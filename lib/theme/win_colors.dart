@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// WINPLUS — Palette de couleurs (transcription fidèle de la charte app_colors).
+/// WINPLUS  Palette de couleurs (transcription fidèle de la charte app_colors).
 /// Jamais de blanc pur : les surfaces claires utilisent le crème.
 class WinColors {
   WinColors._();
@@ -55,7 +55,15 @@ class WinColors {
 /// Espacement sur une échelle de 4dp.
 class WinSpacing {
   WinSpacing._();
-  static const double xs = 4, sm = 8, md = 12, lg = 16, xl = 20, xxl = 24, xxxl = 32, x4 = 48, x5 = 64;
+  static const double xs = 4,
+      sm = 8,
+      md = 12,
+      lg = 16,
+      xl = 20,
+      xxl = 24,
+      xxxl = 32,
+      x4 = 48,
+      x5 = 64;
 }
 
 /// Rayons de bordure.
@@ -67,7 +75,13 @@ class WinRadii {
 /// Ombres « ink » (jamais de noir pur).
 class WinShadows {
   WinShadows._();
-  static const sm = [BoxShadow(color: Color(0x0F163844), blurRadius: 2, offset: Offset(0, 1))];
-  static const md = [BoxShadow(color: Color(0x14163844), blurRadius: 12, offset: Offset(0, 4))];
-  static const lg = [BoxShadow(color: Color(0x1F163844), blurRadius: 32, offset: Offset(0, 12))];
+  static const sm = [
+    BoxShadow(color: Color(0x0F163844), blurRadius: 2, offset: Offset(0, 1))
+  ];
+  static const md = [
+    BoxShadow(color: Color(0x14163844), blurRadius: 12, offset: Offset(0, 4))
+  ];
+  static const lg = [
+    BoxShadow(color: Color(0x1F163844), blurRadius: 32, offset: Offset(0, 12))
+  ];
 }

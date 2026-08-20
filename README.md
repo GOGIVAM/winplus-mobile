@@ -1,4 +1,4 @@
-# WinPlus — Application mobile (Flutter)
+# WinPlus  Application mobile (Flutter)
 
 Plateforme éducative camerounaise : du BEPC aux concours des grandes écoles (ENSP, Polytechnique, FMSB, ENAM, ENS…). Paiement Mobile Money (MTN / Orange) en XAF, assistant pédagogique **WinAI**, et 4 types de comptes.
 
@@ -64,7 +64,7 @@ Les **4 types de comptes sont complets** : Étudiant, Parent, Professeur, Instit
 
 ## Mode sombre
 
-Charcoal neutre type WhatsApp (`#121617`), jamais vert — le teal reste uniquement en couleur d'accent. Basculer : `WinAppScope.of(context).toggleTheme();`
+Charcoal neutre type WhatsApp (`#121617`), jamais vert  le teal reste uniquement en couleur d'accent. Basculer : `WinAppScope.of(context).toggleTheme();`
 
 ## Rôles
 
@@ -82,4 +82,4 @@ Les écrans d'onboarding utilisent des emplacements (`_ImageSlot`). Remplace-les
 
 ---
 
-© WinPlus — charte et contenu conformes au cahier des charges. Prix en XAF.
+© WinPlus  charte et contenu conformes au cahier des charges. Prix en XAF.

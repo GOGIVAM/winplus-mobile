@@ -1,7 +1,7 @@
-# WinPlus Mobile — Plan d'intégration Backend
+# WinPlus Mobile  Plan d'intégration Backend
 
 > Document de référence pour l'implémentation du backend mobile, de l'authentification, de la persistence, des paiements et du logging.
-> Statut : **Planification** — aucun code produit à ce stade.
+> Statut : **Planification**  aucun code produit à ce stade.
 
 ---
 
@@ -26,15 +26,15 @@
 
 ### Ce qui manque
 
-- **Aucun appel HTTP** — tout est mock
-- **Aucune persistance** — reset à chaque redémarrage
+- **Aucun appel HTTP**  tout est mock
+- **Aucune persistance**  reset à chaque redémarrage
 - **Aucune authentification réelle**
 - **WinAI / Chatbot** : le tab `StudentWinAITab` dans `student_tabs.dart` est la bonne UI, mais la réponse est un string fixe hardcodé. Il n'est pas câblé à `POST /api/chatbot/message` ni à l'historique.
 - **Paiements** : UI absente (bouton "Acheter" visible sur les `ContentCard` mais sans action)
 
 ---
 
-## 2. Backend WinPlus — Endpoints disponibles pour le mobile
+## 2. Backend WinPlus  Endpoints disponibles pour le mobile
 
 Backend URL : **`https://api.winplus.cm`**
 
@@ -152,13 +152,13 @@ App → POST /api/auth/signin { email, password }
    RoleShell
 ```
 
-### 4.3 Login (token valide — offline possible)
+### 4.3 Login (token valide  offline possible)
 
 ```
 App ouvre / reprend en foreground
        ↓
 flutter_secure_storage.read(jwt) → JWT présent ?
-       ↓ Oui — vérifier expiry locale
+       ↓ Oui  vérifier expiry locale
 JWT valide ?
        ↓ Oui
 local_auth.authenticate()    ← biométrie ET/OU saisie mot de passe
@@ -212,8 +212,8 @@ Flux de reconfirmation :
 
 ### 4.6 JWT et Refresh Token
 
-- **Access token** : 1440 min (24h) — configuré backend
-- **Refresh token** : 30 jours — configuré backend
+- **Access token** : 1440 min (24h)  configuré backend
+- **Refresh token** : 30 jours  configuré backend
 - **Interceptor Dio** :
   1. Ajouter `Authorization: Bearer <jwt>` à chaque requête
   2. Sur réponse 401 → tenter `POST /api/auth/refresh-token`
@@ -287,7 +287,7 @@ CREATE TABLE notifications_cache (
 
 ---
 
-## 6. Paiements — NotchPay (sans WebView, 100% API)
+## 6. Paiements  NotchPay (sans WebView, 100% API)
 
 ### Pourquoi pas de WebView
 Le `NotchPayService.cs` effectue le paiement en **2 appels API directs** :
@@ -344,7 +344,7 @@ L'écran "Paiements" (tab parent / étudiant) lit d'abord SQLite, puis sync avec
 
 ---
 
-## 7. Téléchargement de fichiers — Solution proposée
+## 7. Téléchargement de fichiers  Solution proposée
 
 ### Contexte
 Les fichiers (PDF, etc.) sont stockés sur **AWS S3** (`winplus-files-prod`).
@@ -446,10 +446,10 @@ lib/
 
 ### Exemple de sortie fichier
 ```
-[2026-08-20T14:32:11] [INFO] [AUTH] Login success — user: ahmed@email.cm, role: student
-[2026-08-20T14:33:02] [WARN] [CONNECTIVITY] Network lost — queuing 1 action
+[2026-08-20T14:32:11] [INFO] [AUTH] Login success  user: ahmed@email.cm, role: student
+[2026-08-20T14:33:02] [WARN] [CONNECTIVITY] Network lost  queuing 1 action
 [2026-08-20T14:35:44] [ERROR] [API] POST /api/payments/initiate → 422 phone format invalid
-[2026-08-20T14:37:10] [INFO] [PAYMENT] Payment completed — orderId: ord_xxx, amount: 3000 XAF
+[2026-08-20T14:37:10] [INFO] [PAYMENT] Payment completed  orderId: ord_xxx, amount: 3000 XAF
 ```
 
 ### En debug
@@ -457,7 +457,7 @@ Les logs apparaissent aussi en console avec couleurs et formatage lisible (`Pret
 
 ---
 
-## 10. WinAI / Chatbot — État actuel et cible
+## 10. WinAI / Chatbot  État actuel et cible
 
 ### État actuel (mock)
 Dans `lib/student/student_tabs.dart`, `StudentWinAITab` :
@@ -485,7 +485,7 @@ Tab ouvert → GET /api/chatbot/history
            → charger les derniers messages dans la liste
 ```
 
-L'`WinAIOrb` animée et l'interface de chat sont prêtes — seule la couche réseau est à brancher.
+L'`WinAIOrb` animée et l'interface de chat sont prêtes  seule la couche réseau est à brancher.
 
 ---
 
@@ -528,25 +528,25 @@ dev_dependencies:
 | 3 | Biométrie obligatoire ou optionnelle ? | ✅ **Proposée à l'activation, jamais forcée** (style WhatsApp) |
 | 4 | URL de base API | ✅ **`https://api.winplus.cm`** |
 | 5 | Téléchargement fichiers S3 | ✅ **Signed URL déjà implémenté** (`SubjectsController.cs` L440–447, 15 min d'expiration) |
-| 6 | Paiement in-app | ✅ **Pas de WebView** — flux 100% API, push USSD natif (MTN/Orange) |
-| 7 | Endpoint `send-confirmation-code` | ✅ **Créé** — `POST /api/auth/send-confirmation-code` |
-| 8 | Endpoint `verify-confirmation` | ✅ **Créé** — `POST /api/auth/verify-confirmation` |
+| 6 | Paiement in-app | ✅ **Pas de WebView**  flux 100% API, push USSD natif (MTN/Orange) |
+| 7 | Endpoint `send-confirmation-code` | ✅ **Créé**  `POST /api/auth/send-confirmation-code` |
+| 8 | Endpoint `verify-confirmation` | ✅ **Créé**  `POST /api/auth/verify-confirmation` |
 
 ---
 
 ## 13. Ordre d'implémentation recommandé
 
-1. **`core/logging`** — logger fichier d'abord (observabilité dès le départ)
-2. **`pubspec.yaml`** — ajouter tous les packages
-3. **`core/db`** — SQLite, schéma, DAOs
-4. **`core/api`** — Dio client + interceptors auth + connectivity
-5. **`core/auth`** — token service + biometric service + auth repository
-6. **Auth screens** — câbler login / signup / email verify / reconfirmation
-7. **Catalog** — remplacer mock_data par appels API + cache SQLite
-8. **Payments** — flux NotchPay complet
-9. **WinAI** — câbler chatbot (`/api/chatbot/message`)
-10. **Offline queue** — sync des actions différées
-11. **Logs** — vérifier rotation et format en production
+1. **`core/logging`**  logger fichier d'abord (observabilité dès le départ)
+2. **`pubspec.yaml`**  ajouter tous les packages
+3. **`core/db`**  SQLite, schéma, DAOs
+4. **`core/api`**  Dio client + interceptors auth + connectivity
+5. **`core/auth`**  token service + biometric service + auth repository
+6. **Auth screens**  câbler login / signup / email verify / reconfirmation
+7. **Catalog**  remplacer mock_data par appels API + cache SQLite
+8. **Payments**  flux NotchPay complet
+9. **WinAI**  câbler chatbot (`/api/chatbot/message`)
+10. **Offline queue**  sync des actions différées
+11. **Logs**  vérifier rotation et format en production
 
 ---
 

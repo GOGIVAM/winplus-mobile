@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// WINPLUS — Modèles de données.
+/// WINPLUS  Modèles de données.
 
 enum WinRole { student, parent, teacher, institution }
 
@@ -61,7 +61,11 @@ class QuizQuestion {
 class Quiz {
   final String id, title, subjectId;
   final List<QuizQuestion> questions;
-  const Quiz({required this.id, required this.title, required this.subjectId, required this.questions});
+  const Quiz(
+      {required this.id,
+      required this.title,
+      required this.subjectId,
+      required this.questions});
 }
 
 class Child {
@@ -88,7 +92,8 @@ class Child {
 class AppNotification {
   final String id, type, title, body, time, group;
   final bool unread;
-  const AppNotification(this.id, this.type, this.title, this.body, this.time, this.group, this.unread);
+  const AppNotification(this.id, this.type, this.title, this.body, this.time,
+      this.group, this.unread);
 }
 
 class RoleInfo {
@@ -96,7 +101,8 @@ class RoleInfo {
   final String label, description;
   final IconData icon;
   final Color color;
-  const RoleInfo(this.role, this.label, this.description, this.icon, this.color);
+  const RoleInfo(
+      this.role, this.label, this.description, this.icon, this.color);
 }
 
 class ProfContent {
@@ -104,13 +110,15 @@ class ProfContent {
   final int downloads;
   final double rating;
   final int revenue;
-  const ProfContent(this.title, this.type, this.status, this.downloads, this.rating, this.revenue);
+  const ProfContent(this.title, this.type, this.status, this.downloads,
+      this.rating, this.revenue);
 }
 
 class Group {
   final String id, name, level;
   final int students, activity, avgScore;
-  const Group(this.id, this.name, this.students, this.activity, this.avgScore, this.level);
+  const Group(this.id, this.name, this.students, this.activity, this.avgScore,
+      this.level);
 }
 
 /// Formate un entier en XAF avec séparateur insécable (ex: 8 000).
