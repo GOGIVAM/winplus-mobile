@@ -11,3 +11,56 @@ pubspec.lock
 bin/
 obj/
 .env
+
+# Fichiers générés automatiquement
+*.g.dart
+*.freezed.dart
+*.mocks.dart
+
+# Android générés
+android/.gradle/
+android/local.properties
+android/app/google-services.json
+android/key.properties
+android/captures/
+android/gradlew
+android/gradlew.bat
+android/gradle/
+
+# iOS générés
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Flutter/App.framework
+ios/Flutter/ephemeral/
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/flutter_export_environment.sh
+ios/Flutter/Generated.xcconfig
+
+# Windows générés
+windows/flutter/generated_plugin_registrant.h
+windows/flutter/generated_plugin_registrant.cc
+windows/flutter/generated_plugins.cmake
+windows/flutter/ephemeral/
+
+# Web générés
+web/flutter_service_worker.js
+web/version.json
+
+# Linux générés
+linux/flutter/generated_plugin_registrant.h
+linux/flutter/generated_plugin_registrant.cc
+linux/flutter/generated_plugins.cmake
+linux/flutter/ephemeral/
+
+# macOS générés
+macos/Flutter/GeneratedPluginRegistrant.swift
+macos/Flutter/ephemeral/
+
+# Logs
+*.log
+logs/
+
+# Caches IDE
+.vscode/
+*.swp
