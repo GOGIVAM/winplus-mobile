@@ -3,9 +3,9 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 
-/// WINPLUS  Widgets réutilisables (équivalents Flutter des composants Win*).
+/// WINPLUS  Widgets réutilisables — design zéro-radius identique au web.
 
-enum WinButtonVariant { primary, accent, outline, ghost, danger }
+enum WinButtonVariant { primary, accent, outline, ghost, danger, secondary }
 
 class WinButton extends StatelessWidget {
   final String label;
@@ -37,6 +37,11 @@ class WinButton extends StatelessWidget {
         fg = s.onPrimary;
         bd = Colors.transparent;
         break;
+      case WinButtonVariant.secondary:
+        bg = s.surface2;
+        fg = s.onSurface;
+        bd = s.outline;
+        break;
       case WinButtonVariant.outline:
         bg = Colors.transparent;
         fg = s.onSurface;
@@ -53,6 +58,7 @@ class WinButton extends StatelessWidget {
         bd = Colors.transparent;
         break;
     }
+    double height = small ? 36 : 48;
     final child = loading
         ? SizedBox(
             width: 18,
@@ -75,18 +81,18 @@ class WinButton extends StatelessWidget {
               ]);
     return SizedBox(
       width: block ? double.infinity : null,
-      height: small ? 38 : 48,
+      height: height,
       child: Material(
         color: bg,
-        borderRadius: BorderRadius.circular(WinRadii.md),
+        borderRadius: BorderRadius.zero,
         child: InkWell(
-          borderRadius: BorderRadius.circular(WinRadii.md),
+          borderRadius: BorderRadius.zero,
           onTap: loading ? null : onTap,
           child: Container(
             alignment: Alignment.center,
             padding: EdgeInsets.symmetric(horizontal: small ? 14 : 20),
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(WinRadii.md),
+                borderRadius: BorderRadius.zero,
                 border: Border.all(color: bd, width: 1.5)),
             child: child,
           ),
@@ -101,14 +107,12 @@ class WinCard extends StatelessWidget {
   final EdgeInsets padding;
   final VoidCallback? onTap;
   final Color? bg;
-  final double radius;
   const WinCard(
       {super.key,
       required this.child,
       this.padding = const EdgeInsets.all(16),
       this.onTap,
-      this.bg,
-      this.radius = WinRadii.lg});
+      this.bg});
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +121,7 @@ class WinCard extends StatelessWidget {
       padding: padding,
       decoration: BoxDecoration(
         color: bg ?? s.cardBg,
-        borderRadius: BorderRadius.circular(radius),
+        borderRadius: BorderRadius.zero,
         border: Border.all(color: s.cardBorder),
         boxShadow: WinShadows.sm,
       ),
@@ -127,7 +131,7 @@ class WinCard extends StatelessWidget {
     return Material(
         color: Colors.transparent,
         child: InkWell(
-            borderRadius: BorderRadius.circular(radius),
+            borderRadius: BorderRadius.zero,
             onTap: onTap,
             child: content));
   }
@@ -147,16 +151,16 @@ class WinChip extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 36,
-        padding: const EdgeInsets.symmetric(horizontal: 14),
+        height: 34,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
         decoration: BoxDecoration(
           color: active ? s.chipActiveBg : s.chipBg,
-          borderRadius: BorderRadius.circular(WinRadii.full),
+          borderRadius: BorderRadius.zero,
           border: Border.all(color: active ? s.chipActiveBg : s.outline),
         ),
         child: Row(mainAxisSize: MainAxisSize.min, children: [
           if (icon != null) ...[
-            Icon(icon, size: 16, color: active ? s.chipActiveFg : s.onSurface),
+            Icon(icon, size: 15, color: active ? s.chipActiveFg : s.onMuted),
             const SizedBox(width: 6)
           ],
           Text(label,
@@ -192,7 +196,7 @@ class WinBadge extends StatelessWidget {
       height: 20,
       padding: const EdgeInsets.symmetric(horizontal: 8),
       decoration: BoxDecoration(
-          color: pairs[0], borderRadius: BorderRadius.circular(WinRadii.full)),
+          color: pairs[0], borderRadius: BorderRadius.zero),
       alignment: Alignment.center,
       child: Text(label,
           style: WinType.manrope(
@@ -210,13 +214,14 @@ class WinProgressBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(WinRadii.full),
+    return SizedBox(
+      height: height,
       child: LinearProgressIndicator(
         value: (value / 100).clamp(0, 1),
         minHeight: height,
         backgroundColor: s.skeleton,
         valueColor: AlwaysStoppedAnimation(color ?? s.primary),
+        borderRadius: BorderRadius.zero,
       ),
     );
   }
@@ -278,6 +283,8 @@ class WinTextField extends StatefulWidget {
   final bool obscure;
   final TextEditingController? controller;
   final VoidCallback? onSuffixTap;
+  final TextInputType? keyboardType;
+  final ValueChanged<String>? onChanged;
   const WinTextField(
       {super.key,
       this.label,
@@ -287,7 +294,9 @@ class WinTextField extends StatefulWidget {
       this.suffixIcon,
       this.obscure = false,
       this.controller,
-      this.onSuffixTap});
+      this.onSuffixTap,
+      this.keyboardType,
+      this.onChanged});
 
   @override
   State<WinTextField> createState() => _WinTextFieldState();
@@ -312,7 +321,7 @@ class _WinTextFieldState extends State<WinTextField> {
           padding: const EdgeInsets.symmetric(horizontal: 14),
           decoration: BoxDecoration(
             color: s.surface,
-            borderRadius: BorderRadius.circular(WinRadii.md),
+            borderRadius: BorderRadius.zero,
             border:
                 Border.all(color: _focused ? s.primary : s.outline, width: 1.5),
           ),
@@ -329,6 +338,8 @@ class _WinTextFieldState extends State<WinTextField> {
                 child: TextField(
                     controller: widget.controller,
                     obscureText: widget.obscure,
+                    keyboardType: widget.keyboardType,
+                    onChanged: widget.onChanged,
                     style: WinType.manrope(size: 15, color: s.onStrong),
                     decoration: InputDecoration(
                         isDense: true,
@@ -382,7 +393,7 @@ class _WinAIOrbState extends State<WinAIOrb>
                   width: widget.size * (1 + ((_c.value + d) % 1) * 0.3),
                   height: widget.size * (1 + ((_c.value + d) % 1) * 0.3),
                   decoration: BoxDecoration(
-                      color: s.primary.withOpacity(0.4),
+                      color: s.primary.withValues(alpha: 0.4),
                       shape: BoxShape.circle)),
             ),
           Container(
@@ -393,7 +404,7 @@ class _WinAIOrbState extends State<WinAIOrb>
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                        color: s.primary.withOpacity(0.4),
+                        color: s.primary.withValues(alpha: 0.4),
                         blurRadius: widget.size * 0.3)
                   ])),
         ]),
@@ -420,10 +431,156 @@ class WinStreakFlame extends StatelessWidget {
               on ? (light ? WinColors.teal400 : s.primary) : WinColors.ink300),
       const SizedBox(width: 6),
       Text('$days',
-          style: WinType.fraunces(
+          style: WinType.archivo(
               size: size * 0.72,
               weight: FontWeight.w700,
               color: light ? WinColors.cream50 : s.onStrong)),
     ]);
+  }
+}
+
+/// Séparateur horizontal avec label optionnel.
+class WinDivider extends StatelessWidget {
+  final String? label;
+  const WinDivider({super.key, this.label});
+  @override
+  Widget build(BuildContext context) {
+    final s = WinTheme.of(context);
+    if (label == null) {
+      return Divider(color: s.outline, height: 1, thickness: 1);
+    }
+    return Row(children: [
+      Expanded(child: Divider(color: s.outline, height: 1, thickness: 1)),
+      Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Text(label!, style: WinType.labelM(s.onFaint))),
+      Expanded(child: Divider(color: s.outline, height: 1, thickness: 1)),
+    ]);
+  }
+}
+
+/// Bannière d'alerte inline (info, warn, error, success).
+class WinAlert extends StatelessWidget {
+  final String message;
+  final BadgeColor type;
+  final IconData? icon;
+  const WinAlert(this.message,
+      {super.key, this.type = BadgeColor.warn, this.icon});
+
+  @override
+  Widget build(BuildContext context) {
+    final (Color bg, Color fg) = switch (type) {
+      BadgeColor.neutral => (WinColors.cream100, WinColors.ink700),
+      BadgeColor.teal    => (WinColors.teal50,   WinColors.teal700),
+      BadgeColor.blue    => (WinColors.blue50,   WinColors.blue700),
+      BadgeColor.success => (WinColors.successBg, WinColors.success),
+      BadgeColor.warn    => (WinColors.warnBg,   WinColors.warn),
+      BadgeColor.error   => (WinColors.errorBg,  WinColors.error),
+      BadgeColor.gold    => (WinColors.goldBg,   WinColors.gold),
+    };
+    final ic = icon ??
+        switch (type) {
+          BadgeColor.success => Icons.check_circle_outline,
+          BadgeColor.warn    => Icons.warning_amber_outlined,
+          BadgeColor.error   => Icons.error_outline,
+          _                  => Icons.info_outline,
+        };
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.zero,
+          border: Border.all(color: fg.withValues(alpha: 0.3))),
+      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Icon(ic, size: 16, color: fg),
+        const SizedBox(width: 8),
+        Expanded(child: Text(message, style: WinType.bodyS(fg))),
+      ]),
+    );
+  }
+}
+
+/// Skeleton loading placeholder.
+class WinSkeleton extends StatefulWidget {
+  final double width, height;
+  const WinSkeleton({super.key, this.width = double.infinity, this.height = 16});
+  @override
+  State<WinSkeleton> createState() => _WinSkeletonState();
+}
+
+class _WinSkeletonState extends State<WinSkeleton>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _c =
+      AnimationController(vsync: this, duration: const Duration(milliseconds: 1200))
+        ..repeat(reverse: true);
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final s = WinTheme.of(context);
+    return AnimatedBuilder(
+        animation: _c,
+        builder: (_, __) => Container(
+              width: widget.width,
+              height: widget.height,
+              decoration: BoxDecoration(
+                  color: Color.lerp(s.skeleton, s.surface2, _c.value),
+                  borderRadius: BorderRadius.zero),
+            ));
+  }
+}
+
+/// Section header avec titre + action optionnelle.
+class WinSectionHeader extends StatelessWidget {
+  final String title;
+  final String? action;
+  final VoidCallback? onAction;
+  const WinSectionHeader(this.title, {super.key, this.action, this.onAction});
+  @override
+  Widget build(BuildContext context) {
+    final s = WinTheme.of(context);
+    return Row(children: [
+      Expanded(child: Text(title, style: WinType.headlineS(s.onStrong))),
+      if (action != null)
+        GestureDetector(
+            onTap: onAction,
+            child: Text(action!,
+                style: WinType.labelM(s.primary)
+                    .copyWith(fontWeight: FontWeight.w600))),
+    ]);
+  }
+}
+
+/// Stat card (valeur + label).
+class WinStatCard extends StatelessWidget {
+  final String value, label;
+  final IconData? icon;
+  final Color? color;
+  const WinStatCard(this.value, this.label,
+      {super.key, this.icon, this.color});
+  @override
+  Widget build(BuildContext context) {
+    final s = WinTheme.of(context);
+    final c = color ?? s.primary;
+    return WinCard(
+        padding: const EdgeInsets.all(14),
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (icon != null) ...[
+                Icon(icon, size: 20, color: c),
+                const SizedBox(height: 8),
+              ],
+              Text(value,
+                  style: WinType.displayS(s.onStrong)
+                      .copyWith(fontSize: 24)),
+              const SizedBox(height: 2),
+              Text(label, style: WinType.labelM(s.onMuted)),
+            ]));
   }
 }

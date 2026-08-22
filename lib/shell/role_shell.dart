@@ -4,6 +4,7 @@ import '../data/models.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../student/student_tabs.dart';
+import '../student/profile_hub_tab.dart';
 import '../parent/parent_tabs.dart';
 import '../teacher/teacher_tabs.dart';
 import '../institution/institution_tabs.dart';
@@ -49,7 +50,7 @@ class _RoleShellState extends State<RoleShell> {
             NavItem('Catalogue', Icons.layers_outlined),
             NavItem('Mon Espace', Icons.grid_view_outlined),
             NavItem('WinAI', Icons.smart_toy_outlined),
-            NavItem('Communauté', Icons.forum_outlined),
+            NavItem('Moi', Icons.person_outline),
           ],
         WinRole.parent => const [
             NavItem('Accueil', Icons.home_outlined),
@@ -75,7 +76,7 @@ class _RoleShellState extends State<RoleShell> {
       };
 
   List<Widget> _pagesFor(WinRole role) => switch (role) {
-        WinRole.student => const [StudentHomeTab(), StudentCatalogTab(), StudentSpaceTab(), StudentWinAITab(), StudentCommunityTab()],
+        WinRole.student => const [StudentHomeTab(), StudentCatalogTab(), StudentSpaceTab(), StudentWinAITab(), ProfileHubTab()],
         WinRole.parent => const [ParentDashTab(), ParentChildrenTab(), ParentResourcesTab(), ParentPaymentsTab(), ParentProfileTab()],
         WinRole.teacher => const [TeacherDashTab(), TeacherContentTab(), TeacherStudentsTab(), TeacherSessionsTab(), TeacherRevenueTab()],
         WinRole.institution => const [InstitutionDashTab(), InstitutionGroupsTab(), InstitutionCatalogTab(), InstitutionAnalyticsTab(), InstitutionAccountTab()],

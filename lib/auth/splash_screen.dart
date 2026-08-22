@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_typography.dart';
 import 'welcome_screen.dart';
@@ -36,7 +36,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
             child: Image.asset('assets/winplus-logo.png', width: 120),
           ),
           const SizedBox(height: 18),
-          Text('WinPlus', style: WinType.fraunces(size: 30, weight: FontWeight.w700, color: WinColors.cream50)),
+          Text('WinPlus', style: WinType.archivo(size: 30, weight: FontWeight.w700, color: WinColors.cream50)),
           const SizedBox(height: 4),
           Text('Ta réussite, notre mission', style: WinType.bodyS(WinColors.ink300)),
         ]),

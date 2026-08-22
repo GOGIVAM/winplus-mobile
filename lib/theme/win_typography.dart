@@ -3,17 +3,17 @@ import 'package:google_fonts/google_fonts.dart';
 import 'win_colors.dart';
 
 /// WINPLUS  Typographie.
-/// Titres & chiffres : Fraunces (serif). UI & corps : Manrope (sans).
+/// Titres & chiffres : Archivo (sans, identique web). UI & corps : Manrope (sans).
 class WinType {
   WinType._();
 
-  static TextStyle fraunces(
+  static TextStyle archivo(
           {double size = 16,
           FontWeight weight = FontWeight.w700,
           Color? color,
           double? height,
           double letterSpacing = -0.3}) =>
-      GoogleFonts.fraunces(
+      GoogleFonts.archivo(
           fontSize: size,
           fontWeight: weight,
           color: color,
@@ -33,20 +33,20 @@ class WinType {
           height: height,
           letterSpacing: letterSpacing);
 
-  // ---- Échelle (voir app_typography) ----
-  static TextStyle displayL(Color c) => fraunces(
+  // ---- Échelle typographique (mirroir exact du web) ----
+  static TextStyle displayL(Color c) => archivo(
       size: 40,
       weight: FontWeight.w700,
       color: c,
       height: 1.0,
       letterSpacing: -0.8);
-  static TextStyle displayM(Color c) => fraunces(
+  static TextStyle displayM(Color c) => archivo(
       size: 28,
       weight: FontWeight.w700,
       color: c,
       height: 1.1,
       letterSpacing: -0.5);
-  static TextStyle displayS(Color c) => fraunces(
+  static TextStyle displayS(Color c) => archivo(
       size: 22,
       weight: FontWeight.w700,
       color: c,

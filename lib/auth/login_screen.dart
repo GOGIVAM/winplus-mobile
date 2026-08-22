@@ -1,11 +1,13 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../app_state.dart';
-import '../data/mock_data.dart';
 import '../data/models.dart';
+import '../services/auth_service.dart';
+import '../services/session_manager.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../shell/role_shell.dart';
+import '../shared/subscription/subscription_notifier.dart';
 
 /// Connexion. Le bouton Google est volontairement bien visible.
 class LoginScreen extends StatefulWidget {
@@ -15,17 +17,42 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _email = TextEditingController(text: 'ahmed@email.cm');
+  final _email = TextEditingController();
   final _pwd = TextEditingController();
   bool _obscure = true, _loading = false;
+  String? _error;
 
-  void _login() {
-    setState(() => _loading = true);
-    Future.delayed(const Duration(seconds: 1), () {
+  WinRole _roleFromString(String? role) => switch (role) {
+        'teacher' => WinRole.teacher,
+        'parent' => WinRole.parent,
+        'institution' => WinRole.institution,
+        _ => WinRole.student,
+      };
+
+  Future<void> _login() async {
+    final email = _email.text.trim();
+    final pwd = _pwd.text;
+    if (email.isEmpty || pwd.isEmpty) {
+      setState(() => _error = 'Veuillez remplir tous les champs.');
+      return;
+    }
+    setState(() { _loading = true; _error = null; });
+    final result = await AuthService.instance.signIn(email, pwd);
+    if (!mounted) return;
+    if (result.success) {
+      final roleStr = await SessionManager.getUserRole();
       if (!mounted) return;
-      WinAppScope.of(context).setRole(WinRole.student);
-      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => const RoleShell()), (r) => false);
-    });
+      final role = _roleFromString(roleStr);
+      WinAppScope.of(context).setRole(role);
+      SubscriptionScope.of(context).loadFromApi();
+      Navigator.pushAndRemoveUntil(
+          context, MaterialPageRoute(builder: (_) => const RoleShell()), (r) => false);
+    } else {
+      setState(() {
+        _loading = false;
+        _error = result.message ?? 'Email ou mot de passe incorrect.';
+      });
+    }
   }
 
   @override
@@ -40,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: ListView(
               padding: const EdgeInsets.fromLTRB(24, 8, 24, 28),
               children: [
-                Center(child: Text('Bon retour !', style: WinType.fraunces(size: 22, weight: FontWeight.w700, color: s.onStrong))),
+                Center(child: Text('Bon retour !', style: WinType.archivo(size: 22, weight: FontWeight.w700, color: s.onStrong))),
                 const SizedBox(height: 4),
                 Center(child: Text('Connecte-toi à ton compte WinPlus.', style: WinType.bodyS(s.onMuted))),
                 const SizedBox(height: 24),
@@ -49,14 +76,24 @@ class _LoginScreenState extends State<LoginScreen> {
                 WinTextField(label: 'Mot de passe', icon: Icons.lock_outline, controller: _pwd, obscure: _obscure, suffixIcon: _obscure ? Icons.visibility_outlined : Icons.visibility_off_outlined, onSuffixTap: () => setState(() => _obscure = !_obscure)),
                 const SizedBox(height: 8),
                 Align(alignment: Alignment.centerRight, child: Text('Mot de passe oublié ?', style: WinType.labelM(s.primaryStrong))),
+                if (_error != null) ...[
+                  const SizedBox(height: 12),
+                  WinAlert(_error!, type: BadgeColor.error),
+                ],
                 const SizedBox(height: 16),
                 WinButton('Se connecter', variant: WinButtonVariant.accent, block: true, loading: _loading, onTap: _login),
                 const SizedBox(height: 24),
                 _Divider(label: 'ou continuer avec'),
                 const SizedBox(height: 16),
-                _SocialButton(icon: Icons.g_mobiledata, label: 'Continuer avec Google', onTap: _login),
+                _SocialButton(icon: Icons.g_mobiledata, label: 'Continuer avec Google', onTap: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Google OAuth — bientôt disponible !')));
+                }),
                 const SizedBox(height: 10),
-                _SocialButton(icon: Icons.phone_outlined, label: 'Continuer avec le téléphone', onTap: _login),
+                _SocialButton(icon: Icons.phone_outlined, label: 'Continuer avec le téléphone', onTap: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Connexion par téléphone — bientôt disponible !')));
+                }),
                 const SizedBox(height: 24),
                 Center(child: Text('Pas encore de compte ? Créer un compte', style: WinType.bodyS(s.onMuted))),
               ],

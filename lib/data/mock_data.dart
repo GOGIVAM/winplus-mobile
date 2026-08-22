@@ -50,7 +50,14 @@ class WinData {
         ratings: 214,
         downloads: 1840,
         free: false,
-        difficulty: 4),
+        difficulty: 4,
+        teacher: 'Prof. Mbarga',
+        description:
+            'Épreuve officielle de Mathématiques du BAC C session 2023. Inclut les 4 exercices et le problème complet avec barème officiel.',
+        reviews: [
+          ContentReview('Sonia K.', 'Très bien structuré, le barème est clair.', 48, 'il y a 3 jours'),
+          ContentReview('Armand T.', 'Exactement l\'épreuve originale, impeccable.', 47, 'il y a 1 sem.'),
+        ]),
     Content(
         id: 'c2',
         title: 'Correction BAC C Physique 2022',
@@ -66,8 +73,15 @@ class WinData {
         free: false,
         fav: true,
         difficulty: 4,
+        teacher: 'Prof. Nkoulou',
+        description:
+            'Correction détaillée et commentée de l\'épreuve de Physique BAC C 2022. Chaque étape est expliquée avec les formules clés à retenir.',
         aiReco:
-            'Tu as raté les questions sur les circuits  voici les corrections détaillées.'),
+            'Tu as raté les questions sur les circuits  voici les corrections détaillées.',
+        reviews: [
+          ContentReview('Fadel M.', 'La meilleure correction que j\'ai trouvée en ligne.', 50, 'il y a 5 jours'),
+          ContentReview('Carole B.', 'Très pédagogique, bravo au prof.', 49, 'il y a 2 sem.'),
+        ]),
     Content(
         id: 'c3',
         title: 'Quiz Chimie organique  Terminale',
@@ -81,7 +95,9 @@ class WinData {
         ratings: 98,
         downloads: 760,
         free: false,
-        difficulty: 3),
+        difficulty: 3,
+        teacher: 'Prof. Ateba',
+        description: '30 questions sur la chimie organique niveau Terminale D. Timer 20 min. Résultats et explications instantanés.'),
     Content(
         id: 'c4',
         title: 'Pack ENSP 2020–2023 (épreuves + corrigés)',
@@ -95,7 +111,14 @@ class WinData {
         ratings: 156,
         downloads: 980,
         free: false,
-        difficulty: 5),
+        difficulty: 5,
+        teacher: 'WinPlus Editorial',
+        description:
+            '4 années d\'annales ENSP avec corrections complètes. Mathématiques, Physique, Chimie. Idéal pour une préparation intensive au concours.',
+        reviews: [
+          ContentReview('Rodrigue N.', 'Pack indispensable pour l\'ENSP. Admis cette année !', 50, 'il y a 1 mois'),
+          ContentReview('Hortense E.', 'Très complet, vaut chaque franc.', 48, 'il y a 2 mois'),
+        ]),
     Content(
         id: 'c5',
         title: 'Méthodes & Dérivées  Préparation BAC C',
@@ -110,7 +133,10 @@ class WinData {
         downloads: 540,
         free: false,
         fav: true,
-        difficulty: 3),
+        difficulty: 3,
+        teacher: 'Prof. Mbarga',
+        description:
+            'Guide méthodologique complet sur les dérivées et les limites. 45 exercices corrigés progressifs. Du niveau Première au BAC C.'),
     Content(
         id: 'c6',
         title: 'BEPC  Mathématiques 2024',
@@ -124,7 +150,9 @@ class WinData {
         ratings: 410,
         downloads: 5200,
         free: true,
-        difficulty: 2),
+        difficulty: 2,
+        teacher: 'WinPlus Editorial',
+        description: 'Épreuve officielle BEPC Mathématiques 2024 en accès libre.'),
     Content(
         id: 'c7',
         title: 'BEPC  SVT 2024',
@@ -138,7 +166,9 @@ class WinData {
         ratings: 286,
         downloads: 3900,
         free: true,
-        difficulty: 2),
+        difficulty: 2,
+        teacher: 'WinPlus Editorial',
+        description: 'Épreuve officielle BEPC SVT 2024 en accès libre.'),
     Content(
         id: 'c8',
         title: 'Pack FMSB Médecine  Annales concours',
@@ -152,7 +182,13 @@ class WinData {
         ratings: 188,
         downloads: 1120,
         free: false,
-        difficulty: 5),
+        difficulty: 5,
+        teacher: 'WinPlus Editorial',
+        description:
+            'Annales complètes du concours d\'entrée à la FMSB (Faculté de Médecine et des Sciences Biomédicales). SVT, Chimie, Physique.',
+        reviews: [
+          ContentReview('Blanche O.', 'J\'ai réussi le concours FMSB grâce à ce pack !', 50, 'il y a 3 mois'),
+        ]),
     Content(
         id: 'c9',
         title: 'Correction Probatoire D Maths 2023',
@@ -166,7 +202,9 @@ class WinData {
         ratings: 142,
         downloads: 1640,
         free: false,
-        difficulty: 3),
+        difficulty: 3,
+        teacher: 'Prof. Essono',
+        description: 'Correction intégrale de l\'épreuve de Maths Probatoire D 2023.'),
     Content(
         id: 'c10',
         title: 'Quiz Dérivées & Limites  Terminale C',
@@ -180,7 +218,9 @@ class WinData {
         ratings: 230,
         downloads: 2100,
         free: true,
-        difficulty: 4),
+        difficulty: 4,
+        teacher: 'Prof. Mbarga',
+        description: '20 questions de niveau BAC C sur les dérivées et limites. Accès libre.'),
     Content(
         id: 'c11',
         title: 'Polytechnique  Physique 2022',
@@ -194,7 +234,9 @@ class WinData {
         ratings: 96,
         downloads: 720,
         free: false,
-        difficulty: 5),
+        difficulty: 5,
+        teacher: 'Prof. Nkoulou',
+        description: 'Épreuve de Physique du concours Polytechnique Yaoundé 2022.'),
     Content(
         id: 'c12',
         title: 'Le Français au BAC  Dissertation & Commentaire',
@@ -208,7 +250,9 @@ class WinData {
         ratings: 64,
         downloads: 480,
         free: false,
-        difficulty: 2),
+        difficulty: 2,
+        teacher: 'Prof. Ngo Mbe',
+        description: 'Méthodes et exemples corrigés pour la dissertation et le commentaire composé au BAC littéraire.'),
   ];
 
   static Content contentById(String id) =>
@@ -218,6 +262,7 @@ class WinData {
     id: 'c10',
     title: 'Quiz Dérivées & Limites',
     subjectId: 'math',
+    durationMinutes: 20,
     questions: [
       QuizQuestion(
           "Quelle est la dérivée de f(x) = x³ ?",
@@ -262,7 +307,7 @@ class WinData {
         progress: 80,
         trend: 'up',
         alertType: 'success',
-        alertMsg: 'Léa a obtenu 90% à son dernier quiz Maths  excellent !'),
+        alertMsg: 'Léa a obtenu 90% à son dernier quiz Maths — excellent !'),
   ];
 
   static const subjectScores = <String, int>{
@@ -294,7 +339,7 @@ class WinData {
         'n3',
         'success',
         'Paiement réussi',
-        'Correction BAC C Physique 2022  3 000 XAF.',
+        'Correction BAC C Physique 2022 — 3 000 XAF.',
         'Hier',
         'Cette semaine',
         false),
@@ -305,6 +350,22 @@ class WinData {
         'Annales 2020–2023 ajoutées au catalogue.',
         'Lun.',
         'Cette semaine',
+        false),
+    AppNotification(
+        'n5',
+        'warn',
+        'Vérification périodique requise',
+        'Confirme ton adresse email pour continuer à utiliser WinPlus.',
+        'il y a 2j',
+        'Cette semaine',
+        true),
+    AppNotification(
+        'n6',
+        'ai',
+        'Plan de révision prêt',
+        'WinAI a généré ton planning BAC C — 3 semaines, 2h/jour.',
+        'il y a 5j',
+        'Ce mois',
         false),
   ];
 
@@ -343,6 +404,207 @@ class WinData {
   static const quizWeek = 4;
   static const downloadsTotal = 23;
 
+  // ---- ABONNEMENT ----
+
+  static const pricingPlans = <PricingPlan>[
+    PricingPlan(
+      tier: PlanTier.libre,
+      name: 'Boutique Libre',
+      tagline: 'Accès limité, achat à l\'unité',
+      priceMonthly: 0,
+      priceYearly: 0,
+      downloadLimit: 5,
+      quizDailyLimit: 3,
+      aiMessages: 10,
+      features: [
+        PricingFeature('5 téléchargements/mois', included: true),
+        PricingFeature('3 quiz par jour', included: true),
+        PricingFeature('10 messages WinAI', included: true),
+        PricingFeature('Accès catalogue complet', included: false, detail: 'Achat à l\'unité seulement'),
+        PricingFeature('Exam Coach IA', included: false),
+        PricingFeature('Téléchargement hors-ligne', included: false),
+        PricingFeature('Corrections prioritaires', included: false),
+      ],
+    ),
+    PricingPlan(
+      tier: PlanTier.standard,
+      name: 'Standard',
+      tagline: 'L\'essentiel pour réviser',
+      priceMonthly: 2500,
+      priceYearly: 25000,
+      downloadLimit: 30,
+      quizDailyLimit: 20,
+      aiMessages: 100,
+      features: [
+        PricingFeature('30 téléchargements/mois', included: true),
+        PricingFeature('20 quiz par jour', included: true),
+        PricingFeature('100 messages WinAI', included: true),
+        PricingFeature('Catalogue complet inclus', included: true),
+        PricingFeature('Exam Coach IA', included: false),
+        PricingFeature('Téléchargement hors-ligne', included: true),
+        PricingFeature('Support prioritaire', included: false),
+      ],
+    ),
+    PricingPlan(
+      tier: PlanTier.premium,
+      name: 'Premium',
+      tagline: 'Tout, sans limite',
+      priceMonthly: 5000,
+      priceYearly: 50000,
+      popular: true,
+      downloadLimit: null,
+      quizDailyLimit: null,
+      aiMessages: null,
+      features: [
+        PricingFeature('Téléchargements illimités', included: true),
+        PricingFeature('Quiz illimités', included: true),
+        PricingFeature('WinAI illimité', included: true),
+        PricingFeature('Exam Coach IA', included: true),
+        PricingFeature('Téléchargement hors-ligne', included: true),
+        PricingFeature('Certificats & badges', included: true),
+        PricingFeature('Support prioritaire 24h', included: true),
+      ],
+    ),
+    PricingPlan(
+      tier: PlanTier.famille,
+      name: 'Famille',
+      tagline: 'Premium pour toute la famille',
+      priceMonthly: 8000,
+      priceYearly: 80000,
+      downloadLimit: null,
+      quizDailyLimit: null,
+      aiMessages: null,
+      features: [
+        PricingFeature('Jusqu\'à 4 enfants', included: true),
+        PricingFeature('Dashboard parent avancé', included: true),
+        PricingFeature('WinAI Alerts par enfant', included: true),
+        PricingFeature('Tout Premium inclus', included: true),
+        PricingFeature('Rapport hebdo par email', included: true),
+        PricingFeature('Support prioritaire 24h', included: true),
+        PricingFeature('Encouragements personnalisés', included: true),
+      ],
+    ),
+  ];
+
+  static const currentSubscription = ActiveSubscription(
+    tier: PlanTier.standard,
+    planName: 'Standard',
+    expiresAt: '15 sept. 2026',
+    autoRenew: true,
+    downloadsUsed: 18,
+    downloadsLimit: 30,
+    quizUsedToday: 2,
+    quizDailyLimit: 20,
+    aiMessagesUsed: 34,
+    aiMessagesLimit: 100,
+  );
+
+  // ---- CONTINUE LEARNING ----
+
+  static const inProgress = <InProgressContent>[
+    InProgressContent('c2', 'Correction BAC C Physique 2022', 'pc', 62, 'il y a 2h'),
+    InProgressContent('c4', 'Pack ENSP 2020–2023', 'math', 38, 'hier'),
+    InProgressContent('c5', 'Méthodes & Dérivées', 'math', 85, 'il y a 3j'),
+  ];
+
+  // ---- RECOMMANDATIONS IA ----
+
+  static const aiRecommendations = <AiRecommendation>[
+    AiRecommendation(
+        RecoType.weakSubject,
+        'Renforce ta Physique',
+        'Ton score moyen en Physique est de 48% — bien en dessous de la moyenne. WinAI a sélectionné 3 ressources ciblées.',
+        contentId: 'c2'),
+    AiRecommendation(
+        RecoType.suggestedQuiz,
+        'Quiz du jour : Dérivées',
+        'Tu n\'as pas pratiqué les dérivées depuis 4 jours. 5 min suffisent pour consolider.',
+        contentId: 'c10'),
+    AiRecommendation(
+        RecoType.examPlan,
+        'Plan BAC C : 3 semaines',
+        'Le BAC C est dans 21 jours. WinAI a préparé un planning jour par jour basé sur tes lacunes.'),
+  ];
+
+  // ---- ACTIVITÉ RÉCENTE ----
+
+  static const activityFeed = <ActivityEvent>[
+    ActivityEvent(ActivityType.quiz, 'Quiz Dérivées & Limites', '4/5 — 80%', 'Aujourd\'hui 09:14'),
+    ActivityEvent(ActivityType.download, 'Correction BAC C Physique 2022', 'Téléchargé', 'Hier 18:40'),
+    ActivityEvent(ActivityType.badge, 'Badge débloqué : 7 jours de feu', '+50 XP', 'Hier 08:00'),
+    ActivityEvent(ActivityType.purchase, 'Méthodes & Dérivées', '2 500 XAF', 'il y a 3j'),
+    ActivityEvent(ActivityType.quiz, 'Quiz Chimie organique', '6/10 — 60%', 'il y a 4j'),
+    ActivityEvent(ActivityType.session, 'Session d\'étude', '1h 30 — Physique', 'il y a 5j'),
+  ];
+
+  // ---- PLANNING HEBDOMADAIRE ----
+
+  static const studyWeekData = StudyWeek([
+    StudyDay('Lun', 90, 120),
+    StudyDay('Mar', 120, 120),
+    StudyDay('Mer', 45, 120),
+    StudyDay('Jeu', 130, 120),
+    StudyDay('Ven', 110, 120),
+    StudyDay('Sam', 60, 120),
+    StudyDay('Dim', 0, 120),
+  ]);
+
+  static const examCoachPlan = StudyPlan(
+    'BAC C',
+    '18 juin 2026',
+    2,
+    [
+      StudyWeekPlan('Semaine 1', ['Dérivées', 'Intégrales', 'Quiz de positionnement'], done: true),
+      StudyWeekPlan('Semaine 2', ['Physique : circuits électriques', 'Mécanique du point', 'Quiz mi-parcours']),
+      StudyWeekPlan('Semaine 3', ['Révision générale', 'Annales 2021–2023', 'Simulation BAC C']),
+    ],
+  );
+
+  // ---- EXAMENS À VENIR ----
+
+  static const upcomingExams = <ExamCountdown>[
+    ExamCountdown('BAC C  Mathématiques', '18 juin 2026', 21, 'math'),
+    ExamCountdown('BAC C  Physique-Chimie', '19 juin 2026', 22, 'pc'),
+    ExamCountdown('Concours ENSP', '5 juil. 2026', 38, 'math'),
+  ];
+
+  // ---- BADGES / GAMIFICATION ----
+
+  static const badges = <AchievementBadge>[
+    AchievementBadge('b1', '7 jours de feu', 'Étudié 7 jours consécutifs',
+        Icons.local_fire_department, WinColors.warn,
+        unlocked: true, unlockedAt: 'Hier'),
+    AchievementBadge('b2', 'Premier quiz', 'Complété ton 1er quiz',
+        Icons.quiz_outlined, WinColors.teal500,
+        unlocked: true, unlockedAt: 'il y a 2 sem.'),
+    AchievementBadge('b3', 'Téléchargeur', '10 contenus téléchargés',
+        Icons.download_done, WinColors.blue500,
+        unlocked: true, unlockedAt: 'il y a 1 mois'),
+    AchievementBadge('b4', 'Expert Maths', '90%+ à 5 quiz de Maths',
+        Icons.functions, WinColors.gold,
+        unlocked: false),
+    AchievementBadge('b5', '30 jours de feu', 'Étudié 30 jours consécutifs',
+        Icons.local_fire_department, WinColors.error,
+        unlocked: false),
+    AchievementBadge('b6', 'Pack complet', 'Terminé un pack annales',
+        Icons.inventory_2_outlined, WinColors.ink700,
+        unlocked: false),
+  ];
+
+  // ---- PROFIL UTILISATEUR ----
+
+  static const userProfile = UserProfile(
+    id: 'u1',
+    name: 'Koumba Martial',
+    email: 'koumba.martial@gmail.com',
+    phone: '+237 699 123 456',
+    role: WinRole.student,
+    level: 'Terminale C',
+    filiere: 'Scientifique',
+    examObjectif: 'BAC C',
+    avatarInitials: 'KM',
+  );
+
   // ---- PROFESSEUR : contenus publiés ----
   static const profContent = <ProfContent>[
     ProfContent('BAC C  Maths 2023', 'Épreuve', 'Publié', 1840, 4.7, 184000),
@@ -352,11 +614,56 @@ class WinData {
     ProfContent('Méthodes & Dérivées', 'Livre', 'Brouillon', 0, 0, 0),
   ];
 
+  // ---- PROFESSEUR : corrections en attente ----
+  static const submissions = <Submission>[
+    Submission('s1', 'Sonia Kombe', 'Devoir Intégrales  Terminale C',
+        'il y a 30 min', false),
+    Submission('s2', 'Armand Talla', 'Devoir Vecteurs  1ère C', 'il y a 2h',
+        false),
+    Submission('s3', 'Fadel Moussa', 'Devoir Chimie organique', 'hier', true,
+        score: 14),
+    Submission('s4', 'Carole Biya', 'Exercice Mécanique', 'il y a 3j', true,
+        score: 16),
+  ];
+
   // ---- INSTITUTION : groupes ----
   static const groups = <Group>[
     Group('g1', 'TLE C 2026', 45, 78, 71, 'BAC'),
     Group('g2', 'TLE D 2026', 38, 52, 58, 'BAC'),
     Group('g3', 'BTS Info 1', 26, 34, 49, 'BTS'),
     Group('g4', '3ème A', 52, 81, 74, 'BEPC'),
+  ];
+
+  // ---- INSTITUTION : élèves à risque ----
+  static const atRiskStudents = <AtRiskStudent>[
+    AtRiskStudent('r1', 'Jean-Paul Ekwalla', 'TLE C', 32, 8, 'high',
+        'Score < 35% depuis 3 semaines, 8 absences'),
+    AtRiskStudent('r2', 'Martine Abanda', 'TLE D', 41, 5, 'high',
+        'Série d\'étude rompue depuis 12 jours'),
+    AtRiskStudent('r3', 'Boris Nguyen', 'BTS Info 1', 48, 3, 'medium',
+        'Score en baisse de 15 pts ce mois'),
+    AtRiskStudent('r4', 'Sylvie Meka', 'TLE C', 50, 4, 'medium',
+        'Physique faible : 28%, aucun quiz cette semaine'),
+  ];
+
+  // ---- PARENT : évènements enfants ----
+  static const childEvents = <ChildEvent>[
+    ChildEvent('Ahmed', 'BAC C  Mathématiques', '18 juin 2026', 'exam'),
+    ChildEvent('Ahmed', 'Renouvellement abonnement', '15 sept. 2026', 'renewal'),
+    ChildEvent('Léa', 'BEPC  Mathématiques', '14 mai 2026', 'exam'),
+  ];
+
+  // ---- PARENT : scores d\'engagement ----
+  static const engagementScores = <EngagementScore>[
+    EngagementScore('k1', 72, 65, 'up'),
+    EngagementScore('k2', 88, 90, 'down'),
+  ];
+
+  // ---- CERTIFICATS ----
+  static const certificates = <Certificate>[
+    Certificate('cert1', 'Maîtrise des Dérivées  Niveau BAC C',
+        '14 jan. 2026', 'https://winplus.cm/verify/cert1', 92),
+    Certificate('cert2', 'Quiz Physique — Expert',
+        '2 mars 2026', 'https://winplus.cm/verify/cert2', 88),
   ];
 }

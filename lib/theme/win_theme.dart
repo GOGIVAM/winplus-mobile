@@ -118,7 +118,7 @@ class WinTheme extends InheritedWidget {
   const WinTheme({super.key, required this.scheme, required super.child});
 
   static WinScheme of(BuildContext context) =>
-      context.dependOnInheritedWidgetOfType<WinTheme>()!.scheme;
+      context.dependOnInheritedWidgetOfExactType<WinTheme>()!.scheme;
 
   @override
   bool updateShouldNotify(WinTheme oldWidget) =>

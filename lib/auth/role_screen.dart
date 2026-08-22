@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../app_state.dart';
 import '../data/mock_data.dart';
 import '../data/models.dart';
@@ -30,7 +30,7 @@ class _RoleScreenState extends State<RoleScreen> {
             child: ListView(
               padding: const EdgeInsets.fromLTRB(24, 4, 24, 24),
               children: [
-                Center(child: Text('Je suis…', style: WinType.fraunces(size: 26, weight: FontWeight.w700, color: s.onStrong))),
+                Center(child: Text('Je suis…', style: WinType.archivo(size: 26, weight: FontWeight.w700, color: s.onStrong))),
                 const SizedBox(height: 6),
                 Center(child: Text('Choisis ton profil pour une expérience personnalisée.', textAlign: TextAlign.center, style: WinType.bodyM(s.onMuted))),
                 const SizedBox(height: 24),

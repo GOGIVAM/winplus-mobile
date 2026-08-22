@@ -31,5 +31,5 @@ class WinAppScope extends InheritedNotifier<WinAppState> {
   const WinAppScope(
       {super.key, required WinAppState super.notifier, required super.child});
   static WinAppState of(BuildContext context) =>
-      context.dependOnInheritedWidgetOfType<WinAppScope>()!.notifier!;
+      context.dependOnInheritedWidgetOfExactType<WinAppScope>()!.notifier!;
 }

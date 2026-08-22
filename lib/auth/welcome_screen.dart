@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
@@ -22,7 +22,7 @@ class WelcomeScreen extends StatelessWidget {
           child: Column(children: [
             Image.asset('assets/winplus-logo.png', width: 96),
             const SizedBox(height: 8),
-            Text('WinPlus', style: WinType.fraunces(size: 28, weight: FontWeight.w700, color: s.onStrong)),
+            Text('WinPlus', style: WinType.archivo(size: 28, weight: FontWeight.w700, color: s.onStrong)),
             Text('Ta réussite, notre mission', style: WinType.bodyS(s.onMuted)),
             Expanded(child: Center(child: _ImageSlot(label: "Image d'accueil"))),
             WinButton('Créer un compte', variant: WinButtonVariant.accent, block: true, onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const RoleScreen()))),

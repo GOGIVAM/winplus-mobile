@@ -1,15 +1,41 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../app_state.dart';
 import '../data/mock_data.dart';
 import '../data/models.dart';
+import '../services/subject_service.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import 'notifications_screen.dart';
+import 'profile_screen.dart';
+import 'content_detail_screen.dart';
 
 /// ===================== ACCUEIL ÉTUDIANT =====================
-class StudentHomeTab extends StatelessWidget {
+class StudentHomeTab extends StatefulWidget {
   const StudentHomeTab({super.key});
+  @override
+  State<StudentHomeTab> createState() => _StudentHomeTabState();
+}
+
+class _StudentHomeTabState extends State<StudentHomeTab> {
+  List<Content> _recommended = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRecommended();
+  }
+
+  Future<void> _loadRecommended() async {
+    try {
+      final page = await SubjectService.instance.getAll(pageSize: 3);
+      if (mounted) {
+        setState(() => _recommended = page.items.map((s) => s.toContent()).toList());
+      }
+    } catch (_) {}
+  }
+
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
@@ -42,13 +68,13 @@ class StudentHomeTab extends StatelessWidget {
                               text: 'Bonne matinée Ahmed  tu as une session '),
                           TextSpan(
                               text: 'Maths',
-                              style: WinType.fraunces(
+                              style: WinType.archivo(
                                       size: 16, color: WinColors.teal400)
                                   .copyWith(fontStyle: FontStyle.italic)),
                           const TextSpan(text: ' planifiée à '),
                           TextSpan(
                               text: '14h',
-                              style: WinType.fraunces(
+                              style: WinType.archivo(
                                       size: 16, color: WinColors.teal400)
                                   .copyWith(fontStyle: FontStyle.italic)),
                           const TextSpan(text: '.'),
@@ -65,7 +91,7 @@ class StudentHomeTab extends StatelessWidget {
                       Expanded(
                           child: _HeroStat(
                               value: Text('${WinData.dayGoal}%',
-                                  style: WinType.fraunces(
+                                  style: WinType.archivo(
                                       size: 22, color: WinColors.teal400)),
                               title: 'objectif du jour',
                               sub: "Temps d'étude")),
@@ -89,15 +115,16 @@ class StudentHomeTab extends StatelessWidget {
                 sub: 'Basé sur tes résultats en Physique'),
             SizedBox(
               height: 210,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemCount: 3,
-                separatorBuilder: (_, __) => const SizedBox(width: 12),
-                itemBuilder: (_, i) => SizedBox(
-                    width: 168,
-                    child: ContentCard(
-                        content: WinData.contentById(['c2', 'c4', 'c8'][i]))),
-              ),
+              child: _recommended.isEmpty
+                  ? const Center(child: CircularProgressIndicator())
+                  : ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: _recommended.length,
+                      separatorBuilder: (_, __) => const SizedBox(width: 12),
+                      itemBuilder: (_, i) => SizedBox(
+                          width: 168,
+                          child: ContentCard(content: _recommended[i])),
+                    ),
             ),
             const SizedBox(height: 24),
             // STATS
@@ -130,9 +157,16 @@ class _TopBar extends StatelessWidget {
       child: Row(children: [
         Image.asset('assets/winplus-logo.png', width: 40),
         const Spacer(),
-        Icon(Icons.notifications_outlined, size: 23, color: s.onSurface),
-        const SizedBox(width: 14),
-        const WinAvatar('Ahmed Nkono', size: 34),
+        IconButton(
+          icon: Icon(Icons.notifications_outlined, size: 23, color: s.onSurface),
+          onPressed: () => Navigator.push(context,
+              MaterialPageRoute(builder: (_) => const NotificationsScreen())),
+        ),
+        GestureDetector(
+          onTap: () => Navigator.push(context,
+              MaterialPageRoute(builder: (_) => const ProfileScreen())),
+          child: const WinAvatar('Ahmed Nkono', size: 34),
+        ),
       ]),
     );
   }
@@ -180,7 +214,7 @@ class _StatCard extends StatelessWidget {
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Icon(icon, size: 20, color: s.primary),
         const SizedBox(height: 8),
-        Text(value, style: WinType.fraunces(size: 22, color: s.onStrong)),
+        Text(value, style: WinType.archivo(size: 22, color: s.onStrong)),
         const SizedBox(height: 4),
         Text(label, style: WinType.labelM(s.onMuted)),
       ]),
@@ -198,7 +232,7 @@ class _SectionHeader extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(title, style: WinType.fraunces(size: 18, color: s.onStrong)),
+        Text(title, style: WinType.archivo(size: 18, color: s.onStrong)),
         if (sub != null)
           Padding(
               padding: const EdgeInsets.only(top: 2),
@@ -217,6 +251,8 @@ class ContentCard extends StatelessWidget {
     final s = WinTheme.of(context);
     final subj = WinData.subjectById(content.subjectId);
     return WinCard(
+      onTap: () => Navigator.push(context,
+          MaterialPageRoute(builder: (_) => ContentDetailScreen(content: content))),
       padding: EdgeInsets.zero,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Container(
@@ -242,7 +278,7 @@ class ContentCard extends StatelessWidget {
                 style: WinType.labelM(s.onMuted)),
             const SizedBox(height: 8),
             Text(content.free ? 'Gratuit' : '${fmtXaf(content.price)}\u00a0XAF',
-                style: WinType.fraunces(
+                style: WinType.archivo(
                     size: 18,
                     color: content.free ? WinColors.success : s.onStrong)),
           ]),
