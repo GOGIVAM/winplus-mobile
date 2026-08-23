@@ -12,7 +12,7 @@ class AchievementsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    final badges = WinData.badges;
+    const badges = WinData.badges;
     final unlocked = badges.where((b) => b.unlocked).length;
     final total = badges.length;
 
@@ -34,7 +34,7 @@ class AchievementsScreen extends StatelessWidget {
             bg: WinColors.ink800,
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Row(children: [
-                WinStreakFlame(WinData.streak, light: true, size: 28),
+                const WinStreakFlame(WinData.streak, light: true, size: 28),
                 const SizedBox(width: 12),
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Text('Série actuelle',
@@ -116,7 +116,7 @@ class _BadgeCard extends StatelessWidget {
               overflow: TextOverflow.ellipsis),
           const SizedBox(height: 8),
           if (badge.unlocked)
-            WinBadge('Débloqué', color: BadgeColor.teal)
+            const WinBadge('Débloqué', color: BadgeColor.teal)
           else
             const WinBadge('Verrouillé'),
           if (badge.unlocked && badge.unlockedAt != null)

@@ -134,7 +134,7 @@ class _ActionPlanScreenState extends State<ActionPlanScreen> {
                           onTap: () => setState(() => _done.add(i)))
                     else
                       Row(children: [
-                        Icon(Icons.check_circle, size: 16, color: WinColors.success),
+                        const Icon(Icons.check_circle, size: 16, color: WinColors.success),
                         const SizedBox(width: 6),
                         Text('Réalisé', style: WinType.labelM(WinColors.success)
                             .copyWith(fontWeight: FontWeight.w600)),

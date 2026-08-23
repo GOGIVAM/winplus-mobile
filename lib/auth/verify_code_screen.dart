@@ -33,7 +33,9 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
     _countdown = 60;
     _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 1), (t) {
-      if (_countdown <= 0) { t.cancel(); } else setState(() => _countdown--);
+      if (_countdown <= 0) { t.cancel(); } else {
+        setState(() => _countdown--);
+      }
     });
   }
 
@@ -88,7 +90,7 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
                 style: WinType.bodyM(s.onMuted)),
             const SizedBox(height: 40),
             if (_verified)
-              WinAlert('Email vérifié avec succès ! Bienvenue sur WinPlus.',
+              const WinAlert('Email vérifié avec succès ! Bienvenue sur WinPlus.',
                   type: BadgeColor.success)
             else ...[
               Row(
@@ -162,7 +164,7 @@ class _CodeBox extends StatelessWidget {
             borderRadius: BorderRadius.zero,
             borderSide: BorderSide(color: s.outline, width: 1.5),
           ),
-          focusedBorder: OutlineInputBorder(
+          focusedBorder: const OutlineInputBorder(
             borderRadius: BorderRadius.zero,
             borderSide: BorderSide(color: WinColors.teal500, width: 2),
           ),

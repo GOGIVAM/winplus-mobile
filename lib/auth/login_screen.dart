@@ -62,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: s.bg,
       body: SafeArea(
         child: Column(children: [
-          _BackBar(logo: true),
+          const _BackBar(logo: true),
           Expanded(
             child: ListView(
               padding: const EdgeInsets.fromLTRB(24, 8, 24, 28),
@@ -83,7 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 16),
                 WinButton('Se connecter', variant: WinButtonVariant.accent, block: true, loading: _loading, onTap: _login),
                 const SizedBox(height: 24),
-                _Divider(label: 'ou continuer avec'),
+                const _Divider(label: 'ou continuer avec'),
                 const SizedBox(height: 16),
                 _SocialButton(icon: Icons.g_mobiledata, label: 'Continuer avec Google', onTap: () {
                   ScaffoldMessenger.of(context).showSnackBar(

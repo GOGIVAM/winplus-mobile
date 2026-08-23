@@ -57,7 +57,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
             Text('Choisissez un mot de passe sécurisé.', style: WinType.bodyM(s.onMuted)),
             const SizedBox(height: 32),
             if (_done) ...[
-              WinAlert(
+              const WinAlert(
                 'Mot de passe mis à jour ! Vous pouvez maintenant vous connecter.',
                 type: BadgeColor.success,
               ),

@@ -87,8 +87,8 @@ class _AddChildScreenState extends State<AddChildScreen> {
         padding: const EdgeInsets.all(20),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           if (isFree)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 16),
+            const Padding(
+              padding: EdgeInsets.only(bottom: 16),
               child: WinAlert(
                 'Le plan Boutique Libre n\'inclut pas le suivi parental. Passez au plan Famille pour accéder aux alertes WinAI.',
                 type: BadgeColor.warn,

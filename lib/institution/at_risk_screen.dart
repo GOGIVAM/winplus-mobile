@@ -87,7 +87,7 @@ class _AtRiskScreenState extends State<AtRiskScreen> {
     if (_students == null) return const Center(child: CircularProgressIndicator());
     if (_items.isEmpty) {
       return Center(child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Icon(Icons.check_circle_outline, size: 64, color: WinColors.success),
+        const Icon(Icons.check_circle_outline, size: 64, color: WinColors.success),
         const SizedBox(height: 12),
         Text('Aucun élève à risque détecté.', style: WinType.bodyM(s.onMuted)),
       ]));

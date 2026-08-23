@@ -136,9 +136,9 @@ class StudentSpaceTab extends StatelessWidget {
       Padding(padding: const EdgeInsets.fromLTRB(16, 12, 16, 8), child: Align(alignment: Alignment.centerLeft, child: Text('Mon Espace', style: WinType.archivo(size: 22, color: s.onStrong)))),
       Expanded(
         child: ListView(padding: const EdgeInsets.fromLTRB(16, 8, 16, 24), children: [
-          Row(children: [
+          const Row(children: [
             Expanded(child: _MiniStat('${WinData.avgScore}%', 'Score moyen', Icons.trending_up)),
-            const SizedBox(width: 10),
+            SizedBox(width: 10),
             Expanded(child: _MiniStat(WinData.studyToday, "Étude aujourd'hui", Icons.schedule)),
           ]),
           const SizedBox(height: 16),

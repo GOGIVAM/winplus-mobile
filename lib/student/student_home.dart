@@ -81,7 +81,7 @@ class _StudentHomeTabState extends State<StudentHomeTab> {
                         ])),
                     const SizedBox(height: 20),
                     Row(children: [
-                      Expanded(
+                      const Expanded(
                           child: _HeroStat(
                               value: WinStreakFlame(WinData.streak,
                                   light: true, size: 22),
@@ -111,7 +111,7 @@ class _StudentHomeTabState extends State<StudentHomeTab> {
                   WinChip('Téléchargements', icon: Icons.download_outlined),
                 ])),
             const SizedBox(height: 24),
-            _SectionHeader('Recommandé par WinAI',
+            const _SectionHeader('Recommandé par WinAI',
                 sub: 'Basé sur tes résultats en Physique'),
             SizedBox(
               height: 210,
@@ -128,15 +128,15 @@ class _StudentHomeTabState extends State<StudentHomeTab> {
             ),
             const SizedBox(height: 24),
             // STATS
-            Row(children: [
+            const Row(children: [
               Expanded(
                   child: _StatCard(Icons.check_circle_outline,
                       '${WinData.quizWeek}', 'Quiz / sem.')),
-              const SizedBox(width: 10),
+              SizedBox(width: 10),
               Expanded(
                   child: _StatCard(
                       Icons.schedule, WinData.studyToday, 'Étude du jour')),
-              const SizedBox(width: 10),
+              SizedBox(width: 10),
               Expanded(
                   child: _StatCard(Icons.download_outlined,
                       '${WinData.downloadsTotal}', 'Téléchargés')),

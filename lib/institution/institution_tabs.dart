@@ -194,8 +194,8 @@ class _InstitutionGroupsTabState extends State<InstitutionGroupsTab> {
   Widget build(BuildContext context) {
     return Column(children: [
       _instHeader(context, 'Groupes'),
-      Padding(padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: const WinTextField(icon: Icons.search, hint: 'Rechercher un groupe…')),
+      const Padding(padding: EdgeInsets.symmetric(horizontal: 16),
+          child: WinTextField(icon: Icons.search, hint: 'Rechercher un groupe…')),
       const SizedBox(height: 12),
       Expanded(child: _groups == null
           ? const Center(child: CircularProgressIndicator())
@@ -281,7 +281,7 @@ class _InstitutionCatalogTabState extends State<InstitutionCatalogTab> {
                         Text(item.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: WinType.titleM(s.onStrong)),
                         Text('${subj.short} · ${item.level ?? ''}', style: WinType.labelM(s.onMuted)),
                       ])),
-                      WinButton('Assigner', variant: WinButtonVariant.outline, small: true, icon: Icons.add),
+                      const WinButton('Assigner', variant: WinButtonVariant.outline, small: true, icon: Icons.add),
                     ]));
                   },
                 )),
@@ -419,12 +419,12 @@ class InstitutionAccountTab extends StatelessWidget {
           ]),
         ),
         const SizedBox(height: 20),
-        _Row(Icons.people_outline, 'Administrateurs', trailing: const WinBadge('3', color: BadgeColor.blue)),
-        _Row(Icons.grid_view_outlined, 'Groupes & classes'),
-        _Row(Icons.receipt_long_outlined, 'Facturation & reçus'),
+        const _Row(Icons.people_outline, 'Administrateurs', trailing: WinBadge('3', color: BadgeColor.blue)),
+        const _Row(Icons.grid_view_outlined, 'Groupes & classes'),
+        const _Row(Icons.receipt_long_outlined, 'Facturation & reçus'),
         _Row(Icons.dark_mode_outlined, 'Mode sombre',
-            trailing: Switch(value: state.dark, activeColor: s.primary, onChanged: (_) => state.toggleTheme())),
-        _Row(Icons.language, 'Langue', trailing: const WinBadge('FR')),
+            trailing: Switch(value: state.dark, activeThumbColor: s.primary, onChanged: (_) => state.toggleTheme())),
+        const _Row(Icons.language, 'Langue', trailing: WinBadge('FR')),
         const SizedBox(height: 8),
         TextButton(
             onPressed: () async {
@@ -458,7 +458,7 @@ class _Row extends StatelessWidget {
         const SizedBox(width: 12),
         Expanded(child: Text(label,
             style: WinType.bodyM(s.onStrong).copyWith(fontWeight: FontWeight.w500))),
-        trailing ?? Icon(Icons.chevron_right, size: 18, color: WinColors.ink300),
+        trailing ?? const Icon(Icons.chevron_right, size: 18, color: WinColors.ink300),
       ]),
     );
   }

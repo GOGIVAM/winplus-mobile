@@ -165,7 +165,7 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
                     Text('Gratuit', style: WinType.titleM(s.onStrong)),
                     Switch(
                       value: _free,
-                      activeColor: s.primary,
+                      activeThumbColor: s.primary,
                       onChanged: (v) => setState(() => _free = v),
                     ),
                   ]),

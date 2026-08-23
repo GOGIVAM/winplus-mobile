@@ -23,7 +23,7 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    final sub = WinData.currentSubscription;
+    const sub = WinData.currentSubscription;
 
     if (sub.isFree && !AppConfig.devMode) {
       return Scaffold(
@@ -104,7 +104,7 @@ class _FormView extends StatelessWidget {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        WinAlert(
+        const WinAlert(
           'WinAI va créer un plan de révision personnalisé basé sur tes résultats.',
           type: BadgeColor.teal, icon: Icons.auto_awesome_outlined,
         ),
@@ -143,7 +143,7 @@ class _PlanView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    final plan = WinData.examCoachPlan;
+    const plan = WinData.examCoachPlan;
     final done = plan.weeks.where((w) => w.done).length;
     final total = plan.weeks.length;
 

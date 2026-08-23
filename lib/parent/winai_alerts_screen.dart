@@ -79,14 +79,14 @@ class _WinAIAlertsScreenState extends State<WinAIAlertsScreen> {
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
       children: [
-        WinAlert(
+        const WinAlert(
           'WinAI surveille les progrès de vos enfants et vous alerte en temps réel.',
           type: BadgeColor.teal, icon: Icons.auto_awesome_outlined,
         ),
         const SizedBox(height: 20),
         if (alerts.isEmpty) ...[
           Center(child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Icon(Icons.check_circle_outline, size: 56, color: WinColors.success),
+            const Icon(Icons.check_circle_outline, size: 56, color: WinColors.success),
             const SizedBox(height: 12),
             Text('Aucune alerte active.', style: WinType.bodyM(s.onMuted)),
             Text('Tout va bien pour vos enfants !', style: WinType.bodyS(s.onFaint)),

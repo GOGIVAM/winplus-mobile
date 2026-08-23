@@ -114,7 +114,7 @@ class _GroupCreateScreenState extends State<GroupCreateScreen> {
                       style: WinType.labelM(s.primary)),
                 ]),
                 const SizedBox(height: 8),
-                WinTextField(
+                const WinTextField(
                   hint: 'Rechercher un élève…',
                   icon: Icons.search,
                 ),
@@ -148,7 +148,7 @@ class _GroupCreateScreenState extends State<GroupCreateScreen> {
                       ]),
                     ),
                   );
-                })).toList(),
+                })),
                 const SizedBox(height: 28),
                 WinButton('Créer le groupe', block: true,
                     loading: _loading,

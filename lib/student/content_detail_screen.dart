@@ -194,7 +194,7 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                     const SizedBox(height: 20),
                     const WinDivider(),
                     const SizedBox(height: 16),
-                    WinSectionHeader('Contenus similaires'),
+                    const WinSectionHeader('Contenus similaires'),
                     const SizedBox(height: 12),
                     SizedBox(
                       height: 190,

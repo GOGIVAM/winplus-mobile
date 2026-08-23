@@ -355,8 +355,8 @@ class TeacherStudentsTab extends StatelessWidget {
     ];
     return Column(children: [
       _teacherHeader(context, 'Mes étudiants'),
-      Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+      const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16),
           child: WinTextField(
               icon: Icons.search, hint: 'Rechercher un étudiant…')),
       const SizedBox(height: 12),
@@ -556,7 +556,7 @@ class _TeacherRevenueTabState extends State<TeacherRevenueTab> {
                             style: WinType.archivo(
                                 size: 32, color: WinColors.cream50)),
                         const SizedBox(height: 14),
-                        WinButton('Retirer mes gains',
+                        const WinButton('Retirer mes gains',
                             variant: WinButtonVariant.accent,
                             small: true,
                             icon: Icons.account_balance_wallet_outlined),

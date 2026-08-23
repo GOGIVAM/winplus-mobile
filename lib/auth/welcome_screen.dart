@@ -24,7 +24,7 @@ class WelcomeScreen extends StatelessWidget {
             const SizedBox(height: 8),
             Text('WinPlus', style: WinType.archivo(size: 28, weight: FontWeight.w700, color: s.onStrong)),
             Text('Ta réussite, notre mission', style: WinType.bodyS(s.onMuted)),
-            Expanded(child: Center(child: _ImageSlot(label: "Image d'accueil"))),
+            const Expanded(child: Center(child: _ImageSlot(label: "Image d'accueil"))),
             WinButton('Créer un compte', variant: WinButtonVariant.accent, block: true, onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const RoleScreen()))),
             const SizedBox(height: 12),
             WinButton('Se connecter', variant: WinButtonVariant.outline, block: true, onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const LoginScreen()))),

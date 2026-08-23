@@ -82,7 +82,7 @@ class _ParentDashTabState extends State<ParentDashTab> {
                       Row(children: [
                         Expanded(child: _PHeroStat('${kids.length}', 'enfants suivis', 'Total')),
                         const SizedBox(width: 10),
-                        Expanded(child: _PHeroStat('—', 'score moyen', 'Cette semaine')),
+                        const Expanded(child: _PHeroStat('—', 'score moyen', 'Cette semaine')),
                       ]),
                     ]),
               ),
@@ -485,8 +485,8 @@ class ParentProfileTab extends StatelessWidget {
               Text('Parent · 2 enfants', style: WinType.bodyM(s.onMuted)),
             ])),
             const SizedBox(height: 20),
-            _Row(Icons.people_outline, 'Mes enfants',
-                trailing: const WinBadge('2', color: BadgeColor.blue)),
+            const _Row(Icons.people_outline, 'Mes enfants',
+                trailing: WinBadge('2', color: BadgeColor.blue)),
             _Row(Icons.account_balance_wallet_outlined, 'Mon abonnement',
                 onTap: () => Navigator.push(context,
                     MaterialPageRoute(builder: (_) => const SubscriptionStatusScreen()))),
@@ -496,10 +496,10 @@ class ParentProfileTab extends StatelessWidget {
             _Row(Icons.dark_mode_outlined, 'Mode sombre',
                 trailing: Switch(
                     value: state.dark,
-                    activeColor: s.primary,
+                    activeThumbColor: s.primary,
                     onChanged: (_) => state.toggleTheme())),
-            _Row(Icons.language, 'Langue', trailing: const WinBadge('FR')),
-            _Row(Icons.shield_outlined, 'Confidentialité & sécurité'),
+            const _Row(Icons.language, 'Langue', trailing: WinBadge('FR')),
+            const _Row(Icons.shield_outlined, 'Confidentialité & sécurité'),
             const SizedBox(height: 8),
             TextButton(
                 onPressed: () async {

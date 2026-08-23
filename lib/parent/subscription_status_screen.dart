@@ -264,7 +264,7 @@ class _RenewalSheetState extends State<RenewalSheet> {
                   color: _method == 'mtn' ? s.primaryContainer : s.cardBg,
                 ),
                 child: Column(children: [
-                  Icon(Icons.phone_android, size: 24, color: WinColors.warn),
+                  const Icon(Icons.phone_android, size: 24, color: WinColors.warn),
                   const SizedBox(height: 4),
                   Text('MTN MoMo', style: WinType.labelM(s.onStrong)),
                 ]),
@@ -281,7 +281,7 @@ class _RenewalSheetState extends State<RenewalSheet> {
                   color: _method == 'orange' ? s.primaryContainer : s.cardBg,
                 ),
                 child: Column(children: [
-                  Icon(Icons.phone_android, size: 24, color: WinColors.error),
+                  const Icon(Icons.phone_android, size: 24, color: WinColors.error),
                   const SizedBox(height: 4),
                   Text('Orange Money', style: WinType.labelM(s.onStrong)),
                 ]),

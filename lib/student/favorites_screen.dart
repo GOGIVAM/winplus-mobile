@@ -98,8 +98,8 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         Text('${favs.length} contenu(s) sauvegardé(s)', style: WinType.labelM(s.onMuted)),
         const SizedBox(height: 8),
         if (atLimit)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 12),
+          const Padding(
+            padding: EdgeInsets.only(bottom: 12),
             child: WinAlert(
               'Plan Libre : limité à 3 favoris. Passez à Standard pour en sauvegarder plus.',
               type: BadgeColor.warn,
@@ -132,7 +132,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
               const SizedBox(width: 8),
               GestureDetector(
                 onTap: () => _remove(fav),
-                child: Icon(Icons.favorite, size: 22, color: WinColors.error),
+                child: const Icon(Icons.favorite, size: 22, color: WinColors.error),
               ),
             ]),
           ),

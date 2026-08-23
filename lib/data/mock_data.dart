@@ -55,8 +55,8 @@ class WinData {
         description:
             'Épreuve officielle de Mathématiques du BAC C session 2023. Inclut les 4 exercices et le problème complet avec barème officiel.',
         reviews: [
-          ContentReview('Sonia K.', 'Très bien structuré, le barème est clair.', 48, 'il y a 3 jours'),
-          ContentReview('Armand T.', 'Exactement l\'épreuve originale, impeccable.', 47, 'il y a 1 sem.'),
+          const ContentReview('Sonia K.', 'Très bien structuré, le barème est clair.', 48, 'il y a 3 jours'),
+          const ContentReview('Armand T.', 'Exactement l\'épreuve originale, impeccable.', 47, 'il y a 1 sem.'),
         ]),
     Content(
         id: 'c2',
@@ -79,8 +79,8 @@ class WinData {
         aiReco:
             'Tu as raté les questions sur les circuits  voici les corrections détaillées.',
         reviews: [
-          ContentReview('Fadel M.', 'La meilleure correction que j\'ai trouvée en ligne.', 50, 'il y a 5 jours'),
-          ContentReview('Carole B.', 'Très pédagogique, bravo au prof.', 49, 'il y a 2 sem.'),
+          const ContentReview('Fadel M.', 'La meilleure correction que j\'ai trouvée en ligne.', 50, 'il y a 5 jours'),
+          const ContentReview('Carole B.', 'Très pédagogique, bravo au prof.', 49, 'il y a 2 sem.'),
         ]),
     Content(
         id: 'c3',
@@ -116,8 +116,8 @@ class WinData {
         description:
             '4 années d\'annales ENSP avec corrections complètes. Mathématiques, Physique, Chimie. Idéal pour une préparation intensive au concours.',
         reviews: [
-          ContentReview('Rodrigue N.', 'Pack indispensable pour l\'ENSP. Admis cette année !', 50, 'il y a 1 mois'),
-          ContentReview('Hortense E.', 'Très complet, vaut chaque franc.', 48, 'il y a 2 mois'),
+          const ContentReview('Rodrigue N.', 'Pack indispensable pour l\'ENSP. Admis cette année !', 50, 'il y a 1 mois'),
+          const ContentReview('Hortense E.', 'Très complet, vaut chaque franc.', 48, 'il y a 2 mois'),
         ]),
     Content(
         id: 'c5',
@@ -187,7 +187,7 @@ class WinData {
         description:
             'Annales complètes du concours d\'entrée à la FMSB (Faculté de Médecine et des Sciences Biomédicales). SVT, Chimie, Physique.',
         reviews: [
-          ContentReview('Blanche O.', 'J\'ai réussi le concours FMSB grâce à ce pack !', 50, 'il y a 3 mois'),
+          const ContentReview('Blanche O.', 'J\'ai réussi le concours FMSB grâce à ce pack !', 50, 'il y a 3 mois'),
         ]),
     Content(
         id: 'c9',

@@ -472,7 +472,7 @@ class _QuizHubScreenState extends State<QuizHubScreen> {
                     icon: Icons.info_outline,
                   ),
                 const SizedBox(height: 16),
-                WinSectionHeader('Quiz disponibles'),
+                const WinSectionHeader('Quiz disponibles'),
                 const SizedBox(height: 12),
                 if (quizzes.isEmpty)
                   Center(child: Padding(

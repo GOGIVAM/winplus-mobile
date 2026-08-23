@@ -37,7 +37,7 @@ class UpgradeSheet extends StatelessWidget {
         Container(
           width: 72,
           height: 72,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
               color: WinColors.warnBg,
               shape: BoxShape.circle),
           child: const Icon(Icons.lock_outline,

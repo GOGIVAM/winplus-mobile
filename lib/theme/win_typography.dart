@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'win_colors.dart';
 
 /// WINPLUS  Typographie.
 /// Titres & chiffres : Archivo (sans, identique web). UI & corps : Manrope (sans).

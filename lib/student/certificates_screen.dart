@@ -11,7 +11,7 @@ class CertificatesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    final certs = WinData.certificates;
+    const certs = WinData.certificates;
 
     return Scaffold(
       backgroundColor: s.bg,
