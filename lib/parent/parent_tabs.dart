@@ -13,11 +13,12 @@ import '../widgets/win_widgets.dart';
 import 'child_activity_screen.dart';
 import 'add_child_screen.dart';
 import 'winai_alerts_screen.dart';
-import 'subscription_status_screen.dart';
+import 'subscription_status_screen.dart' hide RenewalSheet;
 import '../app_config.dart';
-import '../shared/messaging/messaging_screen.dart';
 import '../shared/subscription/subscription_notifier.dart';
 import '../shared/subscription/pricing_screen.dart';
+import 'renewal_sheet.dart';
+import 'buy_for_child_screen.dart';
 
 
 /// ===================== ACCUEIL PARENT =====================
@@ -45,71 +46,109 @@ class _ParentDashTabState extends State<ParentDashTab> {
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
     final kids = _children ?? [];
+    const events = WinData.childEvents;
 
-    return Column(children: [
-      _ParentTopBar(),
-      Expanded(
-        child: ListView(
-            padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
-            children: [
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+      children: [
+        // ── Hero gradient ──────────────────────────────────────────
+        Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              gradient: LinearGradient(
+                  colors: [s.heroFrom, s.heroTo],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight)),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text('BONJOUR', style: WinType.labelS(WinColors.ink300).copyWith(letterSpacing: 0.8)),
+            const SizedBox(height: 6),
+            Row(children: [
+              Text('Mme Nkono', style: WinType.archivo(size: 20, color: WinColors.cream50)),
+              const SizedBox(width: 10),
               Container(
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(24),
-                    gradient: LinearGradient(
-                        colors: [s.heroFrom, s.heroTo],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight)),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('BONJOUR',
-                          style: WinType.labelS(WinColors.ink300)
-                              .copyWith(letterSpacing: 0.8)),
-                      const SizedBox(height: 8),
-                      Text.rich(TextSpan(
-                          style: WinType.bodyL(WinColors.cream50),
-                          children: [
-                            const TextSpan(text: 'Vous avez '),
-                            TextSpan(
-                                text: '${kids.length} enfant${kids.length > 1 ? 's' : ''}',
-                                style: WinType.archivo(
-                                        size: 16, color: WinColors.teal400)
-                                    .copyWith(fontStyle: FontStyle.italic)),
-                            const TextSpan(text: ' suivis sur WinPlus.'),
-                          ])),
-                      const SizedBox(height: 18),
-                      Row(children: [
-                        Expanded(child: _PHeroStat('${kids.length}', 'enfants suivis', 'Total')),
-                        const SizedBox(width: 10),
-                        const Expanded(child: _PHeroStat('—', 'score moyen', 'Cette semaine')),
-                      ]),
-                    ]),
+                    color: WinColors.teal400.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(8)),
+                child: Text('Plan Famille',
+                    style: WinType.manrope(size: 11, weight: FontWeight.w600, color: WinColors.teal300)),
               ),
-              const SizedBox(height: 24),
-              GestureDetector(
-                onTap: () => Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => const WinAIAlertsScreen())),
-                child: Row(children: [
-                  Text('Alertes & conseils WinAI',
-                      style: WinType.archivo(size: 18, color: s.onStrong)),
-                  const Spacer(),
-                  const Icon(Icons.chevron_right, size: 18, color: WinColors.ink300),
-                ]),
-              ),
-              const SizedBox(height: 12),
-              if (_children == null)
-                const Center(child: CircularProgressIndicator())
-              else ...[
-                Text('Mes enfants', style: WinType.archivo(size: 18, color: s.onStrong)),
-                const SizedBox(height: 12),
-                ...kids.map((k) => Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: ChildCard(child: k))),
-              ],
             ]),
-      ),
-    ]);
+            const SizedBox(height: 18),
+            Row(children: [
+              Expanded(child: _PHeroStat('${kids.length}', 'enfants suivis', 'Total')),
+              const SizedBox(width: 10),
+              Expanded(child: _PHeroStat('${fmtXaf(WinData.parentAccount.creditsAvailable)} XAF', 'crédits dispo', 'Plan Famille 💰')),
+            ]),
+          ]),
+        ),
+
+        // ── Alertes WinAI ─────────────────────────────────────────
+        const SizedBox(height: 20),
+        GestureDetector(
+          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const WinAIAlertsScreen())),
+          child: Row(children: [
+            const WinAIOrb(size: 20),
+            const SizedBox(width: 10),
+            Text('Alertes & conseils WinAI', style: WinType.archivo(size: 16, color: s.onStrong)),
+            const Spacer(),
+            const Icon(Icons.chevron_right, size: 18, color: WinColors.ink300),
+          ]),
+        ),
+
+        // ── Mes enfants (cards horizontales scrollables) ──────────
+        const SizedBox(height: 20),
+        Row(children: [
+          Text('Mes enfants', style: WinType.archivo(size: 18, color: s.onStrong)),
+          const Spacer(),
+          if (kids.isNotEmpty)
+            GestureDetector(
+              onTap: () {},
+              child: Text('Voir tout', style: WinType.labelM(s.primary)),
+            ),
+        ]),
+        const SizedBox(height: 12),
+        if (_children == null)
+          const SizedBox(height: 100, child: Center(child: CircularProgressIndicator()))
+        else if (kids.isEmpty)
+          WinCard(
+            child: Text('Aucun enfant suivi. Ajoutez un enfant depuis l\'onglet Enfants.',
+                style: WinType.bodyS(s.onMuted)),
+          )
+        else
+          SizedBox(
+            height: 140,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemCount: kids.length,
+              separatorBuilder: (_, __) => const SizedBox(width: 10),
+              itemBuilder: (ctx, i) => _ChildSummaryCard(child: kids[i]),
+            ),
+          ),
+
+        // ── Évènements à venir ────────────────────────────────────
+        const SizedBox(height: 24),
+        Text('Évènements à venir', style: WinType.archivo(size: 18, color: s.onStrong)),
+        const SizedBox(height: 12),
+        ...events.map((e) => Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: _EventTile(event: e),
+        )),
+
+        // ── Acheter pour un enfant ────────────────────────────────
+        const SizedBox(height: 8),
+        WinButton(
+          'Acheter du contenu pour un enfant',
+          block: true,
+          icon: Icons.shopping_bag_outlined,
+          onTap: kids.isEmpty
+              ? null
+              : () => Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => BuyForChildScreen(children: kids))),
+        ),
+      ],
+    );
   }
 }
 
@@ -121,7 +160,7 @@ class _PHeroStat extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.08),
+          color: Colors.white.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(14)),
       child: Row(children: [
         Text(value,
@@ -167,19 +206,90 @@ class ChildCard extends StatelessWidget {
   }
 }
 
-class _ParentTopBar extends StatelessWidget {
+
+class _ChildSummaryCard extends StatelessWidget {
+  final ApiChild child;
+  const _ChildSummaryCard({required this.child});
+
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      child: Row(children: [
-        Image.asset('assets/winplus-logo.png', width: 40),
-        const Spacer(),
-        Icon(Icons.notifications_outlined, size: 23, color: s.onSurface),
-        const SizedBox(width: 14),
-        const WinAvatar('Mme Nkono', size: 34, color: WinColors.blue100),
-      ]),
+    final eng = WinData.engagementScores.firstWhere(
+      (e) => e.childId == 'k${child.id}',
+      orElse: () => const EngagementScore('_', 72, 64, 'up'),
+    );
+    final isUp = eng.trend == 'up';
+    return GestureDetector(
+      onTap: () => Navigator.push(context,
+          MaterialPageRoute(builder: (_) => ChildActivityScreen(child: child))),
+      child: Container(
+        width: 130,
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+            color: s.surface,
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: s.outline)),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          WinAvatar(child.fullName, size: 36, color: WinColors.blue100),
+          const SizedBox(height: 8),
+          Text(child.firstName,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: WinType.titleM(s.onStrong)),
+          Text(child.level ?? 'Élève',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: WinType.labelS(s.onMuted)),
+          const Spacer(),
+          Row(children: [
+            Text('${eng.score}/100',
+                style: WinType.archivo(size: 13, color: s.primary)),
+            const SizedBox(width: 4),
+            Icon(
+              isUp ? Icons.trending_up : Icons.trending_down,
+              size: 14,
+              color: isUp ? WinColors.success : WinColors.error,
+            ),
+          ]),
+        ]),
+      ),
+    );
+  }
+}
+
+class _EventTile extends StatelessWidget {
+  final ChildEvent event;
+  const _EventTile({required this.event});
+
+  @override
+  Widget build(BuildContext context) {
+    final s = WinTheme.of(context);
+    final isRenewal = event.type == 'renewal';
+    final icon = isRenewal ? Icons.autorenew : Icons.event_available_outlined;
+    final color = isRenewal ? WinColors.warn : s.primary;
+    return GestureDetector(
+      onTap: isRenewal ? () => RenewalSheet.show(context) : null,
+      child: WinCard(
+        child: Row(children: [
+          Container(
+            width: 36, height: 36,
+            decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(10)),
+            child: Icon(icon, size: 18, color: color),
+          ),
+          const SizedBox(width: 12),
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(event.title,
+                style: WinType.titleM(s.onStrong),
+                maxLines: 1, overflow: TextOverflow.ellipsis),
+            Text('${event.childName} · ${event.date}',
+                style: WinType.labelM(s.onMuted)),
+          ])),
+          if (isRenewal)
+            Icon(Icons.chevron_right, size: 16, color: s.onFaint),
+        ]),
+      ),
     );
   }
 }
@@ -344,7 +454,7 @@ class _ParentContentCard extends StatelessWidget {
           Container(
               height: 92,
               decoration: BoxDecoration(
-                  color: subj.color.withOpacity(0.12),
+                  color: subj.color.withValues(alpha: 0.12),
                   borderRadius:
                       const BorderRadius.vertical(top: Radius.circular(16))),
               child:
@@ -490,9 +600,11 @@ class ParentProfileTab extends StatelessWidget {
             _Row(Icons.account_balance_wallet_outlined, 'Mon abonnement',
                 onTap: () => Navigator.push(context,
                     MaterialPageRoute(builder: (_) => const SubscriptionStatusScreen()))),
-            _Row(Icons.chat_outlined, 'Messages',
+            _Row(Icons.autorenew, 'Gérer l\'abonnement',
+                onTap: () => RenewalSheet.show(context)),
+            _Row(Icons.payment_outlined, 'Paiements & historique',
                 onTap: () => Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => const MessagingScreen()))),
+                    MaterialPageRoute(builder: (_) => const _PaymentsScreen()))),
             _Row(Icons.dark_mode_outlined, 'Mode sombre',
                 trailing: Switch(
                     value: state.dark,
@@ -546,6 +658,27 @@ class _Row extends StatelessWidget {
               const Icon(Icons.chevron_right, size: 18, color: WinColors.ink300),
         ]),
       ),
+    );
+  }
+}
+
+class _PaymentsScreen extends StatelessWidget {
+  const _PaymentsScreen();
+  @override
+  Widget build(BuildContext context) {
+    final s = WinTheme.of(context);
+    return Scaffold(
+      backgroundColor: s.bg,
+      appBar: AppBar(
+        backgroundColor: s.bg,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text('Paiements', style: WinType.headlineS(s.onStrong)),
+      ),
+      body: const ParentPaymentsTab(),
     );
   }
 }

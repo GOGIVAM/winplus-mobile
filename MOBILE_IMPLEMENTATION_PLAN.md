@@ -326,8 +326,8 @@ PROFIL TAB
 | Limites publications par plan (0/5/20/illimité) | — | ⚠️ gate "2 max gratuit" uniquement |
 | Classes gérées selon plan (0/1/3/illimité) | — | ❌ non gated |
 | Quiz générés par IA (2/10/illimité) | — | ❌ non implémenté |
-| Éditeur riche document | — | ❌ non implémenté (v2) |
-| Auto-publish calendrier | — | ❌ non implémenté (v2) |
+| Éditeur riche document | — | ❌ non implémenté  |
+| Auto-publish calendrier | — | ❌ non implémenté  |
 
 ### 3.5 INSTITUTION
 

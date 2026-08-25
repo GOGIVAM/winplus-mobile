@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import '../services/institution_service.dart';
+import '../shared/messaging/messaging_screen.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import 'action_plan_screen.dart';
 
 class AtRiskScreen extends StatefulWidget {
   const AtRiskScreen({super.key});
@@ -145,11 +147,15 @@ class _AtRiskCard extends StatelessWidget {
         Text(student.riskReason, style: WinType.bodyS(s.onMuted)),
         const SizedBox(height: 12),
         Row(children: [
-          WinButton('Contacter', small: true, icon: Icons.message_outlined, onTap: () {}),
+          WinButton('Contacter', small: true, icon: Icons.message_outlined,
+              onTap: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => const MessagingScreen()))),
           const SizedBox(width: 8),
           WinButton('Plan d\'action', small: true,
               variant: WinButtonVariant.outline,
-              icon: Icons.checklist_outlined, onTap: () {}),
+              icon: Icons.checklist_outlined,
+              onTap: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => const ActionPlanScreen()))),
         ]),
       ]),
     );

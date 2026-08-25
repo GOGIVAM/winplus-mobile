@@ -396,6 +396,137 @@ class EngagementScore {
   const EngagementScore(this.childId, this.score, this.prevScore, this.trend);
 }
 
+// ---- 4.8 STATS ÉTUDIANT ----
+
+class StudentStats {
+  final int streakDays, avgScore, hoursThisWeek, totalBadges, totalCertificates, totalFavorites;
+  const StudentStats({
+    required this.streakDays,
+    required this.avgScore,
+    required this.hoursThisWeek,
+    required this.totalBadges,
+    required this.totalCertificates,
+    required this.totalFavorites,
+  });
+}
+
+// ---- 4.9 COMPTE PARENT ----
+
+class ParentAccount {
+  final String name, plan;
+  final int creditsAvailable, creditsTotal, creditsUsed, childrenLimit;
+  const ParentAccount({
+    required this.name,
+    required this.plan,
+    required this.creditsAvailable,
+    required this.creditsTotal,
+    required this.creditsUsed,
+    required this.childrenLimit,
+  });
+}
+
+// ---- 4.10 ENFANT SUIVI ----
+
+enum Trend { up, down, stable }
+
+class TrackedChild {
+  final String id, name, level;
+  final int avgScore;
+  final Trend trend;
+  final DateTime lastActiveAt;
+  const TrackedChild({
+    required this.id,
+    required this.name,
+    required this.level,
+    required this.avgScore,
+    required this.trend,
+    required this.lastActiveAt,
+  });
+}
+
+// ---- 4.11 ENGAGEMENT ENFANT ----
+
+class ChildEngagement {
+  final int score, scoreDelta, sessionsThisWeek, avgSessionMinutes;
+  const ChildEngagement({
+    required this.score,
+    required this.scoreDelta,
+    required this.sessionsThisWeek,
+    required this.avgSessionMinutes,
+  });
+}
+
+// ---- 4.12 ÉVÈNEMENTS À VENIR (PARENT) ----
+
+class UpcomingEvent {
+  final String type, label;
+  final DateTime date;
+  const UpcomingEvent({required this.type, required this.label, required this.date});
+}
+
+// ---- 4.14 STATS PROFESSEUR ----
+
+class TeacherStats {
+  final int totalRevenue, totalStudents, publishedCount, totalDownloads;
+  final double avgRating, commissionRate;
+  const TeacherStats({
+    required this.totalRevenue,
+    required this.avgRating,
+    required this.totalStudents,
+    required this.commissionRate,
+    required this.publishedCount,
+    required this.totalDownloads,
+  });
+}
+
+// ---- 4.15 INSIGHT IA PROFESSEUR ----
+
+class TeacherInsight {
+  final IconData icon;
+  final String text;
+  const TeacherInsight({required this.icon, required this.text});
+}
+
+// ---- 4.16 STATS INSTITUTION ----
+
+class InstitutionStats {
+  final String name, plan;
+  final int licensesTotal, licensesUsed, avgSuccessRate, activeStudentsToday, quizThisWeek;
+  const InstitutionStats({
+    required this.name,
+    required this.plan,
+    required this.licensesTotal,
+    required this.licensesUsed,
+    required this.avgSuccessRate,
+    required this.activeStudentsToday,
+    required this.quizThisWeek,
+  });
+}
+
+// ---- 4.17 STAT PAR MATIÈRE ----
+
+class SubjectStat {
+  final String subject;
+  final int sessions;
+  const SubjectStat({required this.subject, required this.sessions});
+}
+
+// ---- 4.18 ÉTUDIANT (ANNUAIRE INSTITUTION) ----
+
+class MockStudent {
+  final String id, name, level, group;
+  final int score;
+  final bool active;
+  const MockStudent({
+    required this.id,
+    required this.name,
+    required this.level,
+    required this.group,
+    required this.score,
+    required this.active,
+  });
+}
+
 /// Formate un entier en XAF avec séparateur insécable (ex: 8 000).
 String fmtXaf(int n) {
   final s = n.toString();

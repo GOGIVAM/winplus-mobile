@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../app_state.dart';
 import '../auth/welcome_screen.dart';
 import '../data/mock_data.dart';
+import '../data/models.dart';
 import '../services/auth_service.dart';
 import '../services/institution_service.dart';
 import '../services/subject_service.dart';
@@ -12,24 +13,10 @@ import '../widgets/win_widgets.dart';
 import 'at_risk_screen.dart';
 import 'action_plan_screen.dart';
 import 'group_create_screen.dart';
+import 'student_directory_screen.dart';
+import 'reports_screen.dart';
 
 
-Widget _instHeader(BuildContext context, String? title) {
-  final s = WinTheme.of(context);
-  return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-    child: Row(children: [
-      if (title == null) Image.asset('assets/winplus-logo.png', width: 40)
-      else Text(title, style: WinType.archivo(size: 22, color: s.onStrong)),
-      const Spacer(),
-      Icon(Icons.notifications_outlined, size: 23, color: s.onSurface),
-      const SizedBox(width: 14),
-      Container(width: 34, height: 34,
-          decoration: BoxDecoration(color: WinColors.goldBg, borderRadius: BorderRadius.circular(10)),
-          child: const Icon(Icons.apartment_outlined, size: 18, color: WinColors.gold)),
-    ]),
-  );
-}
 
 Widget _statCard(BuildContext c, IconData icon, String value, String label) {
   final s = WinTheme.of(c);
@@ -43,7 +30,7 @@ Widget _statCard(BuildContext c, IconData icon, String value, String label) {
 
 Widget _instHeroStat(String value, String title) => Container(
   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-  decoration: BoxDecoration(color: Colors.white.withOpacity(0.08), borderRadius: BorderRadius.circular(14)),
+  decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.08), borderRadius: BorderRadius.circular(14)),
   child: Row(children: [
     Text(value, style: WinType.archivo(size: 22, color: WinColors.teal400)),
     const SizedBox(width: 10),
@@ -105,7 +92,6 @@ class _InstitutionDashTabState extends State<InstitutionDashTab> {
     final total = analytics?.totalStudents ?? groups.fold<int>(0, (a, g) => a + g.memberCount);
 
     return Column(children: [
-      _instHeader(context, null),
       Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(16, 4, 16, 24), children: [
         Container(
           padding: const EdgeInsets.all(20),
@@ -147,6 +133,44 @@ class _InstitutionDashTabState extends State<InstitutionDashTab> {
             const SizedBox(width: 10),
             Expanded(child: _statCard(context, Icons.quiz_outlined,
                 '${analytics?.quizzesThisMonth ?? '—'}', 'Quiz/mois')),
+          ]),
+          const SizedBox(height: 10),
+          // Licences
+          Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(color: s.inkCard, borderRadius: BorderRadius.circular(16)),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Row(children: [
+                const Icon(Icons.shield_outlined, size: 18, color: WinColors.teal400),
+                const SizedBox(width: 8),
+                Expanded(child: Text('Licences utilisées', style: WinType.titleM(WinColors.cream50))),
+                Text('${fmtXaf(WinData.institutionStats.licensesUsed)} / ${fmtXaf(WinData.institutionStats.licensesTotal)}',
+                    style: WinType.archivo(size: 13, color: WinColors.teal400)),
+              ]),
+              const SizedBox(height: 8),
+              WinProgressBar(WinData.institutionStats.licensesUsed / WinData.institutionStats.licensesTotal * 100),
+              const SizedBox(height: 4),
+              Text('${fmtXaf(WinData.institutionStats.licensesTotal - WinData.institutionStats.licensesUsed)} licences disponibles',
+                  style: WinType.labelS(WinColors.ink200)),
+            ]),
+          ),
+          const SizedBox(height: 16),
+          Text('Actions rapides', style: WinType.archivo(size: 18, color: s.onStrong)),
+          const SizedBox(height: 10),
+          Row(children: [
+            Expanded(child: WinButton('Élèves à risque',
+                variant: WinButtonVariant.outline,
+                block: true,
+                icon: Icons.warning_amber_outlined,
+                onTap: () => Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => const AtRiskScreen())))),
+            const SizedBox(width: 10),
+            Expanded(child: WinButton('Annuaire',
+                variant: WinButtonVariant.outline,
+                block: true,
+                icon: Icons.people_outline,
+                onTap: () => Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => const StudentDirectoryScreen())))),
           ]),
           const SizedBox(height: 24),
           Text('Alertes WinAI', style: WinType.archivo(size: 18, color: s.onStrong)),
@@ -193,7 +217,6 @@ class _InstitutionGroupsTabState extends State<InstitutionGroupsTab> {
   @override
   Widget build(BuildContext context) {
     return Column(children: [
-      _instHeader(context, 'Groupes'),
       const Padding(padding: EdgeInsets.symmetric(horizontal: 16),
           child: WinTextField(icon: Icons.search, hint: 'Rechercher un groupe…')),
       const SizedBox(height: 12),
@@ -252,7 +275,6 @@ class _InstitutionCatalogTabState extends State<InstitutionCatalogTab> {
     final s = WinTheme.of(context);
     final items = _items;
     return Column(children: [
-      _instHeader(context, 'Catalogue'),
       Padding(padding: const EdgeInsets.symmetric(horizontal: 16),
           child: WinCard(bg: WinColors.teal50, child: Row(children: [
             const Icon(Icons.info_outline, size: 18, color: WinColors.teal700),
@@ -318,7 +340,6 @@ class _InstitutionAnalyticsTabState extends State<InstitutionAnalyticsTab> {
     final groups = _groups ?? [];
 
     return Column(children: [
-      _instHeader(context, 'Analytics'),
       Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(16, 0, 16, 24), children: [
         Row(children: [
           Expanded(child: _statCard(context, Icons.schedule,
@@ -361,17 +382,26 @@ class _InstitutionAnalyticsTabState extends State<InstitutionAnalyticsTab> {
           const SizedBox(height: 12),
           Text('Matières les plus étudiées', style: WinType.archivo(size: 18, color: s.onStrong)),
           const SizedBox(height: 12),
-          ...[('math', 82), ('pc', 64), ('svt', 58), ('fr', 47)].map((e) {
-            final subj = WinData.subjectById(e.$1);
-            return Padding(padding: const EdgeInsets.only(bottom: 12), child: Row(children: [
-              SizedBox(width: 84, child: Text(subj.short,
-                  style: WinType.bodyM(s.onStrong).copyWith(fontWeight: FontWeight.w600))),
-              Expanded(child: WinProgressBar(e.$2.toDouble(), color: subj.color)),
-              const SizedBox(width: 8),
-              SizedBox(width: 32, child: Text('${e.$2}%', textAlign: TextAlign.right,
-                  style: WinType.labelM(s.onMuted))),
-            ]));
-          }),
+          ...() {
+            const nameToId = <String, String>{
+              'Mathématiques': 'math', 'Physique-Chimie': 'pc',
+              'Français': 'fr', 'SVT': 'svt',
+            };
+            const subjStats = WinData.subjectStats;
+            final maxSess = subjStats.isEmpty ? 1 : subjStats.fold(0, (m, st) => st.sessions > m ? st.sessions : m);
+            return subjStats.map((st) {
+              final subj = WinData.subjectById(nameToId[st.subject] ?? 'math');
+              final pct = (st.sessions / maxSess * 100).round();
+              return Padding(padding: const EdgeInsets.only(bottom: 12), child: Row(children: [
+                SizedBox(width: 84, child: Text(subj.short,
+                    style: WinType.bodyM(s.onStrong).copyWith(fontWeight: FontWeight.w600))),
+                Expanded(child: WinProgressBar(pct.toDouble(), color: subj.color)),
+                const SizedBox(width: 8),
+                SizedBox(width: 32, child: Text('$pct%', textAlign: TextAlign.right,
+                    style: WinType.labelM(s.onMuted))),
+              ]));
+            });
+          }(),
         ],
       ])),
     ]);
@@ -412,16 +442,20 @@ class InstitutionAccountTab extends StatelessWidget {
             const SizedBox(height: 12),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               Text('Licences utilisées', style: WinType.bodyS(WinColors.ink200)),
-              Text('— / —', style: WinType.bodyS(WinColors.cream50).copyWith(fontWeight: FontWeight.w600)),
+              Text('${fmtXaf(WinData.institutionStats.licensesUsed)} / ${fmtXaf(WinData.institutionStats.licensesTotal)}',
+                  style: WinType.bodyS(WinColors.cream50).copyWith(fontWeight: FontWeight.w600)),
             ]),
             const SizedBox(height: 8),
-            const WinProgressBar(0),
+            WinProgressBar(WinData.institutionStats.licensesUsed / WinData.institutionStats.licensesTotal * 100),
           ]),
         ),
         const SizedBox(height: 20),
         const _Row(Icons.people_outline, 'Administrateurs', trailing: WinBadge('3', color: BadgeColor.blue)),
         const _Row(Icons.grid_view_outlined, 'Groupes & classes'),
         const _Row(Icons.receipt_long_outlined, 'Facturation & reçus'),
+        _Row(Icons.bar_chart_outlined, 'Rapports exportables',
+            onTap: () => Navigator.push(context,
+                MaterialPageRoute(builder: (_) => const ReportsScreen()))),
         _Row(Icons.dark_mode_outlined, 'Mode sombre',
             trailing: Switch(value: state.dark, activeThumbColor: s.primary, onChanged: (_) => state.toggleTheme())),
         const _Row(Icons.language, 'Langue', trailing: WinBadge('FR')),
@@ -446,20 +480,24 @@ class _Row extends StatelessWidget {
   final IconData icon;
   final String label;
   final Widget? trailing;
-  const _Row(this.icon, this.label, {this.trailing});
+  final VoidCallback? onTap;
+  const _Row(this.icon, this.label, {this.trailing, this.onTap});
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    return Container(
-      height: 54,
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: s.outline))),
-      child: Row(children: [
-        Icon(icon, size: 20, color: s.onFaint),
-        const SizedBox(width: 12),
-        Expanded(child: Text(label,
-            style: WinType.bodyM(s.onStrong).copyWith(fontWeight: FontWeight.w500))),
-        trailing ?? const Icon(Icons.chevron_right, size: 18, color: WinColors.ink300),
-      ]),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 54,
+        decoration: BoxDecoration(border: Border(bottom: BorderSide(color: s.outline))),
+        child: Row(children: [
+          Icon(icon, size: 20, color: s.onFaint),
+          const SizedBox(width: 12),
+          Expanded(child: Text(label,
+              style: WinType.bodyM(s.onStrong).copyWith(fontWeight: FontWeight.w500))),
+          trailing ?? const Icon(Icons.chevron_right, size: 18, color: WinColors.ink300),
+        ]),
+      ),
     );
   }
 }

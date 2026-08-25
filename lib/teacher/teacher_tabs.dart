@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../app_config.dart';
+import '../data/mock_data.dart';
 import '../data/models.dart';
 import '../services/teacher_service.dart';
 import '../shared/subscription/subscription_notifier.dart';
@@ -8,6 +9,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import 'content_publish_screen.dart';
+import 'content_actions_sheet.dart';
 import 'correction_queue_screen.dart';
 import 'session_create_screen.dart';
 import '../shared/messaging/messaging_screen.dart';
@@ -27,22 +29,6 @@ String _statusLabel(String s) => switch (s) {
       _ => s,
     };
 
-Widget _teacherHeader(BuildContext context, String? title) {
-  final s = WinTheme.of(context);
-  return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-    child: Row(children: [
-      if (title == null)
-        Image.asset('assets/winplus-logo.png', width: 40)
-      else
-        Text(title, style: WinType.archivo(size: 22, color: s.onStrong)),
-      const Spacer(),
-      Icon(Icons.notifications_outlined, size: 23, color: s.onSurface),
-      const SizedBox(width: 14),
-      const WinAvatar('M Fopa', size: 34, color: WinColors.cream200),
-    ]),
-  );
-}
 
 Widget _statCard(BuildContext c, IconData icon, String value, String label) {
   final s = WinTheme.of(c);
@@ -60,7 +46,7 @@ Widget _heroStat(String value, String title, String sub) => Builder(
     builder: (_) => Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.08),
+              color: Colors.white.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(14)),
           child: Row(children: [
             Text(value,
@@ -122,6 +108,7 @@ class TeacherDashTab extends StatefulWidget {
 class _TeacherDashTabState extends State<TeacherDashTab> {
   List<ApiPublishedContent>? _content;
 
+
   @override
   void initState() {
     super.initState();
@@ -143,11 +130,13 @@ class _TeacherDashTabState extends State<TeacherDashTab> {
     final content = _content ?? [];
     final published = content.where((c) => c.status == 'published' || c.status == 'Publié').toList();
     final totalDl = content.fold(0, (a, c) => a + c.downloads);
+    final totalRevenue = content.fold(0, (a, c) => a + c.revenue);
+    final avgRating = published.isEmpty ? 0.0
+        : published.fold(0.0, (a, c) => a + c.rating) / published.length;
     final subScope = SubscriptionScope.of(context);
     final atPublishLimit = !AppConfig.devMode && subScope.isFree && published.length >= 2;
 
     return Column(children: [
-      _teacherHeader(context, null),
       Expanded(
           child: _content == null
               ? const Center(child: CircularProgressIndicator())
@@ -160,7 +149,7 @@ class _TeacherDashTabState extends State<TeacherDashTab> {
                   const TextSpan(text: ' au total.')
                 ], [
                   _heroStat('${published.length}', 'contenus publiés', 'En ligne'),
-                  _heroStat('4,8', 'note moyenne', 'Sur 5'),
+                  _heroStat(avgRating > 0 ? avgRating.toStringAsFixed(1) : '—', 'note moyenne', 'Sur 5'),
                 ]),
                 const SizedBox(height: 16),
                 Row(children: [
@@ -172,18 +161,21 @@ class _TeacherDashTabState extends State<TeacherDashTab> {
                       child: _statCard(
                           context,
                           Icons.account_balance_wallet_outlined,
-                          '907k',
-                          'Revenus (XAF)'))
+                          '${fmtXaf(totalRevenue)} XAF',
+                          'Revenus totaux'))
                 ]),
                 const SizedBox(height: 10),
                 Row(children: [
                   Expanded(
                       child: _statCard(
-                          context, Icons.people_outline, '412', 'Étudiants')),
+                          context, Icons.description_outlined,
+                          '${content.length}', 'Contenus total')),
                   const SizedBox(width: 10),
                   Expanded(
                       child: _statCard(
-                          context, Icons.star_outline, '4,8', 'Note moyenne'))
+                          context, Icons.star_outline,
+                          avgRating > 0 ? avgRating.toStringAsFixed(1) : '—',
+                          'Note moyenne'))
                 ]),
                 const SizedBox(height: 20),
                 WinButton(
@@ -209,6 +201,20 @@ class _TeacherDashTabState extends State<TeacherDashTab> {
                     onTap: () => Navigator.push(context,
                         MaterialPageRoute(builder: (_) => const CorrectionQueueScreen()))),
                 const SizedBox(height: 24),
+                Text('Insights WinAI',
+                    style: WinType.archivo(size: 18, color: s.onStrong)),
+                const SizedBox(height: 12),
+                ...WinData.teacherInsights.map((ins) => Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: WinCard(
+                    child: Row(children: [
+                      Icon(ins.icon, size: 18, color: s.primary),
+                      const SizedBox(width: 12),
+                      Expanded(child: Text(ins.text, style: WinType.bodyS(s.onStrong))),
+                    ]),
+                  ),
+                )),
+                const SizedBox(height: 24),
                 Text('Tes meilleurs contenus',
                     style: WinType.archivo(size: 18, color: s.onStrong)),
                 const SizedBox(height: 12),
@@ -220,7 +226,10 @@ class _TeacherDashTabState extends State<TeacherDashTab> {
                 else
                   ...published.take(5).map((c) => Padding(
                       padding: const EdgeInsets.only(bottom: 10),
-                      child: _ContentRow(c: c))),
+                      child: _ContentRow(c: c, onChanged: () {
+                        setState(() => _content = null);
+                        _load();
+                      }))),
               ])),
     ]);
   }
@@ -228,7 +237,8 @@ class _TeacherDashTabState extends State<TeacherDashTab> {
 
 class _ContentRow extends StatelessWidget {
   final ApiPublishedContent c;
-  const _ContentRow({required this.c});
+  final VoidCallback? onChanged;
+  const _ContentRow({required this.c, this.onChanged});
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
@@ -265,6 +275,11 @@ class _ContentRow extends StatelessWidget {
                   child: Text('${fmtXaf(c.revenue)} XAF',
                       style: WinType.labelM(s.onMuted))),
           ]),
+          const SizedBox(width: 8),
+          GestureDetector(
+            onTap: () => ContentActionsSheet.show(context, c, onChanged: onChanged),
+            child: Icon(Icons.more_vert, size: 20, color: s.onFaint),
+          ),
         ]));
   }
 }
@@ -311,7 +326,6 @@ class _TeacherContentTabState extends State<TeacherContentTab> {
   @override
   Widget build(BuildContext context) {
     return Column(children: [
-      _teacherHeader(context, 'Mes contenus'),
       SizedBox(
           height: 36,
           child: ListView.separated(
@@ -335,72 +349,172 @@ class _TeacherContentTabState extends State<TeacherContentTab> {
                       padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
                       itemCount: _items.length,
                       separatorBuilder: (_, __) => const SizedBox(height: 10),
-                      itemBuilder: (_, i) => _ContentRow(c: _items[i]))),
+                      itemBuilder: (_, i) => _ContentRow(c: _items[i], onChanged: _load))),
     ]);
   }
 }
 
 /// ===================== ÉTUDIANTS =====================
-class TeacherStudentsTab extends StatelessWidget {
+class TeacherStudentsTab extends StatefulWidget {
   const TeacherStudentsTab({super.key});
+  @override
+  State<TeacherStudentsTab> createState() => _TeacherStudentsTabState();
+}
+
+class _TeacherStudentsTabState extends State<TeacherStudentsTab> {
+  String _search = '';
+  String _levelFilter = 'Tout';
+  static const _levelFilters = ['Tout', 'Tle C', 'Tle D', 'Tle A', 'Concours'];
+
+  static const _allStudents = [
+    ('Ahmed Nkono', 'Tle C', 72, 'up'),
+    ('Brenda Mballa', 'Tle C', 86, 'up'),
+    ('Yann Tchami', 'Tle D', 54, 'down'),
+    ('Aïcha Bello', 'Concours', 91, 'up'),
+    ('Steve Ngono', 'Tle A', 63, 'down'),
+  ];
+
+  // (name, élèves, status, scoreMoyen)
+  static const _classes = [
+    ('Terminale C — Mathématiques', 18, 'Actif',    78),
+    ('Terminale D — Sciences',      12, 'Actif',    61),
+    ('BEPC — Intensif',             24, 'Terminé',  72),
+  ];
+
+  void _showCreateClassSheet() {
+    final ctrl = TextEditingController();
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        final s = WinTheme.of(ctx);
+        return Padding(
+          padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
+            decoration: BoxDecoration(
+              color: s.surface,
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+            ),
+            child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Center(child: Container(width: 36, height: 4, margin: const EdgeInsets.only(bottom: 16),
+                  decoration: BoxDecoration(color: s.outline, borderRadius: BorderRadius.circular(2)))),
+              Text('Créer une classe', style: WinType.archivo(size: 18, color: s.onStrong)),
+              const SizedBox(height: 16),
+              WinTextField(label: 'Nom de la classe', hint: 'Ex: Terminale C Maths', icon: Icons.class_outlined, controller: ctrl),
+              const SizedBox(height: 20),
+              WinButton('Créer', block: true, icon: Icons.add,
+                  onTap: () {
+                    Navigator.pop(ctx);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Classe « ${ctrl.text} » créée.')));
+                  }),
+            ]),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    final students = [
-      ('Ahmed Nkono', 'Tle C', 72, 'up'),
-      ('Brenda Mballa', 'Tle C', 86, 'up'),
-      ('Yann Tchami', 'Tle D', 54, 'down'),
-      ('Aïcha Bello', 'Concours', 91, 'up'),
-      ('Steve Ngono', 'Tle A', 63, 'down')
-    ];
+    final students = _allStudents.where((st) {
+      final matchSearch = _search.isEmpty || st.$1.toLowerCase().contains(_search.toLowerCase());
+      final matchLevel = _levelFilter == 'Tout' || st.$2 == _levelFilter;
+      return matchSearch && matchLevel;
+    }).toList();
+
     return Column(children: [
-      _teacherHeader(context, 'Mes étudiants'),
-      const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
+      Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           child: WinTextField(
-              icon: Icons.search, hint: 'Rechercher un étudiant…')),
-      const SizedBox(height: 12),
+              icon: Icons.search,
+              hint: 'Rechercher un étudiant…',
+              onChanged: (v) => setState(() => _search = v))),
+      const SizedBox(height: 8),
+      SizedBox(
+        height: 34,
+        child: ListView(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          children: _levelFilters.map((f) => Padding(
+            padding: const EdgeInsets.only(right: 6),
+            child: WinChip(f,
+                active: _levelFilter == f,
+                onTap: () => setState(() => _levelFilter = f)),
+          )).toList(),
+        ),
+      ),
+      const SizedBox(height: 8),
       Expanded(
-          child: ListView.separated(
+          child: ListView(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-              itemCount: students.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 8),
-              itemBuilder: (_, i) {
-                final st = students[i];
-                final col = st.$3 < 60
-                    ? WinColors.error
-                    : (st.$3 < 80 ? WinColors.warn : WinColors.success);
-                return WinCard(
-                    padding: const EdgeInsets.all(12),
+              children: [
+                Text('Mes classes', style: WinType.archivo(size: 18, color: s.onStrong)),
+                const SizedBox(height: 10),
+                ..._classes.map((cl) => Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: WinCard(
+                    padding: const EdgeInsets.all(14),
                     child: Row(children: [
-                      WinAvatar(st.$1, size: 42),
-                      const SizedBox(width: 12),
-                      Expanded(
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                            Text(st.$1, style: WinType.titleM(s.onStrong)),
-                            Text(st.$2, style: WinType.labelM(s.onMuted))
-                          ])),
-                      Icon(
-                          st.$4 == 'up'
-                              ? Icons.trending_up
-                              : Icons.trending_down,
-                          size: 14,
-                          color: st.$4 == 'up'
-                              ? WinColors.success
-                              : WinColors.error),
-                      const SizedBox(width: 4),
-                      Text('${st.$3}%',
-                          style: WinType.archivo(size: 16, color: col)),
-                      const SizedBox(width: 8),
-                      GestureDetector(
-                        onTap: () => Navigator.push(context,
-                            MaterialPageRoute(builder: (_) => const MessagingScreen())),
-                        child: Icon(Icons.chat_outlined, size: 20, color: s.primary),
+                      Container(
+                        width: 42, height: 42,
+                        decoration: BoxDecoration(color: s.primaryContainer, borderRadius: BorderRadius.circular(10)),
+                        child: Icon(Icons.class_outlined, size: 20, color: s.primary),
                       ),
-                    ]));
-              })),
+                      const SizedBox(width: 12),
+                      Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Text(cl.$1, style: WinType.titleM(s.onStrong), maxLines: 1, overflow: TextOverflow.ellipsis),
+                        Row(children: [
+                          Text('${cl.$2} élèves', style: WinType.labelM(s.onMuted)),
+                          const SizedBox(width: 8),
+                          Icon(Icons.bar_chart_outlined, size: 12,
+                              color: cl.$4 >= 70 ? WinColors.success : WinColors.warn),
+                          const SizedBox(width: 2),
+                          Text('${cl.$4}% moy.', style: WinType.labelM(
+                              cl.$4 >= 70 ? WinColors.success : WinColors.warn)),
+                        ]),
+                      ])),
+                      WinBadge(cl.$3, color: cl.$3 == 'Actif' ? BadgeColor.success : BadgeColor.neutral),
+                      const SizedBox(width: 8),
+                      Icon(Icons.chevron_right, size: 18, color: s.onFaint),
+                    ]),
+                  ),
+                )),
+                WinButton('Créer une classe', variant: WinButtonVariant.outline, block: true,
+                    icon: Icons.add, onTap: _showCreateClassSheet),
+                const SizedBox(height: 24),
+                Text('Étudiants', style: WinType.archivo(size: 18, color: s.onStrong)),
+                const SizedBox(height: 10),
+                ...students.map((st) {
+                  final col = st.$3 < 60 ? WinColors.error : (st.$3 < 80 ? WinColors.warn : WinColors.success);
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: WinCard(
+                        padding: const EdgeInsets.all(12),
+                        child: Row(children: [
+                          WinAvatar(st.$1, size: 42),
+                          const SizedBox(width: 12),
+                          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                            Text(st.$1, style: WinType.titleM(s.onStrong)),
+                            Text(st.$2, style: WinType.labelM(s.onMuted)),
+                          ])),
+                          Icon(st.$4 == 'up' ? Icons.trending_up : Icons.trending_down,
+                              size: 14, color: st.$4 == 'up' ? WinColors.success : WinColors.error),
+                          const SizedBox(width: 4),
+                          Text('${st.$3}%', style: WinType.archivo(size: 16, color: col)),
+                          const SizedBox(width: 8),
+                          GestureDetector(
+                            onTap: () => Navigator.push(context,
+                                MaterialPageRoute(builder: (_) => const MessagingScreen())),
+                            child: Icon(Icons.chat_outlined, size: 20, color: s.primary),
+                          ),
+                        ])),
+                  );
+                }),
+              ])),
     ]);
   }
 }
@@ -416,7 +530,6 @@ class TeacherSessionsTab extends StatelessWidget {
       (WinColors.blue500, 'Correction épreuve Physique', '16:30 – 17:30', false)
     ];
     return Column(children: [
-      _teacherHeader(context, 'Sessions'),
       Expanded(
           child: ListView(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
@@ -530,7 +643,6 @@ class _TeacherRevenueTabState extends State<TeacherRevenueTab> {
     final max = curve.reduce((a, b) => a > b ? a : b);
 
     return Column(children: [
-      _teacherHeader(context, 'Revenus'),
       Expanded(
           child: _revenue == null
               ? const Center(child: CircularProgressIndicator())
@@ -561,6 +673,24 @@ class _TeacherRevenueTabState extends State<TeacherRevenueTab> {
                             small: true,
                             icon: Icons.account_balance_wallet_outlined),
                       ]),
+                ),
+                const SizedBox(height: 16),
+                WinCard(
+                  child: Row(children: [
+                    Container(
+                      width: 40, height: 40,
+                      decoration: const BoxDecoration(
+                          color: WinColors.successBg, shape: BoxShape.circle),
+                      child: const Icon(Icons.percent, size: 18, color: WinColors.success),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Text('Commission Plan Expert',
+                          style: WinType.labelM(s.onMuted)),
+                      Text('80% pour vous · 20% WinPlus',
+                          style: WinType.titleM(s.onStrong)),
+                    ])),
+                  ]),
                 ),
                 const SizedBox(height: 20),
                 Text('Revenus mensuels',

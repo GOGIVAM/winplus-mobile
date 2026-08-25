@@ -3,6 +3,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import 'onboarding_success_screen.dart';
 
 class CompleteProfileScreen extends StatefulWidget {
   const CompleteProfileScreen({super.key});
@@ -28,7 +29,8 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
     if (_step < 2) {
       setState(() => _step++);
     } else {
-      Navigator.pop(context);
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (_) => const OnboardingSuccessScreen()));
     }
   }
 

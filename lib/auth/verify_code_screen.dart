@@ -6,6 +6,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import 'email_verified_screen.dart';
 
 class VerifyCodeScreen extends StatefulWidget {
   final String email;
@@ -18,7 +19,6 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
   final _ctrls = List.generate(6, (_) => TextEditingController());
   final _nodes = List.generate(6, (_) => FocusNode());
   int _countdown = 60;
-  bool _verified = false;
   bool _loading = false;
   String? _error;
   Timer? _timer;
@@ -55,7 +55,10 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
     final result = await AuthService.instance.verifyEmail(widget.email, _code);
     if (!mounted) return;
     if (result.success) {
-      setState(() { _loading = false; _verified = true; });
+      if (!mounted) return;
+      setState(() => _loading = false);
+      await Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (_) => const EmailVerifiedScreen()));
     } else {
       setState(() { _loading = false; _error = result.message ?? 'Code invalide.'; });
     }
@@ -89,34 +92,30 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
             Text('Un code à 6 chiffres a été envoyé à votre adresse.',
                 style: WinType.bodyM(s.onMuted)),
             const SizedBox(height: 40),
-            if (_verified)
-              const WinAlert('Email vérifié avec succès ! Bienvenue sur WinPlus.',
-                  type: BadgeColor.success)
-            else ...[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: List.generate(6, (i) => _CodeBox(
-                  controller: _ctrls[i],
-                  focusNode: _nodes[i],
-                  onChanged: (v) {
-                    if (v.isNotEmpty && i < 5) {
-                      _nodes[i + 1].requestFocus();
-                    } else if (v.isEmpty && i > 0) {
-                      _nodes[i - 1].requestFocus();
-                    }
-                    setState(() {});
-                  },
-                )),
-              ),
-              const SizedBox(height: 32),
-              if (_error != null) ...[
-                WinAlert(_error!, type: BadgeColor.error),
-                const SizedBox(height: 16),
-              ],
-              WinButton('Vérifier',
-                  block: true,
-                  loading: _loading,
-                  onTap: _code.length == 6 ? _verify : null),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: List.generate(6, (i) => _CodeBox(
+                controller: _ctrls[i],
+                focusNode: _nodes[i],
+                onChanged: (v) {
+                  if (v.isNotEmpty && i < 5) {
+                    _nodes[i + 1].requestFocus();
+                  } else if (v.isEmpty && i > 0) {
+                    _nodes[i - 1].requestFocus();
+                  }
+                  setState(() {});
+                },
+              )),
+            ),
+            const SizedBox(height: 32),
+            if (_error != null) ...[
+              WinAlert(_error!, type: BadgeColor.error),
+              const SizedBox(height: 16),
+            ],
+            WinButton('Vérifier',
+                block: true,
+                loading: _loading,
+                onTap: _code.length == 6 ? _verify : null),
               const SizedBox(height: 20),
               Center(
                 child: _countdown > 0

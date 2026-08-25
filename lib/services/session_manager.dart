@@ -9,6 +9,7 @@ class SessionManager {
   static const _keyUserEmail = 'user_email';
   static const _keyUserRole = 'user_role';
   static const _keyUserName = 'user_name';
+  static const _keyLastPeriodicCheck = 'last_periodic_check_ms';
 
   static Future<void> save({
     required String accessToken,
@@ -55,6 +56,24 @@ class SessionManager {
   static Future<bool> isLoggedIn() async {
     final token = await getAccessToken();
     return token != null && token.isNotEmpty;
+  }
+
+  static Future<String?> getUserEmail() async {
+    final p = await SharedPreferences.getInstance();
+    return p.getString(_keyUserEmail);
+  }
+
+  static Future<bool> isPeriodicCheckDue() async {
+    final p = await SharedPreferences.getInstance();
+    final ms = p.getInt(_keyLastPeriodicCheck);
+    if (ms == null) return true;
+    final last = DateTime.fromMillisecondsSinceEpoch(ms);
+    return DateTime.now().difference(last).inDays >= 30;
+  }
+
+  static Future<void> markPeriodicCheckDone() async {
+    final p = await SharedPreferences.getInstance();
+    await p.setInt(_keyLastPeriodicCheck, DateTime.now().millisecondsSinceEpoch);
   }
 
   static Future<void> clear() async {

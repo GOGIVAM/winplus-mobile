@@ -13,6 +13,8 @@ class DownloadHistoryScreen extends StatefulWidget {
 class _DownloadHistoryScreenState extends State<DownloadHistoryScreen> {
   List<ApiDownloadEntry>? _entries;
   String? _error;
+  String _period = '30j';
+  static const _periods = ['7j', '30j', '90j', '1 an'];
 
   @override
   void initState() {
@@ -71,8 +73,36 @@ class _DownloadHistoryScreenState extends State<DownloadHistoryScreen> {
           ),
         ],
       ),
-      body: _buildBody(s),
+      body: Column(children: [
+        SizedBox(
+          height: 44,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            children: _periods.map((p) => Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: WinChip(p,
+                  active: _period == p,
+                  onTap: () => setState(() => _period = p)),
+            )).toList(),
+          ),
+        ),
+        Expanded(child: _buildBody(s)),
+      ]),
     );
+  }
+
+  int get _periodDays => switch (_period) {
+    '7j'   => 7,
+    '30j'  => 30,
+    '90j'  => 90,
+    _      => 365,
+  };
+
+  List<ApiDownloadEntry> get _filtered {
+    if (_entries == null) return [];
+    final cutoff = DateTime.now().subtract(Duration(days: _periodDays));
+    return _entries!.where((e) => e.downloadedAt.isAfter(cutoff)).toList();
   }
 
   Widget _buildBody(WinScheme s) {
@@ -93,20 +123,25 @@ class _DownloadHistoryScreenState extends State<DownloadHistoryScreen> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (_entries!.isEmpty) {
+    final visible = _filtered;
+
+    if (visible.isEmpty) {
       return Center(child: Column(mainAxisSize: MainAxisSize.min, children: [
         Icon(Icons.download_outlined, size: 56, color: s.onFaint),
         const SizedBox(height: 12),
-        Text('Aucun téléchargement pour l\'instant.',
+        Text(_entries!.isEmpty
+            ? 'Aucun téléchargement pour l\'instant.'
+            : 'Aucun téléchargement sur $_period.',
             style: WinType.bodyM(s.onMuted)),
         const SizedBox(height: 4),
-        Text('Télécharge des épreuves depuis le catalogue.',
-            style: WinType.bodyS(s.onFaint)),
+        if (_entries!.isEmpty)
+          Text('Télécharge des épreuves depuis le catalogue.',
+              style: WinType.bodyS(s.onFaint)),
       ]));
     }
 
     final groups = <String, List<ApiDownloadEntry>>{};
-    for (final e in _entries!) {
+    for (final e in visible) {
       final key = _formatDate(e.downloadedAt);
       groups.putIfAbsent(key, () => []).add(e);
     }
@@ -116,7 +151,7 @@ class _DownloadHistoryScreenState extends State<DownloadHistoryScreen> {
       children: [
         Padding(
           padding: const EdgeInsets.only(bottom: 12),
-          child: Text('${_entries!.length} fichier${_entries!.length > 1 ? 's' : ''} téléchargé${_entries!.length > 1 ? 's' : ''}',
+          child: Text('${visible.length} fichier${visible.length > 1 ? 's' : ''} · $_period',
               style: WinType.bodyS(s.onMuted)),
         ),
         ...groups.entries.map((entry) => Column(

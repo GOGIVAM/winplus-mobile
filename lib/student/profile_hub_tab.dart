@@ -9,7 +9,12 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import '../shared/legal_screen.dart';
+import '../shared/study_timer_screen.dart';
 import 'achievements_screen.dart';
+import 'study_groups_screen.dart';
+import 'student_reports_screen.dart';
+import 'quiz_revision_screen.dart';
 import 'certificates_screen.dart';
 import 'download_history_screen.dart';
 import 'favorites_screen.dart';
@@ -163,13 +168,27 @@ class _ProfileHubTabState extends State<ProfileHubTab> {
               color: s.primary,
               label: 'Mes groupes d\'étude',
               subtitle: '3 groupes',
-              onTap: _soon,
+              onTap: () => _go(const StudyGroupsScreen()),
             ),
             _HubTile(
               icon: Icons.bar_chart_outlined,
               color: s.secondary,
               label: 'Mes rapports de progression',
-              onTap: _soon,
+              onTap: () => _go(const StudentReportsScreen()),
+            ),
+            _HubTile(
+              icon: Icons.quiz_outlined,
+              color: WinColors.warn,
+              label: 'Quiz de révision',
+              subtitle: 'Reprendre les questions ratées',
+              onTap: () => _go(const QuizRevisionScreen()),
+            ),
+            _HubTile(
+              icon: Icons.timer_outlined,
+              color: WinColors.teal500,
+              label: 'Timer Pomodoro',
+              subtitle: '25 min focus · 5 min pause',
+              onTap: () => _go(const StudyTimerScreen()),
             ),
             const SizedBox(height: 16),
 
@@ -221,6 +240,18 @@ class _ProfileHubTabState extends State<ProfileHubTab> {
               color: s.onMuted,
               label: 'Paramètres du profil',
               onTap: () => _go(const ProfileScreen()),
+            ),
+            _HubTile(
+              icon: Icons.description_outlined,
+              color: s.onFaint,
+              label: 'Conditions d\'utilisation',
+              onTap: () => LegalScreen.showCgu(context),
+            ),
+            _HubTile(
+              icon: Icons.privacy_tip_outlined,
+              color: s.onFaint,
+              label: 'Politique de confidentialité',
+              onTap: () => LegalScreen.showPrivacy(context),
             ),
             const SizedBox(height: 4),
 

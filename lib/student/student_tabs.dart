@@ -14,6 +14,9 @@ import 'favorites_screen.dart';
 import 'achievements_screen.dart';
 import 'certificates_screen.dart';
 import 'exam_coach_screen.dart';
+import 'study_groups_screen.dart';
+import 'student_reports_screen.dart';
+import 'quiz_revision_screen.dart';
 
 export 'student_home.dart' show StudentHomeTab;
 
@@ -160,6 +163,17 @@ class StudentSpaceTab extends StatelessWidget {
           const SizedBox(height: 10),
           _QuickLink('Historique des téléchargements', Icons.download_outlined, WinColors.ink400,
               () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DownloadHistoryScreen()))),
+          const SizedBox(height: 10),
+          Row(children: [
+            Expanded(child: _QuickLink('Groupes d\'étude', Icons.groups_outlined, WinColors.teal600,
+                () => Navigator.push(context, MaterialPageRoute(builder: (_) => const StudyGroupsScreen())))),
+            const SizedBox(width: 10),
+            Expanded(child: _QuickLink('Mes rapports', Icons.bar_chart_outlined, WinColors.blue500,
+                () => Navigator.push(context, MaterialPageRoute(builder: (_) => const StudentReportsScreen())))),
+          ]),
+          const SizedBox(height: 10),
+          _QuickLink('Quiz de révision', Icons.quiz_outlined, WinColors.warn,
+              () => Navigator.push(context, MaterialPageRoute(builder: (_) => const QuizRevisionScreen()))),
           const SizedBox(height: 16),
           Text('Performance par matière', style: WinType.archivo(size: 18, color: s.onStrong)),
           const SizedBox(height: 12),

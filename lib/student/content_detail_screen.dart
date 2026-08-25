@@ -22,6 +22,16 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
   bool _fav = false;
   List<Content> _similar = [];
   bool _downloading = false;
+  String? _noteTag;
+  final List<String> _notes = ['Revoir les circuits RC avant le BAC.'];
+  final _noteCtrl = TextEditingController();
+  bool _showNoteInput = false;
+
+  @override
+  void dispose() {
+    _noteCtrl.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -190,6 +200,104 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                         ]),
                       ),
                     )),
+                  const SizedBox(height: 20),
+                  const WinDivider(),
+                  const SizedBox(height: 16),
+                  const WinSectionHeader('Mes notes'),
+                  const SizedBox(height: 10),
+                  // Tags rapides
+                  Row(children: [
+                    for (final tag in ['À réviser', 'Difficile', 'Maîtrisé'])
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: GestureDetector(
+                          onTap: () => setState(() => _noteTag = _noteTag == tag ? null : tag),
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 140),
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: _noteTag == tag ? s.primary : Colors.transparent,
+                              border: Border.all(color: _noteTag == tag ? s.primary : s.outline),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(tag,
+                                style: WinType.manrope(
+                                    size: 12,
+                                    weight: FontWeight.w600,
+                                    color: _noteTag == tag ? s.onPrimary : s.onMuted)),
+                          ),
+                        ),
+                      ),
+                  ]),
+                  const SizedBox(height: 10),
+                  // Existing notes
+                  ..._notes.map((note) => Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: WinCard(
+                      padding: const EdgeInsets.all(12),
+                      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        const Icon(Icons.notes_outlined, size: 16, color: WinColors.teal500),
+                        const SizedBox(width: 8),
+                        Expanded(child: Text(note, style: WinType.bodyS(s.onSurface))),
+                        GestureDetector(
+                          onTap: () => setState(() => _notes.remove(note)),
+                          child: Icon(Icons.close, size: 16, color: s.onFaint),
+                        ),
+                      ]),
+                    ),
+                  )),
+                  // Add note toggle
+                  if (_showNoteInput) ...[
+                    TextField(
+                      controller: _noteCtrl,
+                      autofocus: true,
+                      maxLines: 3,
+                      decoration: InputDecoration(
+                        hintText: 'Ajouter une note…',
+                        hintStyle: WinType.bodyS(s.onFaint),
+                        filled: true,
+                        fillColor: s.surface2,
+                        contentPadding: const EdgeInsets.all(12),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: s.outline)),
+                        enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: s.outline)),
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: s.primary, width: 2)),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Row(children: [
+                      Expanded(
+                        child: WinButton('Enregistrer',
+                            icon: Icons.check,
+                            block: true,
+                            small: true,
+                            onTap: () {
+                              final t = _noteCtrl.text.trim();
+                              if (t.isNotEmpty) setState(() { _notes.add(t); _noteCtrl.clear(); });
+                              setState(() => _showNoteInput = false);
+                            }),
+                      ),
+                      const SizedBox(width: 10),
+                      WinButton('Annuler',
+                          variant: WinButtonVariant.ghost,
+                          small: true,
+                          onTap: () => setState(() { _noteCtrl.clear(); _showNoteInput = false; })),
+                    ]),
+                  ] else
+                    GestureDetector(
+                      onTap: () => setState(() => _showNoteInput = true),
+                      child: Row(children: [
+                        Icon(Icons.add_circle_outline, size: 18, color: s.primary),
+                        const SizedBox(width: 6),
+                        Text('Ajouter une note', style: WinType.bodyS(s.primary)
+                            .copyWith(fontWeight: FontWeight.w600)),
+                      ]),
+                    ),
                   if (_similar.isNotEmpty) ...[
                     const SizedBox(height: 20),
                     const WinDivider(),

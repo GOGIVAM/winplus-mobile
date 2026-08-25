@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
 import '../data/models.dart';
 import '../services/teacher_service.dart';
 import '../theme/win_colors.dart';
@@ -18,6 +19,7 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
   final _descCtrl = TextEditingController();
   ContentType? _type;
   String? _subject, _exam, _level;
+  PlatformFile? _pickedFile;
   bool _free = false, _loading = false, _done = false;
 
   static const _types = ['Épreuve', 'Correction', 'Quiz', 'Livre', 'Pack'];
@@ -53,6 +55,12 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Erreur lors de la soumission.')));
     }
+  }
+
+  String _fmtSize(int bytes) {
+    if (bytes < 1024) return '$bytes o';
+    if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)} Ko';
+    return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} Mo';
   }
 
   Widget _selectChips(List<String> items, String? sel, ValueChanged<String> onSel) {
@@ -110,23 +118,43 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 // Upload zone
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () async {
+                    final result = await FilePicker.platform.pickFiles(
+                      type: FileType.custom,
+                      allowedExtensions: ['pdf', 'epub', 'zip', 'doc', 'docx'],
+                    );
+                    if (result != null) setState(() => _pickedFile = result.files.first);
+                  },
                   child: Container(
                     height: 120,
                     decoration: BoxDecoration(
-                      color: s.surface2,
+                      color: _pickedFile != null ? WinColors.successBg : s.surface2,
                       borderRadius: BorderRadius.zero,
-                      border: Border.all(color: s.outline, width: 1.5),
+                      border: Border.all(
+                          color: _pickedFile != null ? WinColors.success : s.outline,
+                          width: 1.5),
                     ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.upload_file_outlined, size: 36, color: s.onFaint),
-                        const SizedBox(height: 8),
-                        Text('Appuyez pour choisir un fichier (PDF, Word)',
-                            style: WinType.bodyS(s.onMuted), textAlign: TextAlign.center),
-                      ],
-                    ),
+                    child: _pickedFile != null
+                        ? Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                            Icon(Icons.check_circle_outline, size: 32, color: WinColors.success),
+                            const SizedBox(height: 8),
+                            Text(_pickedFile!.name,
+                                style: WinType.titleM(WinColors.success),
+                                textAlign: TextAlign.center,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis),
+                            const SizedBox(height: 4),
+                            Text(_fmtSize(_pickedFile!.size),
+                                style: WinType.labelM(WinColors.success)),
+                          ])
+                        : Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                            Icon(Icons.upload_file_outlined, size: 36, color: s.onFaint),
+                            const SizedBox(height: 8),
+                            Text('Appuyez pour choisir un fichier',
+                                style: WinType.bodyS(s.onMuted), textAlign: TextAlign.center),
+                            Text('PDF, ePub, ZIP, Word',
+                                style: WinType.labelM(s.onFaint), textAlign: TextAlign.center),
+                          ]),
                   ),
                 ),
                 const SizedBox(height: 20),

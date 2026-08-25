@@ -3,6 +3,7 @@ import '../../theme/win_colors.dart';
 import '../../theme/win_theme.dart';
 import '../../theme/win_typography.dart';
 import '../../widgets/win_widgets.dart';
+import 'pricing_screen.dart';
 
 class UpgradeSheet extends StatelessWidget {
   final String featureName;
@@ -59,7 +60,11 @@ class UpgradeSheet extends StatelessWidget {
                 .copyWith(fontWeight: FontWeight.w700)),
         const SizedBox(height: 28),
         WinButton('Voir les plans',
-            block: true, onTap: () => Navigator.pop(context)),
+            block: true, onTap: () {
+              Navigator.pop(context);
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => const PricingScreen()));
+            }),
         const SizedBox(height: 10),
         WinButton('Plus tard',
             variant: WinButtonVariant.ghost,

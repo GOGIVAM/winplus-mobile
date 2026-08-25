@@ -1,6 +1,8 @@
 ﻿import 'package:flutter/material.dart';
+import '../services/session_manager.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_typography.dart';
+import 'periodic_confirm_screen.dart';
 import 'welcome_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -15,9 +17,23 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(milliseconds: 2300), () {
-      if (mounted) {
-        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const WelcomeScreen()));
+    Future.delayed(const Duration(milliseconds: 2300), () async {
+      if (!mounted) return;
+      final loggedIn = await SessionManager.isLoggedIn();
+      if (!mounted) return;
+      final checkDue = loggedIn && await SessionManager.isPeriodicCheckDue();
+      if (!mounted) return;
+      final email = checkDue ? (await SessionManager.getUserEmail() ?? '') : '';
+      if (!mounted) return;
+      final nav = Navigator.of(context);
+      if (checkDue) {
+        nav.pushReplacement(
+          MaterialPageRoute(builder: (_) => PeriodicConfirmScreen(email: email)),
+        );
+      } else {
+        nav.pushReplacement(
+          MaterialPageRoute(builder: (_) => const WelcomeScreen()),
+        );
       }
     });
   }

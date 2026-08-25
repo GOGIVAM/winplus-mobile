@@ -659,6 +659,123 @@ class WinData {
     EngagementScore('k2', 88, 90, 'down'),
   ];
 
+  // ---- 4.8 GET /api/student/stats ----
+
+  static const studentStats = StudentStats(
+    streakDays: 14,
+    avgScore: 78,
+    hoursThisWeek: 32,
+    totalBadges: 14,
+    totalCertificates: 2,
+    totalFavorites: 28,
+  );
+
+  // ---- 4.9 GET /api/parent/account ----
+
+  static const parentAccount = ParentAccount(
+    name: 'Solange Nkono',
+    plan: 'Famille',
+    creditsAvailable: 40000,
+    creditsTotal: 40000,
+    creditsUsed: 12500,
+    childrenLimit: 5,
+  );
+
+  // ---- 4.10 GET /api/parent/children ----
+
+  static final trackedChildren = <TrackedChild>[
+    TrackedChild(id: 'k-001', name: 'Ahmed Nkono', level: 'Tle C',
+        avgScore: 78, trend: Trend.up, lastActiveAt: DateTime.now()),
+    TrackedChild(id: 'k-002', name: 'Brenda Nkono', level: '2nde',
+        avgScore: 62, trend: Trend.down,
+        lastActiveAt: DateTime.now().subtract(const Duration(days: 1))),
+    TrackedChild(id: 'k-003', name: 'Kevin Nkono', level: 'BEPC',
+        avgScore: 85, trend: Trend.up, lastActiveAt: DateTime.now()),
+  ];
+
+  // ---- 4.11 GET /api/parent/child/{id}/activity ----
+
+  static const childEngagement = ChildEngagement(
+    score: 73,
+    scoreDelta: 8,
+    sessionsThisWeek: 5,
+    avgSessionMinutes: 42,
+  );
+
+  // ---- 4.12 GET /api/parent/upcoming-events ----
+
+  static final upcomingEvents = <UpcomingEvent>[
+    UpcomingEvent(type: 'renewal', label: 'Renouvellement abonnement',
+        date: DateTime.now().add(const Duration(days: 7))),
+    UpcomingEvent(type: 'exam', label: 'BAC C · Ahmed',
+        date: DateTime(2026, 10, 8)),
+  ];
+
+  // ---- 4.14 GET /api/teacher/stats ----
+
+  static const teacherStats = TeacherStats(
+    totalRevenue: 907000,
+    avgRating: 4.8,
+    totalStudents: 412,
+    commissionRate: 0.80,
+    publishedCount: 18,
+    totalDownloads: 2140,
+  );
+
+  // ---- 4.15 GET /api/teacher/insights ----
+
+  static const teacherInsights = <TeacherInsight>[
+    TeacherInsight(icon: Icons.local_fire_department, text: 'Pack ENSP 2019-2023 — meilleur vendeur ce mois'),
+    TeacherInsight(icon: Icons.people, text: 'Terminale C représente 68% de votre audience'),
+    TeacherInsight(icon: Icons.trending_up, text: '+12% de téléchargements cette semaine'),
+  ];
+
+  // ---- 4.16 GET /api/institution/stats ----
+
+  static const institutionStats = InstitutionStats(
+    name: 'Lycée Bilingue de Yaoundé',
+    plan: 'Enterprise',
+    licensesTotal: 2450,
+    licensesUsed: 1823,
+    avgSuccessRate: 74,
+    activeStudentsToday: 642,
+    quizThisWeek: 1847,
+  );
+
+  // ---- 4.17 GET /api/institution/subject-stats ----
+
+  static const subjectStats = <SubjectStat>[
+    SubjectStat(subject: 'Mathématiques', sessions: 1240),
+    SubjectStat(subject: 'Physique-Chimie', sessions: 890),
+    SubjectStat(subject: 'Français', sessions: 654),
+    SubjectStat(subject: 'SVT', sessions: 420),
+  ];
+
+  // ---- 4.18 GET /api/institution/students ----
+
+  static const mockStudents = <MockStudent>[
+    MockStudent(id: 's-001', name: 'Ahmed Nkono', level: 'Tle C', group: 'Classe A', score: 78, active: true),
+    MockStudent(id: 's-002', name: 'Brenda Mballa', level: 'Tle C', group: 'Classe A', score: 86, active: true),
+    MockStudent(id: 's-003', name: 'Yann Talla', level: '1ère D', group: 'Classe B', score: 54, active: false),
+    MockStudent(id: 's-004', name: 'Aïcha Bello', level: 'Concours', group: 'Classe C', score: 91, active: true),
+    MockStudent(id: 's-005', name: 'Steve Ngono', level: 'Tle A', group: 'Classe B', score: 63, active: true),
+    MockStudent(id: 's-006', name: 'Marie Essono', level: 'Tle C', group: 'Classe A', score: 74, active: true),
+    MockStudent(id: 's-007', name: 'Paul Nkoulou', level: 'Tle D', group: 'Classe B', score: 45, active: false),
+    MockStudent(id: 's-008', name: 'Fatima Moussa', level: '1ère C', group: 'Classe C', score: 82, active: true),
+    MockStudent(id: 's-009', name: 'Rodrigue Ateba', level: 'Concours', group: 'Classe C', score: 88, active: true),
+    MockStudent(id: 's-010', name: 'Carole Biya', level: 'Tle A', group: 'Classe A', score: 67, active: true),
+    MockStudent(id: 's-011', name: 'Hortense Ekwalla', level: 'Tle C', group: 'Classe B', score: 71, active: true),
+    MockStudent(id: 's-012', name: 'Jean-Pierre Meka', level: 'Tle D', group: 'Classe C', score: 38, active: false),
+    MockStudent(id: 's-013', name: 'Sylvie Ngo Mbe', level: '1ère C', group: 'Classe A', score: 79, active: true),
+    MockStudent(id: 's-014', name: 'Boris Tchami', level: 'Tle C', group: 'Classe B', score: 55, active: true),
+    MockStudent(id: 's-015', name: 'Blanche Abanda', level: 'Concours', group: 'Classe C', score: 93, active: true),
+    MockStudent(id: 's-016', name: 'Kevin Nguyen', level: '3ème', group: 'BEPC', score: 60, active: true),
+    MockStudent(id: 's-017', name: 'Solange Kombe', level: 'Tle D', group: 'Classe B', score: 47, active: false),
+    MockStudent(id: 's-018', name: 'Armand Mbarga', level: 'Tle C', group: 'Classe A', score: 85, active: true),
+    MockStudent(id: 's-019', name: 'Martine Fopa', level: '1ère D', group: 'Classe B', score: 72, active: true),
+    MockStudent(id: 's-020', name: 'Thierry Bessala', level: 'Concours', group: 'Classe C', score: 76, active: true),
+  ];
+
   // ---- CERTIFICATS ----
   static const certificates = <Certificate>[
     Certificate('cert1', 'Maîtrise des Dérivées  Niveau BAC C',
