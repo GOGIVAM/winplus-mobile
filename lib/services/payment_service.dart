@@ -6,7 +6,7 @@ class ApiPaymentIntent {
   final String id;
   final double amount;
   final String currency;
-  final String status; // 'pending', 'completed', 'failed'
+  final String status;
   final String? paymentUrl;
   final String? ussdCode;
   const ApiPaymentIntent({

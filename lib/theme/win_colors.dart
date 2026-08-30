@@ -66,7 +66,7 @@ class WinSpacing {
       x5 = 64;
 }
 
-/// Rayons de bordure — design zéro-radius identique au web.
+/// Rayons de bordure  design zéro-radius identique au web.
 /// full=100 réservé aux avatars circulaires uniquement.
 class WinRadii {
   WinRadii._();

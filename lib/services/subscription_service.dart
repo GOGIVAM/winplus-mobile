@@ -4,7 +4,7 @@ class ApiPlan {
   final int id;
   final String name;
   final String tier;
-  final String category; // student, parent, teacher, institution
+  final String category;
   final double priceMonthly;
   final double priceYearly;
   final List<String> features;

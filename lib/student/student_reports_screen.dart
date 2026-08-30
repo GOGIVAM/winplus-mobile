@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../data/mock_data.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
@@ -12,19 +11,43 @@ class StudentReportsScreen extends StatefulWidget {
 }
 
 class _StudentReportsScreenState extends State<StudentReportsScreen> {
-  String _period = '30j';
-  static const _periods = ['7j', '30j', '90j', '1 an'];
+  String _period = '7 jours';
+  static const _periods = ['7 jours', '30 jours', '90 jours', '1 an'];
 
-  static const _quizHistory = [
-    (title: 'Quiz Dérivées & Limites', score: 80, date: "Aujourd'hui"),
-    (title: 'Quiz Chimie organique', score: 60, date: 'il y a 4j'),
-    (title: 'Quiz Physique — Circuits', score: 45, date: 'il y a 1 sem.'),
-    (title: 'Quiz Maths — Vecteurs', score: 72, date: 'il y a 2 sem.'),
-  ];
+  static const _subjectScores = {
+    'Maths': 84,
+    'Physique': 71,
+    'Chimie': 52,
+    'Français': 79,
+    'SVT': 66,
+  };
+
+  static const _weeklyScores = [65, 70, 72, 69, 74, 76, 78];
+  static const _quizTotal = 47;
+  static const _quizSuccessRate = 74;
+
+  Color _barColor(int score) {
+    if (score >= 70) return WinColors.success;
+    if (score >= 50) return WinColors.warn;
+    return WinColors.error;
+  }
+
+  int get _avgScore {
+    final vals = _subjectScores.values;
+    return vals.fold(0, (a, b) => a + b) ~/ vals.length;
+  }
+
+  List<MapEntry<String, int>> get _sortedScores {
+    final entries = _subjectScores.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+    return entries;
+  }
 
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
+    final maxWeekly = _weeklyScores.reduce((a, b) => a > b ? a : b);
+
     return Scaffold(
       backgroundColor: s.bg,
       appBar: AppBar(
@@ -37,160 +60,174 @@ class _StudentReportsScreenState extends State<StudentReportsScreen> {
         title: Text('Mes rapports', style: WinType.headlineS(s.onStrong)),
       ),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
         children: [
+          // 1. Chips période
           SizedBox(
             height: 36,
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: _periods.map((p) => Padding(
                 padding: const EdgeInsets.only(right: 8),
-                child: WinChip(p,
-                    active: _period == p,
-                    onTap: () => setState(() => _period = p)),
+                child: WinChip(
+                  p,
+                  active: _period == p,
+                  onTap: () => setState(() => _period = p),
+                ),
               )).toList(),
             ),
           ),
+          if (_period != '7 jours') ...[
+            const SizedBox(height: 10),
+            Row(children: [
+              Icon(Icons.lock_outline, size: 14, color: WinColors.warn),
+              const SizedBox(width: 6),
+              Text('Plan Standard requis pour cette période',
+                  style: WinType.labelM(WinColors.warn)),
+            ]),
+          ],
+          const SizedBox(height: 20),
+
+          // 2. Card score moyen
+          WinCard(
+            padding: const EdgeInsets.all(20),
+            child: Column(children: [
+              Text(
+                '$_avgScore%',
+                style: WinType.archivo(size: 48, color: _barColor(_avgScore)),
+              ),
+              const SizedBox(height: 4),
+              Text('Score moyen', style: WinType.labelM(s.onMuted)),
+            ]),
+          ),
           const SizedBox(height: 24),
-          Text('Score par matière',
-              style: WinType.archivo(size: 18, color: s.onStrong)),
-          const SizedBox(height: 12),
-          ...WinData.subjectScores.entries.map((e) => Padding(
+
+          // 3. Score par matière
+          WinSectionHeader('Score par matière'),
+          ..._sortedScores.map((e) => Padding(
             padding: const EdgeInsets.only(bottom: 12),
-            child: _SubjectBar(subject: e.key, score: e.value),
+            child: Row(children: [
+              SizedBox(
+                width: 72,
+                child: Text(e.key,
+                    style: WinType.bodyM(s.onStrong)
+                        .copyWith(fontWeight: FontWeight.w600)),
+              ),
+              Expanded(
+                child: WinProgressBar(
+                  e.value.toDouble(),
+                  color: _barColor(e.value),
+                ),
+              ),
+              const SizedBox(width: 8),
+              SizedBox(
+                width: 40,
+                child: Text('${e.value}%',
+                    textAlign: TextAlign.right,
+                    style: WinType.labelM(s.onMuted)),
+              ),
+            ]),
           )),
           const SizedBox(height: 24),
-          Text('Statistiques générales',
-              style: WinType.archivo(size: 18, color: s.onStrong)),
-          const SizedBox(height: 12),
+
+          // 4. Progression hebdomadaire
+          WinSectionHeader('Progression hebdomadaire'),
+          SizedBox(
+            height: 110,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: List.generate(_weeklyScores.length, (i) {
+                final score = _weeklyScores[i];
+                final barH = (score / maxWeekly) * 80;
+                return Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 3),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text('$score', style: WinType.labelS(s.onFaint)),
+                        const SizedBox(height: 2),
+                        Container(
+                          height: barH,
+                          decoration: BoxDecoration(
+                            color: _barColor(score),
+                            borderRadius: BorderRadius.circular(3),
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text('S${i + 1}',
+                            style: WinType.labelS(s.onMuted)),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ),
+          const SizedBox(height: 24),
+
+          // 5. Quiz
+          WinSectionHeader('Quiz'),
           Row(children: [
             Expanded(
               child: WinCard(
-                padding: const EdgeInsets.all(14),
+                padding: const EdgeInsets.all(16),
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Icon(Icons.local_fire_department, size: 20, color: WinColors.warn),
-                  const SizedBox(height: 8),
-                  Text('${WinData.streak}j',
-                      style: WinType.archivo(size: 22, color: s.onStrong)),
-                  Text('Série', style: WinType.labelM(s.onMuted)),
+                  Text('$_quizTotal',
+                      style: WinType.archivo(size: 28, color: s.onStrong)),
+                  const SizedBox(height: 4),
+                  Text('Quiz réalisés', style: WinType.labelM(s.onMuted)),
                 ]),
               ),
             ),
             const SizedBox(width: 10),
             Expanded(
               child: WinCard(
-                padding: const EdgeInsets.all(14),
+                padding: const EdgeInsets.all(16),
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Icon(Icons.quiz_outlined, size: 20, color: s.primary),
-                  const SizedBox(height: 8),
-                  Text('${WinData.quizWeek}',
-                      style: WinType.archivo(size: 22, color: s.onStrong)),
-                  Text('Quiz/sem.', style: WinType.labelM(s.onMuted)),
-                ]),
-              ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: WinCard(
-                padding: const EdgeInsets.all(14),
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Icon(Icons.bar_chart_outlined, size: 20, color: WinColors.success),
-                  const SizedBox(height: 8),
-                  Text('${WinData.avgScore}%',
-                      style: WinType.archivo(size: 22, color: s.onStrong)),
-                  Text('Moy.', style: WinType.labelM(s.onMuted)),
+                  Text('$_quizSuccessRate%',
+                      style: WinType.archivo(size: 28, color: WinColors.success)),
+                  const SizedBox(height: 4),
+                  Text('Taux de réussite', style: WinType.labelM(s.onMuted)),
                 ]),
               ),
             ),
           ]),
-          const SizedBox(height: 24),
-          Text('Historique des quiz',
-              style: WinType.archivo(size: 18, color: s.onStrong)),
           const SizedBox(height: 12),
           WinCard(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: Column(children: [
-              for (int i = 0; i < _quizHistory.length; i++)
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    border: i < _quizHistory.length - 1
-                        ? Border(bottom: BorderSide(color: s.outline))
-                        : null,
-                  ),
-                  child: _QuizHistoryRow(
-                    title: _quizHistory[i].title,
-                    score: _quizHistory[i].score,
-                    date: _quizHistory[i].date,
-                  ),
-                ),
+            padding: const EdgeInsets.all(14),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Row(children: [
+                const Icon(Icons.emoji_events, size: 16, color: WinColors.gold),
+                const SizedBox(width: 6),
+                Text('Meilleure matière : Maths',
+                    style: WinType.bodyM(s.onStrong)
+                        .copyWith(fontWeight: FontWeight.w600)),
+              ]),
+              const SizedBox(height: 6),
+              Row(children: [
+                const Icon(Icons.warning_amber_rounded, size: 16, color: WinColors.warn),
+                const SizedBox(width: 6),
+                Text('À améliorer : Chimie', style: WinType.bodyM(s.onMuted)),
+              ]),
             ]),
           ),
           const SizedBox(height: 24),
+
+          // 6. Export
           WinButton(
             'Exporter PDF',
-            variant: WinButtonVariant.outline,
-            block: true,
             icon: Icons.download_outlined,
+            block: true,
+            variant: WinButtonVariant.outline,
             onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('PDF en cours de génération...')),
+              const SnackBar(
+                content: Text('Disponible avec le Plan Standard'),
+              ),
             ),
           ),
         ],
       ),
     );
-  }
-}
-
-class _SubjectBar extends StatelessWidget {
-  final String subject;
-  final int score;
-  const _SubjectBar({required this.subject, required this.score});
-
-  @override
-  Widget build(BuildContext context) {
-    final s = WinTheme.of(context);
-    final subj = WinData.subjectById(subject);
-    return Row(children: [
-      SizedBox(
-        width: 70,
-        child: Text(subj.short,
-            style: WinType.bodyM(s.onStrong)
-                .copyWith(fontWeight: FontWeight.w600)),
-      ),
-      Expanded(child: WinProgressBar(score.toDouble(), color: subj.color)),
-      const SizedBox(width: 8),
-      SizedBox(
-        width: 40,
-        child: Text('$score%',
-            textAlign: TextAlign.right,
-            style: WinType.labelM(s.onMuted)),
-      ),
-    ]);
-  }
-}
-
-class _QuizHistoryRow extends StatelessWidget {
-  final String title, date;
-  final int score;
-  const _QuizHistoryRow({required this.title, required this.score, required this.date});
-
-  @override
-  Widget build(BuildContext context) {
-    final s = WinTheme.of(context);
-    final color = score >= 70 ? WinColors.success : (score >= 50 ? WinColors.warn : WinColors.error);
-    return Row(children: [
-      Expanded(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(title,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: WinType.bodyM(s.onStrong)
-                  .copyWith(fontWeight: FontWeight.w600)),
-          Text(date, style: WinType.labelM(s.onMuted)),
-        ]),
-      ),
-      Text('$score%', style: WinType.archivo(size: 16, color: color)),
-    ]);
   }
 }

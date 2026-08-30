@@ -3,7 +3,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 
-/// WINPLUS  Widgets réutilisables — design zéro-radius identique au web.
+/// WINPLUS  Widgets réutilisables  design zéro-radius identique au web.
 
 enum WinButtonVariant { primary, accent, outline, ghost, danger, secondary }
 
@@ -131,9 +131,7 @@ class WinCard extends StatelessWidget {
     return Material(
         color: Colors.transparent,
         child: InkWell(
-            borderRadius: BorderRadius.zero,
-            onTap: onTap,
-            child: content));
+            borderRadius: BorderRadius.zero, onTap: onTap, child: content));
   }
 }
 
@@ -195,8 +193,8 @@ class WinBadge extends StatelessWidget {
     return Container(
       height: 20,
       padding: const EdgeInsets.symmetric(horizontal: 8),
-      decoration: BoxDecoration(
-          color: pairs[0], borderRadius: BorderRadius.zero),
+      decoration:
+          BoxDecoration(color: pairs[0], borderRadius: BorderRadius.zero),
       alignment: Alignment.center,
       child: Text(label,
           style: WinType.manrope(
@@ -471,19 +469,19 @@ class WinAlert extends StatelessWidget {
   Widget build(BuildContext context) {
     final (Color bg, Color fg) = switch (type) {
       BadgeColor.neutral => (WinColors.cream100, WinColors.ink700),
-      BadgeColor.teal    => (WinColors.teal50,   WinColors.teal700),
-      BadgeColor.blue    => (WinColors.blue50,   WinColors.blue700),
+      BadgeColor.teal => (WinColors.teal50, WinColors.teal700),
+      BadgeColor.blue => (WinColors.blue50, WinColors.blue700),
       BadgeColor.success => (WinColors.successBg, WinColors.success),
-      BadgeColor.warn    => (WinColors.warnBg,   WinColors.warn),
-      BadgeColor.error   => (WinColors.errorBg,  WinColors.error),
-      BadgeColor.gold    => (WinColors.goldBg,   WinColors.gold),
+      BadgeColor.warn => (WinColors.warnBg, WinColors.warn),
+      BadgeColor.error => (WinColors.errorBg, WinColors.error),
+      BadgeColor.gold => (WinColors.goldBg, WinColors.gold),
     };
     final ic = icon ??
         switch (type) {
           BadgeColor.success => Icons.check_circle_outline,
-          BadgeColor.warn    => Icons.warning_amber_outlined,
-          BadgeColor.error   => Icons.error_outline,
-          _                  => Icons.info_outline,
+          BadgeColor.warn => Icons.warning_amber_outlined,
+          BadgeColor.error => Icons.error_outline,
+          _ => Icons.info_outline,
         };
     return Container(
       padding: const EdgeInsets.all(12),
@@ -503,16 +501,17 @@ class WinAlert extends StatelessWidget {
 /// Skeleton loading placeholder.
 class WinSkeleton extends StatefulWidget {
   final double width, height;
-  const WinSkeleton({super.key, this.width = double.infinity, this.height = 16});
+  const WinSkeleton(
+      {super.key, this.width = double.infinity, this.height = 16});
   @override
   State<WinSkeleton> createState() => _WinSkeletonState();
 }
 
 class _WinSkeletonState extends State<WinSkeleton>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _c =
-      AnimationController(vsync: this, duration: const Duration(milliseconds: 1200))
-        ..repeat(reverse: true);
+  late final AnimationController _c = AnimationController(
+      vsync: this, duration: const Duration(milliseconds: 1200))
+    ..repeat(reverse: true);
   @override
   void dispose() {
     _c.dispose();
@@ -560,8 +559,7 @@ class WinStatCard extends StatelessWidget {
   final String value, label;
   final IconData? icon;
   final Color? color;
-  const WinStatCard(this.value, this.label,
-      {super.key, this.icon, this.color});
+  const WinStatCard(this.value, this.label, {super.key, this.icon, this.color});
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
@@ -577,8 +575,7 @@ class WinStatCard extends StatelessWidget {
                 const SizedBox(height: 8),
               ],
               Text(value,
-                  style: WinType.displayS(s.onStrong)
-                      .copyWith(fontSize: 24)),
+                  style: WinType.displayS(s.onStrong).copyWith(fontSize: 24)),
               const SizedBox(height: 2),
               Text(label, style: WinType.labelM(s.onMuted)),
             ]));

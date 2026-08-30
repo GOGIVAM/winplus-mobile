@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import '../../data/models.dart';
-import '../../data/mock_data.dart';
-import '../../app_config.dart';
 import '../../services/subscription_service.dart';
 
 class SubscriptionNotifier extends ChangeNotifier {
-  ActiveSubscription _sub = WinData.currentSubscription;
+  ActiveSubscription _sub = const ActiveSubscription(
+    tier: PlanTier.libre,
+    planName: 'Libre',
+    expiresAt: '',
+    autoRenew: false,
+  );
 
   Future<void> loadFromApi() async {
     final apiSub = await SubscriptionService.instance.getCurrent();
     if (apiSub == null) return;
-    final tier = _parseTier(apiSub.tier);
     _sub = ActiveSubscription(
-      tier: tier,
+      tier: _parseTier(apiSub.tier),
       planName: apiSub.planName,
       expiresAt: apiSub.expiresAt.toIso8601String(),
       autoRenew: apiSub.autoRenew,
@@ -29,36 +31,31 @@ class SubscriptionNotifier extends ChangeNotifier {
   static PlanTier _parseTier(String t) => switch (t) {
         'standard' => PlanTier.standard,
         'premium' => PlanTier.premium,
-        'famille' || 'family' => PlanTier.famille,
+        'famille' || 'family' || 'family_plus' => PlanTier.famille,
         _ => PlanTier.libre,
       };
 
   ActiveSubscription get subscription => _sub;
   PlanTier get tier => _sub.tier;
 
-  // En dev mode, tout est déverrouillé.
-  bool get canDownload => AppConfig.devMode ||
+  bool get canDownload =>
       _sub.downloadsLimit == 0 || _sub.downloadsUsed < _sub.downloadsLimit;
 
-  bool get canTakeQuiz => AppConfig.devMode ||
+  bool get canTakeQuiz =>
       _sub.quizDailyLimit == 0 || _sub.quizUsedToday < _sub.quizDailyLimit;
 
-  bool get canUseAI => AppConfig.devMode ||
+  bool get canUseAI =>
       _sub.aiMessagesLimit == 0 || _sub.aiMessagesUsed < _sub.aiMessagesLimit;
 
-  bool get isPremium => AppConfig.devMode || _sub.isPremium;
-  bool get isFree => !AppConfig.devMode && _sub.isFree;
+  bool get isPremium => _sub.isPremium;
+  bool get isFree => _sub.isFree;
 
   void setPlan(PlanTier tier) {
-    final plan = WinData.pricingPlans.firstWhere((p) => p.tier == tier);
     _sub = ActiveSubscription(
       tier: tier,
-      planName: plan.name,
-      expiresAt: '21 août 2027',
+      planName: tier.name,
+      expiresAt: '',
       autoRenew: true,
-      downloadsLimit: plan.downloadLimit ?? 0,
-      quizDailyLimit: plan.quizDailyLimit ?? 0,
-      aiMessagesLimit: plan.aiMessages ?? 0,
     );
     notifyListeners();
   }

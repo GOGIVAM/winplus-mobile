@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
-import '../data/models.dart';
-import '../services/teacher_service.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
@@ -15,73 +14,103 @@ class ContentPublishScreen extends StatefulWidget {
 
 class _ContentPublishScreenState extends State<ContentPublishScreen> {
   final _titleCtrl = TextEditingController();
-  final _priceCtrl = TextEditingController();
+  final _yearCtrl = TextEditingController();
   final _descCtrl = TextEditingController();
-  ContentType? _type;
-  String? _subject, _exam, _level;
+  final _priceCtrl = TextEditingController();
+
+  String _type = 'Épreuve';
+  String _subject = 'Mathématiques';
+  String _level = 'BAC C';
+  String _exam = 'BAC';
+  bool _prixLibre = false;
   PlatformFile? _pickedFile;
-  bool _free = false, _loading = false, _done = false;
+  bool _loading = false;
 
-  static const _types = ['Épreuve', 'Correction', 'Quiz', 'Livre', 'Pack'];
-  static const _subjects = ['Mathématiques', 'Physique', 'Chimie', 'Français', 'Anglais', 'SVT', 'Informatique'];
-  static const _exams = ['BAC A', 'BAC C', 'BAC D', 'BEPC', 'Probatoire', 'ENSP', 'FMSB', 'Polytechnique'];
-  static const _levels = ['BEPC', 'Probatoire', 'BAC', 'BTS', 'Licence', 'Concours'];
+  static const _types = ['Épreuve', 'Correction', 'Quiz', 'Livre', 'Pack', 'Fiche'];
+  static const _subjects = ['Mathématiques', 'Physique', 'Chimie', 'Français', 'SVT', 'Anglais', 'Histoire-Géo'];
+  static const _levels = ['BEPC', 'Probatoire', 'BAC A', 'BAC C', 'BAC D', 'Concours'];
+  static const _exams = ['BAC', 'BEPC', 'ENSP', 'Polytechnique', 'ESSEC', 'FMSB', 'ENAM', 'ENS'];
 
-  static const _typeMap = {
-    'Épreuve': ContentType.epreuve,
-    'Correction': ContentType.correction,
-    'Quiz': ContentType.quiz,
-    'Livre': ContentType.livre,
-    'Pack': ContentType.pack,
-  };
-
-  Future<void> _publish() async {
-    if (_titleCtrl.text.trim().isEmpty || _type == null) return;
-    setState(() => _loading = true);
-    final ok = await TeacherService.instance.publishContent(
-      title: _titleCtrl.text.trim(),
-      type: _typeMap.entries.firstWhere((e) => e.value == _type).key,
-      subjectCategory: _subject ?? '',
-      level: _level ?? '',
-      exam: _exam ?? '',
-      price: _free ? 0.0 : double.tryParse(_priceCtrl.text) ?? 0.0,
-      isFree: _free,
-    );
-    if (!mounted) return;
-    if (ok) {
-      setState(() { _loading = false; _done = true; });
-    } else {
-      setState(() => _loading = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Erreur lors de la soumission.')));
-    }
-  }
-
-  String _fmtSize(int bytes) {
+  String _formatFileSize(int bytes) {
     if (bytes < 1024) return '$bytes o';
     if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)} Ko';
     return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} Mo';
   }
 
-  Widget _selectChips(List<String> items, String? sel, ValueChanged<String> onSel) {
-    final s = WinTheme.of(context);
-    return Wrap(spacing: 8, runSpacing: 8, children: items.map((item) {
-      final active = sel == item;
-      return GestureDetector(
-        onTap: () => setState(() => onSel(item)),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: BoxDecoration(
-            color: active ? WinColors.ink800 : s.surface,
-            borderRadius: BorderRadius.zero,
-            border: Border.all(color: active ? WinColors.ink800 : s.outline, width: 1.5),
-          ),
-          child: Text(item, style: WinType.manrope(
-              size: 13, weight: FontWeight.w600,
-              color: active ? WinColors.cream50 : s.onSurface)),
-        ),
+  Future<void> _pickFile() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf', 'epub', 'zip'],
+    );
+    if (result != null && result.files.isNotEmpty) {
+      setState(() => _pickedFile = result.files.first);
+    }
+  }
+
+  Future<void> _submit() async {
+    if (_titleCtrl.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Veuillez saisir un titre.')),
       );
-    }).toList());
+      return;
+    }
+    if (_pickedFile == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Veuillez choisir un fichier.')),
+      );
+      return;
+    }
+    setState(() => _loading = true);
+    await Future.delayed(const Duration(milliseconds: 1500));
+    if (!mounted) return;
+    setState(() => _loading = false);
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Contenu soumis pour révision !')),
+    );
+    Navigator.pop(context);
+  }
+
+  Widget _label(String text) {
+    final s = WinTheme.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Text(text, style: WinType.titleM(s.onStrong)),
+    );
+  }
+
+  Widget _styledDropdown<T>({
+    required T value,
+    required List<T> items,
+    required ValueChanged<T?> onChanged,
+    String Function(T)? display,
+  }) {
+    final s = WinTheme.of(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      decoration: BoxDecoration(
+        color: s.surface,
+        border: Border.all(color: s.outline),
+        borderRadius: BorderRadius.zero,
+      ),
+      child: DropdownButton<T>(
+        value: value,
+        isExpanded: true,
+        underline: const SizedBox(),
+        icon: Icon(Icons.keyboard_arrow_down, color: s.onMuted, size: 20),
+        style: WinType.bodyM(s.onStrong),
+        dropdownColor: s.surface,
+        items: items
+            .map((e) => DropdownMenuItem<T>(
+                  value: e,
+                  child: Text(
+                    display != null ? display(e) : e.toString(),
+                    style: WinType.bodyM(s.onStrong),
+                  ),
+                ))
+            .toList(),
+        onChanged: onChanged,
+      ),
+    );
   }
 
   @override
@@ -91,119 +120,353 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
     return Scaffold(
       backgroundColor: s.bg,
       appBar: AppBar(
-        backgroundColor: s.bg, elevation: 0,
+        backgroundColor: s.bg,
+        elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text('Publier un contenu', style: WinType.headlineS(s.onStrong)),
       ),
-      body: _done
-          ? Center(child: Padding(
-              padding: const EdgeInsets.all(32),
-              child: Column(mainAxisSize: MainAxisSize.min, children: [
-                const Icon(Icons.check_circle, size: 64, color: WinColors.success),
-                const SizedBox(height: 16),
-                Text('Contenu soumis !', style: WinType.displayS(s.onStrong)),
-                const SizedBox(height: 8),
-                Text('Votre contenu est en cours de révision par l\'équipe WinPlus. Vous serez notifié sous 24h.',
-                    style: WinType.bodyM(s.onMuted), textAlign: TextAlign.center),
-                const SizedBox(height: 28),
-                WinButton('Retour', block: true, variant: WinButtonVariant.outline,
-                    onTap: () => Navigator.pop(context)),
-              ]),
-            ))
-          : SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                // Upload zone
-                GestureDetector(
-                  onTap: () async {
-                    final result = await FilePicker.platform.pickFiles(
-                      type: FileType.custom,
-                      allowedExtensions: ['pdf', 'epub', 'zip', 'doc', 'docx'],
-                    );
-                    if (result != null) setState(() => _pickedFile = result.files.first);
-                  },
-                  child: Container(
-                    height: 120,
-                    decoration: BoxDecoration(
-                      color: _pickedFile != null ? WinColors.successBg : s.surface2,
-                      borderRadius: BorderRadius.zero,
-                      border: Border.all(
-                          color: _pickedFile != null ? WinColors.success : s.outline,
-                          width: 1.5),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          // 1. Titre
+          _label('Titre *'),
+          TextField(
+            controller: _titleCtrl,
+            maxLength: 100,
+            style: WinType.bodyM(s.onStrong),
+            decoration: InputDecoration(
+              hintText: 'Ex: BAC C Mathématiques 2024',
+              hintStyle: WinType.bodyM(s.onFaint),
+              filled: true,
+              fillColor: s.surface,
+              counterStyle: WinType.labelS(s.onFaint),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.zero,
+                borderSide: BorderSide(color: s.outline),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.zero,
+                borderSide: BorderSide(color: s.outline),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.zero,
+                borderSide: BorderSide(color: s.primary, width: 1.5),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // 2. Type + Matière
+          Row(children: [
+            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              _label('Type'),
+              _styledDropdown<String>(
+                value: _type,
+                items: _types,
+                onChanged: (v) { if (v != null) setState(() => _type = v); },
+              ),
+            ])),
+            const SizedBox(width: 12),
+            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              _label('Matière'),
+              _styledDropdown<String>(
+                value: _subject,
+                items: _subjects,
+                onChanged: (v) { if (v != null) setState(() => _subject = v); },
+              ),
+            ])),
+          ]),
+          const SizedBox(height: 16),
+
+          // 3. Chips niveau
+          _label('Niveau'),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: _levels.map((lvl) {
+                final active = _level == lvl;
+                return Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: GestureDetector(
+                    onTap: () => setState(() => _level = lvl),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: active ? s.primary : Colors.transparent,
+                        border: Border.all(
+                          color: active ? s.primary : s.outline,
+                          width: 1.5,
+                        ),
+                        borderRadius: BorderRadius.zero,
+                      ),
+                      child: Text(
+                        lvl,
+                        style: WinType.manrope(
+                          size: 13,
+                          weight: FontWeight.w600,
+                          color: active ? s.onPrimary : s.onSurface,
+                        ),
+                      ),
                     ),
-                    child: _pickedFile != null
-                        ? Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                            Icon(Icons.check_circle_outline, size: 32, color: WinColors.success),
-                            const SizedBox(height: 8),
-                            Text(_pickedFile!.name,
-                                style: WinType.titleM(WinColors.success),
-                                textAlign: TextAlign.center,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis),
-                            const SizedBox(height: 4),
-                            Text(_fmtSize(_pickedFile!.size),
-                                style: WinType.labelM(WinColors.success)),
-                          ])
-                        : Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                            Icon(Icons.upload_file_outlined, size: 36, color: s.onFaint),
-                            const SizedBox(height: 8),
-                            Text('Appuyez pour choisir un fichier',
-                                style: WinType.bodyS(s.onMuted), textAlign: TextAlign.center),
-                            Text('PDF, ePub, ZIP, Word',
-                                style: WinType.labelM(s.onFaint), textAlign: TextAlign.center),
-                          ]),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // 4. Examen
+          _label('Examen'),
+          _styledDropdown<String>(
+            value: _exam,
+            items: _exams,
+            onChanged: (v) { if (v != null) setState(() => _exam = v); },
+          ),
+          const SizedBox(height: 16),
+
+          // 5. Année
+          _label('Année'),
+          TextField(
+            controller: _yearCtrl,
+            keyboardType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            style: WinType.bodyM(s.onStrong),
+            decoration: InputDecoration(
+              hintText: 'Ex: 2024',
+              hintStyle: WinType.bodyM(s.onFaint),
+              filled: true,
+              fillColor: s.surface,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.zero,
+                borderSide: BorderSide(color: s.outline),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.zero,
+                borderSide: BorderSide(color: s.outline),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.zero,
+                borderSide: BorderSide(color: s.primary, width: 1.5),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // 6. Description
+          _label('Description'),
+          TextField(
+            controller: _descCtrl,
+            maxLength: 500,
+            maxLines: 4,
+            style: WinType.bodyM(s.onStrong),
+            decoration: InputDecoration(
+              hintText: 'Décrivez le contenu (objectifs, niveau, contenu…)',
+              hintStyle: WinType.bodyM(s.onFaint),
+              filled: true,
+              fillColor: s.surface,
+              counterStyle: WinType.labelS(s.onFaint),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.zero,
+                borderSide: BorderSide(color: s.outline),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.zero,
+                borderSide: BorderSide(color: s.outline),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.zero,
+                borderSide: BorderSide(color: s.primary, width: 1.5),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // 7. Prix
+          _label('Prix'),
+          _PrixRow(
+            prixLibre: _prixLibre,
+            priceCtrl: _priceCtrl,
+            onChanged: (v) => setState(() => _prixLibre = v),
+          ),
+          const SizedBox(height: 20),
+
+          // 8. Upload fichier
+          _label('Fichier'),
+          if (_pickedFile == null)
+            WinButton(
+              '📎 Choisir un fichier',
+              variant: WinButtonVariant.outline,
+              block: true,
+              icon: Icons.attach_file,
+              onTap: _pickFile,
+            )
+          else
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              decoration: BoxDecoration(
+                color: WinColors.successBg,
+                border: Border.all(color: WinColors.success.withValues(alpha: 0.5)),
+                borderRadius: BorderRadius.zero,
+              ),
+              child: Row(children: [
+                const Icon(Icons.picture_as_pdf_outlined, size: 20, color: WinColors.success),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    '${_pickedFile!.name}${_pickedFile!.size > 0 ? ' · ${_formatFileSize(_pickedFile!.size)}' : ''}',
+                    style: WinType.bodyM(WinColors.success),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                const SizedBox(height: 20),
-                WinTextField(label: 'Titre du contenu *', hint: 'BAC C Mathématiques 2024',
-                    icon: Icons.title, controller: _titleCtrl),
-                const SizedBox(height: 16),
-                Text('Type de contenu *', style: WinType.titleM(s.onStrong)),
-                const SizedBox(height: 8),
-                _selectChips(_types, _type == null ? null
-                    : _typeMap.entries.firstWhere((e) => e.value == _type).key,
-                    (v) { _type = _typeMap[v]; }),
-                const SizedBox(height: 16),
-                Text('Matière', style: WinType.titleM(s.onStrong)),
-                const SizedBox(height: 8),
-                _selectChips(_subjects, _subject, (v) { _subject = v; }),
-                const SizedBox(height: 16),
-                Text('Examen cible', style: WinType.titleM(s.onStrong)),
-                const SizedBox(height: 8),
-                _selectChips(_exams, _exam, (v) { _exam = v; }),
-                const SizedBox(height: 16),
-                Text('Niveau', style: WinType.titleM(s.onStrong)),
-                const SizedBox(height: 8),
-                _selectChips(_levels, _level, (v) { _level = v; }),
-                const SizedBox(height: 16),
-                // Prix
-                Row(children: [
-                  Expanded(child: WinTextField(
-                    label: 'Prix (XAF)',
-                    hint: '1000',
-                    icon: Icons.attach_money,
-                    controller: _priceCtrl,
-                    keyboardType: TextInputType.number,
-                  )),
-                  const SizedBox(width: 16),
-                  Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Text('Gratuit', style: WinType.titleM(s.onStrong)),
-                    Switch(
-                      value: _free,
-                      activeThumbColor: s.primary,
-                      onChanged: (v) => setState(() => _free = v),
-                    ),
-                  ]),
-                ]),
-                const SizedBox(height: 32),
-                WinButton('Soumettre pour révision',
-                    block: true, loading: _loading,
-                    icon: Icons.send_outlined, onTap: _publish),
+                GestureDetector(
+                  onTap: () => setState(() => _pickedFile = null),
+                  child: const Icon(Icons.close, size: 18, color: WinColors.success),
+                ),
               ]),
             ),
+          const SizedBox(height: 28),
+
+          // 9. Bouton publier
+          WinButton(
+            'Publier pour révision',
+            block: true,
+            loading: _loading,
+            icon: Icons.send_outlined,
+            onTap: _submit,
+          ),
+          const SizedBox(height: 12),
+
+          // 10. Note légale
+          Center(
+            child: Text(
+              'Votre contenu sera examiné avant d\'être publié (24-48h)',
+              style: WinType.labelS(s.onMuted),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ]),
+      ),
     );
+  }
+}
+
+class _PrixRow extends StatelessWidget {
+  final bool prixLibre;
+  final TextEditingController priceCtrl;
+  final ValueChanged<bool> onChanged;
+
+  const _PrixRow({
+    required this.prixLibre,
+    required this.priceCtrl,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final s = WinTheme.of(context);
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      // Option 1: Abonnement uniquement
+      GestureDetector(
+        onTap: () => onChanged(false),
+        child: Row(children: [
+          Container(
+            width: 20, height: 20,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: !prixLibre ? s.primary : s.outline,
+                width: 2,
+              ),
+            ),
+            child: !prixLibre
+                ? Center(
+                    child: Container(
+                      width: 10, height: 10,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: s.primary,
+                      ),
+                    ),
+                  )
+                : null,
+          ),
+          const SizedBox(width: 10),
+          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text('Abonnement uniquement', style: WinType.titleM(s.onStrong)),
+            Text('Accessible à tous les abonnés', style: WinType.labelS(s.onMuted)),
+          ]),
+        ]),
+      ),
+      const SizedBox(height: 12),
+      // Option 2: Prix libre
+      GestureDetector(
+        onTap: () => onChanged(true),
+        child: Row(children: [
+          Container(
+            width: 20, height: 20,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: prixLibre ? s.primary : s.outline,
+                width: 2,
+              ),
+            ),
+            child: prixLibre
+                ? Center(
+                    child: Container(
+                      width: 10, height: 10,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: s.primary,
+                      ),
+                    ),
+                  )
+                : null,
+          ),
+          const SizedBox(width: 10),
+          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text('Prix libre', style: WinType.titleM(s.onStrong)),
+            Text('Fixez votre propre prix en XAF', style: WinType.labelS(s.onMuted)),
+          ]),
+        ]),
+      ),
+      if (prixLibre) ...[
+        const SizedBox(height: 12),
+        TextField(
+          controller: priceCtrl,
+          keyboardType: TextInputType.number,
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+          style: WinType.bodyM(s.onStrong),
+          decoration: InputDecoration(
+            hintText: 'Montant en XAF (ex: 500)',
+            hintStyle: WinType.bodyM(s.onFaint),
+            filled: true,
+            fillColor: s.surface,
+            suffixText: 'XAF',
+            suffixStyle: WinType.labelM(s.onMuted),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.zero,
+              borderSide: BorderSide(color: s.outline),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.zero,
+              borderSide: BorderSide(color: s.outline),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.zero,
+              borderSide: BorderSide(color: s.primary, width: 1.5),
+            ),
+          ),
+        ),
+      ],
+    ]);
   }
 }

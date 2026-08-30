@@ -1,7 +1,7 @@
 import 'api_client.dart';
 
 class ApiChatMessage {
-  final String role; // 'user' or 'assistant'
+  final String role;
   final String content;
   final DateTime createdAt;
   const ApiChatMessage({
@@ -46,16 +46,20 @@ class ChatbotService {
   final _api = ApiClient.instance;
 
   Future<List<ApiChatSession>> getSessions() async {
-    final res = await _api.dio.get('/chatbot/sessions');
-    final list = res.data as List? ?? [];
+    final res = await _api.dio.get('/chatbot/conversations');
+    final raw = res.data;
+    final list = raw is List
+        ? raw
+        : (raw as Map<String, dynamic>?)?['conversations'] as List? ?? [];
     return list
         .map((e) => ApiChatSession.fromJson(e as Map<String, dynamic>))
         .toList();
   }
 
   Future<List<ApiChatMessage>> getHistory(int sessionId) async {
-    final res = await _api.dio.get('/chatbot/sessions/$sessionId/messages');
-    final list = res.data as List? ?? [];
+    final res = await _api.dio.get('/chatbot/conversations/$sessionId');
+    final conv = res.data as Map<String, dynamic>?;
+    final list = conv?['messages'] as List? ?? [];
     return list
         .map((e) => ApiChatMessage.fromJson(e as Map<String, dynamic>))
         .toList();
@@ -69,11 +73,14 @@ class ChatbotService {
     try {
       final res = await _api.dio.post('/chatbot/message', data: {
         'message': message,
-        if (sessionId != null) 'sessionId': sessionId,
+        if (sessionId != null) 'conversationId': sessionId,
         if (context != null) 'context': context,
       });
       final d = res.data as Map<String, dynamic>?;
-      return d?['reply'] as String?;
+      final assistant = d?['assistantMessage'] as Map<String, dynamic>?;
+      return assistant?['content'] as String?
+          ?? d?['reply'] as String?
+          ?? d?['message'] as String?;
     } catch (_) {
       return null;
     }
@@ -81,7 +88,7 @@ class ChatbotService {
 
   Future<bool> deleteSession(int sessionId) async {
     try {
-      await _api.dio.delete('/chatbot/sessions/$sessionId');
+      await _api.dio.delete('/chatbot/conversations/$sessionId');
       return true;
     } catch (_) {
       return false;

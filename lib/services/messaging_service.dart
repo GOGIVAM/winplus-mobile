@@ -64,7 +64,7 @@ class MessagingService {
   }
 
   Future<List<ApiMessage>> getMessages(int conversationId) async {
-    final res = await _api.dio.get('/messages/conversations/$conversationId');
+    final res = await _api.dio.get('/messages/conversations/$conversationId/messages');
     final list = res.data as List? ?? [];
     return list
         .map((e) => ApiMessage.fromJson(e as Map<String, dynamic>))
@@ -73,7 +73,7 @@ class MessagingService {
 
   Future<bool> sendMessage(int conversationId, String content) async {
     try {
-      await _api.dio.post('/messages/conversations/$conversationId', data: {
+      await _api.dio.post('/messages/conversations/$conversationId/messages', data: {
         'content': content,
       });
       return true;
@@ -82,12 +82,14 @@ class MessagingService {
     }
   }
 
-  Future<int?> startConversation(int recipientId) async {
+  Future<int?> startConversation(int recipientId, {String firstMessage = ''}) async {
     try {
       final res = await _api.dio.post('/messages/conversations', data: {
-        'recipientId': recipientId,
+        'participantId': recipientId,
+        'firstMessage': firstMessage.isNotEmpty ? firstMessage : 'Bonjour',
       });
-      return (res.data as Map<String, dynamic>)['id'] as int?;
+      final d = res.data as Map<String, dynamic>?;
+      return d?['conversationId'] as int? ?? d?['id'] as int?;
     } catch (_) {
       return null;
     }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../app_config.dart';
 import '../services/favorites_service.dart';
 import '../shared/subscription/subscription_notifier.dart';
 import '../theme/win_colors.dart';
@@ -42,7 +41,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     final s = WinTheme.of(context);
     final sub = SubscriptionScope.of(context);
     final favs = _favs ?? [];
-    final atLimit = !AppConfig.devMode && sub.isFree && favs.length >= 3;
+    final atLimit = sub.isFree && favs.length >= 3;
 
     return Scaffold(
       backgroundColor: s.bg,

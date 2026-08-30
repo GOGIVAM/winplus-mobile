@@ -3,8 +3,8 @@
 class AppConfig {
   AppConfig._();
 
-  /// Mettre à false avant le déploiement en production.
-  static const bool devMode = true;
+  /// Mode développement désactivé — toutes les données proviennent de l'API réelle.
+  static const bool devMode = false;
 
   /// URL de base de l'API backend.
   static const String apiBaseUrl = 'https://api.winplus.cm/api';

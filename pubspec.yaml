@@ -23,4 +23,5 @@ flutter:
   uses-material-design: true
   assets:
     - assets/winplus-logo.png
+    - assets/Login.gif
   # Police chargée dynamiquement via google_fonts (Fraunces + Manrope).

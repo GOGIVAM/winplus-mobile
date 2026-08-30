@@ -1,29 +1,86 @@
-# WinPlus Mobile — Plan d'implémentation v4
+# WinPlus Mobile  Plan d'implémentation v4
 
 > **Sources :** `FEATURE_GAP_MOBILE.md` × `Plan_Abonnement.md` × audit code 2026-08-22  
-> **Dernière mise à jour :** 2026-08-22 — Sprint 1 item 1 ✅
+> **Dernière mise à jour :** 2026-08-26  Auth strategy + Sprint 7 ✅
+
+---
+
+## 0. Stratégie d'authentification (décidée 2026-08-26)
+
+### 0.1 Modèle WhatsApp — flux de session
+
+```
+Premier lancement
+  SplashScreen → WelcomeScreen → Login / Inscription → RoleShell
+
+Relance (token valide, < 20 jours depuis dernière confirmation)
+  SplashScreen → RoleShell  (zéro friction)
+
+Relance (token valide, ≥ 20 jours)
+  SplashScreen → PeriodicConfirmScreen (OTP) → RoleShell
+```
+
+- Pas de bouton retour sur `PeriodicConfirmScreen` (bloquant, comme WhatsApp).
+- `SessionManager.isPeriodicCheckDue()` : seuil **20 jours**.
+- OTP devMode : `123456` toujours valide.
+
+### 0.2 Comptes locaux de dev (`AppConfig.devMode = true`)
+
+Aucun appel API. Vérification email + mot de passe locale dans `AuthService`.
+
+| Email | Mot de passe | Rôle |
+|-------|-------------|------|
+| `etudiant@winplus.cm` | `Win2025!` | student |
+| `parent@winplus.cm` | `Win2025!` | parent |
+| `prof@winplus.cm` | `Win2025!` | teacher |
+| `ecole@winplus.cm` | `Win2025!` | institution |
+
+- Mauvais email ou mot de passe → erreur explicite (pas de bypass).
+- Connexion réussie → `SessionManager.save()` avec token fictif → session persistée.
+- Relance app → `SplashScreen` lit la session → `RoleShell` directement.
+
+### 0.3 Sélection de rôle (RoleScreen — "Créer un compte")
+
+En devMode, choisir un rôle et tapper "Continuer" sauvegarde automatiquement une session locale (email du compte dev correspondant). Pas de formulaire d'inscription pour l'instant.
+
+### 0.4 Animations login
+
+- `WelcomeScreen` et `LoginScreen` affichent `assets/Login.gif` à la place du carré vide.
+- Un bandeau dev (visible uniquement en `devMode`) affiche les 4 comptes avec un tap pour pré-remplir les champs.
+
+### 0.5 Icône application
+
+`flutter_launcher_icons` à configurer avec `assets/winplus-logo.png`. Commande à lancer après config :
+```bash
+flutter pub run flutter_launcher_icons
+```
+*(non encore exécuté — nécessite build step)*
+
+### 0.6 Règle : tout ce qui n'appelle pas l'API fonctionne réellement
+
+`SessionManager`, `SharedPreferences`, timers, OTP mock, navigation — tout tourne sans backend. Pas de fallback silencieux pour les utilisateurs.
 
 ---
 
 ## Table des matières
 
 1. [Principes fondamentaux](#1-principes-fondamentaux)
-2. [UX par rôle — comportement attendu (tier max)](#2-ux-par-rôle--comportement-attendu-tier-max)
+2. [UX par rôle  comportement attendu (tier max)](#2-ux-par-rôle--comportement-attendu-tier-max)
 3. [État réel d'implémentation](#3-état-réel-dimplémentation)
 4. [Mock data groupées par endpoint API](#4-mock-data-groupées-par-endpoint-api)
-5. [Backlog ÉTUDIANT — Plan Ultime](#5-backlog-étudiant--plan-ultime)
-6. [Backlog PARENT — Plan Famille](#6-backlog-parent--plan-famille)
-7. [Backlog PROFESSEUR — Plan Expert](#7-backlog-professeur--plan-expert)
-8. [Backlog INSTITUTION — Plan Enterprise](#8-backlog-institution--plan-enterprise)
+5. [Backlog ÉTUDIANT  Plan Ultime](#5-backlog-étudiant--plan-ultime)
+6. [Backlog PARENT  Plan Famille](#6-backlog-parent--plan-famille)
+7. [Backlog PROFESSEUR  Plan Expert](#7-backlog-professeur--plan-expert)
+8. [Backlog INSTITUTION  Plan Enterprise](#8-backlog-institution--plan-enterprise)
 9. [Backlog AUTH & SHARED](#9-backlog-auth--shared)
-10. [Ordre d'implémentation — Sprints](#10-ordre-dimplémentation--sprints)
-11. [Checklist gates — Phase 2](#11-checklist-gates--phase-2)
+10. [Ordre d'implémentation  Sprints](#10-ordre-dimplémentation--sprints)
+11. [Checklist gates  Phase 2](#11-checklist-gates--phase-2)
 12. [Cahier des charges par écran](#12-cahier-des-charges-par-écran)
-7. [Backlog PROFESSEUR — Plan Expert](#7-backlog-professeur--plan-expert)
-8. [Backlog INSTITUTION — Plan Enterprise](#8-backlog-institution--plan-enterprise)
+7. [Backlog PROFESSEUR  Plan Expert](#7-backlog-professeur--plan-expert)
+8. [Backlog INSTITUTION  Plan Enterprise](#8-backlog-institution--plan-enterprise)
 9. [Backlog AUTH & SHARED](#9-backlog-auth--shared)
-10. [Ordre d'implémentation — Sprints](#10-ordre-dimplémentation--sprints)
-11. [Checklist gates — Phase 2](#11-checklist-gates--phase-2)
+10. [Ordre d'implémentation  Sprints](#10-ordre-dimplémentation--sprints)
+11. [Checklist gates  Phase 2](#11-checklist-gates--phase-2)
 
 ---
 
@@ -59,9 +116,9 @@ Cela signifie que l'UI doit afficher les quotas/limites en fonction du plan, mai
 
 ---
 
-## 2. UX par rôle — comportement attendu (tier max)
+## 2. UX par rôle  comportement attendu (tier max)
 
-### 2.1 Étudiant — Plan Ultime
+### 2.1 Étudiant  Plan Ultime
 
 ```
 [Splash] → [Welcome] → [Login → RoleShell]
@@ -70,13 +127,13 @@ HOME TAB
 ├── Hero : "Bonjour [Prénom] · BAC C · Terminale · 🔥14 jours"
 │         Score moyen 78% | 32h cette semaine
 ├── Continue Learning (reprendre où on s'est arrêté)
-│   └── [Card] BAC C Maths 2023 — 65% · Reprendre →
-│   └── [Card] Pack ENSP — 30% · Reprendre →
+│   └── [Card] BAC C Maths 2023  65% · Reprendre →
+│   └── [Card] Pack ENSP  30% · Reprendre →
 ├── Recommandations IA (avec raison affichée)
-│   └── [Card] Quiz Chimie — "Pas révisé depuis 5 jours" →
-│   └── [Card] Correction Physique — "Populaire Tle C" →
+│   └── [Card] Quiz Chimie  "Pas révisé depuis 5 jours" →
+│   └── [Card] Correction Physique  "Populaire Tle C" →
 ├── Compte à rebours
-│   └── 🎯 BAC C — dans 47 jours
+│   └── 🎯 BAC C  dans 47 jours
 └── Activité récente (timeline)
     ├── Quiz Maths · 13/15 · il y a 1h
     ├── Téléchargement BAC D Physique · il y a 3h
@@ -97,7 +154,7 @@ QUIZ TAB
 ├── → QuizActiveScreen (timer, navigation Q)
 │   → QuizResultScreen (score, stats)
 │   → QuizReviewScreen (corrections détaillées)
-└── [Révision] — refaire les quiz échoués
+└── [Révision]  refaire les quiz échoués
 
 MOI TAB (ProfileHubTab) ✅
 ├── Header avatar · Nom · Plan Ultime 🏆
@@ -108,10 +165,10 @@ MOI TAB (ProfileHubTab) ✅
 └── Déconnexion
 ```
 
-### 2.2 Parent — Plan Famille
+### 2.2 Parent  Plan Famille
 
 ```
-[Shell 5 tabs : Accueil · Enfants · Ressources · Messages · Profil]
+[Shell 6 tabs : Accueil · Enfants · Ressources · WinAI · Messages · Profil]
 
 ACCUEIL TAB
 ├── Hero : "Bonjour [Prénom] · Plan Famille"
@@ -137,6 +194,13 @@ ENFANTS TAB
 RESSOURCES TAB
 └── Catalogue + [Acheter pour...] choisir enfant
 
+WINAI TAB  ← Conseiller éducatif familial
+├── Persona : conseiller familial (chaleureux, non-technique)
+├── Suggestions : "Mon enfant est en difficulté" · "Plan de révision maison"
+│               "Analyse ses résultats" · "Comment le motiver ?"
+├── Contexte auto : données enfants injectées si child_ids fournis
+└── Chat → ChatbotService (JWT role=parent → prompt_builder._parent_prompt)
+
 MESSAGES TAB
 └── MessagingScreen → ConversationScreen
 
@@ -148,10 +212,10 @@ PROFIL TAB
 └── Déconnexion
 ```
 
-### 2.3 Professeur — Plan Expert
+### 2.3 Professeur  Plan Expert
 
 ```
-[Shell 5 tabs : Dashboard · Contenus · Étudiants · Sessions · Revenus]
+[Shell 6 tabs : Dashboard · Contenus · Étudiants · WinAI · Sessions · Revenus]
 
 DASHBOARD TAB
 ├── Hero : "[Nom] · Plan Expert · 80% de vos revenus"
@@ -159,7 +223,7 @@ DASHBOARD TAB
 │   ├── X contenus publiés · Y téléchargements · Note moy. 4,8 ⭐
 │   └── N étudiants actifs · M classes
 ├── Insights IA
-│   ├── 🔥 "Pack ENSP — meilleur vendeur ce mois"
+│   ├── 🔥 "Pack ENSP  meilleur vendeur ce mois"
 │   └── 📈 "+12% téléchargements cette semaine"
 └── [Correction queue] [+ Publier contenu]
 
@@ -172,7 +236,7 @@ CONTENUS TAB
 │   └── 🗑️ Supprimer
 └── [+ Publier] → ContentPublishScreen
     ├── Titre, Type, Matière, Niveau, Prix
-    ├── [📎 Choisir fichier] — file_picker
+    ├── [📎 Choisir fichier]  file_picker
     └── [Publier pour révision]
 
 ÉTUDIANTS TAB
@@ -180,6 +244,12 @@ CONTENUS TAB
 │   └── ClassCard → liste étudiants
 ├── Tous les étudiants (recherche)
 └── Row : avatar · nom · score · [💬 Contacter]
+
+WINAI TAB  ← Assistant éditorial & pédagogique
+├── Persona : attaché éditorial (quiz, fiches, corrections)
+├── Suggestions : "Quiz Terminale C (10 QCM)" · "Fiche de cours"
+│               "Correction type" · "Optimiser un titre"
+└── Chat → ChatbotService (JWT role=teacher → prompt_builder._teacher_prompt)
 
 SESSIONS TAB
 ├── Sessions planifiées + passées
@@ -193,10 +263,10 @@ REVENUS TAB
 └── Transactions
 ```
 
-### 2.4 Institution — Plan Enterprise
+### 2.4 Institution  Plan Enterprise
 
 ```
-[Shell 5 tabs : Dashboard · Catalogue · Groupes · Étudiants · Profil]
+[Shell 6 tabs : Dashboard · Groupes · WinAI · Catalogue · Analytics · Compte]
 
 DASHBOARD TAB
 ├── Hero : "[Institution] · Enterprise · [N] élèves"
@@ -217,14 +287,21 @@ GROUPES TAB
 └── GroupCard : nom · niveau · N élèves
     · [Voir élèves] · [Attribuer ressources]
 
-ÉTUDIANTS TAB (Annuaire)
-├── Recherche + filtres (niveau, groupe, statut)
-├── Row : nom · niveau · groupe · score · [Contacter]
-└── [📥 Importer CSV]
+WINAI TAB  ← Conseiller institutionnel stratégique
+├── Persona : auditeur analytique (cohortes, benchmarks, plans d'action)
+├── Suggestions : "Analyse de cohorte" · "Élèves à risque"
+│               "Plan d'action prioritaire" · "Benchmark national"
+└── Chat → ChatbotService (JWT role=institution → prompt_builder._org_prompt)
 
-PROFIL TAB
+CATALOGUE TAB
+└── Contenus disponibles pour les licences
+
+ANALYTICS TAB
+└── KPIs, graphiques, exports
+
+COMPTE TAB
 ├── Plan Enterprise · licences · quotas
-├── [📊 Exporter rapport]
+├── [📊 Exporter rapport] → ReportsScreen
 ├── Mode sombre
 └── Déconnexion
 ```
@@ -248,7 +325,7 @@ PROFIL TAB
 | Email verified (succès) | `auth/email_verified_screen.dart` | ❌ à créer |
 | Reconfirmation périodique | `auth/periodic_confirm_screen.dart` | ❌ à créer |
 | Onboarding success | `auth/onboarding_success_screen.dart` | ❌ à créer |
-| Google OAuth | — | ❌ stub SnackBar seulement |
+| Google OAuth |  | ❌ stub SnackBar seulement |
 
 ### 3.2 ÉTUDIANT
 
@@ -267,86 +344,86 @@ PROFIL TAB
 | Historique téléchargements | `student/download_history_screen.dart` | ✅ câblé, sans filtre période |
 | Notifications | `student/notifications_screen.dart` | ✅ câblé avec badge compteur |
 | Profil (5 tabs : infos, sécurité, notifs, confidentialité, compte) | `student/profile_screen.dart` | ✅ avec 2FA wired |
-| Continue Learning | — | ❌ absent |
-| Recommandations IA (avec reason) | — | ❌ absent |
-| Compte à rebours examens | — | ❌ absent |
-| Activité récente (timeline) | — | ❌ absent |
-| Notes et tags de révision | — | ❌ absent |
+| Continue Learning |  | ❌ absent |
+| Recommandations IA (avec reason) |  | ❌ absent |
+| Compte à rebours examens |  | ❌ absent |
+| Activité récente (timeline) |  | ❌ absent |
+| Notes et tags de révision |  | ❌ absent |
 | Groupes d'étude | `student/study_groups_screen.dart` | ❌ à créer |
 | Rapports de progression | `student/student_reports_screen.dart` | ❌ à créer |
 | Quiz adaptatif / révision | `student/quiz_revision_screen.dart` | ❌ à créer |
-| Différenciation visuelle par plan (Basic/Avancé/Premium UI) | — | ❌ même UI pour tous |
-| Codes promo (-10/-15/-20%) | — | ❌ non implémenté |
+| Différenciation visuelle par plan (Basic/Avancé/Premium UI) |  | ❌ même UI pour tous |
+| Codes promo (-10/-15/-20%) |  | ❌ non implémenté |
 
 ### 3.3 PARENT
 
 | Écran / Feature | Fichier | Statut |
 |---|---|---|
-| Dashboard | `parent/parent_tabs.dart` — `ParentDashTab` | ⚠️ données hardcodées, sans crédits ni cards enfants scrollables |
-| Enfants (liste + gate plan gratuit) | `parent/parent_tabs.dart` — `ParentChildrenTab` | ⚠️ gate "1 enfant max" mais sans vrais plans |
-| Ressources (catalogue parent) | `parent/parent_tabs.dart` — `ParentResourcesTab` | ✅ |
-| Paiements | `parent/parent_tabs.dart` — `ParentPaymentsTab` | ✅ |
-| Profil (avec messagerie) | `parent/parent_tabs.dart` — `ParentProfileTab` | ✅ |
+| Dashboard | `parent/parent_tabs.dart`  `ParentDashTab` | ⚠️ données hardcodées, sans crédits ni cards enfants scrollables |
+| Enfants (liste + gate plan gratuit) | `parent/parent_tabs.dart`  `ParentChildrenTab` | ⚠️ gate "1 enfant max" mais sans vrais plans |
+| Ressources (catalogue parent) | `parent/parent_tabs.dart`  `ParentResourcesTab` | ✅ |
+| Paiements | `parent/parent_tabs.dart`  `ParentPaymentsTab` | ✅ |
+| Profil (avec messagerie) | `parent/parent_tabs.dart`  `ParentProfileTab` | ✅ |
 | Ajout enfant | `parent/add_child_screen.dart` | ✅ |
 | Activité enfant | `parent/child_activity_screen.dart` | ⚠️ pas de tabs, sans score engagement, boutons câblés vides |
 | Alertes WinAI | `parent/winai_alerts_screen.dart` | ✅ |
 | Statut abonnement | `parent/subscription_status_screen.dart` | ✅ |
 | Messagerie | `shared/messaging/messaging_screen.dart` | ✅ câblé dans profil |
 | Tab Messages dédié (4e tab shell) | `shell/role_shell.dart` | ❌ actuellement tab "Paiements" à la 4e place |
-| Crédits mensuels affichés (10k/20k/40k XAF) | — | ❌ absent |
+| Crédits mensuels affichés (10k/20k/40k XAF) |  | ❌ absent |
 | Flow achat pour un enfant | `parent/buy_for_child_flow.dart` | ❌ à créer |
-| Objectifs pour enfants (3 / illimité) | — | ❌ non implémenté |
-| Score d'engagement enfant (0-100) | — | ❌ absent |
-| Évènements à venir (examens, renouvellement) | — | ❌ absent |
+| Objectifs pour enfants (3 / illimité) |  | ❌ non implémenté |
+| Score d'engagement enfant (0-100) |  | ❌ absent |
+| Évènements à venir (examens, renouvellement) |  | ❌ absent |
 | Modal renouvellement abonnement | `parent/renewal_sheet.dart` | ❌ bouton "Gérer" → `onTap: (){}` vide |
 | Encouragement Sheet | `parent/encouragement_sheet.dart` | ❌ à créer |
-| Chat IA (5/50/illimité selon plan) | — | ❌ non implémenté |
-| Partage contenu entre enfants | — | ❌ non implémenté |
-| Rapports de synthèse (email / PDF) | — | ❌ non implémenté |
-| Alertes différenciées par plan (hebdo/quotidien/temps réel) | — | ⚠️ cards fixes, non différenciées |
+| Chat IA (5/50/illimité selon plan) |  | ❌ non implémenté |
+| Partage contenu entre enfants |  | ❌ non implémenté |
+| Rapports de synthèse (email / PDF) |  | ❌ non implémenté |
+| Alertes différenciées par plan (hebdo/quotidien/temps réel) |  | ⚠️ cards fixes, non différenciées |
 
 ### 3.4 PROFESSEUR
 
 | Écran / Feature | Fichier | Statut |
 |---|---|---|
-| Dashboard | `teacher/teacher_tabs.dart` — `TeacherDashTab` | ⚠️ stats "907k / 4,8 / 412" hardcodées |
-| Contenus (liste) | `teacher/teacher_tabs.dart` — `TeacherContentTab` | ✅ |
-| Étudiants + messagerie | `teacher/teacher_tabs.dart` — `TeacherStudentsTab` | ✅ icône chat par étudiant |
-| Sessions | `teacher/teacher_tabs.dart` — `TeacherSessionsTab` | ✅ |
-| Revenus + revenus par contenu | `teacher/teacher_tabs.dart` — `TeacherRevenueTab` | ✅ section ajoutée |
+| Dashboard | `teacher/teacher_tabs.dart`  `TeacherDashTab` | ⚠️ stats "907k / 4,8 / 412" hardcodées |
+| Contenus (liste) | `teacher/teacher_tabs.dart`  `TeacherContentTab` | ✅ |
+| Étudiants + messagerie | `teacher/teacher_tabs.dart`  `TeacherStudentsTab` | ✅ icône chat par étudiant |
+| Sessions | `teacher/teacher_tabs.dart`  `TeacherSessionsTab` | ✅ |
+| Revenus + revenus par contenu | `teacher/teacher_tabs.dart`  `TeacherRevenueTab` | ✅ section ajoutée |
 | Publication contenu | `teacher/content_publish_screen.dart` | ⚠️ formulaire sans upload fichier (zone cliquable vide) |
 | File de corrections | `teacher/correction_queue_screen.dart` | ✅ |
 | Création de session | `teacher/session_create_screen.dart` | ✅ |
-| Upload fichier (file_picker) | — | ❌ zone `onTap: (){}` sans action |
+| Upload fichier (file_picker) |  | ❌ zone `onTap: (){}` sans action |
 | ContentActionsSheet (éditer / stats / statut / supprimer) | `teacher/content_actions_sheet.dart` | ❌ à créer |
-| Commission affichée (70% / 75% / 80%) | — | ❌ non affiché dans Revenue tab |
-| Stats depuis données chargées (pas hardcodées) | — | ❌ valeurs en dur |
-| Insights IA (section dashboard) | — | ❌ absent |
-| Dashboard analytique par classe | — | ⚠️ très basique |
-| Limites publications par plan (0/5/20/illimité) | — | ⚠️ gate "2 max gratuit" uniquement |
-| Classes gérées selon plan (0/1/3/illimité) | — | ❌ non gated |
-| Quiz générés par IA (2/10/illimité) | — | ❌ non implémenté |
-| Éditeur riche document | — | ❌ non implémenté  |
-| Auto-publish calendrier | — | ❌ non implémenté  |
+| Commission affichée (70% / 75% / 80%) |  | ❌ non affiché dans Revenue tab |
+| Stats depuis données chargées (pas hardcodées) |  | ❌ valeurs en dur |
+| Insights IA (section dashboard) |  | ❌ absent |
+| Dashboard analytique par classe |  | ⚠️ très basique |
+| Limites publications par plan (0/5/20/illimité) |  | ⚠️ gate "2 max gratuit" uniquement |
+| Classes gérées selon plan (0/1/3/illimité) |  | ❌ non gated |
+| Quiz générés par IA (2/10/illimité) |  | ❌ non implémenté |
+| Éditeur riche document |  | ❌ non implémenté  |
+| Auto-publish calendrier |  | ❌ non implémenté  |
 
 ### 3.5 INSTITUTION
 
 | Écran / Feature | Fichier | Statut |
 |---|---|---|
-| Dashboard | `institution/institution_tabs.dart` — `InstitutionDashTab` | ⚠️ UI partielle, données hardcodées |
-| Catalogue | `institution/institution_tabs.dart` — `InstitutionCatalogTab` | ✅ |
-| Groupes | `institution/institution_tabs.dart` — `InstitutionGroupsTab` | ✅ |
-| Analytics | `institution/institution_tabs.dart` — `InstitutionAnalyticsTab` | ✅ |
-| Compte | `institution/institution_tabs.dart` — `InstitutionAccountTab` | ✅ |
+| Dashboard | `institution/institution_tabs.dart`  `InstitutionDashTab` | ⚠️ UI partielle, données hardcodées |
+| Catalogue | `institution/institution_tabs.dart`  `InstitutionCatalogTab` | ✅ |
+| Groupes | `institution/institution_tabs.dart`  `InstitutionGroupsTab` | ✅ |
+| Analytics | `institution/institution_tabs.dart`  `InstitutionAnalyticsTab` | ✅ |
+| Compte | `institution/institution_tabs.dart`  `InstitutionAccountTab` | ✅ |
 | Élèves à risque | `institution/at_risk_screen.dart` | ⚠️ UI complète, boutons `onTap: (){}` vides |
 | Plan d'action IA | `institution/action_plan_screen.dart` | ✅ |
 | Création de groupe | `institution/group_create_screen.dart` | ✅ |
-| Bouton "Contacter" câblé → MessagingScreen | — | ❌ vide |
-| Bouton "Plan d'action" câblé → ActionPlanScreen | — | ❌ vide |
+| Bouton "Contacter" câblé → MessagingScreen |  | ❌ vide |
+| Bouton "Plan d'action" câblé → ActionPlanScreen |  | ❌ vide |
 | Annuaire étudiants filtrable | `institution/student_directory_screen.dart` | ❌ à créer |
 | Rapports exportables (mock PDF) | `institution/reports_screen.dart` | ❌ à créer |
-| Dashboard enrichi (licences % / matières / KPIs) | — | ⚠️ données hardcodées |
-| Gestion élèves en masse (CSV import mock) | — | ❌ non implémenté |
+| Dashboard enrichi (licences % / matières / KPIs) |  | ⚠️ données hardcodées |
+| Gestion élèves en masse (CSV import mock) |  | ❌ non implémenté |
 
 ### 3.6 SHARED
 
@@ -370,7 +447,7 @@ PROFIL TAB
 
 ---
 
-### 4.1 `GET /api/auth/me` — Profil utilisateur
+### 4.1 `GET /api/auth/me`  Profil utilisateur
 
 ```dart
 // Remplace : UserService.instance.getProfile()
@@ -387,7 +464,7 @@ static const ApiUserProfile mockUserProfile = ApiUserProfile(
 );
 ```
 
-### 4.2 `GET /api/subscriptions/me` — Abonnement actuel
+### 4.2 `GET /api/subscriptions/me`  Abonnement actuel
 
 ```dart
 // Remplace : SubscriptionService.instance.getCurrent()
@@ -404,15 +481,15 @@ static const ActiveSubscription mockCurrentSubscription = ActiveSubscription(
 );
 ```
 
-### 4.3 `GET /api/subjects` — Catalogue
+### 4.3 `GET /api/subjects`  Catalogue
 
 ```dart
 // Remplace : SubjectService.instance.getAll()
 // Actuellement : appel API réel (✅ connecté)
-// Pas de mock statique — données chargées dynamiquement
+// Pas de mock statique  données chargées dynamiquement
 ```
 
-### 4.4 `GET /api/progress` — Contenus en cours (Continue Learning)
+### 4.4 `GET /api/progress`  Contenus en cours (Continue Learning)
 
 ```dart
 // Remplace : ProgressService.instance.getInProgress()
@@ -435,7 +512,7 @@ static final List<InProgressContent> mockInProgress = [
 ];
 ```
 
-### 4.5 `GET /api/recommendations` — Recommandations IA
+### 4.5 `GET /api/recommendations`  Recommandations IA
 
 ```dart
 // Remplace : RecommendationService.instance.get()
@@ -443,7 +520,7 @@ static final List<InProgressContent> mockInProgress = [
 static final List<AiRecommendation> mockRecommendations = [
   AiRecommendation(
     contentId: 'c-005',
-    title: 'Quiz Chimie — Oxydoréduction',
+    title: 'Quiz Chimie  Oxydoréduction',
     reason: 'Tu n\'as pas révisé la Chimie depuis 5 jours',
     subjectId: 'chimie',
   ),
@@ -456,22 +533,22 @@ static final List<AiRecommendation> mockRecommendations = [
 ];
 ```
 
-### 4.6 `GET /api/activity` — Activité récente étudiant
+### 4.6 `GET /api/activity`  Activité récente étudiant
 
 ```dart
 // Remplace : ActivityService.instance.getRecent()
 // Actuellement : ❌ endpoint non connecté
 static final List<ActivityEvent> mockActivities = [
-  ActivityEvent(type: 'quiz', title: 'Quiz Maths — Suites',
+  ActivityEvent(type: 'quiz', title: 'Quiz Maths  Suites',
     score: '13/15', at: DateTime.now().subtract(const Duration(hours: 1))),
   ActivityEvent(type: 'download', title: 'BAC D Physique 2023',
     at: DateTime.now().subtract(const Duration(hours: 3))),
-  ActivityEvent(type: 'quiz', title: 'Quiz Chimie — Oxydoréduction',
+  ActivityEvent(type: 'quiz', title: 'Quiz Chimie  Oxydoréduction',
     score: '8/15', at: DateTime.now().subtract(const Duration(days: 1))),
 ];
 ```
 
-### 4.7 `GET /api/exams/upcoming` — Examens à venir
+### 4.7 `GET /api/exams/upcoming`  Examens à venir
 
 ```dart
 // Remplace : ExamService.instance.getUpcoming()
@@ -484,7 +561,7 @@ static final List<UpcomingExam> mockUpcomingExams = [
 ];
 ```
 
-### 4.8 `GET /api/student/stats` — Stats étudiant
+### 4.8 `GET /api/student/stats`  Stats étudiant
 
 ```dart
 // Remplace : StudentService.instance.getStats()
@@ -499,7 +576,7 @@ static const StudentStats mockStudentStats = StudentStats(
 );
 ```
 
-### 4.9 `GET /api/parent/account` — Compte parent (crédits)
+### 4.9 `GET /api/parent/account`  Compte parent (crédits)
 
 ```dart
 // Remplace : ParentService.instance.getAccount()
@@ -507,14 +584,14 @@ static const StudentStats mockStudentStats = StudentStats(
 static const ParentAccount mockParentAccount = ParentAccount(
   name: 'Solange Nkono',
   plan: 'Famille',
-  creditsAvailable: 40000, // XAF — Plan Famille
+  creditsAvailable: 40000, // XAF  Plan Famille
   creditsTotal: 40000,
   creditsUsed: 12500,
   childrenLimit: 5,        // Plan Famille
 );
 ```
 
-### 4.10 `GET /api/parent/children` — Enfants suivis
+### 4.10 `GET /api/parent/children`  Enfants suivis
 
 ```dart
 // Remplace : ParentService.instance.getChildren()
@@ -531,7 +608,7 @@ static final List<TrackedChild> mockChildren = [
 ];
 ```
 
-### 4.11 `GET /api/parent/child/{id}/activity` — Activité d'un enfant
+### 4.11 `GET /api/parent/child/{id}/activity`  Activité d'un enfant
 
 ```dart
 // Remplace : ParentService.instance.getChildActivity(childId)
@@ -544,7 +621,7 @@ static const ChildEngagement mockChildEngagement = ChildEngagement(
 );
 ```
 
-### 4.12 `GET /api/parent/upcoming-events` — Évènements à venir (parent)
+### 4.12 `GET /api/parent/upcoming-events`  Évènements à venir (parent)
 
 ```dart
 // Remplace : ParentService.instance.getUpcomingEvents()
@@ -557,7 +634,7 @@ static final List<UpcomingEvent> mockUpcomingEvents = [
 ];
 ```
 
-### 4.13 `GET /api/teacher/content` — Contenus du professeur
+### 4.13 `GET /api/teacher/content`  Contenus du professeur
 
 ```dart
 // Remplace : TeacherService.instance.getContent()
@@ -567,7 +644,7 @@ static final List<UpcomingEvent> mockUpcomingEvents = [
 // avgRating = content.fold(0.0, ...) / content.length
 ```
 
-### 4.14 `GET /api/teacher/stats` — Stats globales professeur
+### 4.14 `GET /api/teacher/stats`  Stats globales professeur
 
 ```dart
 // Remplace : TeacherService.instance.getStats() (endpoint à créer)
@@ -582,14 +659,14 @@ static const TeacherStats mockTeacherStats = TeacherStats(
 );
 ```
 
-### 4.15 `GET /api/teacher/insights` — Insights IA professeur
+### 4.15 `GET /api/teacher/insights`  Insights IA professeur
 
 ```dart
 // Remplace : TeacherService.instance.getInsights()
 // Actuellement : ❌ section absente du dashboard
 static final List<TeacherInsight> mockInsights = [
   TeacherInsight(icon: Icons.local_fire_department,
-    text: 'Pack ENSP 2019-2023 — meilleur vendeur ce mois'),
+    text: 'Pack ENSP 2019-2023  meilleur vendeur ce mois'),
   TeacherInsight(icon: Icons.people,
     text: 'Terminale C représente 68% de votre audience'),
   TeacherInsight(icon: Icons.trending_up,
@@ -597,7 +674,7 @@ static final List<TeacherInsight> mockInsights = [
 ];
 ```
 
-### 4.16 `GET /api/institution/stats` — KPIs institution
+### 4.16 `GET /api/institution/stats`  KPIs institution
 
 ```dart
 // Remplace : InstitutionService.instance.getStats()
@@ -613,7 +690,7 @@ static const InstitutionStats mockInstitutionStats = InstitutionStats(
 );
 ```
 
-### 4.17 `GET /api/institution/subject-stats` — Matières les plus étudiées
+### 4.17 `GET /api/institution/subject-stats`  Matières les plus étudiées
 
 ```dart
 // Remplace : InstitutionService.instance.getSubjectStats()
@@ -626,7 +703,7 @@ static final List<SubjectStat> mockSubjectStats = [
 ];
 ```
 
-### 4.18 `GET /api/institution/students` — Annuaire étudiants
+### 4.18 `GET /api/institution/students`  Annuaire étudiants
 
 ```dart
 // Remplace : InstitutionService.instance.getStudents()
@@ -642,14 +719,14 @@ static final List<MockStudent> mockStudents = [
 ];
 ```
 
-### 4.19 `GET /api/notifications` — Notifications
+### 4.19 `GET /api/notifications`  Notifications
 
 ```dart
 // Remplace : UserService.instance.getNotifications()
 // Actuellement : ✅ connecté (NotificationsScreen + badge dans ProfileHubTab)
 ```
 
-### 4.20 `GET /api/messaging/conversations` — Messagerie
+### 4.20 `GET /api/messaging/conversations`  Messagerie
 
 ```dart
 // Remplace : MessagingService.instance.getConversations()
@@ -658,9 +735,9 @@ static final List<MockStudent> mockStudents = [
 
 ---
 
-## 5. Backlog ÉTUDIANT — Plan Ultime
+## 5. Backlog ÉTUDIANT  Plan Ultime
 
-### 5.1 Home enrichie — 🔴 PRIORITÉ HAUTE
+### 5.1 Home enrichie  🔴 PRIORITÉ HAUTE
 
 **Fichier :** `lib/student/student_home.dart`
 
@@ -673,7 +750,7 @@ static final List<MockStudent> mockStudents = [
 | **Compte à rebours** (prochain examen) | `§4.7` | ❌ |
 | **Activité récente** (timeline 5 événements) | `§4.6` | ❌ |
 
-### 5.2 Différenciation visuelle par plan — 🔴 PRIORITÉ HAUTE
+### 5.2 Différenciation visuelle par plan  🔴 PRIORITÉ HAUTE
 
 Le dashboard doit visuellement changer selon le plan (Basic/Avancé/Premium UI per `Plan_Abonnement.md §5`) :
 
@@ -684,7 +761,7 @@ Plan Premium  → dashboard Premium, recommandations IA actives
 Plan Ultime   → tout visible, badge 🏆, coaching personnalisé
 ```
 
-### 5.3 Notes et tags de révision — 🟡 PRIORITÉ MOYENNE
+### 5.3 Notes et tags de révision  🟡 PRIORITÉ MOYENNE
 
 **Fichier :** widget dans `lib/student/content_detail_screen.dart`
 
@@ -695,7 +772,7 @@ Section "Mes notes" (inline)
 └── Liste notes existantes (max 5 visibles, scroll)
 ```
 
-### 5.4 Groupes d'étude — 🟡 PRIORITÉ MOYENNE
+### 5.4 Groupes d'étude  🟡 PRIORITÉ MOYENNE
 
 **Fichier :** `lib/student/study_groups_screen.dart`
 
@@ -707,7 +784,7 @@ StudyGroupsScreen
 └── [Rejoindre par code]
 ```
 
-### 5.5 Rapports de progression — 🟡 PRIORITÉ MOYENNE
+### 5.5 Rapports de progression  🟡 PRIORITÉ MOYENNE
 
 **Fichier :** `lib/student/student_reports_screen.dart`
 
@@ -717,11 +794,11 @@ StudentReportsScreen
 ├── Score moyen par matière (barres horizontales)
 ├── Progression hebdomadaire (courbe)
 ├── Quiz : taux de réussite, matières fortes/faibles
-├── [Exporter PDF] — Standard+
-└── [Exporter Excel] — Premium+
+├── [Exporter PDF]  Standard+
+└── [Exporter Excel]  Premium+
 ```
 
-### 5.6 Quiz adaptatif / révision — 🟡 PRIORITÉ MOYENNE
+### 5.6 Quiz adaptatif / révision  🟡 PRIORITÉ MOYENNE
 
 **Fichier :** `lib/student/quiz_revision_screen.dart`
 
@@ -732,7 +809,7 @@ QuizRevisionScreen
 └── Lance QuizActiveScreen avec les questions échouées
 ```
 
-### 5.7 Historique avec filtre période — 🟡 PRIORITÉ MOYENNE
+### 5.7 Historique avec filtre période  🟡 PRIORITÉ MOYENNE
 
 **Fichier :** `lib/student/download_history_screen.dart` (enrichir)
 
@@ -740,18 +817,18 @@ Ajouter sélecteur période : 30j (Gratuit) / 90j (Standard) / 1an (Premium) / I
 
 ---
 
-## 6. Backlog PARENT — Plan Famille
+## 6. Backlog PARENT  Plan Famille
 
-### 6.1 Tab Messages dédié — 🔴 PRIORITÉ HAUTE
+### 6.1 Tab Messages dédié  🔴 PRIORITÉ HAUTE
 
 Dans `lib/shell/role_shell.dart` : remplacer le 4e tab Paiements par un tab **Messages** qui pointe directement sur `MessagingScreen`. Paiements reste accessible depuis le Profil.
 
-### 6.2 Dashboard enrichi (ParentDashTab) — 🔴 PRIORITÉ HAUTE
+### 6.2 Dashboard enrichi (ParentDashTab)  🔴 PRIORITÉ HAUTE
 
-**Fichier :** `lib/parent/parent_tabs.dart` — `ParentDashTab`
+**Fichier :** `lib/parent/parent_tabs.dart`  `ParentDashTab`
 
 ```
-ParentDashTab — Plan Famille
+ParentDashTab  Plan Famille
 ├── Hero : "Bonjour [Prénom depuis §4.1]"
 │         💰 Crédits disponibles : 40 000 XAF (depuis §4.9)
 ├── Enfants (cards horizontales scrollables, depuis §4.10)
@@ -763,7 +840,7 @@ ParentDashTab — Plan Famille
 └── [Acheter du contenu pour un enfant →] → BuyForChildScreen
 ```
 
-### 6.3 ChildActivityScreen enrichie — 🔴 PRIORITÉ HAUTE
+### 6.3 ChildActivityScreen enrichie  🔴 PRIORITÉ HAUTE
 
 **Fichier :** `lib/parent/child_activity_screen.dart`
 
@@ -778,12 +855,12 @@ ChildActivityScreen (3 tabs)
 │   └── Dernier quiz + trend
 ├── Tab "Alertes WinAI"
 │   └── Liste alertes (difficulté, streak rompu, matière faible)
-├── [Voir ressources pour cet enfant] — câbler catalogue filtré
-├── [Générer un quiz] — câbler QuizHubScreen
+├── [Voir ressources pour cet enfant]  câbler catalogue filtré
+├── [Générer un quiz]  câbler QuizHubScreen
 └── [💌 Envoyer un encouragement] → EncouragementSheet
 ```
 
-### 6.4 RenewalSheet — 🔴 PRIORITÉ HAUTE
+### 6.4 RenewalSheet  🔴 PRIORITÉ HAUTE
 
 **Fichier :** `lib/parent/renewal_sheet.dart`
 
@@ -796,7 +873,7 @@ RenewalSheet (bottom sheet)
 └── [Confirmer le renouvellement]
 ```
 
-### 6.5 Flow "Acheter pour un enfant" — 🟡 PRIORITÉ MOYENNE
+### 6.5 Flow "Acheter pour un enfant"  🟡 PRIORITÉ MOYENNE
 
 **Fichier :** `lib/parent/buy_for_child_screen.dart`
 
@@ -807,7 +884,7 @@ BuyForChildScreen
 └── Tap → GuestOrderScreen pré-rempli (email parent)
 ```
 
-### 6.6 EncouragementSheet — 🟡 PRIORITÉ MOYENNE
+### 6.6 EncouragementSheet  🟡 PRIORITÉ MOYENNE
 
 **Fichier :** `lib/parent/encouragement_sheet.dart`
 
@@ -823,9 +900,9 @@ EncouragementSheet (bottom sheet)
 
 ---
 
-## 7. Backlog PROFESSEUR — Plan Expert
+## 7. Backlog PROFESSEUR  Plan Expert
 
-### 7.1 Upload fichier dans ContentPublishScreen — 🔴 PRIORITÉ HAUTE
+### 7.1 Upload fichier dans ContentPublishScreen  🔴 PRIORITÉ HAUTE
 
 **Fichier :** `lib/teacher/content_publish_screen.dart`
 
@@ -841,7 +918,7 @@ onTap: () async {
 // Afficher nom du fichier sélectionné + taille
 ```
 
-### 7.2 ContentActionsSheet — 🔴 PRIORITÉ HAUTE
+### 7.2 ContentActionsSheet  🔴 PRIORITÉ HAUTE
 
 **Fichier :** `lib/teacher/content_actions_sheet.dart`
 
@@ -855,7 +932,7 @@ ContentActionsSheet (bottom sheet)
 └── [🗑️  Supprimer] → dialog confirmation → TeacherService.deleteContent()
 ```
 
-### 7.3 Commission affichée + stats réelles — 🟡 PRIORITÉ MOYENNE
+### 7.3 Commission affichée + stats réelles  🟡 PRIORITÉ MOYENNE
 
 **Fichier :** `TeacherRevenueTab` dans `lib/teacher/teacher_tabs.dart`
 
@@ -869,13 +946,13 @@ final avgRating = _content == null || _content!.isEmpty ? 0.0
     : _content!.fold(0.0, (a, c) => a + c.rating) / _content!.length;
 ```
 
-### 7.4 Insights IA dans le dashboard — 🟡 PRIORITÉ MOYENNE
+### 7.4 Insights IA dans le dashboard  🟡 PRIORITÉ MOYENNE
 
 **Fichier :** `TeacherDashTab` dans `lib/teacher/teacher_tabs.dart`
 
 Ajouter section "Insights" en bas du dashboard depuis `§4.15`.
 
-### 7.5 Classes gérées dans TeacherStudentsTab — 🟡 PRIORITÉ MOYENNE
+### 7.5 Classes gérées dans TeacherStudentsTab  🟡 PRIORITÉ MOYENNE
 
 ```
 TeacherStudentsTab enrichi
@@ -887,9 +964,9 @@ TeacherStudentsTab enrichi
 
 ---
 
-## 8. Backlog INSTITUTION — Plan Enterprise
+## 8. Backlog INSTITUTION  Plan Enterprise
 
-### 8.1 Boutons AtRiskScreen câblés — 🔴 PRIORITÉ HAUTE
+### 8.1 Boutons AtRiskScreen câblés  🔴 PRIORITÉ HAUTE
 
 **Fichier :** `lib/institution/at_risk_screen.dart`
 
@@ -903,9 +980,9 @@ onTap: () => Navigator.push(context,
     MaterialPageRoute(builder: (_) => ActionPlanScreen(student: student))),
 ```
 
-### 8.2 Dashboard Institution enrichi — 🔴 PRIORITÉ HAUTE
+### 8.2 Dashboard Institution enrichi  🔴 PRIORITÉ HAUTE
 
-**Fichier :** `lib/institution/institution_tabs.dart` — `InstitutionDashTab`
+**Fichier :** `lib/institution/institution_tabs.dart`  `InstitutionDashTab`
 
 Remplacer les valeurs hardcodées par les données mock `§4.16` et `§4.17` :
 
@@ -915,7 +992,7 @@ final stats = WinData.mockInstitutionStats;
 final subjects = WinData.mockSubjectStats;
 ```
 
-### 8.3 Annuaire étudiants — 🟡 PRIORITÉ MOYENNE
+### 8.3 Annuaire étudiants  🟡 PRIORITÉ MOYENNE
 
 **Fichier :** `lib/institution/student_directory_screen.dart`
 
@@ -928,7 +1005,7 @@ StudentDirectoryScreen
 └── [📥 Importer CSV] → dialog mock "Import en cours..."
 ```
 
-### 8.4 RapportsScreen — 🟡 PRIORITÉ MOYENNE
+### 8.4 RapportsScreen  🟡 PRIORITÉ MOYENNE
 
 **Fichier :** `lib/institution/reports_screen.dart`
 
@@ -962,19 +1039,19 @@ ReportsScreen
 
 ---
 
-## 10. Ordre d'implémentation — Sprints
+## 10. Ordre d'implémentation  Sprints
 
-### Sprint 1 — Navigation & Câblage
+### Sprint 1  Navigation & Câblage
 
 ```
-1.  ProfileHubTab (student)               ✅ FAIT — 5 orphelins câblés
+1.  ProfileHubTab (student)               ✅ FAIT  5 orphelins câblés
 2.  Tab Messages dédié (parent shell)     ❌ remplacer 4e tab
 3.  Cloche 🔔 AppBar tous rôles           ❌ badge + NotificationsScreen
 4.  Boutons AtRisk câblés (institution)   ❌ Contacter + Plan d'action
 5.  UpgradeSheet → PricingScreen          ❌ routage manquant
 ```
 
-### Sprint 2 — Home enrichie (rétention)
+### Sprint 2  Home enrichie (rétention)
 
 ```
 6.  Mock data : §4.4 à §4.8 (InProgressContent, ActivityEvent, etc.)
@@ -986,7 +1063,7 @@ ReportsScreen
 12. Student home : Stats enrichies (streak, score, heures)
 ```
 
-### Sprint 3 — Parent Famille complet
+### Sprint 3  Parent Famille complet
 
 ```
 13. Mock data : §4.9 à §4.12
@@ -997,7 +1074,7 @@ ReportsScreen
 18. BuyForChildScreen
 ```
 
-### Sprint 4 — Teacher Expert complet
+### Sprint 4  Teacher Expert complet
 
 ```
 19. file_picker dans ContentPublishScreen
@@ -1009,7 +1086,7 @@ ReportsScreen
 25. TeacherStudentsTab : classes + ClassCard
 ```
 
-### Sprint 5 — Institution Enterprise complet
+### Sprint 5  Institution Enterprise complet
 
 ```
 26. Mock data : §4.16 à §4.18
@@ -1018,7 +1095,7 @@ ReportsScreen
 29. ReportsScreen (génération mock PDF)
 ```
 
-### Sprint 6 — AUTH manquants
+### Sprint 6  AUTH manquants
 
 ```
 30. email_verified_screen
@@ -1026,7 +1103,7 @@ ReportsScreen
 32. onboarding_success_screen
 ```
 
-### Sprint 7 — Features enrichissement student
+### Sprint 7  Features enrichissement student
 
 ```
 33. Notes et tags de révision (ContentDetailScreen)
@@ -1040,7 +1117,7 @@ ReportsScreen
 
 ---
 
-## 11. Checklist gates — Phase 2
+## 11. Checklist gates  Phase 2
 
 > Après validation UX, ajouter les restrictions par plan en utilisant `SubscriptionScope.of(context)`.  
 > Règle : un gate bloque la limite du plan inférieur, jamais la fonctionnalité elle-même.
@@ -1074,7 +1151,7 @@ ReportsScreen
 
 ---
 
-*Stratégie : UI tier max d'abord — tiers cumulatifs — gates en Phase 2*
+*Stratégie : UI tier max d'abord  tiers cumulatifs  gates en Phase 2*
 
 ---
 
@@ -1087,11 +1164,11 @@ ReportsScreen
 
 ---
 
-### SPRINT 1 — Navigation & Câblage
+### SPRINT 1  Navigation & Câblage
 
 ---
 
-#### 📱 S1-1 — Cloche 🔔 notifications dans l'AppBar (tous rôles)
+#### 📱 S1-1  Cloche 🔔 notifications dans l'AppBar (tous rôles)
 
 **Fichier :** `lib/shell/role_shell.dart`  
 **Navigation :** Visible dès l'ouverture de l'app pour tout utilisateur connecté, en haut à droite de chaque tab.
@@ -1115,7 +1192,7 @@ ReportsScreen
 
 ---
 
-#### 📱 S1-2 — Tab Messages dédié (shell Parent)
+#### 📱 S1-2  Tab Messages dédié (shell Parent)
 
 **Fichier :** `lib/shell/role_shell.dart`  
 **Navigation :** Barre de navigation inférieure du rôle Parent → 4e onglet "Messages"
@@ -1131,11 +1208,11 @@ ReportsScreen
 - Changer `ParentPaymentsTab()` en `MessagingScreen()` dans `_pagesFor`
 - Paiements reste accessible depuis `ParentProfileTab` via un bouton "Historique paiements"
 
-**Appels API (mockés) :** aucun nouveau — `MessagingScreen` est déjà connecté `§4.20`
+**Appels API (mockés) :** aucun nouveau  `MessagingScreen` est déjà connecté `§4.20`
 
 ---
 
-#### 📱 S1-3 — AtRiskScreen — boutons câblés
+#### 📱 S1-3  AtRiskScreen  boutons câblés
 
 **Fichier :** `lib/institution/at_risk_screen.dart`  
 **Navigation :** Shell Institution → Tab Accueil (Dashboard) → Carte "⚠️ N élèves à risque" → `AtRiskScreen`
@@ -1145,7 +1222,7 @@ ReportsScreen
 - Pour chaque élève à risque :
   - Avatar + nom complet de l'élève
   - Niveau (ex. "Terminale C")
-  - Matière faible principale (ex. "Chimie — 34%")
+  - Matière faible principale (ex. "Chimie  34%")
   - Score global actuel (ex. "Score : 41%")
   - Dernière activité (ex. "Inactif depuis 8 jours")
   - Indicateur de sévérité : 🔴 Critique / 🟡 Modéré
@@ -1180,7 +1257,7 @@ static final List<AtRiskStudent> mockAtRiskStudents = [
 
 ---
 
-#### 📱 S1-4 — UpgradeSheet → PricingScreen
+#### 📱 S1-4  UpgradeSheet → PricingScreen
 
 **Fichier :** `lib/shared/subscription/upgrade_sheet.dart`  
 **Navigation :** Déclenché depuis n'importe quel endroit où un contenu est verrouillé (gate). Ex : étudiant gratuit tente de télécharger le 6e fichier.
@@ -1205,11 +1282,11 @@ static final List<AtRiskStudent> mockAtRiskStudents = [
 
 ---
 
-### SPRINT 2 — Home Étudiant enrichie
+### SPRINT 2  Home Étudiant enrichie
 
 ---
 
-#### 📱 S2-1 — StudentHomeTab (version enrichie)
+#### 📱 S2-1  StudentHomeTab (version enrichie)
 
 **Fichier :** `lib/student/student_home.dart`  
 **Navigation :** Shell Étudiant → Tab 1 "Accueil" (tab par défaut à l'ouverture)
@@ -1217,7 +1294,7 @@ static final List<AtRiskStudent> mockAtRiskStudents = [
 **Contenu affiché (de haut en bas) :**
 
 1. **Header dynamique**
-   - "Bonjour [Prénom] 👋" — prénom chargé depuis `SessionManager`
+   - "Bonjour [Prénom] 👋"  prénom chargé depuis `SessionManager`
    - Date du jour en français (ex. "Vendredi 22 août 2026")
    - Icône cloche à droite → NotificationsScreen (avec badge)
 
@@ -1275,13 +1352,170 @@ static final List<AtRiskStudent> mockAtRiskStudents = [
 
 ---
 
-### SPRINT 3 — Parent Famille complet
+#### 📱 S2-2  Différenciation visuelle par plan (StudentHomeTab)
+
+**Fichier :** `lib/student/student_home.dart`  
+**Navigation :** Shell Étudiant → Tab 1 "Accueil"  la UI change selon `SubscriptionScope.of(context).tier`
+
+**Contenu affiché selon le plan :**
+
+| Plan | Badge hero | Sous-titre recommandations IA | Bandeau upgrade |
+|---|---|---|---|
+| `libre` | "Gratuit" gris | "Populaire cette semaine" | ✅ Bandeau teal |
+| `standard` | "Standard" bleu | "Populaire cette semaine" | ❌ |
+| `premium` | "Premium" teal | "Analyse IA complète · Basé sur tes lacunes" | ❌ |
+| `famille` | "Famille" or | "Analyse IA complète · Basé sur tes lacunes" | ❌ |
+
+**Données locales :**
+- `final effectiveTier = AppConfig.devMode ? PlanTier.premium : SubscriptionScope.of(context).tier`
+- Badge pill `(planLabel, planColor)` via `switch (effectiveTier)`  dans le header à droite de la date
+- `_UpgradeBanner` : widget teal pleine largeur, visible uniquement si `!AppConfig.devMode && effectiveTier == PlanTier.libre`
+
+**Appels API (mockés) :**
+| Endpoint | Données | Mock |
+|---|---|---|
+| `GET /api/subscriptions/me` | Plan actuel (tier) | `§4.2` ✅ via `SubscriptionScope` |
 
 ---
 
-#### 📱 S3-1 — ParentDashTab (version enrichie)
+#### 📱 S2-3  Notes et tags dans ContentDetailScreen
 
-**Fichier :** `lib/parent/parent_tabs.dart` — `ParentDashTab`  
+**Fichier :** `lib/student/content_detail_screen.dart`  
+**Navigation :** Catalogue → tap contenu → section "Mes notes" en bas de la fiche
+
+**Contenu affiché :**
+
+1. **Tags rapides** (row de chips)
+   - `[À réviser]` `[Difficile]` `[Maîtrisé]`  toggle actif/inactif
+   - Chip active : fond `WinColors.ink800`, texte `cream50`
+
+2. **Zone de saisie**
+   - Champ `[+ Ajouter une note…]` + bouton `[Enregistrer]`
+
+3. **Liste notes** (max 5 visibles)
+   - Texte + date relative + icône corbeille
+
+**Données locales :**
+- `List<String> _tags`  état togglé localement (pas d'API Phase 1)
+- `List<({String text, DateTime at})> _notes`  liste locale en session
+
+**Appels API (mockés) :** aucun (100 % local Phase 1)
+
+---
+
+#### 📱 S2-4  StudyGroupsScreen
+
+**Fichier :** `lib/student/study_groups_screen.dart`  
+**Navigation :** ProfileHubTab → "Mes groupes d'étude" · StudentSpaceTab → QuickLink "Groupes d'étude"
+
+**Contenu affiché :**
+
+1. **Liste des groupes** (`GroupCard` : nom · matière badge · N membres · dernière activité)
+2. **[+ Créer un groupe]**  bloqué `UpgradeSheet` si plan `libre`
+3. **[Rejoindre par code]**  TextField + bouton
+
+**Données locales :**
+```dart
+static final _mockGroups = [
+  (name: 'BAC C  Maths Intensif', subject: 'Maths', members: 8, lastActivity: 'il y a 2h'),
+  (name: 'Chimie Terminale D',      subject: 'Chimie', members: 5, lastActivity: 'hier'),
+];
+```
+
+**Appels API (mockés) :**
+| Endpoint | Données | Mock |
+|---|---|---|
+| `GET /api/study-groups` | Liste des groupes de l'étudiant | données locales ci-dessus |
+
+---
+
+#### 📱 S2-5  StudentReportsScreen
+
+**Fichier :** `lib/student/student_reports_screen.dart`  
+**Navigation :** ProfileHubTab → "Mes rapports" · StudentSpaceTab → QuickLink "Mes rapports"
+
+**Contenu affiché :**
+
+1. **Sélecteur période** : `[7j]` `[30j]` `[90j]` `[1 an]` (limite selon plan)
+2. **Score par matière** : barres horizontales colorées (vert/orange/rouge selon seuil)
+3. **Résumé global** : streak 🔥 · quiz taux · heures d'étude
+4. **Export** : `[PDF]` Standard+ · `[Excel]` Premium+ → dialog mock
+
+**Données locales :**
+```dart
+static const _subjectScores = [
+  ('Mathématiques', 78), ('Physique', 65),
+  ('Chimie', 42), ('Français', 81), ('SVT', 70),
+];
+```
+
+**Appels API (mockés) :**
+| Endpoint | Données | Mock |
+|---|---|---|
+| `GET /api/student/stats` | streak, hoursThisWeek | `§4.8` |
+| `GET /api/progress` | Scores par matière (simulés) | `§4.4` |
+
+---
+
+#### 📱 S2-6  QuizRevisionScreen
+
+**Fichier :** `lib/student/quiz_revision_screen.dart`  
+**Navigation :** ProfileHubTab → "Quiz de révision" · StudentSpaceTab → QuickLink "Quiz de révision"
+
+**Contenu affiché :**
+
+1. **Header** : "Questions ratées · Reprends les questions manquées récemment"
+2. **Filtre matière** : chips `[Tout]` `[Maths]` `[Chimie]` `[Physique]`
+3. **Liste questions** : `WinCard`  intitulé (2 lignes) · badge matière · "Raté X fois" · score · date relative
+4. **[Lancer une révision]** → SnackBar mock "Quiz lancé !" (Phase 2 : QuizActiveScreen)
+
+**Données locales :**
+```dart
+static final _failedQuestions = [
+  (q: 'Calculer la dérivée de f(x) = x³ − 2x', subject: 'Maths',   failCount: 3, score: '4/5',  at: '2j'),
+  (q: 'Réaction d\'oxydoréduction : équilibrer…', subject: 'Chimie', failCount: 2, score: '8/15', at: '1j'),
+  (q: 'Loi de Faraday  calcul de charge',       subject: 'Physique',failCount: 1, score: '3/5',  at: 'hier'),
+];
+```
+
+**Appels API (mockés) :**
+| Endpoint | Données | Mock |
+|---|---|---|
+| `GET /api/quiz/failed` | Questions ratées + score | données locales ci-dessus |
+
+---
+
+#### 📱 S2-7  Historique téléchargements avec filtre période
+
+**Fichier :** `lib/student/download_history_screen.dart`  
+**Navigation :** ProfileHubTab → "Téléchargements"
+
+**Contenu affiché :**
+
+1. **Sélecteur période** (chips hauteur 44) : `[7j]` `[30j]` `[90j]` `[1 an]`
+2. **Compteur filtré** : `"X fichier(s) · 30j"` en sous-titre
+3. **Liste groupée par date** : en-têtes "Aujourd'hui" / "Hier" / "Il y a N jours" / `jj/mm/aaaa`
+   - Item : icône PDF · titre · badge catégorie (`Épreuve` / `Cours` / `Résumé` / `Exercice`) · heure
+4. **État vide contextuel** : "Aucun téléchargement sur `$_period`" vs "Télécharge des épreuves depuis le catalogue."
+
+**Données locales :**
+- `int get _periodDays` → `switch (_period)` : `'7j'→7, '30j'→30, '90j'→90, _→365`
+- `List<ApiDownloadEntry> get _filtered` → filtre `_entries` par `downloadedAt.isAfter(cutoff)`
+
+**Appels API (mockés) :**
+| Endpoint | Données | Mock |
+|---|---|---|
+| `GET /api/downloads/history` | Liste avec `downloadedAt`, `title`, `category` | `UserService.instance.getDownloadHistory()` ✅ |
+
+---
+
+### SPRINT 3  Parent Famille complet
+
+---
+
+#### 📱 S3-1  ParentDashTab (version enrichie)
+
+**Fichier :** `lib/parent/parent_tabs.dart`  `ParentDashTab`  
 **Navigation :** Shell Parent → Tab 1 "Accueil" (tab par défaut)
 
 **Contenu affiché (de haut en bas) :**
@@ -1352,7 +1586,7 @@ static final List<WinAIAlert> mockWinAIAlerts = [
 
 ---
 
-#### 📱 S3-2 — ChildActivityScreen (version enrichie avec tabs)
+#### 📱 S3-2  ChildActivityScreen (version enrichie avec tabs)
 
 **Fichier :** `lib/parent/child_activity_screen.dart`  
 **Navigation :** Shell Parent → Tab "Enfants" → Tap sur `ChildCard` → `ChildActivityScreen`  
@@ -1370,10 +1604,10 @@ OU : Shell Parent → Tab "Accueil" → Tap card enfant → `ChildActivityScreen
   - Barre circulaire ou linéaire colorée (vert > 70, orange 40-70, rouge < 40)
 - Graphique barres horizontales : sessions par jour cette semaine (Lu/Ma/Me/Je/Ve/Sa/Di)
 - Timeline activité (5 événements) :
-  - Quiz Maths — 13/15 · il y a 2h
+  - Quiz Maths  13/15 · il y a 2h
   - Téléchargement Pack ENSP · hier
   - Exam Coach activé · il y a 2 jours
-  - Quiz Chimie — 8/15 · il y a 3 jours
+  - Quiz Chimie  8/15 · il y a 3 jours
 - [Voir ressources pour Ahmed →] → `ParentResourcesTab` filtré par niveau enfant
 - [Générer un quiz Maths pour Ahmed →] → `QuizHubScreen`
 - [💌 Envoyer un encouragement] → `EncouragementSheet(childId: id)`
@@ -1385,7 +1619,7 @@ OU : Shell Parent → Tab "Accueil" → Tap card enfant → `ChildActivityScreen
   - Physique : 71% → (barre orange)
   - Chimie : 52% ↘ (barre rouge)
   - Français : 79% ↗
-- Dernier quiz : "Quiz Maths — Suites · 13/15 · il y a 2h"
+- Dernier quiz : "Quiz Maths  Suites · 13/15 · il y a 2h"
 - Meilleure matière : "Mathématiques 🏆"
 - Matière à travailler : "Chimie ⚠️"
 
@@ -1416,16 +1650,16 @@ OU : Shell Parent → Tab "Accueil" → Tap card enfant → `ChildActivityScreen
 static final Map<String, ChildStats> mockChildStats = {
   'k-001': ChildStats(avgScore: 78, subjectScores: {
     'math': 84, 'pc': 71, 'chimie': 52, 'fr': 79,
-  }, lastQuizTitle: 'Quiz Maths — Suites', lastQuizScore: '13/15'),
+  }, lastQuizTitle: 'Quiz Maths  Suites', lastQuizScore: '13/15'),
   'k-002': ChildStats(avgScore: 62, subjectScores: {
     'math': 55, 'pc': 68, 'chimie': 60, 'fr': 65,
-  }, lastQuizTitle: 'Quiz Chimie — Oxydoréduction', lastQuizScore: '9/15'),
+  }, lastQuizTitle: 'Quiz Chimie  Oxydoréduction', lastQuizScore: '9/15'),
 };
 ```
 
 ---
 
-#### 📱 S3-3 — RenewalSheet
+#### 📱 S3-3  RenewalSheet
 
 **Fichier :** `lib/parent/renewal_sheet.dart`  
 **Navigation :**  
@@ -1453,12 +1687,12 @@ static final Map<String, ChildStats> mockChildStats = {
   - Erreur → `WinAlert` rouge inline
 
 **Données locales (à implémenter maintenant) :**
-- `bool _yearly = false` — toggle mensuel/annuel
-- `PaymentMethod _method = PaymentMethod.mtn` — radio sélectionné
-- `TextEditingController _phoneCtrl` — numéro Mobile Money
+- `bool _yearly = false`  toggle mensuel/annuel
+- `PaymentMethod _method = PaymentMethod.mtn`  radio sélectionné
+- `TextEditingController _phoneCtrl`  numéro Mobile Money
 - Calcul prix annuel : `monthlyPrice * 12 * 0.85`
 - Validation téléphone : `RegExp(r'^6[0-9]{8}$').hasMatch(phone)`
-- `bool _loading = false` — état du bouton
+- `bool _loading = false`  état du bouton
 
 **Appels API (mockés) :**
 | Endpoint | Données | Mock |
@@ -1467,7 +1701,7 @@ static final Map<String, ChildStats> mockChildStats = {
 
 ---
 
-#### 📱 S3-4 — EncouragementSheet
+#### 📱 S3-4  EncouragementSheet
 
 **Fichier :** `lib/parent/encouragement_sheet.dart`  
 **Navigation :** `ChildActivityScreen` → Tab "Activité" → [💌 Envoyer un encouragement]
@@ -1488,8 +1722,8 @@ static final Map<String, ChildStats> mockChildStats = {
   - Succès → SnackBar "Message envoyé à [Prénom] !" + fermeture
 
 **Données locales (à implémenter maintenant) :**
-- `String? _selectedTemplate` — template sélectionné
-- `TextEditingController _customCtrl` — message personnalisé
+- `String? _selectedTemplate`  template sélectionné
+- `TextEditingController _customCtrl`  message personnalisé
 - `String get _finalMessage` → `_customCtrl.text.isNotEmpty ? _customCtrl.text : _selectedTemplate ?? ''`
 - Templates avec interpolation : remplacer `[Prénom]` par le prénom de l'enfant, `X jours` par le compte à rebours réel, `X%` par le score de l'enfant
 - Validation : message non vide avant envoi
@@ -1501,7 +1735,7 @@ static final Map<String, ChildStats> mockChildStats = {
 
 ---
 
-#### 📱 S3-5 — BuyForChildScreen
+#### 📱 S3-5  BuyForChildScreen
 
 **Fichier :** `lib/parent/buy_for_child_screen.dart`  
 **Navigation :** Shell Parent → Tab "Accueil" → [🛒 Acheter du contenu pour un enfant]
@@ -1513,14 +1747,14 @@ static final Map<String, ChildStats> mockChildStats = {
   - Chips horizontaux scrollables avec prénom + niveau de chaque enfant
   - Ahmed (Tle C) · Brenda (2nde) · Kevin (BEPC)
   - Chip sélectionné en accent, non sélectionné en outline
-- Section "Contenu recommandé pour [Prénom] — [Niveau]" :
+- Section "Contenu recommandé pour [Prénom]  [Niveau]" :
   - Grid 2 colonnes de `ContentCard` filtrées par niveau de l'enfant sélectionné
   - (ex. si Ahmed est en Tle C → afficher contenus Tle C en priorité)
 - En bas de chaque `ContentCard` : bouton [Acheter pour Ahmed] au lieu de [Acheter]
 - Tap → `GuestOrderScreen(content: content, forChildId: selectedChildId, prefilledEmail: parentEmail)`
 
 **Données locales (à implémenter maintenant) :**
-- `String? _selectedChildId` — enfant sélectionné (null = tous)
+- `String? _selectedChildId`  enfant sélectionné (null = tous)
 - Filtrer les contenus par `content.level == selectedChild.level` si enfant sélectionné
 - Récupérer email parent depuis `SessionManager` pour pré-remplir `GuestOrderScreen`
 
@@ -1532,11 +1766,11 @@ static final Map<String, ChildStats> mockChildStats = {
 
 ---
 
-### SPRINT 4 — Professeur Expert complet
+### SPRINT 4  Professeur Expert complet
 
 ---
 
-#### 📱 S4-1 — ContentPublishScreen (avec upload fichier)
+#### 📱 S4-1  ContentPublishScreen (avec upload fichier)
 
 **Fichier :** `lib/teacher/content_publish_screen.dart`  
 **Navigation :** Shell Professeur → Tab "Contenus" → [+ Publier un contenu]  
@@ -1553,7 +1787,7 @@ OU : Shell Professeur → Tab "Dashboard" → bouton [+ Publier] dans le hero
 - Champ **Année** (numérique, ex. 2023)
 - Champ **Description** (multiline, max 500 chars)
 - Sélecteur **Prix** :
-  - Radio [Abonnement uniquement] — gratuit pour les abonnés
+  - Radio [Abonnement uniquement]  gratuit pour les abonnés
   - Radio [Prix libre] → champ montant en XAF
 - Zone **Upload fichier** :
   - Bouton [📎 Choisir un fichier] → `FilePicker.platform.pickFiles()`
@@ -1564,7 +1798,7 @@ OU : Shell Professeur → Tab "Dashboard" → bouton [+ Publier] dans le hero
 - Note : "Votre contenu sera examiné avant d'être publié (24-48h)"
 
 **Données locales (à implémenter maintenant) :**
-- `PlatformFile? _pickedFile` — fichier sélectionné
+- `PlatformFile? _pickedFile`  fichier sélectionné
 - `String _formatFileSize(int bytes)` → ex. "2.3 Mo"
 - Validation avant envoi : titre non vide + fichier sélectionné + matière + niveau
 - `bool _loading = false`
@@ -1582,7 +1816,7 @@ file_picker: ^8.0.0
 
 ---
 
-#### 📱 S4-2 — ContentActionsSheet
+#### 📱 S4-2  ContentActionsSheet
 
 **Fichier :** `lib/teacher/content_actions_sheet.dart`  
 **Navigation :** Shell Professeur → Tab "Contenus" → Bouton `⋯` ou long-press sur un contenu → bottom sheet
@@ -1615,9 +1849,9 @@ file_picker: ^8.0.0
 
 ---
 
-#### 📱 S4-3 — TeacherDashTab (version enrichie)
+#### 📱 S4-3  TeacherDashTab (version enrichie)
 
-**Fichier :** `lib/teacher/teacher_tabs.dart` — `TeacherDashTab`  
+**Fichier :** `lib/teacher/teacher_tabs.dart`  `TeacherDashTab`  
 **Navigation :** Shell Professeur → Tab 1 "Dashboard" (tab par défaut)
 
 **Contenu affiché (de haut en bas) :**
@@ -1638,7 +1872,7 @@ file_picker: ^8.0.0
 
 4. **Insights WinAI** (section "Vos insights")
    - 3 cards (depuis `§4.15`) :
-     - 🔥 "Pack ENSP 2019-2023 — meilleur vendeur ce mois"
+     - 🔥 "Pack ENSP 2019-2023  meilleur vendeur ce mois"
      - 💡 "Terminale C représente 68% de votre audience"
      - 📈 "+12% de téléchargements cette semaine"
 
@@ -1660,9 +1894,9 @@ file_picker: ^8.0.0
 
 ---
 
-#### 📱 S4-4 — TeacherStudentsTab (version enrichie)
+#### 📱 S4-4  TeacherStudentsTab (version enrichie)
 
-**Fichier :** `lib/teacher/teacher_tabs.dart` — `TeacherStudentsTab`  
+**Fichier :** `lib/teacher/teacher_tabs.dart`  `TeacherStudentsTab`  
 **Navigation :** Shell Professeur → Tab 3 "Étudiants"
 
 **Contenu affiché :**
@@ -1685,15 +1919,15 @@ file_picker: ^8.0.0
      - [💬] → `MessagingScreen` avec cet étudiant pré-sélectionné
 
 **Données locales (à implémenter maintenant) :**
-- `String _search = ''` — filtre texte
-- `String _statusFilter = 'Tous'` — chips filtre
+- `String _search = ''`  filtre texte
+- `String _statusFilter = 'Tous'`  chips filtre
 - `List<TeacherStudent> get _filtered` → applique search + status filter
 - En difficulté : `student.avgScore < 50`
 
 **Appels API (mockés) :**
 | Endpoint | Données | Mock |
 |---|---|---|
-| `GET /api/teacher/students` | Liste étudiants avec scores | `§4` — créer `mockTeacherStudents` |
+| `GET /api/teacher/students` | Liste étudiants avec scores | `§4`  créer `mockTeacherStudents` |
 | `GET /api/teacher/classes` | Classes gérées | Créer `mockTeacherClasses` |
 
 ```dart
@@ -1719,13 +1953,13 @@ static final List<TeacherStudent> mockTeacherStudents = [
 
 ---
 
-### SPRINT 5 — Institution Enterprise complet
+### SPRINT 5  Institution Enterprise complet
 
 ---
 
-#### 📱 S5-1 — InstitutionDashTab (version enrichie)
+#### 📱 S5-1  InstitutionDashTab (version enrichie)
 
-**Fichier :** `lib/institution/institution_tabs.dart` — `InstitutionDashTab`  
+**Fichier :** `lib/institution/institution_tabs.dart`  `InstitutionDashTab`  
 **Navigation :** Shell Institution → Tab 1 "Accueil" (tab par défaut)
 
 **Contenu affiché (de haut en bas) :**
@@ -1768,7 +2002,7 @@ static final List<TeacherStudent> mockTeacherStudents = [
 
 ---
 
-#### 📱 S5-2 — StudentDirectoryScreen
+#### 📱 S5-2  StudentDirectoryScreen
 
 **Fichier :** `lib/institution/student_directory_screen.dart`  
 **Navigation :** Shell Institution → Tab "Étudiants" → (c'est le tab lui-même, ou bouton dans le tab Groupes)
@@ -1791,7 +2025,7 @@ static final List<TeacherStudent> mockTeacherStudents = [
 - Pagination ou "Charger plus..."
 
 **Tap [📥 Importer CSV] :**
-- Dialog : "Import CSV — Choisissez un fichier CSV avec les colonnes : nom, email, niveau, groupe"
+- Dialog : "Import CSV  Choisissez un fichier CSV avec les colonnes : nom, email, niveau, groupe"
 - Bouton [Choisir un fichier] → `FilePicker`
 - Bouton [Annuler]
 - Succès simulé : "Import en cours... 1 823 élèves importés avec succès !"
@@ -1811,7 +2045,7 @@ static final List<TeacherStudent> mockTeacherStudents = [
 
 ---
 
-#### 📱 S5-3 — ReportsScreen
+#### 📱 S5-3  ReportsScreen
 
 **Fichier :** `lib/institution/reports_screen.dart`  
 **Navigation :** Shell Institution → Tab "Profil" (InstitutionAccountTab) → [📊 Exporter un rapport]  
@@ -1840,9 +2074,9 @@ OU : `InstitutionDashTab` → bouton dédié
   - Bouton [Fermer]
 
 **Données locales (à implémenter maintenant) :**
-- `String _period = '30 jours'` — toggle sélecteur
+- `String _period = '30 jours'`  toggle sélecteur
 - Simulation génération : `Future.delayed(const Duration(seconds: 2))`
-- Pas de vrai PDF à générer — uniquement la simulation UX
+- Pas de vrai PDF à générer  uniquement la simulation UX
 
 **Appels API (mockés) :**
 | Endpoint | Données | Mock |
@@ -1851,11 +2085,11 @@ OU : `InstitutionDashTab` → bouton dédié
 
 ---
 
-### SPRINT 6 — AUTH manquants
+### SPRINT 6  AUTH manquants
 
 ---
 
-#### 📱 S6-1 — EmailVerifiedScreen
+#### 📱 S6-1  EmailVerifiedScreen
 
 **Fichier :** `lib/auth/email_verified_screen.dart`  
 **Navigation :** Deep link depuis email de vérification → app ouvre cet écran  
@@ -1875,7 +2109,7 @@ OU : `VerifyCodeScreen` après saisie du bon code → redirect ici
 
 ---
 
-#### 📱 S6-2 — PeriodicConfirmScreen
+#### 📱 S6-2  PeriodicConfirmScreen
 
 **Fichier :** `lib/auth/periodic_confirm_screen.dart`  
 **Navigation :** Affiché automatiquement au lancement de l'app si `SessionManager.needsReconfirmation()` retourne true (toutes les 30-45 jours)
@@ -1907,7 +2141,7 @@ OU : `VerifyCodeScreen` après saisie du bon code → redirect ici
 
 ---
 
-#### 📱 S6-3 — OnboardingSuccessScreen
+#### 📱 S6-3  OnboardingSuccessScreen
 
 **Fichier :** `lib/auth/onboarding_success_screen.dart`  
 **Navigation :** `CompleteProfileScreen` → après enregistrement réussi du profil → cet écran
@@ -1931,11 +2165,11 @@ OU : `VerifyCodeScreen` après saisie du bon code → redirect ici
 
 ---
 
-### SPRINT 7 — Enrichissement Étudiant
+### SPRINT 7  Enrichissement Étudiant
 
 ---
 
-#### 📱 S7-1 — Notes & Tags dans ContentDetailScreen
+#### 📱 S7-1  Notes & Tags dans ContentDetailScreen
 
 **Fichier :** `lib/student/content_detail_screen.dart` (enrichir la section existante)  
 **Navigation :** Shell Étudiant → Tab "Catalogue" → Tap sur un contenu → `ContentDetailScreen`
@@ -1953,19 +2187,19 @@ OU : `VerifyCodeScreen` après saisie du bon code → redirect ici
   - Note enregistrée → ajoutée à la liste sans reload
 
 **Données locales (à implémenter maintenant) :**
-- `Set<String> _selectedTags = {}` — tags actifs pour ce contenu
-- `List<String> _notes = []` — notes ajoutées
-- `bool _addingNote = false` — affiche/cache le champ
+- `Set<String> _selectedTags = {}`  tags actifs pour ce contenu
+- `List<String> _notes = []`  notes ajoutées
+- `bool _addingNote = false`  affiche/cache le champ
 - `TextEditingController _noteCtrl`
 - Persistance locale via `shared_preferences` : clé `'notes_${content.id}'` (JSON list)
 - Persistance tags via `shared_preferences` : clé `'tags_${content.id}'` (JSON set)
 - Chargement dans `initState` depuis `shared_preferences`
 
-**Appels API (mockés) :** aucun — 100% local via `shared_preferences`
+**Appels API (mockés) :** aucun  100% local via `shared_preferences`
 
 ---
 
-#### 📱 S7-2 — StudyGroupsScreen
+#### 📱 S7-2  StudyGroupsScreen
 
 **Fichier :** `lib/student/study_groups_screen.dart`  
 **Navigation :** Shell Étudiant → Tab "Moi" (ProfileHubTab) → "Mes groupes d'étude"
@@ -1987,7 +2221,7 @@ OU : `VerifyCodeScreen` après saisie du bon code → redirect ici
 - **[Rejoindre par code]** → bottom sheet :
   - Champ code 6 caractères (ex. "ABC123")
   - Bouton [Rejoindre]
-- Note badge plan : "Plan Ultime — Groupes illimités 🏆"
+- Note badge plan : "Plan Ultime  Groupes illimités 🏆"
 
 **Données locales (à implémenter maintenant) :**
 - `bool _showCreateSheet = false`, `bool _showJoinSheet = false`
@@ -2015,7 +2249,7 @@ static final List<StudyGroup> mockStudyGroups = [
 
 ---
 
-#### 📱 S7-3 — StudentReportsScreen
+#### 📱 S7-3  StudentReportsScreen
 
 **Fichier :** `lib/student/student_reports_screen.dart`  
 **Navigation :** Shell Étudiant → Tab "Moi" (ProfileHubTab) → "Mes rapports de progression"
@@ -2043,7 +2277,7 @@ static final List<StudyGroup> mockStudyGroups = [
 - Bouton [📥 Exporter PDF] (visible, action "bientôt disponible" pour Plan Standard+)
 
 **Données locales (à implémenter maintenant) :**
-- `String _period = '7 jours'` — sélecteur
+- `String _period = '7 jours'`  sélecteur
 - Calcul score moyen : moyenne des scores par matière
 - Graphique progression : 7 `Container` dont la hauteur est proportionnelle au score
 - Tri des matières : `entries.sorted((a, b) => b.value.compareTo(a.value))`
@@ -2067,7 +2301,7 @@ static final StudentReport mockStudentReport = StudentReport(
 
 ---
 
-#### 📱 S7-4 — QuizRevisionScreen
+#### 📱 S7-4  QuizRevisionScreen
 
 **Fichier :** `lib/student/quiz_revision_screen.dart`  
 **Navigation :** Shell Étudiant → Tab "Quiz" → Bouton [🔁 Révision] en haut du `QuizHubScreen`
@@ -2096,7 +2330,7 @@ static final StudentReport mockStudentReport = StudentReport(
 **Appels API (mockés) :**
 | Endpoint | Données | Mock |
 |---|---|---|
-| `GET /api/quiz/mistakes` | Questions ratées récentes | Créer `mockQuizMistakes` — en attendant, utiliser `shared_preferences` local |
+| `GET /api/quiz/mistakes` | Questions ratées récentes | Créer `mockQuizMistakes`  en attendant, utiliser `shared_preferences` local |
 
 ```dart
 static final List<QuizMistake> mockQuizMistakes = [
@@ -2117,7 +2351,7 @@ static final List<QuizMistake> mockQuizMistakes = [
 
 ---
 
-### Écrans existants — Référence rapide
+### Écrans existants  Référence rapide
 
 | Écran | Navigation | API connectée |
 |---|---|---|

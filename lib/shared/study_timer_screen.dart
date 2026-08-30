@@ -90,7 +90,7 @@ class _StudyTimerScreenState extends State<StudyTimerScreen> {
         final s = WinTheme.of(ctx);
         return AlertDialog(
           backgroundColor: s.surface,
-          title: Text(_mode == _TimerMode.pomodoro ? 'Pomodoro terminé ! 🎉' : 'Pause terminée !',
+          title: Text(_mode == _TimerMode.pomodoro ? 'Pomodoro terminé !' : 'Pause terminée !',
               style: WinType.archivo(size: 18, color: s.onStrong)),
           content: Text(
             _mode == _TimerMode.pomodoro

@@ -34,7 +34,7 @@ class FavoritesService {
 
   Future<bool> add(int subjectId) async {
     try {
-      await _api.dio.post('/favorites', data: {'subjectId': subjectId});
+      await _api.dio.post('/favorites/$subjectId');
       return true;
     } catch (_) {
       return false;

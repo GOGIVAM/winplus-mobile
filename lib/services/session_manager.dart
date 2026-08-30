@@ -68,10 +68,23 @@ class SessionManager {
     final ms = p.getInt(_keyLastPeriodicCheck);
     if (ms == null) return true;
     final last = DateTime.fromMillisecondsSinceEpoch(ms);
-    return DateTime.now().difference(last).inDays >= 30;
+    return DateTime.now().difference(last).inDays >= 20;
   }
 
   static Future<void> markPeriodicCheckDone() async {
+    final p = await SharedPreferences.getInstance();
+    await p.setInt(_keyLastPeriodicCheck, DateTime.now().millisecondsSinceEpoch);
+  }
+
+  static Future<bool> needsReconfirmation() async {
+    final p = await SharedPreferences.getInstance();
+    final ms = p.getInt(_keyLastPeriodicCheck);
+    if (ms == null) return true;
+    final last = DateTime.fromMillisecondsSinceEpoch(ms);
+    return DateTime.now().difference(last).inDays > 25;
+  }
+
+  static Future<void> setLastConfirmed() async {
     final p = await SharedPreferences.getInstance();
     await p.setInt(_keyLastPeriodicCheck, DateTime.now().millisecondsSinceEpoch);
   }

@@ -56,26 +56,42 @@ class ApiAtRiskStudent {
   final String firstName;
   final String lastName;
   final String? groupName;
-  final double riskScore; // 0-1, higher = more at risk
+  final String level;
+  final double riskScore;
   final String riskReason;
+  final String weakSubject;
+  final int weakScore;
+  final int globalScore;
+  final int inactiveDays;
   const ApiAtRiskStudent({
     required this.id,
     required this.firstName,
     required this.lastName,
     this.groupName,
+    this.level = '',
     required this.riskScore,
     required this.riskReason,
+    this.weakSubject = '',
+    this.weakScore = 0,
+    this.globalScore = 0,
+    this.inactiveDays = 0,
   });
 
   String get fullName => '$firstName $lastName'.trim();
+  bool get isCritical => globalScore < 40 || inactiveDays > 7;
 
   factory ApiAtRiskStudent.fromJson(Map<String, dynamic> j) => ApiAtRiskStudent(
         id: j['id'] as int? ?? 0,
         firstName: j['firstName'] as String? ?? '',
         lastName: j['lastName'] as String? ?? '',
         groupName: j['groupName'] as String?,
+        level: j['level'] as String? ?? '',
         riskScore: ((j['riskScore'] ?? 0) as num).toDouble(),
         riskReason: j['riskReason'] as String? ?? '',
+        weakSubject: j['weakSubject'] as String? ?? '',
+        weakScore: j['weakScore'] as int? ?? 0,
+        globalScore: j['globalScore'] as int? ?? 0,
+        inactiveDays: j['inactiveDays'] as int? ?? 0,
       );
 }
 
@@ -116,7 +132,9 @@ class InstitutionService {
   Future<List<ApiGroup>> getGroups() async {
     final res = await _api.dio.get('/institution/groups');
     final list = res.data as List? ?? [];
-    return list.map((e) => ApiGroup.fromJson(e as Map<String, dynamic>)).toList();
+    return list
+        .map((e) => ApiGroup.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
   Future<bool> createGroup({

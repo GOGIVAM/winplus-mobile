@@ -1,4 +1,4 @@
-# WinPlus — Fonctionnalités web absentes du mobile
+# WinPlus  Fonctionnalités web absentes du mobile
 
 Comparaison exhaustive entre l'application web et l'application Flutter mobile.
 Chaque fonctionnalité présente dans le web est notée selon sa priorité d'intégration mobile.
@@ -25,9 +25,9 @@ Chaque fonctionnalité présente dans le web est notée selon sa priorité d'int
 
 | Fonctionnalité | Priorité | Note |
 |---|---|---|
-| Landing page, About, Contact, FAQ, Help | ⚫ | Pages marketing — le web est la vitrine, l'app démarre sur Welcome screen |
+| Landing page, About, Contact, FAQ, Help | ⚫ | Pages marketing  le web est la vitrine, l'app démarre sur Welcome screen |
 | Pricing page | 🟡 | Afficher les plans dans le profil ou au moment de l'achat, pas de page dédiée |
-| Privacy, Terms, Cookies | 🟡 | Pas d'écran dédié mais des **liens** depuis le profil — obligatoire légalement |
+| Privacy, Terms, Cookies | 🟡 | Pas d'écran dédié mais des **liens** depuis le profil  obligatoire légalement |
 
 ---
 
@@ -39,7 +39,7 @@ Chaque fonctionnalité présente dans le web est notée selon sa priorité d'int
 | Continue Learning (reprendre où l'étudiant s'est arrêté) | `StudentContinue.tsx` | ❌ | 🔴 | Feature UX clé pour la rétention |
 | Recommandations IA concrètes (matières faibles, quiz suggérés) | `StudentRecommendations.tsx` | ❌ WinAI chat seulement | 🔴 | Relier WinAI aux recommandations sur le home |
 | Activité récente (timeline : quiz, téléchargements, sessions) | `StudentActivity.tsx` | ❌ | 🟡 | Permet à l'étudiant de voir son historique d'apprentissage |
-| Achievements / Badges débloqués | `StudentAchievements.tsx` | ❌ | 🟡 | Gamification — excellent pour l'engagement mobile |
+| Achievements / Badges débloqués | `StudentAchievements.tsx` | ❌ | 🟡 | Gamification  excellent pour l'engagement mobile |
 | Compte à rebours examens à venir | `StudentUpcomingExams.tsx` | ❌ | 🟡 | Très pertinent mobile, contexte immédiat |
 | Comparaison avec les pairs (percentile anonymisé) | `PeerComparison.tsx` | ❌ | 🟢 | Nécessite données réelles en volume |
 | Prédiction de note IA | `GradePrediction.tsx` | ❌ | 🟢 | Feature premium, dépend des données d'usage |
@@ -48,12 +48,12 @@ Chaque fonctionnalité présente dans le web est notée selon sa priorité d'int
 | Recherche globale avec page résultats filtrés | `SearchPage.tsx` | ❌ Champ sans page résultats | 🔴 | Au minimum une page résultats basique |
 | Favoris + Collections personnalisées | `Favorites.tsx` | ❌ | 🟡 | Favoris : simple et très attendu. Collections : v2 |
 | Historique téléchargements (re-téléchargement rapide) | `History.tsx` | ❌ | 🟡 | Accès aux fichiers déjà achetés |
-| **Quiz Engine complet** (timer, navigation Q, résultats, revue des réponses) | `QuizHub.tsx` + `QuizActive` + `QuizResult` + `QuizReview` | ❌ WinAI chat uniquement | 🔴 | Feature cœur — le mobile n'a aucun vrai moteur de quiz |
+| **Quiz Engine complet** (timer, navigation Q, résultats, revue des réponses) | `QuizHub.tsx` + `QuizActive` + `QuizResult` + `QuizReview` | ❌ WinAI chat uniquement | 🔴 | Feature cœur  le mobile n'a aucun vrai moteur de quiz |
 | Quiz adaptatif / liste de révision des fautes | `RevisionList.tsx` | ❌ | 🟡 | À intégrer juste après le quiz engine de base |
 | Learning Style Quiz (VARK 12 questions) | `LearningStyleQuiz.tsx` | ❌ | 🟢 | Utile pour personnalisation mais pas urgent v1 |
 | **Exam Coach / Plan de révision IA** (exam, date, heures/j → planning semaine/semaine) | `ExamCoach.tsx` | ❌ | 🔴 | Feature différenciante, à faire après le quiz engine |
 | Study Session (Pomodoro / focus mode) | `StudySession.tsx` | ❌ | 🟢 | Utile mais non critique v1 |
-| **Profil complet** (infos, sécurité, notifications, confidentialité, compte) | `Profile.tsx` — 5 tabs | ❌ Aucun écran profil étudiant | 🟡 | Au minimum : modifier infos, changer mdp, dark mode |
+| **Profil complet** (infos, sécurité, notifications, confidentialité, compte) | `Profile.tsx`  5 tabs | ❌ Aucun écran profil étudiant | 🟡 | Au minimum : modifier infos, changer mdp, dark mode |
 | Page Notifications (groupées par date, marquer comme lu, résumé IA) | `Notifications.tsx` | ❌ Icône cloche sans page | 🟡 | Page basique nécessaire, résumé IA en v2 |
 | **Certificats** (téléchargement PDF, partage, lien de vérification) | `MyCertificates.tsx` | ❌ | 🟡 | Si le backend émet des certificats, l'affichage mobile est indispensable |
 
@@ -66,7 +66,7 @@ Chaque fonctionnalité présente dans le web est notée selon sa priorité d'int
 | Activité récente de l'enfant (timeline) | `ChildActivityTimeline.tsx` | ❌ | 🔴 | Les parents veulent voir concrètement ce que fait leur enfant |
 | WinAI Alerts détaillées (difficulté, streak rompu, progrès) | `WinAIAlerts.tsx` | ❌ Cards basiques | 🔴 | Core value du rôle Parent |
 | Évènements à venir de l'enfant (examens, renouvellements) | `UpcomingEvents.tsx` | ❌ | 🟡 | Calendrier des échéances importantes |
-| **Ajouter un enfant** (formulaire complet) | `AddChildSheet.tsx` | ❌ Bouton sans formulaire | 🔴 | Le bouton existe dans le mobile — il faut juste le formulaire |
+| **Ajouter un enfant** (formulaire complet) | `AddChildSheet.tsx` | ❌ Bouton sans formulaire | 🔴 | Le bouton existe dans le mobile  il faut juste le formulaire |
 | Score d'engagement enfant (indicateur 0-100, tendance hebdo) | `EngagementScore.tsx` | ❌ | 🟡 | Indicateur synthétique très utile pour les parents |
 | Statut abonnement + date de renouvellement | `PaymentsOverview.tsx` | ❌ Historique seulement | 🔴 | Différent de l'historique : c'est le statut actif/expirant |
 | Renouvellement abonnement (modal + NotchPay) | `RenewalSheet.tsx` | ❌ | 🔴 | Indispensable pour la rétention, à intégrer avec NotchPay |
@@ -115,7 +115,7 @@ Chaque fonctionnalité présente dans le web est notée selon sa priorité d'int
 
 ## Récapitulatif des priorités
 
-### 🔴 Haute — v1 (sans ça l'app n'est pas utilisable)
+### 🔴 Haute  v1 (sans ça l'app n'est pas utilisable)
 
 1. Écrans auth manquants : forgot password, reset password, email verification, complete profile onboarding
 2. Fiche détail contenu + flow d'achat (NotchPay)
@@ -132,7 +132,7 @@ Chaque fonctionnalité présente dans le web est notée selon sa priorité d'int
 13. Continue Learning (étudiant)
 14. Recommandations IA sur le home (étudiant)
 
-### 🟡 Moyenne — v1.5 (enrichit significativement l'app)
+### 🟡 Moyenne  v1.5 (enrichit significativement l'app)
 
 15. Achievements / Badges + streak enrichi
 16. Favoris + Historique téléchargements
@@ -146,7 +146,7 @@ Chaque fonctionnalité présente dans le web est notée selon sa priorité d'int
 24. Score d'engagement enfant (parent)
 25. Annuaire étudiants + Rapports PDF (institution)
 
-### 🟢 Plus tard — v2
+### 🟢 Plus tard  v2
 
 - Google OAuth
 - Learning Style Quiz (VARK)

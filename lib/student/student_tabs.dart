@@ -1,3 +1,4 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import '../data/mock_data.dart';
 import '../data/models.dart';
@@ -53,7 +54,8 @@ class _StudentCatalogTabState extends State<StudentCatalogTab> {
       final page = await SubjectService.instance.getAll(pageSize: 50);
       if (mounted) setState(() => _allItems = page.items.map((s) => s.toContent()).toList());
     } catch (_) {
-      if (mounted) setState(() { _allItems = []; _error = true; });
+      // Fallback offline : utiliser le catalogue local
+      if (mounted) setState(() { _allItems = List<Content>.from(WinData.catalog); _error = false; });
     }
   }
 
@@ -243,19 +245,70 @@ class StudentWinAITab extends StatefulWidget {
 
 class _StudentWinAITabState extends State<StudentWinAITab> {
   final _ctrl = TextEditingController();
-  final List<({bool me, String text})> _msgs = [];
+  final List<({bool me, String text, String? attachment})> _msgs = [];
   bool _thinking = false;
 
   Future<void> _send([String? preset]) async {
     final t = (preset ?? _ctrl.text).trim();
     if (t.isEmpty) return;
-    setState(() { _msgs.add((me: true, text: t)); _ctrl.clear(); _thinking = true; });
+    setState(() { _msgs.add((me: true, text: t, attachment: null)); _ctrl.clear(); _thinking = true; });
     final reply = await ChatbotService.instance.sendMessage(message: t);
     if (!mounted) return;
     setState(() {
       _thinking = false;
-      _msgs.add((me: false, text: reply ?? 'Désolé, je n\'ai pas pu répondre. Réessaie.'));
+      _msgs.add((me: false, text: reply ?? 'Désolé, je n\'ai pas pu répondre. Réessaie.', attachment: null));
     });
+  }
+
+  Future<void> _pickFile() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.any,
+      allowMultiple: false,
+    );
+    if (!mounted || result == null || result.files.isEmpty) return;
+    final file = result.files.first;
+    final name = file.name;
+    final isImage = ['jpg','jpeg','png','gif','webp'].contains(name.split('.').last.toLowerCase());
+    setState(() {
+      _msgs.add((me: true, text: 'Fichier joint : $name', attachment: isImage ? 'image' : 'file'));
+      _thinking = true;
+    });
+    final reply = await ChatbotService.instance.sendMessage(
+      message: 'Analyse ce fichier : $name',
+    );
+    if (!mounted) return;
+    setState(() {
+      _thinking = false;
+      _msgs.add((me: false, text: reply ?? 'Fichier reçu ! Je l\'analyse...', attachment: null));
+    });
+  }
+
+  void _showAttachSheet() {
+    final s = WinTheme.of(context);
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (_) => Container(
+        decoration: BoxDecoration(color: s.surface, borderRadius: const BorderRadius.vertical(top: Radius.circular(20))),
+        padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Container(width: 36, height: 4, margin: const EdgeInsets.only(bottom: 20),
+              decoration: BoxDecoration(color: s.outline2, borderRadius: BorderRadius.circular(2))),
+          Text('Joindre un fichier', style: WinType.headlineS(s.onStrong)),
+          const SizedBox(height: 20),
+          _AttachOption(Icons.image_outlined, 'Image / Photo', WinColors.blue500, () { Navigator.pop(context); _pickFile(); }),
+          const SizedBox(height: 12),
+          _AttachOption(Icons.description_outlined, 'Document (PDF, Word…)', WinColors.teal500, () { Navigator.pop(context); _pickFile(); }),
+          const SizedBox(height: 12),
+          _AttachOption(Icons.mic_outlined, 'Message vocal', WinColors.warn, () {
+            Navigator.pop(context);
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Enregistrement vocal disponible prochainement')),
+            );
+          }),
+        ]),
+      ),
+    );
   }
 
   @override
@@ -322,7 +375,19 @@ class _StudentWinAITabState extends State<StudentWinAITab> {
                         border: m.me ? null : Border.all(color: s.cardBorder),
                         borderRadius: BorderRadius.circular(18),
                       ),
-                      child: Text(m.text, style: WinType.bodyM(m.me ? WinColors.cream50 : s.onSurface)),
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
+                        if (m.attachment != null)
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 6),
+                            child: Row(mainAxisSize: MainAxisSize.min, children: [
+                              Icon(m.attachment == 'image' ? Icons.image_outlined : Icons.attach_file,
+                                  size: 14, color: m.me ? WinColors.teal300 : s.primary),
+                              const SizedBox(width: 4),
+                              Text('Pièce jointe', style: WinType.labelS(m.me ? WinColors.teal300 : s.primary)),
+                            ]),
+                          ),
+                        Text(m.text, style: WinType.bodyM(m.me ? WinColors.cream50 : s.onSurface)),
+                      ]),
                     ),
                   );
                 },
@@ -331,7 +396,17 @@ class _StudentWinAITabState extends State<StudentWinAITab> {
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 14),
         child: Row(children: [
-          Expanded(child: WinTextField(icon: Icons.attach_file, hint: 'Pose ta question à WinAI…', controller: _ctrl)),
+          GestureDetector(
+            onTap: _showAttachSheet,
+            child: Container(
+              width: 46, height: 50,
+              decoration: BoxDecoration(color: s.surface2, borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: s.outline)),
+              child: Icon(Icons.attach_file, size: 20, color: s.onMuted),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(child: WinTextField(hint: 'Pose ta question à WinAI…', controller: _ctrl)),
           const SizedBox(width: 8),
           GestureDetector(
             onTap: _send,
@@ -340,6 +415,33 @@ class _StudentWinAITabState extends State<StudentWinAITab> {
         ]),
       ),
     ]);
+  }
+}
+
+class _AttachOption extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+  final VoidCallback onTap;
+  const _AttachOption(this.icon, this.label, this.color, this.onTap);
+  @override
+  Widget build(BuildContext context) {
+    final s = WinTheme.of(context);
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.06),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: color.withValues(alpha: 0.3))),
+        child: Row(children: [
+          Icon(icon, size: 22, color: color),
+          const SizedBox(width: 14),
+          Text(label, style: WinType.bodyM(s.onStrong).copyWith(fontWeight: FontWeight.w600)),
+        ]),
+      ),
+    );
   }
 }
 

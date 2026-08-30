@@ -56,7 +56,8 @@ class ApiNotification {
         body: j['body'] as String? ?? j['message'] as String?,
         type: j['type'] as String? ?? 'info',
         isRead: j['isRead'] as bool? ?? false,
-        createdAt: DateTime.tryParse(j['createdAt'] as String? ?? '') ?? DateTime.now(),
+        createdAt: DateTime.tryParse(j['createdAt'] as String? ?? '') ??
+            DateTime.now(),
       );
 }
 
@@ -75,7 +76,8 @@ class ApiDownloadEntry {
   factory ApiDownloadEntry.fromJson(Map<String, dynamic> j) => ApiDownloadEntry(
         subjectId: j['subjectId'] as int? ?? 0,
         title: j['title'] as String? ?? '',
-        downloadedAt: DateTime.tryParse(j['downloadedAt'] as String? ?? '') ?? DateTime.now(),
+        downloadedAt: DateTime.tryParse(j['downloadedAt'] as String? ?? '') ??
+            DateTime.now(),
         category: j['category'] as String?,
       );
 }
@@ -98,7 +100,7 @@ class UserService {
     String? level,
   }) async {
     try {
-      await _api.dio.put('/users/me', data: {
+      await _api.dio.put('/users/profile', data: {
         if (firstName != null) 'firstName': firstName,
         if (lastName != null) 'lastName': lastName,
         if (phone != null) 'phone': phone,
@@ -112,7 +114,7 @@ class UserService {
 
   Future<bool> changePassword(String current, String next) async {
     try {
-      await _api.dio.put('/users/me/password', data: {
+      await _api.dio.post('/auth/change-password', data: {
         'currentPassword': current,
         'newPassword': next,
       });
@@ -124,7 +126,10 @@ class UserService {
 
   Future<List<ApiNotification>> getNotifications() async {
     final res = await _api.dio.get('/notifications');
-    final list = res.data as List? ?? [];
+    final raw = res.data;
+    final list = raw is List
+        ? raw
+        : (raw as Map<String, dynamic>?)?['data'] as List? ?? [];
     return list
         .map((e) => ApiNotification.fromJson(e as Map<String, dynamic>))
         .toList();
@@ -137,7 +142,7 @@ class UserService {
   }
 
   Future<List<ApiDownloadEntry>> getDownloadHistory() async {
-    final res = await _api.dio.get('/history');
+    final res = await _api.dio.get('/users/me/downloads');
     final list = res.data as List? ?? [];
     return list
         .map((e) => ApiDownloadEntry.fromJson(e as Map<String, dynamic>))

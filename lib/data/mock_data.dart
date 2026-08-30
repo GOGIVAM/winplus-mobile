@@ -55,8 +55,16 @@ class WinData {
         description:
             'Épreuve officielle de Mathématiques du BAC C session 2023. Inclut les 4 exercices et le problème complet avec barème officiel.',
         reviews: [
-          const ContentReview('Sonia K.', 'Très bien structuré, le barème est clair.', 48, 'il y a 3 jours'),
-          const ContentReview('Armand T.', 'Exactement l\'épreuve originale, impeccable.', 47, 'il y a 1 sem.'),
+          const ContentReview(
+              'Sonia K.',
+              'Très bien structuré, le barème est clair.',
+              48,
+              'il y a 3 jours'),
+          const ContentReview(
+              'Armand T.',
+              'Exactement l\'épreuve originale, impeccable.',
+              47,
+              'il y a 1 sem.'),
         ]),
     Content(
         id: 'c2',
@@ -79,8 +87,13 @@ class WinData {
         aiReco:
             'Tu as raté les questions sur les circuits  voici les corrections détaillées.',
         reviews: [
-          const ContentReview('Fadel M.', 'La meilleure correction que j\'ai trouvée en ligne.', 50, 'il y a 5 jours'),
-          const ContentReview('Carole B.', 'Très pédagogique, bravo au prof.', 49, 'il y a 2 sem.'),
+          const ContentReview(
+              'Fadel M.',
+              'La meilleure correction que j\'ai trouvée en ligne.',
+              50,
+              'il y a 5 jours'),
+          const ContentReview('Carole B.', 'Très pédagogique, bravo au prof.',
+              49, 'il y a 2 sem.'),
         ]),
     Content(
         id: 'c3',
@@ -97,7 +110,8 @@ class WinData {
         free: false,
         difficulty: 3,
         teacher: 'Prof. Ateba',
-        description: '30 questions sur la chimie organique niveau Terminale D. Timer 20 min. Résultats et explications instantanés.'),
+        description:
+            '30 questions sur la chimie organique niveau Terminale D. Timer 20 min. Résultats et explications instantanés.'),
     Content(
         id: 'c4',
         title: 'Pack ENSP 2020–2023 (épreuves + corrigés)',
@@ -116,8 +130,13 @@ class WinData {
         description:
             '4 années d\'annales ENSP avec corrections complètes. Mathématiques, Physique, Chimie. Idéal pour une préparation intensive au concours.',
         reviews: [
-          const ContentReview('Rodrigue N.', 'Pack indispensable pour l\'ENSP. Admis cette année !', 50, 'il y a 1 mois'),
-          const ContentReview('Hortense E.', 'Très complet, vaut chaque franc.', 48, 'il y a 2 mois'),
+          const ContentReview(
+              'Rodrigue N.',
+              'Pack indispensable pour l\'ENSP. Admis cette année !',
+              50,
+              'il y a 1 mois'),
+          const ContentReview('Hortense E.', 'Très complet, vaut chaque franc.',
+              48, 'il y a 2 mois'),
         ]),
     Content(
         id: 'c5',
@@ -152,7 +171,8 @@ class WinData {
         free: true,
         difficulty: 2,
         teacher: 'WinPlus Editorial',
-        description: 'Épreuve officielle BEPC Mathématiques 2024 en accès libre.'),
+        description:
+            'Épreuve officielle BEPC Mathématiques 2024 en accès libre.'),
     Content(
         id: 'c7',
         title: 'BEPC  SVT 2024',
@@ -187,7 +207,11 @@ class WinData {
         description:
             'Annales complètes du concours d\'entrée à la FMSB (Faculté de Médecine et des Sciences Biomédicales). SVT, Chimie, Physique.',
         reviews: [
-          const ContentReview('Blanche O.', 'J\'ai réussi le concours FMSB grâce à ce pack !', 50, 'il y a 3 mois'),
+          const ContentReview(
+              'Blanche O.',
+              'J\'ai réussi le concours FMSB grâce à ce pack !',
+              50,
+              'il y a 3 mois'),
         ]),
     Content(
         id: 'c9',
@@ -204,7 +228,8 @@ class WinData {
         free: false,
         difficulty: 3,
         teacher: 'Prof. Essono',
-        description: 'Correction intégrale de l\'épreuve de Maths Probatoire D 2023.'),
+        description:
+            'Correction intégrale de l\'épreuve de Maths Probatoire D 2023.'),
     Content(
         id: 'c10',
         title: 'Quiz Dérivées & Limites  Terminale C',
@@ -220,7 +245,8 @@ class WinData {
         free: true,
         difficulty: 4,
         teacher: 'Prof. Mbarga',
-        description: '20 questions de niveau BAC C sur les dérivées et limites. Accès libre.'),
+        description:
+            '20 questions de niveau BAC C sur les dérivées et limites. Accès libre.'),
     Content(
         id: 'c11',
         title: 'Polytechnique  Physique 2022',
@@ -236,7 +262,8 @@ class WinData {
         free: false,
         difficulty: 5,
         teacher: 'Prof. Nkoulou',
-        description: 'Épreuve de Physique du concours Polytechnique Yaoundé 2022.'),
+        description:
+            'Épreuve de Physique du concours Polytechnique Yaoundé 2022.'),
     Content(
         id: 'c12',
         title: 'Le Français au BAC  Dissertation & Commentaire',
@@ -252,7 +279,8 @@ class WinData {
         free: false,
         difficulty: 2,
         teacher: 'Prof. Ngo Mbe',
-        description: 'Méthodes et exemples corrigés pour la dissertation et le commentaire composé au BAC littéraire.'),
+        description:
+            'Méthodes et exemples corrigés pour la dissertation et le commentaire composé au BAC littéraire.'),
   ];
 
   static Content contentById(String id) =>
@@ -307,7 +335,7 @@ class WinData {
         progress: 80,
         trend: 'up',
         alertType: 'success',
-        alertMsg: 'Léa a obtenu 90% à son dernier quiz Maths — excellent !'),
+        alertMsg: 'Léa a obtenu 90% à son dernier quiz Maths  excellent !'),
   ];
 
   static const subjectScores = <String, int>{
@@ -339,7 +367,7 @@ class WinData {
         'n3',
         'success',
         'Paiement réussi',
-        'Correction BAC C Physique 2022 — 3 000 XAF.',
+        'Correction BAC C Physique 2022  3 000 XAF.',
         'Hier',
         'Cette semaine',
         false),
@@ -363,7 +391,7 @@ class WinData {
         'n6',
         'ai',
         'Plan de révision prêt',
-        'WinAI a généré ton planning BAC C — 3 semaines, 2h/jour.',
+        'WinAI a généré ton planning BAC C  3 semaines, 2h/jour.',
         'il y a 5j',
         'Ce mois',
         false),
@@ -420,7 +448,8 @@ class WinData {
         PricingFeature('5 téléchargements/mois', included: true),
         PricingFeature('3 quiz par jour', included: true),
         PricingFeature('10 messages WinAI', included: true),
-        PricingFeature('Accès catalogue complet', included: false, detail: 'Achat à l\'unité seulement'),
+        PricingFeature('Accès catalogue complet',
+            included: false, detail: 'Achat à l\'unité seulement'),
         PricingFeature('Exam Coach IA', included: false),
         PricingFeature('Téléchargement hors-ligne', included: false),
         PricingFeature('Corrections prioritaires', included: false),
@@ -502,7 +531,8 @@ class WinData {
   // ---- CONTINUE LEARNING ----
 
   static const inProgress = <InProgressContent>[
-    InProgressContent('c2', 'Correction BAC C Physique 2022', 'pc', 62, 'il y a 2h'),
+    InProgressContent(
+        'c2', 'Correction BAC C Physique 2022', 'pc', 62, 'il y a 2h'),
     InProgressContent('c4', 'Pack ENSP 2020–2023', 'math', 38, 'hier'),
     InProgressContent('c5', 'Méthodes & Dérivées', 'math', 85, 'il y a 3j'),
   ];
@@ -510,31 +540,31 @@ class WinData {
   // ---- RECOMMANDATIONS IA ----
 
   static const aiRecommendations = <AiRecommendation>[
-    AiRecommendation(
-        RecoType.weakSubject,
-        'Renforce ta Physique',
-        'Ton score moyen en Physique est de 48% — bien en dessous de la moyenne. WinAI a sélectionné 3 ressources ciblées.',
+    AiRecommendation(RecoType.weakSubject, 'Renforce ta Physique',
+        'Ton score moyen en Physique est de 48%  bien en dessous de la moyenne. WinAI a sélectionné 3 ressources ciblées.',
         contentId: 'c2'),
-    AiRecommendation(
-        RecoType.suggestedQuiz,
-        'Quiz du jour : Dérivées',
+    AiRecommendation(RecoType.suggestedQuiz, 'Quiz du jour : Dérivées',
         'Tu n\'as pas pratiqué les dérivées depuis 4 jours. 5 min suffisent pour consolider.',
         contentId: 'c10'),
-    AiRecommendation(
-        RecoType.examPlan,
-        'Plan BAC C : 3 semaines',
+    AiRecommendation(RecoType.examPlan, 'Plan BAC C : 3 semaines',
         'Le BAC C est dans 21 jours. WinAI a préparé un planning jour par jour basé sur tes lacunes.'),
   ];
 
   // ---- ACTIVITÉ RÉCENTE ----
 
   static const activityFeed = <ActivityEvent>[
-    ActivityEvent(ActivityType.quiz, 'Quiz Dérivées & Limites', '4/5 — 80%', 'Aujourd\'hui 09:14'),
-    ActivityEvent(ActivityType.download, 'Correction BAC C Physique 2022', 'Téléchargé', 'Hier 18:40'),
-    ActivityEvent(ActivityType.badge, 'Badge débloqué : 7 jours de feu', '+50 XP', 'Hier 08:00'),
-    ActivityEvent(ActivityType.purchase, 'Méthodes & Dérivées', '2 500 XAF', 'il y a 3j'),
-    ActivityEvent(ActivityType.quiz, 'Quiz Chimie organique', '6/10 — 60%', 'il y a 4j'),
-    ActivityEvent(ActivityType.session, 'Session d\'étude', '1h 30 — Physique', 'il y a 5j'),
+    ActivityEvent(ActivityType.quiz, 'Quiz Dérivées & Limites', '4/5  80%',
+        'Aujourd\'hui 09:14'),
+    ActivityEvent(ActivityType.download, 'Correction BAC C Physique 2022',
+        'Téléchargé', 'Hier 18:40'),
+    ActivityEvent(ActivityType.badge, 'Badge débloqué : 7 jours de feu',
+        '+50 XP', 'Hier 08:00'),
+    ActivityEvent(
+        ActivityType.purchase, 'Méthodes & Dérivées', '2 500 XAF', 'il y a 3j'),
+    ActivityEvent(
+        ActivityType.quiz, 'Quiz Chimie organique', '6/10  60%', 'il y a 4j'),
+    ActivityEvent(ActivityType.session, 'Session d\'étude', '1h 30  Physique',
+        'il y a 5j'),
   ];
 
   // ---- PLANNING HEBDOMADAIRE ----
@@ -554,9 +584,16 @@ class WinData {
     '18 juin 2026',
     2,
     [
-      StudyWeekPlan('Semaine 1', ['Dérivées', 'Intégrales', 'Quiz de positionnement'], done: true),
-      StudyWeekPlan('Semaine 2', ['Physique : circuits électriques', 'Mécanique du point', 'Quiz mi-parcours']),
-      StudyWeekPlan('Semaine 3', ['Révision générale', 'Annales 2021–2023', 'Simulation BAC C']),
+      StudyWeekPlan(
+          'Semaine 1', ['Dérivées', 'Intégrales', 'Quiz de positionnement'],
+          done: true),
+      StudyWeekPlan('Semaine 2', [
+        'Physique : circuits électriques',
+        'Mécanique du point',
+        'Quiz mi-parcours'
+      ]),
+      StudyWeekPlan('Semaine 3',
+          ['Révision générale', 'Annales 2021–2023', 'Simulation BAC C']),
     ],
   );
 
@@ -618,8 +655,8 @@ class WinData {
   static const submissions = <Submission>[
     Submission('s1', 'Sonia Kombe', 'Devoir Intégrales  Terminale C',
         'il y a 30 min', false),
-    Submission('s2', 'Armand Talla', 'Devoir Vecteurs  1ère C', 'il y a 2h',
-        false),
+    Submission(
+        's2', 'Armand Talla', 'Devoir Vecteurs  1ère C', 'il y a 2h', false),
     Submission('s3', 'Fadel Moussa', 'Devoir Chimie organique', 'hier', true,
         score: 14),
     Submission('s4', 'Carole Biya', 'Exercice Mécanique', 'il y a 3j', true,
@@ -649,7 +686,8 @@ class WinData {
   // ---- PARENT : évènements enfants ----
   static const childEvents = <ChildEvent>[
     ChildEvent('Ahmed', 'BAC C  Mathématiques', '18 juin 2026', 'exam'),
-    ChildEvent('Ahmed', 'Renouvellement abonnement', '15 sept. 2026', 'renewal'),
+    ChildEvent(
+        'Ahmed', 'Renouvellement abonnement', '15 sept. 2026', 'renewal'),
     ChildEvent('Léa', 'BEPC  Mathématiques', '14 mai 2026', 'exam'),
   ];
 
@@ -684,13 +722,27 @@ class WinData {
   // ---- 4.10 GET /api/parent/children ----
 
   static final trackedChildren = <TrackedChild>[
-    TrackedChild(id: 'k-001', name: 'Ahmed Nkono', level: 'Tle C',
-        avgScore: 78, trend: Trend.up, lastActiveAt: DateTime.now()),
-    TrackedChild(id: 'k-002', name: 'Brenda Nkono', level: '2nde',
-        avgScore: 62, trend: Trend.down,
+    TrackedChild(
+        id: 'k-001',
+        name: 'Ahmed Nkono',
+        level: 'Tle C',
+        avgScore: 78,
+        trend: Trend.up,
+        lastActiveAt: DateTime.now()),
+    TrackedChild(
+        id: 'k-002',
+        name: 'Brenda Nkono',
+        level: '2nde',
+        avgScore: 62,
+        trend: Trend.down,
         lastActiveAt: DateTime.now().subtract(const Duration(days: 1))),
-    TrackedChild(id: 'k-003', name: 'Kevin Nkono', level: 'BEPC',
-        avgScore: 85, trend: Trend.up, lastActiveAt: DateTime.now()),
+    TrackedChild(
+        id: 'k-003',
+        name: 'Kevin Nkono',
+        level: 'BEPC',
+        avgScore: 85,
+        trend: Trend.up,
+        lastActiveAt: DateTime.now()),
   ];
 
   // ---- 4.11 GET /api/parent/child/{id}/activity ----
@@ -705,10 +757,12 @@ class WinData {
   // ---- 4.12 GET /api/parent/upcoming-events ----
 
   static final upcomingEvents = <UpcomingEvent>[
-    UpcomingEvent(type: 'renewal', label: 'Renouvellement abonnement',
+    UpcomingEvent(
+        type: 'renewal',
+        label: 'Renouvellement abonnement',
         date: DateTime.now().add(const Duration(days: 7))),
-    UpcomingEvent(type: 'exam', label: 'BAC C · Ahmed',
-        date: DateTime(2026, 10, 8)),
+    UpcomingEvent(
+        type: 'exam', label: 'BAC C · Ahmed', date: DateTime(2026, 10, 8)),
   ];
 
   // ---- 4.14 GET /api/teacher/stats ----
@@ -725,9 +779,14 @@ class WinData {
   // ---- 4.15 GET /api/teacher/insights ----
 
   static const teacherInsights = <TeacherInsight>[
-    TeacherInsight(icon: Icons.local_fire_department, text: 'Pack ENSP 2019-2023 — meilleur vendeur ce mois'),
-    TeacherInsight(icon: Icons.people, text: 'Terminale C représente 68% de votre audience'),
-    TeacherInsight(icon: Icons.trending_up, text: '+12% de téléchargements cette semaine'),
+    TeacherInsight(
+        icon: Icons.local_fire_department,
+        text: 'Pack ENSP 2019-2023  meilleur vendeur ce mois'),
+    TeacherInsight(
+        icon: Icons.people,
+        text: 'Terminale C représente 68% de votre audience'),
+    TeacherInsight(
+        icon: Icons.trending_up, text: '+12% de téléchargements cette semaine'),
   ];
 
   // ---- 4.16 GET /api/institution/stats ----
@@ -754,33 +813,153 @@ class WinData {
   // ---- 4.18 GET /api/institution/students ----
 
   static const mockStudents = <MockStudent>[
-    MockStudent(id: 's-001', name: 'Ahmed Nkono', level: 'Tle C', group: 'Classe A', score: 78, active: true),
-    MockStudent(id: 's-002', name: 'Brenda Mballa', level: 'Tle C', group: 'Classe A', score: 86, active: true),
-    MockStudent(id: 's-003', name: 'Yann Talla', level: '1ère D', group: 'Classe B', score: 54, active: false),
-    MockStudent(id: 's-004', name: 'Aïcha Bello', level: 'Concours', group: 'Classe C', score: 91, active: true),
-    MockStudent(id: 's-005', name: 'Steve Ngono', level: 'Tle A', group: 'Classe B', score: 63, active: true),
-    MockStudent(id: 's-006', name: 'Marie Essono', level: 'Tle C', group: 'Classe A', score: 74, active: true),
-    MockStudent(id: 's-007', name: 'Paul Nkoulou', level: 'Tle D', group: 'Classe B', score: 45, active: false),
-    MockStudent(id: 's-008', name: 'Fatima Moussa', level: '1ère C', group: 'Classe C', score: 82, active: true),
-    MockStudent(id: 's-009', name: 'Rodrigue Ateba', level: 'Concours', group: 'Classe C', score: 88, active: true),
-    MockStudent(id: 's-010', name: 'Carole Biya', level: 'Tle A', group: 'Classe A', score: 67, active: true),
-    MockStudent(id: 's-011', name: 'Hortense Ekwalla', level: 'Tle C', group: 'Classe B', score: 71, active: true),
-    MockStudent(id: 's-012', name: 'Jean-Pierre Meka', level: 'Tle D', group: 'Classe C', score: 38, active: false),
-    MockStudent(id: 's-013', name: 'Sylvie Ngo Mbe', level: '1ère C', group: 'Classe A', score: 79, active: true),
-    MockStudent(id: 's-014', name: 'Boris Tchami', level: 'Tle C', group: 'Classe B', score: 55, active: true),
-    MockStudent(id: 's-015', name: 'Blanche Abanda', level: 'Concours', group: 'Classe C', score: 93, active: true),
-    MockStudent(id: 's-016', name: 'Kevin Nguyen', level: '3ème', group: 'BEPC', score: 60, active: true),
-    MockStudent(id: 's-017', name: 'Solange Kombe', level: 'Tle D', group: 'Classe B', score: 47, active: false),
-    MockStudent(id: 's-018', name: 'Armand Mbarga', level: 'Tle C', group: 'Classe A', score: 85, active: true),
-    MockStudent(id: 's-019', name: 'Martine Fopa', level: '1ère D', group: 'Classe B', score: 72, active: true),
-    MockStudent(id: 's-020', name: 'Thierry Bessala', level: 'Concours', group: 'Classe C', score: 76, active: true),
+    MockStudent(
+        id: 's-001',
+        name: 'Ahmed Nkono',
+        level: 'Tle C',
+        group: 'Classe A',
+        score: 78,
+        active: true),
+    MockStudent(
+        id: 's-002',
+        name: 'Brenda Mballa',
+        level: 'Tle C',
+        group: 'Classe A',
+        score: 86,
+        active: true),
+    MockStudent(
+        id: 's-003',
+        name: 'Yann Talla',
+        level: '1ère D',
+        group: 'Classe B',
+        score: 54,
+        active: false),
+    MockStudent(
+        id: 's-004',
+        name: 'Aïcha Bello',
+        level: 'Concours',
+        group: 'Classe C',
+        score: 91,
+        active: true),
+    MockStudent(
+        id: 's-005',
+        name: 'Steve Ngono',
+        level: 'Tle A',
+        group: 'Classe B',
+        score: 63,
+        active: true),
+    MockStudent(
+        id: 's-006',
+        name: 'Marie Essono',
+        level: 'Tle C',
+        group: 'Classe A',
+        score: 74,
+        active: true),
+    MockStudent(
+        id: 's-007',
+        name: 'Paul Nkoulou',
+        level: 'Tle D',
+        group: 'Classe B',
+        score: 45,
+        active: false),
+    MockStudent(
+        id: 's-008',
+        name: 'Fatima Moussa',
+        level: '1ère C',
+        group: 'Classe C',
+        score: 82,
+        active: true),
+    MockStudent(
+        id: 's-009',
+        name: 'Rodrigue Ateba',
+        level: 'Concours',
+        group: 'Classe C',
+        score: 88,
+        active: true),
+    MockStudent(
+        id: 's-010',
+        name: 'Carole Biya',
+        level: 'Tle A',
+        group: 'Classe A',
+        score: 67,
+        active: true),
+    MockStudent(
+        id: 's-011',
+        name: 'Hortense Ekwalla',
+        level: 'Tle C',
+        group: 'Classe B',
+        score: 71,
+        active: true),
+    MockStudent(
+        id: 's-012',
+        name: 'Jean-Pierre Meka',
+        level: 'Tle D',
+        group: 'Classe C',
+        score: 38,
+        active: false),
+    MockStudent(
+        id: 's-013',
+        name: 'Sylvie Ngo Mbe',
+        level: '1ère C',
+        group: 'Classe A',
+        score: 79,
+        active: true),
+    MockStudent(
+        id: 's-014',
+        name: 'Boris Tchami',
+        level: 'Tle C',
+        group: 'Classe B',
+        score: 55,
+        active: true),
+    MockStudent(
+        id: 's-015',
+        name: 'Blanche Abanda',
+        level: 'Concours',
+        group: 'Classe C',
+        score: 93,
+        active: true),
+    MockStudent(
+        id: 's-016',
+        name: 'Kevin Nguyen',
+        level: '3ème',
+        group: 'BEPC',
+        score: 60,
+        active: true),
+    MockStudent(
+        id: 's-017',
+        name: 'Solange Kombe',
+        level: 'Tle D',
+        group: 'Classe B',
+        score: 47,
+        active: false),
+    MockStudent(
+        id: 's-018',
+        name: 'Armand Mbarga',
+        level: 'Tle C',
+        group: 'Classe A',
+        score: 85,
+        active: true),
+    MockStudent(
+        id: 's-019',
+        name: 'Martine Fopa',
+        level: '1ère D',
+        group: 'Classe B',
+        score: 72,
+        active: true),
+    MockStudent(
+        id: 's-020',
+        name: 'Thierry Bessala',
+        level: 'Concours',
+        group: 'Classe C',
+        score: 76,
+        active: true),
   ];
 
   // ---- CERTIFICATS ----
   static const certificates = <Certificate>[
-    Certificate('cert1', 'Maîtrise des Dérivées  Niveau BAC C',
-        '14 jan. 2026', 'https://winplus.cm/verify/cert1', 92),
-    Certificate('cert2', 'Quiz Physique — Expert',
-        '2 mars 2026', 'https://winplus.cm/verify/cert2', 88),
+    Certificate('cert1', 'Maîtrise des Dérivées  Niveau BAC C', '14 jan. 2026',
+        'https://winplus.cm/verify/cert1', 92),
+    Certificate('cert2', 'Quiz Physique  Expert', '2 mars 2026',
+        'https://winplus.cm/verify/cert2', 88),
   ];
 }

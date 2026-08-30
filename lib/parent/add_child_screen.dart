@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../app_config.dart';
 import '../services/parent_service.dart';
 import '../shared/subscription/subscription_notifier.dart';
 import '../theme/win_colors.dart';
@@ -14,64 +13,39 @@ class AddChildScreen extends StatefulWidget {
 }
 
 class _AddChildScreenState extends State<AddChildScreen> {
-  final _nameCtrl = TextEditingController();
-  String? _level, _filiere, _objectif, _genre;
-  bool _success = false, _error = false;
-
-  static const _levels = ['BEPC', 'Probatoire', 'BAC', 'BTS', 'Licence', 'Concours'];
-  static const _filieres = ['Scientifique', 'Littéraire', 'Technique', 'Économique'];
-  static const _objectifs = ['BAC A', 'BAC C', 'BAC D', 'BEPC', 'ENSP', 'Polytechnique', 'Autre'];
-  static const _genres = ['Garçon', 'Fille', 'Non précisé'];
+  final _emailCtrl = TextEditingController();
+  bool _loading = false, _success = false, _error = false;
+  String? _errorMsg;
 
   Future<void> _submit() async {
-    if (_nameCtrl.text.trim().isEmpty) {
-      setState(() => _error = true);
+    final email = _emailCtrl.text.trim();
+    if (email.isEmpty || !email.contains('@')) {
+      setState(() { _error = true; _errorMsg = 'Veuillez saisir un email valide.'; });
       return;
     }
-    setState(() => _error = false);
-    final parts = _nameCtrl.text.trim().split(' ');
-    final ok = await ParentService.instance.addChild(
-      firstName: parts.first,
-      lastName: parts.length > 1 ? parts.skip(1).join(' ') : '',
-      level: _level ?? '',
-      schoolName: null,
-    );
+    setState(() { _loading = true; _error = false; });
+    final ok = await ParentService.instance.addChild(email: email);
     if (!mounted) return;
+    setState(() => _loading = false);
     if (ok) {
       setState(() => _success = true);
       Future.delayed(const Duration(milliseconds: 1800),
-          () { if (mounted) Navigator.pop(context); });
+          () { if (mounted) Navigator.pop(context, true); });
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Erreur lors de l\'ajout.')));
+      setState(() { _error = true; _errorMsg = 'Aucun élève trouvé avec cet email, ou déjà lié.'; });
     }
   }
 
-  Widget _chips(List<String> items, String? selected, ValueChanged<String> onTap) {
-    final s = WinTheme.of(context);
-    return Wrap(spacing: 8, runSpacing: 8, children: items.map((item) {
-      final active = selected == item;
-      return GestureDetector(
-        onTap: () => setState(() => onTap(item)),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-          decoration: BoxDecoration(
-            color: active ? WinColors.ink800 : s.surface,
-            borderRadius: BorderRadius.zero,
-            border: Border.all(color: active ? WinColors.ink800 : s.outline, width: 1.5),
-          ),
-          child: Text(item, style: WinType.manrope(
-              size: 13, weight: FontWeight.w600,
-              color: active ? WinColors.cream50 : s.onSurface)),
-        ),
-      );
-    }).toList());
+  @override
+  void dispose() {
+    _emailCtrl.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    final isFree = !AppConfig.devMode && SubscriptionScope.of(context).isFree;
+    final isFree = SubscriptionScope.of(context).isFree;
 
     return Scaffold(
       backgroundColor: s.bg,
@@ -95,40 +69,32 @@ class _AddChildScreenState extends State<AddChildScreen> {
               ),
             ),
           if (_success)
-            WinAlert('${_nameCtrl.text.trim()} a été ajouté à votre compte.',
-                type: BadgeColor.success)
+            const WinAlert('Enfant ajouté à votre compte avec succès.', type: BadgeColor.success)
           else ...[
+            Text(
+              'Entrez l\'adresse email du compte WinPlus de votre enfant pour le lier à votre espace parent.',
+              style: WinType.bodyM(s.onSurface),
+            ),
+            const SizedBox(height: 24),
             WinTextField(
-              label: 'Prénom de l\'enfant *',
-              hint: 'Ahmed, Léa…',
-              icon: Icons.person_outline,
-              controller: _nameCtrl,
+              label: 'Email de l\'enfant *',
+              hint: 'ahmed@example.com',
+              icon: Icons.email_outlined,
+              controller: _emailCtrl,
               onChanged: (_) => setState(() => _error = false),
             ),
-            if (_error)
+            if (_error && _errorMsg != null)
               Padding(
-                padding: const EdgeInsets.only(top: 6),
-                child: Text('Le prénom est requis.',
-                    style: WinType.labelM(WinColors.error)),
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(_errorMsg!, style: WinType.labelM(WinColors.error)),
               ),
-            const SizedBox(height: 20),
-            Text('Niveau scolaire', style: WinType.titleM(s.onStrong)),
-            const SizedBox(height: 8),
-            _chips(_levels, _level, (v) { _level = v; }),
-            const SizedBox(height: 20),
-            Text('Filière', style: WinType.titleM(s.onStrong)),
-            const SizedBox(height: 8),
-            _chips(_filieres, _filiere, (v) { _filiere = v; }),
-            const SizedBox(height: 20),
-            Text('Objectif', style: WinType.titleM(s.onStrong)),
-            const SizedBox(height: 8),
-            _chips(_objectifs, _objectif, (v) { _objectif = v; }),
-            const SizedBox(height: 20),
-            Text('Genre', style: WinType.titleM(s.onStrong)),
-            const SizedBox(height: 8),
-            _chips(_genres, _genre, (v) { _genre = v; }),
             const SizedBox(height: 32),
-            WinButton('Ajouter l\'enfant', block: true, onTap: _submit),
+            WinButton(
+              'Lier l\'enfant',
+              block: true,
+              loading: _loading,
+              onTap: _loading ? null : _submit,
+            ),
           ],
         ]),
       ),

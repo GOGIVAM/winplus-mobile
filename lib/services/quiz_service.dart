@@ -17,11 +17,12 @@ class ApiQuizQuestion {
 
   factory ApiQuizQuestion.fromJson(Map<String, dynamic> j) {
     final opts = (j['options'] as List? ?? []).cast<String>();
-    final correct = j['correctAnswerIndex'] as int? ??
-        j['correctAnswer'] as int? ?? 0;
+    final correct =
+        j['correctAnswerIndex'] as int? ?? j['correctAnswer'] as int? ?? 0;
     return ApiQuizQuestion(
       id: j['id'] as int? ?? 0,
-      questionText: j['questionText'] as String? ?? j['question'] as String? ?? '',
+      questionText:
+          j['questionText'] as String? ?? j['question'] as String? ?? '',
       options: opts,
       correctAnswerIndex: correct,
       explanation: j['explanation'] as String?,
@@ -94,8 +95,8 @@ class QuizService {
   final _api = ApiClient.instance;
 
   Future<List<ApiQuiz>> getAll({int page = 1, int pageSize = 20}) async {
-    final res = await _api.dio.get('/quizzes',
-        queryParameters: {'page': page, 'pageSize': pageSize});
+    final res = await _api.dio
+        .get('/quizzes', queryParameters: {'page': page, 'pageSize': pageSize});
     final list = res.data as List? ?? [];
     return list
         .map((e) => ApiQuiz.fromJson(e as Map<String, dynamic>))
@@ -112,7 +113,7 @@ class QuizService {
     required List<int?> answers,
     required int durationSeconds,
   }) async {
-    final res = await _api.dio.post('/quizzes/$quizId/attempt', data: {
+    final res = await _api.dio.post('/quizzes/$quizId/submit', data: {
       'answers': answers,
       'durationSeconds': durationSeconds,
     });

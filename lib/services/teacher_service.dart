@@ -56,6 +56,41 @@ class ApiSubmission {
       );
 }
 
+class ApiTeacherStats {
+  final int thisMonthRevenue;
+  final List<int> weeklyRevenue;
+  final int activeStudents;
+  const ApiTeacherStats({
+    required this.thisMonthRevenue,
+    required this.weeklyRevenue,
+    required this.activeStudents,
+  });
+}
+
+class ApiTeacherClass {
+  final String id, name;
+  final int studentCount, avgScore;
+  const ApiTeacherClass({
+    required this.id,
+    required this.name,
+    required this.studentCount,
+    required this.avgScore,
+  });
+}
+
+class ApiTeacherStudent {
+  final String id, name, level;
+  final int avgScore;
+  final bool trendUp;
+  const ApiTeacherStudent({
+    required this.id,
+    required this.name,
+    required this.level,
+    required this.avgScore,
+    required this.trendUp,
+  });
+}
+
 class TeacherService {
   TeacherService._();
   static final TeacherService instance = TeacherService._();
@@ -63,7 +98,7 @@ class TeacherService {
   final _api = ApiClient.instance;
 
   Future<List<ApiPublishedContent>> getMyContent() async {
-    final res = await _api.dio.get('/teacher/content');
+    final res = await _api.dio.get('/teacher/contents/mine');
     final list = res.data as List? ?? [];
     return list
         .map((e) => ApiPublishedContent.fromJson(e as Map<String, dynamic>))
@@ -75,19 +110,17 @@ class TeacherService {
     required String type,
     required String subjectCategory,
     required String level,
-    required String exam,
-    required double price,
-    required bool isFree,
+    required int price,
+    String? description,
   }) async {
     try {
-      await _api.dio.post('/teacher/content', data: {
+      await _api.dio.post('/teacher/contents', data: {
         'title': title,
         'category': type,
         'subjectCategory': subjectCategory,
         'level': level,
-        'exam': exam,
         'price': price,
-        'isFree': isFree,
+        if (description != null) 'description': description,
       });
       return true;
     } catch (_) {
@@ -96,40 +129,19 @@ class TeacherService {
   }
 
   Future<List<ApiSubmission>> getSubmissions() async {
-    final res = await _api.dio.get('/teacher/submissions');
-    final list = res.data as List? ?? [];
+    final res = await _api.dio.get('/teacher/corrections/pending');
+    final raw = res.data;
+    final list = raw is List ? raw : (raw as Map<String, dynamic>?)?['items'] as List? ?? [];
     return list
         .map((e) => ApiSubmission.fromJson(e as Map<String, dynamic>))
         .toList();
   }
 
-  Future<bool> correctSubmission(int id, int score, String feedback) async {
+  Future<bool> correctSubmission(int submissionId, int score) async {
     try {
-      await _api.dio.put('/teacher/submissions/$id', data: {
+      await _api.dio.put('/teacher/corrections/pending', data: {
+        'id': submissionId,
         'score': score,
-        'feedback': feedback,
-        'corrected': true,
-      });
-      return true;
-    } catch (_) {
-      return false;
-    }
-  }
-
-  Future<bool> createSession({
-    required String title,
-    required String date,
-    required String link,
-    required int durationMinutes,
-    required int maxStudents,
-  }) async {
-    try {
-      await _api.dio.post('/teacher/sessions', data: {
-        'title': title,
-        'scheduledAt': date,
-        'meetingLink': link,
-        'durationMinutes': durationMinutes,
-        'maxParticipants': maxStudents,
       });
       return true;
     } catch (_) {
@@ -138,13 +150,17 @@ class TeacherService {
   }
 
   Future<Map<String, dynamic>> getRevenueSummary() async {
-    final res = await _api.dio.get('/teacher/revenue');
-    return res.data as Map<String, dynamic>? ?? {};
+    try {
+      final res = await _api.dio.get('/teacher/revenues');
+      return res.data as Map<String, dynamic>? ?? {};
+    } catch (_) {
+      return {};
+    }
   }
 
   Future<List<Map<String, dynamic>>> getContentRevenue() async {
     try {
-      final res = await _api.dio.get('/teacher/revenue/by-content');
+      final res = await _api.dio.get('/teacher/revenue-share');
       return (res.data as List? ?? []).cast<Map<String, dynamic>>();
     } catch (_) {
       return [];
@@ -153,10 +169,49 @@ class TeacherService {
 
   Future<bool> deleteContent(int contentId) async {
     try {
-      await _api.dio.delete('/teacher/content/$contentId');
+      await _api.dio.delete('/teacher/contents/$contentId');
       return true;
     } catch (_) {
       return false;
     }
+  }
+
+  Future<ApiTeacherStats> getStats() async {
+    final res = await _api.dio.get('/teacher/stats');
+    final j = res.data as Map<String, dynamic>;
+    return ApiTeacherStats(
+      thisMonthRevenue: (j['thisMonthRevenue'] as num?)?.toInt() ?? 0,
+      weeklyRevenue: (j['weeklyRevenue'] as List?)?.cast<int>() ?? [0, 0, 0, 0],
+      activeStudents: j['activeStudents'] as int? ?? 0,
+    );
+  }
+
+  Future<List<ApiTeacherClass>> getClasses() async {
+    final res = await _api.dio.get('/teacher/classes');
+    final list = res.data as List? ?? [];
+    return list.map((e) {
+      final j = e as Map<String, dynamic>;
+      return ApiTeacherClass(
+        id: j['id'] as String? ?? '',
+        name: j['name'] as String? ?? '',
+        studentCount: j['studentCount'] as int? ?? 0,
+        avgScore: j['avgScore'] as int? ?? 0,
+      );
+    }).toList();
+  }
+
+  Future<List<ApiTeacherStudent>> getStudents() async {
+    final res = await _api.dio.get('/teacher/students/recent');
+    final list = res.data as List? ?? [];
+    return list.map((e) {
+      final j = e as Map<String, dynamic>;
+      return ApiTeacherStudent(
+        id: (j['id'] ?? '').toString(),
+        name: j['name'] as String? ?? '',
+        level: j['level'] as String? ?? '',
+        avgScore: j['avgScore'] as int? ?? 0,
+        trendUp: j['trendUp'] as bool? ?? true,
+      );
+    }).toList();
   }
 }

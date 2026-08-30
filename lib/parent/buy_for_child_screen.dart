@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../data/mock_data.dart';
 import '../data/models.dart';
 import '../services/parent_service.dart';
+import '../shared/shop/guest_order_screen.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
@@ -19,10 +20,18 @@ class _BuyForChildScreenState extends State<BuyForChildScreen> {
 
   ApiChild get _selected => widget.children[_selectedChildIndex];
 
+  List<Content> get _catalog {
+    final all = WinData.catalog;
+    final level = _selected.level;
+    if (level == null || level.isEmpty) return all.take(6).toList();
+    final filtered = all.where((c) => c.level == level).toList();
+    if (filtered.length < 3) return all.take(6).toList();
+    return filtered.take(6).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    final catalog = WinData.catalog.take(6).toList();
 
     return Scaffold(
       backgroundColor: s.bg,
@@ -33,12 +42,13 @@ class _BuyForChildScreenState extends State<BuyForChildScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Acheter du contenu', style: WinType.headlineS(s.onStrong)),
+        title: Text('Acheter pour…', style: WinType.headlineS(s.onStrong)),
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
         children: [
-          Text('Pour quel enfant ?', style: WinType.archivo(size: 18, color: s.onStrong)),
+          Text('Pour quel enfant ?',
+              style: WinType.archivo(size: 18, color: s.onStrong)),
           const SizedBox(height: 12),
           SizedBox(
             height: 44,
@@ -49,17 +59,21 @@ class _BuyForChildScreenState extends State<BuyForChildScreen> {
               itemBuilder: (ctx, i) {
                 final kid = widget.children[i];
                 final sel = i == _selectedChildIndex;
+                final levelLabel = kid.level != null && kid.level!.isNotEmpty
+                    ? kid.level!
+                    : 'Élève';
                 return GestureDetector(
                   onTap: () => setState(() => _selectedChildIndex = i),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 10),
                     decoration: BoxDecoration(
                       color: sel ? s.primary : s.surface2,
                       borderRadius: BorderRadius.circular(22),
                       border: Border.all(color: sel ? s.primary : s.outline),
                     ),
                     child: Text(
-                      kid.firstName,
+                      '${kid.firstName} ($levelLabel)',
                       style: WinType.manrope(
                         size: 13,
                         weight: FontWeight.w600,
@@ -72,7 +86,10 @@ class _BuyForChildScreenState extends State<BuyForChildScreen> {
             ),
           ),
           const SizedBox(height: 24),
-          Text('Catalogue', style: WinType.archivo(size: 18, color: s.onStrong)),
+          Text(
+            'Contenu recommandé pour ${_selected.firstName}${_selected.level != null ? '  ${_selected.level}' : ''}',
+            style: WinType.archivo(size: 18, color: s.onStrong),
+          ),
           const SizedBox(height: 12),
           GridView.count(
             shrinkWrap: true,
@@ -81,15 +98,17 @@ class _BuyForChildScreenState extends State<BuyForChildScreen> {
             mainAxisSpacing: 12,
             crossAxisSpacing: 12,
             childAspectRatio: 0.62,
-            children: catalog.map((c) => _CatalogCard(
-              content: c,
-              childName: _selected.firstName,
-              onBuy: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Achat initié pour ${_selected.firstName} — ${c.title}')),
-                );
-              },
-            )).toList(),
+            children: _catalog
+                .map((c) => _CatalogCard(
+                      content: c,
+                      childName: _selected.firstName,
+                      onBuy: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => GuestOrderScreen(content: c)),
+                      ),
+                    ))
+                .toList(),
           ),
         ],
       ),
@@ -101,7 +120,8 @@ class _CatalogCard extends StatelessWidget {
   final Content content;
   final String childName;
   final VoidCallback onBuy;
-  const _CatalogCard({required this.content, required this.childName, required this.onBuy});
+  const _CatalogCard(
+      {required this.content, required this.childName, required this.onBuy});
 
   @override
   Widget build(BuildContext context) {
@@ -116,7 +136,8 @@ class _CatalogCard extends StatelessWidget {
             height: 80,
             decoration: BoxDecoration(
               color: subj.color.withValues(alpha: 0.12),
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(16)),
             ),
             child: Center(child: Icon(subj.icon, size: 34, color: subj.color)),
           ),

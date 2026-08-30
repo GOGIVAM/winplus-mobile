@@ -1,9 +1,12 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import '../services/session_manager.dart';
+import '../shell/role_shell.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import 'complete_profile_screen.dart';
 
 class EmailVerifiedScreen extends StatefulWidget {
   const EmailVerifiedScreen({super.key});
@@ -102,7 +105,7 @@ class _EmailVerifiedScreenState extends State<EmailVerifiedScreen>
                       textAlign: TextAlign.center),
                   const SizedBox(height: 14),
                   Text(
-                    'Ton adresse email a bien été confirmée.\nTu peux maintenant accéder à toutes les fonctionnalités WinPlus.',
+                    'Votre compte WinPlus est maintenant actif.',
                     style: WinType.bodyM(s.onMuted),
                     textAlign: TextAlign.center,
                   ),
@@ -118,9 +121,19 @@ class _EmailVerifiedScreenState extends State<EmailVerifiedScreen>
                             color: WinColors.gold)),
                   ]),
                   const Spacer(),
-                  WinButton('Continuer →',
+                  WinButton('Continuer',
                       block: true,
-                      onTap: () => Navigator.pop(context)),
+                      onTap: () async {
+                        final role = await SessionManager.getUserRole();
+                        if (!context.mounted) return;
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (_) => role != null
+                              ? const RoleShell()
+                              : const CompleteProfileScreen()),
+                          (r) => false,
+                        );
+                      }),
                 ],
               ),
             ),

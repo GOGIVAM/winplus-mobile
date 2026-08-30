@@ -139,7 +139,10 @@ class _RoleShellState extends State<RoleShell> {
             height: 34,
             decoration: const BoxDecoration(color: WinColors.blue100, shape: BoxShape.circle),
             alignment: Alignment.center,
-            child: Text('MN', style: WinType.manrope(size: 12, weight: FontWeight.w600, color: WinColors.teal700)),
+            child: Text(
+              WinData.parentAccount.name.split(' ').map((w) => w[0]).take(2).join(),
+              style: WinType.manrope(size: 12, weight: FontWeight.w600, color: WinColors.teal700),
+            ),
           ),
         WinRole.teacher => Container(
             width: 34,
@@ -170,6 +173,7 @@ class _RoleShellState extends State<RoleShell> {
             NavItem('Accueil', Icons.home_outlined),
             NavItem('Enfants', Icons.people_outline),
             NavItem('Ressources', Icons.layers_outlined),
+            NavItem('WinAI', Icons.smart_toy_outlined),
             NavItem('Messages', Icons.chat_bubble_outlined),
             NavItem('Profil', Icons.person_outline),
           ],
@@ -177,12 +181,14 @@ class _RoleShellState extends State<RoleShell> {
             NavItem('Accueil', Icons.home_outlined),
             NavItem('Contenus', Icons.layers_outlined),
             NavItem('Étudiants', Icons.people_outline),
+            NavItem('WinAI', Icons.smart_toy_outlined),
             NavItem('Sessions', Icons.event_outlined),
             NavItem('Revenus', Icons.account_balance_wallet_outlined),
           ],
         WinRole.institution => const [
             NavItem('Accueil', Icons.home_outlined),
             NavItem('Groupes', Icons.people_outline),
+            NavItem('WinAI', Icons.smart_toy_outlined),
             NavItem('Catalogue', Icons.layers_outlined),
             NavItem('Analytics', Icons.bar_chart_outlined),
             NavItem('Compte', Icons.apartment_outlined),
@@ -191,9 +197,9 @@ class _RoleShellState extends State<RoleShell> {
 
   List<Widget> _pagesFor(WinRole role) => switch (role) {
         WinRole.student => const [StudentHomeTab(), StudentCatalogTab(), StudentSpaceTab(), StudentWinAITab(), ProfileHubTab()],
-        WinRole.parent => const [ParentDashTab(), ParentChildrenTab(), ParentResourcesTab(), MessagingScreen(), ParentProfileTab()],
-        WinRole.teacher => const [TeacherDashTab(), TeacherContentTab(), TeacherStudentsTab(), TeacherSessionsTab(), TeacherRevenueTab()],
-        WinRole.institution => const [InstitutionDashTab(), InstitutionGroupsTab(), InstitutionCatalogTab(), InstitutionAnalyticsTab(), InstitutionAccountTab()],
+        WinRole.parent => const [ParentDashTab(), ParentChildrenTab(), ParentResourcesTab(), ParentWinAITab(), MessagingScreen(), ParentProfileTab()],
+        WinRole.teacher => const [TeacherDashTab(), TeacherContentTab(), TeacherStudentsTab(), TeacherWinAITab(), TeacherSessionsTab(), TeacherRevenueTab()],
+        WinRole.institution => const [InstitutionDashTab(), InstitutionGroupsTab(), InstitutionWinAITab(), InstitutionCatalogTab(), InstitutionAnalyticsTab(), InstitutionAccountTab()],
       };
 }
 

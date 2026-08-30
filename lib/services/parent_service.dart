@@ -29,7 +29,7 @@ class ApiChild {
 }
 
 class ApiChildActivity {
-  final String type; // 'download', 'quiz', 'ai_chat'
+  final String type;
   final String description;
   final DateTime occurredAt;
   final int? score;
@@ -43,8 +43,8 @@ class ApiChildActivity {
   factory ApiChildActivity.fromJson(Map<String, dynamic> j) => ApiChildActivity(
         type: j['type'] as String? ?? 'download',
         description: j['description'] as String? ?? '',
-        occurredAt:
-            DateTime.tryParse(j['occurredAt'] as String? ?? '') ?? DateTime.now(),
+        occurredAt: DateTime.tryParse(j['occurredAt'] as String? ?? '') ??
+            DateTime.now(),
         score: j['score'] as int?,
       );
 }
@@ -71,7 +71,7 @@ class ApiChildStats {
 
 class ApiWinAIAlert {
   final int id;
-  final String type; // 'danger', 'warning', 'tip'
+  final String type;
   final String message;
   final DateTime createdAt;
   final bool isRead;
@@ -91,8 +91,8 @@ class ApiWinAIAlert {
         id: j['id'] as int? ?? 0,
         type: j['type'] as String? ?? 'tip',
         message: j['message'] as String? ?? '',
-        createdAt:
-            DateTime.tryParse(j['createdAt'] as String? ?? '') ?? DateTime.now(),
+        createdAt: DateTime.tryParse(j['createdAt'] as String? ?? '') ??
+            DateTime.now(),
         isRead: j['isRead'] as bool? ?? false,
         childId: j['childId'] as int?,
         childName: j['childName'] as String?,
@@ -108,22 +108,14 @@ class ParentService {
   Future<List<ApiChild>> getChildren() async {
     final res = await _api.dio.get('/parent/children');
     final list = res.data as List? ?? [];
-    return list.map((e) => ApiChild.fromJson(e as Map<String, dynamic>)).toList();
+    return list
+        .map((e) => ApiChild.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
-  Future<bool> addChild({
-    required String firstName,
-    required String lastName,
-    required String level,
-    String? schoolName,
-  }) async {
+  Future<bool> addChild({required String email}) async {
     try {
-      await _api.dio.post('/parent/children', data: {
-        'firstName': firstName,
-        'lastName': lastName,
-        'level': level,
-        if (schoolName != null) 'schoolName': schoolName,
-      });
+      await _api.dio.post('/parent/children', data: {'email': email});
       return true;
     } catch (_) {
       return false;

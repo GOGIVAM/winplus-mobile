@@ -49,9 +49,13 @@ class _RoleScreenState extends State<RoleScreen> {
               block: true,
               onTap: _sel == null
                   ? null
-                  : () {
+                  : () async {
                       WinAppScope.of(context).setRole(_sel!);
-                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => const RoleShell()), (r) => false);
+                      if (context.mounted) {
+                        Navigator.pushAndRemoveUntil(context,
+                            MaterialPageRoute(builder: (_) => const RoleShell()),
+                            (r) => false);
+                      }
                     },
             ),
           ),

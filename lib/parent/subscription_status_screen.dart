@@ -24,10 +24,17 @@ class _SubscriptionStatusScreenState extends State<SubscriptionStatusScreen> {
     _load();
   }
 
+  bool _loadError = false;
+
   Future<void> _load() async {
-    final sub = await SubscriptionService.instance.getCurrent();
-    final children = await ParentService.instance.getChildren();
-    if (mounted) setState(() { _sub = sub; _children = children; });
+    setState(() => _loadError = false);
+    try {
+      final sub = await SubscriptionService.instance.getCurrent();
+      final children = await ParentService.instance.getChildren();
+      if (mounted) setState(() { _sub = sub; _children = children; });
+    } catch (_) {
+      if (mounted) setState(() => _loadError = true);
+    }
   }
 
   String _fmtDate(DateTime dt) =>
@@ -55,7 +62,15 @@ class _SubscriptionStatusScreenState extends State<SubscriptionStatusScreen> {
           ),
         ],
       ),
-      body: sub == null
+      body: _loadError
+          ? Center(child: Column(mainAxisSize: MainAxisSize.min, children: [
+              Icon(Icons.wifi_off_outlined, size: 48, color: s.onFaint),
+              const SizedBox(height: 12),
+              Text('Impossible de charger l\'abonnement.', style: WinType.bodyM(s.onMuted)),
+              const SizedBox(height: 12),
+              WinButton('Réessayer', onTap: () { setState(() { _sub = null; _children = null; }); _load(); }),
+            ]))
+          : sub == null
           ? const Center(child: CircularProgressIndicator())
           : ListView(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),

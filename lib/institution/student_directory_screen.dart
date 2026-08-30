@@ -1,3 +1,4 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import '../data/mock_data.dart';
 import '../data/models.dart';
@@ -15,47 +16,30 @@ class StudentDirectoryScreen extends StatefulWidget {
 
 class _StudentDirectoryScreenState extends State<StudentDirectoryScreen> {
   String _query = '';
-  String _levelFilter = 'Tout';
-  String _groupFilter = 'Tout';
-  String _statusFilter = 'Tout';
+  String _levelFilter = 'Tous';
+  String _statusFilter = 'Tous';
+  int _displayCount = 25;
 
-  static const _levels = ['Tout', 'Tle C', 'Tle D', '1ère', 'Concours', 'BTS', 'BEPC'];
-  static const _groups = ['Tout', 'Classe A', 'Classe B', 'Classe C', 'BEPC'];
-  static const _statuses = ['Tout', 'Actif', 'Inactif'];
+  static const _levels = ['Tous', 'Tle C', '1ère', '2nde', 'BEPC', 'BTS', 'Concours'];
+  static const _statuses = ['Tous', 'Actifs', 'Inactifs'];
 
   List<MockStudent> get _filtered => WinData.mockStudents.where((s) {
     final matchQ = _query.isEmpty ||
-        s.name.toLowerCase().contains(_query.toLowerCase()) ||
-        s.group.toLowerCase().contains(_query.toLowerCase());
-    final matchL = _levelFilter == 'Tout' || s.level.startsWith(_levelFilter);
-    final matchG = _groupFilter == 'Tout' || s.group == _groupFilter;
-    final matchS = _statusFilter == 'Tout' ||
-        (_statusFilter == 'Actif' && s.active) ||
-        (_statusFilter == 'Inactif' && !s.active);
-    return matchQ && matchL && matchG && matchS;
+        s.name.toLowerCase().contains(_query.toLowerCase());
+    final matchL = _levelFilter == 'Tous' || s.level.startsWith(_levelFilter);
+    final matchS = _statusFilter == 'Tous' ||
+        (_statusFilter == 'Actifs' && s.active) ||
+        (_statusFilter == 'Inactifs' && !s.active);
+    return matchQ && matchL && matchS;
   }).toList();
 
-  void _showCsvDialog() {
+  void _showCsvImportDialog() {
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Importer des élèves'),
-        content: Column(mainAxisSize: MainAxisSize.min, children: [
-          const Icon(Icons.upload_file_outlined, size: 48, color: WinColors.teal500),
-          const SizedBox(height: 12),
-          const Text('Sélectionnez un fichier CSV avec les colonnes : nom, niveau, groupe.'),
-          const SizedBox(height: 16),
-          WinButton('Choisir un fichier CSV', block: true, icon: Icons.attach_file,
-              onTap: () {
-                Navigator.pop(ctx);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Import en cours... 12 élèves détectés.')),
-                );
-              }),
-        ]),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Annuler')),
-        ],
+      builder: (ctx) => _CsvImportDialog(
+        onSuccess: () => ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('1 823 élèves importés avec succès !')),
+        ),
       ),
     );
   }
@@ -63,7 +47,9 @@ class _StudentDirectoryScreenState extends State<StudentDirectoryScreen> {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    final items = _filtered;
+    final all = _filtered;
+    final shown = all.take(_displayCount).toList();
+    final totalAll = WinData.mockStudents.length;
 
     return Scaffold(
       backgroundColor: s.bg,
@@ -73,12 +59,12 @@ class _StudentDirectoryScreenState extends State<StudentDirectoryScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Annuaire élèves', style: WinType.headlineS(s.onStrong)),
+        title: Text('Annuaire des élèves', style: WinType.headlineS(s.onStrong)),
         actions: [
-          IconButton(
-            icon: Icon(Icons.upload_outlined, color: s.primary),
-            tooltip: 'Importer CSV',
-            onPressed: _showCsvDialog,
+          TextButton.icon(
+            icon: Icon(Icons.upload_file_outlined, color: s.primary, size: 18),
+            label: Text('CSV', style: WinType.labelM(s.primary)),
+            onPressed: _showCsvImportDialog,
           ),
           const SizedBox(width: 4),
         ],
@@ -87,9 +73,9 @@ class _StudentDirectoryScreenState extends State<StudentDirectoryScreen> {
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
           child: TextField(
-            onChanged: (v) => setState(() => _query = v),
+            onChanged: (v) => setState(() { _query = v; _displayCount = 25; }),
             decoration: InputDecoration(
-              hintText: 'Rechercher par nom ou groupe…',
+              hintText: 'Rechercher par nom...',
               hintStyle: WinType.bodyS(s.onFaint),
               prefixIcon: Icon(Icons.search, size: 20, color: s.onFaint),
               filled: true,
@@ -114,50 +100,144 @@ class _StudentDirectoryScreenState extends State<StudentDirectoryScreen> {
             children: _levels.map((l) => Padding(
               padding: const EdgeInsets.only(right: 6),
               child: WinChip(l, active: _levelFilter == l,
-                  onTap: () => setState(() => _levelFilter = l)),
+                  onTap: () => setState(() { _levelFilter = l; _displayCount = 25; })),
             )).toList(),
           ),
         ),
         const SizedBox(height: 6),
-        // Filtres Groupe + Statut
+        // Filtres Statut
         SizedBox(
           height: 32,
           child: ListView(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            children: [
-              ..._groups.map((g) => Padding(
-                padding: const EdgeInsets.only(right: 6),
-                child: WinChip(g, active: _groupFilter == g,
-                    onTap: () => setState(() => _groupFilter = g)),
-              )),
-              const SizedBox(width: 8),
-              ..._statuses.map((st) => Padding(
-                padding: const EdgeInsets.only(right: 6),
-                child: WinChip(st, active: _statusFilter == st,
-                    onTap: () => setState(() => _statusFilter = st)),
-              )),
-            ],
+            children: _statuses.map((st) => Padding(
+              padding: const EdgeInsets.only(right: 6),
+              child: WinChip(st, active: _statusFilter == st,
+                  onTap: () => setState(() { _statusFilter = st; _displayCount = 25; })),
+            )).toList(),
           ),
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
           child: Row(children: [
-            Text('${items.length} élève${items.length > 1 ? 's' : ''}',
+            Text('Affichage ${shown.length} sur $totalAll élèves',
                 style: WinType.labelM(s.onMuted)),
           ]),
         ),
         Expanded(
-          child: items.isEmpty
+          child: all.isEmpty
               ? Center(child: Text('Aucun résultat.', style: WinType.bodyM(s.onMuted)))
               : ListView.separated(
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-                  itemCount: items.length,
+                  itemCount: shown.length + (shown.length < all.length ? 1 : 0),
                   separatorBuilder: (_, __) => const SizedBox(height: 8),
-                  itemBuilder: (ctx, i) => _StudentRow(student: items[i]),
+                  itemBuilder: (ctx, i) {
+                    if (i == shown.length) {
+                      return Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: WinButton(
+                          'Charger 25 de plus',
+                          variant: WinButtonVariant.outline,
+                          block: true,
+                          icon: Icons.expand_more,
+                          onTap: () => setState(() => _displayCount += 25),
+                        ),
+                      );
+                    }
+                    return _StudentRow(student: shown[i]);
+                  },
                 ),
         ),
       ]),
+    );
+  }
+}
+
+class _CsvImportDialog extends StatefulWidget {
+  final VoidCallback onSuccess;
+  const _CsvImportDialog({required this.onSuccess});
+
+  @override
+  State<_CsvImportDialog> createState() => _CsvImportDialogState();
+}
+
+class _CsvImportDialogState extends State<_CsvImportDialog> {
+  String? _fileName;
+  bool _loading = false;
+  bool _done = false;
+
+  Future<void> _pickFile() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['csv'],
+    );
+    if (result != null && result.files.isNotEmpty) {
+      setState(() { _fileName = result.files.first.name; _loading = true; });
+      await Future.delayed(const Duration(seconds: 2));
+      if (!mounted) return;
+      setState(() { _loading = false; _done = true; });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final s = WinTheme.of(context);
+    return AlertDialog(
+      backgroundColor: s.surface,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      title: Text('Import CSV', style: WinType.archivo(size: 17, color: s.onStrong)),
+      content: _done
+          ? Column(mainAxisSize: MainAxisSize.min, children: [
+              const Icon(Icons.check_circle_outline, size: 40, color: WinColors.success),
+              const SizedBox(height: 10),
+              Text('1 823 élèves importés avec succès !',
+                  style: WinType.bodyM(s.onStrong), textAlign: TextAlign.center),
+            ])
+          : Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(
+                'Choisissez un fichier CSV avec les colonnes :\nnom, email, niveau, groupe',
+                style: WinType.bodyS(s.onMuted),
+              ),
+              if (_fileName != null) ...[
+                const SizedBox(height: 10),
+                Row(children: [
+                  Icon(Icons.description_outlined, size: 16, color: s.primary),
+                  const SizedBox(width: 6),
+                  Expanded(child: Text(_fileName!, style: WinType.labelM(s.onStrong),
+                      overflow: TextOverflow.ellipsis)),
+                ]),
+              ],
+              if (_loading) ...[
+                const SizedBox(height: 16),
+                const Row(children: [
+                  SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2)),
+                  SizedBox(width: 12),
+                  Text('Import en cours...'),
+                ]),
+              ],
+            ]),
+      actions: _done
+          ? [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  widget.onSuccess();
+                },
+                child: Text('Fermer', style: WinType.labelM(s.primary)),
+              ),
+            ]
+          : [
+              TextButton(
+                onPressed: _loading ? null : () => Navigator.pop(context),
+                child: Text('Annuler', style: WinType.labelM(s.onMuted)),
+              ),
+              if (!_loading)
+                TextButton(
+                  onPressed: _pickFile,
+                  child: Text('Choisir un fichier', style: WinType.labelM(s.primary)),
+                ),
+            ],
     );
   }
 }
@@ -183,16 +263,28 @@ class _StudentRow extends StatelessWidget {
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(student.name, style: WinType.titleM(s.onStrong)),
           Text('${student.level} · ${student.group}', style: WinType.labelM(s.onMuted)),
+          const SizedBox(height: 4),
+          SizedBox(
+            width: 80,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(3),
+              child: LinearProgressIndicator(
+                value: student.score / 100,
+                minHeight: 4,
+                backgroundColor: s.outline2,
+                valueColor: AlwaysStoppedAnimation(scoreColor),
+              ),
+            ),
+          ),
         ])),
         Text('${student.score}%', style: WinType.archivo(size: 15, color: scoreColor)),
-        const SizedBox(width: 10),
-        Container(
-          width: 8, height: 8,
-          decoration: BoxDecoration(
-              color: student.active ? WinColors.success : s.onFaint,
-              shape: BoxShape.circle),
+        const SizedBox(width: 8),
+        Icon(
+          student.active ? Icons.circle : Icons.circle_outlined,
+          size: 10,
+          color: student.active ? WinColors.success : s.onFaint,
         ),
-        const SizedBox(width: 10),
+        const SizedBox(width: 8),
         GestureDetector(
           onTap: () => Navigator.push(context,
               MaterialPageRoute(builder: (_) => const MessagingScreen())),

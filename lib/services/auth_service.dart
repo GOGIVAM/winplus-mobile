@@ -23,14 +23,14 @@ class AuthService {
         'password': password,
       });
       final d = res.data as Map<String, dynamic>;
-      final user = d['user'] as Map<String, dynamic>;
+      final u = d['user'] as Map<String, dynamic>;
       await SessionManager.save(
-        accessToken: d['accessToken'] as String,
+        accessToken:  d['accessToken'] as String,
         refreshToken: d['refreshToken'] as String,
-        userId: user['id'] as int,
-        email: user['email'] as String,
-        role: (user['role'] as String?) ?? 'student',
-        name: '${user['firstName'] ?? ''} ${user['lastName'] ?? ''}'.trim(),
+        userId: u['id'] as int,
+        email:  u['email'] as String,
+        role:   (u['role'] as String?) ?? 'student',
+        name:   '${u['firstName'] ?? ''} ${u['lastName'] ?? ''}'.trim(),
       );
       return const AuthResult(success: true);
     } on DioException catch (e) {
@@ -88,8 +88,7 @@ class AuthService {
 
   Future<AuthResult> resendVerification(String email) async {
     try {
-      await _api.dio
-          .post('/auth/resend-verification', data: {'email': email});
+      await _api.dio.post('/auth/resend-verification', data: {'email': email});
       return const AuthResult(success: true);
     } on DioException catch (e) {
       final data = e.response?.data as Map<String, dynamic>?;
@@ -101,8 +100,7 @@ class AuthService {
 
   Future<AuthResult> forgotPassword(String email) async {
     try {
-      await _api.dio
-          .post('/auth/forgot-password', data: {'email': email});
+      await _api.dio.post('/auth/forgot-password', data: {'email': email});
       return const AuthResult(success: true);
     } on DioException catch (e) {
       final data = e.response?.data as Map<String, dynamic>?;
@@ -127,7 +125,7 @@ class AuthService {
 
   Future<void> signOut() async {
     try {
-      await _api.dio.post('/auth/signout');
+      await _api.dio.post('/auth/logout');
     } catch (_) {}
     await SessionManager.clear();
   }
