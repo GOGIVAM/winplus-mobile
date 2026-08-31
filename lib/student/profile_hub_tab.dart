@@ -20,6 +20,8 @@ import 'download_history_screen.dart';
 import 'favorites_screen.dart';
 import 'notifications_screen.dart';
 import 'profile_screen.dart';
+import 'my_links_screen.dart';
+import '../shared/forum/forum_screen.dart';
 
 class ProfileHubTab extends StatefulWidget {
   const ProfileHubTab({super.key});
@@ -199,23 +201,21 @@ class _ProfileHubTabState extends State<ProfileHubTab> {
               color: WinColors.teal600,
               label: 'Forum communauté',
               subtitle: 'Questions & réponses',
-              onTap: _soon,
+              onTap: () => _go(const ForumScreen()),
+            ),
+            _HubTile(
+              icon: Icons.link_outlined,
+              color: WinColors.blue700,
+              label: 'Mon réseau',
+              subtitle: 'Parents, profs, établissement',
+              onTap: () => _go(const MyLinksScreen()),
             ),
             _HubTile(
               icon: Icons.smart_toy_outlined,
               color: s.primary,
               label: 'WinAI',
               subtitle: 'Ton assistant pédagogique',
-              onTap: () {
-                // Navigate to WinAI via bottom nav index 3
-                final shell = context.findAncestorStateOfType<State<Scaffold>>();
-                if (shell != null) {
-                  final navState = context.findRootAncestorStateOfType<State>();
-                  if (navState != null) _soon();
-                } else {
-                  _soon();
-                }
-              },
+              onTap: _soon,
             ),
             const SizedBox(height: 16),
 

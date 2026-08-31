@@ -13,6 +13,7 @@ import 'content_actions_sheet.dart';
 import 'correction_queue_screen.dart';
 import 'session_create_screen.dart';
 import '../shared/messaging/messaging_screen.dart';
+import 'teacher_links_screen.dart';
 
 BadgeColor _statusColor(String s) => switch (s) {
       'Publié' => BadgeColor.success,
@@ -677,6 +678,13 @@ class _TeacherStudentsTabState extends State<TeacherStudentsTab> {
                 block: true,
                 icon: Icons.add,
                 onTap: _showCreateClassSheet),
+            const SizedBox(height: 10),
+            WinButton('Mes liaisons directes',
+                variant: WinButtonVariant.outline,
+                block: true,
+                icon: Icons.link_outlined,
+                onTap: () => Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => const TeacherLinksScreen()))),
             const SizedBox(height: 24),
             Text('Étudiants',
                 style: WinType.archivo(size: 18, color: s.onStrong)),
