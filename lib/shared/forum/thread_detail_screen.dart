@@ -198,7 +198,7 @@ class _RolePill extends StatelessWidget {
   Widget build(BuildContext context) {
     final label = switch (role) {
       'teacher' => 'Prof',
-      'institution' => isVerified ? 'Établissement ✓' : 'Établissement',
+      'institution' => 'Établissement',
       'parent' => 'Parent',
       _ => 'Élève',
     };
@@ -211,7 +211,13 @@ class _RolePill extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(color: color.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(8)),
-      child: Text(label, style: TextStyle(fontSize: 11, color: color, fontWeight: FontWeight.w600)),
+      child: Row(mainAxisSize: MainAxisSize.min, children: [
+        Text(label, style: TextStyle(fontSize: 11, color: color, fontWeight: FontWeight.w600)),
+        if (role == 'institution' && isVerified) ...[
+          const SizedBox(width: 3),
+          Icon(Icons.verified_rounded, size: 11, color: color),
+        ],
+      ]),
     );
   }
 }

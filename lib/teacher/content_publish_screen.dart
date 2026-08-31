@@ -300,7 +300,7 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
           _label('Fichier'),
           if (_pickedFile == null)
             WinButton(
-              '📎 Choisir un fichier',
+              'Choisir un fichier',
               variant: WinButtonVariant.outline,
               block: true,
               icon: Icons.attach_file,

@@ -189,7 +189,7 @@ class _RoleBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final label = switch (role) {
       'teacher' => 'Prof',
-      'institution' => isVerified ? 'Établissement ✓' : 'Établissement',
+      'institution' => 'Établissement',
       'parent' => 'Parent',
       _ => 'Élève',
     };
@@ -199,6 +199,13 @@ class _RoleBadge extends StatelessWidget {
       'parent' => BadgeColor.warn,
       _ => BadgeColor.blue,
     };
+    if (role == 'institution' && isVerified) {
+      return Row(mainAxisSize: MainAxisSize.min, children: [
+        WinBadge(label, color: color),
+        const SizedBox(width: 4),
+        const Icon(Icons.verified_rounded, size: 12, color: WinColors.success),
+      ]);
+    }
     return WinBadge(label, color: color);
   }
 }

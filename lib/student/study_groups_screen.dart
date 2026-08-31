@@ -199,7 +199,7 @@ class _GroupCard extends StatelessWidget {
         Text('Dernière activité : $relTime', style: WinType.labelS(s.onFaint)),
         const SizedBox(height: 10),
         WinButton(
-          'Voir →',
+          'Voir',
           small: true,
           variant: WinButtonVariant.outline,
           onTap: onTap,
