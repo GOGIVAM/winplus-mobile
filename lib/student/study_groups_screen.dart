@@ -130,21 +130,30 @@ class _StudyGroupsScreenState extends State<StudyGroupsScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             decoration: BoxDecoration(
               color: WinColors.gold.withValues(alpha: 0.15),
-              border: Border.all(color: WinColors.gold.withValues(alpha: 0.6), width: 1.5),
+              border: Border.all(
+                  color: WinColors.gold.withValues(alpha: 0.6), width: 1.5),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(children: [
-              const Icon(Icons.workspace_premium_outlined, size: 18, color: WinColors.gold),
+              const Icon(Icons.workspace_premium_outlined,
+                  size: 18, color: WinColors.gold),
               const SizedBox(width: 10),
-              Expanded(child: Text('Plan Ultime — Groupes illimités',
-                  style: WinType.labelM(WinColors.gold)
-                      .copyWith(fontWeight: FontWeight.w700))),
+              Expanded(
+                  child: Text('Plan Ultime  Groupes illimités',
+                      style: WinType.labelM(WinColors.gold)
+                          .copyWith(fontWeight: FontWeight.w700))),
             ]),
           ),
           const SizedBox(height: 16),
-          WinButton('+ Créer un groupe', block: true, variant: WinButtonVariant.outline, onTap: _showCreateSheet),
+          WinButton('+ Créer un groupe',
+              block: true,
+              variant: WinButtonVariant.outline,
+              onTap: _showCreateSheet),
           const SizedBox(height: 10),
-          WinButton('Rejoindre par code', block: true, variant: WinButtonVariant.ghost, onTap: _showJoinSheet),
+          WinButton('Rejoindre par code',
+              block: true,
+              variant: WinButtonVariant.ghost,
+              onTap: _showJoinSheet),
         ],
       ),
     );
@@ -299,7 +308,9 @@ class _Leaderboard extends StatelessWidget {
   ];
 
   static const _medals = [
-    Color(0xFFFFD700), Color(0xFFC0C0C0), Color(0xFFCD7F32),
+    Color(0xFFFFD700),
+    Color(0xFFC0C0C0),
+    Color(0xFFCD7F32),
   ];
 
   @override
@@ -326,26 +337,36 @@ class _Leaderboard extends StatelessWidget {
                 width: 28,
                 child: medal != null
                     ? Icon(Icons.emoji_events, size: 20, color: medal)
-                    : Text('${rank + 1}', textAlign: TextAlign.center,
+                    : Text('${rank + 1}',
+                        textAlign: TextAlign.center,
                         style: WinType.labelM(s.onFaint)),
               ),
               const SizedBox(width: 10),
-              WinAvatar(entry.name, size: 34, color: subj.color.withValues(alpha: 0.2)),
+              WinAvatar(entry.name,
+                  size: 34, color: subj.color.withValues(alpha: 0.2)),
               const SizedBox(width: 10),
-              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(entry.name,
-                    style: WinType.titleM(s.onStrong)
-                        .copyWith(fontWeight: entry.isMe ? FontWeight.w700 : FontWeight.w500)),
-                Text('${entry.hours}h · ${entry.score}%',
-                    style: WinType.labelS(s.onMuted)),
-              ])),
+              Expanded(
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                    Text(entry.name,
+                        style: WinType.titleM(s.onStrong).copyWith(
+                            fontWeight: entry.isMe
+                                ? FontWeight.w700
+                                : FontWeight.w500)),
+                    Text('${entry.hours}h · ${entry.score}%',
+                        style: WinType.labelS(s.onMuted)),
+                  ])),
               if (entry.isMe)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
                       color: s.primary.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(8)),
-                  child: Text('Moi', style: WinType.labelS(s.primary).copyWith(fontWeight: FontWeight.w700)),
+                  child: Text('Moi',
+                      style: WinType.labelS(s.primary)
+                          .copyWith(fontWeight: FontWeight.w700)),
                 ),
             ]),
           );
@@ -370,36 +391,56 @@ class _GroupDetailSheet extends StatelessWidget {
       (name: 'Yann Talla', role: 'Membre', hours: 8),
     ];
     return Container(
-      decoration: BoxDecoration(color: s.surface, borderRadius: const BorderRadius.vertical(top: Radius.circular(24))),
+      decoration: BoxDecoration(
+          color: s.surface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24))),
       padding: const EdgeInsets.fromLTRB(24, 16, 24, 40),
-      child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Center(child: Container(width: 36, height: 4, margin: const EdgeInsets.only(bottom: 20),
-            decoration: BoxDecoration(color: s.outline2, borderRadius: BorderRadius.circular(2)))),
-        Row(children: [
-          Expanded(child: Text(group.name, style: WinType.archivo(size: 20, color: s.onStrong))),
-          WinChip(group.subject),
-        ]),
-        const SizedBox(height: 4),
-        Text('${group.memberCount} membres', style: WinType.bodyS(s.onMuted)),
-        const SizedBox(height: 20),
-        Text('Membres actifs', style: WinType.titleM(s.onStrong)),
-        const SizedBox(height: 10),
-        ...members.map((m) => Padding(
-          padding: const EdgeInsets.only(bottom: 10),
-          child: Row(children: [
-            WinAvatar(m.name, size: 36),
-            const SizedBox(width: 10),
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(m.name, style: WinType.bodyM(s.onStrong)),
-              Text(m.role, style: WinType.labelS(s.onMuted)),
-            ])),
-            Text('${m.hours}h cette semaine', style: WinType.labelM(s.primary)),
+      child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+                child: Container(
+                    width: 36,
+                    height: 4,
+                    margin: const EdgeInsets.only(bottom: 20),
+                    decoration: BoxDecoration(
+                        color: s.outline2,
+                        borderRadius: BorderRadius.circular(2)))),
+            Row(children: [
+              Expanded(
+                  child: Text(group.name,
+                      style: WinType.archivo(size: 20, color: s.onStrong))),
+              WinChip(group.subject),
+            ]),
+            const SizedBox(height: 4),
+            Text('${group.memberCount} membres',
+                style: WinType.bodyS(s.onMuted)),
+            const SizedBox(height: 20),
+            Text('Membres actifs', style: WinType.titleM(s.onStrong)),
+            const SizedBox(height: 10),
+            ...members.map((m) => Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Row(children: [
+                    WinAvatar(m.name, size: 36),
+                    const SizedBox(width: 10),
+                    Expanded(
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                          Text(m.name, style: WinType.bodyM(s.onStrong)),
+                          Text(m.role, style: WinType.labelS(s.onMuted)),
+                        ])),
+                    Text('${m.hours}h cette semaine',
+                        style: WinType.labelM(s.primary)),
+                  ]),
+                )),
+            const SizedBox(height: 16),
+            WinButton('Envoyer un message au groupe',
+                block: true,
+                icon: Icons.chat_outlined,
+                onTap: () => Navigator.pop(context)),
           ]),
-        )),
-        const SizedBox(height: 16),
-        WinButton('Envoyer un message au groupe', block: true, icon: Icons.chat_outlined,
-            onTap: () => Navigator.pop(context)),
-      ]),
     );
   }
 }

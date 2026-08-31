@@ -7,7 +7,7 @@
 
 ## 0. Stratégie d'authentification (décidée 2026-08-26)
 
-### 0.1 Modèle WhatsApp — flux de session
+### 0.1 Modèle WhatsApp  flux de session
 
 ```
 Premier lancement
@@ -39,7 +39,7 @@ Aucun appel API. Vérification email + mot de passe locale dans `AuthService`.
 - Connexion réussie → `SessionManager.save()` avec token fictif → session persistée.
 - Relance app → `SplashScreen` lit la session → `RoleShell` directement.
 
-### 0.3 Sélection de rôle (RoleScreen — "Créer un compte")
+### 0.3 Sélection de rôle (RoleScreen  "Créer un compte")
 
 En devMode, choisir un rôle et tapper "Continuer" sauvegarde automatiquement une session locale (email du compte dev correspondant). Pas de formulaire d'inscription pour l'instant.
 
@@ -54,11 +54,11 @@ En devMode, choisir un rôle et tapper "Continuer" sauvegarde automatiquement un
 ```bash
 flutter pub run flutter_launcher_icons
 ```
-*(non encore exécuté — nécessite build step)*
+*(non encore exécuté  nécessite build step)*
 
 ### 0.6 Règle : tout ce qui n'appelle pas l'API fonctionne réellement
 
-`SessionManager`, `SharedPreferences`, timers, OTP mock, navigation — tout tourne sans backend. Pas de fallback silencieux pour les utilisateurs.
+`SessionManager`, `SharedPreferences`, timers, OTP mock, navigation  tout tourne sans backend. Pas de fallback silencieux pour les utilisateurs.
 
 ---
 

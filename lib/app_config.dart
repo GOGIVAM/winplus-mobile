@@ -3,7 +3,7 @@
 class AppConfig {
   AppConfig._();
 
-  /// Mode développement désactivé — toutes les données proviennent de l'API réelle.
+  /// Mode développement désactivé  toutes les données proviennent de l'API réelle.
   static const bool devMode = false;
 
   /// URL de base de l'API backend.
