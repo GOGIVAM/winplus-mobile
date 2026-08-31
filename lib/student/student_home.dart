@@ -270,9 +270,11 @@ class _InProgressCard extends StatelessWidget {
                 style: WinType.labelM(s.primary)
                     .copyWith(fontWeight: FontWeight.w600)),
             const Spacer(),
-            Text('Reprendre →',
-                style: WinType.manrope(
-                    size: 11, weight: FontWeight.w700, color: s.primary)),
+            Row(mainAxisSize: MainAxisSize.min, children: [
+              Text('Reprendre', style: WinType.manrope(size: 11, weight: FontWeight.w700, color: s.primary)),
+              const SizedBox(width: 2),
+              Icon(Icons.arrow_forward_rounded, size: 11, color: s.primary),
+            ]),
           ]),
         ]),
       ),
@@ -348,9 +350,11 @@ class _AiRecoCard extends StatelessWidget {
           Row(children: [
             WinChip(subj.short, icon: subj.icon),
             const Spacer(),
-            Text('Voir →',
-                style: WinType.manrope(
-                    size: 12, weight: FontWeight.w700, color: s.primary)),
+            Row(mainAxisSize: MainAxisSize.min, children: [
+              Text('Voir', style: WinType.manrope(size: 12, weight: FontWeight.w700, color: s.primary)),
+              const SizedBox(width: 2),
+              Icon(Icons.arrow_forward_rounded, size: 12, color: s.primary),
+            ]),
           ]),
         ])),
       ]),
@@ -519,9 +523,11 @@ class _UpgradeBanner extends StatelessWidget {
         const SizedBox(width: 10),
         GestureDetector(
           onTap: () {},
-          child: Text('Voir →',
-              style: WinType.manrope(
-                  size: 12, weight: FontWeight.w700, color: WinColors.teal600)),
+          child: Row(mainAxisSize: MainAxisSize.min, children: [
+            Text('Voir', style: WinType.manrope(size: 12, weight: FontWeight.w700, color: WinColors.teal600)),
+            const SizedBox(width: 2),
+            const Icon(Icons.arrow_forward_rounded, size: 12, color: WinColors.teal600),
+          ]),
         ),
       ]),
     );

@@ -5,6 +5,7 @@ import '../data/mock_data.dart';
 import '../data/models.dart';
 import '../services/auth_service.dart';
 import '../services/chatbot_service.dart';
+import '../widgets/winai_memories_sheet.dart';
 import '../services/parent_service.dart';
 import '../services/subject_service.dart';
 import '../services/subscription_service.dart';
@@ -295,11 +296,11 @@ class _TrackedChildCard extends StatelessWidget {
             ? WinColors.warn
             : WinColors.error;
 
-    final String trendSymbol = child.trend == Trend.up
-        ? '↗'
+    final IconData trendIcon = child.trend == Trend.up
+        ? Icons.trending_up_rounded
         : child.trend == Trend.down
-            ? '↘'
-            : '→';
+            ? Icons.trending_down_rounded
+            : Icons.trending_flat_rounded;
     final Color trendColor = child.trend == Trend.up
         ? WinColors.success
         : child.trend == Trend.down
@@ -343,8 +344,7 @@ class _TrackedChildCard extends StatelessWidget {
             Text('${child.avgScore}%',
                 style: WinType.archivo(size: 14, color: scoreColor)),
             const SizedBox(width: 6),
-            Text(trendSymbol,
-                style: WinType.manrope(size: 14, weight: FontWeight.w700, color: trendColor)),
+            Icon(trendIcon, size: 14, color: trendColor),
           ]),
           const SizedBox(height: 6),
           Row(children: [
@@ -964,6 +964,25 @@ class _ParentWinAITabState extends State<ParentWinAITab> {
                             overflow: TextOverflow.ellipsis),
                       ),
                     )).toList(),
+                  ),
+                  const SizedBox(height: 16),
+                  GestureDetector(
+                    onTap: () => showWinAIMemoriesSheet(context),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF5F3FF),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: const Color(0xFF8B5CF6).withValues(alpha: 0.3)),
+                      ),
+                      child: Row(mainAxisSize: MainAxisSize.min, children: [
+                        const Icon(Icons.psychology_rounded, size: 15, color: Color(0xFF8B5CF6)),
+                        const SizedBox(width: 8),
+                        Text('Mémoire WinAI', style: WinType.manrope(size: 13, weight: FontWeight.w600, color: const Color(0xFF8B5CF6))),
+                        const SizedBox(width: 6),
+                        const Icon(Icons.arrow_forward_ios_rounded, size: 11, color: Color(0xFF8B5CF6)),
+                      ]),
+                    ),
                   ),
                   const Spacer(),
                 ]),

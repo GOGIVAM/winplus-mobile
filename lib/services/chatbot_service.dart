@@ -1,5 +1,26 @@
 import 'api_client.dart';
 
+class ApiWinAIMemory {
+  final int id;
+  final String type;
+  final String content;
+  final DateTime createdAt;
+  const ApiWinAIMemory({
+    required this.id,
+    required this.type,
+    required this.content,
+    required this.createdAt,
+  });
+
+  factory ApiWinAIMemory.fromJson(Map<String, dynamic> j) => ApiWinAIMemory(
+        id: j['id'] as int? ?? 0,
+        type: j['type'] as String? ?? 'general',
+        content: j['content'] as String? ?? '',
+        createdAt:
+            DateTime.tryParse(j['createdAt'] as String? ?? '') ?? DateTime.now(),
+      );
+}
+
 class ApiChatMessage {
   final String role;
   final String content;
@@ -89,6 +110,27 @@ class ChatbotService {
   Future<bool> deleteSession(int sessionId) async {
     try {
       await _api.dio.delete('/chatbot/conversations/$sessionId');
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Future<List<ApiWinAIMemory>> getMemories() async {
+    try {
+      final res = await _api.dio.get('/chatbot/memories');
+      final list = res.data as List? ?? [];
+      return list
+          .map((e) => ApiWinAIMemory.fromJson(e as Map<String, dynamic>))
+          .toList();
+    } catch (_) {
+      return [];
+    }
+  }
+
+  Future<bool> deleteMemory(int id) async {
+    try {
+      await _api.dio.delete('/chatbot/memories/$id');
       return true;
     } catch (_) {
       return false;

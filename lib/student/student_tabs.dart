@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../data/mock_data.dart';
 import '../data/models.dart';
 import '../services/chatbot_service.dart';
+import '../widgets/winai_memories_sheet.dart';
 import '../services/subject_service.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
@@ -340,6 +341,25 @@ class _StudentWinAITabState extends State<StudentWinAITab> {
                         child: Text(q, style: WinType.manrope(size: 13, weight: FontWeight.w600, color: WinColors.teal700)),
                       ),
                     )).toList(),
+                  ),
+                  const SizedBox(height: 16),
+                  GestureDetector(
+                    onTap: () => showWinAIMemoriesSheet(context),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF5F3FF),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: const Color(0xFF8B5CF6).withValues(alpha: 0.3)),
+                      ),
+                      child: Row(mainAxisSize: MainAxisSize.min, children: [
+                        const Icon(Icons.psychology_rounded, size: 15, color: Color(0xFF8B5CF6)),
+                        const SizedBox(width: 8),
+                        Text('Mémoire WinAI', style: WinType.manrope(size: 13, weight: FontWeight.w600, color: const Color(0xFF8B5CF6))),
+                        const SizedBox(width: 6),
+                        const Icon(Icons.arrow_forward_ios_rounded, size: 11, color: Color(0xFF8B5CF6)),
+                      ]),
+                    ),
                   ),
                   const Spacer(),
                 ]),
