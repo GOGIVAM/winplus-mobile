@@ -82,6 +82,7 @@ class TeacherDashTab extends StatefulWidget {
 class _TeacherDashTabState extends State<TeacherDashTab> {
   List<ApiPublishedContent>? _content;
   ApiTeacherStats? _stats;
+  int _pendingCorrections = 0;
 
   @override
   void initState() {
@@ -94,18 +95,24 @@ class _TeacherDashTabState extends State<TeacherDashTab> {
       final results = await Future.wait([
         TeacherService.instance.getMyContent(),
         TeacherService.instance.getStats(),
+        TeacherService.instance.getSubmissions(),
       ]);
-      if (mounted)
+      if (mounted) {
         setState(() {
           _content = results[0] as List<ApiPublishedContent>;
           _stats = results[1] as ApiTeacherStats;
+          _pendingCorrections = (results[2] as List<ApiSubmission>)
+              .where((s) => !s.corrected)
+              .length;
         });
+      }
     } catch (_) {
-      if (mounted)
+      if (mounted) {
         setState(() {
           _content = [];
           _stats = null;
         });
+      }
     }
   }
 
@@ -126,7 +133,7 @@ class _TeacherDashTabState extends State<TeacherDashTab> {
 
     final weeklyRev = _stats?.weeklyRevenue ?? [0, 0, 0, 0];
     final maxRev = weeklyRev.reduce((a, b) => a > b ? a : b);
-    const pendingCorrections = 0;
+    final pendingCorrections = _pendingCorrections;
 
     return Column(children: [
       Expanded(

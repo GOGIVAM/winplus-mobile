@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../data/mock_data.dart';
 import '../data/models.dart';
+import '../services/user_service.dart';
 import '../shared/subscription/subscription_notifier.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
@@ -44,13 +45,28 @@ class StudentHomeTab extends StatefulWidget {
 }
 
 class _StudentHomeTabState extends State<StudentHomeTab> {
+  ApiUserProfile? _profile;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
+  }
+
+  Future<void> _loadProfile() async {
+    try {
+      final p = await UserService.instance.getProfile();
+      if (mounted) { setState(() => _profile = p); }
+    } catch (_) {}
+  }
+
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
     final sub = SubscriptionScope.of(context);
     final effectiveTier = sub.tier;
 
-    final firstName = WinData.userProfile.name.split(' ').first;
+    final firstName = _profile?.firstName ?? WinData.userProfile.name.split(' ').first;
     final now = DateTime.now();
     final hour = now.hour;
     final greeting =

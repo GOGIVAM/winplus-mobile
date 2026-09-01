@@ -162,6 +162,7 @@ class InstitutionDashTab extends StatefulWidget {
 class _InstitutionDashTabState extends State<InstitutionDashTab> {
   List<ApiGroup>? _groups;
   int _atRiskCount = 0;
+  ApiInstitutionAnalytics? _analytics;
 
   @override
   void initState() {
@@ -170,13 +171,18 @@ class _InstitutionDashTabState extends State<InstitutionDashTab> {
   }
 
   Future<void> _load() async {
-    final groups = await InstitutionService.instance.getGroups();
-    final atRisk = await InstitutionService.instance.getAtRiskStudents();
-    if (mounted)
+    final results = await Future.wait([
+      InstitutionService.instance.getGroups(),
+      InstitutionService.instance.getAtRiskStudents(),
+      InstitutionService.instance.getAnalytics(),
+    ]);
+    if (mounted) {
       setState(() {
-        _groups = groups;
-        _atRiskCount = atRisk.length;
+        _groups = results[0] as List<ApiGroup>;
+        _atRiskCount = (results[1] as List<ApiAtRiskStudent>).length;
+        _analytics = results[2] as ApiInstitutionAnalytics;
       });
+    }
   }
 
   @override
@@ -208,7 +214,7 @@ class _InstitutionDashTabState extends State<InstitutionDashTab> {
                                 style: WinType.archivo(
                                     size: 15, color: WinColors.cream50)),
                             const SizedBox(height: 2),
-                            Text('Plan ${WinData.institutionStats.plan}',
+                            Text('Plan ${WinData.institutionStats.plan} · ${_analytics?.totalStudents ?? 0} élèves',
                                 style: WinType.labelS(WinColors.ink300)),
                           ])),
                       Stack(clipBehavior: Clip.none, children: [
@@ -230,12 +236,12 @@ class _InstitutionDashTabState extends State<InstitutionDashTab> {
                     Row(children: [
                       Expanded(
                           child: _instHeroStat(
-                              '${WinData.institutionStats.activeStudentsToday}',
+                              '${_analytics?.activeStudents ?? WinData.institutionStats.activeStudentsToday}',
                               'actifs auj.')),
                       const SizedBox(width: 10),
                       Expanded(
                           child: _instHeroStat(
-                              '${WinData.institutionStats.avgSuccessRate}%',
+                              '${_analytics != null ? _analytics!.averageScore.round() : WinData.institutionStats.avgSuccessRate}%',
                               'taux réussite')),
                     ]),
                   ]),
@@ -246,29 +252,31 @@ class _InstitutionDashTabState extends State<InstitutionDashTab> {
             else ...[
               // KPIs grille 2x2
               Builder(builder: (ctx) {
-                const st = WinData.institutionStats;
-                final pctActive =
-                    (st.activeStudentsToday / st.licensesTotal * 100).round();
-                final pctLic =
-                    (st.licensesUsed / st.licensesTotal * 100).round();
+                final st = WinData.institutionStats;
+                final activeStudents = _analytics?.activeStudents ?? st.activeStudentsToday;
+                final totalStudents = _analytics?.totalStudents.clamp(1, 99999) ?? st.licensesTotal;
+                final avgScore = _analytics?.averageScore.round() ?? st.avgSuccessRate;
+                final quizCount = _analytics?.quizzesThisMonth ?? st.quizThisWeek;
+                final pctActive = (activeStudents / totalStudents * 100).round();
+                final pctLic = (st.licensesUsed / st.licensesTotal * 100).round();
                 return Column(children: [
                   Row(children: [
                     Expanded(
                         child: _statCard(
                             ctx,
                             Icons.people_outline,
-                            '${st.activeStudentsToday} / ${st.licensesTotal}',
+                            '$activeStudents / $totalStudents',
                             'Élèves actifs ($pctActive%)')),
                     const SizedBox(width: 10),
                     Expanded(
                         child: _statCard(ctx, Icons.trending_up_outlined,
-                            '${st.avgSuccessRate}%', 'Taux réussite')),
+                            '$avgScore%', 'Taux réussite')),
                   ]),
                   const SizedBox(height: 10),
                   Row(children: [
                     Expanded(
                         child: _statCard(ctx, Icons.psychology_outlined,
-                            '${st.quizThisWeek}', 'Quiz cette semaine')),
+                            '$quizCount', 'Quiz ce mois')),
                     const SizedBox(width: 10),
                     Expanded(
                         child: _statCard(

@@ -1,18 +1,49 @@
 import 'package:flutter/material.dart';
 import '../data/mock_data.dart';
 import '../data/models.dart';
+import '../services/achievement_service.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 
-class AchievementsScreen extends StatelessWidget {
+class AchievementsScreen extends StatefulWidget {
   const AchievementsScreen({super.key});
+  @override
+  State<AchievementsScreen> createState() => _AchievementsScreenState();
+}
+
+class _AchievementsScreenState extends State<AchievementsScreen> {
+  List<AchievementBadge> _badges = WinData.badges;
+  int _streak = WinData.streak;
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    try {
+      final result = await AchievementService.instance.getMyAchievements();
+      if (mounted) {
+        setState(() {
+          _badges = result.badges;
+          _streak = result.streak;
+          _loading = false;
+        });
+      }
+    } catch (_) {
+      // Fallback to mock data if the API is unavailable
+      if (mounted) setState(() => _loading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    const badges = WinData.badges;
+    final badges = _badges;
     final unlocked = badges.where((b) => b.unlocked).length;
     final total = badges.length;
 
@@ -26,48 +57,52 @@ class AchievementsScreen extends StatelessWidget {
         ),
         title: Text('Achievements', style: WinType.headlineS(s.onStrong)),
       ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
-        children: [
-          // Progress header
-          WinCard(
-            bg: WinColors.ink800,
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Row(children: [
-                const WinStreakFlame(WinData.streak, light: true, size: 28),
-                const SizedBox(width: 12),
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text('Série actuelle',
-                      style: WinType.labelM(WinColors.ink300)),
-                  Text('${WinData.streak} jours consécutifs',
-                      style: WinType.titleM(WinColors.cream50)),
-                ]),
-              ]),
-              const SizedBox(height: 16),
-              Text('$unlocked / $total badges débloqués',
-                  style: WinType.bodyS(WinColors.ink300)),
-              const SizedBox(height: 6),
-              WinProgressBar(unlocked / total * 100,
-                  color: WinColors.teal400),
-            ]),
-          ),
-          const SizedBox(height: 20),
-          Text('Mes badges', style: WinType.headlineS(s.onStrong)),
-          const SizedBox(height: 12),
-          GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisSpacing: 12,
-              crossAxisSpacing: 12,
-              childAspectRatio: 0.85,
+      body: _loading
+          ? const Center(child: CircularProgressIndicator())
+          : ListView(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+              children: [
+                // Progress header
+                WinCard(
+                  bg: WinColors.ink800,
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Row(children: [
+                      WinStreakFlame(_streak, light: true, size: 28),
+                      const SizedBox(width: 12),
+                      Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Text('Série actuelle',
+                            style: WinType.labelM(WinColors.ink300)),
+                        Text('$_streak jours consécutifs',
+                            style: WinType.titleM(WinColors.cream50)),
+                      ]),
+                    ]),
+                    const SizedBox(height: 16),
+                    Text('$unlocked / $total badges débloqués',
+                        style: WinType.bodyS(WinColors.ink300)),
+                    const SizedBox(height: 6),
+                    WinProgressBar(
+                      total > 0 ? unlocked / total * 100 : 0,
+                      color: WinColors.teal400,
+                    ),
+                  ]),
+                ),
+                const SizedBox(height: 20),
+                Text('Mes badges', style: WinType.headlineS(s.onStrong)),
+                const SizedBox(height: 12),
+                GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 12,
+                    crossAxisSpacing: 12,
+                    childAspectRatio: 0.85,
+                  ),
+                  itemCount: badges.length,
+                  itemBuilder: (_, i) => _BadgeCard(badges[i]),
+                ),
+              ],
             ),
-            itemCount: badges.length,
-            itemBuilder: (_, i) => _BadgeCard(badges[i]),
-          ),
-        ],
-      ),
     );
   }
 }

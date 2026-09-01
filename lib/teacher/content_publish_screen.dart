@@ -1,6 +1,7 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../services/teacher_service.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
@@ -25,6 +26,7 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
   bool _prixLibre = false;
   PlatformFile? _pickedFile;
   bool _loading = false;
+  String? _errorMsg;
 
   static const _types = ['Épreuve', 'Correction', 'Quiz', 'Livre', 'Pack', 'Fiche'];
   static const _subjects = ['Mathématiques', 'Physique', 'Chimie', 'Français', 'SVT', 'Anglais', 'Histoire-Géo'];
@@ -49,25 +51,42 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
 
   Future<void> _submit() async {
     if (_titleCtrl.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Veuillez saisir un titre.')),
-      );
+      if (mounted) setState(() => _errorMsg = 'Veuillez saisir un titre.');
       return;
     }
     if (_pickedFile == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Veuillez choisir un fichier.')),
-      );
+      if (mounted) setState(() => _errorMsg = 'Veuillez choisir un fichier.');
       return;
     }
-    setState(() => _loading = true);
-    await Future.delayed(const Duration(milliseconds: 1500));
-    if (!mounted) return;
-    setState(() => _loading = false);
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Contenu soumis pour révision !')),
-    );
-    Navigator.pop(context);
+    if (mounted) setState(() { _loading = true; _errorMsg = null; });
+    try {
+      final price = _prixLibre
+          ? (int.tryParse(_priceCtrl.text.trim()) ?? 0)
+          : 0;
+      final ok = await TeacherService.instance.publishContent(
+        title: _titleCtrl.text.trim(),
+        type: _type,
+        subjectCategory: _subject,
+        level: _level,
+        price: price,
+        description: _descCtrl.text.trim().isEmpty
+            ? null
+            : _descCtrl.text.trim(),
+      );
+      if (!mounted) return;
+      if (ok) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Contenu soumis pour révision !')),
+        );
+        Navigator.pop(context);
+      } else {
+        setState(() => _errorMsg = 'Échec de la soumission. Réessayez.');
+      }
+    } catch (e) {
+      if (mounted) setState(() => _errorMsg = 'Erreur réseau. Réessayez.');
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
   }
 
   Widget _label(String text) {
@@ -332,6 +351,14 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
               ]),
             ),
           const SizedBox(height: 28),
+
+          // 9. Erreur inline
+          if (_errorMsg != null) ...[
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Text(_errorMsg!, style: WinType.bodyS(WinColors.error)),
+            ),
+          ],
 
           // 9. Bouton publier
           WinButton(
