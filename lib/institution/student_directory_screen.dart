@@ -1,8 +1,5 @@
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import '../data/mock_data.dart';
-import '../data/models.dart';
-import '../shared/messaging/messaging_screen.dart';
+import '../services/institution_service.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
@@ -15,42 +12,97 @@ class StudentDirectoryScreen extends StatefulWidget {
 }
 
 class _StudentDirectoryScreenState extends State<StudentDirectoryScreen> {
+  int? _institutionId;
+  List<ApiInstitutionStudent> _students = [];
+  ApiInstitutionKpis? _kpis;
+  bool _loading = true;
+  bool _addLoading = false;
   String _query = '';
-  String _levelFilter = 'Tous';
-  String _statusFilter = 'Tous';
-  int _displayCount = 25;
+  String _addEmail = '';
+  String _addLevel = '';
+  String _addGroup = '';
+  String? _addError;
+  String? _addSuccess;
 
-  static const _levels = ['Tous', 'Tle C', '1ère', '2nde', 'BEPC', 'BTS', 'Concours'];
-  static const _statuses = ['Tous', 'Actifs', 'Inactifs'];
+  final _emailCtrl = TextEditingController();
+  final _levelCtrl = TextEditingController();
+  final _groupCtrl = TextEditingController();
 
-  List<MockStudent> get _filtered => WinData.mockStudents.where((s) {
-    final matchQ = _query.isEmpty ||
-        s.name.toLowerCase().contains(_query.toLowerCase());
-    final matchL = _levelFilter == 'Tous' || s.level.startsWith(_levelFilter);
-    final matchS = _statusFilter == 'Tous' ||
-        (_statusFilter == 'Actifs' && s.active) ||
-        (_statusFilter == 'Inactifs' && !s.active);
-    return matchQ && matchL && matchS;
-  }).toList();
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
 
-  void _showCsvImportDialog() {
-    showDialog(
-      context: context,
-      builder: (ctx) => _CsvImportDialog(
-        onSuccess: () => ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('1 823 élèves importés avec succès !')),
-        ),
-      ),
+  @override
+  void dispose() {
+    _emailCtrl.dispose();
+    _levelCtrl.dispose();
+    _groupCtrl.dispose();
+    super.dispose();
+  }
+
+  Future<void> _load() async {
+    final id = _institutionId ?? await InstitutionService.instance.getMyInstitutionId();
+    if (id == null) {
+      if (mounted) { setState(() => _loading = false); }
+      return;
+    }
+    final results = await Future.wait([
+      InstitutionService.instance.getStudentDirectory(id, q: _query.isEmpty ? null : _query),
+      InstitutionService.instance.getInstitutionKpis(id),
+    ]);
+    if (mounted) {
+      setState(() {
+        _institutionId = id;
+        _students = results[0] as List<ApiInstitutionStudent>;
+        _kpis = results[1] as ApiInstitutionKpis;
+        _loading = false;
+      });
+    }
+  }
+
+  Future<void> _search(String q) async {
+    setState(() => _query = q);
+    if (_institutionId == null) return;
+    final students = await InstitutionService.instance.getStudentDirectory(
+      _institutionId!, q: q.isEmpty ? null : q);
+    if (mounted) { setState(() => _students = students); }
+  }
+
+  Future<void> _addStudent() async {
+    if (_addEmail.trim().isEmpty) {
+      setState(() => _addError = 'Email requis');
+      return;
+    }
+    setState(() { _addLoading = true; _addError = null; _addSuccess = null; });
+    final ok = await InstitutionService.instance.addInstitutionStudent(
+      _institutionId!,
+      _addEmail.trim(),
+      level: _addLevel.trim().isEmpty ? null : _addLevel.trim(),
+      group: _addGroup.trim().isEmpty ? null : _addGroup.trim(),
     );
+    if (!mounted) return;
+    if (ok) {
+      _emailCtrl.clear();
+      _levelCtrl.clear();
+      _groupCtrl.clear();
+      setState(() {
+        _addEmail = '';
+        _addLevel = '';
+        _addGroup = '';
+        _addLoading = false;
+        _addSuccess = 'Élève ajouté avec succès';
+      });
+      await _load();
+    } else {
+      setState(() { _addLoading = false; _addError = 'Impossible d\'ajouter cet élève'; });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    final all = _filtered;
-    final shown = all.take(_displayCount).toList();
-    final totalAll = WinData.mockStudents.length;
-
     return Scaffold(
       backgroundColor: s.bg,
       appBar: AppBar(
@@ -60,235 +112,193 @@ class _StudentDirectoryScreenState extends State<StudentDirectoryScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text('Annuaire des élèves', style: WinType.headlineS(s.onStrong)),
-        actions: [
-          TextButton.icon(
-            icon: Icon(Icons.upload_file_outlined, color: s.primary, size: 18),
-            label: Text('CSV', style: WinType.labelM(s.primary)),
-            onPressed: _showCsvImportDialog,
-          ),
-          const SizedBox(width: 4),
-        ],
       ),
-      body: Column(children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
-          child: TextField(
-            onChanged: (v) => setState(() { _query = v; _displayCount = 25; }),
-            decoration: InputDecoration(
-              hintText: 'Rechercher par nom...',
-              hintStyle: WinType.bodyS(s.onFaint),
-              prefixIcon: Icon(Icons.search, size: 20, color: s.onFaint),
-              filled: true,
-              fillColor: s.surface2,
-              contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: s.outline)),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: s.outline)),
-              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: s.primary, width: 2)),
-            ),
-          ),
-        ),
-        const SizedBox(height: 8),
-        // Filtres Niveau
-        SizedBox(
-          height: 32,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            children: _levels.map((l) => Padding(
-              padding: const EdgeInsets.only(right: 6),
-              child: WinChip(l, active: _levelFilter == l,
-                  onTap: () => setState(() { _levelFilter = l; _displayCount = 25; })),
-            )).toList(),
-          ),
-        ),
-        const SizedBox(height: 6),
-        // Filtres Statut
-        SizedBox(
-          height: 32,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            children: _statuses.map((st) => Padding(
-              padding: const EdgeInsets.only(right: 6),
-              child: WinChip(st, active: _statusFilter == st,
-                  onTap: () => setState(() { _statusFilter = st; _displayCount = 25; })),
-            )).toList(),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
-          child: Row(children: [
-            Text('Affichage ${shown.length} sur $totalAll élèves',
-                style: WinType.labelM(s.onMuted)),
-          ]),
-        ),
-        Expanded(
-          child: all.isEmpty
-              ? Center(child: Text('Aucun résultat.', style: WinType.bodyM(s.onMuted)))
-              : ListView.separated(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-                  itemCount: shown.length + (shown.length < all.length ? 1 : 0),
-                  separatorBuilder: (_, __) => const SizedBox(height: 8),
-                  itemBuilder: (ctx, i) {
-                    if (i == shown.length) {
-                      return Padding(
-                        padding: const EdgeInsets.only(top: 8),
-                        child: WinButton(
-                          'Charger 25 de plus',
-                          variant: WinButtonVariant.outline,
-                          block: true,
-                          icon: Icons.expand_more,
-                          onTap: () => setState(() => _displayCount += 25),
+      body: _loading
+          ? const Center(child: CircularProgressIndicator())
+          : _institutionId == null
+              ? Center(child: Text('Aucune institution associée.', style: WinType.bodyM(s.onMuted)))
+              : Column(children: [
+                  // KPIs
+                  if (_kpis != null)
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                      child: Row(children: [
+                        _KpiCard(label: 'Élèves', value: '${_kpis!.totalStudents}', s: s),
+                        const SizedBox(width: 8),
+                        _KpiCard(label: 'Actifs', value: '${_kpis!.activeStudents}', s: s),
+                        const SizedBox(width: 8),
+                        _KpiCard(label: 'Moy.', value: '${_kpis!.averageScore.toStringAsFixed(0)}%', s: s),
+                        const SizedBox(width: 8),
+                        _KpiCard(label: 'Groupes', value: '${_kpis!.groupCount}', s: s),
+                      ]),
+                    ),
+                  // Add student form
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Text('Ajouter un élève', style: WinType.titleM(s.onStrong)),
+                      const SizedBox(height: 8),
+                      Row(children: [
+                        Expanded(child: _buildTextField(s, _emailCtrl, 'Email', (v) => _addEmail = v)),
+                        const SizedBox(width: 8),
+                        SizedBox(width: 90, child: _buildTextField(s, _levelCtrl, 'Niveau', (v) => _addLevel = v)),
+                        const SizedBox(width: 8),
+                        SizedBox(width: 90, child: _buildTextField(s, _groupCtrl, 'Groupe', (v) => _addGroup = v)),
+                        const SizedBox(width: 8),
+                        FilledButton(
+                          onPressed: _addLoading ? null : _addStudent,
+                          style: FilledButton.styleFrom(backgroundColor: s.primary, foregroundColor: s.onPrimary, padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13)),
+                          child: _addLoading
+                              ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                              : const Icon(Icons.add, size: 18),
                         ),
-                      );
-                    }
-                    return _StudentRow(student: shown[i]);
-                  },
-                ),
-        ),
-      ]),
+                      ]),
+                      if (_addError != null)
+                        Padding(padding: const EdgeInsets.only(top: 4), child: Text(_addError!, style: WinType.labelM(WinColors.error))),
+                      if (_addSuccess != null)
+                        Padding(padding: const EdgeInsets.only(top: 4), child: Text(_addSuccess!, style: WinType.labelM(WinColors.success))),
+                    ]),
+                  ),
+                  const SizedBox(height: 10),
+                  // Search
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: TextField(
+                      onChanged: _search,
+                      decoration: InputDecoration(
+                        hintText: 'Rechercher par nom ou email…',
+                        hintStyle: WinType.bodyS(s.onFaint),
+                        prefixIcon: Icon(Icons.search, size: 20, color: s.onFaint),
+                        filled: true,
+                        fillColor: s.surface2,
+                        contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: s.outline)),
+                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: s.outline)),
+                        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: s.primary, width: 2)),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text('${_students.length} élève${_students.length != 1 ? 's' : ''}', style: WinType.labelM(s.onMuted)),
+                    ),
+                  ),
+                  Expanded(
+                    child: _students.isEmpty
+                        ? Center(child: Text('Aucun élève trouvé.', style: WinType.bodyM(s.onMuted)))
+                        : ListView.separated(
+                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                            itemCount: _students.length,
+                            separatorBuilder: (_, __) => const SizedBox(height: 8),
+                            itemBuilder: (_, i) => _StudentRow(student: _students[i], s: s),
+                          ),
+                  ),
+                ]),
+    );
+  }
+
+  Widget _buildTextField(WinScheme s, TextEditingController ctrl, String hint, ValueChanged<String> onChanged) {
+    return TextField(
+      controller: ctrl,
+      onChanged: onChanged,
+      style: WinType.bodyS(s.onStrong),
+      decoration: InputDecoration(
+        hintText: hint,
+        hintStyle: WinType.bodyS(s.onFaint),
+        filled: true,
+        fillColor: s.surface2,
+        contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: s.outline)),
+        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: s.outline)),
+        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: s.primary, width: 2)),
+      ),
     );
   }
 }
 
-class _CsvImportDialog extends StatefulWidget {
-  final VoidCallback onSuccess;
-  const _CsvImportDialog({required this.onSuccess});
-
-  @override
-  State<_CsvImportDialog> createState() => _CsvImportDialogState();
-}
-
-class _CsvImportDialogState extends State<_CsvImportDialog> {
-  String? _fileName;
-  bool _loading = false;
-  bool _done = false;
-
-  Future<void> _pickFile() async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['csv'],
-    );
-    if (result != null && result.files.isNotEmpty) {
-      setState(() { _fileName = result.files.first.name; _loading = true; });
-      await Future.delayed(const Duration(seconds: 2));
-      if (!mounted) return;
-      setState(() { _loading = false; _done = true; });
-    }
-  }
+class _KpiCard extends StatelessWidget {
+  final String label;
+  final String value;
+  final WinScheme s;
+  const _KpiCard({required this.label, required this.value, required this.s});
 
   @override
   Widget build(BuildContext context) {
-    final s = WinTheme.of(context);
-    return AlertDialog(
-      backgroundColor: s.surface,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      title: Text('Import CSV', style: WinType.archivo(size: 17, color: s.onStrong)),
-      content: _done
-          ? Column(mainAxisSize: MainAxisSize.min, children: [
-              const Icon(Icons.check_circle_outline, size: 40, color: WinColors.success),
-              const SizedBox(height: 10),
-              Text('1 823 élèves importés avec succès !',
-                  style: WinType.bodyM(s.onStrong), textAlign: TextAlign.center),
-            ])
-          : Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(
-                'Choisissez un fichier CSV avec les colonnes :\nnom, email, niveau, groupe',
-                style: WinType.bodyS(s.onMuted),
-              ),
-              if (_fileName != null) ...[
-                const SizedBox(height: 10),
-                Row(children: [
-                  Icon(Icons.description_outlined, size: 16, color: s.primary),
-                  const SizedBox(width: 6),
-                  Expanded(child: Text(_fileName!, style: WinType.labelM(s.onStrong),
-                      overflow: TextOverflow.ellipsis)),
-                ]),
-              ],
-              if (_loading) ...[
-                const SizedBox(height: 16),
-                const Row(children: [
-                  SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2)),
-                  SizedBox(width: 12),
-                  Text('Import en cours...'),
-                ]),
-              ],
-            ]),
-      actions: _done
-          ? [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  widget.onSuccess();
-                },
-                child: Text('Fermer', style: WinType.labelM(s.primary)),
-              ),
-            ]
-          : [
-              TextButton(
-                onPressed: _loading ? null : () => Navigator.pop(context),
-                child: Text('Annuler', style: WinType.labelM(s.onMuted)),
-              ),
-              if (!_loading)
-                TextButton(
-                  onPressed: _pickFile,
-                  child: Text('Choisir un fichier', style: WinType.labelM(s.primary)),
-                ),
-            ],
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        decoration: BoxDecoration(
+          color: s.surface,
+          border: Border.all(color: s.outline),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(children: [
+          Text(value, style: WinType.archivo(size: 18, color: s.primary)),
+          Text(label, style: WinType.labelM(s.onMuted)),
+        ]),
+      ),
     );
   }
 }
 
 class _StudentRow extends StatelessWidget {
-  final MockStudent student;
-  const _StudentRow({required this.student});
+  final ApiInstitutionStudent student;
+  final WinScheme s;
+  const _StudentRow({required this.student, required this.s});
 
   @override
   Widget build(BuildContext context) {
-    final s = WinTheme.of(context);
-    final scoreColor = student.score >= 70
-        ? WinColors.success
-        : student.score >= 50
-            ? WinColors.warn
-            : WinColors.error;
+    final score = student.averageScore;
+    final scoreColor = score == null
+        ? s.onFaint
+        : score >= 70
+            ? WinColors.success
+            : score >= 50
+                ? WinColors.warn
+                : WinColors.error;
 
     return WinCard(
       padding: const EdgeInsets.all(12),
       child: Row(children: [
-        WinAvatar(student.name, size: 40),
+        WinAvatar(student.fullName.isEmpty ? student.email : student.fullName, size: 40),
         const SizedBox(width: 12),
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(student.name, style: WinType.titleM(s.onStrong)),
-          Text('${student.level} · ${student.group}', style: WinType.labelM(s.onMuted)),
-          const SizedBox(height: 4),
-          SizedBox(
-            width: 80,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(3),
-              child: LinearProgressIndicator(
-                value: student.score / 100,
-                minHeight: 4,
-                backgroundColor: s.outline2,
-                valueColor: AlwaysStoppedAnimation(scoreColor),
+          Text(
+            student.fullName.isEmpty ? student.email : student.fullName,
+            style: WinType.titleM(s.onStrong),
+          ),
+          Text(
+            [if (student.level != null) student.level!, if (student.group != null) student.group!].join(' · '),
+            style: WinType.labelM(s.onMuted),
+          ),
+          if (student.matricule != null)
+            Text(student.matricule!, style: WinType.labelM(s.onFaint)),
+        ])),
+        if (score != null) ...[
+          Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+            Text('${score.toStringAsFixed(0)}%', style: WinType.archivo(size: 14, color: scoreColor)),
+            const SizedBox(height: 4),
+            SizedBox(
+              width: 60,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(3),
+                child: LinearProgressIndicator(
+                  value: score / 100,
+                  minHeight: 4,
+                  backgroundColor: s.outline2,
+                  valueColor: AlwaysStoppedAnimation(scoreColor),
+                ),
               ),
             ),
-          ),
-        ])),
-        Text('${student.score}%', style: WinType.archivo(size: 15, color: scoreColor)),
-        const SizedBox(width: 8),
+          ]),
+          const SizedBox(width: 10),
+        ],
         Icon(
-          student.active ? Icons.circle : Icons.circle_outlined,
+          student.isActive ? Icons.circle : Icons.circle_outlined,
           size: 10,
-          color: student.active ? WinColors.success : s.onFaint,
-        ),
-        const SizedBox(width: 8),
-        GestureDetector(
-          onTap: () => Navigator.push(context,
-              MaterialPageRoute(builder: (_) => const MessagingScreen())),
-          child: Icon(Icons.chat_outlined, size: 20, color: s.primary),
+          color: student.isActive ? WinColors.success : s.onFaint,
         ),
       ]),
     );

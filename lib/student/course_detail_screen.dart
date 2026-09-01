@@ -20,18 +20,60 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
   String? _error;
   final Set<int> _openSections = {0};
 
+  List<CourseReview> _reviews = [];
+  int _reviewRating = 5;
+  final _reviewCtrl = TextEditingController();
+  bool _submittingReview = false;
+  bool _reviewSuccess = false;
+  String? _reviewError;
+
   @override
   void initState() {
     super.initState();
     _load();
   }
 
+  @override
+  void dispose() {
+    _reviewCtrl.dispose();
+    super.dispose();
+  }
+
   Future<void> _load() async {
     try {
-      final c = await CourseService.instance.get(widget.courseId);
-      if (mounted) setState(() { _course = c; _loading = false; });
+      final results = await Future.wait([
+        CourseService.instance.get(widget.courseId),
+        CourseService.instance.getReviews(widget.courseId),
+      ]);
+      if (mounted) {
+        setState(() {
+          _course = results[0] as CourseDetail;
+          _reviews = results[1] as List<CourseReview>;
+          _loading = false;
+        });
+      }
     } catch (_) {
-      if (mounted) setState(() { _loading = false; _error = 'Formation introuvable.'; });
+      if (mounted) { setState(() { _loading = false; _error = 'Formation introuvable.'; }); }
+    }
+  }
+
+  Future<void> _submitReview() async {
+    setState(() { _submittingReview = true; _reviewError = null; });
+    try {
+      await CourseService.instance.submitReview(
+        widget.courseId, _reviewRating,
+        comment: _reviewCtrl.text.trim().isEmpty ? null : _reviewCtrl.text.trim(),
+      );
+      final reviews = await CourseService.instance.getReviews(widget.courseId);
+      if (mounted) setState(() {
+        _reviews = reviews;
+        _reviewSuccess = true;
+        _reviewCtrl.clear();
+      });
+    } catch (e) {
+      if (mounted) { setState(() => _reviewError = 'Erreur lors de la soumission.'); }
+    } finally {
+      if (mounted) { setState(() => _submittingReview = false); }
     }
   }
 
@@ -254,6 +296,119 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                 ]),
               );
             }),
+
+            // Reviews
+            const SizedBox(height: 20),
+            Row(children: [
+              const Icon(Icons.star_rounded, size: 18, color: WinColors.gold),
+              const SizedBox(width: 6),
+              Text('Avis${c.reviewsCount > 0 ? " (${c.reviewsCount})" : ""}',
+                  style: WinType.headlineS(s.onStrong)),
+            ]),
+            const SizedBox(height: 10),
+
+            // Formulaire si inscrit et pas encore soumis
+            if (c.isEnrolled && !_reviewSuccess) ...[
+              WinCard(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text('Donnez votre avis', style: WinType.titleM(s.onStrong)),
+                const SizedBox(height: 10),
+                Row(children: List.generate(5, (i) => GestureDetector(
+                  onTap: () => setState(() => _reviewRating = i + 1),
+                  child: Icon(
+                    i < _reviewRating ? Icons.star_rounded : Icons.star_outline_rounded,
+                    size: 30, color: WinColors.gold,
+                  ),
+                ))),
+                const SizedBox(height: 10),
+                TextField(
+                  controller: _reviewCtrl,
+                  maxLines: 3,
+                  decoration: InputDecoration(
+                    hintText: 'Partagez votre expérience (optionnel)…',
+                    hintStyle: WinType.bodyM(s.onFaint),
+                    filled: true,
+                    fillColor: s.bg,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: s.outline),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: s.outline),
+                    ),
+                    contentPadding: const EdgeInsets.all(12),
+                  ),
+                ),
+                if (_reviewError != null) ...[
+                  const SizedBox(height: 6),
+                  Text(_reviewError!, style: WinType.bodyS(WinColors.error)),
+                ],
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton(
+                    style: FilledButton.styleFrom(
+                      backgroundColor: s.primary,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    ),
+                    onPressed: _submittingReview ? null : _submitReview,
+                    child: Text(_submittingReview ? 'Envoi…' : 'Publier mon avis',
+                        style: WinType.titleM(s.onPrimary)),
+                  ),
+                ),
+              ])),
+              const SizedBox(height: 12),
+            ],
+
+            if (_reviewSuccess)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: Row(children: [
+                  Icon(Icons.check_circle, size: 16, color: WinColors.success),
+                  const SizedBox(width: 6),
+                  Text('Merci pour votre avis !', style: WinType.bodyM(WinColors.success)),
+                ]),
+              ),
+
+            // Liste des avis
+            if (_reviews.isEmpty)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: Text('Aucun avis pour le moment.', style: WinType.bodyM(s.onMuted)),
+              )
+            else
+              ..._reviews.map((r) => Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: WinCard(child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  CircleAvatar(
+                    radius: 18,
+                    backgroundImage: r.authorAvatarUrl != null ? NetworkImage(r.authorAvatarUrl!) : null,
+                    backgroundColor: s.surface2,
+                    child: r.authorAvatarUrl == null
+                        ? Text(r.authorName[0].toUpperCase(), style: WinType.labelM(s.onMuted))
+                        : null,
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Row(children: [
+                      Expanded(child: Text(r.authorName,
+                          style: WinType.bodyM(s.onStrong).copyWith(fontWeight: FontWeight.w600))),
+                      if (r.isVerified) ...[
+                        Icon(Icons.verified, size: 13, color: WinColors.success),
+                        const SizedBox(width: 2),
+                      ],
+                      ...List.generate(5, (i) => Icon(
+                        i < r.rating ? Icons.star_rounded : Icons.star_outline_rounded,
+                        size: 13, color: WinColors.gold,
+                      )),
+                    ]),
+                    if (r.comment != null && r.comment!.isNotEmpty) ...[
+                      const SizedBox(height: 4),
+                      Text(r.comment!, style: WinType.bodyM(s.onSurface)),
+                    ],
+                  ])),
+                ])),
+              )),
 
             const SizedBox(height: 32),
           ]),

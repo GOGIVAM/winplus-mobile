@@ -424,6 +424,38 @@ class MyEnrollment {
   }
 }
 
+// ─── Reviews ─────────────────────────────────────────────────────────────────
+
+class CourseReview {
+  final int id;
+  final int rating;
+  final String? comment;
+  final bool isVerified;
+  final String createdAt;
+  final String authorName;
+  final String? authorAvatarUrl;
+
+  const CourseReview({
+    required this.id,
+    required this.rating,
+    this.comment,
+    required this.isVerified,
+    required this.createdAt,
+    required this.authorName,
+    this.authorAvatarUrl,
+  });
+
+  factory CourseReview.fromJson(Map<String, dynamic> j) => CourseReview(
+        id: j['id'] as int? ?? 0,
+        rating: j['rating'] as int? ?? 0,
+        comment: j['comment'] as String?,
+        isVerified: j['isVerified'] as bool? ?? false,
+        createdAt: j['createdAt'] as String? ?? '',
+        authorName: (j['author'] as Map<String, dynamic>?)?['name'] as String? ?? 'Utilisateur',
+        authorAvatarUrl: (j['author'] as Map<String, dynamic>?)?['avatarUrl'] as String?,
+      );
+}
+
 // ─── Service ──────────────────────────────────────────────────────────────────
 
 class CourseService {
@@ -513,5 +545,19 @@ class CourseService {
       progressPercent: ((d['progressPercent'] ?? 0) as num).toDouble(),
       courseCompleted: d['courseCompleted'] as bool? ?? false,
     );
+  }
+
+  // Avis
+  Future<List<CourseReview>> getReviews(int courseId) async {
+    final res = await _api.dio.get('/courses/$courseId/reviews',
+        queryParameters: {'page': 1, 'pageSize': 10});
+    final data = res.data;
+    final list = data is Map ? (data['data'] as List? ?? []) : (data as List? ?? []);
+    return list.map((e) => CourseReview.fromJson(e as Map<String, dynamic>)).toList();
+  }
+
+  Future<void> submitReview(int courseId, int rating, {String? comment}) async {
+    await _api.dio.post('/courses/$courseId/reviews',
+        data: {'rating': rating, if (comment != null && comment.isNotEmpty) 'comment': comment});
   }
 }

@@ -1,5 +1,66 @@
 import 'api_client.dart';
 
+class ApiInstitutionStudent {
+  final int id;
+  final String firstName;
+  final String lastName;
+  final String email;
+  final String? level;
+  final String? group;
+  final String? matricule;
+  final double? averageScore;
+  final bool isActive;
+
+  const ApiInstitutionStudent({
+    required this.id,
+    required this.firstName,
+    required this.lastName,
+    required this.email,
+    this.level,
+    this.group,
+    this.matricule,
+    this.averageScore,
+    this.isActive = true,
+  });
+
+  String get fullName => '$firstName $lastName'.trim();
+
+  factory ApiInstitutionStudent.fromJson(Map<String, dynamic> j) =>
+      ApiInstitutionStudent(
+        id: j['id'] as int? ?? 0,
+        firstName: j['firstName'] as String? ?? '',
+        lastName: j['lastName'] as String? ?? '',
+        email: j['email'] as String? ?? '',
+        level: j['level'] as String?,
+        group: j['group'] as String?,
+        matricule: j['matricule'] as String?,
+        averageScore: (j['averageScore'] as num?)?.toDouble(),
+        isActive: j['isActive'] as bool? ?? true,
+      );
+}
+
+class ApiInstitutionKpis {
+  final int totalStudents;
+  final int activeStudents;
+  final double averageScore;
+  final int groupCount;
+
+  const ApiInstitutionKpis({
+    this.totalStudents = 0,
+    this.activeStudents = 0,
+    this.averageScore = 0,
+    this.groupCount = 0,
+  });
+
+  factory ApiInstitutionKpis.fromJson(Map<String, dynamic> j) =>
+      ApiInstitutionKpis(
+        totalStudents: j['totalStudents'] as int? ?? 0,
+        activeStudents: j['activeStudents'] as int? ?? 0,
+        averageScore: (j['averageScore'] as num?)?.toDouble() ?? 0,
+        groupCount: j['groupCount'] as int? ?? 0,
+      );
+}
+
 class ApiGroup {
   final int id;
   final String name;
@@ -210,6 +271,73 @@ class InstitutionService {
       return (res.data as Map<String, dynamic>?)?['plan'] as String?;
     } catch (_) {
       return null;
+    }
+  }
+
+  Future<int?> getMyInstitutionId() async {
+    try {
+      final res = await _api.dio.get('/institution/me');
+      return (res.data as Map<String, dynamic>?)?['id'] as int?;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<List<ApiInstitutionStudent>> getStudentDirectory(
+    int institutionId, {
+    String? q,
+    int page = 1,
+    int pageSize = 50,
+  }) async {
+    final res = await _api.dio.get(
+      '/institution/$institutionId/students',
+      queryParameters: {
+        if (q != null && q.isNotEmpty) 'q': q,
+        'page': page,
+        'pageSize': pageSize,
+      },
+    );
+    final data = res.data;
+    final list = (data is Map ? data['items'] : data) as List? ?? [];
+    return list
+        .map((e) => ApiInstitutionStudent.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<ApiInstitutionKpis> getInstitutionKpis(int institutionId) async {
+    try {
+      final res = await _api.dio.get('/institution/$institutionId/kpis');
+      return ApiInstitutionKpis.fromJson(
+          res.data as Map<String, dynamic>? ?? {});
+    } catch (_) {
+      return const ApiInstitutionKpis();
+    }
+  }
+
+  Future<bool> addInstitutionStudent(
+    int institutionId,
+    String email, {
+    String? level,
+    String? group,
+    String? matricule,
+  }) async {
+    try {
+      await _api.dio.post(
+        '/institution/$institutionId/students/import',
+        data: {
+          'rows': [
+            {
+              'email': email,
+              if (level != null) 'level': level,
+              if (group != null) 'group': group,
+              if (matricule != null) 'matricule': matricule,
+            }
+          ],
+        },
+      );
+      return true;
+    } catch (_) {
+      return false;
     }
   }
 }
