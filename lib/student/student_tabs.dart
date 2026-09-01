@@ -19,6 +19,8 @@ import 'exam_coach_screen.dart';
 import 'study_groups_screen.dart';
 import 'student_reports_screen.dart';
 import 'quiz_revision_screen.dart';
+import 'my_courses_screen.dart';
+import 'course_catalog_screen.dart';
 
 export 'student_home.dart' show StudentHomeTab;
 
@@ -85,6 +87,32 @@ class _StudentCatalogTabState extends State<StudentCatalogTab> {
             ),
         ]),
       ),
+      // Bannière formations
+      GestureDetector(
+        onTap: () => Navigator.push(context,
+            MaterialPageRoute(builder: (_) => const CourseCatalogScreen())),
+        child: Container(
+          margin: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Color(0xFF0D9488), Color(0xFF0F766E)],
+              begin: Alignment.centerLeft, end: Alignment.centerRight,
+            ),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Row(children: [
+            const Icon(Icons.play_lesson_outlined, color: Colors.white, size: 22),
+            const SizedBox(width: 12),
+            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text('Formations structurées', style: WinType.titleM(Colors.white)),
+              Text('Apprenez à votre rythme · Certificats inclus',
+                  style: WinType.labelS(Colors.white70)),
+            ])),
+            const Icon(Icons.arrow_forward_ios, color: Colors.white60, size: 14),
+          ]),
+        ),
+      ),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: GestureDetector(
@@ -148,6 +176,13 @@ class StudentSpaceTab extends StatelessWidget {
             Expanded(child: _MiniStat(WinData.studyToday, "Étude aujourd'hui", Icons.schedule)),
           ]),
           const SizedBox(height: 16),
+          // Formations
+          _QuickLink('Mes formations', Icons.play_lesson_outlined, WinColors.teal600,
+              () => Navigator.push(context, MaterialPageRoute(builder: (_) => const MyCoursesScreen()))),
+          const SizedBox(height: 10),
+          _QuickLink('Catalogue formations', Icons.explore_outlined, WinColors.teal400,
+              () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CourseCatalogScreen()))),
+          const SizedBox(height: 10),
           Row(children: [
             Expanded(child: _QuickLink('Favoris', Icons.favorite_border, WinColors.error,
                 () => Navigator.push(context, MaterialPageRoute(builder: (_) => const FavoritesScreen())))),

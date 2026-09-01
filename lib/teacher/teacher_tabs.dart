@@ -8,6 +8,7 @@ import '../shared/subscription/subscription_notifier.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
+import 'teacher_courses_screen.dart';
 import '../widgets/win_widgets.dart';
 import 'content_publish_screen.dart';
 import 'content_actions_sheet.dart';
@@ -476,6 +477,40 @@ class _TeacherContentTabState extends State<TeacherContentTab> {
   @override
   Widget build(BuildContext context) {
     return Column(children: [
+      // Bannière formations structurées
+      GestureDetector(
+        onTap: () => Navigator.push(context,
+            MaterialPageRoute(builder: (_) => const TeacherCoursesScreen())),
+        child: Container(
+          margin: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Color(0xFF0F172A), Color(0xFF1E293B)],
+              begin: Alignment.centerLeft, end: Alignment.centerRight,
+            ),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Row(children: [
+            const Icon(Icons.play_lesson_outlined, color: WinColors.teal400, size: 22),
+            const SizedBox(width: 12),
+            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text('Mes formations', style: WinType.titleM(Colors.white)),
+              Text('Créez et gérez vos cours structurés',
+                  style: WinType.labelS(Colors.white54)),
+            ])),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              decoration: BoxDecoration(
+                color: WinColors.teal600,
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Text('Gérer', style: WinType.labelS(Colors.white)
+                  .copyWith(fontWeight: FontWeight.w700)),
+            ),
+          ]),
+        ),
+      ),
       SizedBox(
           height: 36,
           child: ListView.separated(
