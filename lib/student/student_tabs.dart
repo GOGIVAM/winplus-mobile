@@ -21,6 +21,8 @@ import 'student_reports_screen.dart';
 import 'quiz_revision_screen.dart';
 import 'my_courses_screen.dart';
 import 'course_catalog_screen.dart';
+import 'tutors/tutor_search_screen.dart';
+import 'tutors/my_tutor_bookings_screen.dart';
 
 export 'student_home.dart' show StudentHomeTab;
 
@@ -113,6 +115,32 @@ class _StudentCatalogTabState extends State<StudentCatalogTab> {
           ]),
         ),
       ),
+      // Bannière répétiteurs (Mode Répétiteur — professeur_complete.md)
+      GestureDetector(
+        onTap: () => Navigator.push(context,
+            MaterialPageRoute(builder: (_) => const TutorSearchScreen())),
+        child: Container(
+          margin: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Color(0xFF2563EB), Color(0xFF1D4ED8)],
+              begin: Alignment.centerLeft, end: Alignment.centerRight,
+            ),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Row(children: [
+            const Icon(Icons.person_search_outlined, color: Colors.white, size: 22),
+            const SizedBox(width: 12),
+            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text('Trouver un répétiteur', style: WinType.titleM(Colors.white)),
+              Text('Cours particuliers en ligne ou à domicile',
+                  style: WinType.labelS(Colors.white70)),
+            ])),
+            const Icon(Icons.arrow_forward_ios, color: Colors.white60, size: 14),
+          ]),
+        ),
+      ),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: GestureDetector(
@@ -182,6 +210,12 @@ class StudentSpaceTab extends StatelessWidget {
           const SizedBox(height: 10),
           _QuickLink('Catalogue formations', Icons.explore_outlined, WinColors.teal400,
               () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CourseCatalogScreen()))),
+          const SizedBox(height: 10),
+          _QuickLink('Trouver un répétiteur', Icons.person_search_outlined, WinColors.blue500,
+              () => Navigator.push(context, MaterialPageRoute(builder: (_) => const TutorSearchScreen()))),
+          const SizedBox(height: 10),
+          _QuickLink('Mes réservations', Icons.event_available_outlined, WinColors.teal500,
+              () => Navigator.push(context, MaterialPageRoute(builder: (_) => const MyTutorBookingsScreen()))),
           const SizedBox(height: 10),
           Row(children: [
             Expanded(child: _QuickLink('Favoris', Icons.favorite_border, WinColors.error,

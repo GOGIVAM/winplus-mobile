@@ -97,6 +97,34 @@ class TeacherService {
 
   final _api = ApiClient.instance;
 
+  /// Crée une session d'enseignement (POST /api/sessions). `date` vient d'un
+  /// champ texte libre (pas encore un vrai sélecteur date/heure côté écran) :
+  /// on tente un parse ISO, sinon on programme demain à défaut plutôt que
+  /// d'échouer silencieusement.
+  Future<bool> createSession({
+    required String title,
+    required String date,
+    String? link,
+    int durationMinutes = 60,
+    int? maxStudents,
+  }) async {
+    try {
+      final startDate = DateTime.tryParse(date) ?? DateTime.now().add(const Duration(days: 1));
+      await _api.dio.post('/sessions', data: {
+        'title': title,
+        'type': 'live',
+        'startDate': startDate.toIso8601String(),
+        'durationMinutes': durationMinutes,
+        'maxParticipants': maxStudents,
+        'externalLink': link,
+        'isFree': true,
+      });
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
   Future<List<ApiPublishedContent>> getMyContent() async {
     final res = await _api.dio.get('/teacher/contents/mine');
     final list = res.data as List? ?? [];
@@ -137,11 +165,16 @@ class TeacherService {
         .toList();
   }
 
-  Future<bool> correctSubmission(int submissionId, int score) async {
+  /// Note une copie précise. Route réellement exposée par le backend :
+  /// POST /api/corrections/{id} avec {note, comment, status} (contrat déjà
+  /// utilisé par CorrectionQueue.tsx côté web) — PUT /teacher/corrections/pending
+  /// n'a jamais existé côté .NET, cet appel échouait toujours en 404.
+  Future<bool> correctSubmission(int submissionId, int score, [String? feedback]) async {
     try {
-      await _api.dio.put('/teacher/corrections/pending', data: {
-        'id': submissionId,
-        'score': score,
+      await _api.dio.post('/corrections/$submissionId', data: {
+        'note': score,
+        'comment': feedback,
+        'status': 'submitted',
       });
       return true;
     } catch (_) {

@@ -16,6 +16,8 @@ import 'correction_queue_screen.dart';
 import 'session_create_screen.dart';
 import '../shared/messaging/messaging_screen.dart';
 import 'teacher_links_screen.dart';
+import 'tutor_profile_screen.dart';
+import 'tutor_bookings_screen.dart';
 
 BadgeColor _statusColor(String s) => switch (s) {
       'Publié' => BadgeColor.success,
@@ -728,6 +730,20 @@ class _TeacherStudentsTabState extends State<TeacherStudentsTab> {
                 icon: Icons.link_outlined,
                 onTap: () => Navigator.push(context,
                     MaterialPageRoute(builder: (_) => const TeacherLinksScreen()))),
+            const SizedBox(height: 10),
+            WinButton('Mode Répétiteur',
+                variant: WinButtonVariant.outline,
+                block: true,
+                icon: Icons.school_outlined,
+                onTap: () => Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => const TutorProfileScreen()))),
+            const SizedBox(height: 10),
+            WinButton('Mes réservations élèves',
+                variant: WinButtonVariant.outline,
+                block: true,
+                icon: Icons.event_available_outlined,
+                onTap: () => Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => const TutorBookingsScreen()))),
             const SizedBox(height: 24),
             Text('Étudiants',
                 style: WinType.archivo(size: 18, color: s.onStrong)),
