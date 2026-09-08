@@ -124,7 +124,7 @@ Cela signifie que l'UI doit afficher les quotas/limites en fonction du plan, mai
 [Splash] → [Welcome] → [Login → RoleShell]
 
 HOME TAB
-├── Hero : "Bonjour [Prénom] · BAC C · Terminale · 🔥14 jours"
+├── Hero : "Bonjour [Prénom] · BAC C · Terminale · 14 jours"
 │         Score moyen 78% | 32h cette semaine
 ├── Continue Learning (reprendre où on s'est arrêté)
 │   └── [Card] BAC C Maths 2023  65% · Reprendre →
@@ -223,7 +223,7 @@ DASHBOARD TAB
 │   ├── X contenus publiés · Y téléchargements · Note moy. 4,8 ⭐
 │   └── N étudiants actifs · M classes
 ├── Insights IA
-│   ├── 🔥 "Pack ENSP  meilleur vendeur ce mois"
+│   ├──  "Pack ENSP  meilleur vendeur ce mois"
 │   └── 📈 "+12% téléchargements cette semaine"
 └── [Correction queue] [+ Publier contenu]
 
@@ -744,7 +744,7 @@ static final List<MockStudent> mockStudents = [
 | Widget à ajouter | Endpoint mock (§4) | Statut |
 |---|---|---|
 | Nom + date dynamiques depuis SessionManager | `§4.1` | ❌ |
-| Stats : streak 🔥, score moyen, heures/semaine | `§4.8` | ❌ hardcodé |
+| Stats : streak , score moyen, heures/semaine | `§4.8` | ❌ hardcodé |
 | **Continue Learning** (2-3 cards avec %) | `§4.4` | ❌ |
 | **Recommandations IA** (avec `reason` affiché) | `§4.5` | ❌ |
 | **Compte à rebours** (prochain examen) | `§4.7` | ❌ |
@@ -1299,7 +1299,7 @@ static final List<AtRiskStudent> mockAtRiskStudents = [
    - Icône cloche à droite → NotificationsScreen (avec badge)
 
 2. **Bandeau streak + stats (3 cartes horizontales)**
-   - 🔥 Streak : "14 jours de suite"
+   -  Streak : "14 jours de suite"
    - 📊 Score moyen : "78%"
    - ⏱ Cette semaine : "32h d'étude"
 
@@ -1438,7 +1438,7 @@ static final _mockGroups = [
 
 1. **Sélecteur période** : `[7j]` `[30j]` `[90j]` `[1 an]` (limite selon plan)
 2. **Score par matière** : barres horizontales colorées (vert/orange/rouge selon seuil)
-3. **Résumé global** : streak 🔥 · quiz taux · heures d'étude
+3. **Résumé global** : streak  · quiz taux · heures d'étude
 4. **Export** : `[PDF]` Standard+ · `[Excel]` Premium+ → dialog mock
 
 **Données locales :**
@@ -1872,7 +1872,7 @@ file_picker: ^8.0.0
 
 4. **Insights WinAI** (section "Vos insights")
    - 3 cards (depuis `§4.15`) :
-     - 🔥 "Pack ENSP 2019-2023  meilleur vendeur ce mois"
+     -  "Pack ENSP 2019-2023  meilleur vendeur ce mois"
      - 💡 "Terminale C représente 68% de votre audience"
      - 📈 "+12% de téléchargements cette semaine"
 
