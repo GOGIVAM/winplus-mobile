@@ -98,6 +98,10 @@ class UserService {
     String? lastName,
     String? phone,
     String? level,
+    String? specialization,
+    String? targetExam,
+    List<String>? teachingSubjects,
+    List<String>? teachingLevels,
   }) async {
     try {
       await _api.dio.put('/users/profile', data: {
@@ -105,6 +109,10 @@ class UserService {
         if (lastName != null) 'lastName': lastName,
         if (phone != null) 'phone': phone,
         if (level != null) 'level': level,
+        if (specialization != null) 'specialization': specialization,
+        if (targetExam != null) 'targetExam': targetExam,
+        if (teachingSubjects != null) 'teachingSubjects': teachingSubjects,
+        if (teachingLevels != null) 'teachingLevels': teachingLevels,
       });
       return true;
     } catch (_) {

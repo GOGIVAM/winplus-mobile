@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
+import '../data/mock_data.dart';
+import '../data/models.dart';
+import '../services/session_manager.dart';
+import '../services/user_service.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import 'onboarding_success_screen.dart';
 
+/// Complétion de profil après vérification d'email. Le contenu s'adapte au
+/// rôle du compte (student/teacher/parent/institution) — un professeur n'a
+/// pas de "niveau scolaire actuel", il déclare plutôt ce qu'il enseigne
+/// (US-PRO-02, professeur_complete.md). Persisté via PUT /users/profile
+/// (UserService.updateProfile) au lieu de rester purement local.
 class CompleteProfileScreen extends StatefulWidget {
   const CompleteProfileScreen({super.key});
   @override
@@ -12,8 +21,60 @@ class CompleteProfileScreen extends StatefulWidget {
 }
 
 class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
+  WinRole? _role;
+  bool _loadingRole = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRole();
+  }
+
+  Future<void> _loadRole() async {
+    final roleStr = await SessionManager.getUserRole();
+    final role = WinRole.values.firstWhere(
+      (r) => r.name == roleStr,
+      orElse: () => WinRole.student,
+    );
+    if (mounted) setState(() { _role = role; _loadingRole = false; });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_loadingRole) {
+      final s = WinTheme.of(context);
+      return Scaffold(
+        backgroundColor: s.bg,
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    // Parent / institution : pas de données d'onboarding dédiées pour
+    // l'instant — on va directement à l'écran de succès (déjà adapté au rôle).
+    if (_role == WinRole.parent || _role == WinRole.institution) {
+      return OnboardingSuccessScreen(role: _role!);
+    }
+
+    return _role == WinRole.teacher
+        ? const _TeacherProfileWizard()
+        : const _StudentProfileWizard();
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Étudiant — niveau / filière / objectif (comportement historique).
+   ═══════════════════════════════════════════════════════════════════════ */
+
+class _StudentProfileWizard extends StatefulWidget {
+  const _StudentProfileWizard();
+  @override
+  State<_StudentProfileWizard> createState() => _StudentProfileWizardState();
+}
+
+class _StudentProfileWizardState extends State<_StudentProfileWizard> {
   int _step = 0;
   String? _level, _filiere, _objectif;
+  bool _saving = false;
 
   static const _levels = ['BEPC', 'Probatoire', 'BAC', 'BTS', 'Licence', 'Concours'];
   static const _filieres = ['Scientifique', 'Littéraire', 'Technique', 'Économique'];
@@ -25,13 +86,20 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
     _ => _objectif != null,
   };
 
-  void _next() {
+  Future<void> _next() async {
     if (_step < 2) {
       setState(() => _step++);
-    } else {
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (_) => const OnboardingSuccessScreen()));
+      return;
     }
+    setState(() => _saving = true);
+    await UserService.instance.updateProfile(
+      level: _level,
+      specialization: _filiere,
+      targetExam: _objectif,
+    );
+    if (!mounted) return;
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (_) => const OnboardingSuccessScreen(role: WinRole.student)));
   }
 
   @override
@@ -69,7 +137,8 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
             WinButton(
               _step < 2 ? 'Continuer' : 'Terminer',
               block: true,
-              onTap: _canContinue ? _next : null,
+              loading: _saving,
+              onTap: _canContinue && !_saving ? _next : null,
             ),
             const SizedBox(height: 24),
           ]),
@@ -103,6 +172,128 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
         final active = selected == item;
         return GestureDetector(
           onTap: () => onSelect(item),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+            decoration: BoxDecoration(
+              color: active ? WinColors.ink800 : s.surface,
+              borderRadius: BorderRadius.zero,
+              border: Border.all(
+                  color: active ? WinColors.ink800 : s.outline, width: 1.5),
+            ),
+            child: Text(item,
+                style: WinType.manrope(
+                    size: 14,
+                    weight: FontWeight.w600,
+                    color: active ? WinColors.cream50 : s.onSurface)),
+          ),
+        );
+      }).toList(),
+    );
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Professeur — matières / niveaux enseignés (US-PRO-02). Multiselect,
+   persisté sur User.TeachingSubjects/TeachingLevels (PUT /users/profile),
+   réutilisable plus tard pour préremplir l'onboarding Mode Répétiteur.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+class _TeacherProfileWizard extends StatefulWidget {
+  const _TeacherProfileWizard();
+  @override
+  State<_TeacherProfileWizard> createState() => _TeacherProfileWizardState();
+}
+
+class _TeacherProfileWizardState extends State<_TeacherProfileWizard> {
+  int _step = 0;
+  final Set<String> _subjects = {};
+  final Set<String> _levels = {};
+  bool _saving = false;
+
+  static const _teacherLevels = [
+    '6ème', '5ème', '4ème', '3ème', 'Seconde', 'Première', 'Terminale',
+    'BEPC', 'Probatoire', 'BAC', 'BTS', 'Prépa',
+    'ENSP Polytechnique', 'FMSB Médecine', 'ESSEC Commerce', 'ENAM Administration', 'ENS École Normale', 'ENSET',
+  ];
+
+  bool get _canContinue => _step == 0 ? _subjects.isNotEmpty : _levels.isNotEmpty;
+
+  Future<void> _next() async {
+    if (_step == 0) {
+      setState(() => _step = 1);
+      return;
+    }
+    setState(() => _saving = true);
+    await UserService.instance.updateProfile(
+      teachingSubjects: _subjects.toList(),
+      teachingLevels: _levels.toList(),
+    );
+    if (!mounted) return;
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (_) => const OnboardingSuccessScreen(role: WinRole.teacher)));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final s = WinTheme.of(context);
+    final steps = ['Matières', 'Niveaux'];
+    return Scaffold(
+      backgroundColor: s.bg,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            const SizedBox(height: 32),
+            Row(children: [
+              for (int i = 0; i < 2; i++) ...[
+                if (i > 0) const SizedBox(width: 8),
+                Expanded(
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    WinProgressBar(i <= _step ? 100 : 0, height: 3,
+                        color: i < _step ? s.primary : (i == _step ? s.primary : s.outline)),
+                    const SizedBox(height: 4),
+                    Text(steps[i],
+                        style: WinType.labelS(i == _step ? s.primary : s.onFaint)
+                            .copyWith(fontWeight: i == _step ? FontWeight.w700 : FontWeight.w500)),
+                  ]),
+                ),
+              ],
+            ]),
+            const SizedBox(height: 40),
+            Text(_step == 0 ? 'Quelles matières enseignes-tu ?' : 'Quels niveaux couvres-tu ?',
+                style: WinType.displayS(s.onStrong)),
+            const SizedBox(height: 8),
+            Text(
+              _step == 0
+                  ? 'On adapte ton espace professeur et les suggestions WinAI à tes matières.'
+                  : 'Utile pour situer tes contenus et, plus tard, ton profil Mode Répétiteur.',
+              style: WinType.bodyM(s.onMuted),
+            ),
+            const SizedBox(height: 28),
+            Expanded(child: _buildChips(s)),
+            WinButton(
+              _step == 0 ? 'Continuer' : 'Terminer',
+              block: true,
+              loading: _saving,
+              onTap: _canContinue && !_saving ? _next : null,
+            ),
+            const SizedBox(height: 24),
+          ]),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildChips(WinScheme s) {
+    final items = _step == 0 ? WinData.subjects.map((sub) => sub.name).toList() : _teacherLevels;
+    final selectedSet = _step == 0 ? _subjects : _levels;
+    return Wrap(
+      spacing: 10,
+      runSpacing: 10,
+      children: items.map((item) {
+        final active = selectedSet.contains(item);
+        return GestureDetector(
+          onTap: () => setState(() => active ? selectedSet.remove(item) : selectedSet.add(item)),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
             decoration: BoxDecoration(
