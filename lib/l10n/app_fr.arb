@@ -1,0 +1,22 @@
+{
+  "@@locale": "fr",
+  "welcomeTagline": "Ta réussite, notre mission",
+  "createAccount": "Créer un compte",
+  "login": "Se connecter",
+  "loginTitle": "Bon retour !",
+  "loginSubtitle": "Connecte-toi à ton compte WinPlus.",
+  "email": "Email",
+  "password": "Mot de passe",
+  "forgotPassword": "Mot de passe oublié ?",
+  "orContinueWith": "ou continuer avec",
+  "continueWithGoogle": "Continuer avec Google",
+  "continueWithPhone": "Continuer avec le téléphone",
+  "noAccountYet": "Pas encore de compte ? ",
+  "fillAllFields": "Veuillez remplir tous les champs.",
+  "wrongCredentials": "Email ou mot de passe incorrect.",
+  "language": "Langue",
+  "switchToLanguage": "Passer en {lang}",
+  "@switchToLanguage": {
+    "placeholders": { "lang": { "type": "String" } }
+  }
+}

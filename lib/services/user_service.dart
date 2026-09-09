@@ -8,6 +8,7 @@ class ApiUserProfile {
   final String? phone;
   final String? role;
   final String? level;
+  final String? locale;
   final String? avatarUrl;
   const ApiUserProfile({
     required this.id,
@@ -17,6 +18,7 @@ class ApiUserProfile {
     this.phone,
     this.role,
     this.level,
+    this.locale,
     this.avatarUrl,
   });
 
@@ -30,6 +32,7 @@ class ApiUserProfile {
         phone: j['phone'] as String?,
         role: j['role'] as String?,
         level: j['level'] as String?,
+        locale: j['locale'] as String?,
         avatarUrl: j['avatarUrl'] as String?,
       );
 }
@@ -98,6 +101,7 @@ class UserService {
     String? lastName,
     String? phone,
     String? level,
+    String? locale,
     String? specialization,
     String? targetExam,
     List<String>? teachingSubjects,
@@ -109,6 +113,7 @@ class UserService {
         if (lastName != null) 'lastName': lastName,
         if (phone != null) 'phone': phone,
         if (level != null) 'level': level,
+        if (locale != null) 'locale': locale,
         if (specialization != null) 'specialization': specialization,
         if (targetExam != null) 'targetExam': targetExam,
         if (teachingSubjects != null) 'teachingSubjects': teachingSubjects,

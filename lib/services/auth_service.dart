@@ -7,7 +7,8 @@ class AuthResult {
   final bool success;
   final String? message;
   final String? errorCode;
-  const AuthResult({required this.success, this.message, this.errorCode});
+  final String? locale;
+  const AuthResult({required this.success, this.message, this.errorCode, this.locale});
 }
 
 class AuthService {
@@ -32,7 +33,7 @@ class AuthService {
         role:   (u['role'] as String?) ?? 'student',
         name:   '${u['firstName'] ?? ''} ${u['lastName'] ?? ''}'.trim(),
       );
-      return const AuthResult(success: true);
+      return AuthResult(success: true, locale: u['locale'] as String?);
     } on DioException catch (e) {
       final data = e.response?.data as Map<String, dynamic>?;
       return AuthResult(

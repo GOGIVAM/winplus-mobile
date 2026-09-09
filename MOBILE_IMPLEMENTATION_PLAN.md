@@ -1970,7 +1970,7 @@ static final List<TeacherStudent> mockTeacherStudents = [
    - Cloche 🔔 avec badge
 
 2. **KPIs** (grille 2×2)
-   - 👥 Élèves actifs : "642 / 2 450" (avec % : "26%")
+   -  Élèves actifs : "642 / 2 450" (avec % : "26%")
    - 📈 Taux de réussite : "74%"
    - 🧠 Quiz cette semaine : "1 847"
    - 🔑 Licences : "1 823 / 2 450 (74%)"

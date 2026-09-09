@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../app_state.dart';
 import '../data/models.dart';
+import '../l10n/gen/app_localizations.dart';
 import '../services/auth_service.dart';
 import '../services/session_manager.dart';
 import '../theme/win_theme.dart';
@@ -31,10 +33,11 @@ class _LoginScreenState extends State<LoginScreen> {
       };
 
   Future<void> _login() async {
+    final l10n = AppLocalizations.of(context);
     final email = _email.text.trim();
     final pwd   = _pwd.text;
     if (email.isEmpty || pwd.isEmpty) {
-      setState(() => _error = 'Veuillez remplir tous les champs.');
+      setState(() => _error = l10n.fillAllFields);
       return;
     }
     setState(() { _loading = true; _error = null; });
@@ -46,7 +49,14 @@ class _LoginScreenState extends State<LoginScreen> {
       final roleStr = await SessionManager.getUserRole();
       if (!mounted) return;
       final role = _roleFromString(roleStr);
-      WinAppScope.of(context).setRole(role);
+      final appState = WinAppScope.of(context);
+      appState.setRole(role);
+      // Applique la langue enregistrée sur le compte : seule façon de la
+      // retrouver sur un nouvel appareil (le SharedPreferences local ne le
+      // sait pas encore).
+      if (result.locale != null) {
+        unawaited(appState.setLocale(result.locale!));
+      }
       SubscriptionScope.of(context).loadFromApi();
       Navigator.pushAndRemoveUntil(context,
           MaterialPageRoute(builder: (_) => const RoleShell()),
@@ -54,7 +64,7 @@ class _LoginScreenState extends State<LoginScreen> {
     } else {
       setState(() {
         _loading = false;
-        _error = result.message ?? 'Email ou mot de passe incorrect.';
+        _error = result.message ?? l10n.wrongCredentials;
       });
     }
   }
@@ -69,6 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: s.bg,
       body: SafeArea(
@@ -92,7 +103,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 // ── Titre ──────────────────────────────────────────
                 Center(
-                  child: Text('Bon retour !',
+                  child: Text(l10n.loginTitle,
                       style: WinType.archivo(
                           size: 22,
                           weight: FontWeight.w700,
@@ -100,19 +111,19 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 4),
                 Center(
-                  child: Text('Connecte-toi à ton compte WinPlus.',
+                  child: Text(l10n.loginSubtitle,
                       style: WinType.bodyS(s.onMuted)),
                 ),
                 const SizedBox(height: 24),
 
                 // ── Formulaire ─────────────────────────────────────
                 WinTextField(
-                    label: 'Email',
+                    label: l10n.email,
                     icon: Icons.mail_outline,
                     controller: _email),
                 const SizedBox(height: 14),
                 WinTextField(
-                    label: 'Mot de passe',
+                    label: l10n.password,
                     icon: Icons.lock_outline,
                     controller: _pwd,
                     obscure: _obscure,
@@ -127,7 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     onTap: () => Navigator.push(context,
                         MaterialPageRoute(
                             builder: (_) => const ForgotPasswordScreen())),
-                    child: Text('Mot de passe oublié ?',
+                    child: Text(l10n.forgotPassword,
                         style: WinType.labelM(s.primaryStrong)),
                   ),
                 ),
@@ -136,17 +147,17 @@ class _LoginScreenState extends State<LoginScreen> {
                   WinAlert(_error!, type: BadgeColor.error),
                 ],
                 const SizedBox(height: 16),
-                WinButton('Se connecter',
+                WinButton(l10n.login,
                     variant: WinButtonVariant.accent,
                     block: true,
                     loading: _loading,
                     onTap: _login),
                 const SizedBox(height: 24),
-                const _Divider(label: 'ou continuer avec'),
+                _Divider(label: l10n.orContinueWith),
                 const SizedBox(height: 16),
                 _SocialButton(
                     icon: Icons.g_mobiledata,
-                    label: 'Continuer avec Google',
+                    label: l10n.continueWithGoogle,
                     onTap: () {
                       ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
@@ -155,7 +166,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 10),
                 _SocialButton(
                     icon: Icons.phone_outlined,
-                    label: 'Continuer avec le téléphone',
+                    label: l10n.continueWithPhone,
                     onTap: () {
                       ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
@@ -170,9 +181,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Text.rich(TextSpan(
                       style: WinType.bodyS(s.onMuted),
                       children: [
-                        const TextSpan(text: 'Pas encore de compte ? '),
+                        TextSpan(text: l10n.noAccountYet),
                         TextSpan(
-                            text: 'Créer un compte',
+                            text: l10n.createAccount,
                             style: WinType.bodyS(s.primary)
                                 .copyWith(fontWeight: FontWeight.w700)),
                       ],
