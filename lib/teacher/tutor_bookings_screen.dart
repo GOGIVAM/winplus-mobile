@@ -8,7 +8,7 @@ import '../widgets/win_widgets.dart';
 const _modeLabels = {
   'online': 'En ligne',
   'student_home': 'À domicile (élève)',
-  'tutor_home': 'Chez le répétiteur',
+  'tutor_home': 'Chez le tuteur',
   'neutral_place': 'Lieu neutre',
 };
 

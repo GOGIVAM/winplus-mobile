@@ -89,7 +89,7 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
       setState(() => _completion = c);
     } catch (_) {
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Impossible de charger ton profil répétiteur.')));
+        const SnackBar(content: Text('Impossible de charger ton profil tuteur.')));
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -183,7 +183,7 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
       final p = await _service.activate();
       _hydrate(p);
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Ton profil répétiteur est visible dans la recherche !')));
+        const SnackBar(content: Text('Ton profil tuteur est visible dans la recherche !')));
     } catch (e) {
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Complète les champs essentiels avant d\'activer ton profil.')));
@@ -213,7 +213,7 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
       appBar: AppBar(
         backgroundColor: s.bg,
         elevation: 0,
-        title: Text('Mode Répétiteur', style: WinType.archivo(size: 18, color: s.onStrong)),
+        title: Text('Mode Tuteur', style: WinType.archivo(size: 18, color: s.onStrong)),
         actions: [
           if (!_loading && _profile != null)
             IconButton(
@@ -267,7 +267,7 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
         const SizedBox(width: 14),
         Expanded(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(p.title ?? 'Répétiteur WinPlus', style: WinType.archivo(size: 17, color: s.onStrong)),
+            Text(p.title ?? 'Tuteur WinPlus', style: WinType.archivo(size: 17, color: s.onStrong)),
             const SizedBox(height: 6),
             Wrap(spacing: 6, runSpacing: 6, children: [
               if (p.isDiplomaVerified)

@@ -10,7 +10,7 @@ import '../../widgets/win_widgets.dart';
 const _modeLabels = {
   'online': 'En ligne',
   'student_home': 'À domicile',
-  'tutor_home': 'Chez le répétiteur',
+  'tutor_home': 'Chez le tuteur',
   'neutral_place': 'Lieu neutre',
 };
 
@@ -19,7 +19,7 @@ String _fmtDate(DateTime d) =>
 
 (BadgeColor, String) _statusInfo(String status) => switch (status) {
       'pending_payment' => (BadgeColor.neutral, 'Paiement en cours'),
-      'pending_tutor_approval' => (BadgeColor.warn, 'En attente du répétiteur'),
+      'pending_tutor_approval' => (BadgeColor.warn, 'En attente du tuteur'),
       'confirmed' => (BadgeColor.success, 'Confirmée'),
       'completed' => (BadgeColor.blue, 'Effectuée'),
       'disputed' => (BadgeColor.error, 'Contestée'),
@@ -101,7 +101,7 @@ class _MyTutorBookingsScreenState extends State<MyTutorBookingsScreen> {
               Text('Décrivez le problème rencontré pendant cette séance.',
                   style: WinType.bodyS(s.onMuted)),
               const SizedBox(height: 16),
-              WinTextField(hint: 'Ex : le répétiteur ne s\'est pas présenté…', controller: ctrl),
+              WinTextField(hint: 'Ex : le tuteur ne s\'est pas présenté…', controller: ctrl),
               const SizedBox(height: 20),
               WinButton('Envoyer', block: true, variant: WinButtonVariant.danger,
                   onTap: () => Navigator.pop(ctx, ctrl.text)),
@@ -224,7 +224,7 @@ class _BookingCardState extends State<_BookingCard> {
           const SizedBox(width: 10),
           Expanded(
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(b.tutorName ?? 'Répétiteur', style: WinType.titleM(s.onStrong)),
+            Text(b.tutorName ?? 'Tuteur', style: WinType.titleM(s.onStrong)),
             Text('${_fmtDate(b.sessionDate)} · ${b.startTime} – ${b.endTime}',
                 style: WinType.labelM(s.onMuted)),
           ])),

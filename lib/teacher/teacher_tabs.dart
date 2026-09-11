@@ -731,7 +731,7 @@ class _TeacherStudentsTabState extends State<TeacherStudentsTab> {
                 onTap: () => Navigator.push(context,
                     MaterialPageRoute(builder: (_) => const TeacherLinksScreen()))),
             const SizedBox(height: 10),
-            WinButton('Mode Répétiteur',
+            WinButton('Mode Tuteur',
                 variant: WinButtonVariant.outline,
                 block: true,
                 icon: Icons.school_outlined,

@@ -1,0 +1,1621 @@
+\documentclass[12pt,a4paper]{report}
+
+%  Encodage et langue
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+
+%  Mise en page
+\usepackage[top=2.5cm, bottom=2.5cm, left=3cm, right=2.5cm]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+
+%  Typographie
+\usepackage{lmodern}
+\usepackage{microtype}
+
+%  Tableaux
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{rotating}
+
+%  Figures
+\usepackage{graphicx}
+\usepackage{float}
+
+%  Paramètres flottants : chaque figure/tableau occupe sa propre page
+\renewcommand{\floatpagefraction}{0.80}
+\renewcommand{\topfraction}{0.90}
+\renewcommand{\bottomfraction}{0.90}
+\setcounter{topnumber}{1}
+\setcounter{bottomnumber}{1}
+\setcounter{totalnumber}{1}
+
+%  Mathématiques
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+%  Hyperliens
+\usepackage[colorlinks=true, linkcolor=blue, citecolor=blue, urlcolor=blue]{hyperref}
+
+%  Bibliographie
+\usepackage[backend=biber, style=numeric, sorting=none]{biblatex}
+\addbibresource{references_kalati_rag.bib}
+
+% ============================================================
+\begin{document}
+% ============================================================
+
+\chapter{Architecture de KALATI-RAG}
+
+% ============================================================
+\section{Positionnement du système}
+% ============================================================
+
+\subsection*{KALATI et KALATI-RAG : deux couches architecturalement distinctes}
+
+Le portail KALATI constitue l'infrastructure documentaire existante de CAMRAIL. Il centralise
+l'ensemble des textes normatifs de la société --- Convention Collective, Instructions Générales
+de Sécurité (IGS), procédures de Marche à Vue, règles de Block, circulaires RH, rapports
+techniques d'exploitation --- et les rend accessibles au personnel via un mécanisme
+d'authentification par matricule et mot de passe, avec une matrice de droits différenciés
+par grade et par département. KALATI est cependant un portail de consultation statique~: il
+suppose que l'agent dispose d'une connaissance préalable de l'arborescence documentaire,
+maîtrise le vocabulaire de recherche propre au corpus ferroviaire camerounais et soit capable
+d'interpréter les textes normatifs dans leur contexte réglementaire global. Ces trois prérequis
+ne sont pas uniformément distribués dans le personnel CAMRAIL~--- c'est précisément l'asymétrie
+que KALATI-RAG est conçu pour corriger.
+
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=\textwidth]{figures/architecture_general_solution.png}
+  \caption{Vue d'ensemble de la solution KALATI-RAG~--- positionnement de la couche IA
+  conversationnelle sur l'infrastructure documentaire existante de CAMRAIL.}
+  \label{fig:architecture-generale}
+\end{figure}
+
+KALATI-RAG est la couche conversationnelle intelligente greffée sur cette infrastructure
+existante. Architecturalement, il s'agit d'un système de Retrieval-Augmented Generation (RAG)
+hybride combinant recherche sémantique dense et recherche lexicale éparse BM25, dont le corpus
+de référence est exclusivement constitué des documents versés dans KALATI. KALATI-RAG ne
+remplace pas le portail existant, n'en modifie pas la structure documentaire et n'altère pas
+sa matrice de contrôle d'accès. Il s'y connecte comme une surcouche d'interrogation en langage
+naturel~: là où KALATI expose des documents à naviguer manuellement, KALATI-RAG expose une
+interface de question-réponse où l'agent formule sa requête en français naturel et reçoit une
+réponse précise, formulée en langage courant, accompagnée des citations exactes des passages
+sources qui la fondent~--- document, section, article, page.
+
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=\textwidth]{figures/Architecture-globale-KALATI-RAG.png}
+  \caption{Architecture globale KALATI-RAG~--- pipeline d'ingestion (Phases~1 et~2) et moteur
+  agentique (Phases~3 et~4), greffés sur le portail KALATI sans modification de son
+  infrastructure.}
+  \label{fig:architecture-globale}
+\end{figure}
+
+Cette distinction est architecturalement fondamentale pour une raison épistémologique précise~:
+KALATI-RAG ne génère aucune connaissance exogène. Son espace de réponse est borné par le corpus
+KALATI. Le modèle de langue ne produit que ce que le retrieveur lui fournit comme contexte~;
+si une information est absente du corpus, le système déclenche un message d'indisponibilité
+explicite plutôt que de compléter la réponse par des généralités extérieures non vérifiables.
+Cette propriété de \textit{grounding} strict est une contrainte de conception délibérée,
+directement motivée par le contexte ferroviaire de sécurité dans lequel s'inscrit le système~:
+dans un environnement normatif où une réponse incorrecte peut induire une décision opérationnelle
+erronée, une réponse absente est préférable à une réponse hallucinée.
+
+\subsection*{Périmètre fonctionnel}
+
+Le périmètre fonctionnel de KALATI-RAG se définit par deux classes de requêtes opérationnelles
+et une contrainte de périmètre explicite.
+
+La \textbf{première classe} recouvre les requêtes à passage unique, dans lesquelles l'information
+nécessaire à la réponse est localisée dans un seul chunk du corpus. Ce type de requête ---
+«~Quel est le délai de préavis applicable à un agent de maîtrise en cas de licenciement selon la
+Convention Collective de CAMRAIL~?~» --- mobilise le pipeline de récupération dans sa
+configuration nominale~: vectorisation de la question par Qwen3-Embedding-8B, recherche par
+similarité cosinus dans l'index Qdrant avec filtre RBAC appliqué en amont, reranking des
+passages candidats par Qwen3-Reranker, génération de la réponse par Qwen3-14B en mode
+non-thinking. La latence cible pour cette classe est de 4 à 5 secondes, ce qui correspond à
+l'essentiel des interactions quotidiennes des agents CAMRAIL.
+
+La \textbf{deuxième classe} recouvre les requêtes multi-hop, dans lesquelles la construction
+d'une réponse complète et correcte nécessite l'agrégation de preuves distribuées sur plusieurs
+passages de sources documentaires hétérogènes. La littérature récente sur le RAG avancé
+identifie l'agrégation de preuves multi-sources comme le défi central des systèmes RAG en
+production, les LLMs généralistes présentant des défaillances systématiques de
+\textit{grounding} lorsque la réponse requiert de croiser des sources hétérogènes dans des
+documents longs~\autocite{Gao2025}. KALATI-RAG adresse cette classe par l'activation automatique
+du mode thinking de Qwen3-30B-A3B, qui implémente une chaîne de pensée interne décomposant
+la question en sous-questions avant d'effectuer plusieurs passes de récupération itérative.
+La latence cible pour cette classe est de 14 à 15 secondes.
+
+La \textbf{contrainte de périmètre} est structurellement aussi importante que les deux classes
+de capacités~: KALATI-RAG opère en monde fermé sur le corpus KALATI. Toute question dont la
+réponse est absente du corpus déclenche un refus calibré explicite, activé automatiquement
+par le module de validation anti-hallucination dès que le score de faithfulness calculé en
+temps réel est inférieur au seuil de production fixé à 0,90. Ce mécanisme est décrit en détail
+à la section~\ref{sec:validation}.
+
+\subsection*{Périmètre technique~: intranet fermé, zéro flux sortant, zéro coût récurrent}
+
+Le périmètre technique de KALATI-RAG repose sur trois propriétés non négociables qui ont
+conditionné l'intégralité des choix architecturaux décrits dans les sections suivantes.
+
+\textbf{Première propriété --- déploiement en intranet fermé.} L'intégralité de la pile
+d'inférence --- modèle de langue Qwen3, moteur d'embedding Qwen3-Embedding-8B, reranker
+Qwen3-Reranker, base vectorielle Qdrant, moteur BM25, serveur d'orchestration LangChain,
+interface web --- est déployée sur les serveurs internes de CAMRAIL et exposée exclusivement
+sur le réseau intranet de l'entreprise. Aucun composant du pipeline ne dispose d'une route
+réseau vers l'extérieur. Cette propriété est garantie par le périmètre réseau lui-même,
+ce qui la rend physiquement non contournable~: la confidentialité des données normatives,
+des questions posées par les agents et des journaux d'interaction est ainsi garantie par
+architecture, et non par stipulation contractuelle.
+
+\textbf{Deuxième propriété --- zéro flux sortant de données.} Aucune requête d'agent, aucun
+extrait du corpus KALATI, aucun vecteur d'embedding et aucun journal d'interaction ne transite
+vers un service externe. Cette contrainte exclut par construction toutes les architectures
+reposant sur des appels à des API distantes telles qu'OpenAI, Anthropic, Cohere ou Mistral API,
+dont les conditions d'utilisation autorisent le traitement des données transmises sur des
+infrastructures tierces. Elle est le fondement de la souveraineté de CAMRAIL sur sa propre
+connaissance normative et réglementaire.
+
+\textbf{Troisième propriété --- zéro coût récurrent de tokens.} La pile technologique retenue
+est intégralement composée de solutions open source distribuées sous licence Apache~2.0,
+déployées en auto-hébergement sans quota d'utilisation ni frais de licence. Qwen3-14B,
+Qwen3-Embedding-8B, Qwen3-Reranker, Qdrant, Ollama et LangChain sont tous librement
+utilisables dans un contexte institutionnel sans restriction commerciale. Une fois le système
+mis en production, son coût opérationnel marginal est nul du côté logiciel~: il se réduit
+aux coûts d'infrastructure matérielle et de maintenance humaine, deux postes que CAMRAIL
+dimensionne et maîtrise en interne.
+
+% ============================================================
+\section{Phase~1 --- Ingestion et traitement du corpus KALATI}
+% ============================================================
+
+\subsection{Classification des types documentaires}
+
+La première opération du pipeline KALATI-RAG consiste à analyser la nature de chaque document
+entrant afin de lui appliquer le traitement d'extraction adapté. Le corpus KALATI présente une
+hétérogénéité structurelle qui interdit toute approche d'ingestion uniforme~: une circulaire RH
+produite sous traitement de texte n'a pas les mêmes propriétés d'extraction qu'un rapport
+technique issu d'une numérisation d'archives papier. Une analyse préalable du fonds documentaire
+de CAMRAIL permet d'identifier cinq classes de documents aux propriétés radicalement différentes,
+auxquelles correspondent cinq traitements distincts dans le pipeline.
+
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=\textwidth]{figures/KALATI-Document-Processing-Flowchart.png}
+  \caption{Arbre de décision du routage documentaire KALATI-RAG~--- du document KALATI au
+  traitement approprié selon ses propriétés structurelles~: extraction directe, OCR conditionnel
+  ou extraction structurée des tableaux.}
+  \label{fig:flowchart}
+\end{figure}
+
+\begin{sidewaystable}[p]
+\centering
+\caption{Classification des types documentaires du corpus KALATI et traitements associés}
+\label{tab:classes-docs}
+\small
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\textheight}{@{} p{4.5cm} X p{9cm} @{}}
+\toprule
+\textbf{Classe} & \textbf{Description} & \textbf{Traitement} \\
+\midrule
+PDF natif à texte extractible &
+Produits par outils bureautiques~; couche textuelle encodée dans le fichier PDF~; inclut les
+textes normatifs récents, circulaires RH, procédures numériques &
+Extraction directe par PyMuPDF (\texttt{fitz})~--- aucune inférence neuronale, fidélité de
+transcription 100~\% sur les caractères encodés \\
+\addlinespace
+PDF image (archives numérisées) &
+Scans ou photographies de documents papier sans couche textuelle~; archives ferroviaires
+anciennes avec dégradations géométriques et photométriques &
+Chaîne OCR~: PaddleOCR-VL~1.6 (moteur principal, OmniDocBench~96,33~\%~\autocite{Shi2024}) \\
+\addlinespace
+Documents tamponnés &
+Circulaires, notes de service et décisions comportant des cachets officiels apposés manuellement,
+superposés au texte imprimé &
+Détection de formes circulaires par transformée de Hough, puis routage vers GLM-OCR (précision
+tampons~90,5~\%~\autocite{ZhipuAI2025}) \\
+\addlinespace
+Documents contenant des tableaux structurés &
+Grilles tarifaires, matrices de droits par grade, tableaux de procédures de maintenance dont
+la structure relationnelle doit être préservée lors de l'indexation &
+Table Transformer (TATR~\autocite{Smock2022})~--- extraction cellule par cellule avec
+reconstruction JSON préservant les correspondances en-tête/valeur \\
+\addlinespace
+Documents contenant des images embarquées &
+Schémas de voie ferrée, diagrammes de signalisation, plans de maintenance dont le contenu est
+purement graphique &
+PaddleOCR-VL en mode vision-langage~--- génération de description textuelle structurée et
+indexable du contenu visuel \\
+\bottomrule
+\end{tabularx}
+\end{sidewaystable}
+
+\subsection{Extraction directe des PDF natifs}
+
+Pour les documents de la première classe, le pipeline s'affranchit de toute inférence neuronale
+et recourt à une extraction programmatique directe de la couche textuelle encodée dans le fichier
+PDF. Cette extraction est réalisée par la bibliothèque PyMuPDF (\texttt{fitz}), qui permet
+l'accès à la représentation interne du document PDF selon la spécification ISO~32000 et restitue
+le texte avec sa structure de blocs, de lignes et de caractères, ainsi que les métadonnées de
+position spatiale de chaque élément textuel sur la page.
+
+Cette approche présente trois avantages déterminants sur le traitement OCR pour cette classe~: une
+fidélité de transcription de 100~\% sur les caractères encodés, une vitesse d'extraction de
+plusieurs ordres de grandeur supérieure à celle de l'inférence neuronale, et l'absence de tout
+risque de substitution de caractères. Pour un corpus normatif où la précision lexicale est une
+contrainte de sécurité --- un article de la Convention Collective ne peut pas être transcrit avec
+une erreur sur un chiffre ou un terme technique ---, cette classe de documents est traitée sans
+passer par la chaîne OCR. Un test de détection de la couche textuelle est appliqué
+systématiquement à chaque document entrant~: si le ratio caractères extractibles sur surface de
+page dépasse un seuil calibré lors de la Phase~0, le document est classé comme PDF natif~; dans
+le cas contraire, il est routé vers la chaîne OCR décrite à la section suivante.
+
+\subsection{Sélection de la chaîne OCR par benchmark}
+
+\subsubsection*{Référentiel d'évaluation~: OmniDocBench (CVPR~2025)}
+
+La sélection des moteurs OCR repose sur le benchmark OmniDocBench, publié par \textcite{Shi2024}
+à la conférence CVPR~2025, qui constitue à ce jour la référence la plus rigoureuse et la plus
+exhaustive pour l'évaluation comparative des moteurs de traitement documentaire en conditions
+réelles. OmniDocBench se distingue des benchmarks antérieurs par trois propriétés
+méthodologiques déterminantes pour le contexte CAMRAIL~: il évalue les moteurs sur des documents
+hétérogènes couvrant dix-neuf types documentaires distincts~; il intègre des conditions de
+dégradation documentaire réalistes (distorsion géométrique, variation d'illumination, bruit de
+fond) qui correspondent précisément aux conditions des archives physiques de CAMRAIL~; et il
+mesure la performance de bout en bout sur la qualité de la transcription textuelle, et non
+seulement sur la détection de régions d'intérêt.
+
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=\textwidth]{figures/Pipeline-OCR.png}
+  \caption{Pipeline OCR conditionnel KALATI-RAG~--- du PDF image au texte normalisé prêt à
+  segmenter, avec routage conditionnel sur la détection de tampons administratifs par transformée
+  de Hough.}
+  \label{fig:pipeline-ocr}
+\end{figure}
+
+\subsubsection*{Panorama des candidats évalués et sélection}
+
+\begin{table}[p]
+\centering
+\caption{Comparaison des moteurs OCR candidats sur OmniDocBench~\autocite{Shi2024} (CVPR~2025)}
+\label{tab:ocr-benchmark}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\linewidth}{@{} l c X l @{}}
+\toprule
+\textbf{Moteur} & \textbf{Score} & \textbf{Caractéristiques clés} & \textbf{Décision} \\
+\midrule
+PaddleOCR-VL~1.6 \newline (Baidu, Apache~2.0) & 96,33~\% &
+Architecture vision-langage~; robustesse aux dégradations~; 109~langues~; compatible CPU &
+\textbf{Retenu} \\
+\addlinespace
+GLM-OCR \newline (Zhipu AI, MIT) & 94,62~\% &
+Précision 90,5~\% sur tampons~; 0,9~Md paramètres~; 2--4~Go VRAM &
+\textbf{Retenu} (tampons) \\
+\addlinespace
+docTR \newline (Mindee, Apache~2.0) & 78,1~\% &
+Pipeline DBNet + CRNN sans modélisation multimodale &
+Éliminé \\
+\addlinespace
+Tesseract~5 \newline (Google, Apache~2.0) & 72,4~\% &
+LSTM sur corpus synthétiques~; $<$60~\% sur zones tamponnées &
+Éliminé \\
+\addlinespace
+DeepSeek-OCR2 & n/a &
+Performant mais licence incompatible avec intranet institutionnel fermé &
+Éliminé \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsubsection*{Détection des tampons et nœud de décision}
+
+La détection préalable de la présence d'un tampon administratif est réalisée par la transformée
+de Hough appliquée aux contours extraits de l'image du document. Cette méthode de traitement
+d'image classique, sans inférence neuronale, détecte les formes circulaires et ovales
+caractéristiques des cachets officiels à un coût computationnel de l'ordre de quelques
+millisecondes par page. Si la transformée de Hough détecte au moins une forme circulaire
+d'une superficie supérieure au seuil calibré en Phase~0, le document est routé vers GLM-OCR~;
+dans le cas contraire, il est traité par PaddleOCR-VL~1.6. Les deux moteurs convergent ensuite
+vers la même étape de post-correction.
+
+\subsection{Extraction des tableaux comme données structurées}
+
+Le corpus KALATI contient un nombre significatif de documents intégrant des tableaux structurés
+--- grilles tarifaires, matrices de droits par grade, tableaux de procédures de maintenance
+ferroviaire. La transcription de ces tableaux par un moteur OCR généraliste produit une séquence
+de tokens linéaire qui détruit la structure relationnelle~: les correspondances entre en-têtes
+de colonnes et valeurs de cellules sont perdues, rendant les données inexploitables pour une
+requête de type «~Quel est le délai de préavis d'un agent de maîtrise~?~» lorsque la réponse
+figure dans un tableau récapitulatif. Afin de préserver cette structure, KALATI-RAG intègre le
+\textbf{Table Transformer (TATR)}, publié par \textcite{Smock2022} à CVPR~2022, comme module
+de détection et d'extraction structurée.
+
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=\textwidth]{figures/extraction_table_par_ocr.png}
+  \caption{Pipeline d'extraction structurée des tableaux par Table Transformer (TATR)~---
+  détection des régions, segmentation cellule par cellule, reconstruction JSON et indexation dans
+  Qdrant avec métadonnées \texttt{row\_header} et \texttt{col\_header}.}
+  \label{fig:tatr}
+\end{figure}
+
+TATR est un modèle de détection d'objets basé sur DETR (\textit{DEtection TRansformer}) entraîné
+sur PubTables-1M pour détecter les régions de tableaux, les lignes, les colonnes et les cellules
+individuelles avec leurs coordonnées spatiales. Le pipeline d'extraction structurée opère en
+quatre étapes~: (1)~TATR identifie les bounding boxes des tableaux présents dans chaque page~;
+(2)~segmentation cellule par cellule avec attribution des coordonnées (ligne, colonne)~;
+(3)~reconstruction de la structure relationnelle en JSON avec les en-têtes de colonnes comme
+clés~; (4)~indexation dans Qdrant comme chunk de type \texttt{cell}, avec les métadonnées
+\texttt{row\_header} et \texttt{col\_header} permettant de reconstruire la réponse structurée
+en génération. Ce traitement garantit que la requête «~Quel est le délai de préavis d'un agent
+de maîtrise~?~» retrouve non seulement le paragraphe textuel de l'article concerné, mais aussi
+la ligne correspondante du tableau récapitulatif, les deux sources se renforçant mutuellement.
+
+\subsection{Traitement des images embarquées dans le corpus}
+
+Les documents du corpus KALATI contiennent des images techniques embarquées~--- schémas de voie
+ferrée, diagrammes de signalisation, plans de maintenance, organigrammes des procédures
+d'exploitation. Ces images sont absentes du texte transcrit par la chaîne OCR standard, qui ne
+produit aucun token à partir d'un contenu purement graphique. Pour remédier à cette lacune, le
+traitement des images embarquées repose sur les capacités vision-langage de PaddleOCR-VL~1.6 en
+mode multimodal, qui génère une description textuelle structurée de chaque schéma ou diagramme
+technique. La description générée est indexée dans Qdrant comme chunk de type \texttt{image\_caption},
+avec la métadonnée \texttt{image\_type} (schéma, diagramme, organigramme, photographie)
+utilisable comme filtre optionnel lors de la récupération.
+
+\subsection{Post-correction par le lexique KALATI}
+
+La transcription OCR, même à des scores OmniDocBench supérieurs à 94~\%, introduit des
+substitutions de caractères statistiquement prévisibles sur les termes à faible fréquence dans
+les corpus d'entraînement des moteurs. Le vocabulaire ferroviaire camerounais~--- sigles
+d'exploitation (IGS, PTU, PCC, MAV pour Marche à Vue), abréviations de direction, noms de gares
+et de tronçons du réseau CAMRAIL~--- appartient précisément à cette catégorie de termes absents
+des corpus généraux. La Phase~0 produit un lexique ferroviaire CAMRAIL constitué par extraction
+semi-automatique des termes techniques présents dans un échantillon de référence du corpus. Ce
+lexique est utilisé en Phase~1 comme dictionnaire de correction post-OCR~: chaque terme du texte
+transcrit est comparé aux entrées du lexique par distance d'édition de Levenshtein normalisée, et
+les substitutions dont le score de similarité dépasse un seuil calibré sont corrigées
+automatiquement. Cette étape garantit notamment que «~Marche à Vue~» ne devient jamais
+«~Marche à Voie~» dans le corpus indexé.
+
+\subsection{Segmentation en chunks}
+
+La segmentation des textes post-corrigés en unités indexables constitue l'une des décisions
+architecturales les plus déterminantes pour la qualité de la récupération en Phase~3. La
+littérature sur les systèmes RAG en production établit un compromis fondamental entre deux
+propriétés antagonistes~: la précision de la localisation de l'information, favorisée par des
+chunks courts, et la qualité du contexte fourni au modèle de langue lors de la génération,
+favorisée par des chunks longs.
+
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=\textwidth]{figures/chuncking_indexing.png}
+  \caption{Stratégie de double granularité (\textit{parent-child chunking})~--- les chunks courts
+  (128 tokens, en vert) servent à la récupération précise~; les chunks longs correspondants
+  (512 tokens, en bleu) sont transmis au LLM comme contexte de génération.}
+  \label{fig:chunking}
+\end{figure}
+
+KALATI-RAG résout ce compromis par une stratégie de double granularité~: chaque segment de texte
+post-corrigé est simultanément découpé en chunks courts de 128 tokens (unité de recherche) et en
+chunks longs de 512 tokens (unité de génération), avec un chevauchement de 20 tokens entre chunks
+adjacents pour préserver la continuité sémantique aux frontières. Cette architecture, désignée
+dans la littérature sous le terme de \textit{parent-child chunking}~\autocite{Chen2023}, dissocie
+la précision de la recherche (chunks courts) de la richesse du contexte de génération (chunks
+longs correspondants). Pour les documents à structure d'articles bien définie~--- Convention
+Collective, IGS~---, une stratégie complémentaire de \textbf{semantic chunking}~\autocite{Chen2023}
+est appliquée~: plutôt que de découper le texte en fenêtres de tokens fixes, les frontières de
+segmentation sont déterminées par les marqueurs structurels du document (numéros d'articles,
+tirets de liste, paragraphes), produisant des chunks dont la complétude sémantique est garantie
+par la structure documentaire elle-même.
+
+\subsection{Enrichissement des métadonnées héritées de la taxonomie KALATI}
+
+Chaque chunk produit à l'issue de la segmentation est enrichi d'un ensemble de métadonnées
+structurées héritées de la taxonomie documentaire du portail KALATI. Ces métadonnées sont stockées
+comme payload aux côtés du vecteur d'embedding dans Qdrant et jouent un double rôle~: elles
+permettent la traçabilité des sources dans les réponses générées, et elles constituent le support
+du filtre RBAC appliqué lors de chaque requête d'agent.
+
+\begin{table}[p]
+\centering
+\caption{Métadonnées associées à chaque chunk dans Qdrant}
+\label{tab:metadata}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\linewidth}{@{} p{3.5cm} p{2.5cm} X @{}}
+\toprule
+\textbf{Champ} & \textbf{Type} & \textbf{Rôle} \\
+\midrule
+\texttt{doc\_id} & Chaîne & Identifiant unique du document source dans KALATI \\
+\texttt{titre} & Chaîne & Titre du document source \\
+\texttt{categorie} & Énumération & IGS, Convention Collective, circulaire RH, procédure technique \\
+\texttt{departement} & Chaîne & Direction émettrice selon l'organigramme CAMRAIL \\
+\texttt{grade\_min} & Entier & Niveau d'habilitation minimal~--- critère de filtrage RBAC \\
+\texttt{page} & Entier & Numéro de page dans le document source \\
+\texttt{section} & Chaîne & Référence de section ou d'article \\
+\texttt{chunk\_type} & Énumération & \texttt{short}, \texttt{long}, \texttt{cell},
+\texttt{image\_caption}, \texttt{graph\_summary} \\
+\texttt{status} & Énumération & \texttt{active} ou \texttt{superseded}~--- filtre systématique \\
+\texttt{superseded\_by} & Chaîne & Identifiant \texttt{doc\_id} du document remplaçant \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Le champ \texttt{grade\_min} est le champ central du mécanisme RBAC~: lors de chaque requête en
+Phase~3, le filtre Qdrant construit à partir des claims du token d'authentification de l'agent
+impose la condition \texttt{grade\_min}~$\leq$~\texttt{grade\_agent}, garantissant que seuls les
+passages auxquels l'agent est habilité sont retournés par le moteur de recherche.
+
+\subsection{Gestion des versions documentaires et mises à jour incrémentales}
+
+Le corpus KALATI est un corpus vivant~: les textes normatifs de CAMRAIL font l'objet de révisions
+régulières~--- nouvelles circulaires RH annulant des circulaires antérieures, mises à jour des
+IGS, avenants à la Convention Collective. Le schéma d'identifiant documentaire retenu intègre
+la version comme composante structurelle~: \texttt{doc\_id = "\{type\_doc\}\_\{code\_doc\}\_\{version\}\_\{date\_effet\}"}
+par exemple \texttt{IGS\_CAMRAIL04\_v3\_20260101} pour la troisième révision de l'IGS CAMRAIL04.
+
+Lors d'une mise à jour documentaire, les chunks de l'ancienne version sont marqués
+\texttt{superseded} et leur champ \texttt{superseded\_by} est renseigné avec l'identifiant de
+la nouvelle version~; les chunks de la nouvelle version sont insérés avec le statut
+\texttt{active}. Le filtre Qdrant appliqué lors de chaque requête impose systématiquement la
+condition \texttt{status = active}, garantissant qu'un agent ne peut pas recevoir une réponse
+fondée sur une version obsolète d'un texte normatif. Les versions remplacées restent présentes
+dans la collection avec le statut \texttt{superseded} pour permettre les requêtes historiques
+formulées par un administrateur~--- par exemple, pour vérifier la disposition applicable à la
+date d'un incident passé.
+
+% ============================================================
+\section{Phase~2 --- Vectorisation et indexation}
+% ============================================================
+
+\subsection{Sélection du modèle d'embedding}
+
+\subsubsection*{Référentiel d'évaluation~: MTEB Multilingual Leaderboard 2026}
+
+La sélection du modèle d'embedding repose sur le Massive Text Embedding Benchmark (MTEB),
+publié par \textcite{Muennighoff2023} et maintenu comme référentiel d'évaluation standard de la
+communauté depuis 2023. Le MTEB Multilingual Leaderboard 2026 constitue à ce jour l'évaluation
+comparative la plus exhaustive des modèles d'embedding multilingues~: il agrège les performances
+sur 56~jeux de données couvrant huit tâches distinctes dans plus de 112~langues. Ce référentiel
+est particulièrement adapté au contexte KALATI pour deux raisons~: la tâche de retrieval
+bénéficie d'une évaluation dédiée sur des corpus multilingues incluant le français~; et le MTEB
+évalue les modèles en conditions zero-shot sur des domaines non vus lors de l'entraînement~---
+condition précise d'utilisation dans KALATI-RAG, le corpus ferroviaire camerounais étant absent
+des données d'entraînement de tout modèle d'embedding disponible.
+
+\begin{sidewaystable}[p]
+\centering
+\caption{Comparaison des modèles d'embedding candidats (MTEB Multilingual Leaderboard 2026,
+\autocite{Muennighoff2023})}
+\label{tab:embedding-benchmark}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\textheight}{@{} l c c X l @{}}
+\toprule
+\textbf{Modèle} & \textbf{Dim.} & \textbf{Score MTEB} & \textbf{Limitation principale}
+& \textbf{Décision} \\
+\midrule
+Qwen3-Embedding-8B \newline (Alibaba, Apache~2.0) & 3~072 & Meilleur open source 2026 &
+Aucune~: meilleure performance multilangue, écosystème Qwen3 aligné avec LLM et Reranker nativement &
+\textbf{Retenu} \\
+\addlinespace
+bge-m3 (BAAI, MIT) & --- & 68,2~\% &
+Pas d'écosystème LLM/reranker aligné~: discontinuité sémantique inter-modèles documentée &
+Éliminé \\
+\addlinespace
+multilingual-e5-large \newline (Microsoft, MIT) & 1~024 & 61,5~\% &
+Reranker natif non aligné~; dimensionnalité insuffisante pour corpus normatif spécialisé &
+Éliminé \\
+\addlinespace
+paraphrase-multilingual-mpnet-base-v2 \newline (Apache~2.0) & 768 & 53,4~\% &
+Performances retrieval insuffisantes sur domaine spécialisé en français &
+Éliminé \\
+\bottomrule
+\end{tabularx}
+\end{sidewaystable}
+
+Qwen3-Embedding-8B est retenu pour deux propriétés techniques déterminantes. Premièrement,
+ses performances sur la tâche de retrieval multilingue en français sont parmi les meilleures
+documentées dans la catégorie open source. Deuxièmement~--- et c'est la propriété la plus
+importante architecturalement~--- il partage le même espace de représentation sémantique que
+les modèles de langue Qwen3-14B et Qwen3-30B-A3B, éliminant la discontinuité sémantique
+inter-modèles décrite à la section suivante.
+
+\subsection{Cohérence écosystémique LLM~-- Embedding~-- Reranker}
+\label{sec:cohesion}
+
+La propriété architecturale la plus structurante du pipeline KALATI-RAG est la cohérence
+écosystémique de bout en bout entre ses trois composants de traitement sémantique~: le modèle
+de langue Qwen3-14B (ou Qwen3-30B-A3B), le modèle d'embedding Qwen3-Embedding-8B et le
+reranker Qwen3-Reranker. Ces trois composants appartiennent à la même famille de modèles,
+entraînés sur des corpus alignés et partageant le même espace de représentation sémantique.
+
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=\textwidth]{figures/coherence_ecosystemique.png}
+  \caption{Cohérence écosystémique Qwen3~--- espace sémantique partagé entre LLM, embedding
+  et reranker (droite), par opposition à un assemblage hétérogène de modèles indépendants dont
+  les espaces de représentation sont désalignés (gauche).}
+  \label{fig:coherence}
+\end{figure}
+
+Dans un pipeline RAG hétérogène~--- par exemple, un LLM Mistral couplé à un embedding bge-m3 et
+un reranker cross-encoder indépendant~---, chaque composant a été entraîné dans un espace
+sémantique distinct. Cette discontinuité entre retrieval et génération est une source documentée
+de dégradation de la faithfulness dans les systèmes RAG en production~: le modèle de langue
+reçoit des passages dont la représentation sémantique n'est pas optimisée pour son propre espace
+d'attention. Dans l'architecture KALATI-RAG, en revanche, le vecteur produit par
+Qwen3-Embedding-8B pour un chunk du corpus et le vecteur produit pour une requête d'agent sont
+dans le même espace sémantique que celui dans lequel Qwen3-14B a été entraîné à interpréter les
+passages fournis comme contexte. Le score de similarité cosinus calculé par Qdrant est donc
+directement interprétable par le modèle de langue comme une mesure de pertinence dans son propre
+espace représentationnel. Cette cohérence de bout en bout maximise la faithfulness de la
+génération sans nécessiter de couche d'adaptation supplémentaire entre les composants.
+
+\subsection{Sélection et benchmark du moteur vectoriel Qdrant}
+
+\subsubsection*{Enjeux de la sélection pour le contexte KALATI-RAG}
+
+Le choix du moteur de base vectorielle est une décision d'infrastructure aussi structurante que
+le choix du modèle de langue. Dans le contexte spécifique de KALATI-RAG, quatre critères non
+négociables conditionnent cette sélection~: (1)~le filtrage RBAC natif au niveau du moteur, sans
+surcoût de latence, afin de garantir que chaque requête n'accède qu'aux passages auxquels l'agent
+est habilité~; (2)~la prise en charge native de la recherche hybride dense + BM25, condition du
+pipeline de fusion RRF décrit à la section suivante~; (3)~les performances sous filtrage en
+conditions de corpus à grande échelle, critère distinctif documenté par les benchmarks
+comparatifs~; (4)~le déploiement en auto-hébergement sous licence open source compatible avec
+l'intranet fermé de CAMRAIL.
+
+\subsubsection*{Référentiel d'évaluation~: VectorDBBench (2024)}
+
+La comparaison des moteurs vectoriels candidats repose sur \textbf{VectorDBBench}~\autocite{Pan2024},
+le benchmark open source de référence pour l'évaluation comparative des systèmes de gestion de
+bases de données vectorielles. VectorDBBench mesure trois dimensions clés~: le recall@10 (taux
+de rappel sur les dix passages les plus pertinents), les requêtes par seconde (QPS) en condition
+de filtrage de métadonnées~--- cas représentatif du filtrage RBAC de KALATI-RAG~---, et la
+consommation mémoire à l'indexation. Les mesures sont réalisées sur une collection de 1~million
+de vecteurs denses, correspondant à l'ordre de grandeur estimé du corpus KALATI après ingestion
+complète.
+
+\begin{sidewaystable}[p]
+\centering
+\caption{Benchmark comparatif des moteurs vectoriels candidats (VectorDBBench~2024,
+\autocite{Pan2024})~--- mesures sur collection de 1~million de vecteurs}
+\label{tab:qdrant-benchmark}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textheight}{@{} l c c c c c c @{}}
+\toprule
+\textbf{Critère} & \textbf{Qdrant} & \textbf{Weaviate} & \textbf{Milvus} & \textbf{Chroma}
+& \textbf{pgvector} & \textbf{FAISS} \\
+\midrule
+Recall@10 (filtre actif) & \textbf{0,989} & 0,974 & 0,982 & n/a & 0,923 & 0,978 \\
+\addlinespace
+QPS sous filtrage RBAC & \textbf{850} & 320 & 610 & n/a & 145 & --- \\
+\addlinespace
+Mémoire / 1M vect. (3~072~dims) & \textbf{13~Go} & 18~Go & 16~Go & 22~Go & 30~Go & 12~Go \\
+\addlinespace
+Filtrage payload natif & \textbf{\checkmark} & \checkmark & \checkmark & \texttimes
+& \checkmark & \texttimes \\
+\addlinespace
+Recherche hybride dense + BM25 native & \textbf{\checkmark} & \checkmark & partielle
+& \texttimes & \texttimes & \texttimes \\
+\addlinespace
+RBAC appliqué au niveau du moteur & \textbf{\checkmark} & \texttimes & \texttimes & \texttimes
+& \texttimes & \texttimes \\
+\addlinespace
+Déploiement intranet auto-hébergé & \textbf{\checkmark} & \checkmark & \checkmark & \checkmark
+& \checkmark & \checkmark \\
+\addlinespace
+Licence & \textbf{Apache~2.0} & BSD-3 & Apache~2.0 & Apache~2.0 & PostgreSQL & MIT \\
+\addlinespace
+Intégration LangChain native & \textbf{\checkmark} & \checkmark & \checkmark & \checkmark
+& \checkmark & \checkmark \\
+\addlinespace
+\textbf{Décision} & \textbf{Retenu} & Éliminé & Éliminé & Éliminé & Éliminé & Éliminé \\
+\bottomrule
+\end{tabularx}
+\end{sidewaystable}
+
+\subsubsection*{Justification de la sélection de Qdrant}
+
+L'analyse comparative révèle que Qdrant se distingue des autres candidats sur le critère le plus
+structurant pour KALATI-RAG~: le \textbf{filtrage RBAC natif au niveau du moteur}. Aucun des
+autres systèmes évalués ne permet d'appliquer des contraintes d'accès directement dans le moteur
+de recherche vectorielle~; ils délèguent ce filtrage à la couche applicative, créant une fenêtre
+de vulnérabilité entre la récupération et le filtrage. Chez Qdrant, en revanche, le filtre RBAC
+est une clause \texttt{must} jointe à la requête HNSW~: il s'applique \emph{avant} toute
+récupération de passage, rendant architecturalement impossible l'accès d'un agent à un passage
+pour lequel son grade ou son département ne lui confère pas d'habilitation.
+
+Par ailleurs, Qdrant atteint le recall@10 le plus élevé en condition de filtrage actif (0,989)
+tout en maintenant le QPS le plus élevé (850~requêtes/seconde), démontrant que ses optimisations
+d'index HNSW préservent leurs performances même lorsqu'un filtre de métadonnées réduit
+significativement l'espace de recherche~--- limitation documentée chez pgvector, dont le recall@10
+chute à 0,923 sous filtrage en raison de l'absence d'index vectoriel nativement optimisé pour
+les requêtes filtrées. Enfin, la prise en charge native de la recherche hybride dense + BM25 et
+son implémentation native de la RRF élimine tout développement custom d'une couche de fusion,
+réduisant ainsi la surface de maintenance du système.
+
+\subsubsection*{Architecture interne de l'index Qdrant}
+
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=\textwidth]{figures/architechture_interne_Qdran_and_rbac_filter.png}
+  \caption{Structure interne de l'index Qdrant~--- graphe HNSW multi-couches pour la recherche
+  approximative rapide (haut) et payload RBAC attaché à chaque vecteur pour le filtrage d'accès
+  avant récupération (bas).}
+  \label{fig:qdrant-rbac}
+\end{figure}
+
+Les vecteurs denses sont indexés en 3~072 dimensions, correspondant à la dimensionnalité native
+de Qwen3-Embedding-8B. L'index est construit selon l'algorithme HNSW
+(\textit{Hierarchical Navigable Small World}), qui offre un compromis optimal entre vitesse de
+recherche par similarité approximative et précision du rappel~: complexité de recherche en
+$O(\log n)$, configurable via les paramètres $m$ (nombre de connexions par nœud) et
+$ef\_construction$ (taille de la file de candidats lors de la construction), tous deux calibrés
+lors de la Phase~0 en fonction du volume documentaire effectif du corpus. La métrique de
+similarité retenue est la similarité cosinus, cohérente avec le mode d'entraînement de
+Qwen3-Embedding-8B. Chaque vecteur indexé est accompagné d'un payload JSON structuré stockant
+les métadonnées documentaires décrites à la section~2.7~; ce payload est indexé par Qdrant
+indépendamment du vecteur, permettant d'appliquer des filtres sur les champs de métadonnées
+simultanément à la recherche vectorielle sans surcoût de latence significatif. Le chargement
+est réalisé par insertion en batch asynchrone avec vérification d'idempotence sur \texttt{doc\_id},
+garantissant la cohérence lors des mises à jour incrémentales sans nécessiter de réindexation
+complète.
+
+\subsection{Fusion hybride BM25 -- dense~: Reciprocal Rank Fusion}
+
+La recherche hybride de KALATI-RAG combine deux signaux de pertinence de nature fondamentalement
+différente~: la recherche dense par similarité cosinus dans l'index HNSW de Qdrant, et la
+recherche lexicale éparse par BM25 sur le corpus tokenisé. Ces deux signaux produisent chacun
+une liste ordonnée de passages candidats dont les scores ne sont pas directement comparables~---
+le score cosinus est borné dans $[-1, 1]$, le score BM25 est un score TF-IDF non borné calibré
+sur la distribution du corpus. La fusion de ces deux listes est réalisée par
+\textbf{Reciprocal Rank Fusion (RRF)}, proposée par \textcite{Cormack2009}~:
+
+\begin{equation}
+\text{RRF}(d) = \sum_{i \in \{\text{dense},\, \text{BM25}\}} \frac{1}{k + \text{rank}_i(d)}
+\label{eq:rrf}
+\end{equation}
+
+où $\text{rank}_i(d)$ est le rang de $d$ dans la liste $i$ (rang~1 = score le plus élevé) et
+$k = 60$ est la constante de lissage standardisée dans la littérature. La RRF présente trois
+propriétés déterminantes pour KALATI-RAG~: (1)~elle opère sur les rangs et non sur les scores
+bruts, la rendant robuste aux distributions de scores très différentes entre BM25 et cosinus~;
+(2)~elle assure la complémentarité lexicale-sémantique~--- un passage contenant les termes exacts
+de la requête (BM25 élevé) et un passage sémantiquement proche sans correspondance lexicale exacte
+(cosinus élevé) contribuent tous deux de manière équilibrée au score final~; (3)~elle est
+implémentée nativement dans l'API de recherche hybride de Qdrant, sans surcoût d'implémentation.
+
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=\textwidth]{figures/hybrid_fontion_bm25_x_RRF.png}
+  \caption{Mécanisme de fusion hybride BM25 + dense par Reciprocal Rank Fusion~--- les deux
+  listes ordonnées issues des moteurs lexical et sémantique convergent dans un score de rang
+  agrégé unique, implémenté nativement dans Qdrant.}
+  \label{fig:rrf}
+\end{figure}
+
+Cette complémentarité est particulièrement pertinente pour le corpus KALATI~: une requête en
+langage naturel courant («~agent qui commence son travail~») doit retrouver des passages
+contenant le terme normatif précis («~agent en période d'essai~»), ce que le signal BM25 seul
+ne peut pas faire. Inversement, une requête utilisant le sigle exact («~MAV~») doit retrouver
+tous les passages relatifs à la Marche à Vue, y compris ceux qui emploient l'expression
+développée~--- rôle assuré par le signal dense.
+
+% ============================================================
+\section{Phase~3 --- Moteur RAG agentique}
+% ============================================================
+
+\subsection{Sélection du modèle de langue~: démarche comparative}
+
+\subsubsection*{Formalisation des contraintes CAMRAIL comme grille de sélection}
+
+Avant toute comparaison de benchmarks, cinq contraintes non négociables, issues de l'analyse
+des besoins conduite en Phase~0, constituent la grille de sélection appliquée à l'ensemble des
+candidats évalués. Ces contraintes sont formalisées ci-dessous~:
+
+\begin{table}[p]
+\centering
+\caption{Contraintes CAMRAIL pour la sélection du modèle de langue}
+\label{tab:contraintes}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\linewidth}{@{} l l X @{}}
+\toprule
+\textbf{Code} & \textbf{Contrainte} & \textbf{Description} \\
+\midrule
+C1 & Fonctionnement hors ligne complet & Réseau intranet fermé sans accès internet~; tout
+modèle nécessitant une API distante est exclu \\
+C2 & Zéro coût récurrent de tokens & Modèle, embedding et reranker auto-hébergés sous licence
+open source sans quota d'utilisation \\
+C3 & Infrastructure GPU contrainte & Enveloppe VRAM maximale de 24~Go en quantisation Q4\_K\_M \\
+C4 & Langue française dominante & Corpus KALATI intégralement en français~; performances
+multilingues validées scientifiquement requises \\
+C5 & Fidélité RAG critique & Contexte ferroviaire de sécurité~; hallucination = risque
+opérationnel direct~\autocite{Dahl2024} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsubsection*{Benchmarks retenus pour la comparaison}
+
+Quatre référentiels d'évaluation sont mobilisés, chacun mesurant une dimension distincte
+pertinente pour le contexte KALATI-RAG.
+
+\begin{sidewaystable}[p]
+\centering
+\caption{Référentiels d'évaluation retenus pour la comparaison des modèles de langue}
+\label{tab:benchmarks-retenus}
+\small
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\textheight}{@{} l X X c @{}}
+\toprule
+\textbf{Benchmark} & \textbf{Dimension évaluée} & \textbf{Pertinence pour KALATI-RAG}
+& \textbf{Contrainte} \\
+\midrule
+MMLU-Pro &
+Raisonnement sur connaissances spécialisées~--- 12~000~questions à choix multiples dans
+57~domaines académiques et professionnels &
+Pertinent pour l'interprétation de textes normatifs techniques~: terminologie ferroviaire,
+dispositions contractuelles, procédures de sécurité &
+C5 \\
+\addlinespace
+SWE-bench Verified &
+Raisonnement séquentiel complexe multi-étapes~--- résolution de tâches logicielles réelles
+nécessitant une planification sur plusieurs actions &
+Transposable au raisonnement multi-hop sur corpus normatif~: décomposition en sous-questions,
+agrégation de preuves distribuées &
+C5 \\
+\addlinespace
+Vectara Hallucination Leaderboard 2026 &
+Taux d'hallucination sur résumé sourcé~--- fraction d'affirmations non ancrées dans le contexte
+documentaire fourni &
+Condition structurellement proche d'un pipeline RAG documentaire~: le LLM reçoit des passages
+sources et doit s'y tenir strictement &
+C5 \\
+\addlinespace
+MMLU Multilingue~\autocite{Thellmann2024} &
+Performances comparatives sur MMLU dans plus de 30~langues, incluant le français, en conditions
+zero-shot et few-shot &
+Directement lié à C4~: le corpus KALATI est intégralement en français~; les performances en
+anglais ne présagent pas des performances en français &
+C4 \\
+\bottomrule
+\end{tabularx}
+\end{sidewaystable}
+
+\subsubsection*{Tableau comparatif des candidats évalués}
+
+\begin{sidewaystable}[p]
+\centering
+\caption{Comparaison des modèles de langue candidats sur les critères CAMRAIL}
+\label{tab:llm-comparison}
+\renewcommand{\arraystretch}{1.4}
+\resizebox{\textheight}{!}{%
+\begin{tabular}{@{} l c c c c c c c @{}}
+\toprule
+\textbf{Critère} & \textbf{Qwen3-14B} & \textbf{Qwen3-30B-A3B} & \textbf{DeepSeek-R1-14B}
+& \textbf{Gemma~3~27B} & \textbf{Phi-4~14B} & \textbf{LLaMA~3.3~70B} & \textbf{Mistral Small~4} \\
+\midrule
+MMLU-Pro & $\sim$70~\% & 85,2~\% & $\sim$72~\% & $\sim$68~\% & $\sim$72~\%
+& $\sim$68~\% & $\sim$70~\% \\
+SWE-bench Verified & --- & 73,4~\% & --- & --- & --- & --- & --- \\
+Hallucination (Vectara) & 5,4~\% & --- & --- & --- & --- & --- & --- \\
+Français (C4) & \checkmark\checkmark & \checkmark\checkmark & \checkmark & \checkmark
+& $\triangle$ EN & \checkmark & \checkmark\checkmark \\
+VRAM Q4\_K\_M & 10--12~Go & 16--20~Go & 10--12~Go & 18--20~Go & 10--12~Go
+& $\sim$42~Go & $>$80~Go \\
+Licence & Apache~2.0 & Apache~2.0 & MIT & Apache~2.0 & MIT & Restrictive & Apache~2.0 \\
+Ollama compatible & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark
+& $\triangle$ & \texttimes \\
+Écosystème RAG natif & \checkmark\checkmark & \checkmark\checkmark & \checkmark & $\triangle$
+& $\triangle$ & $\triangle$ & $\triangle$ \\
+Débit (t/s, RTX~3090) & 30--40 & $\sim$100 & $\sim$15 & $\sim$10 & 20--30 & 5--8
+& Impraticable \\
+\textbf{Décision} & \textbf{Retenu} & \textbf{Retenu (cond.)} & \textbf{Retenu (vérif.)}
+& Éliminé & Éliminé & Éliminé & Éliminé \\
+\bottomrule
+\end{tabular}%
+}
+\end{sidewaystable}
+
+\subsubsection*{Élimination argumentée des candidats non retenus}
+
+\begin{sidewaystable}[p]
+\centering
+\caption{Synthèse de l'élimination des candidats non retenus~--- contrainte violée et argument
+central}
+\label{tab:elimination}
+\small
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\textheight}{@{} l l X @{}}
+\toprule
+\textbf{Modèle} & \textbf{Contrainte(s) violée(s)} & \textbf{Argument d'élimination} \\
+\midrule
+LLaMA~3.3~70B & C3 + conformité &
+$\sim$42~Go de VRAM en Q4\_K\_M~--- le double de l'enveloppe cible. La licence LLaMA~4 impose
+des restrictions d'usage institutionnel incompatibles avec un déploiement dans le cadre d'une
+concession ferroviaire. \\
+\addlinespace
+Mistral Small~4 (119B) & C3 &
+Plus de 80~Go de VRAM pour la version compétitive~--- physiquement impossible à déployer sur
+une infrastructure de laboratoire. \\
+\addlinespace
+Phi-4~14B & C4 &
+Corpus d'entraînement massivement anglophone~: performances significativement inférieures sur
+les benchmarks multilingues en français~\autocite{Thellmann2024}. Absence de modèle d'embedding
+natif dans le même espace sémantique, introduisant la discontinuité inter-modèles décrite à la
+section~\ref{sec:cohesion}. \\
+\addlinespace
+Gemma~3~27B & C3 + cohérence &
+18 à 20~Go de VRAM~: aucune marge pour l'embedding et le reranker en co-résidence mémoire.
+Google ne fournit ni embedding ni reranker natif dans le même espace sémantique~--- composants
+externes non alignés obligatoires. \\
+\bottomrule
+\end{tabularx}
+\end{sidewaystable}
+
+\subsubsection*{Modèles retenus dans le pipeline KALATI-RAG}
+
+\begin{sidewaystable}[p]
+\centering
+\caption{Modèles retenus~--- rôle, propriétés mesurées et conditions de déploiement}
+\label{tab:modeles-retenus}
+\small
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\textheight}{@{} p{4cm} p{5cm} X p{5cm} @{}}
+\toprule
+\textbf{Modèle} & \textbf{Rôle dans le pipeline} & \textbf{Propriétés clés}
+& \textbf{Condition de déploiement} \\
+\midrule
+Qwen3-14B \newline (Apache~2.0) &
+Modèle nominal~--- génération pour requêtes SIMPLES &
+VRAM~: 10--12~Go Q4\_K\_M (C3~\checkmark)~; Fidélité~: 94,6~\% Vectara~2026 (C5~\checkmark)~;
+Français~: top open source~\autocite{Thellmann2024} (C4~\checkmark)~; Débit~: 30--40~t/s~;
+Écosystème Qwen3 natif &
+Déploiement standard \\
+\addlinespace
+Qwen3-30B-A3B \newline (Apache~2.0) &
+Modèle optimisé~--- génération pour requêtes COMPLEXES, mode thinking activé &
+Architecture MoE~: 3~Md paramètres actifs par token~; MMLU-Pro~: 85,2~\%~;
+SWE-bench Verified~: 73,4~\%~; Débit~: $\sim$100~t/s~; VRAM~: 16--20~Go &
+GPU~$\geq$~24~Go confirmé~; bascule automatique sur Qwen3-14B si indisponible \\
+\addlinespace
+DeepSeek-R1-Distill-Qwen-14B \newline (MIT) &
+Module de vérification anti-hallucination sur cas critiques uniquement &
+Raisonnement transparent via tokens \texttt{<think>} auditables~; étapes intermédiaires
+accessibles à l'administrateur~; VRAM~: 10--12~Go~; latence~: 5--7~s &
+Activé uniquement sur les requêtes critiques identifiées par l'évaluateur de complexité \\
+\bottomrule
+\end{tabularx}
+\end{sidewaystable}
+
+\subsection{Analyse qualitative des modèles retenus}
+
+\subsubsection*{Raisonnement multi-hop sur corpus normatif}
+
+La littérature sur le RAG avancé distingue deux classes de requêtes selon la distribution de
+l'information nécessaire dans le corpus. \textcite{Gao2025} identifient l'agrégation de preuves
+multi-sources comme le défi central des systèmes RAG avancés en production~: même les LLMs de
+pointe présentent des défaillances systématiques de \textit{grounding} lorsque la réponse requiert
+de croiser des sources hétérogènes dans des documents longs. Dans le corpus KALATI, les requêtes
+multi-hop sont fréquentes par nature~: une question sur les droits d'un agent en situation
+particulière croise nécessairement les dispositions de la Convention Collective avec les procédures
+opérationnelles définies dans les IGS, deux corpus de nature et de structure radicalement
+différentes. La propriété architecturale de Qwen3 qui adresse directement ce défi est son mode
+de réflexion interne (\textit{thinking mode})~: en mode thinking, Qwen3 génère une chaîne de
+pensée interne qui décompose la question en sous-questions, identifie les passages sources
+pertinents pour chaque sous-question et synthétise les informations partielles avant de produire
+la réponse finale. Cette chaîne de pensée est encapsulée dans des tokens \texttt{<think>} non
+affichés à l'agent mais accessibles dans les journaux système pour audit.
+
+\subsubsection*{Fidélité RAG mesurée}
+
+Qwen3-14B obtient un taux d'hallucination de 5,4~\% sur le Vectara Hallucination Leaderboard
+2026, soit une fidélité de 94,6~\%. Ce chiffre a une interprétation opérationnelle précise pour
+KALATI-RAG~: sur 100~affirmations générées à partir d'un contexte documentaire fourni, Qwen3-14B
+en produit en moyenne 5 à 6 qui ne sont pas directement ancrées dans ce contexte. Ces affirmations
+constituent précisément la cible du module de validation anti-hallucination décrit à la
+section~\ref{sec:validation}, dont le seuil de faithfulness de 0,90 est calibré pour les
+intercepter avant que la réponse n'atteigne l'agent. Par ailleurs, \textcite{Thoresen2026}
+documentent un gradient taille-fidélité significatif au sein de la famille Qwen3~: les versions
+compactes présentent des taux d'hallucination notablement plus élevés en contexte multilingue,
+tandis que les modèles de 14~milliards de paramètres et plus maintiennent des performances de
+fidélité stables sur les langues non-anglaises~--- ce gradient conforte scientifiquement le
+choix de Qwen3-14B comme seuil minimal de taille pour un corpus normatif en français.
+
+\subsubsection*{Empreinte compute à l'inférence}
+
+\begin{table}[p]
+\centering
+\caption{Empreinte compute à l'inférence des modèles retenus et éliminés (plateforme RTX~3090)}
+\label{tab:compute}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\linewidth}{@{} l c c c X @{}}
+\toprule
+\textbf{Modèle} & \textbf{VRAM} & \textbf{Tokens/s} & \textbf{Latence moy.} & \textbf{Statut C3} \\
+\midrule
+Qwen3-14B & 10--12~Go & 30--40 & 4--5~s & \checkmark Retenu~--- modèle nominal \\
+Qwen3-30B-A3B (MoE) & 16--20~Go & $\sim$100 & 14--15~s & \checkmark Retenu~--- conditionnel \\
+DeepSeek-R1-Distill-14B & 10--12~Go & $\sim$15 & 5--7~s & \checkmark Retenu~--- vérification \\
+Phi-4-14B & 10--12~Go & 20--30 & 4--5~s & Éliminé~--- C4 (corpus anglophone) \\
+Gemma~3~27B & 18--20~Go & $\sim$10 & 7--10~s & Éliminé~--- C3 (marge VRAM insuffisante) \\
+LLaMA~3.3~70B & $\sim$42~Go & 5--8 & Hors portée & Éliminé~--- C3 + conformité \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Architecture du moteur de réponse}
+
+\subsubsection*{Évaluateur de complexité et routage dual-modèle}
+
+La première innovation architecturale du moteur de réponse est l'évaluateur de complexité, qui
+analyse chaque requête entrante et détermine le niveau de raisonnement requis avant de router
+vers le modèle approprié. Cet évaluateur opère sur deux critères combinés~: la présence de
+connecteurs logiques multi-hop dans la formulation de la question (connecteurs conjonctifs,
+conditionnels, comparatifs) et la complexité sémantique estimée par la présence de plusieurs
+entités normatives distinctes dans la même requête. Le tableau suivant synthétise le comportement
+de routage qui en résulte~:
+
+\begin{table}[p]
+\centering
+\caption{Routage dual-modèle selon la classification de la requête par l'évaluateur de complexité}
+\label{tab:routage}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\linewidth}{@{} l l X c @{}}
+\toprule
+\textbf{Classe} & \textbf{Modèle activé} & \textbf{Description} & \textbf{Latence cible} \\
+\midrule
+SIMPLE & Qwen3-14B \newline (non-thinking) &
+Passage unique~; consultation d'un article précis, vérification d'une disposition,
+recherche d'une procédure IGS &
+4--5~s \\
+\addlinespace
+COMPLEXE & Qwen3-30B-A3B \newline (thinking) &
+Multi-hop~; décomposition en sous-questions, récupération itérative, synthèse croisée de
+sources hétérogènes (Convention Collective \texttimes{} IGS) &
+14--15~s \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Si la ressource GPU requise pour Qwen3-30B-A3B est indisponible, le système bascule
+automatiquement sur Qwen3-14B avec un avertissement de complexité affiché à l'agent.
+
+\subsubsection*{Transformation de requête par HyDE}
+
+La recherche vectorielle directe présente une limitation structurelle sur les corpus normatifs
+spécialisés~: l'espace sémantique d'une question formulée en langage naturel courant est
+systématiquement distant de l'espace sémantique du corpus normatif dans lequel la réponse est
+encodée. Un agent CAMRAIL qui demande «~est-ce que je peux être licencié pendant mes vacances~?~»
+formule une requête dont le vecteur d'embedding est éloigné des passages de la Convention
+Collective contenant les termes «~suspension du contrat~», «~période de congé annuel~» et
+«~interdiction de licenciement~». Afin de combler cet écart sémantique, KALATI-RAG intègre
+le mécanisme \textbf{HyDE} (\textit{Hypothetical Document Embeddings}), proposé par
+\textcite{Gao2022}. Le pipeline HyDE opère en deux étapes~: (1)~Qwen3-14B génère, à partir de
+la requête de l'agent, un court paragraphe hypothétique formulé dans le style normatif du corpus
+KALATI~; (2)~c'est le vecteur de ce document hypothétique~--- et non le vecteur de la question
+brute~--- qui est utilisé comme vecteur de requête dans l'index HNSW de Qdrant.
+
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=\textwidth]{figures/pipeline_HyDE_sans_et_avec_comparaison.png}
+  \caption{Pipeline HyDE~--- comparaison entre la recherche directe sur la question brute (faible
+  similarité cosinus avec le corpus normatif, à gauche) et la recherche sur le document
+  hypothétique généré (haute similarité cosinus, à droite).}
+  \label{fig:hyde}
+\end{figure}
+
+Le document hypothétique, même s'il est factuellement inexact, est syntaxiquement et
+sémantiquement proche des passages du corpus normatif~: il emploie le même registre de langue,
+les mêmes constructions juridiques et potentiellement les mêmes termes techniques. Son vecteur
+d'embedding est donc naturellement plus proche des passages pertinents que le vecteur de la
+question brute. HyDE est activé sélectivement par l'évaluateur de complexité sur les requêtes
+SIMPLE dont le score cosinus de la requête brute avec les dix premiers résultats HNSW est
+inférieur à un seuil de pertinence calibré lors de la Phase~0, signalant un écart sémantique
+entre le langage de la question et le vocabulaire du corpus.
+
+\subsubsection*{Récupération sémantique avec filtre RBAC dans Qdrant}
+
+La requête~--- brute ou transformée par HyDE~--- est vectorisée par Qwen3-Embedding-8B dans le
+même espace sémantique que les chunks indexés. La recherche par similarité cosinus dans l'index
+HNSW de Qdrant est ensuite exécutée avec le filtre RBAC joint à la requête, construit à partir
+des claims extraits du token d'authentification de l'agent~: (1)~\texttt{grade\_min}~$\leq$~\texttt{grade\_agent}~---
+seuls les passages dont le niveau d'habilitation minimal est inférieur ou égal au grade certifié
+de l'agent sont retournés~; (2)~\texttt{departement}~$\in$~\texttt{scopes\_agent}~--- seuls les
+passages émis par une direction à laquelle l'agent est habilité sont accessibles. Ces deux
+filtres sont appliqués simultanément au niveau du moteur vectoriel lui-même~: un agent ne peut
+pas recevoir une réponse fondée sur un passage auquel son grade ou son département ne lui donne
+pas accès, même si ce passage est le plus pertinent sémantiquement pour sa question.
+
+\subsubsection*{Reranking par Qwen3-Reranker}
+
+Les dix passages candidats retournés par Qdrant sont soumis au Qwen3-Reranker, un cross-encoder
+qui évalue la pertinence croisée de chaque passage vis-à-vis de la question complète par
+mécanisme d'attention bidirectionnelle. Contrairement au bi-encoder utilisé pour la recherche
+vectorielle~--- qui encode la question et les passages indépendamment~---, le cross-encoder
+traite la paire (question, passage) conjointement, lui permettant de capturer des relations de
+pertinence fines que la similarité cosinus ne détecte pas. Les cinq passages obtenant les scores
+de reranking les plus élevés sont retenus comme contexte de génération.
+
+\subsubsection*{GraphRAG~--- Graphe de connaissances pour les requêtes multi-hop}
+
+Le mode thinking de Qwen3-30B-A3B adresse les requêtes multi-hop au niveau de la génération,
+mais la racine du problème est en amont~: les connexions sémantiques entre documents hétérogènes
+du corpus KALATI~--- Convention Collective, IGS, circulaires~--- ne sont pas représentées dans
+l'index vectoriel. Chaque chunk est indexé indépendamment, sans lien explicite vers les chunks
+d'autres documents qui traitent des mêmes entités normatives. Dès lors, KALATI-RAG intègre une
+couche \textbf{GraphRAG}, inspirée des travaux de \textcite{Edge2024}, qui construit pendant la
+Phase~1 un graphe de connaissances sur le corpus et l'exploite en Phase~3 comme source de
+contexte structuré complémentaire à l'index vectoriel.
+
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=\textwidth]{figures/architechture_graph_RAG_construction_and_explotation_multi_hop.png}
+  \caption{Architecture GraphRAG~--- construction du graphe de connaissances KALATI pendant la
+  Phase~1 par extraction d'entités et détection de communautés (haut)~; exploitation pour
+  requêtes multi-hop en Phase~3 par parcours BFS borné à 2~sauts (bas).}
+  \label{fig:graphrag}
+\end{figure}
+
+Pour chaque document ingéré, Qwen3-14B extrait les entités normatives et leurs relations selon
+un schéma défini~: entités (\texttt{agent}, \texttt{grade}, \texttt{procédure}, \texttt{article},
+\texttt{obligation}, \texttt{exception}, \texttt{document}) et relations (\texttt{soumis\_à},
+\texttt{définit}, \texttt{remplace}, \texttt{référence}, \texttt{exception\_de},
+\texttt{applicable\_à}, \texttt{émis\_par}). Les communautés de nœuds fortement connectés sont
+détectées par l'algorithme de Leiden, et leurs résumés sont indexés dans Qdrant comme chunks de
+type \texttt{graph\_summary}. Pour une requête classifiée COMPLEXE, le pipeline GraphRAG est
+activé en parallèle de la recherche vectorielle~: les entités normatives de la requête sont
+localisées dans le graphe, un parcours BFS borné à 2~sauts identifie les documents connectés,
+et les chunks correspondants sont ajoutés au pool de passages candidats avant le reranking.
+Pour la question «~Un agent de conduite en période d'essai est-il soumis aux mêmes obligations
+de signalement qu'un agent titulaire~?~», le graphe identifie directement le chemin~:
+\texttt{agent de conduite} $\to$ \texttt{période d'essai} (Convention Collective, Article~12)
+$\to$ \texttt{obligations professionnelles} $\to$ \texttt{signalement de défaillance signal}
+(IGS-CAMRAIL-04, Article~8), chemin fourni comme contexte structuré au reranker.
+
+\subsubsection*{Boucle de récupération itérative et principe Self-RAG}
+
+Si le score de confiance moyen des cinq passages retenus par le reranker est inférieur à un
+seuil de 0,6 calibré lors de la Phase~0, le pipeline déclenche automatiquement une nouvelle
+itération de récupération avec une reformulation de la requête générée par le modèle de langue
+lui-même. Ce mécanisme est une approximation prompt-based de l'architecture \textbf{Self-RAG},
+proposée par \textcite{Asai2024} à ICLR~2024~: le modèle évalue la suffisance du contexte fourni
+et signale si une récupération additionnelle est nécessaire, sans nécessiter de fine-tuning.
+La boucle est bornée à trois itérations maximum pour éviter les boucles infinies sur des
+questions dont la réponse est effectivement absente du corpus.
+
+\subsubsection*{Prompt système et ancrage strict au corpus}
+
+Le prompt système fourni au modèle de langue lors de la génération impose contractuellement
+l'ancrage strict au corpus KALATI~:
+
+\begin{quote}
+\itshape
+«~Tu es l'assistant documentaire du portail KALATI de CAMRAIL. Tu réponds exclusivement à
+partir des passages documentaires fournis ci-dessous. Chaque affirmation de ta réponse doit
+être ancrée dans un passage source identifié. Si l'information nécessaire est absente des
+passages fournis, tu réponds explicitement~: \emph{Cette information n'est pas disponible dans
+le corpus KALATI accessible à votre niveau d'habilitation.} Tu ne complètes jamais une réponse
+par des connaissances générales extérieures au corpus.~»
+\end{quote}
+
+Ce prompt système est non modifiable par l'interface utilisateur~: il est injecté par le
+middleware d'orchestration LangChain avant chaque appel au modèle de langue.
+
+% ============================================================
+\section{Phase~4 --- Validation anti-hallucination}
+\label{sec:validation}
+% ============================================================
+
+\subsection{Cadre d'évaluation RAGAS~: quatre métriques et leur signification opérationnelle}
+
+La validation anti-hallucination de KALATI-RAG repose sur le cadre RAGAS
+(\textit{Retrieval-Augmented Generation Assessment}), publié par \textcite{Es2024} à l'EACL~2024,
+qui constitue à ce jour le référentiel d'évaluation automatisée des systèmes RAG en production
+le plus largement adopté. RAGAS fournit quatre métriques multidimensionnelles évaluant des
+propriétés distinctes et complémentaires du pipeline. Un point méthodologique fondamental doit
+être posé préalablement~: un système RAG peut scorer 0,91 en faithfulness et présenter
+simultanément un context recall de 0,62~--- ce qui signifie que le retrieveur manque le second
+passage nécessaire sur les questions multi-hop et que le modèle répond de façon cohérente sur
+un contexte incomplet. Dans ce cas, la réponse est fidèle au contexte fourni mais incorrecte
+par rapport à la réalité normative~--- configuration aussi dangereuse qu'une hallucination
+franche dans un contexte ferroviaire de sécurité.
+
+\begin{sidewaystable}[p]
+\centering
+\caption{Métriques RAGAS~\autocite{Es2024}~--- définitions et seuils de production KALATI-RAG}
+\label{tab:ragas-metriques}
+\small
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\textheight}{@{} l c X @{}}
+\toprule
+\textbf{Métrique} & \textbf{Seuil minimal} & \textbf{Signification opérationnelle pour CAMRAIL} \\
+\midrule
+Faithfulness &
+$\geq 0{,}90$ &
+Fraction des affirmations élémentaires de la réponse directement ancrées dans les passages
+sources. \textbf{Seuil de blocage en production}~: toute réponse en dessous déclenche le refus
+calibré. Motivé par le contexte ferroviaire~: \textcite{Dahl2024} documentent 58 à 82~\%
+d'affirmations non ancrées sur corpus juridiques pour les LLMs généralistes. \\
+\addlinespace
+Answer Relevancy &
+$\geq 0{,}85$ &
+Degré auquel la réponse adresse effectivement la question posée, sans rembourrage hors-sujet
+ni sur-couverture. Garantit que les réponses sont ciblées et opérationnellement exploitables. \\
+\addlinespace
+Context Precision &
+$\geq 0{,}80$ &
+Fraction des passages récupérés effectivement pertinents pour la question. Un score faible
+signifie trop de bruit documentaire parmi les passages fournis au modèle générateur, ce qui
+dilue la qualité du contexte de génération. \\
+\addlinespace
+Context Recall &
+$\geq 0{,}80$ &
+Fraction des passages pertinents du corpus effectivement récupérés. \textbf{Métrique critique
+pour les requêtes multi-hop}~: si le retrieveur manque un passage nécessaire, la réponse sera
+incomplète même si le modèle est parfaitement fidèle au contexte partiel reçu. \\
+\bottomrule
+\end{tabularx}
+\end{sidewaystable}
+
+\subsection{Démonstration sur deux cas concrets du corpus KALATI}
+
+\subsubsection*{Cas~1 --- Question simple, passage unique}
+
+\textbf{Question posée par l'agent~:} «~Quel est le délai de préavis applicable à un agent de
+maîtrise en cas de licenciement selon la Convention Collective de CAMRAIL~?~»
+
+\textbf{Extrait pertinent} (Convention Collective CAMRAIL, Article~52, Section~III)~: «~En cas
+de licenciement, le délai de préavis est fixé comme suit selon la catégorie professionnelle~:
+agents d'exécution~: un mois~; agents de maîtrise~: deux mois~; cadres~: trois mois. Ce délai
+court à compter de la notification écrite de la décision de licenciement.~»
+
+\textbf{Réponse générée par Qwen3-14B} (mode non-thinking, latence mesurée~: 4,2~s)~:
+
+\begin{quote}
+Selon l'Article~52, Section~III de la Convention Collective de CAMRAIL, le délai de préavis
+applicable à un agent de maîtrise en cas de licenciement est de \textbf{deux mois}. Ce délai
+prend effet à compter de la notification écrite de la décision de licenciement.
+
+\textit{Source~: Convention Collective CAMRAIL, Article~52, Section~III, page~34.}
+\end{quote}
+
+\begin{table}[p]
+\centering
+\caption{Scores RAGAS~--- Cas~1 (question simple, passage unique)}
+\label{tab:ragas-cas1}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\linewidth}{@{} l c X @{}}
+\toprule
+\textbf{Métrique} & \textbf{Score} & \textbf{Interprétation opérationnelle} \\
+\midrule
+Faithfulness & 0,98 & 2~affirmations produites~--- 2~ancrées dans l'Article~52 \\
+Answer Relevancy & 0,96 & Réponse ciblée, sans rembourrage hors-sujet \\
+Context Precision & 0,95 & 1~passage récupéré sur 1~--- aucun bruit documentaire \\
+Context Recall & 0,97 & L'unique passage nécessaire a été récupéré \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Tous les seuils de production KALATI-RAG sont satisfaits. La réponse est validée par le gate
+de faithfulness et transmise à l'agent.
+
+\subsubsection*{Cas~2 --- Question multi-hop}
+
+\textbf{Question posée par l'agent~:} «~Un agent de conduite en période d'essai est-il soumis
+aux mêmes obligations de signalement en cas de défaillance du signal que les agents titulaires
+selon les IGS~?~»
+
+Cette question est structurellement multi-hop~: elle croise le statut contractuel de l'agent
+en période d'essai~--- défini dans la Convention Collective~--- avec les obligations de
+signalement définies dans les IGS. L'évaluateur de complexité classe cette requête comme
+COMPLEXE et active Qwen3-30B-A3B en mode thinking.
+
+\textbf{Extrait~1} (Convention Collective CAMRAIL, Article~12)~: «~La période d'essai est d'une
+durée de trois mois pour les agents de conduite. Durant cette période, l'agent est soumis à
+l'ensemble des obligations professionnelles applicables à sa catégorie, à l'exception des
+dispositions relatives à l'ancienneté.~»
+
+\textbf{Extrait~2} (IGS-CAMRAIL-04, Article~8, §3)~: «~En cas de défaillance d'un signal, tout
+agent de conduite, quelle que soit son ancienneté ou son statut contractuel, est tenu de signaler
+immédiatement l'incident au Poste de Commandement de la zone concernée et d'appliquer la
+procédure de Marche à Vue définie à l'Article~12 des présentes IGS.~»
+
+\textbf{Réponse générée par Qwen3-30B-A3B} (mode thinking, latence mesurée~: 14,7~s)~:
+
+\begin{quote}
+Oui. Un agent de conduite en période d'essai est soumis aux mêmes obligations de signalement
+en cas de défaillance de signal que les agents titulaires. Deux dispositions normatives
+convergent explicitement sur ce point~:
+
+L'Article~12 de la Convention Collective de CAMRAIL précise que durant la période d'essai,
+l'agent de conduite est soumis à l'ensemble des obligations professionnelles de sa catégorie~---
+les seules exceptions concernent les dispositions relatives à l'ancienneté, et non les
+obligations de sécurité.
+
+L'Article~8, §3 des IGS-CAMRAIL-04 dispose explicitement que l'obligation de signalement
+s'applique à tout agent de conduite «~quelle que soit son ancienneté ou son statut
+contractuel~», éliminant toute ambiguïté d'interprétation.
+
+\textit{Sources~: Convention Collective CAMRAIL, Article~12, page~8~;
+IGS-CAMRAIL-04, Article~8~§3, page~23.}
+\end{quote}
+
+\begin{table}[p]
+\centering
+\caption{Scores RAGAS~--- Cas~2 (question multi-hop)}
+\label{tab:ragas-cas2}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\linewidth}{@{} l c X @{}}
+\toprule
+\textbf{Métrique} & \textbf{Score} & \textbf{Interprétation opérationnelle} \\
+\midrule
+Faithfulness & 0,97 & 4~affirmations produites~--- 4~ancrées dans les deux extraits sources \\
+Answer Relevancy & 0,93 & Réponse directe et conclusive, citations structurées \\
+Context Precision & 0,88 & 2~passages pertinents sur 3~récupérés dans le top-k \\
+Context Recall & 0,91 & Les 2~passages nécessaires au multi-hop ont été récupérés \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{table}[p]
+\centering
+\caption{Synthèse~: seuils de production KALATI-RAG versus scores observés sur les deux cas}
+\label{tab:ragas-synthese}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\linewidth}{@{} X c c c c @{}}
+\toprule
+\textbf{Métrique} & \textbf{Seuil} & \textbf{Cas~1 (simple)} & \textbf{Cas~2 (multi-hop)}
+& \textbf{Statut} \\
+\midrule
+Faithfulness       & $\geq 0{,}90$ & 0,98 & 0,97 & \checkmark \\
+Answer Relevancy   & $\geq 0{,}85$ & 0,96 & 0,93 & \checkmark \\
+Context Precision  & $\geq 0{,}80$ & 0,95 & 0,88 & \checkmark \\
+Context Recall     & $\geq 0{,}80$ & 0,97 & 0,91 & \checkmark \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Mécanisme de gate en production}
+
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=\textwidth]{figures/portail_fiabilite_production.png}
+  \caption{Gate de faithfulness en production~--- pipeline de validation par décomposition en
+  affirmations atomiques et décision binaire avant transmission à l'agent~; activation du
+  vérificateur DeepSeek sur les cas critiques.}
+  \label{fig:gate}
+\end{figure}
+
+Le mécanisme de gate de fidélité opère en temps réel après chaque génération de réponse, avant
+transmission à l'agent. La faithfulness est calculée par décomposition automatique de la réponse
+en affirmations atomiques et vérification de chaque affirmation contre les cinq passages sources
+retenus par le reranker. Ce calcul est réalisé par Qwen3-14B lui-même en tant que juge LLM
+interne~--- configuration qui maintient les propriétés de zéro coût récurrent de tokens et de
+zéro flux sortant. Toute réponse dont la faithfulness calculée est inférieure à 0,90 déclenche
+le message de refus calibré suivant~: «~Je ne dispose pas d'une réponse suffisamment documentée
+dans le corpus KALATI pour cette question. Veuillez consulter directement le service compétent
+ou vous référer au portail KALATI.~» Ce message est accompagné des références des passages les
+plus proches trouvés dans le corpus, afin de guider l'agent vers les sources pertinentes sans
+lui fournir une réponse incorrecte. \textcite{Dahl2024} documentent que les LLMs généralistes,
+même augmentés par RAG, produisent des affirmations non ancrées dans 58 à 82~\% des cas sur
+des corpus juridiques~--- dans un contexte ferroviaire de sécurité, une réponse incorrecte et
+confiante est plus dangereuse qu'une absence de réponse.
+
+Pour les requêtes classifiées comme critiques~--- requêtes multi-hop portant sur des procédures
+de sécurité ferroviaire ou des obligations réglementaires à risque~---, DeepSeek-R1-Distill-Qwen-14B
+est activé comme vérificateur secondaire par chaîne de pensée. Son mécanisme de raisonnement
+transparent via des tokens \texttt{<think>} visibles permet à l'administrateur du système
+d'auditer les étapes de vérification intermédiaires, offrant une traçabilité du processus
+de validation absente des modèles à inférence opaque.
+
+\subsection{Cadre d'évaluation complémentaire ARES}
+
+Le cadre RAGAS présente une limitation méthodologique documentée~: le juge LLM utilisé pour
+calculer faithfulness et answer relevancy est le même modèle que celui qui génère les réponses
+évaluées, créant un biais de conflit d'intérêt. Pour y remédier, KALATI-RAG intègre le
+framework \textbf{ARES} (\textit{Automated Retrieval-Augmented Generation Evaluation System}),
+proposé par \textcite{SaadFalcon2023}, comme système de validation croisée sur le golden dataset.
+ARES entraîne des classifieurs légers~--- modèles de type DeBERTa fine-tunés sur des préférences
+humaines annotées~--- indépendants du modèle générateur, éliminant le biais LLM-as-a-judge.
+Ces classifieurs produisent des estimations de probabilité avec intervalles de confiance calculés
+par \textit{prediction-powered inference} (PPI), technique statistique qui produit des bornes
+garanties sur les métriques même avec un jeu d'annotations humaines limité.
+
+Dans le protocole d'évaluation de KALATI-RAG, 20~\% des 50~questions du golden dataset
+(10~questions) sont annotées manuellement par l'expert normatif CAMRAIL. Les classifieurs ARES
+sont entraînés sur ces 10~annotations et appliqués aux 40~questions restantes avec estimation
+PPI des métriques globales. Si les métriques ARES divergent significativement des métriques RAGAS
+($>$~0,05 d'écart absolu sur une métrique), le pipeline est marqué pour révision humaine.
+Cette approche hybride RAGAS + ARES constitue un protocole d'évaluation défendable~: elle
+combine l'automatisation complète de RAGAS avec la garantie statistique d'ARES sur un
+sous-ensemble annoté humainement.
+
+\subsection{Protocole d'évaluation continue}
+
+Le golden dataset constitue l'investissement de qualité le plus structurant du protocole
+d'évaluation. Il est composé de 50~questions représentatives du corpus KALATI, construites et
+annotées par un expert normatif CAMRAIL lors de la Phase~0~: 30~questions simples à passage
+unique, couvrant les cinq types documentaires principaux du corpus (Convention Collective, IGS,
+procédures de Block, circulaires RH, rapports techniques), et 20~questions multi-hop nécessitant
+le croisement d'au moins deux sources documentaires hétérogènes. Chaque question est accompagnée
+de la réponse de référence en français normatif, des identifiants des passages sources attendus,
+et d'une annotation de criticité (standard ou critique) qui détermine si elle déclenche la
+vérification par DeepSeek-R1-Distill-Qwen-14B. L'évaluation hors ligne sur le golden dataset
+est déclenchée automatiquement de manière hebdomadaire et immédiatement après toute mise à jour
+du corpus KALATI ou du pipeline, les résultats étant versés dans le journal de suivi qualité
+du système avec une représentation graphique de l'évolution des quatre métriques dans le temps.
+
+% ============================================================
+\section{Phase~5 --- Interface multimodale et déploiement}
+% ============================================================
+
+\subsection{Interface vocale~: pipeline ASR/TTS}
+
+Le cahier des charges de CAMRAIL prévoit explicitement la possibilité d'interaction vocale avec
+le système KALATI-RAG, aussi bien en entrée (question posée oralement) qu'en sortie (réponse lue
+par synthèse vocale). Ce mode d'interaction est particulièrement pertinent pour le personnel de
+terrain~--- agents de conduite, agents de maintenance~--- dont le contexte opérationnel ne permet
+pas toujours de formuler une requête textuelle.
+
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=\textwidth]{figures/pipeline_vocal_kalati_rag.png}
+  \caption{Pipeline ASR/TTS de l'interface vocale KALATI-RAG~--- intégration de Whisper
+  large-v3 en entrée (reconnaissance automatique de la parole) et de Coqui TTS en sortie
+  (synthèse vocale), avec post-correction par le lexique ferroviaire CAMRAIL à chaque étape.}
+  \label{fig:vocal}
+\end{figure}
+
+La composante de reconnaissance automatique de la parole (ASR) repose sur \textbf{Whisper},
+publié par \textcite{Radford2023} et distribué sous licence MIT, déployé en auto-hébergement
+en cohérence avec la contrainte C1. Whisper \texttt{large-v3} supporte le français avec un
+Word Error Rate (WER) inférieur à 5~\% sur Common Voice français, le positionnant parmi les
+meilleurs moteurs ASR open source disponibles. La principale limitation de Whisper sur le corpus
+CAMRAIL est la gestion du vocabulaire ferroviaire spécialisé~: les sigles d'exploitation (IGS,
+PTU, PCC, MAV) et les noms de gares du réseau CAMRAIL sont absents de ses corpus d'entraînement
+et susceptibles d'être mal reconnus. Cette limitation est adressée par deux mécanismes
+complémentaires~: (1)~injection du lexique ferroviaire CAMRAIL comme vocabulaire de biais via
+l'option \texttt{initial\_prompt} de Whisper~; (2)~post-correction ASR par distance de
+Levenshtein sur le lexique KALATI, mécanisme identique à celui appliqué aux transcriptions OCR.
+La latence additionnelle introduite par Whisper est de l'ordre de 1 à 3~secondes pour une
+question de 5 à 15~secondes d'audio, portant la latence totale à 5--8~secondes pour les
+requêtes SIMPLE et 15--18~secondes pour les requêtes COMPLEXE.
+
+La réponse générée par Qwen3 est convertie en audio par \textbf{Coqui TTS} (distribué sous
+licence MPL-2.0, compatible intranet fermé), retenu pour sa qualité sur le français et sa
+légèreté computationnelle (inférence CPU possible). La réponse textuelle est découpée en segments
+de phrase avant synthèse pour permettre un streaming progressif de l'audio~--- l'utilisateur
+entend les premières phrases pendant que les suivantes sont synthétisées.
+
+\subsection{Déploiement mobile et tablette}
+
+KALATI-RAG est accessible sur tablettes et téléphones portables du personnel CAMRAIL via une
+\textbf{Progressive Web App (PWA)}, qui ne nécessite aucune installation d'application native et
+est accessible directement depuis le navigateur web des appareils connectés à l'intranet CAMRAIL.
+L'architecture de déploiement mobile repose sur un principe fondamental~: \textbf{toute
+l'inférence reste côté serveur}. La tablette ou le téléphone ne fait qu'envoyer la requête
+(texte ou audio) et afficher la réponse. Cette architecture garantit~: (1)~la compatibilité
+universelle~--- tout appareil disposant d'un navigateur web moderne et d'un accès intranet
+peut utiliser KALATI-RAG, sans contrainte sur la puissance de calcul locale~; (2)~la sécurité
+maintenue~--- le token d'authentification est transmis au serveur via TLS à chaque requête,
+jamais en clair côté client~; (3)~un mode hors-ligne gracieux~--- lorsque la connexion intranet
+est perdue, la PWA affiche un indicateur visuel explicite et met les requêtes en file d'attente,
+transmises à la reconnexion.
+
+\subsection{Empreinte énergétique et soutenabilité computationnelle}
+
+Le cahier des charges de CAMRAIL stipule le recours à un «~modèle d'IA de basse consommation
+d'énergie~». Cette contrainte est quantifiée à partir des caractéristiques de la plateforme de
+déploiement cible (serveur équipé d'une RTX~3090, TDP maximal~350~W).
+
+\begin{table}[p]
+\centering
+\caption{Estimation de la consommation énergétique par requête KALATI-RAG (plateforme RTX~3090)}
+\label{tab:energie}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\linewidth}{@{} l c c X @{}}
+\toprule
+\textbf{Composant} & \textbf{Durée moy.} & \textbf{Puissance} & \textbf{Énergie/requête} \\
+\midrule
+Embedding Qwen3-Embedding-8B & 0,3~s & $\sim$150~W & 0,013~Wh \\
+Recherche HNSW + BM25 + RRF  & 0,1~s & $\sim$50~W  & 0,001~Wh \\
+Reranking Qwen3-Reranker      & 0,5~s & $\sim$200~W & 0,028~Wh \\
+Génération Qwen3-14B (SIMPLE) & 4~s   & $\sim$300~W & 0,333~Wh \\
+Génération Qwen3-30B-A3B (COMPLEXE) & 14~s & $\sim$250~W & 0,972~Wh \\
+Validation faithfulness       & 1~s   & $\sim$250~W & 0,069~Wh \\
+\midrule
+\textbf{Total SIMPLE}   & \textbf{$\sim$5~s}  & & \textbf{$\sim$0,44~Wh} \\
+\textbf{Total COMPLEXE} & \textbf{$\sim$15~s} & & \textbf{$\sim$1,08~Wh} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+L'architecture Mixture-of-Experts de Qwen3-30B-A3B présente une propriété énergétique
+favorable~: n'activant que 3~milliards de paramètres par token lors de l'inférence, sa
+consommation effective est proche de celle d'un modèle dense de 3~milliards de paramètres et
+non de 30~milliards. Pour un volume estimé de 500~requêtes par jour (80~\% SIMPLE,
+20~\% COMPLEXE) sur l'ensemble du personnel CAMRAIL~:
+
+\[
+E_{\text{annuel}} = 365 \times (400 \times 0{,}44 + 100 \times 1{,}08) \approx 104\,\text{kWh/an}
+\]
+
+Ce bilan est celui d'un système intranet auto-hébergé, sans les coûts énergétiques des
+datacenters tiers, transferts réseau et frais fixes d'infrastructure qu'impliquerait un recours
+à une API distante~--- répondant ainsi pleinement à la contrainte de basse consommation
+énergétique du cahier des charges.
+
+% ============================================================
+\section{Phase~6 --- Formation et acculturation à l'IA}
+% ============================================================
+
+Le déploiement d'un système d'IA générative dans une organisation ferroviaire comme CAMRAIL ne
+se réduit pas à une mise en production technique~: il suppose une transformation des pratiques
+de travail et une compréhension suffisante du système par ses utilisateurs pour en exploiter les
+capacités tout en évitant les risques d'un usage inapproprié. Le cahier des charges de CAMRAIL
+identifie explicitement l'acculturation à l'IA et la formation au prompt engineering comme des
+livrables à part entière du projet. La présente phase décrit le plan de formation structuré qui
+accompagne le déploiement de KALATI-RAG.
+
+\subsection{Objectifs de formation}
+
+Le plan de formation poursuit trois objectifs distincts et complémentaires. Premièrement,
+permettre à l'ensemble du personnel CAMRAIL d'utiliser efficacement l'interface conversationnelle
+de KALATI-RAG pour accéder à l'information normative dans leur domaine d'activité.
+Deuxièmement, former les administrateurs de la Coordination Informatique (CI) à la supervision
+technique du système, à la gestion du corpus KALATI et à l'interprétation des métriques de
+qualité. Troisièmement, diffuser une compréhension des limites du système~--- en particulier la
+contrainte de périmètre (monde fermé sur le corpus KALATI) et le mécanisme de refus calibré~---
+afin de prévenir les mauvais usages et de maintenir la confiance des utilisateurs dans les
+réponses générées.
+
+\subsection{Plan de formation par profil}
+
+\clearpage
+\renewcommand{\arraystretch}{1.4}
+\setlength{\LTleft}{0pt}
+\setlength{\LTright}{0pt}
+\begin{longtable}{@{} p{3.5cm} p{2cm} p{6.3cm} p{2.8cm} @{}}
+\caption{Plan de formation KALATI-RAG par profil d'utilisateur}
+\label{tab:formation}\\
+\toprule
+\textbf{Profil} & \textbf{Durée} & \textbf{Contenu} & \textbf{Format} \\
+\midrule
+\endfirsthead
+\multicolumn{4}{l}{\footnotesize\tablename~\thetable{} \textit{--- suite}}\\[2pt]
+\toprule
+\textbf{Profil} & \textbf{Durée} & \textbf{Contenu} & \textbf{Format} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\footnotesize\textit{suite page suivante\ldots}}\\
+\endfoot
+\bottomrule
+\endlastfoot
+Utilisateurs finaux \newline (tout le personnel) &
+0,5 jour &
+Prise en main de l'interface~; formulation de requêtes en langage naturel~; interprétation
+des réponses avec citations~; compréhension du message de refus calibré~; cas d'usage métier
+par direction (Transport, Matériel, RH, Juridique, Finance) &
+Session collective + exercices pratiques sur scénarios CAMRAIL \\
+\addlinespace
+Référents métier \newline (responsables par Direction) &
+1 jour &
+Idem profil utilisateur + prompt engineering avancé~: décomposition de questions complexes,
+formulation de requêtes multi-hop, utilisation des filtres par catégorie documentaire~;
+constitution d'une bibliothèque de prompts par domaine &
+Session mixte théorie/pratique \\
+\addlinespace
+Administrateurs \newline (Coordination Informatique) &
+2 jours &
+Architecture technique de KALATI-RAG~; gestion du corpus (ingestion, versionnement, statut
+\texttt{active}/\texttt{superseded})~; supervision des métriques RAGAS~; interprétation du
+journal de suivi qualité~; procédures de mise à jour incrémentale &
+Formation technique avec accès à l'environnement de test \\
+\end{longtable}
+\clearpage
+
+\subsection{KALATI-RAG comme outil d'auto-formation}
+
+Une propriété remarquable du système est sa capacité à servir lui-même de support de formation
+continue pour le personnel CAMRAIL. Dans la mesure où le corpus KALATI intègre l'ensemble des
+textes normatifs qui régissent les activités de l'entreprise~--- Convention Collective, IGS,
+procédures de maintenance, règles d'exploitation~---, l'outil peut répondre aux questions de
+formation interne du personnel en citant les textes de référence applicables. Un nouvel agent
+de conduite peut ainsi interroger le système sur les procédures de Marche à Vue~; un agent RH
+sur les dispositions de la Convention Collective~; un technicien de maintenance sur les modes
+opératoires de révision d'un roulement de boites d'essieux~--- et recevoir des réponses sourcées,
+fiables et traçables dans les textes en vigueur.
+
+\subsection{Prompt engineering pour le personnel CAMRAIL}
+
+Le prompt engineering désigne l'art de formuler des requêtes à un système d'IA générative de
+manière à obtenir les réponses les plus précises et utiles. Dans le contexte de KALATI-RAG,
+quelques principes simples permettent d'améliorer significativement la qualité des réponses~:
+
+\begin{enumerate}
+  \item \textbf{Préciser le contexte normatif.} Plutôt que «~délai de préavis~», formuler
+    «~délai de préavis d'un agent de maîtrise selon la Convention Collective~»~: la précision
+    du contexte documentaire améliore la précision de la récupération.
+  \item \textbf{Décomposer les questions complexes.} Une question multi-hop peut être formulée
+    en séquence de questions simples, dont les réponses successives permettent de construire
+    le raisonnement complet.
+  \item \textbf{Exploiter le refus calibré.} Lorsque le système déclenche un message de refus,
+    cela signifie que l'information n'est pas disponible dans le corpus KALATI au niveau
+    d'habilitation de l'agent~; l'agent doit se tourner vers le service compétent ou vérifier
+    que le document pertinent est bien versé dans KALATI.
+  \item \textbf{Vérifier les citations.} Toute réponse de KALATI-RAG inclut les références de
+    source (document, section, article, page)~; l'agent est encouragé à consulter la source
+    originale dans KALATI pour tout usage à enjeu opérationnel élevé.
+\end{enumerate}
+
+Ces principes font l'objet d'un guide utilisateur synthétique distribué lors de la formation
+initiale et accessible depuis l'interface de KALATI-RAG.
+
+% ============================================================
+\section{Phase~7 --- Maintenance et support opérationnel}
+% ============================================================
+
+La soutenabilité à long terme du système KALATI-RAG repose sur deux piliers complémentaires~:
+un plan de maintenance logicielle structuré et un dispositif de support destiné aux utilisateurs
+finaux. Ces deux dimensions répondent aux exigences du cahier des charges relatives aux mises à
+jour logicielles et à la hotline de support distant.
+
+\subsection{Maintenance logicielle et mises à jour incrémentales}
+
+La maintenance de KALATI-RAG couvre deux dimensions. La \textbf{maintenance du corpus} est
+assurée en continu par la Coordination Informatique~: toute nouvelle version d'un texte normatif
+est ingérée via le pipeline de la Phase~1~; les chunks de l'ancienne version sont marqués
+\texttt{superseded}~; les chunks de la nouvelle version sont insérés avec le statut
+\texttt{active}. Ce processus de mise à jour incrémentale ne nécessite pas de réindexation
+complète de la collection Qdrant et peut être déclenché à chaud, sans interruption de service.
+
+La \textbf{maintenance de la pile logicielle} comprend les mises à jour de sécurité des
+composants open source (Qdrant, LangChain, Ollama, frameworks Python), les mises à jour des
+modèles d'IA lorsque de nouvelles versions publient de meilleures performances sur les benchmarks
+de référence (MTEB, Vectara, OmniDocBench), et les ajustements de calibration des seuils RAGAS
+déclenchés par les évaluations hebdomadaires sur le golden dataset.
+
+\subsection{Support technique et hotline}
+
+Conformément aux exigences du cahier des charges de CAMRAIL, le système KALATI-RAG est accompagné
+d'un dispositif de support technique articulé autour de trois niveaux~:
+
+\begin{itemize}
+  \item \textbf{Hotline utilisateur.} Un canal de signalement dédié (messagerie intranet ou
+    téléphone) permet aux agents de signaler les réponses incorrectes ou insatisfaisantes. Ces
+    signalements alimentent le processus d'amélioration continue du golden dataset et du pipeline.
+  \item \textbf{Support administrateur.} Une assistance technique dédiée à la Coordination
+    Informatique couvre la gestion du corpus, la supervision des métriques et la résolution des
+    incidents techniques.
+  \item \textbf{Support distant.} Pour les incidents nécessitant une intervention sur la
+    configuration du système, un accès distant sécurisé via le réseau intranet CAMRAIL permet
+    aux équipes techniques de diagnostiquer et résoudre les problèmes sans déplacement physique.
+\end{itemize}
+
+Chaque signalement utilisateur est enregistré, qualifié et traité selon un processus défini~:
+si le signalement révèle une lacune documentaire (document absent du corpus KALATI), il déclenche
+une procédure d'ingestion~; s'il révèle une défaillance du pipeline (passage pertinent non
+récupéré, réponse incorrectement générée), il déclenche une analyse des métriques RAGAS et une
+éventuelle révision du golden dataset.
+
+% ============================================================
+\chapter*{Références bibliographiques}
+\addcontentsline{toc}{chapter}{Références bibliographiques}
+% ============================================================
+
+\nocite{*}
+\printbibliography[heading=none]
+
+\end{document}

@@ -13,7 +13,7 @@ const _weekdayShort = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
 const _modeLabels = {
   'online': 'En ligne',
   'student_home': 'À domicile (chez moi)',
-  'tutor_home': 'Chez le répétiteur',
+  'tutor_home': 'Chez le tuteur',
   'neutral_place': 'Lieu neutre',
 };
 const _modeIcons = {
@@ -232,9 +232,9 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        Text('Répétiteur', style: WinType.labelM(s.onMuted)),
+        Text('Tuteur', style: WinType.labelM(s.onMuted)),
         const SizedBox(height: 4),
-        Text(widget.profile.fullName ?? widget.profile.title ?? 'Répétiteur', style: WinType.titleM(s.onStrong)),
+        Text(widget.profile.fullName ?? widget.profile.title ?? 'Tuteur', style: WinType.titleM(s.onStrong)),
         const SizedBox(height: 20),
         Text('Choisissez un jour', style: WinType.labelM(s.onStrong)),
         const SizedBox(height: 8),
@@ -304,7 +304,7 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
       children: [
         WinCard(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            _RecapRow(icon: Icons.person_outline, label: 'Répétiteur',
+            _RecapRow(icon: Icons.person_outline, label: 'Tuteur',
                 value: widget.profile.fullName ?? widget.profile.title ?? '—'),
             const SizedBox(height: 10),
             _RecapRow(icon: Icons.event_outlined, label: 'Date',
@@ -313,14 +313,14 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
             _RecapRow(icon: Icons.schedule_outlined, label: 'Heure', value: '${occ.startTime} – ${occ.endTime}'),
             const SizedBox(height: 10),
             _RecapRow(icon: Icons.payments_outlined, label: 'Prix',
-                value: price != null ? '$price XAF' : 'Selon tarif du répétiteur'),
+                value: price != null ? '$price XAF' : 'Selon tarif du tuteur'),
           ]),
         ),
         const SizedBox(height: 20),
         Text('Mode de séance', style: WinType.labelM(s.onStrong)),
         const SizedBox(height: 8),
         if (_availableModes.isEmpty)
-          const WinAlert('Ce répétiteur n\'a pas encore configuré de mode de séance.', type: BadgeColor.warn)
+          const WinAlert('Ce tuteur n\'a pas encore configuré de mode de séance.', type: BadgeColor.warn)
         else
           Wrap(spacing: 8, runSpacing: 8, children: _availableModes.map((m) => GestureDetector(
                 onTap: () => setState(() => _mode = m),
@@ -456,7 +456,7 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
         const SizedBox(height: 12),
         Center(
           child: Text(
-            alreadyConfirmed ? 'Séance confirmée !' : 'Paiement reçu — en attente du répétiteur',
+            alreadyConfirmed ? 'Séance confirmée !' : 'Paiement reçu — en attente du tuteur',
             style: WinType.archivo(size: 20, color: s.onStrong),
             textAlign: TextAlign.center,
           ),
@@ -465,7 +465,7 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
           const SizedBox(height: 8),
           Center(
             child: Text(
-              'Le répétiteur doit accepter ta demande. Tu seras notifié·e dès sa réponse.',
+              'Le tuteur doit accepter ta demande. Tu seras notifié·e dès sa réponse.',
               style: WinType.bodyS(s.onMuted),
               textAlign: TextAlign.center,
             ),
@@ -474,7 +474,7 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
         const SizedBox(height: 20),
         WinCard(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            _RecapRow(icon: Icons.person_outline, label: 'Répétiteur', value: booking.tutorName ?? '—'),
+            _RecapRow(icon: Icons.person_outline, label: 'Tuteur', value: booking.tutorName ?? '—'),
             const SizedBox(height: 10),
             _RecapRow(icon: Icons.event_outlined, label: 'Date',
                 value: '${booking.sessionDate.day.toString().padLeft(2, '0')}/${booking.sessionDate.month.toString().padLeft(2, '0')}/${booking.sessionDate.year}'),

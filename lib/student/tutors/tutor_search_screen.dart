@@ -16,7 +16,7 @@ const _tutorLevels = [
 const _tutorModes = [
   ('online', 'En ligne'),
   ('student_home', 'À mon domicile'),
-  ('tutor_home', 'Chez le répétiteur'),
+  ('tutor_home', 'Chez le tuteur'),
   ('neutral_place', 'Espace neutre'),
 ];
 const _tutorCities = ['Douala', 'Yaoundé'];
@@ -75,7 +75,7 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Trouver un répétiteur', style: WinType.headlineS(s.onStrong)),
+        title: Text('Trouver un tuteur', style: WinType.headlineS(s.onStrong)),
       ),
       body: Column(children: [
         SizedBox(
@@ -162,7 +162,7 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
                   ? Center(child: Column(mainAxisSize: MainAxisSize.min, children: [
                       Icon(Icons.wifi_off_outlined, size: 48, color: s.onFaint),
                       const SizedBox(height: 12),
-                      Text('Impossible de charger les répétiteurs.', style: WinType.bodyM(s.onMuted)),
+                      Text('Impossible de charger les tuteurs.', style: WinType.bodyM(s.onMuted)),
                       const SizedBox(height: 12),
                       WinButton('Réessayer', onTap: _search),
                     ]))
@@ -172,7 +172,7 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
                           child: Column(mainAxisSize: MainAxisSize.min, children: [
                             Icon(Icons.person_search_outlined, size: 64, color: s.onFaint),
                             const SizedBox(height: 12),
-                            Text('Aucun répétiteur trouvé pour ces critères.',
+                            Text('Aucun tuteur trouvé pour ces critères.',
                                 style: WinType.bodyM(s.onMuted), textAlign: TextAlign.center),
                           ]),
                         ))

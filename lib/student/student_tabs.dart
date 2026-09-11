@@ -133,7 +133,7 @@ class _StudentCatalogTabState extends State<StudentCatalogTab> {
             const Icon(Icons.person_search_outlined, color: Colors.white, size: 22),
             const SizedBox(width: 12),
             Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('Trouver un répétiteur', style: WinType.titleM(Colors.white)),
+              Text('Trouver un tuteur', style: WinType.titleM(Colors.white)),
               Text('Cours particuliers en ligne ou à domicile',
                   style: WinType.labelS(Colors.white70)),
             ])),
@@ -211,7 +211,7 @@ class StudentSpaceTab extends StatelessWidget {
           _QuickLink('Catalogue formations', Icons.explore_outlined, WinColors.teal400,
               () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CourseCatalogScreen()))),
           const SizedBox(height: 10),
-          _QuickLink('Trouver un répétiteur', Icons.person_search_outlined, WinColors.blue500,
+          _QuickLink('Trouver un tuteur', Icons.person_search_outlined, WinColors.blue500,
               () => Navigator.push(context, MaterialPageRoute(builder: (_) => const TutorSearchScreen()))),
           const SizedBox(height: 10),
           _QuickLink('Mes réservations', Icons.event_available_outlined, WinColors.teal500,

@@ -73,7 +73,7 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Profil du répétiteur', style: WinType.headlineS(s.onStrong)),
+        title: Text('Profil du tuteur', style: WinType.headlineS(s.onStrong)),
       ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
@@ -114,7 +114,7 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
           const SizedBox(width: 14),
           Expanded(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(p.fullName ?? 'Répétiteur WinPlus', style: WinType.archivo(size: 19, color: s.onStrong)),
+              Text(p.fullName ?? 'Tuteur WinPlus', style: WinType.archivo(size: 19, color: s.onStrong)),
               if ((p.title ?? '').isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(top: 2),

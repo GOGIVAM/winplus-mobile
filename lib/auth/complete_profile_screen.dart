@@ -266,7 +266,7 @@ class _TeacherProfileWizardState extends State<_TeacherProfileWizard> {
             Text(
               _step == 0
                   ? 'On adapte ton espace professeur et les suggestions WinAI à tes matières.'
-                  : 'Utile pour situer tes contenus et, plus tard, ton profil Mode Répétiteur.',
+                  : 'Utile pour situer tes contenus et, plus tard, ton profil Mode Tuteur.',
               style: WinType.bodyM(s.onMuted),
             ),
             const SizedBox(height: 28),
