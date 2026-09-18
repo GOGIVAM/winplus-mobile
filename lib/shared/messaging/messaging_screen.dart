@@ -175,7 +175,9 @@ class _ConversationScreenState extends State<ConversationScreen> {
     if (text.isEmpty) return;
     _ctrl.clear();
     setState(() => _sending = true);
-    final ok = await MessagingService.instance.sendMessage(widget.conversation.id, text);
+    // Envoyé immédiatement si en ligne, mis en file sinon (jamais perdu)
+    // voir MessagingService.sendMessageQueueable.
+    final ok = await MessagingService.instance.sendMessageQueueable(widget.conversation.id, text);
     if (!mounted) return;
     setState(() => _sending = false);
     if (ok) _load();

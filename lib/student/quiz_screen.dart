@@ -77,6 +77,20 @@ class _QuizActiveScreenState extends State<QuizActiveScreen> {
       answers: List<int?>.from(_answers),
       date: 'Maintenant',
     );
+
+    // Le score affiché est calculé localement ci-dessus (jamais bloqué par
+    // le réseau) ; cet appel se contente de faire atteindre le résultat au
+    // serveur, immédiatement si possible, en file sinon (voir
+    // QuizService.submitAttemptQueueable).
+    final quizId = int.tryParse(widget.quiz.id);
+    if (quizId != null) {
+      unawaited(QuizService.instance.submitAttemptQueueable(
+        quizId: quizId,
+        answers: List<int?>.from(_answers),
+        durationSeconds: elapsed,
+      ));
+    }
+
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(

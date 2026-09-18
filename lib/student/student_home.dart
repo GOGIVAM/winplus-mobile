@@ -8,6 +8,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import 'content_detail_screen.dart';
+import 'pending_goals_panel.dart';
 
 String _fmtDate(DateTime d) {
   const days = [
@@ -164,6 +165,8 @@ class _StudentHomeTabState extends State<StudentHomeTab> {
                   ]),
             ),
             const SizedBox(height: 12),
+            // Objectifs proposés par un parent, en attente de réponse
+            const PendingGoalsPanel(),
             // UPGRADE BANNER  visible uniquement en plan Gratuit hors devMode
             if (effectiveTier == PlanTier.libre)
               _UpgradeBanner(s: s),

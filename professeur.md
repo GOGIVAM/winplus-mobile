@@ -1,4 +1,4 @@
-# Espace Professeur — WinPlus
+# Espace Professeur  WinPlus
 
 Document de référence exhaustif listant toutes les fonctionnalités disponibles pour un professeur sur WinPlus. Un professeur connecté accède à ses fonctionnalités propres ET à toutes les fonctionnalités disponibles sans compte.
 
@@ -14,7 +14,7 @@ Le plan **Fondateur à 5 000 XAF par mois** autorise 5 épreuves publiables par 
 
 Le plan **Pro à 10 000 XAF par mois** monte à 20 épreuves par mois, 3 classes d'un total de 100 élèves, 10 quiz IA par mois, 5 parcours, évaluations illimitées, suivi élèves avancé avec insights pédagogiques, 50 Go de stockage, auto-publication par calendrier, export de données en tous formats, et une commission de 75 %. Les paiements sont automatiques.
 
-Le plan **Expert à 15 000 XAF par mois** est sans limite : publications, classes et élèves illimités, quiz IA illimités, IA premium, stockage illimité, support chat 24h/7j en priorité, et une commission de 80 % — le meilleur taux de la plateforme.
+Le plan **Expert à 15 000 XAF par mois** est sans limite : publications, classes et élèves illimités, quiz IA illimités, IA premium, stockage illimité, support chat 24h/7j en priorité, et une commission de 80 %  le meilleur taux de la plateforme.
 
 Des options supplémentaires sont disponibles à la carte : une classe de plus pour 1 000 XAF par mois, un co-enseignant pour 500 XAF par mois, 100 Go de stockage supplémentaire pour 500 XAF par mois. Un engagement annuel donne droit à 15 % de réduction.
 
@@ -136,7 +136,7 @@ Le professeur peut établir des connexions directes avec ses élèves en dehors 
 
 Le professeur crée des formations complètes composées de sections et de leçons. Chaque formation a un titre, un résumé court, une description complète, une vignette, une vidéo de présentation, une langue, un niveau, une catégorie, des tags, un prix, une option d'accès gratuit, une option d'inclusion dans l'abonnement WinPlus, des prérequis, des objectifs pédagogiques et une option de délivrance d'un certificat à la complétion.
 
-Les sections peuvent être créées, modifiées, supprimées et réordonnées. Les leçons à l'intérieur de chaque section peuvent être de trois types : vidéo (avec une URL et une durée), article (avec un contenu texte ou Markdown) ou fichier téléchargeable. Chaque leçon peut être modifiée, supprimée, réordonnée et marquée comme aperçu public visible sans inscription. Quand la formation est prête et contient au moins une leçon publiée, le professeur la soumet pour validation — elle passe en révision et ne peut plus être modifiée jusqu'à la décision de l'équipe.
+Les sections peuvent être créées, modifiées, supprimées et réordonnées. Les leçons à l'intérieur de chaque section peuvent être de trois types : vidéo (avec une URL et une durée), article (avec un contenu texte ou Markdown) ou fichier téléchargeable. Chaque leçon peut être modifiée, supprimée, réordonnée et marquée comme aperçu public visible sans inscription. Quand la formation est prête et contient au moins une leçon publiée, le professeur la soumet pour validation  elle passe en révision et ne peut plus être modifiée jusqu'à la décision de l'équipe.
 
 ---
 
@@ -146,7 +146,7 @@ Le professeur sélectionne l'un de ses contenus publiés et lance une analyse Wi
 
 ---
 
-## 21. WinAI — Assistant éditorial et pédagogique dédié
+## 21. WinAI  Assistant éditorial et pédagogique dédié
 
 En plus du chatbot général, le professeur bénéficie d'un assistant WinAI configuré pour son rôle d'attaché éditorial et pédagogique. Il reformule, synthétise, structure et enrichit du contenu à la demande, propose des plans de cours, des activités pédagogiques, des quiz, des fiches de révision et des corrections types. Des suggestions rapides prédéfinies sont disponibles. La mémoire WinAI conserve le profil du professeur entre les conversations pour personnaliser les réponses.
 
@@ -203,7 +203,7 @@ Le professeur peut envoyer des messages directs à ses élèves. Les notificatio
 | File de corrections priorisée | Implémenté |
 | Analyse IA d'une soumission d'élève | Implémenté |
 | Suggestions de commentaires IA lors de la correction | Implémenté |
-| Données réelles en file de corrections (backend) | En cours — stub à compléter |
+| Données réelles en file de corrections (backend) | En cours  stub à compléter |
 | Calendrier des sessions | Implémenté |
 | Création de session avec types et prix | Implémenté |
 | Annulation de session avec notification inscrits | Implémenté |
@@ -212,8 +212,8 @@ Le professeur peut envoyer des messages directs à ses élèves. Les notificatio
 | Gestion des classes (CRUD complet) | Implémenté |
 | Ajout d'élève par e-mail à une classe | Implémenté |
 | Liaisons directes professeur-élève | Implémenté |
-| Formations structurées — liste, filtres, options | Implémenté |
-| Formations structurées — éditeur sections et leçons | Implémenté |
+| Formations structurées  liste, filtres, options | Implémenté |
+| Formations structurées  éditeur sections et leçons | Implémenté |
 | Soumission de formation pour révision | Implémenté |
 | Intelligence de Classe (analyse IA de groupe) | Implémenté |
 | WinAI dédié rôle enseignant | Implémenté |

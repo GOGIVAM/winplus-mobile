@@ -9,14 +9,15 @@ import 'tutor_booking_flow_screen.dart';
 
 const _weekdayShort = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
 
-/// Fiche répétiteur publique (vue élève) — professeur_complete.md, section
+/// Fiche répétiteur publique (vue élève)  professeur_complete.md, section
 /// "Fiche répétiteur (vue publique)".
 class TutorPublicProfileScreen extends StatefulWidget {
   final int userId;
   const TutorPublicProfileScreen({super.key, required this.userId});
 
   @override
-  State<TutorPublicProfileScreen> createState() => _TutorPublicProfileScreenState();
+  State<TutorPublicProfileScreen> createState() =>
+      _TutorPublicProfileScreenState();
 }
 
 class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
@@ -32,31 +33,47 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
   }
 
   Future<void> _load() async {
-    setState(() { _loading = true; _error = false; });
+    setState(() {
+      _loading = true;
+      _error = false;
+    });
     try {
-      final profile = await TutorProfileService.instance.getPublicProfile(widget.userId);
+      final profile =
+          await TutorProfileService.instance.getPublicProfile(widget.userId);
       List<TutorAvailabilityOccurrence> occ = [];
       try {
-        occ = await TutorBookingService.instance.getTwoWeekCalendar(widget.userId);
+        occ = await TutorBookingService.instance
+            .getTwoWeekCalendar(widget.userId);
       } catch (_) {
         // La fiche reste consultable même si le calendrier échoue.
       }
-      if (mounted) setState(() { _profile = profile; _occurrences = occ; _loading = false; });
+      if (mounted)
+        setState(() {
+          _profile = profile;
+          _occurrences = occ;
+          _loading = false;
+        });
     } catch (_) {
-      if (mounted) setState(() { _loading = false; _error = true; });
+      if (mounted)
+        setState(() {
+          _loading = false;
+          _error = true;
+        });
     }
   }
 
   void _openBooking({TutorAvailabilityOccurrence? preselected}) {
     final p = _profile;
     if (p == null) return;
-    Navigator.push(context, MaterialPageRoute(
-      builder: (_) => TutorBookingFlowScreen(
-        profile: p,
-        occurrences: _occurrences,
-        initialOccurrence: preselected,
-      ),
-    ));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => TutorBookingFlowScreen(
+            profile: p,
+            occurrences: _occurrences,
+            initialOccurrence: preselected,
+          ),
+        ));
   }
 
   @override
@@ -78,10 +95,12 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : _error || p == null
-              ? Center(child: Column(mainAxisSize: MainAxisSize.min, children: [
+              ? Center(
+                  child: Column(mainAxisSize: MainAxisSize.min, children: [
                   Icon(Icons.wifi_off_outlined, size: 48, color: s.onFaint),
                   const SizedBox(height: 12),
-                  Text('Impossible de charger ce profil.', style: WinType.bodyM(s.onMuted)),
+                  Text('Impossible de charger ce profil.',
+                      style: WinType.bodyM(s.onMuted)),
                   const SizedBox(height: 12),
                   WinButton('Réessayer', onTap: _load),
                 ]))
@@ -96,7 +115,8 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
                     ),
                     child: SafeArea(
                       top: false,
-                      child: WinButton('Réserver une séance', block: true,
+                      child: WinButton('Réserver une séance',
+                          block: true,
                           icon: Icons.calendar_month_outlined,
                           onTap: () => _openBooking()),
                     ),
@@ -113,8 +133,10 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
           WinAvatar(p.fullName ?? p.title ?? '?', size: 72),
           const SizedBox(width: 14),
           Expanded(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(p.fullName ?? 'Tuteur WinPlus', style: WinType.archivo(size: 19, color: s.onStrong)),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(p.fullName ?? 'Tuteur WinPlus',
+                  style: WinType.archivo(size: 19, color: s.onStrong)),
               if ((p.title ?? '').isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(top: 2),
@@ -122,8 +144,10 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
                 ),
               const SizedBox(height: 8),
               Wrap(spacing: 6, runSpacing: 6, children: [
-                if (p.isDiplomaVerified) const WinBadge('Vérifié Diplôme', color: BadgeColor.success),
-                const WinBadge('Avis bientôt disponibles', color: BadgeColor.neutral),
+                if (p.isDiplomaVerified)
+                  const WinBadge('Vérifié Diplôme', color: BadgeColor.success),
+                const WinBadge('Avis bientôt disponibles',
+                    color: BadgeColor.neutral),
               ]),
             ]),
           ),
@@ -142,7 +166,9 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
               const SizedBox(width: 10),
               Expanded(
                 child: Text(p.videoUrl!,
-                    style: WinType.bodyS(s.primary), maxLines: 1, overflow: TextOverflow.ellipsis),
+                    style: WinType.bodyS(s.primary),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis),
               ),
             ]),
           ),
@@ -151,12 +177,17 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
         const _SectionTitle('Tarifs & forfaits'),
         const SizedBox(height: 8),
         WinCard(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(children: [
-              Text(p.hourlyRateXaf != null ? '${p.hourlyRateXaf} XAF' : 'Tarif non communiqué',
+              Text(
+                  p.hourlyRateXaf != null
+                      ? '${p.hourlyRateXaf} XAF'
+                      : 'Tarif non communiqué',
                   style: WinType.archivo(size: 20, color: s.onStrong)),
               if (p.hourlyRateXaf != null)
-                Padding(padding: const EdgeInsets.only(left: 4, top: 6),
+                Padding(
+                    padding: const EdgeInsets.only(left: 4, top: 6),
                     child: Text('/ heure', style: WinType.labelM(s.onMuted))),
             ]),
             if (p.trialSessionEnabled) ...[
@@ -175,10 +206,15 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
               ...p.packages.where((pk) => pk.isActive).map((pk) => Padding(
                     padding: const EdgeInsets.only(bottom: 8),
                     child: Row(children: [
-                      Icon(Icons.inventory_2_outlined, size: 16, color: s.onFaint),
+                      Icon(Icons.inventory_2_outlined,
+                          size: 16, color: s.onFaint),
                       const SizedBox(width: 8),
-                      Expanded(child: Text('${pk.name} — ${pk.sessionsCount} séances', style: WinType.bodyS(s.onStrong))),
-                      Text('${pk.totalPriceXaf} XAF', style: WinType.labelM(s.onStrong).copyWith(fontWeight: FontWeight.w700)),
+                      Expanded(
+                          child: Text('${pk.name}  ${pk.sessionsCount} séances',
+                              style: WinType.bodyS(s.onStrong))),
+                      Text('${pk.totalPriceXaf} XAF',
+                          style: WinType.labelM(s.onStrong)
+                              .copyWith(fontWeight: FontWeight.w700)),
                     ]),
                   )),
             ],
@@ -187,23 +223,36 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
         const SizedBox(height: 16),
         const _SectionTitle('Disponibilités (14 prochains jours)'),
         const SizedBox(height: 8),
-        _AvailabilityCalendar(occurrences: _occurrences, onTapSlot: (occ) => _openBooking(preselected: occ)),
+        _AvailabilityCalendar(
+            occurrences: _occurrences,
+            onTapSlot: (occ) => _openBooking(preselected: occ)),
         const SizedBox(height: 16),
         const _SectionTitle('Matières & niveaux'),
         const SizedBox(height: 8),
         WinCard(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text('Matières', style: WinType.labelM(s.onMuted)),
             const SizedBox(height: 6),
-            Wrap(spacing: 6, runSpacing: 6, children: p.subjects.isEmpty
-                ? [Text('Non renseigné', style: WinType.bodyS(s.onFaint))]
-                : p.subjects.map((sub) => WinBadge(sub, color: BadgeColor.teal)).toList()),
+            Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: p.subjects.isEmpty
+                    ? [Text('Non renseigné', style: WinType.bodyS(s.onFaint))]
+                    : p.subjects
+                        .map((sub) => WinBadge(sub, color: BadgeColor.teal))
+                        .toList()),
             const SizedBox(height: 12),
             Text('Niveaux', style: WinType.labelM(s.onMuted)),
             const SizedBox(height: 6),
-            Wrap(spacing: 6, runSpacing: 6, children: p.levels.isEmpty
-                ? [Text('Non renseigné', style: WinType.bodyS(s.onFaint))]
-                : p.levels.map((lvl) => WinBadge(lvl, color: BadgeColor.blue)).toList()),
+            Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: p.levels.isEmpty
+                    ? [Text('Non renseigné', style: WinType.bodyS(s.onFaint))]
+                    : p.levels
+                        .map((lvl) => WinBadge(lvl, color: BadgeColor.blue))
+                        .toList()),
           ]),
         ),
         const SizedBox(height: 100), // laisse la place au bouton sticky
@@ -227,7 +276,8 @@ class _SectionTitle extends StatelessWidget {
 class _AvailabilityCalendar extends StatefulWidget {
   final List<TutorAvailabilityOccurrence> occurrences;
   final ValueChanged<TutorAvailabilityOccurrence> onTapSlot;
-  const _AvailabilityCalendar({required this.occurrences, required this.onTapSlot});
+  const _AvailabilityCalendar(
+      {required this.occurrences, required this.onTapSlot});
 
   @override
   State<_AvailabilityCalendar> createState() => _AvailabilityCalendarState();
@@ -250,16 +300,24 @@ class _AvailabilityCalendarState extends State<_AvailabilityCalendar> {
   }
 
   bool _dayHasBookable(DateTime day) => widget.occurrences.any((o) =>
-      o.date.year == day.year && o.date.month == day.month && o.date.day == day.day && o.isBookable);
+      o.date.year == day.year &&
+      o.date.month == day.month &&
+      o.date.day == day.day &&
+      o.isBookable);
 
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
     if (widget.occurrences.isEmpty) {
-      return const WinAlert('Aucun créneau disponible pour le moment.', type: BadgeColor.neutral);
+      return const WinAlert('Aucun créneau disponible pour le moment.',
+          type: BadgeColor.neutral);
     }
-    final daySlots = widget.occurrences.where((o) =>
-        o.date.year == _selectedDay.year && o.date.month == _selectedDay.month && o.date.day == _selectedDay.day).toList();
+    final daySlots = widget.occurrences
+        .where((o) =>
+            o.date.year == _selectedDay.year &&
+            o.date.month == _selectedDay.month &&
+            o.date.day == _selectedDay.day)
+        .toList();
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       SizedBox(
@@ -270,7 +328,9 @@ class _AvailabilityCalendarState extends State<_AvailabilityCalendar> {
           separatorBuilder: (_, __) => const SizedBox(width: 8),
           itemBuilder: (_, i) {
             final day = _days[i];
-            final active = day.year == _selectedDay.year && day.month == _selectedDay.month && day.day == _selectedDay.day;
+            final active = day.year == _selectedDay.year &&
+                day.month == _selectedDay.month &&
+                day.day == _selectedDay.day;
             final bookable = _dayHasBookable(day);
             return GestureDetector(
               onTap: () => setState(() => _selectedDay = day),
@@ -278,16 +338,23 @@ class _AvailabilityCalendarState extends State<_AvailabilityCalendar> {
                 width: 52,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: active ? s.primary : (bookable ? WinColors.successBg : s.chipBg),
+                  color: active
+                      ? s.primary
+                      : (bookable ? WinColors.successBg : s.chipBg),
                   border: Border.all(color: active ? s.primary : s.outline),
                 ),
-                child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Text(_weekdayShort[day.weekday - 1],
-                      style: WinType.labelS(active ? Colors.white : s.onMuted)),
-                  const SizedBox(height: 2),
-                  Text('${day.day}',
-                      style: WinType.titleM(active ? Colors.white : (bookable ? WinColors.success : s.onStrong))),
-                ]),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(_weekdayShort[day.weekday - 1],
+                          style: WinType.labelS(
+                              active ? Colors.white : s.onMuted)),
+                      const SizedBox(height: 2),
+                      Text('${day.day}',
+                          style: WinType.titleM(active
+                              ? Colors.white
+                              : (bookable ? WinColors.success : s.onStrong))),
+                    ]),
               ),
             );
           },
@@ -297,20 +364,26 @@ class _AvailabilityCalendarState extends State<_AvailabilityCalendar> {
       if (daySlots.isEmpty)
         Text('Aucun créneau ce jour-là.', style: WinType.bodyS(s.onFaint))
       else
-        Wrap(spacing: 8, runSpacing: 8, children: daySlots.map((occ) {
-          return GestureDetector(
-            onTap: occ.isBookable ? () => widget.onTapSlot(occ) : null,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(
-                color: occ.isBookable ? WinColors.successBg : s.chipBg,
-                border: Border.all(color: occ.isBookable ? WinColors.success : s.outline),
-              ),
-              child: Text('${occ.startTime} – ${occ.endTime}',
-                  style: WinType.labelM(occ.isBookable ? WinColors.success : s.onFaint)),
-            ),
-          );
-        }).toList()),
+        Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: daySlots.map((occ) {
+              return GestureDetector(
+                onTap: occ.isBookable ? () => widget.onTapSlot(occ) : null,
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: occ.isBookable ? WinColors.successBg : s.chipBg,
+                    border: Border.all(
+                        color: occ.isBookable ? WinColors.success : s.outline),
+                  ),
+                  child: Text('${occ.startTime} – ${occ.endTime}',
+                      style: WinType.labelM(
+                          occ.isBookable ? WinColors.success : s.onFaint)),
+                ),
+              );
+            }).toList()),
     ]);
   }
 }

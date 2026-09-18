@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../data/mock_data.dart';
 import '../data/models.dart';
+import '../services/local_downloads_service.dart';
 import '../services/subject_service.dart';
 import '../shared/shop/guest_order_screen.dart';
 import '../shared/subscription/subscription_notifier.dart';
@@ -10,6 +11,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import 'document_viewer_screen.dart';
 import 'quiz_screen.dart';
 
 class ContentDetailScreen extends StatefulWidget {
@@ -23,6 +25,7 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
   bool _fav = false;
   List<Content> _similar = [];
   bool _downloading = false;
+  String? _localPath;
   Set<String> _selectedTags = {};
   List<String> _notes = [];
   final _noteCtrl = TextEditingController();
@@ -40,6 +43,21 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
     _fav = widget.content.fav;
     _loadSimilar();
     _loadPrefs();
+    _checkLocalFile();
+  }
+
+  Future<void> _checkLocalFile() async {
+    final path = await LocalDownloadsService.instance.localPathFor(widget.content.id);
+    if (mounted) setState(() => _localPath = path);
+  }
+
+  void _open() {
+    openDocumentViewer(
+      context,
+      title: widget.content.title,
+      remoteUrl: widget.content.documentUrl ?? '',
+      localPath: _localPath,
+    );
   }
 
   Future<void> _loadPrefs() async {
@@ -86,10 +104,18 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
     setState(() => _downloading = true);
     final ok = await SubjectService.instance.download(id);
     if (!mounted) return;
-    setState(() => _downloading = false);
+    final path = await LocalDownloadsService.instance.localPathFor(widget.content.id);
+    if (!mounted) return;
+    setState(() {
+      _downloading = false;
+      _localPath = path;
+    });
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(
-          ok ? 'Téléchargement lancé !' : 'Erreur lors du téléchargement.'),
+      content: Text(path != null
+          ? 'Téléchargé  disponible hors ligne.'
+          : ok
+              ? 'Téléchargement lancé !'
+              : 'Erreur lors du téléchargement.'),
     ));
   }
 
@@ -438,7 +464,9 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
         content: c,
         isPremium: subScope.isPremium,
         downloading: _downloading,
+        downloadedLocally: _localPath != null,
         onDownload: _download,
+        onOpen: _open,
       ),
     );
   }
@@ -448,12 +476,16 @@ class _BottomBar extends StatelessWidget {
   final Content content;
   final bool isPremium;
   final bool downloading;
+  final bool downloadedLocally;
   final VoidCallback onDownload;
+  final VoidCallback onOpen;
   const _BottomBar({
     required this.content,
     required this.isPremium,
     required this.downloading,
+    required this.downloadedLocally,
     required this.onDownload,
+    required this.onOpen,
   });
 
   @override
@@ -467,6 +499,11 @@ class _BottomBar extends StatelessWidget {
           icon: Icons.play_arrow_rounded,
           onTap: () => Navigator.push(context,
               MaterialPageRoute(builder: (_) => const QuizHubScreen())));
+    } else if (downloadedLocally) {
+      btn = WinButton('Ouvrir  disponible hors ligne',
+          block: true,
+          icon: Icons.folder_open_outlined,
+          onTap: onOpen);
     } else if (content.free || isPremium) {
       btn = WinButton(content.free ? 'Télécharger gratuitement' : 'Télécharger',
           block: true,

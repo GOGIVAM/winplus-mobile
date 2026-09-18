@@ -23,7 +23,7 @@ const _modeIcons = {
   'neutral_place': Icons.place_outlined,
 };
 
-/// Flow de réservation en 3 écrans (professeur_complete.md — "Flow de
+/// Flow de réservation en 3 écrans (professeur_complete.md  "Flow de
 /// réservation mobile", 3 écrans maximum) implémenté comme un seul écran
 /// avec état interne d'étape, à l'image du stepper de TutorProfileScreen.
 class TutorBookingFlowScreen extends StatefulWidget {
@@ -101,13 +101,18 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
   Future<void> _loadCalendar() async {
     setState(() => _loadingCalendar = true);
     try {
-      final occ = await TutorBookingService.instance.getTwoWeekCalendar(widget.profile.userId);
-      if (mounted) setState(() { _occurrences = occ; _loadingCalendar = false; });
+      final occ = await TutorBookingService.instance
+          .getTwoWeekCalendar(widget.profile.userId);
+      if (mounted)
+        setState(() {
+          _occurrences = occ;
+          _loadingCalendar = false;
+        });
     } catch (_) {
       if (mounted) {
         setState(() => _loadingCalendar = false);
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Impossible de charger les disponibilités.')));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Impossible de charger les disponibilités.')));
       }
     }
   }
@@ -119,7 +124,10 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
   }
 
   bool _dayHasBookable(DateTime day) => _occurrences.any((o) =>
-      o.date.year == day.year && o.date.month == day.month && o.date.day == day.day && o.isBookable);
+      o.date.year == day.year &&
+      o.date.month == day.month &&
+      o.date.day == day.day &&
+      o.isBookable);
 
   /// Formatte un numéro camerounais en local sans indicatif pays, comme
   /// attendu par le backend (NotchPay) : on retire les préfixes +237 / 237
@@ -141,7 +149,10 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
       setState(() => _submitError = 'Numéro de téléphone invalide.');
       return;
     }
-    setState(() { _submitting = true; _submitError = null; });
+    setState(() {
+      _submitting = true;
+      _submitError = null;
+    });
     try {
       final result = await TutorBookingService.instance.createBooking(
         tutorUserId: widget.profile.userId,
@@ -152,11 +163,17 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
         phone: phone,
       );
       if (!mounted) return;
-      setState(() { _booking = result.booking; _submitting = false; });
+      setState(() {
+        _booking = result.booking;
+        _submitting = false;
+      });
       _startPolling(result.booking.id);
     } catch (_) {
       if (mounted) {
-        setState(() { _submitting = false; _submitError = 'Erreur lors de la création de la réservation.'; });
+        setState(() {
+          _submitting = false;
+          _submitError = 'Erreur lors de la création de la réservation.';
+        });
       }
     }
   }
@@ -166,7 +183,10 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
     setState(() => _pollTimedOut = false);
     _pollTimer?.cancel();
     _pollTimer = Timer.periodic(const Duration(seconds: 4), (t) async {
-      if (!mounted) { t.cancel(); return; }
+      if (!mounted) {
+        t.cancel();
+        return;
+      }
       final elapsed = DateTime.now().difference(_pollStarted!);
       if (elapsed > const Duration(minutes: 5)) {
         t.cancel();
@@ -194,7 +214,11 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    final titles = ['Choisir un créneau', 'Récapitulatif', 'Paiement Mobile Money'];
+    final titles = [
+      'Choisir un créneau',
+      'Récapitulatif',
+      'Paiement Mobile Money'
+    ];
     return Scaffold(
       backgroundColor: s.bg,
       appBar: AppBar(
@@ -225,16 +249,22 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
   // ---------------- Étape 1 : choix du créneau ----------------
 
   Widget _buildStepSlot(WinScheme s) {
-    if (_loadingCalendar) return const Center(child: CircularProgressIndicator());
-    final daySlots = _occurrences.where((o) =>
-        o.date.year == _selectedDay.year && o.date.month == _selectedDay.month && o.date.day == _selectedDay.day).toList();
+    if (_loadingCalendar)
+      return const Center(child: CircularProgressIndicator());
+    final daySlots = _occurrences
+        .where((o) =>
+            o.date.year == _selectedDay.year &&
+            o.date.month == _selectedDay.month &&
+            o.date.day == _selectedDay.day)
+        .toList();
 
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
         Text('Tuteur', style: WinType.labelM(s.onMuted)),
         const SizedBox(height: 4),
-        Text(widget.profile.fullName ?? widget.profile.title ?? 'Tuteur', style: WinType.titleM(s.onStrong)),
+        Text(widget.profile.fullName ?? widget.profile.title ?? 'Tuteur',
+            style: WinType.titleM(s.onStrong)),
         const SizedBox(height: 20),
         Text('Choisissez un jour', style: WinType.labelM(s.onStrong)),
         const SizedBox(height: 8),
@@ -246,22 +276,36 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
             separatorBuilder: (_, __) => const SizedBox(width: 8),
             itemBuilder: (_, i) {
               final day = _days[i];
-              final active = day.year == _selectedDay.year && day.month == _selectedDay.month && day.day == _selectedDay.day;
+              final active = day.year == _selectedDay.year &&
+                  day.month == _selectedDay.month &&
+                  day.day == _selectedDay.day;
               final bookable = _dayHasBookable(day);
               return GestureDetector(
-                onTap: () => setState(() { _selectedDay = day; _selectedOccurrence = null; }),
+                onTap: () => setState(() {
+                  _selectedDay = day;
+                  _selectedOccurrence = null;
+                }),
                 child: Container(
                   width: 52,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: active ? s.primary : (bookable ? WinColors.successBg : s.chipBg),
+                    color: active
+                        ? s.primary
+                        : (bookable ? WinColors.successBg : s.chipBg),
                     border: Border.all(color: active ? s.primary : s.outline),
                   ),
-                  child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    Text(_weekdayShort[day.weekday - 1], style: WinType.labelS(active ? Colors.white : s.onMuted)),
-                    const SizedBox(height: 2),
-                    Text('${day.day}', style: WinType.titleM(active ? Colors.white : (bookable ? WinColors.success : s.onStrong))),
-                  ]),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(_weekdayShort[day.weekday - 1],
+                            style: WinType.labelS(
+                                active ? Colors.white : s.onMuted)),
+                        const SizedBox(height: 2),
+                        Text('${day.day}',
+                            style: WinType.titleM(active
+                                ? Colors.white
+                                : (bookable ? WinColors.success : s.onStrong))),
+                      ]),
                 ),
               );
             },
@@ -273,23 +317,42 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
         if (daySlots.isEmpty)
           Text('Aucun créneau ce jour-là.', style: WinType.bodyS(s.onFaint))
         else
-          Wrap(spacing: 8, runSpacing: 8, children: daySlots.map((occ) {
-            final selected = _selectedOccurrence == occ;
-            return GestureDetector(
-              onTap: occ.isBookable ? () => setState(() => _selectedOccurrence = occ) : null,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                decoration: BoxDecoration(
-                  color: selected ? s.primary : (occ.isBookable ? WinColors.successBg : s.chipBg),
-                  border: Border.all(color: selected ? s.primary : (occ.isBookable ? WinColors.success : s.outline)),
-                ),
-                child: Text('${occ.startTime} – ${occ.endTime}',
-                    style: WinType.labelM(selected ? Colors.white : (occ.isBookable ? WinColors.success : s.onFaint))),
-              ),
-            );
-          }).toList()),
+          Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: daySlots.map((occ) {
+                final selected = _selectedOccurrence == occ;
+                return GestureDetector(
+                  onTap: occ.isBookable
+                      ? () => setState(() => _selectedOccurrence = occ)
+                      : null,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 14, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: selected
+                          ? s.primary
+                          : (occ.isBookable ? WinColors.successBg : s.chipBg),
+                      border: Border.all(
+                          color: selected
+                              ? s.primary
+                              : (occ.isBookable
+                                  ? WinColors.success
+                                  : s.outline)),
+                    ),
+                    child: Text('${occ.startTime} – ${occ.endTime}',
+                        style: WinType.labelM(selected
+                            ? Colors.white
+                            : (occ.isBookable
+                                ? WinColors.success
+                                : s.onFaint))),
+                  ),
+                );
+              }).toList()),
         const SizedBox(height: 28),
-        WinButton('Continuer', block: true, onTap: _selectedOccurrence != null ? _goToStep1 : null),
+        WinButton('Continuer',
+            block: true,
+            onTap: _selectedOccurrence != null ? _goToStep1 : null),
       ],
     );
   }
@@ -303,16 +366,27 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
       padding: const EdgeInsets.all(16),
       children: [
         WinCard(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            _RecapRow(icon: Icons.person_outline, label: 'Tuteur',
-                value: widget.profile.fullName ?? widget.profile.title ?? '—'),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            _RecapRow(
+                icon: Icons.person_outline,
+                label: 'Tuteur',
+                value: widget.profile.fullName ?? widget.profile.title ?? ''),
             const SizedBox(height: 10),
-            _RecapRow(icon: Icons.event_outlined, label: 'Date',
-                value: '${occ.date.day.toString().padLeft(2, '0')}/${occ.date.month.toString().padLeft(2, '0')}/${occ.date.year}'),
+            _RecapRow(
+                icon: Icons.event_outlined,
+                label: 'Date',
+                value:
+                    '${occ.date.day.toString().padLeft(2, '0')}/${occ.date.month.toString().padLeft(2, '0')}/${occ.date.year}'),
             const SizedBox(height: 10),
-            _RecapRow(icon: Icons.schedule_outlined, label: 'Heure', value: '${occ.startTime} – ${occ.endTime}'),
+            _RecapRow(
+                icon: Icons.schedule_outlined,
+                label: 'Heure',
+                value: '${occ.startTime} – ${occ.endTime}'),
             const SizedBox(height: 10),
-            _RecapRow(icon: Icons.payments_outlined, label: 'Prix',
+            _RecapRow(
+                icon: Icons.payments_outlined,
+                label: 'Prix',
                 value: price != null ? '$price XAF' : 'Selon tarif du tuteur'),
           ]),
         ),
@@ -320,25 +394,39 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
         Text('Mode de séance', style: WinType.labelM(s.onStrong)),
         const SizedBox(height: 8),
         if (_availableModes.isEmpty)
-          const WinAlert('Ce tuteur n\'a pas encore configuré de mode de séance.', type: BadgeColor.warn)
+          const WinAlert(
+              'Ce tuteur n\'a pas encore configuré de mode de séance.',
+              type: BadgeColor.warn)
         else
-          Wrap(spacing: 8, runSpacing: 8, children: _availableModes.map((m) => GestureDetector(
-                onTap: () => setState(() => _mode = m),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                  decoration: BoxDecoration(
-                    color: _mode == m ? s.primary : s.chipBg,
-                    border: Border.all(color: _mode == m ? s.primary : s.outline),
-                  ),
-                  child: Row(mainAxisSize: MainAxisSize.min, children: [
-                    Icon(_modeIcons[m], size: 16, color: _mode == m ? Colors.white : s.onMuted),
-                    const SizedBox(width: 6),
-                    Text(_modeLabels[m] ?? m, style: WinType.labelM(_mode == m ? Colors.white : s.onSurface)),
-                  ]),
-                ),
-              )).toList()),
+          Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: _availableModes
+                  .map((m) => GestureDetector(
+                        onTap: () => setState(() => _mode = m),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 14, vertical: 10),
+                          decoration: BoxDecoration(
+                            color: _mode == m ? s.primary : s.chipBg,
+                            border: Border.all(
+                                color: _mode == m ? s.primary : s.outline),
+                          ),
+                          child: Row(mainAxisSize: MainAxisSize.min, children: [
+                            Icon(_modeIcons[m],
+                                size: 16,
+                                color: _mode == m ? Colors.white : s.onMuted),
+                            const SizedBox(width: 6),
+                            Text(_modeLabels[m] ?? m,
+                                style: WinType.labelM(
+                                    _mode == m ? Colors.white : s.onSurface)),
+                          ]),
+                        ),
+                      ))
+                  .toList()),
         const SizedBox(height: 28),
-        WinButton('Payer maintenant', block: true,
+        WinButton('Payer maintenant',
+            block: true,
             onTap: (_mode != null) ? () => setState(() => _step = 2) : null),
       ],
     );
@@ -363,13 +451,16 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
             keyboardType: TextInputType.phone,
           ),
           const SizedBox(height: 8),
-          Text('Numéro Cameroun sans indicatif pays (ex: 670000000).', style: WinType.labelS(s.onFaint)),
+          Text('Numéro Cameroun sans indicatif pays (ex: 670000000).',
+              style: WinType.labelS(s.onFaint)),
           if (_submitError != null) ...[
             const SizedBox(height: 12),
             WinAlert(_submitError!, type: BadgeColor.error),
           ],
           const SizedBox(height: 24),
-          WinButton(_submitting ? 'Envoi en cours…' : 'Payer', block: true, loading: _submitting,
+          WinButton(_submitting ? 'Envoi en cours…' : 'Payer',
+              block: true,
+              loading: _submitting,
               onTap: _submitting ? null : _submitBooking),
         ],
       );
@@ -394,13 +485,17 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           const CircularProgressIndicator(),
           const SizedBox(height: 20),
-          Text('En attente de confirmation…', style: WinType.titleM(s.onStrong), textAlign: TextAlign.center),
+          Text('En attente de confirmation…',
+              style: WinType.titleM(s.onStrong), textAlign: TextAlign.center),
           const SizedBox(height: 8),
-          Text('Valide le paiement via le message USSD envoyé sur ton téléphone.',
-              style: WinType.bodyS(s.onMuted), textAlign: TextAlign.center),
+          Text(
+              'Valide le paiement via le message USSD envoyé sur ton téléphone.',
+              style: WinType.bodyS(s.onMuted),
+              textAlign: TextAlign.center),
           if (booking.notchpayReference != null) ...[
             const SizedBox(height: 12),
-            Text('Réf. : ${booking.notchpayReference}', style: WinType.labelS(s.onFaint)),
+            Text('Réf. : ${booking.notchpayReference}',
+                style: WinType.labelS(s.onFaint)),
           ],
         ]),
       ),
@@ -414,14 +509,20 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           Icon(Icons.hourglass_bottom_outlined, size: 48, color: s.onFaint),
           const SizedBox(height: 16),
-          Text('Toujours en attente', style: WinType.titleM(s.onStrong), textAlign: TextAlign.center),
+          Text('Toujours en attente',
+              style: WinType.titleM(s.onStrong), textAlign: TextAlign.center),
           const SizedBox(height: 8),
-          Text('Le paiement met plus de temps que prévu. Tu peux vérifier plus tard dans "Mes séances".',
-              style: WinType.bodyS(s.onMuted), textAlign: TextAlign.center),
+          Text(
+              'Le paiement met plus de temps que prévu. Tu peux vérifier plus tard dans "Mes séances".',
+              style: WinType.bodyS(s.onMuted),
+              textAlign: TextAlign.center),
           const SizedBox(height: 20),
-          WinButton('Vérifier maintenant', variant: WinButtonVariant.outline, onTap: () => _startPolling(booking.id)),
+          WinButton('Vérifier maintenant',
+              variant: WinButtonVariant.outline,
+              onTap: () => _startPolling(booking.id)),
           const SizedBox(height: 10),
-          WinButton('Fermer', variant: WinButtonVariant.ghost,
+          WinButton('Fermer',
+              variant: WinButtonVariant.ghost,
               onTap: () => Navigator.of(context).pop()),
         ]),
       ),
@@ -435,12 +536,20 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           const Icon(Icons.cancel_outlined, size: 48, color: WinColors.error),
           const SizedBox(height: 16),
-          Text('Réservation annulée', style: WinType.titleM(s.onStrong), textAlign: TextAlign.center),
+          Text('Réservation annulée',
+              style: WinType.titleM(s.onStrong), textAlign: TextAlign.center),
           const SizedBox(height: 8),
-          Text(booking.cancellationReason ?? 'Le paiement n\'a pas pu être confirmé.',
-              style: WinType.bodyS(s.onMuted), textAlign: TextAlign.center),
+          Text(
+              booking.cancellationReason ??
+                  'Le paiement n\'a pas pu être confirmé.',
+              style: WinType.bodyS(s.onMuted),
+              textAlign: TextAlign.center),
           const SizedBox(height: 20),
-          WinButton('Réessayer', onTap: () => setState(() { _booking = null; _phoneCtrl.clear(); })),
+          WinButton('Réessayer',
+              onTap: () => setState(() {
+                    _booking = null;
+                    _phoneCtrl.clear();
+                  })),
         ]),
       ),
     );
@@ -452,11 +561,14 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
       padding: const EdgeInsets.all(16),
       children: [
         const SizedBox(height: 12),
-        const Icon(Icons.check_circle_outline, size: 56, color: WinColors.success),
+        const Icon(Icons.check_circle_outline,
+            size: 56, color: WinColors.success),
         const SizedBox(height: 12),
         Center(
           child: Text(
-            alreadyConfirmed ? 'Séance confirmée !' : 'Paiement reçu — en attente du tuteur',
+            alreadyConfirmed
+                ? 'Séance confirmée !'
+                : 'Paiement reçu  en attente du tuteur',
             style: WinType.archivo(size: 20, color: s.onStrong),
             textAlign: TextAlign.center,
           ),
@@ -473,22 +585,38 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
         ],
         const SizedBox(height: 20),
         WinCard(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            _RecapRow(icon: Icons.person_outline, label: 'Tuteur', value: booking.tutorName ?? '—'),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            _RecapRow(
+                icon: Icons.person_outline,
+                label: 'Tuteur',
+                value: booking.tutorName ?? ''),
             const SizedBox(height: 10),
-            _RecapRow(icon: Icons.event_outlined, label: 'Date',
-                value: '${booking.sessionDate.day.toString().padLeft(2, '0')}/${booking.sessionDate.month.toString().padLeft(2, '0')}/${booking.sessionDate.year}'),
+            _RecapRow(
+                icon: Icons.event_outlined,
+                label: 'Date',
+                value:
+                    '${booking.sessionDate.day.toString().padLeft(2, '0')}/${booking.sessionDate.month.toString().padLeft(2, '0')}/${booking.sessionDate.year}'),
             const SizedBox(height: 10),
-            _RecapRow(icon: Icons.schedule_outlined, label: 'Heure', value: '${booking.startTime} – ${booking.endTime}'),
+            _RecapRow(
+                icon: Icons.schedule_outlined,
+                label: 'Heure',
+                value: '${booking.startTime} – ${booking.endTime}'),
             const SizedBox(height: 10),
-            _RecapRow(icon: Icons.payments_outlined, label: 'Prix', value: '${booking.priceXaf} XAF'),
+            _RecapRow(
+                icon: Icons.payments_outlined,
+                label: 'Prix',
+                value: '${booking.priceXaf} XAF'),
             const SizedBox(height: 10),
-            _RecapRow(icon: _modeIcons[booking.mode] ?? Icons.info_outline, label: 'Mode',
+            _RecapRow(
+                icon: _modeIcons[booking.mode] ?? Icons.info_outline,
+                label: 'Mode',
                 value: _modeLabels[booking.mode] ?? booking.mode),
           ]),
         ),
         const SizedBox(height: 24),
-        WinButton('Voir ma séance', block: true,
+        WinButton('Voir ma séance',
+            block: true,
             onTap: () => Navigator.of(context).popUntil((r) => r.isFirst)),
       ],
     );
@@ -498,7 +626,8 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
 class _RecapRow extends StatelessWidget {
   final IconData icon;
   final String label, value;
-  const _RecapRow({required this.icon, required this.label, required this.value});
+  const _RecapRow(
+      {required this.icon, required this.label, required this.value});
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);

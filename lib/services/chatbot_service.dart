@@ -1,4 +1,5 @@
 import 'api_client.dart';
+import 'connectivity_service.dart';
 
 class ApiWinAIMemory {
   final int id;
@@ -86,11 +87,19 @@ class ChatbotService {
         .toList();
   }
 
+  /// Génération IA = toujours en ligne. Contrairement aux autres méthodes de
+  /// ce service (qui retournent null en cas d'échec), le hors-ligne renvoie
+  /// le message d'erreur explicite requis, directement comme "réponse"
+  /// c'est ce que les écrans de chat affichent déjà tel quel, sans changement
+  /// de signature à répercuter sur chacun des appelants.
   Future<String?> sendMessage({
     required String message,
     int? sessionId,
     String? context,
   }) async {
+    if (!ConnectivityService.instance.isOnline) {
+      return const OfflineActionException().message;
+    }
     try {
       final res = await _api.dio.post('/chatbot/message', data: {
         'message': message,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/connectivity_service.dart';
 import '../services/parent_service.dart';
 import '../shared/subscription/subscription_notifier.dart';
 import '../theme/win_colors.dart';
@@ -24,7 +25,14 @@ class _AddChildScreenState extends State<AddChildScreen> {
       return;
     }
     setState(() { _loading = true; _error = false; });
-    final ok = await ParentService.instance.addChild(email: email);
+    bool ok = false;
+    try {
+      ok = await ParentService.instance.addChild(email: email);
+    } on OfflineActionException catch (e) {
+      if (!mounted) return;
+      setState(() { _loading = false; _error = true; _errorMsg = e.message; });
+      return;
+    }
     if (!mounted) return;
     setState(() => _loading = false);
     if (ok) {

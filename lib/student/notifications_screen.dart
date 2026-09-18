@@ -13,7 +13,6 @@ class NotificationsScreen extends StatefulWidget {
 
 class _NotificationsScreenState extends State<NotificationsScreen> {
   List<ApiNotification>? _notifs;
-  bool _allRead = false;
 
   @override
   void initState() {
@@ -31,8 +30,32 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   }
 
   Future<void> _markAllRead() async {
-    await UserService.instance.markAllNotificationsRead();
-    if (mounted) setState(() => _allRead = true);
+    final ok = await UserService.instance.markAllNotificationsRead();
+    if (!mounted) return;
+    if (ok) {
+      setState(() {
+        _notifs = _notifs?.map((n) => n.copyWith(isRead: true)).toList();
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Impossible de marquer les notifications comme lues. Réessaie.")),
+      );
+    }
+  }
+
+  Future<void> _openNotification(ApiNotification n) async {
+    if (n.isRead) return;
+    // Optimiste : l'UI se met à jour tout de suite, sans attendre le réseau.
+    setState(() {
+      _notifs = _notifs?.map((x) => x.id == n.id ? x.copyWith(isRead: true) : x).toList();
+    });
+    final ok = await UserService.instance.markNotificationRead(n.id);
+    if (!ok && mounted) {
+      // Échec réseau : on remet l'état réel plutôt que de laisser un faux "lu".
+      setState(() {
+        _notifs = _notifs?.map((x) => x.id == n.id ? x.copyWith(isRead: false) : x).toList();
+      });
+    }
   }
 
   Color _dotColor(String type, WinScheme s) => switch (type) {
@@ -91,7 +114,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   Widget _buildBody(WinScheme s) {
     if (_notifs == null) return const Center(child: CircularProgressIndicator());
 
-    if (_allRead || _notifs!.isEmpty) {
+    if (_notifs!.isEmpty || _notifs!.every((n) => n.isRead)) {
       return Center(child: Column(mainAxisSize: MainAxisSize.min, children: [
         Icon(Icons.check_circle_outline, size: 64, color: s.onFaint),
         const SizedBox(height: 12),
@@ -121,12 +144,13 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                 style: WinType.titleS(s.onFaint).copyWith(letterSpacing: 0.8)),
           ),
           ...entry.value.map((n) {
-            final unread = !n.isRead && !_allRead;
+            final unread = !n.isRead;
             final color = _dotColor(n.type, s);
             return Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: WinCard(
                 bg: unread ? s.primaryContainer : null,
+                onTap: () => _openNotification(n),
                 child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Container(
                     width: 40, height: 40,

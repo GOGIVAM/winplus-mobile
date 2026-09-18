@@ -1,8 +1,8 @@
-Voilà, j'ai suffisamment de matière. Je vais tout synthétiser de façon structurée — fonctionnalités, user stories, workflows et UX mobile/web.
+Voilà, j'ai suffisamment de matière. Je vais tout synthétiser de façon structurée  fonctionnalités, user stories, workflows et UX mobile/web.
 
 ---
 
-# Espace Professeur / Répétiteur WinPlus — Référentiel complet
+# Espace Professeur / Répétiteur WinPlus  Référentiel complet
 
 ---
 
@@ -13,9 +13,9 @@ Voilà, j'ai suffisamment de matière. Je vais tout synthétiser de façon struc
 **Identité et crédibilité**
 - Photo de profil obligatoire (pas des initiales pour un répétiteur public)
 - Nom complet ou nom professionnel
-- Titre libre : "Prof de Maths — Terminale C/D" ou "Répétiteur en Physique-Chimie"
-- Bio courte 300 caractères max — s'adresse directement à l'élève
-- Vidéo d'introduction courte (lien externe YouTube ou upload direct) — les plateformes de tutorat qui affichent une vidéo d'introduction augmentent significativement les conversions de réservation
+- Titre libre : "Prof de Maths  Terminale C/D" ou "Répétiteur en Physique-Chimie"
+- Bio courte 300 caractères max  s'adresse directement à l'élève
+- Vidéo d'introduction courte (lien externe YouTube ou upload direct)  les plateformes de tutorat qui affichent une vidéo d'introduction augmentent significativement les conversions de réservation
 - Badge "Vérifié Diplôme" après upload et validation du justificatif par l'équipe WinPlus
 - Badge "Expérimenté" déclenché automatiquement après N séances effectuées
 - Badge "Très réactif" si taux de réponse aux demandes > 90 % en moins de 2h
@@ -40,7 +40,7 @@ Voilà, j'ai suffisamment de matière. Je vais tout synthétiser de façon struc
 - WinAI suggère un tarif horaire basé sur la matière, le niveau et les autres répétiteurs de la zone
 
 **Modes d'intervention**
-- À domicile chez l'élève — avec zones géographiques couvertes (quartiers / communes cochés)
+- À domicile chez l'élève  avec zones géographiques couvertes (quartiers / communes cochés)
 - À domicile chez le répétiteur
 - En ligne via WinPlus (session intégrée) ou lien externe (Meet, Zoom)
 - Présentiel en espace neutre
@@ -77,10 +77,10 @@ Voilà, j'ai suffisamment de matière. Je vais tout synthétiser de façon struc
 ### C. Flow de réservation et paiement
 
 - Demande de réservation par l'élève : matière, niveau, mode, créneau souhaité, message optionnel
-- Messagerie pré-réservation : l'élève et le répétiteur échangent avant de confirmer — réduit les annulations et améliore la satisfaction à la première séance
+- Messagerie pré-réservation : l'élève et le répétiteur échangent avant de confirmer  réduit les annulations et améliore la satisfaction à la première séance
 - Le répétiteur accepte ou refuse dans le délai de préavis défini
 - À l'acceptation : l'élève paie en avance via Mobile Money (MTN/Orange)
-- Les fonds sont retenus par WinPlus (escrow) jusqu'à la confirmation post-séance — protège le répétiteur contre les no-shows et l'élève contre les défauts de prestation
+- Les fonds sont retenus par WinPlus (escrow) jusqu'à la confirmation post-séance  protège le répétiteur contre les no-shows et l'élève contre les défauts de prestation
 - Libération automatique des fonds 2h après la fin de la séance si aucune contestation
 - En cas de litige : gel des fonds, escalade vers le support WinPlus
 - Politique d'annulation configurable par le répétiteur : remboursement total si annulation > 24h, partiel si < 24h, aucun si < 2h
@@ -101,7 +101,7 @@ Voilà, j'ai suffisamment de matière. Je vais tout synthétiser de façon struc
 
 ---
 
-### E. Création de formation — fonctionnalités supplémentaires
+### E. Création de formation  fonctionnalités supplémentaires
 
 **Drip content (publication progressive)**
 - Le professeur programme le déblocage des leçons selon un calendrier (ex. leçon 3 débloquée 7 jours après l'inscription) ou selon la progression (ex. leçon 3 débloquée si score quiz leçon 2 ≥ 60 %)
@@ -110,7 +110,7 @@ Voilà, j'ai suffisamment de matière. Je vais tout synthétiser de façon struc
 **Contenu interactif dans les leçons**
 - Quiz intégré à la vidéo à un timestamp précis (pause automatique, question, reprise)
 - Sondage en direct dans une leçon
-- Tableau blanc interactif pour les leçons live : dessin, annotation, surlignage — crucial pour maths et sciences
+- Tableau blanc interactif pour les leçons live : dessin, annotation, surlignage  crucial pour maths et sciences
 
 **Gamification**
 - Points attribués à la complétion de chaque leçon et quiz
@@ -135,7 +135,7 @@ Voilà, j'ai suffisamment de matière. Je vais tout synthétiser de façon struc
 
 ---
 
-### F. WinAI — fonctionnalités supplémentaires pour le répétiteur
+### F. WinAI  fonctionnalités supplémentaires pour le répétiteur
 
 - Suggestion de tarif horaire contextualisée
 - Optimisation du profil public (analyse et recommandations concrètes)
@@ -150,79 +150,79 @@ Voilà, j'ai suffisamment de matière. Je vais tout synthétiser de façon struc
 
 ### Profil et onboarding
 
-US-01 — En tant que professeur souhaitant proposer des cours particuliers, je veux activer le mode Répétiteur depuis mes paramètres afin que mon profil soit visible dans la recherche d'élèves.
+US-01  En tant que professeur souhaitant proposer des cours particuliers, je veux activer le mode Répétiteur depuis mes paramètres afin que mon profil soit visible dans la recherche d'élèves.
 
-US-02 — En tant que répétiteur, je veux renseigner mes matières, niveaux, zones d'intervention et tarif horaire afin que les élèves puissent évaluer si je corresponds à leurs besoins.
+US-02  En tant que répétiteur, je veux renseigner mes matières, niveaux, zones d'intervention et tarif horaire afin que les élèves puissent évaluer si je corresponds à leurs besoins.
 
-US-03 — En tant que répétiteur, je veux uploader mon diplôme ou relevé de notes afin d'obtenir le badge "Vérifié Diplôme" et renforcer ma crédibilité.
+US-03  En tant que répétiteur, je veux uploader mon diplôme ou relevé de notes afin d'obtenir le badge "Vérifié Diplôme" et renforcer ma crédibilité.
 
-US-04 — En tant que répétiteur, je veux ajouter un lien vers une courte vidéo de présentation afin que les élèves puissent évaluer mon style pédagogique avant de réserver.
+US-04  En tant que répétiteur, je veux ajouter un lien vers une courte vidéo de présentation afin que les élèves puissent évaluer mon style pédagogique avant de réserver.
 
-US-05 — En tant que répétiteur, je veux que WinAI analyse mon profil et me suggère des améliorations concrètes afin d'optimiser ma visibilité dans les résultats de recherche.
+US-05  En tant que répétiteur, je veux que WinAI analyse mon profil et me suggère des améliorations concrètes afin d'optimiser ma visibilité dans les résultats de recherche.
 
-US-06 — En tant que répétiteur, je veux définir mes créneaux de disponibilité hebdomadaire et mon délai de préavis minimum afin de ne recevoir que des demandes compatibles avec mon agenda.
+US-06  En tant que répétiteur, je veux définir mes créneaux de disponibilité hebdomadaire et mon délai de préavis minimum afin de ne recevoir que des demandes compatibles avec mon agenda.
 
-US-07 — En tant que répétiteur, je veux que WinAI me suggère un tarif horaire adapté à ma matière, mon niveau et ma zone afin de me positionner correctement sur le marché.
+US-07  En tant que répétiteur, je veux que WinAI me suggère un tarif horaire adapté à ma matière, mon niveau et ma zone afin de me positionner correctement sur le marché.
 
 ---
 
 ### Recherche et mise en relation (côté élève)
 
-US-08 — En tant qu'élève, je veux rechercher un répétiteur par matière, niveau, mode d'intervention et localisation afin de trouver rapidement celui qui correspond à ma situation.
+US-08  En tant qu'élève, je veux rechercher un répétiteur par matière, niveau, mode d'intervention et localisation afin de trouver rapidement celui qui correspond à ma situation.
 
-US-09 — En tant qu'élève, je veux voir le prochain créneau disponible de chaque répétiteur directement dans les résultats de recherche afin de choisir selon mon urgence.
+US-09  En tant qu'élève, je veux voir le prochain créneau disponible de chaque répétiteur directement dans les résultats de recherche afin de choisir selon mon urgence.
 
-US-10 — En tant qu'élève, je veux accéder à la fiche complète d'un répétiteur (bio, avis, vidéo, tarif, disponibilités) afin de prendre une décision éclairée avant de le contacter.
+US-10  En tant qu'élève, je veux accéder à la fiche complète d'un répétiteur (bio, avis, vidéo, tarif, disponibilités) afin de prendre une décision éclairée avant de le contacter.
 
-US-11 — En tant qu'élève, je veux envoyer un message au répétiteur avant de confirmer la réservation afin de préciser mes besoins et m'assurer qu'il peut m'aider.
+US-11  En tant qu'élève, je veux envoyer un message au répétiteur avant de confirmer la réservation afin de préciser mes besoins et m'assurer qu'il peut m'aider.
 
-US-12 — En tant qu'élève, je veux réserver un créneau et payer en avance via Mobile Money afin de sécuriser ma séance.
+US-12  En tant qu'élève, je veux réserver un créneau et payer en avance via Mobile Money afin de sécuriser ma séance.
 
-US-13 — En tant qu'élève, je veux choisir un forfait multi-séances avec un prix dégressif afin de m'engager sur du long terme à moindre coût.
+US-13  En tant qu'élève, je veux choisir un forfait multi-séances avec un prix dégressif afin de m'engager sur du long terme à moindre coût.
 
-US-14 — En tant qu'élève, je veux noter et commenter la séance après qu'elle s'est tenue afin d'aider d'autres élèves à choisir ce répétiteur.
+US-14  En tant qu'élève, je veux noter et commenter la séance après qu'elle s'est tenue afin d'aider d'autres élèves à choisir ce répétiteur.
 
 ---
 
 ### Gestion des réservations (côté répétiteur)
 
-US-15 — En tant que répétiteur, je veux recevoir une notification push immédiate à chaque demande de réservation afin de pouvoir répondre dans le délai imparti.
+US-15  En tant que répétiteur, je veux recevoir une notification push immédiate à chaque demande de réservation afin de pouvoir répondre dans le délai imparti.
 
-US-16 — En tant que répétiteur, je veux accepter ou refuser une demande en un geste depuis la notification afin de ne pas perdre de temps.
+US-16  En tant que répétiteur, je veux accepter ou refuser une demande en un geste depuis la notification afin de ne pas perdre de temps.
 
-US-17 — En tant que répétiteur, je veux marquer une séance comme effectuée depuis l'application afin de déclencher la libération des fonds et inviter l'élève à noter.
+US-17  En tant que répétiteur, je veux marquer une séance comme effectuée depuis l'application afin de déclencher la libération des fonds et inviter l'élève à noter.
 
-US-18 — En tant que répétiteur, je veux que WinAI me génère un compte-rendu structuré après chaque séance afin d'envoyer un rapport de qualité à l'élève ou à ses parents sans effort.
+US-18  En tant que répétiteur, je veux que WinAI me génère un compte-rendu structuré après chaque séance afin d'envoyer un rapport de qualité à l'élève ou à ses parents sans effort.
 
-US-19 — En tant que répétiteur, je veux voir un planning de mes séances à venir sur une vue calendrier afin de gérer mon agenda facilement.
+US-19  En tant que répétiteur, je veux voir un planning de mes séances à venir sur une vue calendrier afin de gérer mon agenda facilement.
 
-US-20 — En tant que répétiteur, je veux passer en mode "En vacances" sans perdre mon profil ni mes avis afin de suspendre temporairement les réservations.
+US-20  En tant que répétiteur, je veux passer en mode "En vacances" sans perdre mon profil ni mes avis afin de suspendre temporairement les réservations.
 
 ---
 
 ### Revenus et paiements
 
-US-21 — En tant que répétiteur, je veux voir mes revenus issus des séances et des ventes catalogue agrégés dans un seul tableau de bord afin d'avoir une vision complète de mon activité.
+US-21  En tant que répétiteur, je veux voir mes revenus issus des séances et des ventes catalogue agrégés dans un seul tableau de bord afin d'avoir une vision complète de mon activité.
 
-US-22 — En tant que répétiteur, je veux retirer mes revenus disponibles via MTN MoMo ou Orange Money afin d'encaisser mes gains rapidement.
+US-22  En tant que répétiteur, je veux retirer mes revenus disponibles via MTN MoMo ou Orange Money afin d'encaisser mes gains rapidement.
 
-US-23 — En tant que répétiteur, je veux voir le détail de chaque transaction (nom de l'élève, type de prestation, montant brut, commission WinPlus, montant net) afin de tenir ma comptabilité.
+US-23  En tant que répétiteur, je veux voir le détail de chaque transaction (nom de l'élève, type de prestation, montant brut, commission WinPlus, montant net) afin de tenir ma comptabilité.
 
 ---
 
 ### Formation enrichie
 
-US-24 — En tant que professeur, je veux programmer le déblocage progressif des leçons (drip content) afin de maintenir l'engagement des élèves sur la durée.
+US-24  En tant que professeur, je veux programmer le déblocage progressif des leçons (drip content) afin de maintenir l'engagement des élèves sur la durée.
 
-US-25 — En tant que professeur, je veux intégrer des quiz à des timestamps précis dans mes vidéos afin de vérifier la compréhension en temps réel.
+US-25  En tant que professeur, je veux intégrer des quiz à des timestamps précis dans mes vidéos afin de vérifier la compréhension en temps réel.
 
-US-26 — En tant que professeur, je veux activer la gamification sur une formation (points, badges, classement) afin de motiver mes élèves.
+US-26  En tant que professeur, je veux activer la gamification sur une formation (points, badges, classement) afin de motiver mes élèves.
 
-US-27 — En tant que professeur, je veux qu'un certificat vérifiable soit automatiquement généré à la complétion d'une formation afin de valoriser le travail de mes élèves.
+US-27  En tant que professeur, je veux qu'un certificat vérifiable soit automatiquement généré à la complétion d'une formation afin de valoriser le travail de mes élèves.
 
-US-28 — En tant que professeur, je veux voir à quelle leçon mes élèves décrochent afin d'améliorer le contenu de cette leçon.
+US-28  En tant que professeur, je veux voir à quelle leçon mes élèves décrochent afin d'améliorer le contenu de cette leçon.
 
-US-29 — En tant que professeur, je veux être alerté par WinAI quand un élève est "à risque de décrochage" sur ma formation afin de le relancer proactivement.
+US-29  En tant que professeur, je veux être alerté par WinAI quand un élève est "à risque de décrochage" sur ma formation afin de le relancer proactivement.
 
 ---
 
@@ -230,7 +230,7 @@ US-29 — En tant que professeur, je veux être alerté par WinAI quand un élè
 
 ---
 
-### Workflow 1 — Onboarding Répétiteur
+### Workflow 1  Onboarding Répétiteur
 
 1. Le professeur ouvre ses paramètres de compte et active "Mode Répétiteur"
 2. Un assistant d'onboarding en 5 étapes se lance (stepper) :
@@ -245,7 +245,7 @@ US-29 — En tant que professeur, je veux être alerté par WinAI quand un élè
 
 ---
 
-### Workflow 2 — Réservation d'une séance (end to end)
+### Workflow 2  Réservation d'une séance (end to end)
 
 1. L'élève cherche un répétiteur (filtres) → ouvre une fiche → consulte disponibilités
 2. L'élève envoie un message pré-réservation (optionnel) ou clique directement "Réserver"
@@ -263,7 +263,7 @@ US-29 — En tant que professeur, je veux être alerté par WinAI quand un élè
 
 ---
 
-### Workflow 3 — Gestion d'un litige
+### Workflow 3  Gestion d'un litige
 
 1. Après la séance, l'élève conteste via un bouton "Signaler un problème"
 2. Les fonds restent gelés
@@ -273,7 +273,7 @@ US-29 — En tant que professeur, je veux être alerté par WinAI quand un élè
 
 ---
 
-### Workflow 4 — Publication d'une formation avec drip content
+### Workflow 4  Publication d'une formation avec drip content
 
 1. Le professeur crée la formation (onglet Informations comme actuellement)
 2. Dans l'onglet Contenu, pour chaque section il définit la règle de déblocage :
@@ -283,11 +283,11 @@ US-29 — En tant que professeur, je veux être alerté par WinAI quand un élè
 3. Pour chaque leçon vidéo, il peut ajouter des checkpoints : à tel timestamp, une question se pose
 4. Il active ou non la gamification : points par leçon, badges, classement
 5. Il active ou non le certificat de complétion
-6. Soumission pour validation — même flow existant
+6. Soumission pour validation  même flow existant
 
 ---
 
-### Workflow 5 — Alerte décrochage et relance élève
+### Workflow 5  Alerte décrochage et relance élève
 
 1. WinAI surveille en continu les métriques des élèves inscrits sur une formation
 2. Si un élève n'a pas ouvert la formation depuis X jours alors qu'il reste des leçons, WinAI génère une alerte pour le professeur
@@ -297,7 +297,7 @@ US-29 — En tant que professeur, je veux être alerté par WinAI quand un élè
 
 ---
 
-## IV. UX — APPLICATION MOBILE (Flutter)
+## IV. UX  APPLICATION MOBILE (Flutter)
 
 ---
 
@@ -307,7 +307,7 @@ La barre de navigation basse reste à 6 onglets. Le mode Répétiteur s'intègre
 
 ---
 
-### Onglet Accueil — enrichissement
+### Onglet Accueil  enrichissement
 
 Le hero du tableau de bord affiche maintenant deux blocs distincts si le mode Répétiteur est actif :
 
@@ -319,14 +319,14 @@ Un switch rapide en haut du hero permet de basculer l'affichage entre les deux v
 
 ---
 
-### Onglet Sessions — enrichissement
+### Onglet Sessions  enrichissement
 
 Deux tabs en haut de l'écran : "Formations / Lives" (existant) et "Cours particuliers" (nouveau).
 
 Tab "Cours particuliers" :
 - Vue liste des séances à venir avec élève, matière, heure, mode, statut (confirmée / en attente)
 - Badge "Demandes en attente (N)" en rouge sur le titre de l'onglet
-- Carte de demande : photo élève, matière, niveau, créneau demandé, bouton "Accepter" (vert) et "Refuser" (gris) directement sur la carte — pas de navigation supplémentaire
+- Carte de demande : photo élève, matière, niveau, créneau demandé, bouton "Accepter" (vert) et "Refuser" (gris) directement sur la carte  pas de navigation supplémentaire
 - Carte de séance confirmée : bouton "Marquer effectuée" visible dès la fin prévue de la séance
 - Bouton flottant "Gérer mes disponibilités" qui ouvre la grille hebdomadaire
 
@@ -334,11 +334,11 @@ Tab "Cours particuliers" :
 
 ### Vue disponibilités (modal bottom sheet)
 
-Grille 7 jours × plages horaires (matin / après-midi / soir). L'utilisateur tape les cases pour les activer ou désactiver. Un bouton "Reproduire cette semaine" propage la grille indéfiniment. Sauvegarde instantanée à chaque tap — pas de bouton "Enregistrer" séparé.
+Grille 7 jours × plages horaires (matin / après-midi / soir). L'utilisateur tape les cases pour les activer ou désactiver. Un bouton "Reproduire cette semaine" propage la grille indéfiniment. Sauvegarde instantanée à chaque tap  pas de bouton "Enregistrer" séparé.
 
 ---
 
-### Fiche répétiteur (vue publique — côté élève dans l'app)
+### Fiche répétiteur (vue publique  côté élève dans l'app)
 
 Scroll vertical avec :
 - Photo grande, nom, titre, badges, note étoilée
@@ -353,11 +353,11 @@ Scroll vertical avec :
 
 ### Flow de réservation mobile (3 écrans maximum)
 
-Écran 1 — Choix du créneau : calendrier horizontal, on sélectionne un jour, les créneaux disponibles apparaissent en dessous. On sélectionne l'heure et la durée.
+Écran 1  Choix du créneau : calendrier horizontal, on sélectionne un jour, les créneaux disponibles apparaissent en dessous. On sélectionne l'heure et la durée.
 
-Écran 2 — Récapitulatif + message optionnel : date, heure, durée, mode, prix. Champ message court (100 caractères). Bouton "Payer maintenant".
+Écran 2  Récapitulatif + message optionnel : date, heure, durée, mode, prix. Champ message court (100 caractères). Bouton "Payer maintenant".
 
-Écran 3 — Paiement Mobile Money : saisie du numéro, confirmation USSD, écran de succès avec récapitulatif et bouton "Voir ma séance".
+Écran 3  Paiement Mobile Money : saisie du numéro, confirmation USSD, écran de succès avec récapitulatif et bouton "Voir ma séance".
 
 ---
 
@@ -367,17 +367,17 @@ Notification push → l'élève ouvre l'app → modal bottom sheet : "Comment s'
 
 ---
 
-### Profil répétiteur — édition mobile
+### Profil répétiteur  édition mobile
 
-Accessible depuis les paramètres ou depuis un bouton "Modifier mon profil répétiteur" dans l'onglet Accueil. Formulaire paginé en 5 étapes (même structure que l'onboarding). Chaque étape est sauvegardée indépendamment — si l'utilisateur ferme l'app en cours, il reprend là où il en était.
-
----
-
-## V. UX — APPLICATION WEB (React)
+Accessible depuis les paramètres ou depuis un bouton "Modifier mon profil répétiteur" dans l'onglet Accueil. Formulaire paginé en 5 étapes (même structure que l'onboarding). Chaque étape est sauvegardée indépendamment  si l'utilisateur ferme l'app en cours, il reprend là où il en était.
 
 ---
 
-### Navigation latérale — enrichissement
+## V. UX  APPLICATION WEB (React)
+
+---
+
+### Navigation latérale  enrichissement
 
 Ajout d'une entrée "Cours particuliers" dans la sidebar, entre Sessions et Revenus. Icône calendrier avec badge rouge si des demandes sont en attente.
 
@@ -387,9 +387,9 @@ Ajout d'une entrée "Cours particuliers" dans la sidebar, entre Sessions et Reve
 
 Deux colonnes :
 
-Colonne gauche — Demandes en attente : liste des demandes non encore acceptées avec photo élève, matière, niveau, créneau demandé, message joint. Boutons "Accepter" et "Refuser" avec confirmation. Les demandes expirées (délai dépassé) sont grisées et archivées automatiquement.
+Colonne gauche  Demandes en attente : liste des demandes non encore acceptées avec photo élève, matière, niveau, créneau demandé, message joint. Boutons "Accepter" et "Refuser" avec confirmation. Les demandes expirées (délai dépassé) sont grisées et archivées automatiquement.
 
-Colonne droite — Calendrier des séances : calendrier hebdomadaire (même style que la vue Sessions existante) avec les séances de cours particuliers en couleur distincte (violet par exemple, pour les différencier des sessions Lives / Enregistrements / Corrections). Clic sur un bloc → détail de la séance, bouton "Marquer effectuée", lien de session.
+Colonne droite  Calendrier des séances : calendrier hebdomadaire (même style que la vue Sessions existante) avec les séances de cours particuliers en couleur distincte (violet par exemple, pour les différencier des sessions Lives / Enregistrements / Corrections). Clic sur un bloc → détail de la séance, bouton "Marquer effectuée", lien de session.
 
 ---
 
@@ -399,19 +399,19 @@ Page dédiée accessible depuis un bouton dans la vue "Cours particuliers". Gril
 
 ---
 
-### Profil public — prévisualisation web
+### Profil public  prévisualisation web
 
 Un bouton "Voir mon profil comme un élève" dans les paramètres ouvre un onglet avec la fiche publique telle qu'elle apparaît dans les résultats de recherche. WinAI affiche un score de complétude (0 à 100) avec les items manquants listés et cliquables (clic → navigue directement vers le champ à compléter).
 
 ---
 
-### Tableau de bord revenus — enrichissement web
+### Tableau de bord revenus  enrichissement web
 
 Le graphique existant ajoute une série "Cours particuliers" en plus de la série "Catalogue". Le tableau de détails distingue les deux sources avec filtrage possible. L'historique des transactions détaille pour les séances : nom de l'élève, matière, durée, montant brut, commission WinPlus (%), montant net.
 
 ---
 
-### Éditeur de formation — enrichissements web
+### Éditeur de formation  enrichissements web
 
 Dans l'onglet Contenu de l'éditeur :
 
@@ -422,21 +422,21 @@ Pour chaque leçon vidéo, un bouton "Ajouter un checkpoint" ouvre un panneau la
 En bas de l'éditeur, un panneau "Options de formation" contient les toggles : Gamification activée (oui/non), Certificat de complétion (oui/non), Classement visible par les élèves (oui/non).
 
 ---
-Parfait. Voici le complément complet — messagerie, achat de contenu et IA en profondeur.
+Parfait. Voici le complément complet  messagerie, achat de contenu et IA en profondeur.
 
 ---
 
-# Complément — Messagerie, Achat de contenu et WinAI étendu
+# Complément  Messagerie, Achat de contenu et WinAI étendu
 
 ---
 
-## I. MESSAGERIE — Système de communication complet
+## I. MESSAGERIE  Système de communication complet
 
 ---
 
 ### Architecture générale
 
-La messagerie WinPlus n'est pas un simple chat élève-professeur. C'est un système à trois niveaux : conversations directes 1-to-1, conversations de groupe, et canaux de classe ou de formation. Tout est interne à la plateforme — aucun lien externe, tout le fil de communication reste sur WinPlus, ce qui protège les deux parties en cas de litige et garde les données sur la plateforme.
+La messagerie WinPlus n'est pas un simple chat élève-professeur. C'est un système à trois niveaux : conversations directes 1-to-1, conversations de groupe, et canaux de classe ou de formation. Tout est interne à la plateforme  aucun lien externe, tout le fil de communication reste sur WinPlus, ce qui protège les deux parties en cas de litige et garde les données sur la plateforme.
 
 ---
 
@@ -455,8 +455,8 @@ Ce qui s'envoie dans une conversation directe :
 - Texte brut
 - Fichiers PDF (épreuves, corrections, fiches)
 - Images (photos de cahier, schémas)
-- Notes vocales — les plateformes de tutorat qui intègrent les notes vocales réduisent la friction sur mobile car taper du texte mathématique est pénible
-- Liens vers un contenu WinPlus (épreuve, correction, formation) — le lien génère une carte de prévisualisation inline
+- Notes vocales  les plateformes de tutorat qui intègrent les notes vocales réduisent la friction sur mobile car taper du texte mathématique est pénible
+- Liens vers un contenu WinPlus (épreuve, correction, formation)  le lien génère une carte de prévisualisation inline
 - Lien de session (généré automatiquement à la confirmation d'une réservation)
 
 **Conversation de groupe**
@@ -476,7 +476,7 @@ Chaque formation publiée peut avoir un canal dédié activable par le professeu
 
 ---
 
-### Réseau du professeur — qui peut lui écrire
+### Réseau du professeur  qui peut lui écrire
 
 Le réseau d'un professeur sur WinPlus comprend :
 - Ses élèves liés (liaison directe)
@@ -486,7 +486,7 @@ Le réseau d'un professeur sur WinPlus comprend :
 - Les autres professeurs avec qui il a échangé ou qu'il suit
 - Les membres de groupes communs
 
-En dehors de ce réseau, un utilisateur inconnu ne peut pas envoyer de message directement — il doit d'abord envoyer une demande de contact que le professeur accepte ou refuse. Cela évite le spam.
+En dehors de ce réseau, un utilisateur inconnu ne peut pas envoyer de message directement  il doit d'abord envoyer une demande de contact que le professeur accepte ou refuse. Cela évite le spam.
 
 ---
 
@@ -520,7 +520,7 @@ Archiver une conversation qui n'est plus active sans la supprimer. Elle reste ac
 
 ### UX Messagerie mobile
 
-Onglet dédié "Messages" dans la barre de navigation basse — à intégrer soit en 7ème onglet soit en remplacement d'un onglet moins utilisé, à discuter selon le contexte WinPlus. Badge de notification (N) sur l'icône.
+Onglet dédié "Messages" dans la barre de navigation basse  à intégrer soit en 7ème onglet soit en remplacement d'un onglet moins utilisé, à discuter selon le contexte WinPlus. Badge de notification (N) sur l'icône.
 
 Écran liste : conversations triées par date du dernier message. Aperçu du dernier message. Swipe gauche → archiver. Swipe droit → marquer comme lu/non lu.
 
@@ -534,7 +534,7 @@ Panneau latéral droit rétractable accessible depuis toutes les vues, avec badg
 
 ---
 
-## II. ACHAT DE CONTENU — Le professeur comme acheteur
+## II. ACHAT DE CONTENU  Le professeur comme acheteur
 
 ---
 
@@ -542,13 +542,13 @@ Panneau latéral droit rétractable accessible depuis toutes les vues, avec badg
 
 Le professeur n'est pas uniquement un créateur-vendeur. Il est aussi un acheteur. Deux raisons principales :
 
-Premièrement, il cherche des ressources pour enrichir ses formations ou préparer ses cours particuliers — une épreuve bien construite d'un collègue peut lui servir de support pédagogique ou de devoir à donner.
+Premièrement, il cherche des ressources pour enrichir ses formations ou préparer ses cours particuliers  une épreuve bien construite d'un collègue peut lui servir de support pédagogique ou de devoir à donner.
 
 Deuxièmement, un répétiteur qui couvre des concours spécifiques (ENSP, Polytechnique, FMSB) a besoin d'accéder aux meilleures épreuves disponibles sur la plateforme pour préparer ses élèves.
 
 ---
 
-### Catalogue d'achat — fonctionnalités
+### Catalogue d'achat  fonctionnalités
 
 **Recherche et filtres depuis l'espace professeur**
 
@@ -566,13 +566,13 @@ Filtres supplémentaires pour le professeur-acheteur :
 **Fiche contenu enrichie pour un professeur**
 
 Quand un professeur ouvre la fiche d'un contenu dans le catalogue, il voit en plus des informations standard :
-- "X enseignants ont utilisé ce contenu dans leurs formations" — indicateur de confiance professionnelle
+- "X enseignants ont utilisé ce contenu dans leurs formations"  indicateur de confiance professionnelle
 - Possibilité de l'ajouter directement comme ressource complémentaire dans l'une de ses formations en cours (bouton "Ajouter à une formation")
 - Possibilité de l'assigner comme devoir à une classe (bouton "Assigner à une classe")
 
 **Achat et téléchargement**
 
-Flow identique à l'élève : paiement via Mobile Money ou solde WinPlus (le professeur peut utiliser ses revenus de vente pour acheter du contenu — circuit interne). Historique des achats séparé dans l'onglet Revenus, en section "Achats".
+Flow identique à l'élève : paiement via Mobile Money ou solde WinPlus (le professeur peut utiliser ses revenus de vente pour acheter du contenu  circuit interne). Historique des achats séparé dans l'onglet Revenus, en section "Achats".
 
 **Bibliothèque personnelle**
 
@@ -582,7 +582,7 @@ Tous les contenus achetés ou téléchargés gratuitement s'accumulent dans une 
 
 Quand le professeur assigne un contenu acheté à une classe, les élèves de cette classe y accèdent sans repayer. WinPlus déduit une fois le montant du contenu depuis le compte du professeur et distribue les accès à tous les élèves de la classe. Chaque élève voit le contenu dans son espace comme "Assigné par [Nom du Professeur]".
 
-**WinAI — recommandations d'achat**
+**WinAI  recommandations d'achat**
 
 WinAI analyse le profil du professeur (matières, niveaux, contenus déjà publiés, historique de ses formations) et propose proactivement des contenus pertinents dans le catalogue :
 - "Les professeurs de Terminale C qui publient des contenus de Physique achètent souvent ces 3 épreuves"
@@ -591,7 +591,7 @@ WinAI analyse le profil du professeur (matières, niveaux, contenus déjà publi
 
 ---
 
-## III. WINAI — Fonctionnalités IA détaillées et nouvelles
+## III. WINAI  Fonctionnalités IA détaillées et nouvelles
 
 ---
 
@@ -601,11 +601,11 @@ Génération de quiz, optimisation de titre, génération de description, analys
 
 ---
 
-### Nouvelles fonctionnalités IA — détail complet
+### Nouvelles fonctionnalités IA  détail complet
 
 ---
 
-**WinAI-1 — Génération de plan de cours complet (syllabus)**
+**WinAI-1  Génération de plan de cours complet (syllabus)**
 
 Le professeur saisit : matière, niveau, durée totale (ex. 3 mois), objectifs pédagogiques généraux, examens visés. WinAI génère un syllabus structuré semaine par semaine : titre de chaque séance, notions abordées, activités proposées, durée estimée, ressources suggérées depuis le catalogue WinPlus. Le plan est exportable en PDF ou importable directement comme structure d'une formation WinPlus.
 
@@ -613,7 +613,7 @@ User story : En tant que professeur créant une formation de préparation au BAC
 
 ---
 
-**WinAI-2 — Génération de rubrique d'évaluation (barème)**
+**WinAI-2  Génération de rubrique d'évaluation (barème)**
 
 À partir d'un énoncé collé ou uploadé, WinAI génère automatiquement un barème détaillé question par question : points par sous-question, critères d'attribution partielle, erreurs types pénalisées. Le barème est utilisé ensuite dans le flow de correction pour guider le professeur ou le répétiteur.
 
@@ -621,7 +621,7 @@ User story : En tant que répétiteur corrigeant un devoir de maths Tle C, je ve
 
 ---
 
-**WinAI-3 — Notation automatique premier niveau (pre-grading)**
+**WinAI-3  Notation automatique premier niveau (pre-grading)**
 
 Pour les quiz à choix multiples et les questions à réponse courte, WinAI propose une note automatique avec un intervalle de confiance (ex. "Entre 13 et 15 sur 20, à valider"). Pour les questions longues (développement, problèmes), WinAI surligne les éléments présents et absents dans la réponse de l'élève par rapport au barème, et suggère une note que le professeur accepte ou corrige. La décision finale reste toujours au professeur.
 
@@ -629,7 +629,7 @@ User story : En tant que professeur avec 30 copies à corriger, je veux que WinA
 
 ---
 
-**WinAI-4 — Résumé automatique de leçon (pour l'élève)**
+**WinAI-4  Résumé automatique de leçon (pour l'élève)**
 
 Après qu'un élève a complété une leçon vidéo ou un article, WinAI génère automatiquement un résumé des points clés en 5 à 7 bullet points, une liste des formules ou définitions importantes, et 2-3 questions de vérification rapide. Ce résumé est disponible dans l'espace élève mais le professeur peut le désactiver ou le personnaliser pour chaque leçon.
 
@@ -637,15 +637,15 @@ User story : En tant que professeur, je veux que WinAI génère automatiquement 
 
 ---
 
-**WinAI-5 — Q&A automatique dans le canal de formation**
+**WinAI-5  Q&A automatique dans le canal de formation**
 
-Le professeur active l'option "WinAI répond aux questions fréquentes" sur le canal de sa formation. WinAI analyse le contenu de toutes les leçons de la formation et répond automatiquement aux questions des élèves dans le canal avec une mention "Réponse générée par WinAI — à vérifier avec ton professeur". Si WinAI n'est pas sûr de la réponse (confiance inférieure à un seuil), il tague le professeur automatiquement au lieu de répondre. Le professeur voit toutes les interactions IA dans un journal dédié et peut corriger ou compléter une réponse IA en un clic.
+Le professeur active l'option "WinAI répond aux questions fréquentes" sur le canal de sa formation. WinAI analyse le contenu de toutes les leçons de la formation et répond automatiquement aux questions des élèves dans le canal avec une mention "Réponse générée par WinAI  à vérifier avec ton professeur". Si WinAI n'est pas sûr de la réponse (confiance inférieure à un seuil), il tague le professeur automatiquement au lieu de répondre. Le professeur voit toutes les interactions IA dans un journal dédié et peut corriger ou compléter une réponse IA en un clic.
 
 User story : En tant que professeur gérant 80 élèves sur une formation, je veux que WinAI réponde aux questions simples dans le canal afin de ne pas être submergé par des demandes répétitives.
 
 ---
 
-**WinAI-6 — Analyse comparative de performance (benchmarking)**
+**WinAI-6  Analyse comparative de performance (benchmarking)**
 
 WinAI compare les performances d'une classe ou d'un groupe d'élèves d'un professeur avec les moyennes anonymisées de l'ensemble de la plateforme pour le même niveau et la même matière. Le résultat : "Tes élèves de Tle D en Maths sont 12 % en dessous de la moyenne WinPlus pour ce niveau. Les lacunes les plus fréquentes dans ta classe (trigonométrie, suites) sont différentes de la tendance nationale (fonctions dérivées, intégrales). Contenu recommandé pour combler ces écarts : [lien vers 2 épreuves du catalogue]."
 
@@ -653,15 +653,15 @@ User story : En tant que répétiteur préparant un élève au concours ENSP, je
 
 ---
 
-**WinAI-7 — Détection de plagiat entre soumissions**
+**WinAI-7  Détection de plagiat entre soumissions**
 
-Quand plusieurs élèves d'une même classe soumettent des travaux similaires, WinAI détecte les similarités textuelles et signale au professeur les paires de soumissions suspectes avec un score de similarité. Le professeur décide de la suite. Aucun élève n'est accusé directement — WinAI signale uniquement au professeur.
+Quand plusieurs élèves d'une même classe soumettent des travaux similaires, WinAI détecte les similarités textuelles et signale au professeur les paires de soumissions suspectes avec un score de similarité. Le professeur décide de la suite. Aucun élève n'est accusé directement  WinAI signale uniquement au professeur.
 
 User story : En tant que professeur recevant 25 copies d'un devoir maison, je veux être alerté si des copies semblent identiques afin d'intervenir si nécessaire.
 
 ---
 
-**WinAI-8 — Génération de fiche de révision personnalisée par élève**
+**WinAI-8  Génération de fiche de révision personnalisée par élève**
 
 Le répétiteur, après plusieurs séances avec un élève, demande à WinAI de générer une fiche de révision personnalisée basée sur les compte-rendus de séances précédents, les scores aux quiz et les erreurs identifiées. La fiche liste : notions à revoir en priorité, exercices recommandés depuis le catalogue WinPlus, méthodes et formules clés à mémoriser. Elle est partagée directement dans la conversation de messagerie avec l'élève.
 
@@ -669,15 +669,15 @@ User story : En tant que répétiteur suivant un élève depuis 2 mois, je veux 
 
 ---
 
-**WinAI-9 — Suggestion de contenu à publier (veille éditoriale)**
+**WinAI-9  Suggestion de contenu à publier (veille éditoriale)**
 
-WinAI analyse en temps réel les tendances de recherche sur WinPlus : quelles matières, quels niveaux et quels concours génèrent le plus de recherches sans résultats satisfaisants. Il alerte le professeur : "Il y a cette semaine 200 élèves qui cherchent des épreuves de Chimie Tle D pour le concours FMSB sans trouver ce qu'ils cherchent. Tu enseignes cette matière — publier maintenant te positionnerait comme première offre sur ce créneau." La prédiction de popularité existante s'appuie sur cette veille.
+WinAI analyse en temps réel les tendances de recherche sur WinPlus : quelles matières, quels niveaux et quels concours génèrent le plus de recherches sans résultats satisfaisants. Il alerte le professeur : "Il y a cette semaine 200 élèves qui cherchent des épreuves de Chimie Tle D pour le concours FMSB sans trouver ce qu'ils cherchent. Tu enseignes cette matière  publier maintenant te positionnerait comme première offre sur ce créneau." La prédiction de popularité existante s'appuie sur cette veille.
 
 User story : En tant que professeur de Sciences, je veux que WinAI me signale les besoins du marché non couverts afin de publier au bon moment et maximiser mes téléchargements.
 
 ---
 
-**WinAI-10 — Transcription et résumé de session live**
+**WinAI-10  Transcription et résumé de session live**
 
 Après une session live ou enregistrée, WinAI transcrit automatiquement l'audio (si la session passe par WinPlus), génère un résumé structuré (points abordés, questions posées par les élèves, décisions prises, devoirs annoncés) et envoie ce résumé aux élèves participants via le canal de messagerie. Le professeur peut éditer le résumé avant envoi.
 
@@ -685,33 +685,33 @@ User story : En tant que professeur ayant donné un cours live de 2h, je veux un
 
 ---
 
-**WinAI-11 — Coach pédagogique pour le répétiteur**
+**WinAI-11  Coach pédagogique pour le répétiteur**
 
-Sur la base de l'historique complet des séances, des avis reçus et des progressions de ses élèves, WinAI génère un rapport mensuel de coaching pour le répétiteur : ses points forts déclarés par les élèves, les matières où ses élèves progressent le plus, les patterns d'amélioration ou de stagnation, des recommandations concrètes sur sa pratique pédagogique (ex. "Tes élèves décrochent en moyenne à la 45ème minute — essaie une pause ou un changement d'activité"). Ce rapport est visible dans le tableau de bord, onglet "Mon coaching WinAI".
+Sur la base de l'historique complet des séances, des avis reçus et des progressions de ses élèves, WinAI génère un rapport mensuel de coaching pour le répétiteur : ses points forts déclarés par les élèves, les matières où ses élèves progressent le plus, les patterns d'amélioration ou de stagnation, des recommandations concrètes sur sa pratique pédagogique (ex. "Tes élèves décrochent en moyenne à la 45ème minute  essaie une pause ou un changement d'activité"). Ce rapport est visible dans le tableau de bord, onglet "Mon coaching WinAI".
 
 User story : En tant que répétiteur voulant améliorer ma pratique, je veux recevoir un rapport mensuel WinAI sur mes performances pédagogiques afin de progresser professionnellement.
 
 ---
 
-**WinAI-12 — Génération automatique de communication parents**
+**WinAI-12  Génération automatique de communication parents**
 
 Le répétiteur ou le professeur rédige un résumé rapide en langage naturel ("l'élève a bien progressé en trigonométrie, encore des lacunes en géométrie analytique, devoirs à faire pages 45-47") et WinAI le transforme en un message formel et bienveillant adressable aux parents, avec la progression chiffrée, les points positifs soulignés, les axes d'amélioration, et les devoirs clairement listés. Envoyable directement via la messagerie WinPlus ou copié pour un envoi externe.
 
 ---
 
-**WinAI-13 — Adaptive difficulty dans les quiz de formation**
+**WinAI-13  Adaptive difficulty dans les quiz de formation**
 
-Pour les formations avec quiz activé, WinAI ajuste dynamiquement la difficulté des questions proposées à chaque élève selon ses résultats précédents. Un élève qui réussit 90 % des questions reçoit des variantes plus difficiles. Un élève à 40 % reçoit des questions plus accessibles avec des indices progressifs. La difficulté est calibrée sans jamais bloquer la progression — un élève ne peut jamais rester "coincé".
-
----
-
-**WinAI-14 — Mémoire conversationnelle enrichie**
-
-La mémoire WinAI existante sur mobile est étendue et rendue explicite. Elle mémorise : les matières de prédilection du professeur, son style pédagogique déclaré, ses formats de quiz préférés, ses épreuves et formations publiées, les patterns de ses élèves, et les conversations précédentes. Quand le professeur revient sur WinAI après 3 jours, le chatbot dit "La dernière fois on avait commencé un quiz de Physique Tle C — tu veux qu'on le finalise ?" Ce contexte persistant évite de réexpliquer le contexte à chaque session.
+Pour les formations avec quiz activé, WinAI ajuste dynamiquement la difficulté des questions proposées à chaque élève selon ses résultats précédents. Un élève qui réussit 90 % des questions reçoit des variantes plus difficiles. Un élève à 40 % reçoit des questions plus accessibles avec des indices progressifs. La difficulté est calibrée sans jamais bloquer la progression  un élève ne peut jamais rester "coincé".
 
 ---
 
-**WinAI-15 — Détection de plagiat dans le contenu publié**
+**WinAI-14  Mémoire conversationnelle enrichie**
+
+La mémoire WinAI existante sur mobile est étendue et rendue explicite. Elle mémorise : les matières de prédilection du professeur, son style pédagogique déclaré, ses formats de quiz préférés, ses épreuves et formations publiées, les patterns de ses élèves, et les conversations précédentes. Quand le professeur revient sur WinAI après 3 jours, le chatbot dit "La dernière fois on avait commencé un quiz de Physique Tle C  tu veux qu'on le finalise ?" Ce contexte persistant évite de réexpliquer le contexte à chaque session.
+
+---
+
+**WinAI-15  Détection de plagiat dans le contenu publié**
 
 Avant qu'une épreuve ou correction soit soumise pour validation, WinAI vérifie si le contenu uploadé présente des similarités importantes avec des ressources déjà présentes sur WinPlus ou dans des bases de données publiques connues. Il signale au professeur les sections similaires et suggère de reformuler ou de citer la source. Ça protège WinPlus contre les publications de contenu plagié et protège le professeur contre une validation refusée.
 
@@ -727,19 +727,19 @@ Nouvelles : génération de syllabus/plan de cours, génération de barème, pre
 
 ---
 
-Je vais rédiger les user stories complètes en couvrant tout — le document mis à jour, les fonctionnalités répétiteur, la messagerie enrichie, les achats et toutes les capacités WinAI qu'on a détaillées.
+Je vais rédiger les user stories complètes en couvrant tout  le document mis à jour, les fonctionnalités répétiteur, la messagerie enrichie, les achats et toutes les capacités WinAI qu'on a détaillées.
 
 ---
 
-# User Stories — Espace Professeur / Répétiteur WinPlus
+# User Stories  Espace Professeur / Répétiteur WinPlus
 
 Convention de format :
-US-[MODULE]-[Numéro] — En tant que [acteur], je veux [action] afin de [bénéfice].
+US-[MODULE]-[Numéro]  En tant que [acteur], je veux [action] afin de [bénéfice].
 Critères d'acceptation sous chaque story.
 
 ---
 
-## MODULE 1 — ONBOARDING ET PROFIL
+## MODULE 1  ONBOARDING ET PROFIL
 
 ---
 
@@ -748,7 +748,7 @@ En tant que nouvel utilisateur choisissant le rôle Professeur, je veux complét
 
 Critères d'acceptation :
 - L'onboarding est découpé en 5 étapes maximum avec un stepper visuel
-- Chaque étape est sauvegardée indépendamment — une fermeture accidentelle ne remet pas à zéro
+- Chaque étape est sauvegardée indépendamment  une fermeture accidentelle ne remet pas à zéro
 - Le profil est fonctionnel dès l'étape 3 complétée, les étapes 4 et 5 sont optionnelles
 - Un score de complétude (0-100) est affiché à la fin avec les éléments manquants cliquables
 
@@ -807,7 +807,7 @@ Critères d'acceptation :
 - Champ URL acceptant YouTube, Vimeo ou upload direct (max 100 Mo)
 - La vidéo s'affiche en lecteur embarqué sur la fiche publique
 - Si le lien est invalide, un message d'erreur clair est affiché
-- La vidéo est optionnelle — son absence n'empêche pas l'activation du profil répétiteur
+- La vidéo est optionnelle  son absence n'empêche pas l'activation du profil répétiteur
 
 ---
 
@@ -827,7 +827,7 @@ En tant que répétiteur, je veux définir mes disponibilités hebdomadaires et 
 
 Critères d'acceptation :
 - Grille hebdomadaire 7 jours × plages horaires (matin/après-midi/soir ou par heure)
-- Tap sur une case pour activer/désactiver — sauvegarde instantanée sans bouton "Enregistrer"
+- Tap sur une case pour activer/désactiver  sauvegarde instantanée sans bouton "Enregistrer"
 - Bouton "Reproduire cette semaine" qui propage la grille indéfiniment
 - Choix du délai de préavis : 12h, 24h, 48h
 - Choix du nombre max de séances par semaine (le calendrier se ferme automatiquement quand le max est atteint)
@@ -869,7 +869,7 @@ Critères d'acceptation :
 
 ---
 
-## MODULE 2 — CATALOGUE ET ACHAT DE CONTENU
+## MODULE 2  CATALOGUE ET ACHAT DE CONTENU
 
 ---
 
@@ -946,7 +946,7 @@ En tant que professeur, je veux que WinAI me recommande proactivement des conten
 Critères d'acceptation :
 - Les recommandations WinAI sont affichées dans le tableau de bord, section "Recommandé pour toi"
 - Les critères de recommandation : matières et niveaux du professeur, contenus de ses formations, lacunes détectées dans ses classes, tendances de recherche non satisfaites sur la plateforme
-- Chaque recommandation est accompagnée d'une justification courte ("Tes élèves de Tle D ont des difficultés en trigonométrie — ce contenu est très bien noté sur ce thème")
+- Chaque recommandation est accompagnée d'une justification courte ("Tes élèves de Tle D ont des difficultés en trigonométrie  ce contenu est très bien noté sur ce thème")
 - Le professeur peut masquer une recommandation ("Pas intéressé")
 
 ---
@@ -973,7 +973,7 @@ Critères d'acceptation :
 
 ---
 
-## MODULE 3 — PUBLICATION DE CONTENUS
+## MODULE 3  PUBLICATION DE CONTENUS
 
 ---
 
@@ -994,10 +994,10 @@ Critères d'acceptation :
 En tant que professeur, je veux qu'à chaque étape de publication WinAI puisse m'assister afin de publier un contenu de meilleure qualité sans effort supplémentaire.
 
 Critères d'acceptation :
-- Étape 2 : bouton "Optimiser avec WinAI" sur le champ titre — génère une suggestion avec justification, acceptation en un clic
-- Étape 2 : bouton "Générer une description" — produit 2-3 phrases à partir des métadonnées saisies
-- Étape 3 (quiz) : bouton "Suggérer 10 questions" — génère des QCM calibrés pour l'examen ciblé, sélection individuelle avant import
-- Étape 3 (correction) : bouton "Générer une correction type" — structure la correction question par question depuis l'énoncé collé
+- Étape 2 : bouton "Optimiser avec WinAI" sur le champ titre  génère une suggestion avec justification, acceptation en un clic
+- Étape 2 : bouton "Générer une description"  produit 2-3 phrases à partir des métadonnées saisies
+- Étape 3 (quiz) : bouton "Suggérer 10 questions"  génère des QCM calibrés pour l'examen ciblé, sélection individuelle avant import
+- Étape 3 (correction) : bouton "Générer une correction type"  structure la correction question par question depuis l'énoncé collé
 - Étape 4 : prédiction de popularité automatique (téléchargements estimés sur 30 jours, prix recommandé, meilleures ventes comparables, timing optimal)
 
 ---
@@ -1035,7 +1035,7 @@ Critères d'acceptation :
 
 ---
 
-## MODULE 4 — CORRECTIONS
+## MODULE 4  CORRECTIONS
 
 ---
 
@@ -1069,7 +1069,7 @@ En tant que professeur, je veux que WinAI détecte les similarités entre les co
 Critères d'acceptation :
 - L'analyse de similarité est déclenchée automatiquement quand plusieurs soumissions arrivent pour le même exercice
 - WinAI signale uniquement au professeur les paires de soumissions avec un score de similarité élevé (≥ 70 %)
-- Aucun élève n'est notifié — la détection est un outil pour le professeur, pas une sanction automatique
+- Aucun élève n'est notifié  la détection est un outil pour le professeur, pas une sanction automatique
 - Le professeur peut marquer une alerte comme "Faux positif" pour l'exclure
 
 ---
@@ -1103,11 +1103,11 @@ Critères d'acceptation :
 - Pour les quiz à choix multiples : notation automatique directe avec score final
 - Pour les réponses courtes : WinAI propose une note avec intervalle de confiance ("Entre 13 et 15/20, à valider")
 - Pour les développements longs : WinAI surligne les éléments présents/absents par rapport au barème et suggère une note
-- La décision finale reste toujours au professeur — aucune note n'est envoyée à l'élève sans validation manuelle
+- La décision finale reste toujours au professeur  aucune note n'est envoyée à l'élève sans validation manuelle
 
 ---
 
-## MODULE 5 — SESSIONS
+## MODULE 5  SESSIONS
 
 ---
 
@@ -1155,7 +1155,7 @@ Critères d'acceptation :
 
 ---
 
-## MODULE 6 — COURS PARTICULIERS (MODE RÉPÉTITEUR)
+## MODULE 6  COURS PARTICULIERS (MODE RÉPÉTITEUR)
 
 ---
 
@@ -1175,7 +1175,7 @@ En tant qu'élève, je veux accéder à la fiche complète d'un répétiteur afi
 
 Critères d'acceptation :
 - La fiche affiche : photo, nom, titre, badges, note globale et nombre d'avis, bio, vidéo d'intro, tarifs et forfaits, disponibilités (calendrier horizontal 14 jours), avis vérifiés (3 en preview + "Voir tout"), matières et niveaux, zones d'intervention, politique d'annulation
-- Le bouton "Réserver" est sticky en bas de la fiche — visible sans scroller
+- Le bouton "Réserver" est sticky en bas de la fiche  visible sans scroller
 - Les créneaux disponibles sont affichés en vert, les indisponibles en gris
 
 ---
@@ -1243,7 +1243,7 @@ Critères d'acceptation :
 - Invitation à noter envoyée par notification push après libération des fonds
 - Interface de notation : 5 étoiles + champ commentaire optionnel (300 caractères max)
 - Un élève ne peut noter qu'une fois par séance
-- Seuls les élèves ayant eu une séance confirmée peuvent laisser un avis — les avis anonymes ou non vérifiés sont impossibles
+- Seuls les élèves ayant eu une séance confirmée peuvent laisser un avis  les avis anonymes ou non vérifiés sont impossibles
 - Le répétiteur peut répondre publiquement à chaque avis depuis son profil
 
 ---
@@ -1295,7 +1295,7 @@ Critères d'acceptation :
 
 ---
 
-## MODULE 7 — MESSAGERIE
+## MODULE 7  MESSAGERIE
 
 ---
 
@@ -1329,7 +1329,7 @@ Critères d'acceptation :
 - Le professeur crée un groupe depuis une classe existante (import automatique des membres) ou manuellement
 - Chaque groupe a un nom, une photo optionnelle et un créateur-administrateur
 - Le créateur peut épingler des messages d'annonce en haut du fil
-- Le créateur peut activer le mode "Canal d'annonce" — seul lui peut envoyer des messages, les membres ne peuvent que réagir
+- Le créateur peut activer le mode "Canal d'annonce"  seul lui peut envoyer des messages, les membres ne peuvent que réagir
 - Mentions @Nom pour notifier un membre spécifique
 
 ---
@@ -1414,7 +1414,7 @@ Critères d'acceptation :
 
 ---
 
-## MODULE 8 — GESTION DES CLASSES
+## MODULE 8  GESTION DES CLASSES
 
 ---
 
@@ -1462,7 +1462,7 @@ Critères d'acceptation :
 
 ---
 
-## MODULE 9 — FORMATIONS STRUCTURÉES
+## MODULE 9  FORMATIONS STRUCTURÉES
 
 ---
 
@@ -1484,7 +1484,7 @@ Critères d'acceptation :
 - Trois règles de déblocage par section : "Immédiatement à l'inscription", "X jours après l'inscription", "Si score quiz section précédente ≥ X %"
 - Les deux dernières règles sont combinables
 - Les leçons verrouillées affichent un cadenas et la condition de déblocage pour l'élève
-- Le déblocage est automatique — aucune action manuelle du professeur n'est requise
+- Le déblocage est automatique  aucune action manuelle du professeur n'est requise
 
 ---
 
@@ -1553,7 +1553,7 @@ En tant que professeur, je veux que WinAI active un Q&A automatique dans le cana
 Critères d'acceptation :
 - Toggle "WinAI répond aux questions" dans les paramètres du canal de la formation
 - WinAI base ses réponses uniquement sur le contenu des leçons de la formation (pas de réponses génériques)
-- Chaque réponse IA porte la mention "Réponse générée par WinAI — à vérifier avec ton professeur"
+- Chaque réponse IA porte la mention "Réponse générée par WinAI  à vérifier avec ton professeur"
 - Si la confiance de WinAI est inférieure à 70 % : il tague le professeur au lieu de répondre
 - Le professeur voit un journal de toutes les interactions IA et peut corriger ou compléter en un clic
 
@@ -1571,7 +1571,7 @@ Critères d'acceptation :
 
 ---
 
-## MODULE 10 — INTELLIGENCE DE CLASSE ET ANALYTICS
+## MODULE 10  INTELLIGENCE DE CLASSE ET ANALYTICS
 
 ---
 
@@ -1606,7 +1606,7 @@ Critères d'acceptation :
 
 ---
 
-## MODULE 11 — WINAI GLOBAL
+## MODULE 11  WINAI GLOBAL
 
 ---
 
@@ -1650,7 +1650,7 @@ Critères d'acceptation :
 - Activable via le toggle "Adaptive difficulty" dans les paramètres de la formation
 - Un élève avec plus de 85 % de réussite reçoit des variantes de questions plus difficiles
 - Un élève avec moins de 50 % reçoit des questions plus accessibles avec des indices progressifs
-- La difficulté ne bloque jamais la progression — un élève ne reste pas "coincé" sur une leçon
+- La difficulté ne bloque jamais la progression  un élève ne reste pas "coincé" sur une leçon
 - Le niveau de difficulté appliqué est visible dans les analytics pour le professeur
 
 ---
@@ -1673,7 +1673,7 @@ Critères d'acceptation :
 - L'analyse de plagiat se déclenche automatiquement à l'étape de prévisualisation (étape 4) de la publication
 - Si des similarités sont détectées : les sections concernées sont surlignées avec le pourcentage de similarité
 - WinAI suggère de reformuler ou de citer la source
-- Le professeur peut choisir d'ignorer un résultat et soumettre quand même — la décision finale est à la validation humaine
+- Le professeur peut choisir d'ignorer un résultat et soumettre quand même  la décision finale est à la validation humaine
 - Un contenu entièrement original reçoit un badge "Originalité confirmée par WinAI"
 
 ---
@@ -1690,7 +1690,7 @@ Critères d'acceptation :
 
 ---
 
-## MODULE 12 — REVENUS ET RETRAITS
+## MODULE 12  REVENUS ET RETRAITS
 
 ---
 
@@ -1728,7 +1728,7 @@ Critères d'acceptation :
 
 ---
 
-## MODULE 13 — FORUM ET COMMUNAUTÉ
+## MODULE 13  FORUM ET COMMUNAUTÉ
 
 ---
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/messaging_service.dart';
 import '../services/parent_service.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
@@ -26,6 +27,7 @@ class EncouragementSheet extends StatefulWidget {
 class _EncouragementSheetState extends State<EncouragementSheet> {
   int? _selectedTemplate;
   final _ctrl = TextEditingController();
+  bool _sending = false;
 
   List<(IconData, String)> get _templates {
     final name = widget.child.firstName;
@@ -57,6 +59,29 @@ class _EncouragementSheetState extends State<EncouragementSheet> {
   String get _message {
     if (_selectedTemplate != null) return _templates[_selectedTemplate!].$2;
     return _ctrl.text.trim();
+  }
+
+  /// Avant : le bouton fermait la feuille et affichait un succès factice
+  /// sans jamais rien envoyer. Un encouragement est un message au sens
+  /// plein, envoyé via la vraie messagerie DirectMessage.
+  Future<void> _send() async {
+    final message = _message;
+    if (message.isEmpty) return;
+    setState(() => _sending = true);
+    try {
+      await MessagingService.instance.startConversation(widget.child.id, firstMessage: message);
+      if (!mounted) return;
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Message envoyé à ${widget.child.firstName} !')),
+      );
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _sending = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Impossible d'envoyer le message. Réessayez.")),
+      );
+    }
   }
 
   @override
@@ -186,16 +211,8 @@ class _EncouragementSheetState extends State<EncouragementSheet> {
               'Envoyer',
               block: true,
               icon: Icons.send_outlined,
-              onTap: _message.isEmpty
-                  ? null
-                  : () {
-                      Navigator.pop(context);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                            content: Text(
-                                'Message envoyé à ${widget.child.firstName} !')),
-                      );
-                    },
+              loading: _sending,
+              onTap: _message.isEmpty || _sending ? null : _send,
             ),
           ],
         ),

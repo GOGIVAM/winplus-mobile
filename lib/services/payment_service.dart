@@ -1,4 +1,5 @@
 import 'api_client.dart';
+import 'connectivity_service.dart';
 
 enum PaymentMethod { mtnMomo, orangeMoney }
 
@@ -54,12 +55,15 @@ class PaymentService {
 
   final _api = ApiClient.instance;
 
+  /// Les paiements ne sont jamais mis en file hors ligne : throw explicite
+  /// plutôt qu'un échec silencieux (voir requireOnline).
   Future<ApiPaymentIntent?> initiate({
     required int planId,
     required PaymentMethod method,
     required String phoneNumber,
     required bool yearly,
   }) async {
+    requireOnline();
     try {
       final res = await _api.dio.post('/payments/initiate', data: {
         'planId': planId,
@@ -82,11 +86,16 @@ class PaymentService {
     }
   }
 
+  /// La réponse réelle est { payments: [...], total, page, limit }, jamais un
+  /// tableau nu  "res.data as List?" levait une exception à chaque appel
+  /// (Map n'est pas List), silencieusement avalée par le catch, donc
+  /// l'historique de paiement était toujours vide en pratique.
   Future<List<Map<String, dynamic>>> getHistory() async {
     try {
       final res = await _api.dio.get('/payments/history');
-      final list = res.data as List? ?? [];
-      return list.cast<Map<String, dynamic>>();
+      final data = res.data;
+      final list = data is Map ? data['payments'] as List? : data as List?;
+      return (list ?? []).cast<Map<String, dynamic>>();
     } catch (_) {
       return [];
     }

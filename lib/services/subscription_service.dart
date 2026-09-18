@@ -34,11 +34,17 @@ class ApiPlan {
 
 class ApiActiveSubscription {
   final int id;
+
+  /// Id du PricingPlan (distinct de [id], celui de la Subscription elle-même)
+  ///  c'est celui-ci qu'il faut envoyer pour se réabonner/renouveler via
+  /// SubscriptionService.purchase.
+  final int pricingPlanId;
   final String planName;
   final String tier;
   final String status;
   final DateTime expiresAt;
   final bool autoRenew;
+  final double price;
   final int downloadsUsed;
   final int downloadsLimit;
   final int quizUsedToday;
@@ -47,11 +53,13 @@ class ApiActiveSubscription {
   final int aiMessagesLimit;
   const ApiActiveSubscription({
     required this.id,
+    required this.pricingPlanId,
     required this.planName,
     required this.tier,
     required this.status,
     required this.expiresAt,
     required this.autoRenew,
+    this.price = 0,
     this.downloadsUsed = 0,
     this.downloadsLimit = 0,
     this.quizUsedToday = 0,
@@ -66,12 +74,14 @@ class ApiActiveSubscription {
   factory ApiActiveSubscription.fromJson(Map<String, dynamic> j) =>
       ApiActiveSubscription(
         id: j['id'] as int? ?? 0,
+        pricingPlanId: j['pricingPlanId'] as int? ?? 0,
         planName: j['planName'] as String? ?? '',
         tier: j['tier'] as String? ?? 'free',
         status: j['status'] as String? ?? 'active',
         expiresAt: DateTime.tryParse(j['expiresAt'] as String? ?? '') ??
             DateTime.now().add(const Duration(days: 30)),
         autoRenew: j['autoRenew'] as bool? ?? false,
+        price: ((j['price'] ?? 0) as num).toDouble(),
         downloadsUsed: j['downloadsUsed'] as int? ?? 0,
         downloadsLimit: j['downloadsLimit'] as int? ?? 0,
         quizUsedToday: j['quizUsedToday'] as int? ?? 0,
@@ -88,10 +98,12 @@ class SubscriptionService {
   final _api = ApiClient.instance;
 
   Future<List<ApiPlan>> getPlans(String category) async {
-    final res = await _api.dio.get('/pricing/plans',
-        queryParameters: {'category': category});
+    final res = await _api.dio
+        .get('/pricing/plans', queryParameters: {'category': category});
     final list = res.data as List? ?? [];
-    return list.map((e) => ApiPlan.fromJson(e as Map<String, dynamic>)).toList();
+    return list
+        .map((e) => ApiPlan.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
   Future<ApiActiveSubscription?> getCurrent() async {
@@ -113,6 +125,26 @@ class SubscriptionService {
     } catch (_) {
       return false;
     }
+  }
+
+  /// Souscrit/renouvelle avec paiement Mobile Money (POST /subscriptions/purchase,
+  /// crée l'Order ET initie le paiement NotchPay en un seul appel). Remplace
+  /// l'ancien usage de PaymentService.initiate() pour ce cas : ce dernier
+  /// attend un OrderId déjà existant (Order/{id}), pas un planId  aucun des
+  /// deux DTOs ne correspondait au corps réellement envoyé, donc l'ancien
+  /// appel échouait systématiquement (validation 400 côté backend).
+  Future<int?> purchase({
+    required int planId,
+    required String phone,
+    bool yearly = false,
+  }) async {
+    final res = await _api.dio.post('/subscriptions/purchase', data: {
+      'planId': planId,
+      'phone': phone,
+      'billing': yearly ? 'yearly' : 'monthly',
+    });
+    final d = res.data as Map<String, dynamic>?;
+    return d?['paymentId'] as int?;
   }
 
   Future<bool> cancel() async {

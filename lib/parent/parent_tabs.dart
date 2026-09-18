@@ -1,4 +1,5 @@
-﻿import 'package:flutter/material.dart';
+﻿import 'dart:async';
+import 'package:flutter/material.dart';
 import '../app_state.dart';
 import '../auth/welcome_screen.dart';
 import '../data/mock_data.dart';
@@ -6,20 +7,22 @@ import '../data/models.dart';
 import '../services/auth_service.dart';
 import '../services/chatbot_service.dart';
 import '../widgets/winai_memories_sheet.dart';
+import '../services/connectivity_service.dart';
+import '../services/local_cache_service.dart';
 import '../services/parent_service.dart';
 import '../services/subject_service.dart';
 import '../services/subscription_service.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
+import '../widgets/offline_banner.dart';
 import '../widgets/win_widgets.dart';
 import 'child_activity_screen.dart';
 import 'add_child_screen.dart';
 import 'winai_alerts_screen.dart';
-import 'subscription_status_screen.dart' hide RenewalSheet;
+import 'subscription_status_screen.dart';
 import '../shared/subscription/subscription_notifier.dart';
 import '../shared/subscription/pricing_screen.dart';
-import 'renewal_sheet.dart';
 import 'buy_for_child_screen.dart';
 import '../shared/legal_screen.dart';
 
@@ -37,20 +40,40 @@ class ParentDashTab extends StatefulWidget {
 
 class _ParentDashTabState extends State<ParentDashTab> {
   List<ApiChild>? _children;
-  List<ApiWinAIAlert> _alerts = [];
+  List<ApiPersistedAlert> _alerts = [];
   ApiActiveSubscription? _sub;
+  bool _offline = !ConnectivityService.instance.isOnline;
+  StreamSubscription<bool>? _connSub;
 
   @override
   void initState() {
     super.initState();
     _load();
+    _connSub = ConnectivityService.instance.onStatusChange.listen((online) {
+      if (mounted) setState(() => _offline = !online);
+    });
+  }
+
+  @override
+  void dispose() {
+    _connSub?.cancel();
+    super.dispose();
   }
 
   Future<void> _load() async {
-    final kids = await ParentService.instance.getChildren();
-    final alerts = await ParentService.instance.getAlerts();
-    final sub = await SubscriptionService.instance.getCurrent();
-    if (mounted) setState(() { _children = kids; _alerts = alerts; _sub = sub; });
+    // getChildren()/getAlerts() retombent déjà sur le cache (ParentDashboardBox)
+    // en cas d'échec réseau  ce try/catch ne couvre que le cas "jamais mis
+    // en cache et hors ligne dès le premier lancement", pour ne jamais rester
+    // bloqué sur le spinner (contrairement au comportement précédent, qui
+    // n'avait aucune gestion d'erreur ici).
+    try {
+      final kids = await ParentService.instance.getChildren();
+      final alerts = await ParentService.instance.getAllPersistedAlerts(kids.map((c) => c.id).toList());
+      final sub = await SubscriptionService.instance.getCurrent();
+      if (mounted) setState(() { _children = kids; _alerts = alerts; _sub = sub; });
+    } catch (_) {
+      if (mounted) setState(() { _children = []; _alerts = []; });
+    }
   }
 
   @override
@@ -74,6 +97,10 @@ class _ParentDashTabState extends State<ParentDashTab> {
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
       children: [
+        if (_offline && _children != null)
+          OfflineBanner(updatedAt: LocalCacheService.lastUpdatedAt(
+              LocalCacheService.parentDashboard, 'children')),
+
         // ── Hero gradient ──────────────────────────────────────────
         Container(
           padding: const EdgeInsets.all(20),
@@ -154,7 +181,7 @@ class _ParentDashTabState extends State<ParentDashTab> {
         ),
         if (_alerts.isNotEmpty) ...[
           const SizedBox(height: 12),
-          WinAlert(_alerts.first.message, type: BadgeColor.warn, icon: Icons.warning_amber_rounded),
+          WinAlert(_alerts.first.content, type: BadgeColor.warn, icon: Icons.warning_amber_rounded),
         ],
 
         // ── Mes enfants (cards horizontales scrollables) ──────────
@@ -374,7 +401,10 @@ class _EventTile extends StatelessWidget {
     final days = event.date.difference(DateTime.now()).inDays;
     final daysLabel = days <= 0 ? "aujourd'hui" : 'dans $days jour${days > 1 ? 's' : ''}';
     return GestureDetector(
-      onTap: isRenewal ? () => RenewalSheet.show(context) : null,
+      onTap: isRenewal
+          ? () => Navigator.push(context,
+              MaterialPageRoute(builder: (_) => const SubscriptionStatusScreen()))
+          : null,
       child: WinCard(
         child: Row(children: [
           Container(
@@ -778,7 +808,8 @@ class ParentProfileTab extends StatelessWidget {
               onTap: () => Navigator.push(context,
                   MaterialPageRoute(builder: (_) => const SubscriptionStatusScreen()))),
           _Row(Icons.autorenew, 'Gérer l\'abonnement',
-              onTap: () => RenewalSheet.show(context)),
+              onTap: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => const SubscriptionStatusScreen()))),
           _Row(Icons.payment_outlined, 'Paiements & historique',
               onTap: () => Navigator.push(context,
                   MaterialPageRoute(builder: (_) => const _PaymentsScreen()))),

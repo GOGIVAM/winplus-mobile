@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 
 import 'api_client.dart';
 
-/// Avis élève sur une séance de répétition terminée (Module 6 — avis
+/// Avis élève sur une séance de répétition terminée (Module 6  avis
 /// répétiteurs, professeur_complete.md).
 class TutorReview {
   final int id;
@@ -35,8 +35,12 @@ class TutorReview {
         rating: j['rating'] as int? ?? 0,
         comment: j['comment'] as String?,
         tutorReply: j['tutorReply'] as String?,
-        tutorRepliedAt: j['tutorRepliedAt'] != null ? DateTime.tryParse(j['tutorRepliedAt'] as String) : null,
-        createdAt: j['createdAt'] != null ? DateTime.tryParse(j['createdAt'] as String) : null,
+        tutorRepliedAt: j['tutorRepliedAt'] != null
+            ? DateTime.tryParse(j['tutorRepliedAt'] as String)
+            : null,
+        createdAt: j['createdAt'] != null
+            ? DateTime.tryParse(j['createdAt'] as String)
+            : null,
       );
 }
 
@@ -47,7 +51,8 @@ class TutorReviewService {
 
   /// L'élève laisse un avis sur une séance terminée (ou contestée). Une
   /// seule fois par réservation ; le serveur renvoie une erreur sinon.
-  Future<TutorReview> submit(int tutorBookingId, int rating, {String? comment}) async {
+  Future<TutorReview> submit(int tutorBookingId, int rating,
+      {String? comment}) async {
     try {
       final res = await _api.dio.post('/tutor-reviews', data: {
         'tutorBookingId': tutorBookingId,
@@ -57,29 +62,40 @@ class TutorReviewService {
       return TutorReview.fromJson(res.data as Map<String, dynamic>);
     } on DioException catch (e) {
       final data = e.response?.data as Map<String, dynamic>?;
-      throw Exception(data?['error'] as String? ?? data?['message'] as String? ?? 'Impossible d\'envoyer l\'avis.');
+      throw Exception(data?['error'] as String? ??
+          data?['message'] as String? ??
+          'Impossible d\'envoyer l\'avis.');
     }
   }
 
   /// Le répétiteur répond publiquement à un avis laissé sur son profil.
   Future<TutorReview> reply(int reviewId, String reply) async {
     try {
-      final res = await _api.dio.post('/tutor-reviews/$reviewId/reply', data: {'reply': reply});
+      final res = await _api.dio
+          .post('/tutor-reviews/$reviewId/reply', data: {'reply': reply});
       return TutorReview.fromJson(res.data as Map<String, dynamic>);
     } on DioException catch (e) {
       final data = e.response?.data as Map<String, dynamic>?;
-      throw Exception(data?['error'] as String? ?? data?['message'] as String? ?? 'Impossible d\'envoyer la réponse.');
+      throw Exception(data?['error'] as String? ??
+          data?['message'] as String? ??
+          'Impossible d\'envoyer la réponse.');
     }
   }
 
   /// Avis publics d'un répétiteur (fiche publique), paginés.
-  Future<List<TutorReview>> getForTutor(int tutorUserId, {int page = 1, int pageSize = 20}) async {
-    final res = await _api.dio.get('/tutor-reviews/tutor/$tutorUserId', queryParameters: {
+  Future<List<TutorReview>> getForTutor(int tutorUserId,
+      {int page = 1, int pageSize = 20}) async {
+    final res = await _api.dio
+        .get('/tutor-reviews/tutor/$tutorUserId', queryParameters: {
       'page': page,
       'pageSize': pageSize,
     });
     final data = res.data;
-    final list = data is Map<String, dynamic> ? (data['items'] as List? ?? []) : (data as List? ?? []);
-    return list.map((e) => TutorReview.fromJson(e as Map<String, dynamic>)).toList();
+    final list = data is Map<String, dynamic>
+        ? (data['items'] as List? ?? [])
+        : (data as List? ?? []);
+    return list
+        .map((e) => TutorReview.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 }

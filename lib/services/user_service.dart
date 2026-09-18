@@ -62,6 +62,15 @@ class ApiNotification {
         createdAt: DateTime.tryParse(j['createdAt'] as String? ?? '') ??
             DateTime.now(),
       );
+
+  ApiNotification copyWith({bool? isRead}) => ApiNotification(
+        id: id,
+        title: title,
+        body: body,
+        type: type,
+        isRead: isRead ?? this.isRead,
+        createdAt: createdAt,
+      );
 }
 
 class ApiDownloadEntry {
@@ -148,10 +157,25 @@ class UserService {
         .toList();
   }
 
-  Future<void> markAllNotificationsRead() async {
+  /// Retourne false en cas d'échec réseau plutôt que d'avaler l'erreur
+  /// silencieusement  l'écran appelant doit pouvoir distinguer un vrai
+  /// succès d'un échec, au lieu d'afficher "tout est à jour" à tort.
+  Future<bool> markAllNotificationsRead() async {
     try {
       await _api.dio.put('/notifications/read-all');
-    } catch (_) {}
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Future<bool> markNotificationRead(int id) async {
+    try {
+      await _api.dio.put('/notifications/$id/read');
+      return true;
+    } catch (_) {
+      return false;
+    }
   }
 
   Future<List<ApiDownloadEntry>> getDownloadHistory() async {

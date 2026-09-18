@@ -13,7 +13,7 @@ class WinAIAlertsScreen extends StatefulWidget {
 }
 
 class _WinAIAlertsScreenState extends State<WinAIAlertsScreen> {
-  List<ApiWinAIAlert>? _alerts;
+  List<ApiPersistedAlert>? _alerts;
   List<ApiChild>? _children;
 
   @override
@@ -23,8 +23,8 @@ class _WinAIAlertsScreenState extends State<WinAIAlertsScreen> {
   }
 
   Future<void> _load() async {
-    final alerts = await ParentService.instance.getAlerts();
     final children = await ParentService.instance.getChildren();
+    final alerts = await ParentService.instance.getAllPersistedAlerts(children.map((c) => c.id).toList());
     if (mounted)
       setState(() {
         _alerts = alerts;
@@ -32,21 +32,22 @@ class _WinAIAlertsScreenState extends State<WinAIAlertsScreen> {
       });
   }
 
-  Color _alertColor(String type) => switch (type) {
-        'danger' => WinColors.error,
-        'warning' => WinColors.warn,
+  // La sévérité (Low/Medium/High), pas le type de signal, porte le niveau de gravité.
+  Color _alertColor(String severity) => switch (severity) {
+        'High' => WinColors.error,
+        'Medium' => WinColors.warn,
         _ => WinColors.success,
       };
 
-  Color _alertBg(String type) => switch (type) {
-        'danger' => WinColors.errorBg,
-        'warning' => WinColors.warnBg,
+  Color _alertBg(String severity) => switch (severity) {
+        'High' => WinColors.errorBg,
+        'Medium' => WinColors.warnBg,
         _ => WinColors.successBg,
       };
 
-  IconData _alertIcon(String type) => switch (type) {
-        'danger' => Icons.error_outline,
-        'warning' => Icons.warning_amber_outlined,
+  IconData _alertIcon(String severity) => switch (severity) {
+        'High' => Icons.error_outline,
+        'Medium' => Icons.warning_amber_outlined,
         _ => Icons.check_circle_outline,
       };
 
@@ -111,8 +112,8 @@ class _WinAIAlertsScreenState extends State<WinAIAlertsScreen> {
           Text('Alertes récentes', style: WinType.headlineS(s.onStrong)),
           const SizedBox(height: 12),
           ...alerts.map((alert) {
-            final color = _alertColor(alert.type);
-            final bg = _alertBg(alert.type);
+            final color = _alertColor(alert.severity);
+            final bg = _alertBg(alert.severity);
             final child =
                 children.where((c) => c.id == alert.childId).firstOrNull;
             return Padding(
@@ -126,7 +127,7 @@ class _WinAIAlertsScreenState extends State<WinAIAlertsScreen> {
                         const SizedBox(width: 8),
                         Text(child.fullName, style: WinType.titleM(s.onStrong)),
                         const Spacer(),
-                        Text(_formatDate(alert.createdAt),
+                        Text(_formatDate(alert.detectedAt),
                             style: WinType.labelS(s.onFaint)),
                       ]),
                       const SizedBox(height: 6),
@@ -146,11 +147,11 @@ class _WinAIAlertsScreenState extends State<WinAIAlertsScreen> {
                       child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Icon(_alertIcon(alert.type),
+                            Icon(_alertIcon(alert.severity),
                                 size: 18, color: color),
                             const SizedBox(width: 10),
                             Expanded(
-                                child: Text(alert.message,
+                                child: Text(alert.content,
                                     style: WinType.bodyS(s.onSurface))),
                           ]),
                     ),

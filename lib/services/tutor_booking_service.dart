@@ -1,6 +1,6 @@
 import 'api_client.dart';
 
-/// Réservation d'une séance de répétition (Module 1 — professeur_complete.md).
+/// Réservation d'une séance de répétition (Module 1  professeur_complete.md).
 /// Mirroir du flow web (bookings + paiement Mobile Money via NotchPay).
 
 class TutorAvailabilityOccurrence {
@@ -16,7 +16,8 @@ class TutorAvailabilityOccurrence {
     required this.isBookable,
   });
 
-  factory TutorAvailabilityOccurrence.fromJson(Map<String, dynamic> j) => TutorAvailabilityOccurrence(
+  factory TutorAvailabilityOccurrence.fromJson(Map<String, dynamic> j) =>
+      TutorAvailabilityOccurrence(
         date: DateTime.parse(j['date'] as String),
         startTime: j['startTime'] as String? ?? '08:00',
         endTime: j['endTime'] as String? ?? '09:00',
@@ -84,7 +85,8 @@ class TutorBookingRecord {
   bool get isCancelled => status == 'cancelled';
   bool get isPending => status == 'pending_payment';
 
-  factory TutorBookingRecord.fromJson(Map<String, dynamic> j) => TutorBookingRecord(
+  factory TutorBookingRecord.fromJson(Map<String, dynamic> j) =>
+      TutorBookingRecord(
         id: j['id'] as int? ?? 0,
         tutorUserId: j['tutorUserId'] as int? ?? 0,
         tutorName: j['tutorName'] as String?,
@@ -100,10 +102,18 @@ class TutorBookingRecord {
         paymentStatus: j['paymentStatus'] as String? ?? 'pending',
         notchpayReference: j['notchpayReference'] as String?,
         cancellationReason: j['cancellationReason'] as String?,
-        createdAt: j['createdAt'] != null ? DateTime.tryParse(j['createdAt'] as String) : null,
-        completedAt: j['completedAt'] != null ? DateTime.tryParse(j['completedAt'] as String) : null,
-        escrowReleasedAt: j['escrowReleasedAt'] != null ? DateTime.tryParse(j['escrowReleasedAt'] as String) : null,
-        disputedAt: j['disputedAt'] != null ? DateTime.tryParse(j['disputedAt'] as String) : null,
+        createdAt: j['createdAt'] != null
+            ? DateTime.tryParse(j['createdAt'] as String)
+            : null,
+        completedAt: j['completedAt'] != null
+            ? DateTime.tryParse(j['completedAt'] as String)
+            : null,
+        escrowReleasedAt: j['escrowReleasedAt'] != null
+            ? DateTime.tryParse(j['escrowReleasedAt'] as String)
+            : null,
+        disputedAt: j['disputedAt'] != null
+            ? DateTime.tryParse(j['disputedAt'] as String)
+            : null,
         disputeReason: j['disputeReason'] as String?,
         canMarkCompleted: j['canMarkCompleted'] as bool? ?? false,
         canDispute: j['canDispute'] as bool? ?? false,
@@ -115,10 +125,13 @@ class TutorBookingRecord {
 class TutorPendingBooking {
   final TutorBookingRecord booking;
   final int minutesRemaining;
-  const TutorPendingBooking({required this.booking, required this.minutesRemaining});
+  const TutorPendingBooking(
+      {required this.booking, required this.minutesRemaining});
 
-  factory TutorPendingBooking.fromJson(Map<String, dynamic> j) => TutorPendingBooking(
-        booking: TutorBookingRecord.fromJson(j['booking'] as Map<String, dynamic>),
+  factory TutorPendingBooking.fromJson(Map<String, dynamic> j) =>
+      TutorPendingBooking(
+        booking:
+            TutorBookingRecord.fromJson(j['booking'] as Map<String, dynamic>),
         minutesRemaining: j['minutesRemaining'] as int? ?? 0,
       );
 }
@@ -126,10 +139,13 @@ class TutorPendingBooking {
 class TutorBookingCreatedResult {
   final TutorBookingRecord booking;
   final String? notchpayAuthorizationUrl;
-  const TutorBookingCreatedResult({required this.booking, this.notchpayAuthorizationUrl});
+  const TutorBookingCreatedResult(
+      {required this.booking, this.notchpayAuthorizationUrl});
 
-  factory TutorBookingCreatedResult.fromJson(Map<String, dynamic> j) => TutorBookingCreatedResult(
-        booking: TutorBookingRecord.fromJson(j['booking'] as Map<String, dynamic>),
+  factory TutorBookingCreatedResult.fromJson(Map<String, dynamic> j) =>
+      TutorBookingCreatedResult(
+        booking:
+            TutorBookingRecord.fromJson(j['booking'] as Map<String, dynamic>),
         notchpayAuthorizationUrl: j['notchpayAuthorizationUrl'] as String?,
       );
 }
@@ -141,17 +157,23 @@ class TutorBookingService {
 
   /// Calendrier des créneaux d'un répétiteur pour la semaine contenant [anyDateInWeek]
   /// (le backend recale sur le lundi).
-  Future<List<TutorAvailabilityOccurrence>> getCalendar(int tutorUserId, DateTime anyDateInWeek) async {
+  Future<List<TutorAvailabilityOccurrence>> getCalendar(
+      int tutorUserId, DateTime anyDateInWeek) async {
     final weekStart =
         '${anyDateInWeek.year.toString().padLeft(4, '0')}-${anyDateInWeek.month.toString().padLeft(2, '0')}-${anyDateInWeek.day.toString().padLeft(2, '0')}';
-    final res = await _api.dio.get('/tutor-bookings/tutor/$tutorUserId/calendar',
+    final res = await _api.dio.get(
+        '/tutor-bookings/tutor/$tutorUserId/calendar',
         queryParameters: {'weekStart': weekStart});
     final list = res.data as List? ?? [];
-    return list.map((e) => TutorAvailabilityOccurrence.fromJson(e as Map<String, dynamic>)).toList();
+    return list
+        .map((e) =>
+            TutorAvailabilityOccurrence.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
   /// Calendrier ~14 jours : semaine courante + semaine suivante.
-  Future<List<TutorAvailabilityOccurrence>> getTwoWeekCalendar(int tutorUserId) async {
+  Future<List<TutorAvailabilityOccurrence>> getTwoWeekCalendar(
+      int tutorUserId) async {
     final now = DateTime.now();
     final nextWeek = now.add(const Duration(days: 7));
     final results = await Future.wait([
@@ -190,11 +212,14 @@ class TutorBookingService {
   Future<List<TutorBookingRecord>> getMine() async {
     final res = await _api.dio.get('/tutor-bookings/mine');
     final list = res.data as List? ?? [];
-    return list.map((e) => TutorBookingRecord.fromJson(e as Map<String, dynamic>)).toList();
+    return list
+        .map((e) => TutorBookingRecord.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
   Future<TutorBookingRecord> cancel(int id, {String? reason}) async {
-    final res = await _api.dio.post('/tutor-bookings/$id/cancel', data: {'reason': reason});
+    final res = await _api.dio
+        .post('/tutor-bookings/$id/cancel', data: {'reason': reason});
     return TutorBookingRecord.fromJson(res.data as Map<String, dynamic>);
   }
 
@@ -203,7 +228,9 @@ class TutorBookingService {
   Future<List<TutorPendingBooking>> getPending() async {
     final res = await _api.dio.get('/tutor-bookings/tutor/pending');
     final list = res.data as List? ?? [];
-    return list.map((e) => TutorPendingBooking.fromJson(e as Map<String, dynamic>)).toList();
+    return list
+        .map((e) => TutorPendingBooking.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
   /// Le répétiteur accepte la demande.
@@ -214,7 +241,8 @@ class TutorBookingService {
 
   /// Le répétiteur refuse la demande (remboursement simulé côté serveur).
   Future<TutorBookingRecord> decline(int id, {String? reason}) async {
-    final res = await _api.dio.put('/tutor-bookings/$id/decline', data: {'reason': reason});
+    final res = await _api.dio
+        .put('/tutor-bookings/$id/decline', data: {'reason': reason});
     return TutorBookingRecord.fromJson(res.data as Map<String, dynamic>);
   }
 
@@ -227,7 +255,8 @@ class TutorBookingService {
 
   /// L'élève conteste une séance dans la fenêtre de 2h après la fin.
   Future<TutorBookingRecord> dispute(int id, String reason) async {
-    final res = await _api.dio.put('/tutor-bookings/$id/dispute', data: {'reason': reason});
+    final res = await _api.dio
+        .put('/tutor-bookings/$id/dispute', data: {'reason': reason});
     return TutorBookingRecord.fromJson(res.data as Map<String, dynamic>);
   }
 }

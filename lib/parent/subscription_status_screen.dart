@@ -17,6 +17,7 @@ class SubscriptionStatusScreen extends StatefulWidget {
 class _SubscriptionStatusScreenState extends State<SubscriptionStatusScreen> {
   ApiActiveSubscription? _sub;
   List<ApiChild>? _children;
+  List<Map<String, dynamic>> _paymentHistory = [];
 
   @override
   void initState() {
@@ -31,7 +32,10 @@ class _SubscriptionStatusScreenState extends State<SubscriptionStatusScreen> {
     try {
       final sub = await SubscriptionService.instance.getCurrent();
       final children = await ParentService.instance.getChildren();
-      if (mounted) setState(() { _sub = sub; _children = children; });
+      // L'historique n'est qu'indicatif  s'il échoue, la carte se contente
+      // d'un état vide plutôt que de bloquer tout l'écran.
+      final history = await PaymentService.instance.getHistory().catchError((_) => <Map<String, dynamic>>[]);
+      if (mounted) setState(() { _sub = sub; _children = children; _paymentHistory = history; });
     } catch (_) {
       if (mounted) setState(() => _loadError = true);
     }
@@ -143,28 +147,37 @@ class _SubscriptionStatusScreenState extends State<SubscriptionStatusScreen> {
                 const SizedBox(height: 20),
                 Text('Historique des paiements', style: WinType.headlineS(s.onStrong)),
                 const SizedBox(height: 12),
-                ...[
-                  ('15 août 2026', sub.planName, 2500),
-                  ('15 juil. 2026', sub.planName, 2500),
-                  ('15 juin 2026', sub.planName, 2500),
-                ].map((p) => Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: WinCard(
-                    padding: const EdgeInsets.all(12),
-                    child: Row(children: [
-                      Icon(Icons.receipt_long_outlined, size: 18, color: s.onFaint),
-                      const SizedBox(width: 10),
-                      Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        Text(p.$2, style: WinType.titleM(s.onStrong)),
-                        Text(p.$1, style: WinType.labelM(s.onMuted)),
-                      ])),
-                      Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                        Text('${fmtXaf(p.$3)} XAF', style: WinType.titleM(s.onStrong)),
-                        const WinBadge('Payé', color: BadgeColor.success),
-                      ]),
-                    ]),
-                  ),
-                )),
+                if (_paymentHistory.isEmpty)
+                  Text('Aucun paiement enregistré pour l\'instant.', style: WinType.bodyM(s.onMuted))
+                else
+                  ..._paymentHistory.map((p) {
+                    final status = (p['status'] as String? ?? '').toLowerCase();
+                    final (label, color) = switch (status) {
+                      'complete' || 'completed' || 'succeeded' => ('Payé', BadgeColor.success),
+                      'failed' || 'expired' || 'cancelled' => ('Échoué', BadgeColor.error),
+                      _ => ('En attente', BadgeColor.warn),
+                    };
+                    final amount = ((p['amount'] ?? 0) as num).round();
+                    final initiatedAt = DateTime.tryParse(p['initiatedAt'] as String? ?? '');
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: WinCard(
+                        padding: const EdgeInsets.all(12),
+                        child: Row(children: [
+                          Icon(Icons.receipt_long_outlined, size: 18, color: s.onFaint),
+                          const SizedBox(width: 10),
+                          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                            Text(sub.planName, style: WinType.titleM(s.onStrong)),
+                            Text(initiatedAt != null ? _fmtDate(initiatedAt) : '', style: WinType.labelM(s.onMuted)),
+                          ])),
+                          Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+                            Text('${fmtXaf(amount)} XAF', style: WinType.titleM(s.onStrong)),
+                            WinBadge(label, color: color),
+                          ]),
+                        ]),
+                      ),
+                    );
+                  }),
                 const SizedBox(height: 24),
                 WinButton('Renouveler maintenant',
                     block: true, icon: Icons.refresh,
@@ -172,7 +185,11 @@ class _SubscriptionStatusScreenState extends State<SubscriptionStatusScreen> {
                       context: context,
                       isScrollControlled: true,
                       backgroundColor: Colors.transparent,
-                      builder: (_) => RenewalSheet(planId: sub.id),
+                      builder: (_) => RenewalSheet(
+                        planId: sub.pricingPlanId,
+                        planName: sub.planName,
+                        price: sub.price,
+                      ),
                     )),
                 const SizedBox(height: 10),
                 WinButton('Changer de plan',
@@ -217,32 +234,52 @@ class _UsageRow extends StatelessWidget {
 
 class RenewalSheet extends StatefulWidget {
   final int planId;
-  const RenewalSheet({super.key, required this.planId});
+  final String planName;
+  final double price;
+  const RenewalSheet({super.key, required this.planId, required this.planName, required this.price});
   @override
   State<RenewalSheet> createState() => _RenewalSheetState();
 }
 
 class _RenewalSheetState extends State<RenewalSheet> {
+  // Purement visuel : NotchPay détermine l'opérateur à partir du numéro
+  // lui-même, ce choix n'est envoyé nulle part (PurchaseSubscriptionRequest
+  // n'a pas de champ "method").
   String _method = 'mtn';
   final _phoneCtrl = TextEditingController();
   bool _loading = false, _done = false;
+  String? _error;
 
   Future<void> _pay() async {
-    if (_phoneCtrl.text.trim().isEmpty) return;
-    setState(() => _loading = true);
-    final intent = await PaymentService.instance.initiate(
-      planId: widget.planId,
-      method: _method == 'mtn' ? PaymentMethod.mtnMomo : PaymentMethod.orangeMoney,
-      phoneNumber: _phoneCtrl.text.trim(),
-      yearly: false,
-    );
-    if (!mounted) return;
-    if (intent != null) {
-      setState(() { _loading = false; _done = true; });
-    } else {
-      setState(() => _loading = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Erreur lors de l\'initiation du paiement.')));
+    // Le champ n'affiche que "+237" en préfixe visuel (WinTextField ci-dessous)
+    // sans jamais l'ajouter à la valeur envoyée  sans ceci, un numéro tapé
+    // tel que suggéré par le placeholder ("6XX XXX XXX") partait sans
+    // indicatif pays vers NotchPay.
+    final digits = _phoneCtrl.text.replaceAll(RegExp(r'\D'), '');
+    if (digits.isEmpty) return;
+    final phone = digits.startsWith('237') ? digits : '237$digits';
+    setState(() { _loading = true; _error = null; });
+    try {
+      // POST /subscriptions/purchase crée l'Order ET initie le paiement en un
+      // seul appel  l'ancien code appelait PaymentService.initiate(planId:...)
+      // qui attend en réalité un OrderId déjà existant (pas un planId) et
+      // n'accepte ni méthode ni facturation dans son corps : la requête
+      // échouait systématiquement côté serveur (validation 400).
+      final paymentId = await SubscriptionService.instance.purchase(
+        planId: widget.planId,
+        phone: phone,
+      );
+      if (!mounted) return;
+      if (paymentId != null) {
+        setState(() { _loading = false; _done = true; });
+      } else {
+        setState(() => _loading = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Erreur lors de l\'initiation du paiement.')));
+      }
+    } catch (e) {
+      if (!mounted) return;
+      setState(() { _loading = false; _error = 'Impossible d\'initier le paiement. Réessayez.'; });
     }
   }
 
@@ -254,9 +291,9 @@ class _RenewalSheetState extends State<RenewalSheet> {
       padding: const EdgeInsets.fromLTRB(24, 20, 24, 40),
       child: Column(mainAxisSize: MainAxisSize.min, children: [
         Container(width: 40, height: 4, color: s.outline2, margin: const EdgeInsets.only(bottom: 20)),
-        Text('Renouveler l\'abonnement', style: WinType.headlineS(s.onStrong)),
+        Text('Renouveler ${widget.planName}', style: WinType.headlineS(s.onStrong)),
         const SizedBox(height: 4),
-        Text('2 500 XAF / mois', style: WinType.archivo(size: 28, weight: FontWeight.w700, color: s.primary)),
+        Text('${fmtXaf(widget.price.round())} XAF / mois', style: WinType.archivo(size: 28, weight: FontWeight.w700, color: s.primary)),
         const SizedBox(height: 20),
         if (_done) ...[
           const WinAlert('Paiement initié ! Confirmez le paiement sur votre téléphone.',
@@ -307,6 +344,10 @@ class _RenewalSheetState extends State<RenewalSheet> {
           WinTextField(label: 'Numéro de téléphone', hint: '+237 6XX XXX XXX',
               icon: Icons.phone_outlined, controller: _phoneCtrl,
               keyboardType: TextInputType.phone),
+          if (_error != null) ...[
+            const SizedBox(height: 8),
+            WinAlert(_error!, type: BadgeColor.error, icon: Icons.error_outline),
+          ],
           const SizedBox(height: 20),
           WinButton('Payer maintenant', block: true, loading: _loading, onTap: _pay),
           const SizedBox(height: 10),

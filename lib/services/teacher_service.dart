@@ -109,7 +109,8 @@ class TeacherService {
     int? maxStudents,
   }) async {
     try {
-      final startDate = DateTime.tryParse(date) ?? DateTime.now().add(const Duration(days: 1));
+      final startDate = DateTime.tryParse(date) ??
+          DateTime.now().add(const Duration(days: 1));
       await _api.dio.post('/sessions', data: {
         'title': title,
         'type': 'live',
@@ -159,7 +160,9 @@ class TeacherService {
   Future<List<ApiSubmission>> getSubmissions() async {
     final res = await _api.dio.get('/teacher/corrections/pending');
     final raw = res.data;
-    final list = raw is List ? raw : (raw as Map<String, dynamic>?)?['items'] as List? ?? [];
+    final list = raw is List
+        ? raw
+        : (raw as Map<String, dynamic>?)?['items'] as List? ?? [];
     return list
         .map((e) => ApiSubmission.fromJson(e as Map<String, dynamic>))
         .toList();
@@ -167,9 +170,10 @@ class TeacherService {
 
   /// Note une copie précise. Route réellement exposée par le backend :
   /// POST /api/corrections/{id} avec {note, comment, status} (contrat déjà
-  /// utilisé par CorrectionQueue.tsx côté web) — PUT /teacher/corrections/pending
+  /// utilisé par CorrectionQueue.tsx côté web)  PUT /teacher/corrections/pending
   /// n'a jamais existé côté .NET, cet appel échouait toujours en 404.
-  Future<bool> correctSubmission(int submissionId, int score, [String? feedback]) async {
+  Future<bool> correctSubmission(int submissionId, int score,
+      [String? feedback]) async {
     try {
       await _api.dio.post('/corrections/$submissionId', data: {
         'note': score,

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import '../data/mock_data.dart';
-import '../data/models.dart';
 import '../services/parent_service.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import 'album_tab.dart';
 import 'encouragement_sheet.dart';
+import 'exam_watch_mode_tab.dart';
+import 'goal_proposal_tab.dart';
+import 'portfolio_tab.dart';
 
 class ChildActivityScreen extends StatefulWidget {
   final ApiChild child;
@@ -20,12 +22,13 @@ class _ChildActivityScreenState extends State<ChildActivityScreen>
   late final TabController _tab;
   ApiChildStats? _stats;
   List<ApiChildActivity>? _activities;
-  List<ApiWinAIAlert> _childAlerts = [];
+  List<ApiPersistedAlert> _childAlerts = [];
+  ApiChildSubjectScores? _subjectScores;
 
   @override
   void initState() {
     super.initState();
-    _tab = TabController(length: 3, vsync: this);
+    _tab = TabController(length: 7, vsync: this);
     _load();
   }
 
@@ -36,25 +39,34 @@ class _ChildActivityScreenState extends State<ChildActivityScreen>
   }
 
   Future<void> _load() async {
-    final stats = await ParentService.instance.getChildStats(widget.child.id);
-    final activities =
-        await ParentService.instance.getChildActivity(widget.child.id);
-    final allAlerts = await ParentService.instance.getAlerts();
-    if (mounted)
-      setState(() {
-        _stats = stats;
-        _activities = activities;
-        _childAlerts =
-            allAlerts.where((a) => a.childId == widget.child.id).toList();
-      });
-  }
-
-  EngagementScore get _engScore {
-    final id = 'k${widget.child.id}';
-    return WinData.engagementScores.firstWhere(
-      (e) => e.childId == id,
-      orElse: () => const EngagementScore('fallback', 72, 64, 'up'),
-    );
+    // Avant : aucune gestion d'erreur ici  une exception (réseau, 500…)
+    // laissait l'écran bloqué indéfiniment sur son indicateur de chargement.
+    try {
+      final stats = await ParentService.instance.getChildStats(widget.child.id);
+      final activities = await ParentService.instance.getChildActivity(widget.child.id);
+      final alerts = await ParentService.instance.getPersistedAlerts(widget.child.id);
+      final subjectScores = await ParentService.instance.getChildSubjectScores(widget.child.id);
+      if (mounted) {
+        setState(() {
+          _stats = stats;
+          _activities = activities;
+          _childAlerts = alerts;
+          _subjectScores = subjectScores;
+        });
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(() {
+          // _stats == null est le signal de chargement du build() ci-dessous
+          // (L116)  lui donner une valeur, même vide, permet à l'écran de
+          // sortir de l'état "chargement" au lieu d'y rester bloqué.
+          _stats = const ApiChildStats();
+          _activities = _activities ?? [];
+          _childAlerts = [];
+          _subjectScores = const ApiChildSubjectScores(subjects: []);
+        });
+      }
+    }
   }
 
   @override
@@ -92,6 +104,7 @@ class _ChildActivityScreenState extends State<ChildActivityScreen>
         ],
         bottom: TabBar(
           controller: _tab,
+          isScrollable: true,
           labelColor: s.primary,
           unselectedLabelColor: s.onFaint,
           indicatorColor: s.primary,
@@ -99,6 +112,10 @@ class _ChildActivityScreenState extends State<ChildActivityScreen>
           tabs: const [
             Tab(text: 'Activité'),
             Tab(text: 'Résultats'),
+            Tab(text: 'Objectifs'),
+            Tab(text: 'Veille examen'),
+            Tab(text: 'Portrait'),
+            Tab(text: 'Album'),
             Tab(text: 'Alertes WinAI'),
           ],
         ),
@@ -111,9 +128,12 @@ class _ChildActivityScreenState extends State<ChildActivityScreen>
                 _ActivityTab(
                   stats: _stats!,
                   activities: _activities ?? [],
-                  engScore: _engScore,
                 ),
-                _ResultsTab(child: widget.child),
+                _ResultsTab(scores: _subjectScores ?? const ApiChildSubjectScores(subjects: [])),
+                GoalProposalTab(child: widget.child),
+                ExamWatchModeTab(child: widget.child),
+                PortfolioTab(child: widget.child),
+                AlbumTab(child: widget.child),
                 _AlertsTab(
                     alerts: _childAlerts, childName: widget.child.firstName),
               ],
@@ -171,30 +191,40 @@ class _ChildActivityScreenState extends State<ChildActivityScreen>
 class _ActivityTab extends StatelessWidget {
   final ApiChildStats stats;
   final List<ApiChildActivity> activities;
-  final EngagementScore engScore;
-  const _ActivityTab(
-      {required this.stats, required this.activities, required this.engScore});
+  const _ActivityTab({required this.stats, required this.activities});
 
-  // minutes×10 mock, Lun–Dim
-  static const _sessionBars = [50, 70, 40, 80, 60, 30, 0];
   static const _dayLabels = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+
+  /// Nombre d'activités (téléchargements/quiz/sessions IA) par jour de la
+  /// semaine, sur les 7 derniers jours  dérivé de la vraie activité
+  /// (ApiChildActivity.occurredAt) plutôt que d'une barre codée en dur.
+  List<int> _weekCounts() {
+    final counts = List<int>.filled(7, 0);
+    final now = DateTime.now();
+    final weekAgo = now.subtract(const Duration(days: 7));
+    for (final a in activities) {
+      if (a.occurredAt.isBefore(weekAgo)) continue;
+      counts[a.occurredAt.weekday - 1]++;
+    }
+    return counts;
+  }
 
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    final delta = engScore.score - engScore.prevScore;
-    final deltaLabel =
-        delta >= 0 ? '+$delta cette semaine' : '$delta cette semaine';
-    final scoreColor = engScore.score >= 70
+    final scoreColor = stats.averageScore >= 70
         ? WinColors.success
-        : engScore.score >= 50
+        : stats.averageScore >= 50
             ? WinColors.warn
             : WinColors.error;
+    final weekCounts = _weekCounts();
+    final maxCount = weekCounts.isEmpty ? 0 : weekCounts.reduce((a, b) => a > b ? a : b);
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
       children: [
-        // Score engagement
+        // Score moyen (30 derniers jours, QuizAttempts  donnée réelle,
+        // remplace l'ancien "score d'engagement" entièrement simulé).
         Center(
           child: Column(children: [
             Stack(alignment: Alignment.center, children: [
@@ -202,7 +232,7 @@ class _ActivityTab extends StatelessWidget {
                 width: 120,
                 height: 120,
                 child: CircularProgressIndicator(
-                  value: engScore.score / 100,
+                  value: (stats.averageScore / 100).clamp(0, 1),
                   strokeWidth: 10,
                   backgroundColor: s.outline2,
                   valueColor: AlwaysStoppedAnimation(scoreColor),
@@ -210,7 +240,7 @@ class _ActivityTab extends StatelessWidget {
               ),
               Column(mainAxisSize: MainAxisSize.min, children: [
                 Text(
-                  '${engScore.score}',
+                  '${stats.averageScore.round()}',
                   style: WinType.archivo(
                       size: 32, weight: FontWeight.w700, color: s.onStrong),
                 ),
@@ -218,22 +248,7 @@ class _ActivityTab extends StatelessWidget {
               ]),
             ]),
             const SizedBox(height: 10),
-            Row(mainAxisSize: MainAxisSize.min, children: [
-              Icon(
-                engScore.trend == 'up'
-                    ? Icons.trending_up
-                    : Icons.trending_down,
-                size: 16,
-                color: engScore.trend == 'up'
-                    ? WinColors.success
-                    : WinColors.error,
-              ),
-              const SizedBox(width: 4),
-              Text(deltaLabel,
-                  style: WinType.labelM(engScore.trend == 'up'
-                      ? WinColors.success
-                      : WinColors.error)),
-            ]),
+            Text('Score moyen sur 30 jours', style: WinType.labelM(s.onMuted)),
           ]),
         ),
         const SizedBox(height: 24),
@@ -268,15 +283,15 @@ class _ActivityTab extends StatelessWidget {
                   color: s.secondary)),
         ]),
         const SizedBox(height: 24),
-        Text('Sessions cette semaine', style: WinType.headlineS(s.onStrong)),
+        Text('Activité cette semaine', style: WinType.headlineS(s.onStrong)),
         const SizedBox(height: 12),
         WinCard(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: List.generate(7, (i) {
-              final val = _sessionBars[i];
-              final maxH = 60.0;
-              final h = val == 0 ? 4.0 : (val / 80.0) * maxH;
+              final val = weekCounts[i];
+              const maxH = 60.0;
+              final h = val == 0 || maxCount == 0 ? 4.0 : (val / maxCount) * maxH;
               return Expanded(
                 child: Column(children: [
                   Container(
@@ -369,148 +384,151 @@ class _ActivityTab extends StatelessWidget {
 // ---- Tab Résultats ----
 
 class _ResultsTab extends StatelessWidget {
-  final ApiChild child;
-  const _ResultsTab({required this.child});
+  final ApiChildSubjectScores scores;
+  const _ResultsTab({required this.scores});
 
-  // Per-child subject scores keyed by child id → subject id → score%
-  static const Map<int, Map<String, int>> _childScores = {
-    1: {'math': 82, 'pc': 74, 'chimie': 61, 'fr': 88},
-    2: {'math': 91, 'pc': 85, 'chimie': 78, 'fr': 70},
-    3: {'math': 55, 'pc': 62, 'chimie': 48, 'fr': 71},
-  };
-
-  // Per-child last quiz: title, score label, badge%
-  static const Map<int, (String, String, int)> _lastQuiz = {
-    1: ('Quiz Maths · 4/5', '80%', 80),
-    2: ('Quiz PC · 5/5', '100%', 100),
-    3: ('Quiz Chimie · 2/5', '40%', 40),
-  };
+  Color _scoreColor(double pct) => pct >= 70
+      ? WinColors.success
+      : pct >= 50
+          ? WinColors.warn
+          : WinColors.error;
 
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    final scores = _childScores[child.id] ?? _childScores[1]!;
-    final sortedEntries = scores.entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
-    final best = sortedEntries.first;
-    final worst = sortedEntries.last;
-    final quiz = _lastQuiz[child.id] ?? _lastQuiz[1]!;
-    final quizBadgeColor = quiz.$3 >= 70
+    final subjects = [...scores.subjects]..sort((a, b) => b.averageScore.compareTo(a.averageScore));
+    final quiz = scores.lastQuiz;
+
+    if (subjects.isEmpty && quiz == null) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            Icon(Icons.bar_chart_outlined, size: 48, color: s.onFaint),
+            const SizedBox(height: 12),
+            Text('Pas encore de résultats ce mois-ci.',
+                style: WinType.bodyM(s.onMuted), textAlign: TextAlign.center),
+          ]),
+        ),
+      );
+    }
+
+    final best = subjects.isNotEmpty ? subjects.first : null;
+    final worst = subjects.isNotEmpty ? subjects.last : null;
+    final quizPct = quiz?.scorePercent ?? 0;
+    final quizBadgeColor = quizPct >= 70
         ? BadgeColor.success
-        : quiz.$3 >= 50
+        : quizPct >= 50
             ? BadgeColor.warn
             : BadgeColor.error;
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
       children: [
-        Text('Score moyen par matière', style: WinType.headlineS(s.onStrong)),
-        const SizedBox(height: 16),
-        WinCard(
-          child: Column(
-            children: sortedEntries.map((entry) {
-              final subj = WinData.subjectById(entry.key);
-              final pct = entry.value;
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 14),
+        if (subjects.isNotEmpty) ...[
+          Text('Score moyen par matière (30 jours)', style: WinType.headlineS(s.onStrong)),
+          const SizedBox(height: 16),
+          WinCard(
+            child: Column(
+              children: subjects.map((entry) {
+                final color = _scoreColor(entry.averageScore);
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 14),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(children: [
+                          Icon(Icons.menu_book_outlined, size: 15, color: color),
+                          const SizedBox(width: 6),
+                          Expanded(child: Text(entry.subjectTitle, style: WinType.labelM(s.onStrong))),
+                          Text('${entry.averageScore.round()}%',
+                              style: WinType.archivo(size: 14, color: color)),
+                        ]),
+                        const SizedBox(height: 6),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(4),
+                          child: LinearProgressIndicator(
+                            value: (entry.averageScore / 100).clamp(0, 1),
+                            minHeight: 8,
+                            backgroundColor: s.outline2,
+                            valueColor: AlwaysStoppedAnimation(color),
+                          ),
+                        ),
+                      ]),
+                );
+              }).toList(),
+            ),
+          ),
+          const SizedBox(height: 16),
+        ],
+        if (best != null && worst != null && subjects.length > 1)
+          Row(children: [
+            Expanded(
+              child: WinCard(
+                padding: const EdgeInsets.all(12),
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(children: [
-                        Icon(subj.icon, size: 15, color: subj.color),
-                        const SizedBox(width: 6),
-                        Text(subj.short, style: WinType.labelM(s.onStrong)),
-                        const Spacer(),
-                        Text('$pct%',
-                            style:
-                                WinType.archivo(size: 14, color: subj.color)),
+                        const Icon(Icons.emoji_events, size: 14, color: WinColors.gold),
+                        const SizedBox(width: 4),
+                        Text('Meilleure matière', style: WinType.labelS(s.onMuted)),
                       ]),
-                      const SizedBox(height: 6),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(4),
-                        child: LinearProgressIndicator(
-                          value: pct / 100,
-                          minHeight: 8,
-                          backgroundColor: s.outline2,
-                          valueColor: AlwaysStoppedAnimation(subj.color),
-                        ),
-                      ),
+                      const SizedBox(height: 4),
+                      Text(best.subjectTitle, style: WinType.titleM(s.onStrong)),
+                      Text('${best.averageScore.round()}%',
+                          style: WinType.archivo(size: 18, color: WinColors.success)),
                     ]),
-              );
-            }).toList(),
-          ),
-        ),
-        const SizedBox(height: 16),
-        Row(children: [
-          Expanded(
-            child: WinCard(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(children: [
-                      const Icon(Icons.emoji_events, size: 14, color: WinColors.gold),
-                      const SizedBox(width: 4),
-                      Text('Meilleure matière', style: WinType.labelS(s.onMuted)),
-                    ]),
-                    const SizedBox(height: 4),
-                    Text(WinData.subjectById(best.key).short,
-                        style: WinType.titleM(s.onStrong)),
-                    Text('${best.value}%',
-                        style: WinType.archivo(
-                            size: 18, color: WinColors.success)),
-                  ]),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: WinCard(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(children: [
-                      const Icon(Icons.warning_amber_rounded, size: 14, color: WinColors.warn),
-                      const SizedBox(width: 4),
-                      Text('À travailler', style: WinType.labelS(s.onMuted)),
-                    ]),
-                    const SizedBox(height: 4),
-                    Text(WinData.subjectById(worst.key).short,
-                        style: WinType.titleM(s.onStrong)),
-                    Text('${worst.value}%',
-                        style:
-                            WinType.archivo(size: 18, color: WinColors.warn)),
-                  ]),
-            ),
-          ),
-        ]),
-        const SizedBox(height: 16),
-        WinCard(
-          child: Row(children: [
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: WinColors.successBg,
-                borderRadius: BorderRadius.circular(10),
               ),
-              child: const Icon(Icons.quiz_outlined,
-                  size: 20, color: WinColors.success),
             ),
             const SizedBox(width: 12),
             Expanded(
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Dernier quiz', style: WinType.labelM(s.onMuted)),
-                    const SizedBox(height: 2),
-                    Text('${quiz.$1}  ${quiz.$2}',
-                        style: WinType.titleM(s.onStrong)),
-                  ]),
+              child: WinCard(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(children: [
+                        const Icon(Icons.warning_amber_rounded, size: 14, color: WinColors.warn),
+                        const SizedBox(width: 4),
+                        Text('À travailler', style: WinType.labelS(s.onMuted)),
+                      ]),
+                      const SizedBox(height: 4),
+                      Text(worst.subjectTitle, style: WinType.titleM(s.onStrong)),
+                      Text('${worst.averageScore.round()}%',
+                          style: WinType.archivo(size: 18, color: WinColors.warn)),
+                    ]),
+              ),
             ),
-            WinBadge(quiz.$2, color: quizBadgeColor),
           ]),
-        ),
+        if (quiz != null) ...[
+          const SizedBox(height: 16),
+          WinCard(
+            child: Row(children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: WinColors.successBg,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Icon(Icons.quiz_outlined, size: 20, color: WinColors.success),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Dernier quiz', style: WinType.labelM(s.onMuted)),
+                      const SizedBox(height: 2),
+                      Text('${quiz.title} · ${quiz.correctAnswers}/${quiz.totalQuestions}',
+                          style: WinType.titleM(s.onStrong)),
+                    ]),
+              ),
+              WinBadge('${quiz.scorePercent.round()}%', color: quizBadgeColor),
+            ]),
+          ),
+        ],
       ],
     );
   }
@@ -519,7 +537,7 @@ class _ResultsTab extends StatelessWidget {
 // ---- Tab Alertes WinAI ----
 
 class _AlertsTab extends StatelessWidget {
-  final List<ApiWinAIAlert> alerts;
+  final List<ApiPersistedAlert> alerts;
   final String childName;
   const _AlertsTab({required this.alerts, required this.childName});
 
@@ -560,28 +578,25 @@ class _AlertsTab extends StatelessWidget {
         Text('Alertes WinAI', style: WinType.headlineS(s.onStrong)),
         const SizedBox(height: 12),
         ...alerts.map((a) {
-          final BadgeColor badgeColor = switch (a.type) {
-            'danger' => BadgeColor.error,
-            'warning' => BadgeColor.warn,
-            'tip' => BadgeColor.blue,
+          // Sévérité (Low/Medium/High), pas le type de signal, porte le niveau de gravité.
+          final BadgeColor badgeColor = switch (a.severity) {
+            'High' => BadgeColor.error,
+            'Medium' => BadgeColor.warn,
             _ => BadgeColor.blue,
           };
-          final Color iconColor = switch (a.type) {
-            'danger' => WinColors.error,
-            'warning' => WinColors.warn,
-            'tip' => WinColors.blue500,
+          final Color iconColor = switch (a.severity) {
+            'High' => WinColors.error,
+            'Medium' => WinColors.warn,
             _ => WinColors.blue500,
           };
-          final IconData icon = switch (a.type) {
-            'danger' => Icons.error_outline,
-            'warning' => Icons.warning_amber_outlined,
-            'tip' => Icons.lightbulb_outline,
+          final IconData icon = switch (a.severity) {
+            'High' => Icons.error_outline,
+            'Medium' => Icons.warning_amber_outlined,
             _ => Icons.info_outline,
           };
-          final String badgeLabel = switch (a.type) {
-            'danger' => 'Alerte',
-            'warning' => 'Attention',
-            'tip' => 'Conseil',
+          final String badgeLabel = switch (a.severity) {
+            'High' => 'Alerte',
+            'Medium' => 'Attention',
             _ => 'Info',
           };
           return Padding(
@@ -606,11 +621,11 @@ class _AlertsTab extends StatelessWidget {
                         Row(children: [
                           WinBadge(badgeLabel, color: badgeColor),
                           const Spacer(),
-                          Text(_relTime(a.createdAt),
+                          Text(_relTime(a.detectedAt),
                               style: WinType.labelS(s.onFaint)),
                         ]),
                         const SizedBox(height: 6),
-                        Text(a.message, style: WinType.bodyS(s.onMuted)),
+                        Text(a.content, style: WinType.bodyS(s.onMuted)),
                       ]),
                 ),
               ]),

@@ -1,4 +1,5 @@
 import '../services/api_client.dart';
+import 'connectivity_service.dart';
 
 class LinkingService {
   static final instance = LinkingService._();
@@ -12,19 +13,27 @@ class LinkingService {
     return resp as List;
   }
 
-  Future<void> invite(int targetUserId) =>
-      ApiClient.instance.post('/teacher-links/invite', data: {'targetUserId': targetUserId});
+  /// Demande d'accès enseignant = toujours en ligne, jamais mise en file
+  /// (requireOnline).
+  Future<void> invite(int targetUserId) {
+    requireOnline();
+    return ApiClient.instance.post('/teacher-links/invite', data: {'targetUserId': targetUserId});
+  }
 
   Future<List<dynamic>> getPendingInvitations() async {
     final resp = await ApiClient.instance.get('/teacher-links/pending');
     return resp as List;
   }
 
-  Future<void> acceptInvitation(int linkId) =>
-      ApiClient.instance.put('/teacher-links/$linkId/accept', data: {});
+  Future<void> acceptInvitation(int linkId) {
+    requireOnline();
+    return ApiClient.instance.put('/teacher-links/$linkId/accept', data: {});
+  }
 
-  Future<void> rejectInvitation(int linkId) =>
-      ApiClient.instance.put('/teacher-links/$linkId/reject', data: {});
+  Future<void> rejectInvitation(int linkId) {
+    requireOnline();
+    return ApiClient.instance.put('/teacher-links/$linkId/reject', data: {});
+  }
 
   Future<List<dynamic>> getMyLinks() async {
     final resp = await ApiClient.instance.get('/teacher-links/mine');

@@ -30,6 +30,11 @@ class Content {
   final String? aiReco, description, teacher;
   final int difficulty;
   final List<ContentReview> reviews;
+
+  /// URL du fichier réel côté serveur (Subjects.documentUrl)  absente pour
+  /// le contenu de démonstration (WinData.catalog), présente dès que le
+  /// contenu vient de l'API réelle (voir ApiSubjectToContent.toContent()).
+  final String? documentUrl;
   Content({
     required this.id,
     required this.title,
@@ -49,6 +54,7 @@ class Content {
     this.teacher,
     this.difficulty = 3,
     this.reviews = const [],
+    this.documentUrl,
   });
 
   double get rating => rating100 / 10.0;
@@ -220,8 +226,7 @@ class ActiveSubscription {
     this.aiMessagesLimit = 50,
   });
 
-  bool get isPremium =>
-      tier == PlanTier.premium || tier == PlanTier.famille;
+  bool get isPremium => tier == PlanTier.premium || tier == PlanTier.famille;
   bool get isFree => tier == PlanTier.libre;
   double get downloadRatio =>
       downloadsLimit == 0 ? 0 : downloadsUsed / downloadsLimit;
@@ -334,8 +339,8 @@ class AtRiskStudent {
   final int score, absences;
   final String risk; // 'high', 'medium'
   final String alert;
-  const AtRiskStudent(this.id, this.name, this.level, this.score,
-      this.absences, this.risk, this.alert);
+  const AtRiskStudent(this.id, this.name, this.level, this.score, this.absences,
+      this.risk, this.alert);
 }
 
 // ---- GAMIFICATION ----
@@ -346,7 +351,8 @@ class AchievementBadge {
   final Color color;
   final bool unlocked;
   final String? unlockedAt;
-  const AchievementBadge(this.id, this.name, this.description, this.icon, this.color,
+  const AchievementBadge(
+      this.id, this.name, this.description, this.icon, this.color,
       {this.unlocked = false, this.unlockedAt});
 }
 
@@ -399,7 +405,12 @@ class EngagementScore {
 // ---- 4.8 STATS ÉTUDIANT ----
 
 class StudentStats {
-  final int streakDays, avgScore, hoursThisWeek, totalBadges, totalCertificates, totalFavorites;
+  final int streakDays,
+      avgScore,
+      hoursThisWeek,
+      totalBadges,
+      totalCertificates,
+      totalFavorites;
   const StudentStats({
     required this.streakDays,
     required this.avgScore,
@@ -461,7 +472,8 @@ class ChildEngagement {
 class UpcomingEvent {
   final String type, label;
   final DateTime date;
-  const UpcomingEvent({required this.type, required this.label, required this.date});
+  const UpcomingEvent(
+      {required this.type, required this.label, required this.date});
 }
 
 // ---- 4.14 STATS PROFESSEUR ----
@@ -491,7 +503,11 @@ class TeacherInsight {
 
 class InstitutionStats {
   final String name, plan;
-  final int licensesTotal, licensesUsed, avgSuccessRate, activeStudentsToday, quizThisWeek;
+  final int licensesTotal,
+      licensesUsed,
+      avgSuccessRate,
+      activeStudentsToday,
+      quizThisWeek;
   const InstitutionStats({
     required this.name,
     required this.plan,

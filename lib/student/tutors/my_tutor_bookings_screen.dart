@@ -31,7 +31,7 @@ String _fmtDate(DateTime d) =>
 
 /// "Mes réservations" élève : historique des séances de répétition avec
 /// possibilité de laisser un avis (séances effectuées) ou de contester dans
-/// la fenêtre de 2h (Module 6 — professeur_complete.md).
+/// la fenêtre de 2h (Module 6  professeur_complete.md).
 class MyTutorBookingsScreen extends StatefulWidget {
   const MyTutorBookingsScreen({super.key});
 
@@ -67,14 +67,14 @@ class _MyTutorBookingsScreenState extends State<MyTutorBookingsScreen> {
     try {
       await TutorBookingService.instance.dispute(b.id, reason.trim());
       if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('Votre signalement a été envoyé.')));
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Votre signalement a été envoyé.')));
       }
       await _load();
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('Impossible d\'envoyer le signalement.')));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Impossible d\'envoyer le signalement.')));
       }
     }
   }
@@ -88,24 +88,34 @@ class _MyTutorBookingsScreenState extends State<MyTutorBookingsScreen> {
       builder: (ctx) {
         final s = WinTheme.of(ctx);
         return Padding(
-          padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
+          padding:
+              EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
           child: Container(
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
             decoration: BoxDecoration(
               color: s.surface,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(24)),
             ),
-            child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('Signaler un problème', style: WinType.archivo(size: 18, color: s.onStrong)),
-              const SizedBox(height: 6),
-              Text('Décrivez le problème rencontré pendant cette séance.',
-                  style: WinType.bodyS(s.onMuted)),
-              const SizedBox(height: 16),
-              WinTextField(hint: 'Ex : le tuteur ne s\'est pas présenté…', controller: ctrl),
-              const SizedBox(height: 20),
-              WinButton('Envoyer', block: true, variant: WinButtonVariant.danger,
-                  onTap: () => Navigator.pop(ctx, ctrl.text)),
-            ]),
+            child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Signaler un problème',
+                      style: WinType.archivo(size: 18, color: s.onStrong)),
+                  const SizedBox(height: 6),
+                  Text('Décrivez le problème rencontré pendant cette séance.',
+                      style: WinType.bodyS(s.onMuted)),
+                  const SizedBox(height: 16),
+                  WinTextField(
+                      hint: 'Ex : le tuteur ne s\'est pas présenté…',
+                      controller: ctrl),
+                  const SizedBox(height: 20),
+                  WinButton('Envoyer',
+                      block: true,
+                      variant: WinButtonVariant.danger,
+                      onTap: () => Navigator.pop(ctx, ctrl.text)),
+                ]),
           ),
         );
       },
@@ -127,7 +137,9 @@ class _MyTutorBookingsScreenState extends State<MyTutorBookingsScreen> {
         ),
         title: Text('Mes réservations', style: WinType.headlineS(s.onStrong)),
         actions: [
-          IconButton(icon: Icon(Icons.refresh_outlined, color: s.onMuted), onPressed: _load),
+          IconButton(
+              icon: Icon(Icons.refresh_outlined, color: s.onMuted),
+              onPressed: _load),
         ],
       ),
       body: bookings == null && !_error
@@ -137,7 +149,8 @@ class _MyTutorBookingsScreenState extends State<MyTutorBookingsScreen> {
                   child: Column(mainAxisSize: MainAxisSize.min, children: [
                   Icon(Icons.wifi_off_outlined, size: 48, color: s.onFaint),
                   const SizedBox(height: 12),
-                  Text('Impossible de charger vos réservations.', style: WinType.bodyM(s.onMuted)),
+                  Text('Impossible de charger vos réservations.',
+                      style: WinType.bodyM(s.onMuted)),
                   const SizedBox(height: 12),
                   WinButton('Réessayer', onTap: _load),
                 ]))
@@ -145,7 +158,8 @@ class _MyTutorBookingsScreenState extends State<MyTutorBookingsScreen> {
                   ? Center(
                       child: Padding(
                       padding: const EdgeInsets.all(24),
-                      child: Text('Aucune réservation pour le moment.', style: WinType.bodyM(s.onMuted)),
+                      child: Text('Aucune réservation pour le moment.',
+                          style: WinType.bodyM(s.onMuted)),
                     ))
                   : RefreshIndicator(
                       onRefresh: _load,
@@ -156,7 +170,8 @@ class _MyTutorBookingsScreenState extends State<MyTutorBookingsScreen> {
                         itemBuilder: (_, i) => _BookingCard(
                           booking: bookings[i],
                           reviewSent: _reviewed.contains(bookings[i].id),
-                          onReviewed: () => setState(() => _reviewed.add(bookings[i].id)),
+                          onReviewed: () =>
+                              setState(() => _reviewed.add(bookings[i].id)),
                           onDispute: () => _dispute(bookings[i]),
                         ),
                       ),
@@ -198,15 +213,22 @@ class _BookingCardState extends State<_BookingCard> {
       setState(() => _error = 'Choisissez une note avant d\'envoyer.');
       return;
     }
-    setState(() { _submitting = true; _error = null; });
+    setState(() {
+      _submitting = true;
+      _error = null;
+    });
     try {
       await TutorReviewService.instance.submit(widget.booking.id, _rating,
-          comment: _commentCtrl.text.trim().isEmpty ? null : _commentCtrl.text.trim());
+          comment: _commentCtrl.text.trim().isEmpty
+              ? null
+              : _commentCtrl.text.trim());
       if (!mounted) return;
       widget.onReviewed();
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Merci pour votre avis !')));
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Merci pour votre avis !')));
     } catch (e) {
-      if (mounted) setState(() => _error = e.toString().replaceFirst('Exception: ', ''));
+      if (mounted)
+        setState(() => _error = e.toString().replaceFirst('Exception: ', ''));
     } finally {
       if (mounted) setState(() => _submitting = false);
     }
@@ -223,11 +245,15 @@ class _BookingCardState extends State<_BookingCard> {
           WinAvatar(b.tutorName ?? '?', size: 40),
           const SizedBox(width: 10),
           Expanded(
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(b.tutorName ?? 'Tuteur', style: WinType.titleM(s.onStrong)),
-            Text('${_fmtDate(b.sessionDate)} · ${b.startTime} – ${b.endTime}',
-                style: WinType.labelM(s.onMuted)),
-          ])),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                Text(b.tutorName ?? 'Tuteur',
+                    style: WinType.titleM(s.onStrong)),
+                Text(
+                    '${_fmtDate(b.sessionDate)} · ${b.startTime} – ${b.endTime}',
+                    style: WinType.labelM(s.onMuted)),
+              ])),
           WinBadge(label, color: color),
         ]),
         const SizedBox(height: 10),
@@ -242,7 +268,8 @@ class _BookingCardState extends State<_BookingCard> {
         ]),
         if (b.isDisputed && (b.disputeReason ?? '').isNotEmpty) ...[
           const SizedBox(height: 10),
-          WinAlert('Signalement envoyé : ${b.disputeReason}', type: BadgeColor.error),
+          WinAlert('Signalement envoyé : ${b.disputeReason}',
+              type: BadgeColor.error),
         ],
         if (b.isCompleted && !widget.reviewSent) ...[
           const SizedBox(height: 14),
@@ -250,7 +277,8 @@ class _BookingCardState extends State<_BookingCard> {
           const SizedBox(height: 12),
           Text('Laisser un avis', style: WinType.labelM(s.onStrong)),
           const SizedBox(height: 8),
-          Row(children: List.generate(5, (i) {
+          Row(
+              children: List.generate(5, (i) {
             final filled = i < _rating;
             return GestureDetector(
               onTap: () => setState(() => _rating = i + 1),
@@ -262,26 +290,37 @@ class _BookingCardState extends State<_BookingCard> {
             );
           })),
           const SizedBox(height: 8),
-          WinTextField(hint: 'Commentaire (optionnel, 300 caractères max)', controller: _commentCtrl),
+          WinTextField(
+              hint: 'Commentaire (optionnel, 300 caractères max)',
+              controller: _commentCtrl),
           if (_error != null) ...[
             const SizedBox(height: 8),
             WinAlert(_error!, type: BadgeColor.error),
           ],
           const SizedBox(height: 10),
-          WinButton('Envoyer mon avis', block: true, small: true, loading: _submitting,
+          WinButton('Envoyer mon avis',
+              block: true,
+              small: true,
+              loading: _submitting,
               onTap: _submitting ? null : _submitReview),
           if (b.canDispute) ...[
             const SizedBox(height: 8),
-            WinButton('Signaler un problème', block: true, small: true,
-                variant: WinButtonVariant.outline, onTap: widget.onDispute),
+            WinButton('Signaler un problème',
+                block: true,
+                small: true,
+                variant: WinButtonVariant.outline,
+                onTap: widget.onDispute),
           ],
         ] else if (b.isCompleted && widget.reviewSent) ...[
           const SizedBox(height: 10),
           const WinAlert('Merci pour votre avis !', type: BadgeColor.success),
         ] else if (b.canDispute) ...[
           const SizedBox(height: 12),
-          WinButton('Signaler un problème', block: true, small: true,
-              variant: WinButtonVariant.outline, onTap: widget.onDispute),
+          WinButton('Signaler un problème',
+              block: true,
+              small: true,
+              variant: WinButtonVariant.outline,
+              onTap: widget.onDispute),
         ],
       ]),
     );

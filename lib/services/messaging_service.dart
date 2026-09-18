@@ -1,4 +1,6 @@
 import 'api_client.dart';
+import 'connectivity_service.dart';
+import 'outbox_service.dart';
 
 class ApiConversation {
   final int id;
@@ -71,6 +73,18 @@ class MessagingService {
         .toList();
   }
 
+  /// Enregistre le rejeu des messages mis en file hors ligne  à appeler une
+  /// fois au démarrage (voir main.dart).
+  static void registerOutboxHandler() {
+    OutboxService.instance.registerHandler('message_send', (payload) async {
+      await ApiClient.instance.dio.post(
+        '/messages/conversations/${payload['conversationId']}/messages',
+        data: {'content': payload['content']},
+      );
+      return true;
+    });
+  }
+
   Future<bool> sendMessage(int conversationId, String content) async {
     try {
       await _api.dio.post('/messages/conversations/$conversationId/messages', data: {
@@ -80,6 +94,21 @@ class MessagingService {
     } catch (_) {
       return false;
     }
+  }
+
+  /// Envoie immédiatement si en ligne ; sinon met le message en file
+  /// (OutboxService) pour un envoi automatique au retour du réseau, plutôt
+  /// que de perdre silencieusement le contenu saisi.
+  Future<bool> sendMessageQueueable(int conversationId, String content) async {
+    if (ConnectivityService.instance.isOnline) {
+      final ok = await sendMessage(conversationId, content);
+      if (ok) return true;
+    }
+    await OutboxService.instance.enqueue('message_send', {
+      'conversationId': conversationId,
+      'content': content,
+    });
+    return true; // mis en file avec succès  affiché comme envoyé/en attente côté UI
   }
 
   Future<int?> startConversation(int recipientId, {String firstMessage = ''}) async {

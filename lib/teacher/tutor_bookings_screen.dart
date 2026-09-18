@@ -17,7 +17,7 @@ String _fmtDate(DateTime d) =>
 
 /// Espace "Cours particuliers" du répétiteur : demandes en attente
 /// (accepter/refuser avec compte à rebours) et séances à venir/à clôturer
-/// (Module 6 — professeur_complete.md, cycle de vie des réservations).
+/// (Module 6  professeur_complete.md, cycle de vie des réservations).
 class TutorBookingsScreen extends StatefulWidget {
   const TutorBookingsScreen({super.key});
 
@@ -61,8 +61,8 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
       await _load();
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('Impossible d\'accepter cette demande.')));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Impossible d\'accepter cette demande.')));
       }
     } finally {
       if (mounted) setState(() => _busy.remove(id));
@@ -70,16 +70,18 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
   }
 
   Future<void> _decline(int id) async {
-    final reason = await _promptText(context, title: 'Refuser la demande', hint: 'Motif (optionnel)');
+    final reason = await _promptText(context,
+        title: 'Refuser la demande', hint: 'Motif (optionnel)');
     if (reason == null) return; // annulé
     setState(() => _busy.add(id));
     try {
-      await TutorBookingService.instance.decline(id, reason: reason.isEmpty ? null : reason);
+      await TutorBookingService.instance
+          .decline(id, reason: reason.isEmpty ? null : reason);
       await _load();
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('Impossible de refuser cette demande.')));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Impossible de refuser cette demande.')));
       }
     } finally {
       if (mounted) setState(() => _busy.remove(id));
@@ -93,15 +95,16 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
       await _load();
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('Impossible de clôturer cette séance.')));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Impossible de clôturer cette séance.')));
       }
     } finally {
       if (mounted) setState(() => _busy.remove(id));
     }
   }
 
-  Future<String?> _promptText(BuildContext context, {required String title, String? hint}) async {
+  Future<String?> _promptText(BuildContext context,
+      {required String title, String? hint}) async {
     final ctrl = TextEditingController();
     return showModalBottomSheet<String>(
       context: context,
@@ -110,30 +113,40 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
       builder: (ctx) {
         final s = WinTheme.of(ctx);
         return Padding(
-          padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
+          padding:
+              EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
           child: Container(
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
             decoration: BoxDecoration(
               color: s.surface,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(24)),
             ),
-            child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(title, style: WinType.archivo(size: 18, color: s.onStrong)),
-              const SizedBox(height: 16),
-              WinTextField(hint: hint, controller: ctrl),
-              const SizedBox(height: 20),
-              Row(children: [
-                Expanded(
-                  child: WinButton('Annuler', variant: WinButtonVariant.outline, block: true,
-                      onTap: () => Navigator.pop(ctx)),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: WinButton('Confirmer', variant: WinButtonVariant.danger, block: true,
-                      onTap: () => Navigator.pop(ctx, ctrl.text.trim())),
-                ),
-              ]),
-            ]),
+            child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title,
+                      style: WinType.archivo(size: 18, color: s.onStrong)),
+                  const SizedBox(height: 16),
+                  WinTextField(hint: hint, controller: ctrl),
+                  const SizedBox(height: 20),
+                  Row(children: [
+                    Expanded(
+                      child: WinButton('Annuler',
+                          variant: WinButtonVariant.outline,
+                          block: true,
+                          onTap: () => Navigator.pop(ctx)),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: WinButton('Confirmer',
+                          variant: WinButtonVariant.danger,
+                          block: true,
+                          onTap: () => Navigator.pop(ctx, ctrl.text.trim())),
+                    ),
+                  ]),
+                ]),
           ),
         );
       },
@@ -161,7 +174,9 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
         ),
         title: Text('Cours particuliers', style: WinType.headlineS(s.onStrong)),
         actions: [
-          IconButton(icon: Icon(Icons.refresh_outlined, color: s.onMuted), onPressed: _load),
+          IconButton(
+              icon: Icon(Icons.refresh_outlined, color: s.onMuted),
+              onPressed: _load),
         ],
       ),
       body: pending == null && !_error
@@ -171,7 +186,8 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
                   child: Column(mainAxisSize: MainAxisSize.min, children: [
                   Icon(Icons.wifi_off_outlined, size: 48, color: s.onFaint),
                   const SizedBox(height: 12),
-                  Text('Impossible de charger vos réservations.', style: WinType.bodyM(s.onMuted)),
+                  Text('Impossible de charger vos réservations.',
+                      style: WinType.bodyM(s.onMuted)),
                   const SizedBox(height: 12),
                   WinButton('Réessayer', onTap: _load),
                 ]))
@@ -180,11 +196,13 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
                   child: ListView(
                     padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                     children: [
-                      Text('Demandes en attente', style: WinType.archivo(size: 18, color: s.onStrong)),
+                      Text('Demandes en attente',
+                          style: WinType.archivo(size: 18, color: s.onStrong)),
                       const SizedBox(height: 10),
                       if ((pending ?? []).isEmpty)
                         WinCard(
-                          child: Text('Aucune demande en attente pour le moment.',
+                          child: Text(
+                              'Aucune demande en attente pour le moment.',
                               style: WinType.bodyS(s.onMuted)),
                         )
                       else
@@ -198,7 +216,8 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
                               ),
                             )),
                       const SizedBox(height: 24),
-                      Text('Séances à venir / à clôturer', style: WinType.archivo(size: 18, color: s.onStrong)),
+                      Text('Séances à venir / à clôturer',
+                          style: WinType.archivo(size: 18, color: s.onStrong)),
                       const SizedBox(height: 10),
                       if (upcoming.isEmpty)
                         WinCard(
@@ -226,7 +245,11 @@ class _PendingCard extends StatelessWidget {
   final bool busy;
   final VoidCallback onAccept;
   final VoidCallback onDecline;
-  const _PendingCard({required this.pending, required this.busy, required this.onAccept, required this.onDecline});
+  const _PendingCard(
+      {required this.pending,
+      required this.busy,
+      required this.onAccept,
+      required this.onDecline});
 
   @override
   Widget build(BuildContext context) {
@@ -239,11 +262,15 @@ class _PendingCard extends StatelessWidget {
           WinAvatar(b.studentName ?? '?', size: 40),
           const SizedBox(width: 10),
           Expanded(
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(b.studentName ?? 'Élève', style: WinType.titleM(s.onStrong)),
-            Text('${_fmtDate(b.sessionDate)} · ${b.startTime} – ${b.endTime}',
-                style: WinType.labelM(s.onMuted)),
-          ])),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                Text(b.studentName ?? 'Élève',
+                    style: WinType.titleM(s.onStrong)),
+                Text(
+                    '${_fmtDate(b.sessionDate)} · ${b.startTime} – ${b.endTime}',
+                    style: WinType.labelM(s.onMuted)),
+              ])),
           WinBadge('${pending.minutesRemaining} min',
               color: urgent ? BadgeColor.error : BadgeColor.warn),
         ]),
@@ -260,13 +287,16 @@ class _PendingCard extends StatelessWidget {
         const SizedBox(height: 14),
         Row(children: [
           Expanded(
-            child: WinButton('Refuser', variant: WinButtonVariant.outline, small: true,
-                loading: busy, onTap: busy ? null : onDecline),
+            child: WinButton('Refuser',
+                variant: WinButtonVariant.outline,
+                small: true,
+                loading: busy,
+                onTap: busy ? null : onDecline),
           ),
           const SizedBox(width: 10),
           Expanded(
-            child: WinButton('Accepter', small: true, loading: busy,
-                onTap: busy ? null : onAccept),
+            child: WinButton('Accepter',
+                small: true, loading: busy, onTap: busy ? null : onAccept),
           ),
         ]),
       ]),
@@ -278,7 +308,8 @@ class _UpcomingCard extends StatelessWidget {
   final TutorBookingRecord booking;
   final bool busy;
   final VoidCallback onComplete;
-  const _UpcomingCard({required this.booking, required this.busy, required this.onComplete});
+  const _UpcomingCard(
+      {required this.booking, required this.busy, required this.onComplete});
 
   BadgeColor get _statusColor => switch (booking.status) {
         'confirmed' => BadgeColor.success,
@@ -304,21 +335,30 @@ class _UpcomingCard extends StatelessWidget {
           WinAvatar(b.studentName ?? '?', size: 40),
           const SizedBox(width: 10),
           Expanded(
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(b.studentName ?? 'Élève', style: WinType.titleM(s.onStrong)),
-            Text('${_fmtDate(b.sessionDate)} · ${b.startTime} – ${b.endTime}',
-                style: WinType.labelM(s.onMuted)),
-          ])),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                Text(b.studentName ?? 'Élève',
+                    style: WinType.titleM(s.onStrong)),
+                Text(
+                    '${_fmtDate(b.sessionDate)} · ${b.startTime} – ${b.endTime}',
+                    style: WinType.labelM(s.onMuted)),
+              ])),
           WinBadge(_statusLabel, color: _statusColor),
         ]),
         if (b.isDisputed && (b.disputeReason ?? '').isNotEmpty) ...[
           const SizedBox(height: 8),
-          WinAlert('Motif de contestation : ${b.disputeReason}', type: BadgeColor.error),
+          WinAlert('Motif de contestation : ${b.disputeReason}',
+              type: BadgeColor.error),
         ],
         if (b.canMarkCompleted) ...[
           const SizedBox(height: 14),
-          WinButton('Marquer effectuée', block: true, small: true, loading: busy,
-              icon: Icons.check_circle_outline, onTap: busy ? null : onComplete),
+          WinButton('Marquer effectuée',
+              block: true,
+              small: true,
+              loading: busy,
+              icon: Icons.check_circle_outline,
+              onTap: busy ? null : onComplete),
         ],
       ]),
     );

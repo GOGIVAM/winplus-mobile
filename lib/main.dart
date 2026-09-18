@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'app_state.dart';
@@ -5,8 +6,28 @@ import 'l10n/gen/app_localizations.dart';
 import 'theme/win_theme.dart';
 import 'auth/splash_screen.dart';
 import 'shared/subscription/subscription_notifier.dart';
+import 'services/connectivity_service.dart';
+import 'services/local_cache_service.dart';
+import 'services/messaging_service.dart';
+import 'services/outbox_service.dart';
+import 'services/quiz_service.dart';
 
-void main() => runApp(const WinPlusApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Fondation hors ligne (brique 1/2/3) : stockage structuré, détection
+  // réseau, file d'attente  dans cet ordre, chacun dépendant du précédent.
+  await LocalCacheService.init();
+  await ConnectivityService.instance.start();
+  await OutboxService.instance.init();
+  QuizService.registerOutboxHandler();
+  MessagingService.registerOutboxHandler();
+  // Au cas où l'app démarre déjà en ligne avec des actions en attente d'un
+  // précédent passage hors ligne.
+  unawaited(OutboxService.instance.flush());
+
+  runApp(const WinPlusApp());
+}
 
 class WinPlusApp extends StatefulWidget {
   const WinPlusApp({super.key});

@@ -1,4 +1,5 @@
 import 'api_client.dart';
+import 'local_downloads_service.dart';
 import '../data/models.dart';
 
 class SubjectPage {
@@ -77,6 +78,7 @@ extension ApiSubjectToContent on ApiSubject {
         downloads: downloadCount,
         free: isFree,
         description: description,
+        documentUrl: documentUrl,
       );
 }
 
@@ -141,12 +143,39 @@ class SubjectService {
     return ApiSubject.fromJson(res.data as Map<String, dynamic>);
   }
 
+  /// Incrémente le compteur de téléchargement côté serveur ET télécharge
+  /// réellement le fichier (documentUrl) vers le stockage privé de l'app.
+  /// L'ancienne version n'appelait que le compteur  "un abus de langage" :
+  /// le fichier restait distant, seule une ligne de log était écrite.
+  /// Un échec de l'un n'annule pas l'autre : le compteur est une métrique
+  /// serveur indépendante de la réussite du téléchargement local.
   Future<bool> download(int subjectId) async {
+    bool counterOk = false;
     try {
       await _api.dio.post('/subjects/$subjectId/download');
-      return true;
+      counterOk = true;
     } catch (_) {
-      return false;
+      counterOk = false;
     }
+
+    try {
+      final subject = await getById(subjectId);
+      final url = subject.documentUrl;
+      if (url != null && url.isNotEmpty) {
+        await LocalDownloadsService.instance.download(
+          contentId: '$subjectId',
+          url: url,
+          suggestedFileName: subject.title,
+        );
+        return true;
+      }
+    } catch (_) {
+      // Le fichier n'a pas pu être récupéré (réseau, URL absente…) : le
+      // contenu reste consultable à distance comme avant, juste pas hors
+      // ligne. On ne fait pas échouer toute l'action pour autant si au
+      // moins le compteur est passé.
+    }
+
+    return counterOk;
   }
 }

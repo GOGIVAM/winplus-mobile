@@ -1,19 +1,19 @@
-🔍  MAÎTRE — À envoyer en premier à Claude Code
+🔍  MAÎTRE  À envoyer en premier à Claude Code
 Tu travailles sur WinPlus/Réussir, une plateforme éducative camerounaise.
 Stack technique :
-- Backend 1 : ASP.NET Core 8 (C#) — API principale, gestion des utilisateurs, paiements NotchPay (MTN/Orange MoMo), sessions, cours particuliers
-- Backend 2 : FastAPI (Python) — IA/ML, WinAI, analyses, génération de contenu
-- Frontend : React 18 — interface web professeur et élève
+- Backend 1 : ASP.NET Core 8 (C#)  API principale, gestion des utilisateurs, paiements NotchPay (MTN/Orange MoMo), sessions, cours particuliers
+- Backend 2 : FastAPI (Python)  IA/ML, WinAI, analyses, génération de contenu
+- Frontend : React 18  interface web professeur et élève
 - DB : PostgreSQL
 - Storage : AWS S3
 
 Règles absolues pour toutes tes interventions :
 1. Avant toute implémentation, explore le code existant (dotnet, Python, React) et dis-moi ce qui est déjà en place, partiellement implémenté, ou absent.
-2. Pour les modifications frontend, charge et respecte impérativement le skill UI/UX situé à : C:\Users\Miguel\.claude\skills\ui-ux-pro-max — il définit les composants, tokens de design, patterns UX et conventions de nommage du projet.
+2. Pour les modifications frontend, charge et respecte impérativement le skill UI/UX situé à : C:\Users\Miguel\.claude\skills\ui-ux-pro-max  il définit les composants, tokens de design, patterns UX et conventions de nommage du projet.
 3. Ne jamais casser une feature existante. Toujours vérifier les dépendances avant de modifier un fichier.
 4. Lister les fichiers modifiés à la fin de chaque intervention.
-MODULE 1 — PROFIL RÉPÉTITEUR
- 1A — Audit profil répétiteur
+MODULE 1  PROFIL RÉPÉTITEUR
+ 1A  Audit profil répétiteur
 Audit complet du mode Répétiteur sur WinPlus.
 
 Explore le code C# (ASP.NET Core) et React pour répondre à ces questions :
@@ -24,7 +24,7 @@ Explore le code C# (ASP.NET Core) et React pour répondre à ces questions :
 
 Dresse un tableau de l'existant : Fonctionnalité | Statut (Implémenté / Partiel / Absent) | Fichiers concernés.
 Ne modifie rien pour l'instant.
- 1B — Onboarding répétiteur en 5 étapes
+ 1B  Onboarding répétiteur en 5 étapes
 Sur la base de l'audit précédent, implémente l'onboarding répétiteur en 5 étapes.
 
 Backend C# :
@@ -39,7 +39,7 @@ Frontend React :
 - Afficher le score de complétude 0-100 à la fin avec items manquants cliquables
 
 Respecte l'UI/UX existant. Liste les fichiers créés/modifiés.
- 1C — Grille de disponibilités
+ 1C  Grille de disponibilités
 Implémente la gestion des disponibilités hebdomadaires du répétiteur.
 
 Audit d'abord :
@@ -57,11 +57,11 @@ Frontend React :
 - Composant WeeklyAvailabilityGrid : 7 colonnes × plages horaires (matin/AM/soir)
 - Tap/click sur une case = toggle immédiat avec appel PATCH optimiste
 - Bouton "Reproduire cette semaine" qui propage la grille indéfiniment
-- Aucun bouton "Enregistrer" séparé — sauvegarde instantanée visible
+- Aucun bouton "Enregistrer" séparé  sauvegarde instantanée visible
 
 Ne touche pas aux composants de session/calendrier existants sans vérifier les dépendances.
-MODULE 2 — RECHERCHE ET RÉSERVATION
- 2A — Audit moteur de recherche répétiteur
+MODULE 2  RECHERCHE ET RÉSERVATION
+ 2A  Audit moteur de recherche répétiteur
 Audit du moteur de recherche côté élève pour trouver un répétiteur.
 
 Explore C# et React :
@@ -72,7 +72,7 @@ Explore C# et React :
 
 Résultat attendu : tableau Filtre | Implémenté | Endpoint/Composant.
 Ne modifie rien.
- 2B — Flow de réservation 3 écrans
+ 2B  Flow de réservation 3 écrans
 Implémente le flow de réservation d'une séance de cours particulier.
 
 Audit préalable :
@@ -95,7 +95,7 @@ Frontend React (3 écrans max) :
 - Bouton "Réserver" sticky en bas de la fiche répétiteur
 
 Liste tous les fichiers modifiés.
- 2C — Gestion des demandes côté répétiteur
+ 2C  Gestion des demandes côté répétiteur
 Implémente la gestion des demandes de réservation côté répétiteur.
 
 Audit préalable :
@@ -116,8 +116,8 @@ Frontend React :
 - Badge rouge "N demandes en attente" sur le titre de l'onglet
 
 Ne modifie pas la structure de l'onglet Sessions existant sans audit préalable de ses composants.
-MODULE 3 — MESSAGERIE
- 3A — Audit système de messagerie
+MODULE 3  MESSAGERIE
+ 3A  Audit système de messagerie
 Audit complet du système de messagerie WinPlus.
 
 Explore C#, Python et React :
@@ -128,7 +128,7 @@ Explore C#, Python et React :
 5. Le réseau de contacts (qui peut écrire à qui) est-il modélisé ?
 
 Résultat : inventaire complet avec statut et fichiers.
- 3B — Messagerie directe 1-to-1
+ 3B  Messagerie directe 1-to-1
 Sur la base de l'audit messagerie, implémente la messagerie directe 1-to-1.
 
 Backend C# :
@@ -144,7 +144,7 @@ Frontend React :
 - Écran conversation : bulles, statut "Lu", boutons d'attachement (PDF, image, note vocale)
 - Tap long → menu : Répondre (avec citation), Réagir (👍❤️😄), Copier, Supprimer
 - Panneau latéral rétractable sur web (accessible depuis toutes les vues sans quitter la page)
- 3C — Canal de formation + Q&A WinAI
+ 3C  Canal de formation + Q&A WinAI
 Implémente le canal de messagerie par formation avec Q&A automatique WinAI.
 
 Audit préalable :
@@ -163,11 +163,11 @@ Backend Python (FastAPI) :
 
 Frontend React :
 - Charge C:\Users\Miguel\.claude\skills\ui-ux-pro-max
-- Canal de formation : fil de discussion, messages IA avec badge "Réponse WinAI — à vérifier"
+- Canal de formation : fil de discussion, messages IA avec badge "Réponse WinAI  à vérifier"
 - Journal des interactions IA visible uniquement par le professeur avec bouton "Corriger cette réponse"
 - Toggle d'activation du Q&A dans les paramètres de la formation
-MODULE 4 — CATALOGUE ET BIBLIOTHÈQUE
- 4A — Audit catalogue côté professeur-acheteur
+MODULE 4  CATALOGUE ET BIBLIOTHÈQUE
+ 4A  Audit catalogue côté professeur-acheteur
 Audit du catalogue WinPlus du point de vue du professeur en tant qu'acheteur.
 
 Explore C# et React :
@@ -178,7 +178,7 @@ Explore C# et React :
 5. Le solde WinPlus peut-il être utilisé comme moyen de paiement dans le catalogue ?
 
 Résultat : tableau fonctionnalité/statut/fichiers. Ne modifie rien.
- 4B — Bibliothèque personnelle + assignation classe
+ 4B  Bibliothèque personnelle + assignation classe
 Implémente la bibliothèque personnelle du professeur et l'assignation de contenu à une classe.
 
 Backend C# :
@@ -195,8 +195,8 @@ Frontend React :
 - Champ notes privées (max 300 chars) par contenu, visible uniquement par le professeur
 - Bouton "Ajouter à une formation" et "Assigner à une classe" sur chaque item
 - Depuis la fiche catalogue : bouton "Acheter pour ajouter à une formation" si pas encore acheté
-MODULE 5 — FORMATIONS ENRICHIES
- 5A — Audit formations (drip content, gamification, certificats)
+MODULE 5  FORMATIONS ENRICHIES
+ 5A  Audit formations (drip content, gamification, certificats)
 Audit des fonctionnalités avancées de formation WinPlus.
 
 Explore C#, Python et React :
@@ -207,7 +207,7 @@ Explore C#, Python et React :
 5. Les checkpoints vidéo (quiz à un timestamp) existent-ils dans l'éditeur ou dans le player ?
 
 Résultat attendu : fonctionnalité / statut / fichiers.
- 5B — Drip content et checkpoints vidéo
+ 5B  Drip content et checkpoints vidéo
 Implémente le drip content (déblocage progressif) et les checkpoints vidéo.
 
 Audit préalable obligatoire : lis les modèles Section et Leçon dans le code C# avant de toucher au schéma.
@@ -224,13 +224,13 @@ Frontend React :
 - Dans l'éditeur de leçon vidéo : bouton "Ajouter un checkpoint" → panneau latéral avec saisie timestamp (mm:ss) + question QCM
 - Dans le player vidéo : détection des timestamps, pause auto, affichage question, reprise après réponse
 - Côté élève : sections verrouillées avec cadenas + texte de la condition ("Disponible dans X jours" ou "Complète le quiz précédent avec ≥ 60%")
- 5C — Gamification et certificats
+ 5C  Gamification et certificats
 Implémente la gamification et les certificats vérifiables pour les formations.
 
 Backend C# :
 - Entités : FormationGamification (formationId, pointsParLeçon, pointsParQuiz, pointsBonusParfait, classementVisible), ElèveBadge (elèveId, formationId, badgeType, dateObtention), CertificatCompletion (elèveId, formationId, codeVerification uuid, dateEmission, noteObtenue)
 - Logique attribution points : à chaque complétion de leçon et quiz réussi → incrémenter ElèveProgression.points
-- Logique badges : "Premier quiz validé", "Formation 50%", "Score parfait", "Formation complétée" — déclenchés par événements
+- Logique badges : "Premier quiz validé", "Formation 50%", "Score parfait", "Formation complétée"  déclenchés par événements
 - Génération certificat : automatique quand l'élève atteint 100% → générer PDF avec QRCode pointant vers la page de vérification
 - Endpoint public GET /api/certificats/{code} (sans authentification) pour vérification
 
@@ -240,8 +240,8 @@ Frontend React :
 - Widget de progression gamifiée dans l'espace élève : points, badges débloqués, rang dans le classement
 - Page publique de vérification de certificat : saisie du code → résultat avec nom, cours, note, date, badge d'authenticité
 - Téléchargement du certificat en PDF par l'élève
-MODULE 6 — WINAI
- 6A — Audit WinAI existant
+MODULE 6  WINAI
+ 6A  Audit WinAI existant
 Audit complet de WinAI dans le codebase WinPlus.
 
 Explore FastAPI (Python) et C# :
@@ -253,7 +253,7 @@ Explore FastAPI (Python) et C# :
 
 Résultat : inventaire de toutes les capacités IA existantes avec endpoint + fichier Python/C#.
 Ne modifie rien.
- 6B — Compte-rendu de séance + fiche de révision
+ 6B  Compte-rendu de séance + fiche de révision
 Implémente la génération de compte-rendu de séance et de fiche de révision personnalisée.
 
 Audit préalable : lis les endpoints FastAPI existants pour ne pas dupliquer la logique LLM déjà en place.
@@ -272,7 +272,7 @@ Frontend React :
 - Charge C:\Users\Miguel\.claude\skills\ui-ux-pro-max
 - Post-séance : modal "Compte-rendu disponible" avec champ d'édition + bouton "Envoyer à l'élève" (déclenche l'envoi dans la conversation messagerie)
 - Depuis la fiche élève (mode répétiteur) : bouton "Générer fiche de révision" → résultat éditable + bouton "Partager dans la conversation"
- 6C — Mémoire conversationnelle WinAI
+ 6C  Mémoire conversationnelle WinAI
 Implémente la mémoire conversationnelle persistante pour le chatbot WinAI.
 
 Backend Python (FastAPI) :
@@ -281,7 +281,7 @@ Backend Python (FastAPI) :
 - Endpoint GET /winai/memoire : retourne les éléments mémorisés pour l'utilisateur connecté
 - Endpoint DELETE /winai/memoire/{cle} : supprime un élément de mémoire
 - Au démarrage d'une session chatbot : injecter la mémoire pertinente dans le  système
-- Si une conversation non finalisée existe : première suggestion "On avait commencé [X] — tu veux continuer ?"
+- Si une conversation non finalisée existe : première suggestion "On avait commencé [X]  tu veux continuer ?"
 
 Backend C# :
 - Proxy endpoint GET /api/winai/memoire → FastAPI (pour ne pas exposer FastAPI directement au front)
@@ -291,8 +291,8 @@ Frontend React :
 - Dans le chatbot WinAI (bouton flottant existant) : section "Mémoire WinAI" accessible en bas du panneau
 - Liste des éléments mémorisés avec bouton de suppression individuelle
 - La suggestion de continuation s'affiche comme premier message de la session si applicable
-MODULE 7 — REVENUS ET PAIEMENTS
- 7A — Audit tableau de bord revenus
+MODULE 7  REVENUS ET PAIEMENTS
+ 7A  Audit tableau de bord revenus
 Audit du tableau de bord revenus WinPlus.
 
 Explore C# et React :
@@ -303,7 +303,7 @@ Explore C# et React :
 5. L'historique des achats (professeur-acheteur) est-il séparé de l'historique des ventes ?
 
 Résultat : inventaire avec statut et fichiers.
- 7B — Revenus agrégés multi-sources
+ 7B  Revenus agrégés multi-sources
 Étends le tableau de bord revenus pour afficher les cours particuliers comme source distincte.
 
 Audit préalable : lis les composants React du tableau de bord revenus existant avant toute modification.
@@ -318,9 +318,9 @@ Frontend React :
 - Modifie le composant de graphique existant pour ajouter une 2ème série "Cours particuliers" (sans casser la série existante)
 - Tableau de détail avec colonne "Source" filtrable (Catalogue / Cours particuliers / Achats)
 - Pour les cours particuliers : afficher nom élève, matière, durée, montant brut, commission %, montant net
-- Ne pas refaire le composant de retrait Mobile Money s'il existe déjà — l'étendre si besoin
-MODULE 8 — ANALYTICS ET DÉTECTION DE DÉCROCHAGE
- 8A — Détection de décrochage + alertes
+- Ne pas refaire le composant de retrait Mobile Money s'il existe déjà  l'étendre si besoin
+MODULE 8  ANALYTICS ET DÉTECTION DE DÉCROCHAGE
+ 8A  Détection de décrochage + alertes
 Implémente la détection de décrochage sur les formations avec alertes WinAI.
 
 Audit préalable :
@@ -341,10 +341,10 @@ Frontend React :
 - Dans les analytics de formation : widget "Élèves à risque" avec liste et signaux
 - Bouton "Relancer ces élèves" → confirmation → envoi groupé du message WinAI
 - Taux de réactivation affiché dans les analytics (% d'élèves relancés qui sont revenus dans les 7 jours)
- TRANSVERSAL — Tests et non-régression
+ TRANSVERSAL  Tests et non-régression
 Avant de merger les modifications apportées dans cette session, effectue une vérification de non-régression.
 
-1. Liste tous les fichiers C# modifiés et vérifie que les migrations EF Core ne cassent pas les données existantes (utilise des migrations additive uniquement — pas de suppression de colonne sans vérification préalable)
+1. Liste tous les fichiers C# modifiés et vérifie que les migrations EF Core ne cassent pas les données existantes (utilise des migrations additive uniquement  pas de suppression de colonne sans vérification préalable)
 2. Liste tous les fichiers Python modifiés et vérifie que les endpoints existants répondent toujours correctement (teste manuellement ou avec les tests pytest existants s'ils existent)
 3. Liste tous les fichiers React modifiés et vérifie que les routes existantes s'affichent toujours (pas de 404 introduit)
 4. Vérifie que le skill UI/UX C:\Users\Miguel\.claude\skills\ui-ux-pro-max a bien été respecté pour toutes les modifications frontend (tokens, composants, conventions)

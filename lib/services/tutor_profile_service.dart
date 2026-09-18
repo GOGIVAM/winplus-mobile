@@ -1,6 +1,6 @@
 import 'api_client.dart';
 
-/// Profil "Mode Répétiteur" (Module 1 — professeur_complete.md).
+/// Profil "Mode Répétiteur" (Module 1  professeur_complete.md).
 class TutorZone {
   final int? id;
   final String city;
@@ -60,7 +60,8 @@ class TutorAvailabilitySlot {
     this.isActive = true,
   });
 
-  factory TutorAvailabilitySlot.fromJson(Map<String, dynamic> j) => TutorAvailabilitySlot(
+  factory TutorAvailabilitySlot.fromJson(Map<String, dynamic> j) =>
+      TutorAvailabilitySlot(
         id: j['id'] as int?,
         dayOfWeek: j['dayOfWeek'] as int? ?? 0,
         startTime: j['startTime'] as String? ?? '08:00',
@@ -88,7 +89,8 @@ class TutorVerificationDocument {
     this.rejectionReason,
   });
 
-  factory TutorVerificationDocument.fromJson(Map<String, dynamic> j) => TutorVerificationDocument(
+  factory TutorVerificationDocument.fromJson(Map<String, dynamic> j) =>
+      TutorVerificationDocument(
         id: j['id'] as int? ?? 0,
         documentUrl: j['documentUrl'] as String? ?? '',
         status: j['status'] as String? ?? 'pending',
@@ -190,9 +192,11 @@ class TutorProfile {
         isActive: j['isActive'] as bool? ?? false,
         onboardingStep: j['onboardingStep'] as int? ?? 0,
         completionScore: j['completionScore'] as int? ?? 0,
-        subjects: (j['subjects'] as List? ?? []).map((e) => e as String).toList(),
+        subjects:
+            (j['subjects'] as List? ?? []).map((e) => e as String).toList(),
         levels: (j['levels'] as List? ?? []).map((e) => e as String).toList(),
-        specialties: (j['specialties'] as List? ?? []).map((e) => e as String).toList(),
+        specialties:
+            (j['specialties'] as List? ?? []).map((e) => e as String).toList(),
         interventionZones: (j['interventionZones'] as List? ?? [])
             .map((e) => TutorZone.fromJson(e as Map<String, dynamic>))
             .toList(),
@@ -200,10 +204,12 @@ class TutorProfile {
             .map((e) => TutorPackage.fromJson(e as Map<String, dynamic>))
             .toList(),
         availabilitySlots: (j['availabilitySlots'] as List? ?? [])
-            .map((e) => TutorAvailabilitySlot.fromJson(e as Map<String, dynamic>))
+            .map((e) =>
+                TutorAvailabilitySlot.fromJson(e as Map<String, dynamic>))
             .toList(),
         pendingOrLatestDocument: j['pendingOrLatestDocument'] != null
-            ? TutorVerificationDocument.fromJson(j['pendingOrLatestDocument'] as Map<String, dynamic>)
+            ? TutorVerificationDocument.fromJson(
+                j['pendingOrLatestDocument'] as Map<String, dynamic>)
             : null,
         averageRating: (j['averageRating'] as num?)?.toDouble(),
         reviewCount: j['reviewCount'] as int? ?? 0,
@@ -215,9 +221,11 @@ class TutorProfile {
 class TutorProfileCompletion {
   final int score;
   final List<Map<String, String>> missingItems;
-  const TutorProfileCompletion({required this.score, this.missingItems = const []});
+  const TutorProfileCompletion(
+      {required this.score, this.missingItems = const []});
 
-  factory TutorProfileCompletion.fromJson(Map<String, dynamic> j) => TutorProfileCompletion(
+  factory TutorProfileCompletion.fromJson(Map<String, dynamic> j) =>
+      TutorProfileCompletion(
         score: j['score'] as int? ?? 0,
         missingItems: (j['missingItems'] as List? ?? [])
             .map((e) => Map<String, String>.from(e as Map))
@@ -239,7 +247,8 @@ class TutorRateSuggestion {
     required this.explanation,
   });
 
-  factory TutorRateSuggestion.fromJson(Map<String, dynamic> j) => TutorRateSuggestion(
+  factory TutorRateSuggestion.fromJson(Map<String, dynamic> j) =>
+      TutorRateSuggestion(
         suggestedRateXaf: j['suggested_rate_xaf'] as int? ?? 0,
         rangeLowXaf: j['range_low_xaf'] as int? ?? 0,
         rangeHighXaf: j['range_high_xaf'] as int? ?? 0,
@@ -274,17 +283,22 @@ class TutorProfileService {
   }
 
   Future<TutorProfile> setVacation(bool isOnVacation) async {
-    final res = await _api.dio.post('/tutor-profile/me/vacation', data: isOnVacation);
+    final res =
+        await _api.dio.post('/tutor-profile/me/vacation', data: isOnVacation);
     return TutorProfile.fromJson(res.data as Map<String, dynamic>);
   }
 
-  Future<TutorVerificationDocument> submitVerificationDocument(String documentUrl) async {
-    final res = await _api.dio.post('/tutor-profile/me/verification-document', data: {'documentUrl': documentUrl});
+  Future<TutorVerificationDocument> submitVerificationDocument(
+      String documentUrl) async {
+    final res = await _api.dio.post('/tutor-profile/me/verification-document',
+        data: {'documentUrl': documentUrl});
     return TutorVerificationDocument.fromJson(res.data as Map<String, dynamic>);
   }
 
-  Future<TutorRateSuggestion> suggestRate(String subject, {String? level}) async {
-    final res = await _api.dio.post('/tutor-profile/me/suggest-rate', data: {'subject': subject, 'level': level});
+  Future<TutorRateSuggestion> suggestRate(String subject,
+      {String? level}) async {
+    final res = await _api.dio.post('/tutor-profile/me/suggest-rate',
+        data: {'subject': subject, 'level': level});
     return TutorRateSuggestion.fromJson(res.data as Map<String, dynamic>);
   }
 
@@ -294,6 +308,7 @@ class TutorProfileService {
     String? level,
     num? maxHourlyRateXaf,
     bool? verifiedOnly,
+
     /// online | student_home | tutor_home | neutral_place
     String? mode,
     String? city,
@@ -313,7 +328,9 @@ class TutorProfileService {
       'pageSize': pageSize,
     });
     final list = res.data as List? ?? [];
-    return list.map((e) => TutorSearchResult.fromJson(e as Map<String, dynamic>)).toList();
+    return list
+        .map((e) => TutorSearchResult.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
   /// Fiche publique d'un répétiteur (404 si non actif).
@@ -323,7 +340,7 @@ class TutorProfileService {
   }
 }
 
-/// Résultat de recherche répétiteur (US-STU — professeur_complete.md).
+/// Résultat de recherche répétiteur (US-STU  professeur_complete.md).
 class TutorSearchResult {
   final int userId;
   final String fullName;
@@ -349,7 +366,8 @@ class TutorSearchResult {
     this.levels = const [],
   });
 
-  factory TutorSearchResult.fromJson(Map<String, dynamic> j) => TutorSearchResult(
+  factory TutorSearchResult.fromJson(Map<String, dynamic> j) =>
+      TutorSearchResult(
         userId: j['userId'] as int? ?? 0,
         fullName: j['fullName'] as String? ?? '',
         avatarUrl: j['avatarUrl'] as String?,
@@ -358,7 +376,8 @@ class TutorSearchResult {
         isDiplomaVerified: j['isDiplomaVerified'] as bool? ?? false,
         averageRating: (j['averageRating'] as num?)?.toDouble(),
         reviewCount: j['reviewCount'] as int? ?? 0,
-        subjects: (j['subjects'] as List? ?? []).map((e) => e as String).toList(),
+        subjects:
+            (j['subjects'] as List? ?? []).map((e) => e as String).toList(),
         levels: (j['levels'] as List? ?? []).map((e) => e as String).toList(),
       );
 }

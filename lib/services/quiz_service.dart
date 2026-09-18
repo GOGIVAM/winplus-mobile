@@ -1,4 +1,7 @@
 import 'api_client.dart';
+import 'connectivity_service.dart';
+import 'local_cache_service.dart';
+import 'outbox_service.dart';
 import '../data/models.dart';
 
 class ApiQuizQuestion {
@@ -94,13 +97,32 @@ class QuizService {
 
   final _api = ApiClient.instance;
 
+  /// Enregistre le rejeu des soumissions de quiz mises en file hors ligne
+  /// à appeler une fois au démarrage (voir main.dart).
+  static void registerOutboxHandler() {
+    OutboxService.instance.registerHandler('quiz_submit', (payload) async {
+      await QuizService.instance.submitAttempt(
+        quizId: payload['quizId'] as int,
+        answers: (payload['answers'] as List).map((a) => a as int?).toList(),
+        durationSeconds: payload['durationSeconds'] as int,
+      );
+      return true;
+    });
+  }
+
+  /// Liste des quiz  mise en cache (StudentDashboardBox).
   Future<List<ApiQuiz>> getAll({int page = 1, int pageSize = 20}) async {
-    final res = await _api.dio
-        .get('/quizzes', queryParameters: {'page': page, 'pageSize': pageSize});
-    final list = res.data as List? ?? [];
-    return list
-        .map((e) => ApiQuiz.fromJson(e as Map<String, dynamic>))
-        .toList();
+    final result = await LocalCacheService.cachedFetch<List<ApiQuiz>>(
+      box: LocalCacheService.studentDashboard,
+      key: 'quizzes_p${page}_$pageSize',
+      fetchLiveRaw: () async => (await _api.dio.get('/quizzes',
+              queryParameters: {'page': page, 'pageSize': pageSize}))
+          .data,
+      parse: (raw) => ((raw as List?) ?? [])
+          .map((e) => ApiQuiz.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+    return result.value;
   }
 
   Future<ApiQuiz> getById(int id) async {
@@ -124,5 +146,30 @@ class QuizService {
       total: d['totalQuestions'] as int? ?? 0,
       certificateUrl: d['certificateUrl'] as String?,
     );
+  }
+
+  /// Soumet immédiatement si en ligne ; sinon met en file (OutboxService) et
+  /// synchronise automatiquement au retour du réseau. Le résultat affiché à
+  /// l'élève hors ligne est calculé localement (voir quiz_screen.dart)
+  /// cet appel ne fait que garantir que le score atteigne le serveur.
+  Future<void> submitAttemptQueueable({
+    required int quizId,
+    required List<int?> answers,
+    required int durationSeconds,
+  }) async {
+    if (ConnectivityService.instance.isOnline) {
+      try {
+        await submitAttempt(quizId: quizId, answers: answers, durationSeconds: durationSeconds);
+        return;
+      } catch (_) {
+        // Tombe en file ci-dessous  réseau signalé disponible mais
+        // requête effectivement en échec (portail captif, coupure ponctuelle...).
+      }
+    }
+    await OutboxService.instance.enqueue('quiz_submit', {
+      'quizId': quizId,
+      'answers': answers,
+      'durationSeconds': durationSeconds,
+    });
   }
 }

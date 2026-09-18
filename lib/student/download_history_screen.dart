@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import '../services/local_downloads_service.dart';
 import '../services/user_service.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import 'document_viewer_screen.dart';
 
 class DownloadHistoryScreen extends StatefulWidget {
   const DownloadHistoryScreen({super.key});
@@ -14,6 +16,7 @@ class _DownloadHistoryScreenState extends State<DownloadHistoryScreen> {
   List<ApiDownloadEntry>? _entries;
   String? _error;
   String _period = '30j';
+  Map<int, String> _localPaths = {};
   static const _periods = ['7j', '30j', '90j', '1 an'];
 
   @override
@@ -25,7 +28,12 @@ class _DownloadHistoryScreenState extends State<DownloadHistoryScreen> {
   Future<void> _load() async {
     try {
       final entries = await UserService.instance.getDownloadHistory();
-      if (mounted) setState(() => _entries = entries);
+      final paths = <int, String>{};
+      for (final e in entries) {
+        final p = await LocalDownloadsService.instance.localPathFor('${e.subjectId}');
+        if (p != null) paths[e.subjectId] = p;
+      }
+      if (mounted) setState(() { _entries = entries; _localPaths = paths; });
     } catch (_) {
       if (mounted) setState(() => _error = 'Impossible de charger l\'historique.');
     }
@@ -163,40 +171,54 @@ class _DownloadHistoryScreenState extends State<DownloadHistoryScreen> {
                   style: WinType.titleS(s.onFaint)
                       .copyWith(letterSpacing: 0.6)),
             ),
-            ...entry.value.map((item) => Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: WinCard(
-                child: Row(children: [
-                  Container(
-                    width: 44, height: 44,
-                    color: s.primaryContainer,
-                    child: Icon(Icons.picture_as_pdf_outlined,
-                        size: 22, color: s.primary),
+            ...entry.value.map((item) {
+              final localPath = _localPaths[item.subjectId];
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: GestureDetector(
+                  onTap: localPath == null
+                      ? null
+                      : () => openDocumentViewer(context,
+                          title: item.title, remoteUrl: '', localPath: localPath),
+                  child: WinCard(
+                    child: Row(children: [
+                      Container(
+                        width: 44, height: 44,
+                        color: s.primaryContainer,
+                        child: Icon(Icons.picture_as_pdf_outlined,
+                            size: 22, color: s.primary),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(item.title,
+                              style: WinType.titleM(s.onStrong),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis),
+                          const SizedBox(height: 2),
+                          Row(children: [
+                            WinBadge(_categoryLabel(item.category)),
+                            const SizedBox(width: 8),
+                            Text(
+                              '${item.downloadedAt.hour.toString().padLeft(2, '0')}:${item.downloadedAt.minute.toString().padLeft(2, '0')}',
+                              style: WinType.labelS(s.onFaint),
+                            ),
+                          ]),
+                        ],
+                      )),
+                      Icon(
+                        localPath != null
+                            ? Icons.offline_pin_outlined
+                            : Icons.download_done_outlined,
+                        size: 20,
+                        color: localPath != null ? s.primary : s.onFaint,
+                      ),
+                    ]),
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(item.title,
-                          style: WinType.titleM(s.onStrong),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis),
-                      const SizedBox(height: 2),
-                      Row(children: [
-                        WinBadge(_categoryLabel(item.category)),
-                        const SizedBox(width: 8),
-                        Text(
-                          '${item.downloadedAt.hour.toString().padLeft(2, '0')}:${item.downloadedAt.minute.toString().padLeft(2, '0')}',
-                          style: WinType.labelS(s.onFaint),
-                        ),
-                      ]),
-                    ],
-                  )),
-                  Icon(Icons.download_done_outlined,
-                      size: 20, color: s.onFaint),
-                ]),
-              ),
-            )),
+                ),
+              );
+            }),
           ],
         )),
       ],

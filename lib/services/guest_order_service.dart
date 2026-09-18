@@ -1,4 +1,5 @@
 import 'api_client.dart';
+import 'connectivity_service.dart';
 import 'payment_service.dart';
 
 class ApiGuestOrderResult {
@@ -18,6 +19,7 @@ class GuestOrderService {
 
   final _api = ApiClient.instance;
 
+  /// Achat = toujours en ligne, jamais mis en file (requireOnline).
   Future<ApiGuestOrderResult?> placeOrder({
     required int subjectId,
     required String firstName,
@@ -26,6 +28,7 @@ class GuestOrderService {
     required String email,
     required PaymentMethod method,
   }) async {
+    requireOnline();
     try {
       final res = await _api.dio.post('/orders/guest', data: {
         'subjectId': subjectId,
