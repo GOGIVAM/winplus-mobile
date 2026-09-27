@@ -121,9 +121,11 @@ class _SubscriptionStatusScreenState extends State<SubscriptionStatusScreen> {
                     used: sub.quizUsedToday, limit: sub.quizDailyLimit,
                     unlimited: sub.quizDailyLimit == 0),
                 const SizedBox(height: 10),
-                _UsageRow(icon: Icons.auto_awesome_outlined, label: 'Messages WinAI',
-                    used: sub.aiMessagesUsed, limit: sub.aiMessagesLimit,
-                    unlimited: sub.aiMessagesLimit == 0),
+                // Partie 8.3 : usage WinAI présenté en relatif au plan
+                // gratuit, jamais en compteur brut de tokens.
+                _AiUsageRow(multiplier: sub.aiUsageMultiplier,
+                    label: sub.aiUsageLabel, exhausted: sub.aiQuotaExhausted,
+                    limitMessage: sub.aiLimitMessage),
                 if (children.isNotEmpty) ...[
                   const SizedBox(height: 20),
                   Text('Mes enfants', style: WinType.headlineS(s.onStrong)),
@@ -200,6 +202,45 @@ class _SubscriptionStatusScreenState extends State<SubscriptionStatusScreen> {
   }
 }
 
+class _AiUsageRow extends StatelessWidget {
+  final int multiplier;
+  final String label;
+  final bool exhausted;
+  /// Message serveur (8.10) : quelle limite est atteinte et quand elle se
+  /// réinitialise. Jamais de nombre de tokens.
+  final String? limitMessage;
+  const _AiUsageRow({required this.multiplier, required this.label,
+      required this.exhausted, this.limitMessage});
+
+  @override
+  Widget build(BuildContext context) {
+    final s = WinTheme.of(context);
+    final text = label.isNotEmpty
+        ? label
+        : (multiplier <= 1
+            ? 'Usage WinAI du plan gratuit'
+            : "${multiplier}x plus d'usage WinAI que le plan gratuit");
+    return WinCard(
+      padding: const EdgeInsets.all(12),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(children: [
+          Icon(Icons.auto_awesome_outlined, size: 16, color: s.primary),
+          const SizedBox(width: 8),
+          Expanded(child: Text(text, style: WinType.titleM(s.onStrong))),
+          // 8.10 : plus de plafond mensuel ; limite de session ou de semaine.
+          if (exhausted)
+            Text('Limite atteinte',
+                style: WinType.labelM(WinColors.error).copyWith(fontWeight: FontWeight.w700)),
+        ]),
+        if (exhausted && (limitMessage?.isNotEmpty ?? false)) ...[
+          const SizedBox(height: 6),
+          Text(limitMessage!, style: WinType.labelM(s.onMuted)),
+        ],
+      ]),
+    );
+  }
+}
+
 class _UsageRow extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -236,7 +277,18 @@ class RenewalSheet extends StatefulWidget {
   final int planId;
   final String planName;
   final double price;
-  const RenewalSheet({super.key, required this.planId, required this.planName, required this.price});
+
+  /// Période facturée. L'écran de tarifs partagé propose mensuel/annuel, et
+  /// cette feuille était figée sur le mensuel : sans ce drapeau, un plan
+  /// annuel choisi côté tarifs était facturé au mois.
+  final bool yearly;
+  const RenewalSheet({
+    super.key,
+    required this.planId,
+    required this.planName,
+    required this.price,
+    this.yearly = false,
+  });
   @override
   State<RenewalSheet> createState() => _RenewalSheetState();
 }
@@ -268,6 +320,7 @@ class _RenewalSheetState extends State<RenewalSheet> {
       final paymentId = await SubscriptionService.instance.purchase(
         planId: widget.planId,
         phone: phone,
+        yearly: widget.yearly,
       );
       if (!mounted) return;
       if (paymentId != null) {
@@ -293,7 +346,7 @@ class _RenewalSheetState extends State<RenewalSheet> {
         Container(width: 40, height: 4, color: s.outline2, margin: const EdgeInsets.only(bottom: 20)),
         Text('Renouveler ${widget.planName}', style: WinType.headlineS(s.onStrong)),
         const SizedBox(height: 4),
-        Text('${fmtXaf(widget.price.round())} XAF / mois', style: WinType.archivo(size: 28, weight: FontWeight.w700, color: s.primary)),
+        Text('${fmtXaf(widget.price.round())} XAF / ${widget.yearly ? 'an' : 'mois'}', style: WinType.archivo(size: 28, weight: FontWeight.w700, color: s.primary)),
         const SizedBox(height: 20),
         if (_done) ...[
           const WinAlert('Paiement initié ! Confirmez le paiement sur votre téléphone.',

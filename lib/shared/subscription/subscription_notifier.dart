@@ -22,8 +22,8 @@ class SubscriptionNotifier extends ChangeNotifier {
       downloadsLimit: apiSub.downloadsLimit,
       quizUsedToday: apiSub.quizUsedToday,
       quizDailyLimit: apiSub.quizDailyLimit,
-      aiMessagesUsed: apiSub.aiMessagesUsed,
-      aiMessagesLimit: apiSub.aiMessagesLimit,
+      aiUsageMultiplier: apiSub.aiUsageMultiplier,
+      aiQuotaExhausted: apiSub.aiQuotaExhausted,
     );
     notifyListeners();
   }
@@ -44,8 +44,8 @@ class SubscriptionNotifier extends ChangeNotifier {
   bool get canTakeQuiz =>
       _sub.quizDailyLimit == 0 || _sub.quizUsedToday < _sub.quizDailyLimit;
 
-  bool get canUseAI =>
-      _sub.aiMessagesLimit == 0 || _sub.aiMessagesUsed < _sub.aiMessagesLimit;
+  /// Indicatif seulement : le serveur reste seul juge (402 à l'épuisement).
+  bool get canUseAI => !_sub.aiQuotaExhausted;
 
   bool get isPremium => _sub.isPremium;
   bool get isFree => _sub.isFree;
@@ -70,8 +70,8 @@ class SubscriptionNotifier extends ChangeNotifier {
       downloadsLimit: _sub.downloadsLimit,
       quizUsedToday: _sub.quizUsedToday,
       quizDailyLimit: _sub.quizDailyLimit,
-      aiMessagesUsed: _sub.aiMessagesUsed,
-      aiMessagesLimit: _sub.aiMessagesLimit,
+      aiUsageMultiplier: _sub.aiUsageMultiplier,
+      aiQuotaExhausted: _sub.aiQuotaExhausted,
     );
     notifyListeners();
   }
@@ -86,8 +86,8 @@ class SubscriptionNotifier extends ChangeNotifier {
       downloadsLimit: _sub.downloadsLimit,
       quizUsedToday: _sub.quizUsedToday + 1,
       quizDailyLimit: _sub.quizDailyLimit,
-      aiMessagesUsed: _sub.aiMessagesUsed,
-      aiMessagesLimit: _sub.aiMessagesLimit,
+      aiUsageMultiplier: _sub.aiUsageMultiplier,
+      aiQuotaExhausted: _sub.aiQuotaExhausted,
     );
     notifyListeners();
   }

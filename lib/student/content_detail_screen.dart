@@ -5,7 +5,7 @@ import '../data/mock_data.dart';
 import '../data/models.dart';
 import '../services/local_downloads_service.dart';
 import '../services/subject_service.dart';
-import '../shared/shop/guest_order_screen.dart';
+import '../shared/shop/account_required_purchase_screen.dart';
 import '../shared/subscription/subscription_notifier.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
@@ -518,7 +518,7 @@ class _BottomBar extends StatelessWidget {
             onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (_) => GuestOrderScreen(content: content)))),
+                    builder: (_) => AccountRequiredPurchaseScreen(content: content)))),
         const SizedBox(height: 8),
         GestureDetector(
           onTap: () {},

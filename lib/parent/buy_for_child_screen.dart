@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../data/mock_data.dart';
 import '../data/models.dart';
 import '../services/parent_service.dart';
-import '../shared/shop/guest_order_screen.dart';
+import '../shared/shop/account_required_purchase_screen.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
@@ -105,7 +105,7 @@ class _BuyForChildScreenState extends State<BuyForChildScreen> {
                       onBuy: () => Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (_) => GuestOrderScreen(content: c)),
+                            builder: (_) => AccountRequiredPurchaseScreen(content: c)),
                       ),
                     ))
                 .toList(),

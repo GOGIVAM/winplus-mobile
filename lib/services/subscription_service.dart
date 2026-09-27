@@ -49,8 +49,23 @@ class ApiActiveSubscription {
   final int downloadsLimit;
   final int quizUsedToday;
   final int quizDailyLimit;
-  final int aiMessagesUsed;
-  final int aiMessagesLimit;
+  /// Partie 8.3 : usage WinAI relatif au plan gratuit (1 = gratuit), jamais
+  /// un compteur brut. Remplace aiMessagesUsed/aiMessagesLimit, retirés de
+  /// GET /api/subscriptions/me (le quota est désormais en tokens réels).
+  final int aiUsageMultiplier;
+  final String aiUsageLabel;
+  final bool aiQuotaExhausted;
+
+  /// Partie 8.10 : limite atteinte — 'session' (5 h glissantes), 'week'
+  /// (7 jours glissants) ou null. Plus de plafond mensuel.
+  final String? aiLimitReached;
+
+  /// Heure (UTC) à laquelle l'utilisateur pourra de nouveau écrire ; null si
+  /// aucune limite n'est atteinte.
+  final DateTime? aiLimitResetsAt;
+
+  /// Message serveur prêt à afficher (sans nombre de tokens) ; null sinon.
+  final String? aiLimitMessage;
   const ApiActiveSubscription({
     required this.id,
     required this.pricingPlanId,
@@ -64,8 +79,12 @@ class ApiActiveSubscription {
     this.downloadsLimit = 0,
     this.quizUsedToday = 0,
     this.quizDailyLimit = 0,
-    this.aiMessagesUsed = 0,
-    this.aiMessagesLimit = 0,
+    this.aiUsageMultiplier = 1,
+    this.aiUsageLabel = '',
+    this.aiQuotaExhausted = false,
+    this.aiLimitReached,
+    this.aiLimitResetsAt,
+    this.aiLimitMessage,
   });
 
   bool get isFree => tier == 'free' || tier == 'libre';
@@ -86,8 +105,13 @@ class ApiActiveSubscription {
         downloadsLimit: j['downloadsLimit'] as int? ?? 0,
         quizUsedToday: j['quizUsedToday'] as int? ?? 0,
         quizDailyLimit: j['quizDailyLimit'] as int? ?? 0,
-        aiMessagesUsed: j['aiMessagesUsed'] as int? ?? 0,
-        aiMessagesLimit: j['aiMessagesLimit'] as int? ?? 0,
+        aiUsageMultiplier: (j['aiUsageMultiplier'] as num?)?.toInt() ?? 1,
+        aiUsageLabel: j['aiUsageLabel'] as String? ?? '',
+        aiQuotaExhausted: j['aiQuotaExhausted'] as bool? ?? false,
+        aiLimitReached: j['aiLimitReached'] as String?,
+        aiLimitResetsAt:
+            DateTime.tryParse(j['aiLimitResetsAt'] as String? ?? ''),
+        aiLimitMessage: j['aiLimitMessage'] as String?,
       );
 }
 

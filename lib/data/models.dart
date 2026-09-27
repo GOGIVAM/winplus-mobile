@@ -212,7 +212,9 @@ class ActiveSubscription {
   final bool autoRenew;
   final int downloadsUsed, downloadsLimit;
   final int quizUsedToday, quizDailyLimit;
-  final int aiMessagesUsed, aiMessagesLimit;
+  /// Usage WinAI relatif au plan gratuit (Partie 8.3) — jamais un compteur.
+  final int aiUsageMultiplier;
+  final bool aiQuotaExhausted;
   const ActiveSubscription({
     required this.tier,
     required this.planName,
@@ -222,8 +224,8 @@ class ActiveSubscription {
     this.downloadsLimit = 5,
     this.quizUsedToday = 0,
     this.quizDailyLimit = 3,
-    this.aiMessagesUsed = 0,
-    this.aiMessagesLimit = 50,
+    this.aiUsageMultiplier = 1,
+    this.aiQuotaExhausted = false,
   });
 
   bool get isPremium => tier == PlanTier.premium || tier == PlanTier.famille;

@@ -524,8 +524,7 @@ class WinData {
     downloadsLimit: 30,
     quizUsedToday: 2,
     quizDailyLimit: 20,
-    aiMessagesUsed: 34,
-    aiMessagesLimit: 100,
+    aiUsageMultiplier: 4,
   );
 
   // ---- CONTINUE LEARNING ----

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../app_state.dart';
 import '../../data/models.dart';
+import '../../parent/subscription_status_screen.dart' show RenewalSheet;
 import '../../services/subscription_service.dart';
 import '../../theme/win_colors.dart';
 import '../../theme/win_theme.dart';
@@ -52,6 +53,29 @@ class _PricingScreenState extends State<PricingScreen> {
 
   Future<void> _subscribe(ApiPlan plan) async {
     final messenger = ScaffoldMessenger.of(context);
+
+    // Un plan payant ne s'active plus par POST /subscriptions : le serveur
+    // refuse désormais toute activation sans paiement confirmé (faille §7.1 du
+    // suivi, un simple appel offrait le plan le plus cher). Le paiement Mobile
+    // Money passe par la feuille déjà utilisée pour le renouvellement, et
+    // l'abonnement est créé côté serveur à la confirmation du paiement.
+    final price = (_yearly ? plan.priceYearly : plan.priceMonthly);
+    if (price > 0) {
+      await showModalBottomSheet<void>(
+        context: context,
+        isScrollControlled: true,
+        builder: (_) => RenewalSheet(
+          planId: plan.id,
+          planName: plan.name,
+          price: price,
+          yearly: _yearly,
+        ),
+      );
+      if (!mounted) return;
+      _load();
+      return;
+    }
+
     final ok = await SubscriptionService.instance.subscribe(plan.id, yearly: _yearly);
     if (!mounted) return;
     if (ok) {
