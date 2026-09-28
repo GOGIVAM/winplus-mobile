@@ -21,8 +21,8 @@ class ApiWinAIMemory {
         id: j['id'] as int? ?? 0,
         type: j['type'] as String? ?? 'general',
         content: j['content'] as String? ?? '',
-        createdAt:
-            DateTime.tryParse(j['createdAt'] as String? ?? '') ?? DateTime.now(),
+        createdAt: DateTime.tryParse(j['createdAt'] as String? ?? '') ??
+            DateTime.now(),
       );
 }
 
@@ -39,8 +39,8 @@ class ApiChatMessage {
   factory ApiChatMessage.fromJson(Map<String, dynamic> j) => ApiChatMessage(
         role: j['role'] as String? ?? 'assistant',
         content: j['content'] as String? ?? '',
-        createdAt:
-            DateTime.tryParse(j['createdAt'] as String? ?? '') ?? DateTime.now(),
+        createdAt: DateTime.tryParse(j['createdAt'] as String? ?? '') ??
+            DateTime.now(),
       );
 }
 
@@ -59,8 +59,8 @@ class ApiChatSession {
   factory ApiChatSession.fromJson(Map<String, dynamic> j) => ApiChatSession(
         id: j['id'] as int? ?? 0,
         title: j['title'] as String? ?? 'Conversation',
-        createdAt:
-            DateTime.tryParse(j['createdAt'] as String? ?? '') ?? DateTime.now(),
+        createdAt: DateTime.tryParse(j['createdAt'] as String? ?? '') ??
+            DateTime.now(),
         lastMessage: j['lastMessage'] as String?,
       );
 }
@@ -98,7 +98,7 @@ class ChatbotService {
   /// tel quel, sans changement de signature à répercuter sur chacun d'eux.
   ///
   ///  - hors-ligne : message d'erreur hors-ligne ;
-  ///  - 402 (Partie 8.10) : message serveur — limite de session (5 h) ou
+  ///  - 402 (Partie 8.10) : message serveur limite de session (5 h) ou
   ///    hebdomadaire (7 jours) atteinte et heure de reprise, sans nombre de
   ///    tokens. Il était auparavant avalé en null (« Désolé, je n'ai pas pu
   ///    répondre ») ;
@@ -126,9 +126,9 @@ class ChatbotService {
       });
       final d = res.data as Map<String, dynamic>?;
       final assistant = d?['assistantMessage'] as Map<String, dynamic>?;
-      return assistant?['content'] as String?
-          ?? d?['reply'] as String?
-          ?? d?['message'] as String?;
+      return assistant?['content'] as String? ??
+          d?['reply'] as String? ??
+          d?['message'] as String?;
     } on DioException catch (e) {
       return quotaRefusalMessage(e.response?.statusCode, e.response?.data);
     } catch (_) {

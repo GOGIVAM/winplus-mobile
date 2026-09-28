@@ -31,10 +31,11 @@ class Content {
   final int difficulty;
   final List<ContentReview> reviews;
 
-  /// URL du fichier réel côté serveur (Subjects.documentUrl)  absente pour
-  /// le contenu de démonstration (WinData.catalog), présente dès que le
-  /// contenu vient de l'API réelle (voir ApiSubjectToContent.toContent()).
-  final String? documentUrl;
+  /// Un corrigé est disponible pour cette épreuve (API : hasCorrection).
+  /// Module 44 : le modèle ne porte plus d'adresse de fichier  épreuves,
+  /// corrigés et livres se lisent uniquement dans la visionneuse intégrée
+  /// (DocumentViewerScreen), à partir de l'identifiant du contenu.
+  final bool hasCorrection;
   Content({
     required this.id,
     required this.title,
@@ -54,7 +55,7 @@ class Content {
     this.teacher,
     this.difficulty = 3,
     this.reviews = const [],
-    this.documentUrl,
+    this.hasCorrection = false,
   });
 
   double get rating => rating100 / 10.0;
@@ -212,7 +213,8 @@ class ActiveSubscription {
   final bool autoRenew;
   final int downloadsUsed, downloadsLimit;
   final int quizUsedToday, quizDailyLimit;
-  /// Usage WinAI relatif au plan gratuit (Partie 8.3) — jamais un compteur.
+
+  /// Usage WinAI relatif au plan gratuit (Partie 8.3) jamais un compteur.
   final int aiUsageMultiplier;
   final bool aiQuotaExhausted;
   const ActiveSubscription({

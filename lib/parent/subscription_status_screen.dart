@@ -82,7 +82,7 @@ class _SubscriptionStatusScreenState extends State<SubscriptionStatusScreen> {
                 Container(
                   decoration: BoxDecoration(
                     color: s.cardBg,
-                    borderRadius: BorderRadius.zero,
+                    borderRadius: BorderRadius.circular(WinRadii.lg),
                     border: Border(
                       top: BorderSide(color: s.primary, width: 4),
                       left: BorderSide(color: s.cardBorder),
@@ -340,10 +340,19 @@ class _RenewalSheetState extends State<RenewalSheet> {
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
     return Container(
-      decoration: BoxDecoration(color: s.surface, borderRadius: BorderRadius.zero),
+      decoration: BoxDecoration(
+          color: s.surface,
+          borderRadius:
+              BorderRadius.vertical(top: Radius.circular(WinRadii.xl))),
       padding: const EdgeInsets.fromLTRB(24, 20, 24, 40),
       child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Container(width: 40, height: 4, color: s.outline2, margin: const EdgeInsets.only(bottom: 20)),
+        Container(
+            width: 40,
+            height: 4,
+            decoration: BoxDecoration(
+                color: s.outline2,
+                borderRadius: BorderRadius.circular(WinRadii.full)),
+            margin: const EdgeInsets.only(bottom: 20)),
         Text('Renouveler ${widget.planName}', style: WinType.headlineS(s.onStrong)),
         const SizedBox(height: 4),
         Text('${fmtXaf(widget.price.round())} XAF / ${widget.yearly ? 'an' : 'mois'}', style: WinType.archivo(size: 28, weight: FontWeight.w700, color: s.primary)),
@@ -364,6 +373,7 @@ class _RenewalSheetState extends State<RenewalSheet> {
               child: Container(
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(WinRadii.md),
                   border: Border.all(color: _method == 'mtn' ? s.primary : s.outline,
                       width: _method == 'mtn' ? 2 : 1),
                   color: _method == 'mtn' ? s.primaryContainer : s.cardBg,
@@ -381,6 +391,7 @@ class _RenewalSheetState extends State<RenewalSheet> {
               child: Container(
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(WinRadii.md),
                   border: Border.all(color: _method == 'orange' ? s.primary : s.outline,
                       width: _method == 'orange' ? 2 : 1),
                   color: _method == 'orange' ? s.primaryContainer : s.cardBg,

@@ -49,6 +49,7 @@ class ApiActiveSubscription {
   final int downloadsLimit;
   final int quizUsedToday;
   final int quizDailyLimit;
+
   /// Partie 8.3 : usage WinAI relatif au plan gratuit (1 = gratuit), jamais
   /// un compteur brut. Remplace aiMessagesUsed/aiMessagesLimit, retirés de
   /// GET /api/subscriptions/me (le quota est désormais en tokens réels).
@@ -56,7 +57,7 @@ class ApiActiveSubscription {
   final String aiUsageLabel;
   final bool aiQuotaExhausted;
 
-  /// Partie 8.10 : limite atteinte — 'session' (5 h glissantes), 'week'
+  /// Partie 8.10 : limite atteinte 'session' (5 h glissantes), 'week'
   /// (7 jours glissants) ou null. Plus de plafond mensuel.
   final String? aiLimitReached;
 

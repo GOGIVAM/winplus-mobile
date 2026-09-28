@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../data/mock_data.dart';
 import '../data/models.dart';
-import '../services/local_downloads_service.dart';
 import '../services/subject_service.dart';
 import '../shared/shop/account_required_purchase_screen.dart';
 import '../shared/subscription/subscription_notifier.dart';
@@ -13,6 +12,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import 'document_viewer_screen.dart';
 import 'quiz_screen.dart';
+import 'student_home.dart' show ContentCard;
 
 class ContentDetailScreen extends StatefulWidget {
   final Content content;
@@ -24,8 +24,6 @@ class ContentDetailScreen extends StatefulWidget {
 class _ContentDetailScreenState extends State<ContentDetailScreen> {
   bool _fav = false;
   List<Content> _similar = [];
-  bool _downloading = false;
-  String? _localPath;
   Set<String> _selectedTags = {};
   List<String> _notes = [];
   final _noteCtrl = TextEditingController();
@@ -43,21 +41,22 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
     _fav = widget.content.fav;
     _loadSimilar();
     _loadPrefs();
-    _checkLocalFile();
   }
 
-  Future<void> _checkLocalFile() async {
-    final path = await LocalDownloadsService.instance.localPathFor(widget.content.id);
-    if (mounted) setState(() => _localPath = path);
-  }
-
-  void _open() {
-    openDocumentViewer(
-      context,
-      title: widget.content.title,
-      remoteUrl: widget.content.documentUrl ?? '',
-      localPath: _localPath,
-    );
+  /// Module 44 : épreuves, corrigés et livres ne se téléchargent plus ; ils
+  /// s'ouvrent dans la visionneuse intégrée, filigranée au nom du compte.
+  /// Le serveur applique la règle d'accès (gratuit, abonné, acheté).
+  void _open({ViewerDocumentKind kind = ViewerDocumentKind.document}) {
+    final id = int.tryParse(widget.content.id);
+    if (id == null) {
+      // Contenu de démonstration (WinData.catalog) : aucun document réel.
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text(
+              "Ce contenu de démonstration n'a pas de document à afficher.")));
+      return;
+    }
+    openDocumentViewer(context,
+        subjectId: id, title: widget.content.title, kind: kind);
   }
 
   Future<void> _loadPrefs() async {
@@ -98,27 +97,6 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
     } catch (_) {}
   }
 
-  Future<void> _download() async {
-    final id = int.tryParse(widget.content.id);
-    if (id == null) return;
-    setState(() => _downloading = true);
-    final ok = await SubjectService.instance.download(id);
-    if (!mounted) return;
-    final path = await LocalDownloadsService.instance.localPathFor(widget.content.id);
-    if (!mounted) return;
-    setState(() {
-      _downloading = false;
-      _localPath = path;
-    });
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(path != null
-          ? 'Téléchargé  disponible hors ligne.'
-          : ok
-              ? 'Téléchargement lancé !'
-              : 'Erreur lors du téléchargement.'),
-    ));
-  }
-
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
@@ -131,33 +109,51 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            expandedHeight: 220,
+            expandedHeight: 240,
             pinned: true,
             backgroundColor: s.surface,
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back, color: s.onStrong),
-              onPressed: () => Navigator.pop(context),
+            leading: WinCircleIconButton(
+              icon: Icons.arrow_back,
+              onTap: () => Navigator.pop(context),
             ),
             actions: [
-              IconButton(
-                icon: Icon(_fav ? Icons.favorite : Icons.favorite_border,
-                    color: _fav ? WinColors.error : s.onStrong),
-                onPressed: () => setState(() {
+              WinCircleIconButton(
+                icon: _fav ? Icons.favorite : Icons.favorite_border,
+                iconColor: _fav ? WinColors.error : null,
+                onTap: () => setState(() {
                   _fav = !_fav;
                   widget.content.fav = _fav;
                 }),
               ),
-              IconButton(
-                icon: Icon(Icons.share_outlined, color: s.onStrong),
-                onPressed: () {},
-              ),
+              const SizedBox(width: 8),
+              WinCircleIconButton(icon: Icons.share_outlined, onTap: () {}),
+              const SizedBox(width: 8),
             ],
             flexibleSpace: FlexibleSpaceBar(
-              background: Container(
-                color: subj.color.withValues(alpha: 0.12),
-                child:
-                    Center(child: Icon(subj.icon, size: 72, color: subj.color)),
-              ),
+              background: Stack(fit: StackFit.expand, children: [
+                Container(
+                  color: subj.color.withValues(alpha: 0.12),
+                  child: Center(
+                      child: Icon(subj.icon, size: 72, color: subj.color)),
+                ),
+                Positioned(
+                  left: 16,
+                  bottom: 16,
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: c.free ? WinColors.success : Colors.white,
+                      borderRadius: BorderRadius.circular(WinRadii.full),
+                      boxShadow: WinShadows.sm,
+                    ),
+                    child: Text(c.free ? 'Gratuit' : '${fmtXaf(c.price)} XAF',
+                        style: WinType.titleM(
+                                c.free ? Colors.white : WinColors.ink800)
+                            .copyWith(fontWeight: FontWeight.w700)),
+                  ),
+                ),
+              ]),
             ),
           ),
           SliverList(
@@ -212,10 +208,10 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                       ]),
                       const SizedBox(height: 12),
                       Row(children: [
-                        Icon(Icons.download_outlined,
+                        Icon(Icons.visibility_outlined,
                             size: 16, color: s.onFaint),
                         const SizedBox(width: 4),
-                        Text('${c.downloads} téléchargements',
+                        Text('${c.downloads} consultations',
                             style: WinType.labelM(s.onMuted)),
                         const SizedBox(width: 16),
                         Icon(Icons.calendar_today_outlined,
@@ -331,7 +327,8 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                                       color: _selectedTags.contains(tag)
                                           ? s.primary
                                           : s.outline),
-                                  borderRadius: BorderRadius.circular(20),
+                                  borderRadius:
+                                      BorderRadius.circular(WinRadii.full),
                                 ),
                                 child: Text(tag,
                                     style: WinType.manrope(
@@ -442,14 +439,15 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                         const WinSectionHeader('Contenus similaires'),
                         const SizedBox(height: 12),
                         SizedBox(
-                          height: 190,
+                          height: 210,
                           child: ListView.separated(
                             scrollDirection: Axis.horizontal,
                             itemCount: _similar.length,
                             separatorBuilder: (_, __) =>
                                 const SizedBox(width: 10),
                             itemBuilder: (_, i) => SizedBox(
-                                width: 148, child: _CompactCard(_similar[i])),
+                                width: 150,
+                                child: ContentCard(content: _similar[i])),
                           ),
                         ),
                       ],
@@ -463,10 +461,8 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
       bottomNavigationBar: _BottomBar(
         content: c,
         isPremium: subScope.isPremium,
-        downloading: _downloading,
-        downloadedLocally: _localPath != null,
-        onDownload: _download,
-        onOpen: _open,
+        onOpen: () => _open(),
+        onOpenCorrection: () => _open(kind: ViewerDocumentKind.correction),
       ),
     );
   }
@@ -475,17 +471,13 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
 class _BottomBar extends StatelessWidget {
   final Content content;
   final bool isPremium;
-  final bool downloading;
-  final bool downloadedLocally;
-  final VoidCallback onDownload;
   final VoidCallback onOpen;
+  final VoidCallback onOpenCorrection;
   const _BottomBar({
     required this.content,
     required this.isPremium,
-    required this.downloading,
-    required this.downloadedLocally,
-    required this.onDownload,
     required this.onOpen,
+    required this.onOpenCorrection,
   });
 
   @override
@@ -499,17 +491,26 @@ class _BottomBar extends StatelessWidget {
           icon: Icons.play_arrow_rounded,
           onTap: () => Navigator.push(context,
               MaterialPageRoute(builder: (_) => const QuizHubScreen())));
-    } else if (downloadedLocally) {
-      btn = WinButton('Ouvrir  disponible hors ligne',
-          block: true,
-          icon: Icons.folder_open_outlined,
-          onTap: onOpen);
     } else if (content.free || isPremium) {
-      btn = WinButton(content.free ? 'Télécharger gratuitement' : 'Télécharger',
-          block: true,
-          icon: Icons.download_outlined,
-          loading: downloading,
-          onTap: onDownload);
+      // Lecture dans la visionneuse uniquement : plus de bouton de
+      // téléchargement ni de copie hors ligne (Module 44).
+      btn = Column(mainAxisSize: MainAxisSize.min, children: [
+        WinButton(
+            content.type == ContentType.livre
+                ? 'Lire le livre'
+                : "Lire dans l'application",
+            block: true,
+            icon: Icons.menu_book_outlined,
+            onTap: onOpen),
+        if (content.hasCorrection) ...[
+          const SizedBox(height: 8),
+          WinButton('Voir le corrigé',
+              block: true,
+              variant: WinButtonVariant.outline,
+              icon: Icons.fact_check_outlined,
+              onTap: onOpenCorrection),
+        ],
+      ]);
     } else {
       btn = Column(mainAxisSize: MainAxisSize.min, children: [
         WinButton('Acheter  ${fmtXaf(content.price)} XAF',
@@ -518,7 +519,8 @@ class _BottomBar extends StatelessWidget {
             onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (_) => AccountRequiredPurchaseScreen(content: content)))),
+                    builder: (_) =>
+                        AccountRequiredPurchaseScreen(content: content)))),
         const SizedBox(height: 8),
         GestureDetector(
           onTap: () {},
@@ -533,46 +535,6 @@ class _BottomBar extends StatelessWidget {
       decoration: BoxDecoration(
           color: s.surface, border: Border(top: BorderSide(color: s.outline))),
       child: btn,
-    );
-  }
-}
-
-class _CompactCard extends StatelessWidget {
-  final Content content;
-  const _CompactCard(this.content);
-  @override
-  Widget build(BuildContext context) {
-    final s = WinTheme.of(context);
-    final subj = WinData.subjectById(content.subjectId);
-    return GestureDetector(
-      onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (_) => ContentDetailScreen(content: content))),
-      child: WinCard(
-        padding: EdgeInsets.zero,
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Container(
-            height: 80,
-            color: subj.color.withValues(alpha: 0.12),
-            child: Center(child: Icon(subj.icon, size: 32, color: subj.color)),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(10),
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(content.title,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: WinType.titleM(s.onStrong)),
-              const SizedBox(height: 4),
-              Text(content.free ? 'Gratuit' : '${fmtXaf(content.price)} XAF',
-                  style: WinType.labelM(
-                      content.free ? WinColors.success : s.primary)),
-            ]),
-          ),
-        ]),
-      ),
     );
   }
 }

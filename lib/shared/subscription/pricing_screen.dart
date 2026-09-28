@@ -155,7 +155,7 @@ class _PricingScreenState extends State<PricingScreen> {
                       padding: const EdgeInsets.all(14),
                       decoration: BoxDecoration(
                         color: s.surface2,
-                        borderRadius: BorderRadius.zero,
+                        borderRadius: BorderRadius.circular(WinRadii.md),
                         border: Border.all(color: s.outline),
                       ),
                       child: Row(children: [
@@ -192,9 +192,10 @@ class _PlanCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
     return Container(
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         color: s.cardBg,
-        borderRadius: BorderRadius.zero,
+        borderRadius: BorderRadius.circular(WinRadii.lg),
         border: Border.all(
           color: isCurrent ? s.primary : s.cardBorder,
           width: isCurrent ? 2 : 1,

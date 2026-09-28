@@ -1,5 +1,6 @@
+import 'dart:typed_data';
+import 'package:dio/dio.dart';
 import 'api_client.dart';
-import 'local_downloads_service.dart';
 import '../data/models.dart';
 
 class SubjectPage {
@@ -22,8 +23,9 @@ class ApiSubject {
   final int downloadCount;
   final bool isFree;
   final double price;
-  final String? documentUrl;
-  final String? correctionUrl;
+  /// Module 44 : l'API ne renvoie jamais l'adresse du fichier, seulement
+  /// la disponibilité du corrigé ; le document se lit dans la visionneuse.
+  final bool hasCorrection;
   final double? rating;
   final int ratingsCount;
   const ApiSubject({
@@ -38,8 +40,7 @@ class ApiSubject {
     this.downloadCount = 0,
     this.isFree = false,
     this.price = 0,
-    this.documentUrl,
-    this.correctionUrl,
+    this.hasCorrection = false,
     this.rating,
     this.ratingsCount = 0,
   });
@@ -56,8 +57,7 @@ class ApiSubject {
         downloadCount: j['downloadCount'] as int? ?? 0,
         isFree: j['isFree'] as bool? ?? false,
         price: ((j['price'] ?? 0) as num).toDouble(),
-        documentUrl: j['documentUrl'] as String?,
-        correctionUrl: j['correctionUrl'] as String?,
+        hasCorrection: j['hasCorrection'] as bool? ?? false,
         rating: ((j['averageRating'] ?? 0) as num).toDouble(),
         ratingsCount: j['ratingsCount'] as int? ?? 0,
       );
@@ -78,7 +78,7 @@ extension ApiSubjectToContent on ApiSubject {
         downloads: downloadCount,
         free: isFree,
         description: description,
-        documentUrl: documentUrl,
+        hasCorrection: hasCorrection,
       );
 }
 
@@ -143,39 +143,29 @@ class SubjectService {
     return ApiSubject.fromJson(res.data as Map<String, dynamic>);
   }
 
-  /// Incrémente le compteur de téléchargement côté serveur ET télécharge
-  /// réellement le fichier (documentUrl) vers le stockage privé de l'app.
-  /// L'ancienne version n'appelait que le compteur  "un abus de langage" :
-  /// le fichier restait distant, seule une ligne de log était écrite.
-  /// Un échec de l'un n'annule pas l'autre : le compteur est une métrique
-  /// serveur indépendante de la réussite du téléchargement local.
-  Future<bool> download(int subjectId) async {
-    bool counterOk = false;
-    try {
-      await _api.dio.post('/subjects/$subjectId/download');
-      counterOk = true;
-    } catch (_) {
-      counterOk = false;
+  /// Octets du PDF d'une épreuve, de son corrigé ([correction]) ou d'un
+  /// livre, filigranés côté serveur au nom du compte connecté (Module 44).
+  ///
+  /// Les épreuves, corrigés et livres ne sont plus jamais téléchargés sur
+  /// l'appareil (décision §11.4) : ces octets restent en mémoire, le temps
+  /// de l'affichage dans la visionneuse intégrée, et ne sont écrits nulle
+  /// part. Le serveur applique la règle d'accès (gratuit, abonné, acheté ou
+  /// assigné) : 401/403/404 remontent en [DioException].
+  Future<Uint8List> viewBytes(int subjectId, {bool correction = false}) async {
+    final res = await _api.dio.get<List<int>>(
+      '/subjects/$subjectId/view',
+      queryParameters: {if (correction) 'kind': 'correction'},
+      // Un livre ou une épreuve volumineuse peut dépasser le délai par
+      // défaut prévu pour les réponses JSON.
+      options: Options(
+        responseType: ResponseType.bytes,
+        receiveTimeout: const Duration(minutes: 2),
+      ),
+    );
+    final data = res.data;
+    if (data == null || data.isEmpty) {
+      throw StateError('Document vide');
     }
-
-    try {
-      final subject = await getById(subjectId);
-      final url = subject.documentUrl;
-      if (url != null && url.isNotEmpty) {
-        await LocalDownloadsService.instance.download(
-          contentId: '$subjectId',
-          url: url,
-          suggestedFileName: subject.title,
-        );
-        return true;
-      }
-    } catch (_) {
-      // Le fichier n'a pas pu être récupéré (réseau, URL absente…) : le
-      // contenu reste consultable à distance comme avant, juste pas hors
-      // ligne. On ne fait pas échouer toute l'action pour autant si au
-      // moins le compteur est passé.
-    }
-
-    return counterOk;
+    return data is Uint8List ? data : Uint8List.fromList(data);
   }
 }
