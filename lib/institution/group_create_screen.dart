@@ -124,7 +124,8 @@ class _GroupCreateScreenState extends State<GroupCreateScreen> {
                                   horizontal: 14, vertical: 8),
                               decoration: BoxDecoration(
                                 color: active ? WinColors.ink800 : s.surface,
-                                borderRadius: BorderRadius.zero,
+                                borderRadius:
+                                    BorderRadius.circular(WinRadii.full),
                                 border: Border.all(
                                     color:
                                         active ? WinColors.ink800 : s.outline,
@@ -170,7 +171,7 @@ class _GroupCreateScreenState extends State<GroupCreateScreen> {
                           margin: const EdgeInsets.only(bottom: 6),
                           decoration: BoxDecoration(
                             color: sel ? s.primaryContainer : s.cardBg,
-                            borderRadius: BorderRadius.zero,
+                            borderRadius: BorderRadius.circular(WinRadii.md),
                             border: Border.all(
                               color: sel ? s.primary : s.cardBorder,
                               width: sel ? 1.5 : 1,

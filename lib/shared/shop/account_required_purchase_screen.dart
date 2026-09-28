@@ -3,6 +3,7 @@ import '../../auth/login_screen.dart';
 import '../../auth/role_screen.dart';
 import '../../data/models.dart';
 import '../../services/session_manager.dart';
+import '../../theme/win_colors.dart';
 import '../../theme/win_theme.dart';
 import '../../theme/win_typography.dart';
 import '../../widgets/win_widgets.dart';
@@ -60,28 +61,47 @@ class _AccountRequiredPurchaseScreenState
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
         children: [
           WinCard(
-            child: Row(children: [
+            padding: EdgeInsets.zero,
+            child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Container(
-                width: 52,
-                height: 52,
-                color: s.surface2,
+                width: 84,
+                height: 84,
+                decoration: BoxDecoration(
+                  color: s.surface2,
+                  borderRadius: BorderRadius.horizontal(
+                      left: Radius.circular(WinRadii.lg)),
+                ),
                 child: Center(
                     child: Icon(Icons.description_outlined,
-                        size: 28, color: s.primary)),
+                        size: 32, color: s.primary)),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 14),
               Expanded(
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                  child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                     Text(c.title,
                         style: WinType.titleM(s.onStrong),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis),
-                    const SizedBox(height: 4),
-                    Text('${fmtXaf(c.price)} XAF',
-                        style: WinType.headlineS(s.primary)),
-                  ])),
+                    const SizedBox(height: 6),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: s.primaryContainer,
+                        borderRadius: BorderRadius.circular(WinRadii.full),
+                      ),
+                      child: Text('${fmtXaf(c.price)} XAF',
+                          style: WinType.labelM(s.primary)
+                              .copyWith(fontWeight: FontWeight.w700)),
+                    ),
+                  ],
+                ),
+              )),
+              const SizedBox(width: 14),
             ]),
           ),
           const SizedBox(height: 20),

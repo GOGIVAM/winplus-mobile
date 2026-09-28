@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/messaging_service.dart';
 import '../services/parent_service.dart';
+import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
@@ -69,7 +70,8 @@ class _EncouragementSheetState extends State<EncouragementSheet> {
     if (message.isEmpty) return;
     setState(() => _sending = true);
     try {
-      await MessagingService.instance.startConversation(widget.child.id, firstMessage: message);
+      await MessagingService.instance
+          .startConversation(widget.child.id, firstMessage: message);
       if (!mounted) return;
       Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(
@@ -79,7 +81,8 @@ class _EncouragementSheetState extends State<EncouragementSheet> {
       if (!mounted) return;
       setState(() => _sending = false);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Impossible d'envoyer le message. Réessayez.")),
+        const SnackBar(
+            content: Text("Impossible d'envoyer le message. Réessayez.")),
       );
     }
   }
@@ -91,7 +94,7 @@ class _EncouragementSheetState extends State<EncouragementSheet> {
     return Container(
       decoration: BoxDecoration(
         color: s.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(WinRadii.xl)),
       ),
       padding: EdgeInsets.fromLTRB(
           24, 20, 24, MediaQuery.of(context).viewInsets.bottom + 32),
@@ -107,7 +110,7 @@ class _EncouragementSheetState extends State<EncouragementSheet> {
                 margin: const EdgeInsets.only(bottom: 20),
                 decoration: BoxDecoration(
                   color: s.outline,
-                  borderRadius: BorderRadius.circular(2),
+                  borderRadius: BorderRadius.circular(WinRadii.full),
                 ),
               ),
             ),
@@ -136,7 +139,7 @@ class _EncouragementSheetState extends State<EncouragementSheet> {
                       color: selected ? s.primary : s.outline,
                       width: selected ? 2 : 1,
                     ),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(WinRadii.md),
                     color: selected
                         ? s.primary.withValues(alpha: 0.06)
                         : Colors.transparent,
@@ -179,15 +182,15 @@ class _EncouragementSheetState extends State<EncouragementSheet> {
                     filled: true,
                     fillColor: s.surface2,
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(WinRadii.md),
                       borderSide: BorderSide(color: s.outline),
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(WinRadii.md),
                       borderSide: BorderSide(color: s.outline),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(WinRadii.md),
                       borderSide: BorderSide(color: s.primary, width: 2),
                     ),
                     contentPadding: const EdgeInsets.fromLTRB(14, 12, 14, 28),

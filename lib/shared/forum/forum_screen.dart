@@ -14,7 +14,13 @@ class ForumScreen extends StatefulWidget {
 }
 
 class _ForumScreenState extends State<ForumScreen> {
-  static const _categories = ['all', 'Questions', 'Discussions', 'Ressources', 'Aide'];
+  static const _categories = [
+    'all',
+    'Questions',
+    'Discussions',
+    'Ressources',
+    'Aide'
+  ];
   String _category = 'all';
   List<dynamic> _threads = [];
   bool _loading = true;
@@ -31,7 +37,13 @@ class _ForumScreenState extends State<ForumScreen> {
 
   Future<void> _load({bool reset = false}) async {
     if (reset) {
-      setState(() { _page = 1; _hasMore = true; _threads = []; _loading = true; _error = null; });
+      setState(() {
+        _page = 1;
+        _hasMore = true;
+        _threads = [];
+        _loading = true;
+        _error = null;
+      });
     }
     try {
       final data = await ForumService.instance.getThreads(
@@ -49,13 +61,21 @@ class _ForumScreenState extends State<ForumScreen> {
         });
       }
     } catch (e) {
-      if (mounted) setState(() { _error = e.toString(); _loading = false; _loadingMore = false; });
+      if (mounted)
+        setState(() {
+          _error = e.toString();
+          _loading = false;
+          _loadingMore = false;
+        });
     }
   }
 
   Future<void> _loadMore() async {
     if (_loadingMore || !_hasMore) return;
-    setState(() { _loadingMore = true; _page++; });
+    setState(() {
+      _loadingMore = true;
+      _page++;
+    });
     await _load();
   }
 
@@ -72,8 +92,8 @@ class _ForumScreenState extends State<ForumScreen> {
           IconButton(
             icon: Icon(Icons.add, color: s.primary),
             onPressed: () => Navigator.push(context,
-              MaterialPageRoute(builder: (_) => const NewThreadScreen()))
-              .then((_) => _load(reset: true)),
+                    MaterialPageRoute(builder: (_) => const NewThreadScreen()))
+                .then((_) => _load(reset: true)),
           ),
         ],
       ),
@@ -88,20 +108,13 @@ class _ForumScreenState extends State<ForumScreen> {
             separatorBuilder: (_, __) => const SizedBox(width: 8),
             itemBuilder: (context, i) {
               final cat = _categories[i];
-              final selected = cat == _category;
-              return GestureDetector(
-                onTap: () { setState(() => _category = cat); _load(reset: true); },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: selected ? s.primary : s.surface2,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    cat == 'all' ? 'Tous' : cat,
-                    style: WinType.labelM(selected ? Colors.white : s.onMuted),
-                  ),
-                ),
+              return WinChip(
+                cat == 'all' ? 'Tous' : cat,
+                active: cat == _category,
+                onTap: () {
+                  setState(() => _category = cat);
+                  _load(reset: true);
+                },
               );
             },
           ),
@@ -109,30 +122,43 @@ class _ForumScreenState extends State<ForumScreen> {
         // Liste des threads
         Expanded(
           child: _loading
-            ? const Center(child: CircularProgressIndicator())
-            : _error != null
-              ? Center(child: Text(_error!, style: WinType.bodyM(WinColors.error)))
-              : _threads.isEmpty
-                ? Center(child: Text('Aucun thread dans cette catégorie.', style: WinType.bodyM(s.onMuted)))
-                : NotificationListener<ScrollNotification>(
-                  onNotification: (n) {
-                    if (n.metrics.pixels >= n.metrics.maxScrollExtent - 200) _loadMore();
-                    return false;
-                  },
-                  child: ListView.separated(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: _threads.length + (_loadingMore ? 1 : 0),
-                    separatorBuilder: (_, __) => const SizedBox(height: 10),
-                    itemBuilder: (context, i) {
-                      if (i == _threads.length) return const Center(child: CircularProgressIndicator());
-                      final t = _threads[i] as Map<String, dynamic>;
-                      return _ThreadCard(thread: t, onTap: () {
-                        Navigator.push(context,
-                          MaterialPageRoute(builder: (_) => ThreadDetailScreen(thread: t)));
-                      });
-                    },
-                  ),
-                ),
+              ? const Center(child: CircularProgressIndicator())
+              : _error != null
+                  ? Center(
+                      child:
+                          Text(_error!, style: WinType.bodyM(WinColors.error)))
+                  : _threads.isEmpty
+                      ? Center(
+                          child: Text('Aucun thread dans cette catégorie.',
+                              style: WinType.bodyM(s.onMuted)))
+                      : NotificationListener<ScrollNotification>(
+                          onNotification: (n) {
+                            if (n.metrics.pixels >=
+                                n.metrics.maxScrollExtent - 200) _loadMore();
+                            return false;
+                          },
+                          child: ListView.separated(
+                            padding: const EdgeInsets.all(16),
+                            itemCount: _threads.length + (_loadingMore ? 1 : 0),
+                            separatorBuilder: (_, __) =>
+                                const SizedBox(height: 10),
+                            itemBuilder: (context, i) {
+                              if (i == _threads.length)
+                                return const Center(
+                                    child: CircularProgressIndicator());
+                              final t = _threads[i] as Map<String, dynamic>;
+                              return _ThreadCard(
+                                  thread: t,
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) =>
+                                                ThreadDetailScreen(thread: t)));
+                                  });
+                            },
+                          ),
+                        ),
         ),
       ]),
     );
@@ -156,7 +182,9 @@ class _ThreadCard extends StatelessWidget {
       child: WinCard(
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(children: [
-            Expanded(child: Text(thread['title'] ?? '', style: WinType.titleM(s.onStrong))),
+            Expanded(
+                child: Text(thread['title'] ?? '',
+                    style: WinType.titleM(s.onStrong))),
             if (isSolved) const SizedBox(width: 8),
             if (isSolved) WinBadge('Résolu', color: BadgeColor.success),
           ]),
@@ -168,7 +196,8 @@ class _ThreadCard extends StatelessWidget {
             const Spacer(),
             Icon(Icons.chat_bubble_outline, size: 13, color: s.onFaint),
             const SizedBox(width: 4),
-            Text('${thread['repliesCount'] ?? 0}', style: WinType.labelM(s.onFaint)),
+            Text('${thread['repliesCount'] ?? 0}',
+                style: WinType.labelM(s.onFaint)),
             const SizedBox(width: 12),
             Icon(Icons.thumb_up_outlined, size: 13, color: s.onFaint),
             const SizedBox(width: 4),

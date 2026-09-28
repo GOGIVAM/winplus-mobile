@@ -70,19 +70,23 @@ class _ActionPlanScreenState extends State<ActionPlanScreen> {
     return Scaffold(
       backgroundColor: s.bg,
       appBar: AppBar(
-        backgroundColor: s.bg, elevation: 0,
+        backgroundColor: s.bg,
+        elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Plan d\'action WinAI', style: WinType.headlineS(s.onStrong)),
+        title:
+            Text('Plan d\'action WinAI', style: WinType.headlineS(s.onStrong)),
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
         children: [
           WinAlert(
-            _aiPlan ?? 'WinAI a analysé les données de votre institution et recommande $total actions prioritaires.',
-            type: BadgeColor.teal, icon: Icons.auto_awesome_outlined,
+            _aiPlan ??
+                'WinAI a analysé les données de votre institution et recommande $total actions prioritaires.',
+            type: BadgeColor.teal,
+            icon: Icons.auto_awesome_outlined,
           ),
           const SizedBox(height: 16),
           Row(children: [
@@ -102,45 +106,55 @@ class _ActionPlanScreenState extends State<ActionPlanScreen> {
               child: Container(
                 decoration: BoxDecoration(
                   color: isDone ? WinColors.successBg : s.cardBg,
-                  borderRadius: BorderRadius.zero,
+                  borderRadius: BorderRadius.circular(WinRadii.lg),
                   border: Border.all(
                     color: isDone ? WinColors.success : s.cardBorder,
                   ),
                   boxShadow: WinShadows.sm,
                 ),
                 padding: const EdgeInsets.all(14),
-                child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Container(
-                    width: 40, height: 40,
-                    decoration: BoxDecoration(
-                      color: a.$2.withValues(alpha: 0.12),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(a.$1, size: 20, color: isDone ? WinColors.success : a.$2),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Text(a.$3, style: WinType.titleM(s.onStrong)),
-                    Text(a.$4, style: WinType.labelM(s.primary)
-                        .copyWith(fontWeight: FontWeight.w600)),
-                    const SizedBox(height: 4),
-                    Text(a.$5, style: WinType.bodyS(s.onMuted)),
-                    const SizedBox(height: 10),
-                    if (!isDone)
-                      WinButton('Marquer comme fait', small: true,
-                          variant: WinButtonVariant.outline,
-                          icon: Icons.check,
-                          onTap: () => setState(() => _done.add(i)))
-                    else
-                      Row(children: [
-                        const Icon(Icons.check_circle, size: 16, color: WinColors.success),
-                        const SizedBox(width: 6),
-                        Text('Réalisé', style: WinType.labelM(WinColors.success)
-                            .copyWith(fontWeight: FontWeight.w600)),
-                      ]),
-                  ])),
-                ]),
+                child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: a.$2.withValues(alpha: 0.12),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(a.$1,
+                            size: 20, color: isDone ? WinColors.success : a.$2),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                            Text(a.$3, style: WinType.titleM(s.onStrong)),
+                            Text(a.$4,
+                                style: WinType.labelM(s.primary)
+                                    .copyWith(fontWeight: FontWeight.w600)),
+                            const SizedBox(height: 4),
+                            Text(a.$5, style: WinType.bodyS(s.onMuted)),
+                            const SizedBox(height: 10),
+                            if (!isDone)
+                              WinButton('Marquer comme fait',
+                                  small: true,
+                                  variant: WinButtonVariant.outline,
+                                  icon: Icons.check,
+                                  onTap: () => setState(() => _done.add(i)))
+                            else
+                              Row(children: [
+                                const Icon(Icons.check_circle,
+                                    size: 16, color: WinColors.success),
+                                const SizedBox(width: 6),
+                                Text('Réalisé',
+                                    style: WinType.labelM(WinColors.success)
+                                        .copyWith(fontWeight: FontWeight.w600)),
+                              ]),
+                          ])),
+                    ]),
               ),
             );
           }),

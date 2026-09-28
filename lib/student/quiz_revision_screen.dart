@@ -174,7 +174,7 @@ class _MistakeCard extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
             decoration: BoxDecoration(
               color: subj.color.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(6),
+              borderRadius: BorderRadius.circular(WinRadii.full),
             ),
             child: Text(subj.short,
                 style: WinType.manrope(

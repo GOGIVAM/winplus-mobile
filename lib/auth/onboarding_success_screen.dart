@@ -111,7 +111,7 @@ class _OnboardingSuccessScreenState extends State<OnboardingSuccessScreen>
                   width: 28, height: 28,
                   decoration: BoxDecoration(
                     color: WinColors.successBg,
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(WinRadii.sm),
                   ),
                   child: const Icon(Icons.check, size: 16, color: WinColors.success),
                 ),

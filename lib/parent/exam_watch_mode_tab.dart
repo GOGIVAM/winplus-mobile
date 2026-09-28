@@ -195,29 +195,31 @@ class _ExamWatchModeTabState extends State<ExamWatchModeTab> {
           WinCard(
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text("Type d'examen", style: WinType.labelM(s.onMuted)),
-              const SizedBox(height: 4),
-              TextField(
+              WinTextField(
+                label: "Type d'examen",
+                hint: 'Ex : BEPC, Baccalauréat série C…',
+                icon: Icons.school_outlined,
                 controller: _examTypeCtrl,
-                decoration: const InputDecoration(
-                    isDense: true,
-                    border: OutlineInputBorder(),
-                    hintText: 'Ex : BEPC, Baccalauréat série C…'),
               ),
-              const SizedBox(height: 10),
-              Text("Date de l'examen", style: WinType.labelM(s.onMuted)),
-              const SizedBox(height: 4),
+              const SizedBox(height: 14),
+              Text("Date de l'examen",
+                  style: WinType.labelM(s.onStrong)
+                      .copyWith(fontWeight: FontWeight.w500)),
+              const SizedBox(height: 8),
               GestureDetector(
                 onTap: _pickExamDate,
                 child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                  decoration:
-                      BoxDecoration(border: Border.all(color: s.outline)),
+                  height: 50,
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
+                  decoration: BoxDecoration(
+                    color: s.surface,
+                    borderRadius: BorderRadius.circular(WinRadii.md),
+                    border: Border.all(color: s.outline, width: 1.5),
+                  ),
                   child: Row(children: [
                     Icon(Icons.calendar_today_outlined,
-                        size: 14, color: s.onFaint),
-                    const SizedBox(width: 8),
+                        size: 16, color: s.onFaint),
+                    const SizedBox(width: 10),
                     Text(
                         _examDate != null
                             ? _fmtDate(_examDate!)

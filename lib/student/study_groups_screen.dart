@@ -132,7 +132,7 @@ class _StudyGroupsScreenState extends State<StudyGroupsScreen> {
               color: WinColors.gold.withValues(alpha: 0.15),
               border: Border.all(
                   color: WinColors.gold.withValues(alpha: 0.6), width: 1.5),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(WinRadii.lg),
             ),
             child: Row(children: [
               const Icon(Icons.workspace_premium_outlined,
@@ -253,7 +253,10 @@ class _CreateGroupSheetState extends State<_CreateGroupSheet> {
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
     return Container(
-      decoration: BoxDecoration(color: s.surface),
+      decoration: BoxDecoration(
+          color: s.surface,
+          borderRadius:
+              BorderRadius.vertical(top: Radius.circular(WinRadii.xl))),
       padding: EdgeInsets.fromLTRB(
           24, 20, 24, MediaQuery.of(context).viewInsets.bottom + 40),
       child: Column(
@@ -266,7 +269,8 @@ class _CreateGroupSheetState extends State<_CreateGroupSheet> {
                 height: 4,
                 margin: const EdgeInsets.only(bottom: 20),
                 decoration: BoxDecoration(
-                    color: s.outline2, borderRadius: BorderRadius.circular(2)),
+                    color: s.outline2,
+                    borderRadius: BorderRadius.circular(WinRadii.full)),
               ),
             ),
             Text('Créer un groupe',
@@ -363,7 +367,7 @@ class _Leaderboard extends StatelessWidget {
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
                       color: s.primary.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(8)),
+                      borderRadius: BorderRadius.circular(WinRadii.full)),
                   child: Text('Moi',
                       style: WinType.labelS(s.primary)
                           .copyWith(fontWeight: FontWeight.w700)),
@@ -393,7 +397,8 @@ class _GroupDetailSheet extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
           color: s.surface,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(24))),
+          borderRadius:
+              BorderRadius.vertical(top: Radius.circular(WinRadii.xl))),
       padding: const EdgeInsets.fromLTRB(24, 16, 24, 40),
       child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -406,7 +411,7 @@ class _GroupDetailSheet extends StatelessWidget {
                     margin: const EdgeInsets.only(bottom: 20),
                     decoration: BoxDecoration(
                         color: s.outline2,
-                        borderRadius: BorderRadius.circular(2)))),
+                        borderRadius: BorderRadius.circular(WinRadii.full)))),
             Row(children: [
               Expanded(
                   child: Text(group.name,
@@ -484,7 +489,10 @@ class _JoinGroupSheetState extends State<_JoinGroupSheet> {
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
     return Container(
-      decoration: BoxDecoration(color: s.surface),
+      decoration: BoxDecoration(
+          color: s.surface,
+          borderRadius:
+              BorderRadius.vertical(top: Radius.circular(WinRadii.xl))),
       padding: EdgeInsets.fromLTRB(
           24, 20, 24, MediaQuery.of(context).viewInsets.bottom + 40),
       child: Column(
@@ -497,7 +505,8 @@ class _JoinGroupSheetState extends State<_JoinGroupSheet> {
                 height: 4,
                 margin: const EdgeInsets.only(bottom: 20),
                 decoration: BoxDecoration(
-                    color: s.outline2, borderRadius: BorderRadius.circular(2)),
+                    color: s.outline2,
+                    borderRadius: BorderRadius.circular(WinRadii.full)),
               ),
             ),
             Text('Rejoindre par code',

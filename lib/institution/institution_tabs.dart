@@ -35,7 +35,7 @@ Widget _instHeroStat(String value, String title) => Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
           color: Colors.white.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(14)),
+          borderRadius: BorderRadius.circular(WinRadii.md)),
       child: Row(children: [
         Text(value, style: WinType.archivo(size: 22, color: WinColors.teal400)),
         const SizedBox(width: 10),
@@ -65,7 +65,7 @@ class _GroupRow extends StatelessWidget {
               alignment: Alignment.center,
               decoration: BoxDecoration(
                   color: s.primaryContainer,
-                  borderRadius: BorderRadius.circular(10)),
+                  borderRadius: BorderRadius.circular(WinRadii.sm)),
               child: Text('${g.memberCount}',
                   style: WinType.archivo(size: 16, color: s.primary))),
           const SizedBox(width: 12),
@@ -115,7 +115,8 @@ class _GroupRow extends StatelessWidget {
       context: context,
       backgroundColor: s.bg,
       shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+          borderRadius:
+              BorderRadius.vertical(top: Radius.circular(WinRadii.xl))),
       builder: (_) => Padding(
         padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
         child: Column(
@@ -128,7 +129,7 @@ class _GroupRow extends StatelessWidget {
                       height: 4,
                       decoration: BoxDecoration(
                           color: s.outline,
-                          borderRadius: BorderRadius.circular(2)))),
+                          borderRadius: BorderRadius.circular(WinRadii.full)))),
               const SizedBox(height: 16),
               Text('Attribuer à ${group.name}',
                   style: WinType.titleL(s.onStrong)),
@@ -197,7 +198,7 @@ class _InstitutionDashTabState extends State<InstitutionDashTab> {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(24),
+                  borderRadius: BorderRadius.circular(WinRadii.xl),
                   gradient: LinearGradient(
                       colors: [s.heroFrom, s.heroTo],
                       begin: Alignment.topLeft,
@@ -214,7 +215,8 @@ class _InstitutionDashTabState extends State<InstitutionDashTab> {
                                 style: WinType.archivo(
                                     size: 15, color: WinColors.cream50)),
                             const SizedBox(height: 2),
-                            Text('Plan ${WinData.institutionStats.plan} · ${_analytics?.totalStudents ?? 0} élèves',
+                            Text(
+                                'Plan ${WinData.institutionStats.plan} · ${_analytics?.totalStudents ?? 0} élèves',
                                 style: WinType.labelS(WinColors.ink300)),
                           ])),
                       Stack(clipBehavior: Clip.none, children: [
@@ -253,12 +255,19 @@ class _InstitutionDashTabState extends State<InstitutionDashTab> {
               // KPIs grille 2x2
               Builder(builder: (ctx) {
                 final st = WinData.institutionStats;
-                final activeStudents = _analytics?.activeStudents ?? st.activeStudentsToday;
-                final totalStudents = _analytics?.totalStudents.clamp(1, 99999) ?? st.licensesTotal;
-                final avgScore = _analytics?.averageScore.round() ?? st.avgSuccessRate;
-                final quizCount = _analytics?.quizzesThisMonth ?? st.quizThisWeek;
-                final pctActive = (activeStudents / totalStudents * 100).round();
-                final pctLic = (st.licensesUsed / st.licensesTotal * 100).round();
+                final activeStudents =
+                    _analytics?.activeStudents ?? st.activeStudentsToday;
+                final totalStudents =
+                    _analytics?.totalStudents.clamp(1, 99999) ??
+                        st.licensesTotal;
+                final avgScore =
+                    _analytics?.averageScore.round() ?? st.avgSuccessRate;
+                final quizCount =
+                    _analytics?.quizzesThisMonth ?? st.quizThisWeek;
+                final pctActive =
+                    (activeStudents / totalStudents * 100).round();
+                final pctLic =
+                    (st.licensesUsed / st.licensesTotal * 100).round();
                 return Column(children: [
                   Row(children: [
                     Expanded(
@@ -537,7 +546,8 @@ class _InstitutionCatalogTabState extends State<InstitutionCatalogTab> {
                                   height: 48,
                                   decoration: BoxDecoration(
                                       color: subj.color.withValues(alpha: 0.12),
-                                      borderRadius: BorderRadius.circular(12)),
+                                      borderRadius:
+                                          BorderRadius.circular(WinRadii.sm)),
                                   child: Icon(subj.icon,
                                       size: 22, color: subj.color)),
                               const SizedBox(width: 12),
@@ -736,7 +746,7 @@ class InstitutionAccountTab extends StatelessWidget {
                   height: 80,
                   decoration: BoxDecoration(
                       color: WinColors.goldBg,
-                      borderRadius: BorderRadius.circular(20)),
+                      borderRadius: BorderRadius.circular(WinRadii.lg)),
                   child: const Icon(Icons.apartment_outlined,
                       size: 40, color: WinColors.gold)),
               const SizedBox(height: 12),
@@ -749,7 +759,8 @@ class InstitutionAccountTab extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                  color: s.inkCard, borderRadius: BorderRadius.circular(16)),
+                  color: s.inkCard,
+                  borderRadius: BorderRadius.circular(WinRadii.lg)),
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -846,7 +857,8 @@ class _Row extends StatelessWidget {
 
 /// ===================== WINAI =====================
 class InstitutionWinAITab extends StatefulWidget {
-  const InstitutionWinAITab({super.key});
+  final String? initialMessage;
+  const InstitutionWinAITab({super.key, this.initialMessage});
   @override
   State<InstitutionWinAITab> createState() => _InstitutionWinAITabState();
 }
@@ -862,6 +874,15 @@ class _InstitutionWinAITabState extends State<InstitutionWinAITab> {
     'Plan d\'action prioritaire',
     'Benchmark national',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialMessage != null) {
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => _send(widget.initialMessage));
+    }
+  }
 
   Future<void> _send([String? preset]) async {
     final t = (preset ?? _ctrl.text).trim();
@@ -885,143 +906,165 @@ class _InstitutionWinAITabState extends State<InstitutionWinAITab> {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    return Column(children: [
-      Expanded(
-        child: _msgs.isEmpty
-            ? Padding(
-                padding: const EdgeInsets.all(24),
-                child: Column(children: [
-                  const Spacer(),
-                  const WinAIOrb(size: 80),
-                  const SizedBox(height: 20),
-                  Text('WinAI',
-                      style: WinType.archivo(size: 28, color: s.onStrong)),
-                  const SizedBox(height: 6),
-                  Text('Ton auditeur analytique & stratège institutionnel',
-                      style: WinType.bodyM(s.onMuted),
-                      textAlign: TextAlign.center),
-                  const SizedBox(height: 24),
-                  GridView.count(
-                    shrinkWrap: true,
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 10,
-                    crossAxisSpacing: 10,
-                    childAspectRatio: 2.6,
-                    children: _suggestions
-                        .map((q) => GestureDetector(
-                              onTap: () => _send(q),
-                              child: Container(
-                                padding: const EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                    color: WinColors.teal500
-                                        .withValues(alpha: 0.08),
-                                    borderRadius: BorderRadius.circular(12),
-                                    border: Border.all(
-                                        color: WinColors.teal500
-                                            .withValues(alpha: 0.25))),
-                                alignment: Alignment.centerLeft,
-                                child: Text(q,
-                                    style: WinType.manrope(
-                                        size: 13,
-                                        weight: FontWeight.w600,
-                                        color: WinColors.teal600),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis),
-                              ),
-                            ))
-                        .toList(),
-                  ),
-                  const SizedBox(height: 16),
-                  GestureDetector(
-                    onTap: () => showWinAIMemoriesSheet(context),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF5F3FF),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: const Color(0xFF8B5CF6).withValues(alpha: 0.3)),
-                      ),
-                      child: Row(mainAxisSize: MainAxisSize.min, children: [
-                        const Icon(Icons.psychology_rounded, size: 15, color: Color(0xFF8B5CF6)),
-                        const SizedBox(width: 8),
-                        Text('Mémoire WinAI', style: WinType.manrope(size: 13, weight: FontWeight.w600, color: const Color(0xFF8B5CF6))),
-                        const SizedBox(width: 6),
-                        const Icon(Icons.arrow_forward_ios_rounded, size: 11, color: Color(0xFF8B5CF6)),
-                      ]),
+    return Scaffold(
+      backgroundColor: s.bg,
+      appBar: AppBar(
+        backgroundColor: s.bg,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text('WinAI', style: WinType.headlineS(s.onStrong)),
+      ),
+      body: Column(children: [
+        Expanded(
+          child: _msgs.isEmpty
+              ? Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(children: [
+                    const Spacer(),
+                    const WinAIOrb(size: 80),
+                    const SizedBox(height: 20),
+                    Text('WinAI',
+                        style: WinType.archivo(size: 28, color: s.onStrong)),
+                    const SizedBox(height: 6),
+                    Text('Ton auditeur analytique & stratège institutionnel',
+                        style: WinType.bodyM(s.onMuted),
+                        textAlign: TextAlign.center),
+                    const SizedBox(height: 24),
+                    GridView.count(
+                      shrinkWrap: true,
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 10,
+                      crossAxisSpacing: 10,
+                      childAspectRatio: 2.6,
+                      children: _suggestions
+                          .map((q) => GestureDetector(
+                                onTap: () => _send(q),
+                                child: Container(
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                      color: WinColors.teal500
+                                          .withValues(alpha: 0.08),
+                                      borderRadius:
+                                          BorderRadius.circular(WinRadii.md),
+                                      border: Border.all(
+                                          color: WinColors.teal500
+                                              .withValues(alpha: 0.25))),
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(q,
+                                      style: WinType.manrope(
+                                          size: 13,
+                                          weight: FontWeight.w600,
+                                          color: WinColors.teal600),
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis),
+                                ),
+                              ))
+                          .toList(),
                     ),
-                  ),
-                  const Spacer(),
-                ]),
-              )
-            : ListView.builder(
-                padding: const EdgeInsets.all(16),
-                itemCount: _msgs.length + (_thinking ? 1 : 0),
-                itemBuilder: (_, i) {
-                  if (_thinking && i == _msgs.length) {
+                    const SizedBox(height: 16),
+                    GestureDetector(
+                      onTap: () => showWinAIMemoriesSheet(context),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 10),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF5F3FF),
+                          borderRadius: BorderRadius.circular(WinRadii.full),
+                          border: Border.all(
+                              color: const Color(0xFF8B5CF6)
+                                  .withValues(alpha: 0.3)),
+                        ),
+                        child: Row(mainAxisSize: MainAxisSize.min, children: [
+                          const Icon(Icons.psychology_rounded,
+                              size: 15, color: Color(0xFF8B5CF6)),
+                          const SizedBox(width: 8),
+                          Text('Mémoire WinAI',
+                              style: WinType.manrope(
+                                  size: 13,
+                                  weight: FontWeight.w600,
+                                  color: const Color(0xFF8B5CF6))),
+                          const SizedBox(width: 6),
+                          const Icon(Icons.arrow_forward_ios_rounded,
+                              size: 11, color: Color(0xFF8B5CF6)),
+                        ]),
+                      ),
+                    ),
+                    const Spacer(),
+                  ]),
+                )
+              : ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: _msgs.length + (_thinking ? 1 : 0),
+                  itemBuilder: (_, i) {
+                    if (_thinking && i == _msgs.length) {
+                      return Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          margin: const EdgeInsets.only(bottom: 12),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 14, vertical: 12),
+                          decoration: BoxDecoration(
+                              color: s.cardBg,
+                              border: Border.all(color: s.cardBorder),
+                              borderRadius: BorderRadius.circular(WinRadii.lg)),
+                          child: Row(mainAxisSize: MainAxisSize.min, children: [
+                            SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: CircularProgressIndicator(
+                                    strokeWidth: 2, color: s.primary)),
+                            const SizedBox(width: 8),
+                            Text('WinAI réfléchit…',
+                                style: WinType.bodyS(s.onMuted)),
+                          ]),
+                        ),
+                      );
+                    }
+                    final m = _msgs[i];
                     return Align(
-                      alignment: Alignment.centerLeft,
+                      alignment:
+                          m.me ? Alignment.centerRight : Alignment.centerLeft,
                       child: Container(
                         margin: const EdgeInsets.only(bottom: 12),
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 14, vertical: 12),
+                            horizontal: 14, vertical: 10),
+                        constraints: const BoxConstraints(maxWidth: 280),
                         decoration: BoxDecoration(
-                            color: s.cardBg,
-                            border: Border.all(color: s.cardBorder),
-                            borderRadius: BorderRadius.circular(18)),
-                        child: Row(mainAxisSize: MainAxisSize.min, children: [
-                          SizedBox(
-                              width: 16,
-                              height: 16,
-                              child: CircularProgressIndicator(
-                                  strokeWidth: 2, color: s.primary)),
-                          const SizedBox(width: 8),
-                          Text('WinAI réfléchit…',
-                              style: WinType.bodyS(s.onMuted)),
-                        ]),
+                          color: m.me ? WinColors.ink800 : s.cardBg,
+                          border: m.me ? null : Border.all(color: s.cardBorder),
+                          borderRadius: BorderRadius.circular(WinRadii.lg),
+                        ),
+                        child: Text(m.text,
+                            style: WinType.bodyM(
+                                m.me ? WinColors.cream50 : s.onSurface)),
                       ),
                     );
-                  }
-                  final m = _msgs[i];
-                  return Align(
-                    alignment:
-                        m.me ? Alignment.centerRight : Alignment.centerLeft,
-                    child: Container(
-                      margin: const EdgeInsets.only(bottom: 12),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 14, vertical: 10),
-                      constraints: const BoxConstraints(maxWidth: 280),
-                      decoration: BoxDecoration(
-                        color: m.me ? WinColors.ink800 : s.cardBg,
-                        border: m.me ? null : Border.all(color: s.cardBorder),
-                        borderRadius: BorderRadius.circular(18),
-                      ),
-                      child: Text(m.text,
-                          style: WinType.bodyM(
-                              m.me ? WinColors.cream50 : s.onSurface)),
-                    ),
-                  );
-                },
-              ),
-      ),
-      Padding(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 14),
-        child: Row(children: [
-          Expanded(
-              child: WinTextField(
-                  hint: 'Analyse, benchmark, plan d\'action…',
-                  controller: _ctrl)),
-          const SizedBox(width: 8),
-          GestureDetector(
-            onTap: _send,
-            child: Container(
-                width: 48,
-                height: 50,
-                decoration: BoxDecoration(
-                    color: s.primary, borderRadius: BorderRadius.circular(12)),
-                child: Icon(Icons.send, size: 20, color: s.onPrimary)),
-          ),
-        ]),
-      ),
-    ]);
+                  },
+                ),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 14),
+          child: Row(children: [
+            Expanded(
+                child: WinTextField(
+                    hint: 'Analyse, benchmark, plan d\'action…',
+                    controller: _ctrl)),
+            const SizedBox(width: 8),
+            GestureDetector(
+              onTap: _send,
+              child: Container(
+                  width: 48,
+                  height: 48,
+                  decoration:
+                      BoxDecoration(color: s.primary, shape: BoxShape.circle),
+                  child: Icon(Icons.send, size: 20, color: s.onPrimary)),
+            ),
+          ]),
+        ),
+      ]),
+    );
   }
 }

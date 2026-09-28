@@ -1,12 +1,12 @@
 ﻿import 'package:flutter/material.dart';
-import '../app_state.dart';
 import '../data/mock_data.dart';
 import '../data/models.dart';
+import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
-import '../shell/role_shell.dart';
 import 'login_screen.dart';
+import 'signup_screen.dart';
 
 /// Sélection du rôle à l'inscription.
 class RoleScreen extends StatefulWidget {
@@ -49,14 +49,10 @@ class _RoleScreenState extends State<RoleScreen> {
               block: true,
               onTap: _sel == null
                   ? null
-                  : () async {
-                      WinAppScope.of(context).setRole(_sel!);
-                      if (context.mounted) {
-                        Navigator.pushAndRemoveUntil(context,
-                            MaterialPageRoute(builder: (_) => const RoleShell()),
-                            (r) => false);
-                      }
-                    },
+                  : () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => SignupScreen(role: _sel!))),
             ),
           ),
         ]),
@@ -79,11 +75,11 @@ class _RoleCard extends StatelessWidget {
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           color: selected ? s.surface2 : s.cardBg,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(WinRadii.md),
           border: Border.all(color: selected ? s.onStrong : s.cardBorder, width: selected ? 2 : 1),
         ),
         child: Row(children: [
-          Container(width: 48, height: 48, decoration: BoxDecoration(color: info.color, borderRadius: BorderRadius.circular(12)), child: Icon(info.icon, color: Colors.white, size: 24)),
+          Container(width: 48, height: 48, decoration: BoxDecoration(color: info.color, borderRadius: BorderRadius.circular(WinRadii.sm)), child: Icon(info.icon, color: Colors.white, size: 24)),
           const SizedBox(width: 14),
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(info.label, style: WinType.titleL(s.onStrong)),

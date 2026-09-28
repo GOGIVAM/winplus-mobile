@@ -3,7 +3,8 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 
-/// WINPLUS  Widgets réutilisables  design zéro-radius identique au web.
+/// WINPLUS  Widgets réutilisables  direction visuelle "Funica" (arrondis
+/// généreux, boutons/chips en pilule), couleurs de marque WinPlus conservées.
 
 enum WinButtonVariant { primary, accent, outline, ghost, danger, secondary }
 
@@ -84,15 +85,15 @@ class WinButton extends StatelessWidget {
       height: height,
       child: Material(
         color: bg,
-        borderRadius: BorderRadius.zero,
+        borderRadius: BorderRadius.circular(WinRadii.full),
         child: InkWell(
-          borderRadius: BorderRadius.zero,
+          borderRadius: BorderRadius.circular(WinRadii.full),
           onTap: loading ? null : onTap,
           child: Container(
             alignment: Alignment.center,
             padding: EdgeInsets.symmetric(horizontal: small ? 14 : 20),
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.zero,
+                borderRadius: BorderRadius.circular(WinRadii.full),
                 border: Border.all(color: bd, width: 1.5)),
             child: child,
           ),
@@ -119,9 +120,10 @@ class WinCard extends StatelessWidget {
     final s = WinTheme.of(context);
     final content = Container(
       padding: padding,
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         color: bg ?? s.cardBg,
-        borderRadius: BorderRadius.zero,
+        borderRadius: BorderRadius.circular(WinRadii.lg),
         border: Border.all(color: s.cardBorder),
         boxShadow: WinShadows.sm,
       ),
@@ -130,8 +132,11 @@ class WinCard extends StatelessWidget {
     if (onTap == null) return content;
     return Material(
         color: Colors.transparent,
+        borderRadius: BorderRadius.circular(WinRadii.lg),
         child: InkWell(
-            borderRadius: BorderRadius.zero, onTap: onTap, child: content));
+            borderRadius: BorderRadius.circular(WinRadii.lg),
+            onTap: onTap,
+            child: content));
   }
 }
 
@@ -153,7 +158,7 @@ class WinChip extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 12),
         decoration: BoxDecoration(
           color: active ? s.chipActiveBg : s.chipBg,
-          borderRadius: BorderRadius.zero,
+          borderRadius: BorderRadius.circular(WinRadii.full),
           border: Border.all(color: active ? s.chipActiveBg : s.outline),
         ),
         child: Row(mainAxisSize: MainAxisSize.min, children: [
@@ -193,8 +198,8 @@ class WinBadge extends StatelessWidget {
     return Container(
       height: 20,
       padding: const EdgeInsets.symmetric(horizontal: 8),
-      decoration:
-          BoxDecoration(color: pairs[0], borderRadius: BorderRadius.zero),
+      decoration: BoxDecoration(
+          color: pairs[0], borderRadius: BorderRadius.circular(WinRadii.full)),
       alignment: Alignment.center,
       child: Text(label,
           style: WinType.manrope(
@@ -219,7 +224,7 @@ class WinProgressBar extends StatelessWidget {
         minHeight: height,
         backgroundColor: s.skeleton,
         valueColor: AlwaysStoppedAnimation(color ?? s.primary),
-        borderRadius: BorderRadius.zero,
+        borderRadius: BorderRadius.circular(WinRadii.full),
       ),
     );
   }
@@ -319,7 +324,7 @@ class _WinTextFieldState extends State<WinTextField> {
           padding: const EdgeInsets.symmetric(horizontal: 14),
           decoration: BoxDecoration(
             color: s.surface,
-            borderRadius: BorderRadius.zero,
+            borderRadius: BorderRadius.circular(WinRadii.md),
             border:
                 Border.all(color: _focused ? s.primary : s.outline, width: 1.5),
           ),
@@ -487,7 +492,7 @@ class WinAlert extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
           color: bg,
-          borderRadius: BorderRadius.zero,
+          borderRadius: BorderRadius.circular(WinRadii.sm),
           border: Border.all(color: fg.withValues(alpha: 0.3))),
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Icon(ic, size: 16, color: fg),
@@ -528,7 +533,7 @@ class _WinSkeletonState extends State<WinSkeleton>
               height: widget.height,
               decoration: BoxDecoration(
                   color: Color.lerp(s.skeleton, s.surface2, _c.value),
-                  borderRadius: BorderRadius.zero),
+                  borderRadius: BorderRadius.circular(WinRadii.sm)),
             ));
   }
 }
@@ -551,6 +556,38 @@ class WinSectionHeader extends StatelessWidget {
                 style: WinType.labelM(s.primary)
                     .copyWith(fontWeight: FontWeight.w600))),
     ]);
+  }
+}
+
+/// Bouton icône circulaire semi-transparent flottant sur une image héro
+/// (retour/favori/partage), comme sur les fiches produit et pages de
+/// formation Funica  jamais une IconButton plate sur fond uni au-dessus
+/// d'une image.
+class WinCircleIconButton extends StatelessWidget {
+  final IconData icon;
+  final Color? iconColor;
+  final VoidCallback onTap;
+  const WinCircleIconButton(
+      {super.key, required this.icon, this.iconColor, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final s = WinTheme.of(context);
+    return Padding(
+      padding: const EdgeInsets.all(4),
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          width: 38,
+          height: 38,
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.85),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(icon, size: 19, color: iconColor ?? s.onStrong),
+        ),
+      ),
+    );
   }
 }
 

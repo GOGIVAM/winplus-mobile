@@ -50,7 +50,8 @@ class _ProfileHubTabState extends State<ProfileHubTab> {
   Future<void> _loadNotifCount() async {
     try {
       final notifs = await UserService.instance.getNotifications();
-      if (mounted) setState(() => _unreadCount = notifs.where((n) => !n.isRead).length);
+      if (mounted)
+        setState(() => _unreadCount = notifs.where((n) => !n.isRead).length);
     } catch (_) {}
   }
 
@@ -61,10 +62,13 @@ class _ProfileHubTabState extends State<ProfileHubTab> {
         title: const Text('Se déconnecter ?'),
         content: const Text('Vous serez redirigé vers l\'écran d\'accueil.'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Annuler')),
+          TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Annuler')),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Déconnecter', style: TextStyle(color: Colors.red)),
+            child:
+                const Text('Déconnecter', style: TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -105,20 +109,29 @@ class _ProfileHubTabState extends State<ProfileHubTab> {
           WinAvatar(name, size: 54),
           const SizedBox(width: 14),
           Expanded(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(name, style: WinType.archivo(size: 17, weight: FontWeight.w700, color: s.onStrong)),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(name,
+                  style: WinType.archivo(
+                      size: 17, weight: FontWeight.w700, color: s.onStrong)),
               const SizedBox(height: 2),
               Row(children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
                     color: WinColors.gold.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(WinRadii.full),
                   ),
                   child: Row(mainAxisSize: MainAxisSize.min, children: [
-                    const Icon(Icons.workspace_premium_outlined, size: 13, color: WinColors.gold),
+                    const Icon(Icons.workspace_premium_outlined,
+                        size: 13, color: WinColors.gold),
                     const SizedBox(width: 4),
-                    Text('Plan $planName', style: WinType.manrope(size: 12, weight: FontWeight.w700, color: WinColors.gold)),
+                    Text('Plan $planName',
+                        style: WinType.manrope(
+                            size: 12,
+                            weight: FontWeight.w700,
+                            color: WinColors.gold)),
                   ]),
                 ),
               ]),
@@ -260,15 +273,19 @@ class _ProfileHubTabState extends State<ProfileHubTab> {
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               child: Row(children: [
                 Container(
-                  width: 36, height: 36,
+                  width: 36,
+                  height: 36,
                   decoration: BoxDecoration(
                     color: s.onMuted.withValues(alpha: 0.10),
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(WinRadii.sm),
                   ),
-                  child: Icon(Icons.dark_mode_outlined, size: 20, color: s.onMuted),
+                  child: Icon(Icons.dark_mode_outlined,
+                      size: 20, color: s.onMuted),
                 ),
                 const SizedBox(width: 12),
-                Expanded(child: Text('Mode sombre', style: WinType.titleM(s.onStrong))),
+                Expanded(
+                    child:
+                        Text('Mode sombre', style: WinType.titleM(s.onStrong))),
                 Switch(
                   value: appState.dark,
                   onChanged: (_) => appState.toggleTheme(),
@@ -283,15 +300,19 @@ class _ProfileHubTabState extends State<ProfileHubTab> {
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
               child: Row(children: [
                 Container(
-                  width: 36, height: 36,
+                  width: 36,
+                  height: 36,
                   decoration: BoxDecoration(
                     color: WinColors.error.withValues(alpha: 0.10),
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(WinRadii.sm),
                   ),
-                  child: const Icon(Icons.logout, size: 20, color: WinColors.error),
+                  child: const Icon(Icons.logout,
+                      size: 20, color: WinColors.error),
                 ),
                 const SizedBox(width: 12),
-                Expanded(child: Text('Se déconnecter', style: WinType.titleM(WinColors.error))),
+                Expanded(
+                    child: Text('Se déconnecter',
+                        style: WinType.titleM(WinColors.error))),
               ]),
             ),
           ],
@@ -308,8 +329,9 @@ class _SectionLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
     return Text(label.toUpperCase(),
-        style: WinType.manrope(size: 11, weight: FontWeight.w700, color: s.onFaint)
-            .copyWith(letterSpacing: 1.1));
+        style:
+            WinType.manrope(size: 11, weight: FontWeight.w700, color: s.onFaint)
+                .copyWith(letterSpacing: 1.1));
   }
 }
 
@@ -340,16 +362,18 @@ class _HubTile extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         child: Row(children: [
           Container(
-            width: 36, height: 36,
+            width: 36,
+            height: 36,
             decoration: BoxDecoration(
               color: color.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(WinRadii.sm),
             ),
             child: Icon(icon, size: 20, color: color),
           ),
           const SizedBox(width: 12),
           Expanded(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(label, style: WinType.titleM(s.onStrong)),
               if (subtitle != null)
                 Text(subtitle!, style: WinType.labelM(s.onMuted)),
@@ -358,8 +382,12 @@ class _HubTile extends StatelessWidget {
           if (badge != null)
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-              decoration: BoxDecoration(color: WinColors.error, borderRadius: BorderRadius.circular(20)),
-              child: Text(badge!, style: WinType.manrope(size: 11, weight: FontWeight.w700, color: Colors.white)),
+              decoration: BoxDecoration(
+                  color: WinColors.error,
+                  borderRadius: BorderRadius.circular(WinRadii.full)),
+              child: Text(badge!,
+                  style: WinType.manrope(
+                      size: 11, weight: FontWeight.w700, color: Colors.white)),
             )
           else
             Icon(Icons.chevron_right, size: 18, color: s.onFaint),

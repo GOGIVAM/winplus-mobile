@@ -24,7 +24,8 @@ class _WinAIAlertsScreenState extends State<WinAIAlertsScreen> {
 
   Future<void> _load() async {
     final children = await ParentService.instance.getChildren();
-    final alerts = await ParentService.instance.getAllPersistedAlerts(children.map((c) => c.id).toList());
+    final alerts = await ParentService.instance
+        .getAllPersistedAlerts(children.map((c) => c.id).toList());
     if (mounted)
       setState(() {
         _alerts = alerts;
@@ -134,7 +135,7 @@ class _WinAIAlertsScreenState extends State<WinAIAlertsScreen> {
                     ],
                     Container(
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.zero,
+                        borderRadius: BorderRadius.circular(WinRadii.md),
                         border: Border(
                           left: BorderSide(color: color, width: 4),
                           top: BorderSide(color: s.outline),

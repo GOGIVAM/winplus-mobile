@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 import '../services/subscription_service.dart';
 import '../services/user_service.dart';
+import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
@@ -27,8 +28,11 @@ class _ProfileScreenState extends State<ProfileScreen>
   final _newPwdCtrl = TextEditingController();
   final _confPwdCtrl = TextEditingController();
 
-  bool _notifQuiz = true, _notifAI = true, _notifPromo = false,
-      _notifExam = true, _notifCommunity = false;
+  bool _notifQuiz = true,
+      _notifAI = true,
+      _notifPromo = false,
+      _notifExam = true,
+      _notifCommunity = false;
   bool _profilePublic = true, _shareStats = false;
   bool _twoFactor = false;
   bool _savingProfile = false;
@@ -68,7 +72,8 @@ class _ProfileScreenState extends State<ProfileScreen>
     if (!mounted) return;
     setState(() => _savingProfile = false);
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(ok ? 'Profil mis à jour.' : 'Erreur lors de la mise à jour.'),
+      content:
+          Text(ok ? 'Profil mis à jour.' : 'Erreur lors de la mise à jour.'),
     ));
   }
 
@@ -84,7 +89,10 @@ class _ProfileScreenState extends State<ProfileScreen>
       setState(() => _pwdError = 'Les mots de passe ne correspondent pas.');
       return;
     }
-    setState(() { _savingPwd = true; _pwdError = null; });
+    setState(() {
+      _savingPwd = true;
+      _pwdError = null;
+    });
     final ok = await UserService.instance.changePassword(cur, next);
     if (!mounted) return;
     setState(() => _savingPwd = false);
@@ -92,8 +100,8 @@ class _ProfileScreenState extends State<ProfileScreen>
       _curPwdCtrl.clear();
       _newPwdCtrl.clear();
       _confPwdCtrl.clear();
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Mot de passe modifié.')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Mot de passe modifié.')));
     } else {
       setState(() => _pwdError = 'Mot de passe actuel incorrect.');
     }
@@ -112,7 +120,8 @@ class _ProfileScreenState extends State<ProfileScreen>
     return Scaffold(
       backgroundColor: s.bg,
       appBar: AppBar(
-        backgroundColor: s.bg, elevation: 0,
+        backgroundColor: s.bg,
+        elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
@@ -139,8 +148,10 @@ class _ProfileScreenState extends State<ProfileScreen>
         // ---- PROFIL ----
         SingleChildScrollView(
           padding: const EdgeInsets.all(20),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Center(child: Column(children: [
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Center(
+                child: Column(children: [
               WinAvatar(_profile?.fullName ?? '…', size: 72),
               const SizedBox(height: 8),
               GestureDetector(
@@ -151,18 +162,30 @@ class _ProfileScreenState extends State<ProfileScreen>
               ),
             ])),
             const SizedBox(height: 24),
-            WinTextField(label: 'Nom complet', controller: _nameCtrl, icon: Icons.person_outline),
+            WinTextField(
+                label: 'Nom complet',
+                controller: _nameCtrl,
+                icon: Icons.person_outline),
             const SizedBox(height: 14),
-            WinTextField(label: 'Email', controller: _emailCtrl, icon: Icons.email_outlined,
+            WinTextField(
+                label: 'Email',
+                controller: _emailCtrl,
+                icon: Icons.email_outlined,
                 keyboardType: TextInputType.emailAddress),
             const SizedBox(height: 14),
-            WinTextField(label: 'Téléphone', controller: _phoneCtrl, icon: Icons.phone_outlined,
+            WinTextField(
+                label: 'Téléphone',
+                controller: _phoneCtrl,
+                icon: Icons.phone_outlined,
                 keyboardType: TextInputType.phone),
             const SizedBox(height: 14),
-            WinTextField(label: 'Niveau', controller: _levelCtrl, icon: Icons.school_outlined),
+            WinTextField(
+                label: 'Niveau',
+                controller: _levelCtrl,
+                icon: Icons.school_outlined),
             const SizedBox(height: 28),
-            WinButton('Enregistrer les modifications', block: true,
-                loading: _savingProfile, onTap: _saveProfile),
+            WinButton('Enregistrer les modifications',
+                block: true, loading: _savingProfile, onTap: _saveProfile),
           ]),
         ),
 
@@ -170,20 +193,33 @@ class _ProfileScreenState extends State<ProfileScreen>
         ListView(padding: const EdgeInsets.all(20), children: [
           Text('Changer le mot de passe', style: WinType.headlineS(s.onStrong)),
           const SizedBox(height: 14),
-          WinTextField(label: 'Mot de passe actuel', hint: '••••••••',
-              icon: Icons.lock_outline, obscure: true, controller: _curPwdCtrl),
+          WinTextField(
+              label: 'Mot de passe actuel',
+              hint: '••••••••',
+              icon: Icons.lock_outline,
+              obscure: true,
+              controller: _curPwdCtrl),
           const SizedBox(height: 12),
-          WinTextField(label: 'Nouveau mot de passe', hint: '••••••••',
-              icon: Icons.lock_outline, obscure: true, controller: _newPwdCtrl),
+          WinTextField(
+              label: 'Nouveau mot de passe',
+              hint: '••••••••',
+              icon: Icons.lock_outline,
+              obscure: true,
+              controller: _newPwdCtrl),
           const SizedBox(height: 12),
-          WinTextField(label: 'Confirmer', hint: '••••••••',
-              icon: Icons.lock_outline, obscure: true, controller: _confPwdCtrl),
+          WinTextField(
+              label: 'Confirmer',
+              hint: '••••••••',
+              icon: Icons.lock_outline,
+              obscure: true,
+              controller: _confPwdCtrl),
           if (_pwdError != null) ...[
             const SizedBox(height: 10),
             WinAlert(_pwdError!, type: BadgeColor.error),
           ],
           const SizedBox(height: 20),
-          WinButton('Changer le mot de passe', block: true,
+          WinButton('Changer le mot de passe',
+              block: true,
               variant: WinButtonVariant.outline,
               loading: _savingPwd,
               onTap: _changePwd),
@@ -191,10 +227,15 @@ class _ProfileScreenState extends State<ProfileScreen>
           const WinDivider(),
           const SizedBox(height: 20),
           Row(children: [
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('Authentification à 2 facteurs', style: WinType.titleM(s.onStrong)),
-              Text('Un code email à chaque connexion.', style: WinType.bodyS(s.onMuted)),
-            ])),
+            Expanded(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                  Text('Authentification à 2 facteurs',
+                      style: WinType.titleM(s.onStrong)),
+                  Text('Un code email à chaque connexion.',
+                      style: WinType.bodyS(s.onMuted)),
+                ])),
             Switch(
               value: _twoFactor,
               activeTrackColor: s.primary,
@@ -218,13 +259,18 @@ class _ProfileScreenState extends State<ProfileScreen>
           const SizedBox(height: 20),
           Text('Sessions actives', style: WinType.headlineS(s.onStrong)),
           const SizedBox(height: 12),
-          WinCard(child: Row(children: [
+          WinCard(
+              child: Row(children: [
             Icon(Icons.phone_android, size: 24, color: s.onFaint),
             const SizedBox(width: 12),
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('Android · Yaoundé', style: WinType.titleM(s.onStrong)),
-              Text('Maintenant · Session actuelle', style: WinType.labelM(s.onFaint)),
-            ])),
+            Expanded(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                  Text('Android · Yaoundé', style: WinType.titleM(s.onStrong)),
+                  Text('Maintenant · Session actuelle',
+                      style: WinType.labelM(s.onFaint)),
+                ])),
             const WinBadge('Actif', color: BadgeColor.success),
           ])),
         ]),
@@ -232,55 +278,102 @@ class _ProfileScreenState extends State<ProfileScreen>
         // ---- NOTIFICATIONS ----
         Builder(builder: (ctx) {
           final items = [
-            ('quiz', _notifQuiz, 'Résultats de quiz', 'Recevoir vos scores après chaque quiz'),
-            ('ai', _notifAI, 'Recommandations WinAI', 'Alertes et conseils personnalisés'),
-            ('promo', _notifPromo, 'Offres et promotions', 'Nouveaux contenus, promotions'),
-            ('exam', _notifExam, 'Rappels d\'examens', 'Compte à rebours avant vos examens'),
-            ('community', _notifCommunity, 'Communauté', 'Réponses à vos questions'),
+            (
+              'quiz',
+              _notifQuiz,
+              'Résultats de quiz',
+              'Recevoir vos scores après chaque quiz'
+            ),
+            (
+              'ai',
+              _notifAI,
+              'Recommandations WinAI',
+              'Alertes et conseils personnalisés'
+            ),
+            (
+              'promo',
+              _notifPromo,
+              'Offres et promotions',
+              'Nouveaux contenus, promotions'
+            ),
+            (
+              'exam',
+              _notifExam,
+              'Rappels d\'examens',
+              'Compte à rebours avant vos examens'
+            ),
+            (
+              'community',
+              _notifCommunity,
+              'Communauté',
+              'Réponses à vos questions'
+            ),
           ];
           return ListView(padding: const EdgeInsets.all(20), children: [
             ...items.map((item) => Padding(
-              padding: const EdgeInsets.only(bottom: 16),
-              child: Row(children: [
-                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(item.$3, style: WinType.titleM(s.onStrong)),
-                  Text(item.$4, style: WinType.bodyS(s.onMuted)),
-                ])),
-                Switch(value: item.$2,
-                    onChanged: (v) => setState(() {
-                      switch (item.$1) {
-                        case 'quiz': _notifQuiz = v;
-                        case 'ai': _notifAI = v;
-                        case 'promo': _notifPromo = v;
-                        case 'exam': _notifExam = v;
-                        case 'community': _notifCommunity = v;
-                      }
-                    }),
-                    activeTrackColor: s.primary),
-              ]),
-            )),
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: Row(children: [
+                    Expanded(
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                          Text(item.$3, style: WinType.titleM(s.onStrong)),
+                          Text(item.$4, style: WinType.bodyS(s.onMuted)),
+                        ])),
+                    Switch(
+                        value: item.$2,
+                        onChanged: (v) => setState(() {
+                              switch (item.$1) {
+                                case 'quiz':
+                                  _notifQuiz = v;
+                                case 'ai':
+                                  _notifAI = v;
+                                case 'promo':
+                                  _notifPromo = v;
+                                case 'exam':
+                                  _notifExam = v;
+                                case 'community':
+                                  _notifCommunity = v;
+                              }
+                            }),
+                        activeTrackColor: s.primary),
+                  ]),
+                )),
           ]);
         }),
 
         // ---- CONFIDENTIALITÉ ----
         ListView(padding: const EdgeInsets.all(20), children: [
           Row(children: [
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('Profil visible', style: WinType.titleM(s.onStrong)),
-              Text('Visible par la communauté WinPlus.', style: WinType.bodyS(s.onMuted)),
-            ])),
-            Switch(value: _profilePublic, onChanged: (v) => setState(() => _profilePublic = v),
+            Expanded(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                  Text('Profil visible', style: WinType.titleM(s.onStrong)),
+                  Text('Visible par la communauté WinPlus.',
+                      style: WinType.bodyS(s.onMuted)),
+                ])),
+            Switch(
+                value: _profilePublic,
+                onChanged: (v) => setState(() => _profilePublic = v),
                 activeTrackColor: s.primary),
           ]),
           const SizedBox(height: 16),
           const WinDivider(),
           const SizedBox(height: 16),
           Row(children: [
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('Statistiques anonymisées', style: WinType.titleM(s.onStrong)),
-              Text('Aide à améliorer WinPlus.', style: WinType.bodyS(s.onMuted)),
-            ])),
-            Switch(value: _shareStats, onChanged: (v) => setState(() => _shareStats = v),
+            Expanded(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                  Text('Statistiques anonymisées',
+                      style: WinType.titleM(s.onStrong)),
+                  Text('Aide à améliorer WinPlus.',
+                      style: WinType.bodyS(s.onMuted)),
+                ])),
+            Switch(
+                value: _shareStats,
+                onChanged: (v) => setState(() => _shareStats = v),
                 activeTrackColor: s.primary),
           ]),
           const SizedBox(height: 24),
@@ -332,22 +425,28 @@ class _TabCompteState extends State<_TabCompte> {
     final s = WinTheme.of(context);
     final sub = _sub;
     return ListView(padding: const EdgeInsets.all(20), children: [
-      WinCard(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      WinCard(
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
           Text(sub != null ? 'Plan ${sub.planName}' : 'Chargement…',
               style: WinType.headlineS(s.onStrong)),
           const Spacer(),
-          WinBadge(sub?.isActive == true ? 'Actif' : '…', color: BadgeColor.success),
+          WinBadge(sub?.isActive == true ? 'Actif' : '…',
+              color: BadgeColor.success),
         ]),
         if (sub != null) ...[
           const SizedBox(height: 4),
-          Text('Expire le ${sub.expiresAt.day.toString().padLeft(2,'0')}/${sub.expiresAt.month.toString().padLeft(2,'0')}/${sub.expiresAt.year}',
+          Text(
+              'Expire le ${sub.expiresAt.day.toString().padLeft(2, '0')}/${sub.expiresAt.month.toString().padLeft(2, '0')}/${sub.expiresAt.year}',
               style: WinType.bodyS(s.onMuted)),
         ],
         const SizedBox(height: 14),
-        WinButton('Gérer mon abonnement', block: true,
+        WinButton('Gérer mon abonnement',
+            block: true,
             variant: WinButtonVariant.outline,
-            icon: Icons.credit_card_outlined, onTap: () {}),
+            icon: Icons.credit_card_outlined,
+            onTap: () {}),
       ])),
       const SizedBox(height: 24),
       const WinDivider(label: 'Zone dangereuse'),
@@ -355,28 +454,35 @@ class _TabCompteState extends State<_TabCompte> {
       const WinAlert('La suppression de votre compte est irréversible.',
           type: BadgeColor.error),
       const SizedBox(height: 14),
-      WinButton('Supprimer mon compte', block: true,
+      WinButton('Supprimer mon compte',
+          block: true,
           variant: WinButtonVariant.danger,
           icon: Icons.delete_outline,
           onTap: () => showDialog(
-            context: context,
-            builder: (_) => AlertDialog(
-              title: const Text('Supprimer le compte ?'),
-              content: const Text('Cette action est irréversible. Toutes vos données seront perdues.'),
-              actions: [
-                TextButton(onPressed: () => Navigator.pop(context),
-                    child: const Text('Annuler')),
-                TextButton(onPressed: () => Navigator.pop(context),
-                    child: const Text('Supprimer',
-                        style: TextStyle(color: Colors.red))),
-              ],
-            ),
-          )),
+                context: context,
+                builder: (_) => AlertDialog(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(WinRadii.xl)),
+                  title: const Text('Supprimer le compte ?'),
+                  content: const Text(
+                      'Cette action est irréversible. Toutes vos données seront perdues.'),
+                  actions: [
+                    TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('Annuler')),
+                    TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('Supprimer',
+                            style: TextStyle(color: Colors.red))),
+                  ],
+                ),
+              )),
       const SizedBox(height: 20),
       TextButton(
         onPressed: _signOut,
         child: Text('Se déconnecter',
-            style: WinType.manrope(size: 14, weight: FontWeight.w600, color: Colors.red)),
+            style: WinType.manrope(
+                size: 14, weight: FontWeight.w600, color: Colors.red)),
       ),
     ]);
   }

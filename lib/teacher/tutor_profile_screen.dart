@@ -432,7 +432,7 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
       ]),
       const SizedBox(height: 6),
       ClipRRect(
-        borderRadius: BorderRadius.zero,
+        borderRadius: BorderRadius.circular(WinRadii.full),
         child: LinearProgressIndicator(
             value: c.score / 100,
             backgroundColor: s.chipBg,
@@ -473,6 +473,7 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
         height: 26,
         alignment: Alignment.center,
         decoration: BoxDecoration(
+          shape: BoxShape.circle,
           color:
               active ? WinColors.teal400 : (done ? WinColors.teal50 : s.chipBg),
           border:
@@ -710,6 +711,7 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
                     height: 34,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(WinRadii.sm),
                         color: active ? WinColors.teal400 : s.chipBg,
                         border: Border.all(color: s.outline)),
                     child: Text(pi == 0 ? _days[day] : '',

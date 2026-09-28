@@ -83,28 +83,35 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
 
     return Scaffold(
       backgroundColor: s.bg,
-      appBar: AppBar(
-        backgroundColor: s.bg,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text('Profil du tuteur', style: WinType.headlineS(s.onStrong)),
-      ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : _error || p == null
-              ? Center(
-                  child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  Icon(Icons.wifi_off_outlined, size: 48, color: s.onFaint),
-                  const SizedBox(height: 12),
-                  Text('Impossible de charger ce profil.',
-                      style: WinType.bodyM(s.onMuted)),
-                  const SizedBox(height: 12),
-                  WinButton('Réessayer', onTap: _load),
+              ? SafeArea(
+                  child: Column(children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
+                    child: Row(children: [
+                      WinCircleIconButton(
+                          icon: Icons.arrow_back,
+                          onTap: () => Navigator.pop(context)),
+                    ]),
+                  ),
+                  Expanded(
+                    child: Center(
+                      child: Column(mainAxisSize: MainAxisSize.min, children: [
+                        Icon(Icons.wifi_off_outlined,
+                            size: 48, color: s.onFaint),
+                        const SizedBox(height: 12),
+                        Text('Impossible de charger ce profil.',
+                            style: WinType.bodyM(s.onMuted)),
+                        const SizedBox(height: 12),
+                        WinButton('Réessayer', onTap: _load),
+                      ]),
+                    ),
+                  ),
                 ]))
               : Column(children: [
+                  _HeroHeader(profile: p, onBack: () => Navigator.pop(context)),
                   Expanded(child: _buildBody(s, p)),
                   // Bouton "Réserver" sticky en bas (professeur_complete.md).
                   Container(
@@ -127,31 +134,8 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
 
   Widget _buildBody(WinScheme s, TutorProfile p) {
     return ListView(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
       children: [
-        Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          WinAvatar(p.fullName ?? p.title ?? '?', size: 72),
-          const SizedBox(width: 14),
-          Expanded(
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(p.fullName ?? 'Tuteur WinPlus',
-                  style: WinType.archivo(size: 19, color: s.onStrong)),
-              if ((p.title ?? '').isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(top: 2),
-                  child: Text(p.title!, style: WinType.bodyM(s.onMuted)),
-                ),
-              const SizedBox(height: 8),
-              Wrap(spacing: 6, runSpacing: 6, children: [
-                if (p.isDiplomaVerified)
-                  const WinBadge('Vérifié Diplôme', color: BadgeColor.success),
-                const WinBadge('Avis bientôt disponibles',
-                    color: BadgeColor.neutral),
-              ]),
-            ]),
-          ),
-        ]),
         if ((p.tutorBio ?? '').isNotEmpty) ...[
           const SizedBox(height: 16),
           Text(p.tutorBio!, style: WinType.bodyM(s.onSurface)),
@@ -261,6 +245,84 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
   }
 }
 
+/// En-tête héros dégradé (identité du tuteur), même langage que les
+/// bandeaux d'accueil des tableaux de bord et le panneau de connexion
+/// remplace l'ancienne simple ligne avatar+texte en haut de liste.
+class _HeroHeader extends StatelessWidget {
+  final TutorProfile profile;
+  final VoidCallback onBack;
+  const _HeroHeader({required this.profile, required this.onBack});
+
+  @override
+  Widget build(BuildContext context) {
+    final s = WinTheme.of(context);
+    final p = profile;
+    return Container(
+      padding: const EdgeInsets.fromLTRB(12, 8, 16, 20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [s.heroFrom, s.heroTo],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
+      child: SafeArea(
+        bottom: false,
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          WinCircleIconButton(icon: Icons.arrow_back, onTap: onBack),
+          const SizedBox(height: 12),
+          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Stack(clipBehavior: Clip.none, children: [
+              WinAvatar(p.fullName ?? p.title ?? '?',
+                  size: 72, color: WinColors.teal400),
+              if (p.isDiplomaVerified)
+                Positioned(
+                  bottom: -2,
+                  right: -2,
+                  child: Container(
+                    width: 22,
+                    height: 22,
+                    decoration: BoxDecoration(
+                      color: WinColors.success,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: s.heroTo, width: 2),
+                    ),
+                    child: const Icon(Icons.check_rounded,
+                        size: 13, color: Colors.white),
+                  ),
+                ),
+            ]),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(p.fullName ?? 'Tuteur WinPlus',
+                        style: WinType.archivo(
+                            size: 19, color: WinColors.cream50)),
+                    if ((p.title ?? '').isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2),
+                        child: Text(p.title!,
+                            style: WinType.bodyM(WinColors.ink200)),
+                      ),
+                    const SizedBox(height: 10),
+                    Wrap(spacing: 6, runSpacing: 6, children: [
+                      if (p.isDiplomaVerified)
+                        const WinBadge('Vérifié Diplôme',
+                            color: BadgeColor.success),
+                      const WinBadge('Avis bientôt disponibles',
+                          color: BadgeColor.neutral),
+                    ]),
+                  ]),
+            ),
+          ]),
+        ]),
+      ),
+    );
+  }
+}
+
 class _SectionTitle extends StatelessWidget {
   final String title;
   const _SectionTitle(this.title);
@@ -341,6 +403,7 @@ class _AvailabilityCalendarState extends State<_AvailabilityCalendar> {
                   color: active
                       ? s.primary
                       : (bookable ? WinColors.successBg : s.chipBg),
+                  borderRadius: BorderRadius.circular(WinRadii.sm),
                   border: Border.all(color: active ? s.primary : s.outline),
                 ),
                 child: Column(
@@ -375,6 +438,7 @@ class _AvailabilityCalendarState extends State<_AvailabilityCalendar> {
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
                     color: occ.isBookable ? WinColors.successBg : s.chipBg,
+                    borderRadius: BorderRadius.circular(WinRadii.full),
                     border: Border.all(
                         color: occ.isBookable ? WinColors.success : s.outline),
                   ),

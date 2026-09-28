@@ -57,8 +57,10 @@ class _CoursePlayerScreenState extends State<CoursePlayerScreen> {
       });
       // Navigate to first incomplete or specified lesson
       final lessonId = widget.initialLessonId ??
-          data.allLessons.firstWhere((l) => !l.isCompleted,
-              orElse: () => data.allLessons.first).id;
+          data.allLessons
+              .firstWhere((l) => !l.isCompleted,
+                  orElse: () => data.allLessons.first)
+              .id;
       _loadLesson(lessonId);
     } catch (_) {
       if (mounted) {
@@ -68,10 +70,18 @@ class _CoursePlayerScreenState extends State<CoursePlayerScreen> {
   }
 
   Future<void> _loadLesson(int lessonId) async {
-    setState(() { _loadingLesson = true; _currentLessonId = lessonId; });
+    setState(() {
+      _loadingLesson = true;
+      _currentLessonId = lessonId;
+    });
     try {
-      final lesson = await CourseService.instance.getLesson(widget.courseId, lessonId);
-      if (mounted) setState(() { _lesson = lesson; _loadingLesson = false; });
+      final lesson =
+          await CourseService.instance.getLesson(widget.courseId, lessonId);
+      if (mounted)
+        setState(() {
+          _lesson = lesson;
+          _loadingLesson = false;
+        });
     } catch (_) {
       if (mounted) setState(() => _loadingLesson = false);
     }
@@ -93,28 +103,50 @@ class _CoursePlayerScreenState extends State<CoursePlayerScreen> {
         _progressPercent = result.progressPercent;
         _courseCompleted = result.courseCompleted;
         _lesson = LessonContent(
-          id: l.id, title: l.title, lessonType: l.lessonType,
-          description: l.description, videoUrl: l.videoUrl,
-          videoDurationSec: l.videoDurationSec, articleContent: l.articleContent,
-          fileUrl: l.fileUrl, fileName: l.fileName,
-          isPreview: l.isPreview, isCompleted: true, lastPositionSec: 0,
+          id: l.id,
+          title: l.title,
+          lessonType: l.lessonType,
+          description: l.description,
+          videoUrl: l.videoUrl,
+          videoDurationSec: l.videoDurationSec,
+          articleContent: l.articleContent,
+          fileUrl: l.fileUrl,
+          fileName: l.fileName,
+          isPreview: l.isPreview,
+          isCompleted: true,
+          lastPositionSec: 0,
         );
-        _curriculum = _curriculum == null ? null : CourseCurriculum(
-          courseId: _curriculum!.courseId,
-          title: _curriculum!.title,
-          progressPercent: result.progressPercent,
-          completedAt: result.courseCompleted ? DateTime.now().toIso8601String() : _curriculum!.completedAt,
-          certificateUrl: _curriculum!.certificateUrl,
-          sections: _curriculum!.sections.map((sec) => CurriculumSection(
-            id: sec.id, title: sec.title, position: sec.position,
-            lessons: sec.lessons.map((ll) => ll.id == l.id
-                ? CurriculumLesson(
-                    id: ll.id, title: ll.title, lessonType: ll.lessonType,
-                    videoDurationSec: ll.videoDurationSec, position: ll.position,
-                    isPreview: ll.isPreview, isCompleted: true, lastPositionSec: 0)
-                : ll).toList(),
-          )).toList(),
-        );
+        _curriculum = _curriculum == null
+            ? null
+            : CourseCurriculum(
+                courseId: _curriculum!.courseId,
+                title: _curriculum!.title,
+                progressPercent: result.progressPercent,
+                completedAt: result.courseCompleted
+                    ? DateTime.now().toIso8601String()
+                    : _curriculum!.completedAt,
+                certificateUrl: _curriculum!.certificateUrl,
+                sections: _curriculum!.sections
+                    .map((sec) => CurriculumSection(
+                          id: sec.id,
+                          title: sec.title,
+                          position: sec.position,
+                          lessons: sec.lessons
+                              .map((ll) => ll.id == l.id
+                                  ? CurriculumLesson(
+                                      id: ll.id,
+                                      title: ll.title,
+                                      lessonType: ll.lessonType,
+                                      videoDurationSec: ll.videoDurationSec,
+                                      position: ll.position,
+                                      isPreview: ll.isPreview,
+                                      isCompleted: true,
+                                      lastPositionSec: 0)
+                                  : ll)
+                              .toList(),
+                        ))
+                    .toList(),
+              );
       });
       if (result.courseCompleted) _showCompletionDialog();
     } catch (_) {}
@@ -126,23 +158,28 @@ class _CoursePlayerScreenState extends State<CoursePlayerScreen> {
       context: context,
       builder: (_) => AlertDialog(
         backgroundColor: s.surface,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(WinRadii.xl)),
         title: Column(children: [
           const Icon(Icons.workspace_premium, size: 56, color: WinColors.gold),
           const SizedBox(height: 12),
-          Text('Formation terminée !', style: WinType.headlineS(s.onStrong), textAlign: TextAlign.center),
+          Text('Formation terminée !',
+              style: WinType.headlineS(s.onStrong),
+              textAlign: TextAlign.center),
         ]),
-        content: Text('Félicitations ! Votre certificat est en cours de génération.',
-            style: WinType.bodyM(s.onMuted), textAlign: TextAlign.center),
+        content: Text(
+            'Félicitations ! Votre certificat est en cours de génération.',
+            style: WinType.bodyM(s.onMuted),
+            textAlign: TextAlign.center),
         actions: [
-          Center(child: WinButton('Fermer', onTap: () => Navigator.pop(context))),
+          Center(
+              child: WinButton('Fermer', onTap: () => Navigator.pop(context))),
         ],
       ),
     );
   }
 
-  List<CurriculumLesson> get _allLessons =>
-      _curriculum?.allLessons ?? [];
+  List<CurriculumLesson> get _allLessons => _curriculum?.allLessons ?? [];
 
   CurriculumLesson? get _prevLesson {
     final idx = _allLessons.indexWhere((l) => l.id == _currentLessonId);
@@ -151,7 +188,9 @@ class _CoursePlayerScreenState extends State<CoursePlayerScreen> {
 
   CurriculumLesson? get _nextLesson {
     final idx = _allLessons.indexWhere((l) => l.id == _currentLessonId);
-    return idx >= 0 && idx < _allLessons.length - 1 ? _allLessons[idx + 1] : null;
+    return idx >= 0 && idx < _allLessons.length - 1
+        ? _allLessons[idx + 1]
+        : null;
   }
 
   @override
@@ -164,10 +203,14 @@ class _CoursePlayerScreenState extends State<CoursePlayerScreen> {
         elevation: 0,
         title: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(widget.courseTitle,
-              style: WinType.labelM(Colors.white70), maxLines: 1, overflow: TextOverflow.ellipsis),
+              style: WinType.labelM(Colors.white70),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis),
           if (_lesson != null)
             Text(_lesson!.title,
-                style: WinType.titleM(Colors.white), maxLines: 1, overflow: TextOverflow.ellipsis),
+                style: WinType.titleM(Colors.white),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis),
         ]),
         actions: [
           // Progress
@@ -177,7 +220,7 @@ class _CoursePlayerScreenState extends State<CoursePlayerScreen> {
               SizedBox(
                 width: 48,
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(3),
+                  borderRadius: BorderRadius.circular(WinRadii.full),
                   child: LinearProgressIndicator(
                     value: _progressPercent / 100,
                     minHeight: 5,
@@ -200,29 +243,37 @@ class _CoursePlayerScreenState extends State<CoursePlayerScreen> {
         ],
       ),
       body: _loadingCurr
-          ? const Center(child: CircularProgressIndicator(color: WinColors.teal400))
+          ? const Center(
+              child: CircularProgressIndicator(color: WinColors.teal400))
           : Column(children: [
-              Expanded(child: _sidebarOpen ? _CurriculumPanel(
-                curriculum: _curriculum!,
-                currentLessonId: _currentLessonId,
-                onSelect: (id) {
-                  setState(() => _sidebarOpen = false);
-                  _loadLesson(id);
-                },
-              ) : _LessonView(
-                lesson: _lesson,
-                loading: _loadingLesson,
-                courseCompleted: _courseCompleted,
-                onMarkComplete: _markComplete,
-              )),
+              Expanded(
+                  child: _sidebarOpen
+                      ? _CurriculumPanel(
+                          curriculum: _curriculum!,
+                          currentLessonId: _currentLessonId,
+                          onSelect: (id) {
+                            setState(() => _sidebarOpen = false);
+                            _loadLesson(id);
+                          },
+                        )
+                      : _LessonView(
+                          lesson: _lesson,
+                          loading: _loadingLesson,
+                          courseCompleted: _courseCompleted,
+                          onMarkComplete: _markComplete,
+                        )),
 
               // Bottom nav bar
               _BottomNav(
                 prev: _prevLesson,
                 next: _nextLesson,
                 isCompleted: _lesson?.isCompleted ?? false,
-                onPrev: () { if (_prevLesson != null) _loadLesson(_prevLesson!.id); },
-                onNext: () { if (_nextLesson != null) _loadLesson(_nextLesson!.id); },
+                onPrev: () {
+                  if (_prevLesson != null) _loadLesson(_prevLesson!.id);
+                },
+                onNext: () {
+                  if (_nextLesson != null) _loadLesson(_nextLesson!.id);
+                },
                 onComplete: _markComplete,
               ),
             ]),
@@ -251,37 +302,52 @@ class _CurriculumPanel extends StatelessWidget {
         itemCount: curriculum.sections.length,
         itemBuilder: (_, si) {
           final sec = curriculum.sections[si];
-          return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 14, 16, 6),
-              child: Text(sec.title,
-                  style: WinType.labelM(Colors.white38).copyWith(
-                      fontWeight: FontWeight.w700, letterSpacing: 0.5)),
-            ),
-            ...sec.lessons.map((l) {
-              final active = l.id == currentLessonId;
-              return InkWell(
-                onTap: () => onSelect(l.id),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  color: active ? WinColors.teal600.withValues(alpha: 0.15) : Colors.transparent,
-                  child: Row(children: [
-                    Icon(
-                      l.isCompleted ? Icons.check_circle : (active ? Icons.play_circle : Icons.radio_button_unchecked),
-                      size: 18,
-                      color: l.isCompleted ? WinColors.teal400 : (active ? Colors.white : Colors.white38),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(child: Text(l.title,
-                        style: WinType.bodyM(active ? Colors.white : Colors.white70),
-                        maxLines: 2, overflow: TextOverflow.ellipsis)),
-                    if (l.lessonType == 'video' && l.videoDurationSec > 0)
-                      Text(l.durationStr, style: WinType.labelS(Colors.white38)),
-                  ]),
+          return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 14, 16, 6),
+                  child: Text(sec.title,
+                      style: WinType.labelM(Colors.white38).copyWith(
+                          fontWeight: FontWeight.w700, letterSpacing: 0.5)),
                 ),
-              );
-            }),
-          ]);
+                ...sec.lessons.map((l) {
+                  final active = l.id == currentLessonId;
+                  return InkWell(
+                    onTap: () => onSelect(l.id),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 12),
+                      color: active
+                          ? WinColors.teal600.withValues(alpha: 0.15)
+                          : Colors.transparent,
+                      child: Row(children: [
+                        Icon(
+                          l.isCompleted
+                              ? Icons.check_circle
+                              : (active
+                                  ? Icons.play_circle
+                                  : Icons.radio_button_unchecked),
+                          size: 18,
+                          color: l.isCompleted
+                              ? WinColors.teal400
+                              : (active ? Colors.white : Colors.white38),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                            child: Text(l.title,
+                                style: WinType.bodyM(
+                                    active ? Colors.white : Colors.white70),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis)),
+                        if (l.lessonType == 'video' && l.videoDurationSec > 0)
+                          Text(l.durationStr,
+                              style: WinType.labelS(Colors.white38)),
+                      ]),
+                    ),
+                  );
+                }),
+              ]);
         },
       ),
     );
@@ -306,11 +372,13 @@ class _LessonView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (loading) {
-      return const Center(child: CircularProgressIndicator(color: WinColors.teal400));
+      return const Center(
+          child: CircularProgressIndicator(color: WinColors.teal400));
     }
     if (lesson == null) {
-      return Center(child: Text('Sélectionnez une leçon.',
-          style: WinType.bodyM(Colors.white38)));
+      return Center(
+          child: Text('Sélectionnez une leçon.',
+              style: WinType.bodyM(Colors.white38)));
     }
 
     final l = lesson!;
@@ -319,7 +387,8 @@ class _LessonView extends StatelessWidget {
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         // Video placeholder (real implementation needs video_player package)
         if (l.lessonType == 'video' && l.videoUrl != null)
-          _VideoPlaceholder(videoUrl: l.videoUrl!, durationSec: l.videoDurationSec),
+          _VideoPlaceholder(
+              videoUrl: l.videoUrl!, durationSec: l.videoDurationSec),
 
         // Article content
         if (l.lessonType == 'article' && l.articleContent != null)
@@ -328,7 +397,7 @@ class _LessonView extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: const Color(0xFF1E293B),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(WinRadii.lg),
             ),
             child: Text(l.articleContent!,
                 style: WinType.bodyM(Colors.white).copyWith(height: 1.7)),
@@ -341,17 +410,22 @@ class _LessonView extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: const Color(0xFF1E293B),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: WinColors.teal600.withValues(alpha: 0.4)),
+              borderRadius: BorderRadius.circular(WinRadii.lg),
+              border:
+                  Border.all(color: WinColors.teal600.withValues(alpha: 0.4)),
             ),
             child: Row(children: [
               const Icon(Icons.attach_file, color: WinColors.teal400, size: 24),
               const SizedBox(width: 12),
-              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(l.fileName ?? 'Fichier joint',
-                    style: WinType.titleM(Colors.white)),
-                Text('Appuyez pour télécharger', style: WinType.labelS(Colors.white54)),
-              ])),
+              Expanded(
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                    Text(l.fileName ?? 'Fichier joint',
+                        style: WinType.titleM(Colors.white)),
+                    Text('Appuyez pour télécharger',
+                        style: WinType.labelS(Colors.white54)),
+                  ])),
               const Icon(Icons.download_outlined, color: WinColors.teal400),
             ]),
           ),
@@ -359,10 +433,11 @@ class _LessonView extends StatelessWidget {
         // Lesson info
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(children: [
-              Expanded(child: Text(l.title,
-                  style: WinType.headlineS(Colors.white))),
+              Expanded(
+                  child: Text(l.title, style: WinType.headlineS(Colors.white))),
               if (l.isCompleted)
                 Row(mainAxisSize: MainAxisSize.min, children: [
                   Icon(Icons.check_circle, size: 16, color: WinColors.teal400),
@@ -382,17 +457,22 @@ class _LessonView extends StatelessWidget {
                   gradient: const LinearGradient(
                     colors: [WinColors.teal700, WinColors.teal600],
                   ),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(WinRadii.lg),
                 ),
                 child: Row(children: [
-                  const Icon(Icons.workspace_premium, color: Colors.white, size: 28),
+                  const Icon(Icons.workspace_premium,
+                      color: Colors.white, size: 28),
                   const SizedBox(width: 12),
-                  Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Text('Formation terminée !',
-                        style: WinType.titleM(Colors.white).copyWith(fontWeight: FontWeight.w700)),
-                    Text('Votre certificat est disponible.',
-                        style: WinType.labelM(Colors.white70)),
-                  ])),
+                  Expanded(
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                        Text('Formation terminée !',
+                            style: WinType.titleM(Colors.white)
+                                .copyWith(fontWeight: FontWeight.w700)),
+                        Text('Votre certificat est disponible.',
+                            style: WinType.labelM(Colors.white70)),
+                      ])),
                 ]),
               ),
             ],
@@ -418,17 +498,22 @@ class _VideoPlaceholder extends StatelessWidget {
       height: 210,
       color: Colors.black,
       child: Stack(alignment: Alignment.center, children: [
-        Icon(Icons.play_circle_filled, size: 64, color: Colors.white.withValues(alpha: 0.85)),
+        Icon(Icons.play_circle_filled,
+            size: 64, color: Colors.white.withValues(alpha: 0.85)),
         Positioned(
-          bottom: 12, right: 12,
+          bottom: 12,
+          right: 12,
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
               color: Colors.black54,
-              borderRadius: BorderRadius.circular(6),
+              borderRadius: BorderRadius.circular(WinRadii.sm),
             ),
             child: Text('$m:${s.toString().padLeft(2, '0')}',
-                style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w600)),
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600)),
           ),
         ),
       ]),
@@ -470,24 +555,29 @@ class _BottomNav extends StatelessWidget {
           IconButton(
             onPressed: prev != null ? onPrev : null,
             icon: Icon(Icons.skip_previous_rounded,
-                color: prev != null ? Colors.white70 : Colors.white24, size: 28),
+                color: prev != null ? Colors.white70 : Colors.white24,
+                size: 28),
           ),
           // Mark complete
           Expanded(
             child: isCompleted
                 ? Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    const Icon(Icons.check_circle, size: 16, color: WinColors.teal400),
+                    const Icon(Icons.check_circle,
+                        size: 16, color: WinColors.teal400),
                     const SizedBox(width: 6),
-                    Text('Leçon terminée', style: WinType.labelM(WinColors.teal400)),
+                    Text('Leçon terminée',
+                        style: WinType.labelM(WinColors.teal400)),
                   ])
                 : FilledButton.icon(
                     style: FilledButton.styleFrom(
                       backgroundColor: WinColors.teal600,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(WinRadii.full)),
                       padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
                     icon: const Icon(Icons.check, size: 18),
-                    label: Text('Marquer terminé', style: WinType.labelM(Colors.white)),
+                    label: Text('Marquer terminé',
+                        style: WinType.labelM(Colors.white)),
                     onPressed: onComplete,
                   ),
           ),
@@ -495,7 +585,8 @@ class _BottomNav extends StatelessWidget {
           IconButton(
             onPressed: next != null ? onNext : null,
             icon: Icon(Icons.skip_next_rounded,
-                color: next != null ? Colors.white70 : Colors.white24, size: 28),
+                color: next != null ? Colors.white70 : Colors.white24,
+                size: 28),
           ),
         ]),
       ),

@@ -68,22 +68,13 @@ class _NewThreadScreenState extends State<NewThreadScreen> {
           Wrap(
             spacing: 8,
             runSpacing: 8,
-            children: _categories.map((cat) {
-              final sel = cat == _category;
-              return GestureDetector(
-                onTap: () => setState(() => _category = cat),
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: sel ? s.primary : s.surface2,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(cat,
-                      style: WinType.labelM(sel ? Colors.white : s.onMuted)),
-                ),
-              );
-            }).toList(),
+            children: _categories
+                .map((cat) => WinChip(
+                      cat,
+                      active: cat == _category,
+                      onTap: () => setState(() => _category = cat),
+                    ))
+                .toList(),
           ),
           const SizedBox(height: 20),
           WinTextField(
@@ -104,6 +95,7 @@ class _NewThreadScreenState extends State<NewThreadScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
               decoration: BoxDecoration(
                 color: s.surface,
+                borderRadius: BorderRadius.circular(WinRadii.md),
                 border: Border.all(color: s.outline, width: 1.5),
               ),
               child:

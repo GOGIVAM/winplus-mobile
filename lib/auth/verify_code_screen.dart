@@ -33,7 +33,9 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
     _countdown = 60;
     _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 1), (t) {
-      if (_countdown <= 0) { t.cancel(); } else {
+      if (_countdown <= 0) {
+        t.cancel();
+      } else {
         setState(() => _countdown--);
       }
     });
@@ -42,8 +44,12 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
   @override
   void dispose() {
     _timer?.cancel();
-    for (final c in _ctrls) { c.dispose(); }
-    for (final n in _nodes) { n.dispose(); }
+    for (final c in _ctrls) {
+      c.dispose();
+    }
+    for (final n in _nodes) {
+      n.dispose();
+    }
     super.dispose();
   }
 
@@ -51,7 +57,10 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
 
   Future<void> _verify() async {
     if (_code.length < 6) return;
-    setState(() { _loading = true; _error = null; });
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
     final result = await AuthService.instance.verifyEmail(widget.email, _code);
     if (!mounted) return;
     if (result.success) {
@@ -60,7 +69,10 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
       await Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (_) => const EmailVerifiedScreen()));
     } else {
-      setState(() { _loading = false; _error = result.message ?? 'Code invalide.'; });
+      setState(() {
+        _loading = false;
+        _error = result.message ?? 'Code invalide.';
+      });
     }
   }
 
@@ -85,37 +97,58 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const SizedBox(height: 16),
-            Text('Vérification email', style: WinType.displayS(s.onStrong)),
-            const SizedBox(height: 8),
-            Text('Un code à 6 chiffres a été envoyé à votre adresse.',
-                style: WinType.bodyM(s.onMuted)),
-            const SizedBox(height: 40),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: List.generate(6, (i) => _CodeBox(
-                controller: _ctrls[i],
-                focusNode: _nodes[i],
-                onChanged: (v) {
-                  if (v.isNotEmpty && i < 5) {
-                    _nodes[i + 1].requestFocus();
-                  } else if (v.isEmpty && i > 0) {
-                    _nodes[i - 1].requestFocus();
-                  }
-                  setState(() {});
-                },
-              )),
-            ),
-            const SizedBox(height: 32),
-            if (_error != null) ...[
-              WinAlert(_error!, type: BadgeColor.error),
-              const SizedBox(height: 16),
-            ],
-            WinButton('Vérifier',
-                block: true,
-                loading: _loading,
-                onTap: _code.length == 6 ? _verify : null),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(height: 8),
+              Container(
+                width: 80,
+                height: 80,
+                decoration: BoxDecoration(
+                  color: s.primary.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(Icons.mark_email_read_outlined,
+                    size: 40, color: s.primary),
+              ),
+              const SizedBox(height: 24),
+              Text('Vérification email',
+                  style: WinType.displayS(s.onStrong),
+                  textAlign: TextAlign.center),
+              const SizedBox(height: 8),
+              Text('Un code à 6 chiffres a été envoyé à votre adresse.',
+                  style: WinType.bodyM(s.onMuted), textAlign: TextAlign.center),
+              const SizedBox(height: 8),
+              Text(widget.email,
+                  style: WinType.bodyM(s.primary)
+                      .copyWith(fontWeight: FontWeight.w600)),
+              const SizedBox(height: 32),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: List.generate(
+                    6,
+                    (i) => _CodeBox(
+                          controller: _ctrls[i],
+                          focusNode: _nodes[i],
+                          onChanged: (v) {
+                            if (v.isNotEmpty && i < 5) {
+                              _nodes[i + 1].requestFocus();
+                            } else if (v.isEmpty && i > 0) {
+                              _nodes[i - 1].requestFocus();
+                            }
+                            setState(() {});
+                          },
+                        )),
+              ),
+              const SizedBox(height: 32),
+              if (_error != null) ...[
+                WinAlert(_error!, type: BadgeColor.error),
+                const SizedBox(height: 16),
+              ],
+              WinButton('Vérifier',
+                  block: true,
+                  loading: _loading,
+                  onTap: _code.length == 6 ? _verify : null),
               const SizedBox(height: 20),
               Center(
                 child: _countdown > 0
@@ -140,7 +173,10 @@ class _CodeBox extends StatelessWidget {
   final TextEditingController controller;
   final FocusNode focusNode;
   final ValueChanged<String> onChanged;
-  const _CodeBox({required this.controller, required this.focusNode, required this.onChanged});
+  const _CodeBox(
+      {required this.controller,
+      required this.focusNode,
+      required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -160,12 +196,12 @@ class _CodeBox extends StatelessWidget {
         decoration: InputDecoration(
           counterText: '',
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.zero,
+            borderRadius: BorderRadius.circular(WinRadii.md),
             borderSide: BorderSide(color: s.outline, width: 1.5),
           ),
-          focusedBorder: const OutlineInputBorder(
-            borderRadius: BorderRadius.zero,
-            borderSide: BorderSide(color: WinColors.teal500, width: 2),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(WinRadii.md),
+            borderSide: const BorderSide(color: WinColors.teal500, width: 2),
           ),
           fillColor: s.surface,
           filled: true,

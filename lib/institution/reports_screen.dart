@@ -67,8 +67,12 @@ class _ReportsScreenState extends State<ReportsScreen> {
         ]),
         content: Text('Votre rapport "$title" est prêt.'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Partager')),
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Fermer')),
+          TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Partager')),
+          TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Fermer')),
         ],
       ),
     );
@@ -81,7 +85,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
     return Scaffold(
       backgroundColor: s.bg,
       appBar: AppBar(
-        backgroundColor: s.bg, elevation: 0,
+        backgroundColor: s.bg,
+        elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
@@ -95,11 +100,14 @@ class _ReportsScreenState extends State<ReportsScreen> {
           child: ListView(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            children: _periods.map((p) => Padding(
-              padding: const EdgeInsets.only(right: 8),
-              child: WinChip(p, active: _period == p,
-                  onTap: () => setState(() => _period = p)),
-            )).toList(),
+            children: _periods
+                .map((p) => Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: WinChip(p,
+                          active: _period == p,
+                          onTap: () => setState(() => _period = p)),
+                    ))
+                .toList(),
           ),
         ),
         const SizedBox(height: 16),
@@ -143,19 +151,23 @@ class _ReportTypeCard extends StatelessWidget {
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
           Container(
-            width: 44, height: 44,
+            width: 44,
+            height: 44,
             decoration: BoxDecoration(
               color: report.color.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(WinRadii.sm),
             ),
             child: Icon(report.icon, size: 22, color: report.color),
           ),
           const SizedBox(width: 12),
-          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(report.title, style: WinType.titleM(s.onStrong)),
-            const SizedBox(height: 2),
-            Text(report.description, style: WinType.labelM(s.onMuted)),
-          ])),
+          Expanded(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                Text(report.title, style: WinType.titleM(s.onStrong)),
+                const SizedBox(height: 2),
+                Text(report.description, style: WinType.labelM(s.onMuted)),
+              ])),
         ]),
         const SizedBox(height: 14),
         WinButton(

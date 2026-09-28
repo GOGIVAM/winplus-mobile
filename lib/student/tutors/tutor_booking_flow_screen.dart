@@ -237,11 +237,21 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
         title: Text(titles[_step], style: WinType.headlineS(s.onStrong)),
       ),
       body: SafeArea(
-        child: switch (_step) {
-          0 => _buildStepSlot(s),
-          1 => _buildStepRecap(s),
-          _ => _buildStepPayment(s),
-        },
+        child: Column(children: [
+          if (_booking == null) ...[
+            Padding(
+              padding: const EdgeInsets.fromLTRB(24, 8, 24, 4),
+              child: _BookingStepper(step: _step),
+            ),
+          ],
+          Expanded(
+            child: switch (_step) {
+              0 => _buildStepSlot(s),
+              1 => _buildStepRecap(s),
+              _ => _buildStepPayment(s),
+            },
+          ),
+        ]),
       ),
     );
   }
@@ -292,6 +302,7 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
                     color: active
                         ? s.primary
                         : (bookable ? WinColors.successBg : s.chipBg),
+                    borderRadius: BorderRadius.circular(WinRadii.sm),
                     border: Border.all(color: active ? s.primary : s.outline),
                   ),
                   child: Column(
@@ -333,6 +344,7 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
                       color: selected
                           ? s.primary
                           : (occ.isBookable ? WinColors.successBg : s.chipBg),
+                      borderRadius: BorderRadius.circular(WinRadii.full),
                       border: Border.all(
                           color: selected
                               ? s.primary
@@ -409,6 +421,7 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
                               horizontal: 14, vertical: 10),
                           decoration: BoxDecoration(
                             color: _mode == m ? s.primary : s.chipBg,
+                            borderRadius: BorderRadius.circular(WinRadii.full),
                             border: Border.all(
                                 color: _mode == m ? s.primary : s.outline),
                           ),
@@ -620,6 +633,54 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
             onTap: () => Navigator.of(context).popUntil((r) => r.isFirst)),
       ],
     );
+  }
+}
+
+/// Stepper numéroté 3 étapes (mêmes rond+trait que l'onboarding répétiteur
+/// côté professeur)  remplace le simple changement de titre dans l'AppBar,
+/// qui ne montrait ni la progression ni les étapes restantes.
+class _BookingStepper extends StatelessWidget {
+  final int step;
+  const _BookingStepper({required this.step});
+
+  @override
+  Widget build(BuildContext context) {
+    final s = WinTheme.of(context);
+    const labels = ['Créneau', 'Récapitulatif', 'Paiement'];
+    return Row(
+        children: List.generate(labels.length * 2 - 1, (i) {
+      if (i.isOdd) {
+        final done = (i ~/ 2) < step;
+        return Expanded(
+            child: Container(
+                height: 2, color: done ? WinColors.teal400 : s.outline));
+      }
+      final idx = i ~/ 2;
+      final active = idx == step;
+      final done = idx < step;
+      return Column(children: [
+        Container(
+          width: 26,
+          height: 26,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: active
+                ? WinColors.teal400
+                : (done ? WinColors.teal50 : s.chipBg),
+            border: Border.all(
+                color: active || done ? WinColors.teal400 : s.outline),
+          ),
+          child: done
+              ? const Icon(Icons.check, size: 14, color: WinColors.teal700)
+              : Text('${idx + 1}',
+                  style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      color: active ? Colors.white : s.onMuted)),
+        ),
+      ]);
+    }));
   }
 }
 

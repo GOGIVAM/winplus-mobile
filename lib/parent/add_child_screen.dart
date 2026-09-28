@@ -21,26 +21,40 @@ class _AddChildScreenState extends State<AddChildScreen> {
   Future<void> _submit() async {
     final email = _emailCtrl.text.trim();
     if (email.isEmpty || !email.contains('@')) {
-      setState(() { _error = true; _errorMsg = 'Veuillez saisir un email valide.'; });
+      setState(() {
+        _error = true;
+        _errorMsg = 'Veuillez saisir un email valide.';
+      });
       return;
     }
-    setState(() { _loading = true; _error = false; });
+    setState(() {
+      _loading = true;
+      _error = false;
+    });
     bool ok = false;
     try {
       ok = await ParentService.instance.addChild(email: email);
     } on OfflineActionException catch (e) {
       if (!mounted) return;
-      setState(() { _loading = false; _error = true; _errorMsg = e.message; });
+      setState(() {
+        _loading = false;
+        _error = true;
+        _errorMsg = e.message;
+      });
       return;
     }
     if (!mounted) return;
     setState(() => _loading = false);
     if (ok) {
       setState(() => _success = true);
-      Future.delayed(const Duration(milliseconds: 1800),
-          () { if (mounted) Navigator.pop(context, true); });
+      Future.delayed(const Duration(milliseconds: 1800), () {
+        if (mounted) Navigator.pop(context, true);
+      });
     } else {
-      setState(() { _error = true; _errorMsg = 'Aucun élève trouvé avec cet email, ou déjà lié.'; });
+      setState(() {
+        _error = true;
+        _errorMsg = 'Aucun élève trouvé avec cet email, ou déjà lié.';
+      });
     }
   }
 
@@ -58,7 +72,8 @@ class _AddChildScreenState extends State<AddChildScreen> {
     return Scaffold(
       backgroundColor: s.bg,
       appBar: AppBar(
-        backgroundColor: s.bg, elevation: 0,
+        backgroundColor: s.bg,
+        elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
@@ -77,7 +92,8 @@ class _AddChildScreenState extends State<AddChildScreen> {
               ),
             ),
           if (_success)
-            const WinAlert('Enfant ajouté à votre compte avec succès.', type: BadgeColor.success)
+            const WinAlert('Enfant ajouté à votre compte avec succès.',
+                type: BadgeColor.success)
           else ...[
             Text(
               'Entrez l\'adresse email du compte WinPlus de votre enfant pour le lier à votre espace parent.',

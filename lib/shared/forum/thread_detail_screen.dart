@@ -24,12 +24,20 @@ class _ThreadDetailScreenState extends State<ThreadDetailScreen> {
   }
 
   @override
-  void dispose() { _replyCtrl.dispose(); super.dispose(); }
+  void dispose() {
+    _replyCtrl.dispose();
+    super.dispose();
+  }
 
   Future<void> _loadPosts() async {
     try {
-      final posts = await ForumService.instance.getPosts(widget.thread['id'] as int);
-      if (mounted) setState(() { _posts = posts; _loading = false; });
+      final posts =
+          await ForumService.instance.getPosts(widget.thread['id'] as int);
+      if (mounted)
+        setState(() {
+          _posts = posts;
+          _loading = false;
+        });
     } catch (e) {
       if (mounted) setState(() => _loading = false);
     }
@@ -43,7 +51,8 @@ class _ThreadDetailScreenState extends State<ThreadDetailScreen> {
       await ForumService.instance.reply(widget.thread['id'] as int, text);
       _replyCtrl.clear();
       await _loadPosts();
-    } catch (_) {} finally {
+    } catch (_) {
+    } finally {
       if (mounted) setState(() => _sending = false);
     }
   }
@@ -67,48 +76,74 @@ class _ThreadDetailScreenState extends State<ThreadDetailScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(widget.thread['category'] ?? 'Thread', style: WinType.labelM(s.onMuted)),
+        title: Text(widget.thread['category'] ?? 'Thread',
+            style: WinType.labelM(s.onMuted)),
       ),
       body: Column(children: [
         Expanded(
           child: _loading
-            ? const Center(child: CircularProgressIndicator())
-            : ListView.builder(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-              itemCount: _posts.length + 1,
-              itemBuilder: (context, i) {
-                if (i == 0) return _ThreadHeader(thread: widget.thread, s: s);
-                final post = _posts[i - 1] as Map<String, dynamic>;
-                return _PostCard(post: post, s: s, onVote: _vote);
-              },
-            ),
+              ? const Center(child: CircularProgressIndicator())
+              : ListView.builder(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                  itemCount: _posts.length + 1,
+                  itemBuilder: (context, i) {
+                    if (i == 0)
+                      return _ThreadHeader(thread: widget.thread, s: s);
+                    final post = _posts[i - 1] as Map<String, dynamic>;
+                    return _PostCard(post: post, s: s, onVote: _vote);
+                  },
+                ),
         ),
-        // Zone de réponse
+        // Zone de réponse  champ en pilule + bouton d'envoi circulaire,
+        // même langage que le composer du chat WinAI.
         Container(
-          padding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
+          padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
           decoration: BoxDecoration(
             color: s.surface,
             border: Border(top: BorderSide(color: s.outline, width: 0.5)),
           ),
-          child: Row(children: [
+          child: Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
             Expanded(
-              child: TextField(
-                controller: _replyCtrl,
-                maxLines: 3, minLines: 1,
-                style: WinType.bodyM(s.onStrong),
-                decoration: InputDecoration(
-                  hintText: 'Votre réponse…',
-                  hintStyle: WinType.bodyM(s.onFaint),
-                  border: InputBorder.none,
+              child: Container(
+                constraints: const BoxConstraints(minHeight: 44),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  color: s.surface2,
+                  borderRadius: BorderRadius.circular(WinRadii.full),
+                  border: Border.all(color: s.outline),
+                ),
+                child: TextField(
+                  controller: _replyCtrl,
+                  maxLines: 4,
+                  minLines: 1,
+                  style: WinType.bodyM(s.onStrong),
+                  decoration: InputDecoration(
+                    isDense: true,
+                    hintText: 'Votre réponse…',
+                    hintStyle: WinType.bodyM(s.onFaint),
+                    border: InputBorder.none,
+                  ),
                 ),
               ),
             ),
             const SizedBox(width: 8),
-            IconButton(
-              onPressed: _sending ? null : _sendReply,
-              icon: _sending
-                ? SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: s.primary))
-                : Icon(Icons.send, color: s.primary),
+            GestureDetector(
+              onTap: _sending ? null : _sendReply,
+              child: Container(
+                width: 44,
+                height: 44,
+                decoration:
+                    BoxDecoration(color: s.primary, shape: BoxShape.circle),
+                alignment: Alignment.center,
+                child: _sending
+                    ? SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(
+                            strokeWidth: 2, color: s.onPrimary))
+                    : Icon(Icons.send, size: 18, color: s.onPrimary),
+              ),
             ),
           ]),
         ),
@@ -154,7 +189,7 @@ class _PostCard extends StatelessWidget {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: isAccepted ? WinColors.successBg : s.surface,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(WinRadii.lg),
         border: Border.all(
           color: isAccepted ? WinColors.success : s.outline,
           width: isAccepted ? 1.5 : 0.5,
@@ -162,10 +197,15 @@ class _PostCard extends StatelessWidget {
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          Text(post['authorName'] ?? 'Anonyme', style: WinType.labelM(s.onStrong).copyWith(fontWeight: FontWeight.w600)),
+          Text(post['authorName'] ?? 'Anonyme',
+              style: WinType.labelM(s.onStrong)
+                  .copyWith(fontWeight: FontWeight.w600)),
           const SizedBox(width: 8),
           _RolePill(role: role, isVerified: isVerified),
-          if (isAccepted) ...[const Spacer(), const Icon(Icons.check_circle, color: WinColors.success, size: 18)],
+          if (isAccepted) ...[
+            const Spacer(),
+            const Icon(Icons.check_circle, color: WinColors.success, size: 18)
+          ],
         ]),
         const SizedBox(height: 8),
         Text(post['content'] ?? '', style: WinType.bodyM(s.onSurface)),
@@ -210,9 +250,13 @@ class _RolePill extends StatelessWidget {
     };
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-      decoration: BoxDecoration(color: color.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(8)),
+      decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(WinRadii.full)),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
-        Text(label, style: TextStyle(fontSize: 11, color: color, fontWeight: FontWeight.w600)),
+        Text(label,
+            style: TextStyle(
+                fontSize: 11, color: color, fontWeight: FontWeight.w600)),
         if (role == 'institution' && isVerified) ...[
           const SizedBox(width: 3),
           Icon(Icons.verified_rounded, size: 11, color: color),

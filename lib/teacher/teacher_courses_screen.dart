@@ -243,8 +243,8 @@ class _TeacherCoursesScreenState extends State<TeacherCoursesScreen> {
             children: [
               Icon(Icons.wifi_off_outlined, size: 48, color: s.onFaint),
               const SizedBox(height: 12),
-              Text(_error!, style: WinType.bodyM(s.onMuted),
-                  textAlign: TextAlign.center),
+              Text(_error!,
+                  style: WinType.bodyM(s.onMuted), textAlign: TextAlign.center),
               const SizedBox(height: 16),
               WinButton('Réessayer',
                   variant: WinButtonVariant.outline,
@@ -318,7 +318,11 @@ class _CourseCard extends StatelessWidget {
               Container(
                 width: 96,
                 height: 96,
-                color: _statusThumbnailColor(course.status).withValues(alpha: 0.12),
+                decoration: BoxDecoration(
+                  color: _statusThumbnailColor(course.status)
+                      .withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(WinRadii.md),
+                ),
                 child: Icon(
                   Icons.play_circle_outline_rounded,
                   size: 36,
@@ -362,13 +366,15 @@ class _CourseCard extends StatelessWidget {
                     children: [
                       _StatPill(
                         icon: Icons.menu_book_outlined,
-                        label: '${course.lessonsCount} leçon${course.lessonsCount != 1 ? 's' : ''}',
+                        label:
+                            '${course.lessonsCount} leçon${course.lessonsCount != 1 ? 's' : ''}',
                         color: s.onMuted,
                       ),
                       const SizedBox(width: 10),
                       _StatPill(
                         icon: Icons.people_outline,
-                        label: '${course.enrolledCount} inscrit${course.enrolledCount != 1 ? 's' : ''}',
+                        label:
+                            '${course.enrolledCount} inscrit${course.enrolledCount != 1 ? 's' : ''}',
                         color: s.onMuted,
                       ),
                     ],
@@ -392,7 +398,8 @@ class _StatPill extends StatelessWidget {
   final String label;
   final Color color;
 
-  const _StatPill({required this.icon, required this.label, required this.color});
+  const _StatPill(
+      {required this.icon, required this.label, required this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -450,17 +457,19 @@ class _CourseOptionsSheetState extends State<_CourseOptionsSheet> {
       builder: (ctx) {
         final title = data['title'] as String? ?? widget.course.title;
         final description = data['description'] as String? ?? '';
-        final lessonsCount =
-            (data['lessonsCount'] as num?)?.toInt() ?? widget.course.lessonsCount;
-        final enrolledCount =
-            (data['enrolledCount'] as num?)?.toInt() ?? widget.course.enrolledCount;
+        final lessonsCount = (data['lessonsCount'] as num?)?.toInt() ??
+            widget.course.lessonsCount;
+        final enrolledCount = (data['enrolledCount'] as num?)?.toInt() ??
+            widget.course.enrolledCount;
         final avgRating =
             (data['avgRating'] as num?)?.toDouble() ?? widget.course.avgRating;
         final status = data['status'] as String? ?? widget.course.status;
         return AlertDialog(
           backgroundColor: s.surface,
-          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-          title: Text(title, style: WinType.archivo(size: 18, color: s.onStrong)),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(WinRadii.lg)),
+          title:
+              Text(title, style: WinType.archivo(size: 18, color: s.onStrong)),
           content: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -485,7 +494,8 @@ class _CourseOptionsSheetState extends State<_CourseOptionsSheet> {
                       style: WinType.labelM(s.onMuted)),
                   if (avgRating > 0) ...[
                     const SizedBox(width: 14),
-                    const Icon(Icons.star_outline, size: 14, color: WinColors.gold),
+                    const Icon(Icons.star_outline,
+                        size: 14, color: WinColors.gold),
                     const SizedBox(width: 4),
                     Text(avgRating.toStringAsFixed(1),
                         style: WinType.labelM(s.onMuted)),
@@ -499,9 +509,7 @@ class _CourseOptionsSheetState extends State<_CourseOptionsSheet> {
               onPressed: () => Navigator.of(ctx).pop(),
               child: Text('Fermer',
                   style: WinType.manrope(
-                      size: 14,
-                      weight: FontWeight.w600,
-                      color: s.primary)),
+                      size: 14, weight: FontWeight.w600, color: s.primary)),
             ),
           ],
         );
@@ -522,7 +530,8 @@ class _CourseOptionsSheetState extends State<_CourseOptionsSheet> {
         padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
         decoration: BoxDecoration(
           color: s.surface,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+          borderRadius:
+              const BorderRadius.vertical(top: Radius.circular(WinRadii.xl)),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -535,7 +544,7 @@ class _CourseOptionsSheetState extends State<_CourseOptionsSheet> {
                 margin: const EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
                   color: s.outline,
-                  borderRadius: BorderRadius.circular(2),
+                  borderRadius: BorderRadius.circular(WinRadii.full),
                 ),
               ),
             ),
@@ -569,16 +578,14 @@ class _CourseOptionsSheetState extends State<_CourseOptionsSheet> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-                'Statut mis à jour : ${_statusLabel(newStatus)}'),
+            content: Text('Statut mis à jour : ${_statusLabel(newStatus)}'),
           ),
         );
       }
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text('Échec de la mise à jour du statut.')),
+          const SnackBar(content: Text('Échec de la mise à jour du statut.')),
         );
       }
     }
@@ -593,7 +600,8 @@ class _CourseOptionsSheetState extends State<_CourseOptionsSheet> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: s.surface,
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(WinRadii.lg)),
         title: Text('Supprimer la formation ?',
             style: WinType.archivo(size: 18, color: s.onStrong)),
         content: Text(
@@ -605,9 +613,7 @@ class _CourseOptionsSheetState extends State<_CourseOptionsSheet> {
             onPressed: () => Navigator.of(ctx).pop(),
             child: Text('Annuler',
                 style: WinType.manrope(
-                    size: 14,
-                    weight: FontWeight.w600,
-                    color: s.onMuted)),
+                    size: 14, weight: FontWeight.w600, color: s.onMuted)),
           ),
           TextButton(
             onPressed: () {
@@ -616,9 +622,7 @@ class _CourseOptionsSheetState extends State<_CourseOptionsSheet> {
             },
             child: Text('Supprimer',
                 style: WinType.manrope(
-                    size: 14,
-                    weight: FontWeight.w600,
-                    color: WinColors.error)),
+                    size: 14, weight: FontWeight.w600, color: WinColors.error)),
           ),
         ],
       ),
@@ -639,7 +643,8 @@ class _CourseOptionsSheetState extends State<_CourseOptionsSheet> {
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Impossible de supprimer la formation.')),
+          const SnackBar(
+              content: Text('Impossible de supprimer la formation.')),
         );
       }
     } finally {
@@ -656,7 +661,8 @@ class _CourseOptionsSheetState extends State<_CourseOptionsSheet> {
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
       decoration: BoxDecoration(
         color: s.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius:
+            const BorderRadius.vertical(top: Radius.circular(WinRadii.xl)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -670,7 +676,7 @@ class _CourseOptionsSheetState extends State<_CourseOptionsSheet> {
               margin: const EdgeInsets.only(bottom: 16),
               decoration: BoxDecoration(
                 color: s.outline,
-                borderRadius: BorderRadius.circular(2),
+                borderRadius: BorderRadius.circular(WinRadii.full),
               ),
             ),
           ),
@@ -756,8 +762,7 @@ class _OptionTile extends StatelessWidget {
                 ? SizedBox(
                     width: 22,
                     height: 22,
-                    child: CircularProgressIndicator(
-                        strokeWidth: 2, color: fg))
+                    child: CircularProgressIndicator(strokeWidth: 2, color: fg))
                 : Icon(icon, size: 22, color: fg),
             const SizedBox(width: 14),
             Expanded(
@@ -799,8 +804,7 @@ class _StatusOption extends StatelessWidget {
           children: [
             WinBadge(label, color: badgeColor),
             const Spacer(),
-            if (isActive)
-              Icon(Icons.check_rounded, size: 18, color: s.primary),
+            if (isActive) Icon(Icons.check_rounded, size: 18, color: s.primary),
           ],
         ),
       ),

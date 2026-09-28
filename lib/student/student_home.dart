@@ -57,7 +57,9 @@ class _StudentHomeTabState extends State<StudentHomeTab> {
   Future<void> _loadProfile() async {
     try {
       final p = await UserService.instance.getProfile();
-      if (mounted) { setState(() => _profile = p); }
+      if (mounted) {
+        setState(() => _profile = p);
+      }
     } catch (_) {}
   }
 
@@ -67,7 +69,8 @@ class _StudentHomeTabState extends State<StudentHomeTab> {
     final sub = SubscriptionScope.of(context);
     final effectiveTier = sub.tier;
 
-    final firstName = _profile?.firstName ?? WinData.userProfile.name.split(' ').first;
+    final firstName =
+        _profile?.firstName ?? WinData.userProfile.name.split(' ').first;
     final now = DateTime.now();
     final hour = now.hour;
     final greeting =
@@ -92,7 +95,7 @@ class _StudentHomeTabState extends State<StudentHomeTab> {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(24),
+                  borderRadius: BorderRadius.circular(WinRadii.xl),
                   gradient: LinearGradient(
                       colors: [s.heroFrom, s.heroTo],
                       begin: Alignment.topLeft,
@@ -110,7 +113,7 @@ class _StudentHomeTabState extends State<StudentHomeTab> {
                             horizontal: 10, vertical: 3),
                         decoration: BoxDecoration(
                             color: planColor.withValues(alpha: 0.18),
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(WinRadii.full),
                             border: Border.all(
                                 color: planColor.withValues(alpha: 0.4))),
                         child: Row(mainAxisSize: MainAxisSize.min, children: [
@@ -168,8 +171,7 @@ class _StudentHomeTabState extends State<StudentHomeTab> {
             // Objectifs proposés par un parent, en attente de réponse
             const PendingGoalsPanel(),
             // UPGRADE BANNER  visible uniquement en plan Gratuit hors devMode
-            if (effectiveTier == PlanTier.libre)
-              _UpgradeBanner(s: s),
+            if (effectiveTier == PlanTier.libre) _UpgradeBanner(s: s),
             const SizedBox(height: 4),
             // CHIPS
             SizedBox(
@@ -290,7 +292,9 @@ class _InProgressCard extends StatelessWidget {
                     .copyWith(fontWeight: FontWeight.w600)),
             const Spacer(),
             Row(mainAxisSize: MainAxisSize.min, children: [
-              Text('Reprendre', style: WinType.manrope(size: 11, weight: FontWeight.w700, color: s.primary)),
+              Text('Reprendre',
+                  style: WinType.manrope(
+                      size: 11, weight: FontWeight.w700, color: s.primary)),
               const SizedBox(width: 2),
               Icon(Icons.arrow_forward_rounded, size: 11, color: s.primary),
             ]),
@@ -348,7 +352,7 @@ class _AiRecoCard extends StatelessWidget {
           height: 40,
           decoration: BoxDecoration(
               color: color.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(10)),
+              borderRadius: BorderRadius.circular(WinRadii.sm)),
           child: Icon(icon, size: 20, color: color),
         ),
         const SizedBox(width: 12),
@@ -370,7 +374,9 @@ class _AiRecoCard extends StatelessWidget {
             WinChip(subj.short, icon: subj.icon),
             const Spacer(),
             Row(mainAxisSize: MainAxisSize.min, children: [
-              Text('Voir', style: WinType.manrope(size: 12, weight: FontWeight.w700, color: s.primary)),
+              Text('Voir',
+                  style: WinType.manrope(
+                      size: 12, weight: FontWeight.w700, color: s.primary)),
               const SizedBox(width: 2),
               Icon(Icons.arrow_forward_rounded, size: 12, color: s.primary),
             ]),
@@ -397,7 +403,7 @@ class _ExamCountdownCard extends StatelessWidget {
           height: 44,
           decoration: BoxDecoration(
               color: subj.color.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(10)),
+              borderRadius: BorderRadius.circular(WinRadii.sm)),
           child: Icon(subj.icon, size: 22, color: subj.color),
         ),
         const SizedBox(width: 12),
@@ -477,7 +483,7 @@ class _HeroStat extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
           color: Colors.white.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(14)),
+          borderRadius: BorderRadius.circular(WinRadii.sm)),
       child: Row(children: [
         value,
         const SizedBox(width: 10),
@@ -526,7 +532,7 @@ class _UpgradeBanner extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
         color: WinColors.teal50,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(WinRadii.sm),
         border: Border.all(color: WinColors.teal100),
       ),
       child: Row(children: [
@@ -543,9 +549,14 @@ class _UpgradeBanner extends StatelessWidget {
         GestureDetector(
           onTap: () {},
           child: Row(mainAxisSize: MainAxisSize.min, children: [
-            Text('Voir', style: WinType.manrope(size: 12, weight: FontWeight.w700, color: WinColors.teal600)),
+            Text('Voir',
+                style: WinType.manrope(
+                    size: 12,
+                    weight: FontWeight.w700,
+                    color: WinColors.teal600)),
             const SizedBox(width: 2),
-            const Icon(Icons.arrow_forward_rounded, size: 12, color: WinColors.teal600),
+            const Icon(Icons.arrow_forward_rounded,
+                size: 12, color: WinColors.teal600),
           ]),
         ),
       ]),
@@ -574,12 +585,20 @@ class _SectionHeader extends StatelessWidget {
 }
 
 /// Carte de contenu (catalogue).
-class ContentCard extends StatelessWidget {
+class ContentCard extends StatefulWidget {
   final Content content;
   const ContentCard({super.key, required this.content});
   @override
+  State<ContentCard> createState() => _ContentCardState();
+}
+
+class _ContentCardState extends State<ContentCard> {
+  late bool _fav = widget.content.fav;
+
+  @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
+    final content = widget.content;
     final subj = WinData.subjectById(content.subjectId);
     return WinCard(
       onTap: () => Navigator.push(
@@ -588,33 +607,84 @@ class ContentCard extends StatelessWidget {
               builder: (_) => ContentDetailScreen(content: content))),
       padding: EdgeInsets.zero,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Container(
-          height: 92,
-          decoration: BoxDecoration(
-              color: subj.color.withValues(alpha: 0.12),
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(16))),
-          child: Center(child: Icon(subj.icon, size: 38, color: subj.color)),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(12),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            SizedBox(
-                height: 38,
-                child: Text(content.title,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: WinType.titleM(s.onStrong))),
-            const SizedBox(height: 4),
-            Text('${subj.short} · ${content.level} · ${content.year}',
-                style: WinType.labelM(s.onMuted)),
-            const SizedBox(height: 8),
-            Text(content.free ? 'Gratuit' : '${fmtXaf(content.price)} XAF',
-                style: WinType.archivo(
-                    size: 18,
-                    color: content.free ? WinColors.success : s.onStrong)),
+        Expanded(
+          flex: 6,
+          child: Stack(fit: StackFit.expand, children: [
+            Container(
+              color: subj.color.withValues(alpha: 0.14),
+              child:
+                  Center(child: Icon(subj.icon, size: 40, color: subj.color)),
+            ),
+            Positioned(
+              top: 8,
+              left: 8,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.55),
+                  borderRadius: BorderRadius.circular(WinRadii.full),
+                ),
+                child: Text(contentTypeLabel(content.type),
+                    style: WinType.labelS(Colors.white)
+                        .copyWith(fontWeight: FontWeight.w600)),
+              ),
+            ),
+            Positioned(
+              top: 4,
+              right: 4,
+              child: GestureDetector(
+                onTap: () => setState(() {
+                  _fav = !_fav;
+                  content.fav = _fav;
+                }),
+                child: Container(
+                  width: 30,
+                  height: 30,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.9),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(_fav ? Icons.favorite : Icons.favorite_border,
+                      size: 16,
+                      color: _fav ? WinColors.error : WinColors.ink600),
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: 8,
+              right: 8,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: content.free ? WinColors.success : Colors.white,
+                  borderRadius: BorderRadius.circular(WinRadii.full),
+                ),
+                child: Text(
+                    content.free ? 'Gratuit' : '${fmtXaf(content.price)} XAF',
+                    style: WinType.labelS(
+                            content.free ? Colors.white : WinColors.ink800)
+                        .copyWith(fontWeight: FontWeight.w700)),
+              ),
+            ),
           ]),
+        ),
+        Expanded(
+          flex: 4,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(content.title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: WinType.titleM(s.onStrong)),
+              const Spacer(),
+              Text('${subj.short} · ${content.level} · ${content.year}',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: WinType.labelS(s.onMuted)),
+            ]),
+          ),
         ),
       ]),
     );

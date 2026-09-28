@@ -69,21 +69,30 @@ class _GoalProposalTabState extends State<GoalProposalTab> {
       setState(() => _error = "Le titre et l'échéance sont requis.");
       return;
     }
-    setState(() { _submitting = true; _error = null; _success = false; });
+    setState(() {
+      _submitting = true;
+      _error = null;
+      _success = false;
+    });
     try {
       await GoalsService.instance.propose(
         childId: widget.child.id,
         title: _titleCtrl.text.trim(),
-        description: _descCtrl.text.trim().isEmpty ? null : _descCtrl.text.trim(),
+        description:
+            _descCtrl.text.trim().isEmpty ? null : _descCtrl.text.trim(),
         type: _type,
         deadline: _deadline!,
       );
       _titleCtrl.clear();
       _descCtrl.clear();
-      setState(() { _deadline = null; _success = true; });
+      setState(() {
+        _deadline = null;
+        _success = true;
+      });
       _load();
     } catch (_) {
-      setState(() => _error = "La proposition n'a pas pu être envoyée. Réessayez.");
+      setState(
+          () => _error = "La proposition n'a pas pu être envoyée. Réessayez.");
     } finally {
       setState(() => _submitting = false);
     }
@@ -99,12 +108,15 @@ class _GoalProposalTabState extends State<GoalProposalTab> {
     if (goals == null) return const Center(child: CircularProgressIndicator());
 
     final pending = goals.where((g) => g.status == 'Pending').toList();
-    final active = goals.where((g) => g.status == 'Active' && g.proposedByUserId != null).toList();
+    final active = goals
+        .where((g) => g.status == 'Active' && g.proposedByUserId != null)
+        .toList();
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
       children: [
-        Text('Proposer un objectif à ${widget.child.firstName}', style: WinType.headlineS(s.onStrong)),
+        Text('Proposer un objectif à ${widget.child.firstName}',
+            style: WinType.headlineS(s.onStrong)),
         const SizedBox(height: 6),
         Text(
           "Votre proposition attend l'accord de votre enfant : il peut l'accepter telle quelle, l'ajuster, ou la refuser.",
@@ -112,35 +124,52 @@ class _GoalProposalTabState extends State<GoalProposalTab> {
         ),
         const SizedBox(height: 16),
         WinCard(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('Titre', style: WinType.labelM(s.onMuted)),
-            const SizedBox(height: 4),
-            TextField(controller: _titleCtrl, decoration: const InputDecoration(isDense: true, border: OutlineInputBorder())),
-            const SizedBox(height: 10),
-            Text('Description (optionnel)', style: WinType.labelM(s.onMuted)),
-            const SizedBox(height: 4),
-            TextField(controller: _descCtrl, maxLines: 2, decoration: const InputDecoration(isDense: true, border: OutlineInputBorder())),
-            const SizedBox(height: 10),
-            Text('Type', style: WinType.labelM(s.onMuted)),
-            const SizedBox(height: 4),
-            DropdownButtonFormField<String>(
-              initialValue: _type,
-              decoration: const InputDecoration(isDense: true, border: OutlineInputBorder()),
-              items: _goalTypes.map((t) => DropdownMenuItem(value: t.$1, child: Text(t.$2))).toList(),
-              onChanged: (v) => setState(() => _type = v ?? 'academic'),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            WinTextField(
+                label: 'Titre',
+                controller: _titleCtrl,
+                icon: Icons.flag_outlined),
+            const SizedBox(height: 12),
+            WinTextField(
+                label: 'Description (optionnel)', controller: _descCtrl),
+            const SizedBox(height: 12),
+            Text('Type',
+                style: WinType.labelM(s.onStrong)
+                    .copyWith(fontWeight: FontWeight.w500)),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              children: _goalTypes
+                  .map((t) => WinChip(t.$2,
+                      active: _type == t.$1,
+                      onTap: () => setState(() => _type = t.$1)))
+                  .toList(),
             ),
-            const SizedBox(height: 10),
-            Text('Échéance', style: WinType.labelM(s.onMuted)),
-            const SizedBox(height: 4),
+            const SizedBox(height: 14),
+            Text('Échéance',
+                style: WinType.labelM(s.onStrong)
+                    .copyWith(fontWeight: FontWeight.w500)),
+            const SizedBox(height: 8),
             GestureDetector(
               onTap: _pickDeadline,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                decoration: BoxDecoration(border: Border.all(color: s.outline)),
+                height: 50,
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                decoration: BoxDecoration(
+                  color: s.surface,
+                  borderRadius: BorderRadius.circular(WinRadii.md),
+                  border: Border.all(color: s.outline, width: 1.5),
+                ),
                 child: Row(children: [
-                  Icon(Icons.calendar_today_outlined, size: 14, color: s.onFaint),
-                  const SizedBox(width: 8),
-                  Text(_deadline != null ? _fmtDate(_deadline!) : 'Choisir une date', style: WinType.bodyM(s.onStrong)),
+                  Icon(Icons.calendar_today_outlined,
+                      size: 16, color: s.onFaint),
+                  const SizedBox(width: 10),
+                  Text(
+                      _deadline != null
+                          ? _fmtDate(_deadline!)
+                          : 'Choisir une date',
+                      style: WinType.bodyM(s.onStrong)),
                 ]),
               ),
             ),
@@ -150,26 +179,33 @@ class _GoalProposalTabState extends State<GoalProposalTab> {
             ],
             if (_success) ...[
               const SizedBox(height: 8),
-              Text('Proposition envoyée.', style: WinType.labelS(WinColors.teal700)),
+              Text('Proposition envoyée.',
+                  style: WinType.labelS(WinColors.teal700)),
             ],
             const SizedBox(height: 12),
-            WinButton("Proposer l'objectif", block: true, loading: _submitting, onTap: _submit),
+            WinButton("Proposer l'objectif",
+                block: true, loading: _submitting, onTap: _submit),
           ]),
         ),
         const SizedBox(height: 20),
         Text('Propositions en attente', style: WinType.titleM(s.onStrong)),
         const SizedBox(height: 8),
         if (pending.isEmpty)
-          Text('Aucune proposition en attente de réponse.', style: WinType.bodyS(s.onMuted))
+          Text('Aucune proposition en attente de réponse.',
+              style: WinType.bodyS(s.onMuted))
         else
-          ...pending.map((g) => _GoalRow(goal: g, label: 'En attente', color: WinColors.warn)),
+          ...pending.map((g) =>
+              _GoalRow(goal: g, label: 'En attente', color: WinColors.warn)),
         const SizedBox(height: 20),
-        Text('Objectifs actifs co-construits', style: WinType.titleM(s.onStrong)),
+        Text('Objectifs actifs co-construits',
+            style: WinType.titleM(s.onStrong)),
         const SizedBox(height: 8),
         if (active.isEmpty)
-          Text('Aucun objectif co-construit actif pour le moment.', style: WinType.bodyS(s.onMuted))
+          Text('Aucun objectif co-construit actif pour le moment.',
+              style: WinType.bodyS(s.onMuted))
         else
-          ...active.map((g) => _GoalRow(goal: g, label: 'Actif', color: WinColors.teal600)),
+          ...active.map((g) =>
+              _GoalRow(goal: g, label: 'Actif', color: WinColors.teal600)),
       ],
     );
   }
@@ -179,7 +215,8 @@ class _GoalRow extends StatelessWidget {
   final ApiGoal goal;
   final String label;
   final Color color;
-  const _GoalRow({required this.goal, required this.label, required this.color});
+  const _GoalRow(
+      {required this.goal, required this.label, required this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -190,7 +227,8 @@ class _GoalRow extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Expanded(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(goal.title ?? '', style: WinType.titleM(s.onStrong)),
               if (goal.description != null && goal.description!.isNotEmpty) ...[
                 const SizedBox(height: 2),
@@ -205,8 +243,14 @@ class _GoalRow extends StatelessWidget {
           ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-            decoration: BoxDecoration(color: color.withValues(alpha: 0.12), border: Border.all(color: color.withValues(alpha: 0.4))),
-            child: Text(label, style: WinType.labelS(color).copyWith(fontWeight: FontWeight.w700)),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(WinRadii.full),
+              border: Border.all(color: color.withValues(alpha: 0.4)),
+            ),
+            child: Text(label,
+                style: WinType.labelS(color)
+                    .copyWith(fontWeight: FontWeight.w700)),
           ),
         ]),
       ),

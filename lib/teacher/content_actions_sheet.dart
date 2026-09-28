@@ -51,8 +51,8 @@ class ContentActionsSheet extends StatelessWidget {
           final s = WinTheme.of(ctx);
           return AlertDialog(
             backgroundColor: s.surface,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(WinRadii.xl)),
             title: Text('Changer le statut',
                 style: WinType.archivo(size: 17, color: s.onStrong)),
             content: Row(
@@ -68,7 +68,7 @@ class ContentActionsSheet extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: active ? s.primary : Colors.transparent,
                       border: Border.all(color: active ? s.primary : s.outline),
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(WinRadii.full),
                     ),
                     child: Text(
                       st,
@@ -111,8 +111,8 @@ class ContentActionsSheet extends StatelessWidget {
         final s = WinTheme.of(ctx);
         return AlertDialog(
           backgroundColor: s.surface,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(WinRadii.xl)),
           title: Text('Supprimer ?',
               style: WinType.archivo(size: 17, color: s.onStrong)),
           content: Text(
@@ -147,7 +147,8 @@ class ContentActionsSheet extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: s.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius:
+            const BorderRadius.vertical(top: Radius.circular(WinRadii.xl)),
       ),
       padding: EdgeInsets.fromLTRB(
           20, 16, 20, MediaQuery.of(context).viewInsets.bottom + 32),
@@ -162,7 +163,8 @@ class ContentActionsSheet extends StatelessWidget {
                 height: 4,
                 margin: const EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
-                    color: s.outline, borderRadius: BorderRadius.circular(2)),
+                    color: s.outline,
+                    borderRadius: BorderRadius.circular(WinRadii.full)),
               ),
             ),
 

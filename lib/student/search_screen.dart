@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import '../data/mock_data.dart';
 import '../data/models.dart';
 import '../services/subject_service.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
-import 'content_detail_screen.dart';
+import 'student_home.dart' show ContentCard;
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -22,8 +21,22 @@ class _SearchScreenState extends State<SearchScreen> {
   bool _loading = false;
   List<Content> _results = [];
 
-  static const _types = ['Tout', 'Épreuve', 'Correction', 'Quiz', 'Livre', 'Pack'];
-  static const _levels = ['Tout', 'BEPC', 'Probatoire', 'BAC', 'BTS', 'Concours'];
+  static const _types = [
+    'Tout',
+    'Épreuve',
+    'Correction',
+    'Quiz',
+    'Livre',
+    'Pack'
+  ];
+  static const _levels = [
+    'Tout',
+    'BEPC',
+    'Probatoire',
+    'BAC',
+    'BTS',
+    'Concours'
+  ];
 
   static const _apiTypeMap = {
     'Épreuve': 'epreuve',
@@ -35,7 +48,10 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Future<void> _search(String q) async {
     if (q.trim().isEmpty) {
-      setState(() { _results = []; _loading = false; });
+      setState(() {
+        _results = [];
+        _loading = false;
+      });
       return;
     }
     setState(() => _loading = true);
@@ -53,7 +69,11 @@ class _SearchScreenState extends State<SearchScreen> {
         });
       }
     } catch (_) {
-      if (mounted) setState(() { _results = []; _loading = false; });
+      if (mounted)
+        setState(() {
+          _results = [];
+          _loading = false;
+        });
     }
   }
 
@@ -96,7 +116,10 @@ class _SearchScreenState extends State<SearchScreen> {
                     icon: Icon(Icons.close, size: 18, color: s.onFaint),
                     onPressed: () {
                       _ctrl.clear();
-                      setState(() { _query = ''; _results = []; });
+                      setState(() {
+                        _query = '';
+                        _results = [];
+                      });
                     })
                 : null,
           ),
@@ -113,7 +136,10 @@ class _SearchScreenState extends State<SearchScreen> {
             itemBuilder: (_, i) => WinChip(
               _types[i],
               active: _typeFilter == _types[i],
-              onTap: () { setState(() => _typeFilter = _types[i]); _onFilterChanged(); },
+              onTap: () {
+                setState(() => _typeFilter = _types[i]);
+                _onFilterChanged();
+              },
             ),
           ),
         ),
@@ -128,7 +154,10 @@ class _SearchScreenState extends State<SearchScreen> {
             itemBuilder: (_, i) => WinChip(
               _levels[i],
               active: _levelFilter == _levels[i],
-              onTap: () { setState(() => _levelFilter = _levels[i]); _onFilterChanged(); },
+              onTap: () {
+                setState(() => _levelFilter = _levels[i]);
+                _onFilterChanged();
+              },
             ),
           ),
         ),
@@ -140,51 +169,18 @@ class _SearchScreenState extends State<SearchScreen> {
                   ? _LoadingSkeleton()
                   : _results.isEmpty
                       ? _NoResults(_query)
-                      : ListView.separated(
+                      : GridView.builder(
                           padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  mainAxisSpacing: 12,
+                                  crossAxisSpacing: 12,
+                                  childAspectRatio: 0.72),
                           itemCount: _results.length,
-                          separatorBuilder: (_, __) => const SizedBox(height: 8),
-                          itemBuilder: (_, i) => _ResultRow(_results[i]),
+                          itemBuilder: (_, i) =>
+                              ContentCard(content: _results[i]),
                         ),
-        ),
-      ]),
-    );
-  }
-}
-
-class _ResultRow extends StatelessWidget {
-  final Content content;
-  const _ResultRow(this.content);
-  @override
-  Widget build(BuildContext context) {
-    final s = WinTheme.of(context);
-    final subj = WinData.subjectById(content.subjectId);
-    return WinCard(
-      onTap: () => Navigator.push(context,
-          MaterialPageRoute(builder: (_) => ContentDetailScreen(content: content))),
-      padding: const EdgeInsets.all(12),
-      child: Row(children: [
-        Container(
-          width: 44,
-          height: 44,
-          color: subj.color.withValues(alpha: 0.12),
-          child: Icon(subj.icon, size: 22, color: subj.color),
-        ),
-        const SizedBox(width: 12),
-        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(content.title,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: WinType.titleM(s.onStrong)),
-          const SizedBox(height: 2),
-          Text('${content.exam} · ${content.level} · ${content.year}',
-              style: WinType.labelM(s.onMuted)),
-        ])),
-        const SizedBox(width: 8),
-        Text(
-          content.free ? 'Gratuit' : '${fmtXaf(content.price)} XAF',
-          style: WinType.labelM(content.free ? WinColors.success : s.primary)
-              .copyWith(fontWeight: FontWeight.w700),
         ),
       ]),
     );
@@ -195,7 +191,8 @@ class _EmptyIdle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    return Center(child: Column(mainAxisSize: MainAxisSize.min, children: [
+    return Center(
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
       Icon(Icons.search, size: 64, color: s.onFaint),
       const SizedBox(height: 12),
       Text('Recherchez dans le catalogue', style: WinType.bodyM(s.onMuted)),
@@ -209,7 +206,8 @@ class _NoResults extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    return Center(child: Padding(
+    return Center(
+        child: Padding(
       padding: const EdgeInsets.all(32),
       child: Column(mainAxisSize: MainAxisSize.min, children: [
         Icon(Icons.search_off, size: 64, color: s.onFaint),
@@ -224,28 +222,38 @@ class _NoResults extends StatelessWidget {
 class _LoadingSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
+    final s = WinTheme.of(context);
+    return GridView.builder(
       padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
-      itemCount: 3,
-      separatorBuilder: (_, __) => const SizedBox(height: 8),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          mainAxisSpacing: 12,
+          crossAxisSpacing: 12,
+          childAspectRatio: 0.72),
+      itemCount: 4,
       itemBuilder: (_, __) => Container(
-        height: 68,
-        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: WinTheme.of(context).cardBg,
-          border: Border.all(color: WinTheme.of(context).outline),
+          color: s.cardBg,
+          borderRadius: BorderRadius.circular(WinRadii.lg),
+          border: Border.all(color: s.outline),
         ),
-        child: const Row(children: [
-          WinSkeleton(width: 44, height: 44),
-          SizedBox(width: 12),
-          Expanded(child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-            WinSkeleton(height: 14),
-            SizedBox(height: 6),
-            WinSkeleton(width: 120, height: 11),
-          ])),
+        clipBehavior: Clip.antiAlias,
+        child: Column(children: [
+          const Expanded(flex: 6, child: WinSkeleton(height: double.infinity)),
+          Expanded(
+            flex: 4,
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    WinSkeleton(height: 14),
+                    SizedBox(height: 6),
+                    WinSkeleton(width: 80, height: 11),
+                  ]),
+            ),
+          ),
         ]),
       ),
     );

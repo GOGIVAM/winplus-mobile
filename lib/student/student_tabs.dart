@@ -9,6 +9,8 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import '../shared/shop/cart_screen.dart';
+import '../shared/shop/orders_screen.dart';
 import 'student_home.dart';
 import 'search_screen.dart';
 import 'download_history_screen.dart';
@@ -104,6 +106,12 @@ class _StudentCatalogTabState extends State<StudentCatalogTab> {
               icon: Icon(Icons.refresh_outlined, size: 20, color: s.onMuted),
               onPressed: _load,
             ),
+          IconButton(
+            icon:
+                Icon(Icons.shopping_cart_outlined, size: 20, color: s.onMuted),
+            onPressed: () => Navigator.push(
+                context, MaterialPageRoute(builder: (_) => const CartScreen())),
+          ),
         ]),
       ),
       // Bannière formations
@@ -119,7 +127,7 @@ class _StudentCatalogTabState extends State<StudentCatalogTab> {
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
             ),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(WinRadii.sm),
           ),
           child: Row(children: [
             const Icon(Icons.play_lesson_outlined,
@@ -152,7 +160,7 @@ class _StudentCatalogTabState extends State<StudentCatalogTab> {
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
             ),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(WinRadii.sm),
           ),
           child: Row(children: [
             const Icon(Icons.person_search_outlined,
@@ -336,6 +344,28 @@ class StudentSpaceTab extends StatelessWidget {
                                 builder: (_) => const ExamCoachScreen())))),
               ]),
               const SizedBox(height: 10),
+              Row(children: [
+                Expanded(
+                    child: _QuickLink(
+                        'Mon panier',
+                        Icons.shopping_cart_outlined,
+                        WinColors.teal600,
+                        () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => const CartScreen())))),
+                const SizedBox(width: 10),
+                Expanded(
+                    child: _QuickLink(
+                        'Mes commandes',
+                        Icons.receipt_long_outlined,
+                        WinColors.blue500,
+                        () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => const OrdersScreen())))),
+              ]),
+              const SizedBox(height: 10),
               _QuickLink(
                   'Historique des téléchargements',
                   Icons.download_outlined,
@@ -452,7 +482,8 @@ class _MiniStat extends StatelessWidget {
 
 /// ===================== WINAI =====================
 class StudentWinAITab extends StatefulWidget {
-  const StudentWinAITab({super.key});
+  final String? initialMessage;
+  const StudentWinAITab({super.key, this.initialMessage});
   @override
   State<StudentWinAITab> createState() => _StudentWinAITabState();
 }
@@ -461,6 +492,15 @@ class _StudentWinAITabState extends State<StudentWinAITab> {
   final _ctrl = TextEditingController();
   final List<({bool me, String text, String? attachment})> _msgs = [];
   bool _thinking = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialMessage != null) {
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => _send(widget.initialMessage));
+    }
+  }
 
   Future<void> _send([String? preset]) async {
     final t = (preset ?? _ctrl.text).trim();
@@ -523,7 +563,7 @@ class _StudentWinAITabState extends State<StudentWinAITab> {
         decoration: BoxDecoration(
             color: s.surface,
             borderRadius:
-                const BorderRadius.vertical(top: Radius.circular(20))),
+                const BorderRadius.vertical(top: Radius.circular(WinRadii.xl))),
         padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           Container(
@@ -531,7 +571,8 @@ class _StudentWinAITabState extends State<StudentWinAITab> {
               height: 4,
               margin: const EdgeInsets.only(bottom: 20),
               decoration: BoxDecoration(
-                  color: s.outline2, borderRadius: BorderRadius.circular(2))),
+                  color: s.outline2,
+                  borderRadius: BorderRadius.circular(WinRadii.full))),
           Text('Joindre un fichier', style: WinType.headlineS(s.onStrong)),
           const SizedBox(height: 20),
           _AttachOption(
@@ -569,186 +610,200 @@ class _StudentWinAITabState extends State<StudentWinAITab> {
       'Mes matières faibles ?',
       'Génère un quiz Chimie'
     ];
-    return Column(children: [
-      Expanded(
-        child: _msgs.isEmpty
-            ? Padding(
-                padding: const EdgeInsets.all(24),
-                child: Column(children: [
-                  const Spacer(),
-                  const WinAIOrb(size: 80),
-                  const SizedBox(height: 20),
-                  Text('WinAI',
-                      style: WinType.archivo(size: 28, color: s.onStrong)),
-                  const SizedBox(height: 6),
-                  Text('Ton assistant pédagogique personnel',
-                      style: WinType.bodyM(s.onMuted)),
-                  const SizedBox(height: 24),
-                  GridView.count(
-                    shrinkWrap: true,
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 10,
-                    crossAxisSpacing: 10,
-                    childAspectRatio: 2.6,
-                    children: suggestions
-                        .map((q) => GestureDetector(
-                              onTap: () => _send(q),
-                              child: Container(
-                                padding: const EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                    color: WinColors.teal50,
-                                    borderRadius: BorderRadius.circular(12),
-                                    border:
-                                        Border.all(color: WinColors.teal100)),
-                                alignment: Alignment.centerLeft,
-                                child: Text(q,
-                                    style: WinType.manrope(
-                                        size: 13,
-                                        weight: FontWeight.w600,
-                                        color: WinColors.teal700)),
-                              ),
-                            ))
-                        .toList(),
-                  ),
-                  const SizedBox(height: 16),
-                  GestureDetector(
-                    onTap: () => showWinAIMemoriesSheet(context),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 10),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF5F3FF),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                            color:
-                                const Color(0xFF8B5CF6).withValues(alpha: 0.3)),
-                      ),
-                      child: Row(mainAxisSize: MainAxisSize.min, children: [
-                        const Icon(Icons.psychology_rounded,
-                            size: 15, color: Color(0xFF8B5CF6)),
-                        const SizedBox(width: 8),
-                        Text('Mémoire WinAI',
-                            style: WinType.manrope(
-                                size: 13,
-                                weight: FontWeight.w600,
-                                color: const Color(0xFF8B5CF6))),
-                        const SizedBox(width: 6),
-                        const Icon(Icons.arrow_forward_ios_rounded,
-                            size: 11, color: Color(0xFF8B5CF6)),
-                      ]),
+    return Scaffold(
+      backgroundColor: s.bg,
+      appBar: AppBar(
+        backgroundColor: s.bg,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text('WinAI', style: WinType.headlineS(s.onStrong)),
+      ),
+      body: Column(children: [
+        Expanded(
+          child: _msgs.isEmpty
+              ? Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(children: [
+                    const Spacer(),
+                    const WinAIOrb(size: 80),
+                    const SizedBox(height: 20),
+                    Text('WinAI',
+                        style: WinType.archivo(size: 28, color: s.onStrong)),
+                    const SizedBox(height: 6),
+                    Text('Ton assistant pédagogique personnel',
+                        style: WinType.bodyM(s.onMuted)),
+                    const SizedBox(height: 24),
+                    GridView.count(
+                      shrinkWrap: true,
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 10,
+                      crossAxisSpacing: 10,
+                      childAspectRatio: 2.6,
+                      children: suggestions
+                          .map((q) => GestureDetector(
+                                onTap: () => _send(q),
+                                child: Container(
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                      color: WinColors.teal50,
+                                      borderRadius:
+                                          BorderRadius.circular(WinRadii.sm),
+                                      border:
+                                          Border.all(color: WinColors.teal100)),
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(q,
+                                      style: WinType.manrope(
+                                          size: 13,
+                                          weight: FontWeight.w600,
+                                          color: WinColors.teal700)),
+                                ),
+                              ))
+                          .toList(),
                     ),
-                  ),
-                  const Spacer(),
-                ]),
-              )
-            : ListView.builder(
-                padding: const EdgeInsets.all(16),
-                itemCount: _msgs.length + (_thinking ? 1 : 0),
-                itemBuilder: (_, i) {
-                  if (_thinking && i == _msgs.length) {
+                    const SizedBox(height: 16),
+                    GestureDetector(
+                      onTap: () => showWinAIMemoriesSheet(context),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 10),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF5F3FF),
+                          borderRadius: BorderRadius.circular(WinRadii.sm),
+                          border: Border.all(
+                              color: const Color(0xFF8B5CF6)
+                                  .withValues(alpha: 0.3)),
+                        ),
+                        child: Row(mainAxisSize: MainAxisSize.min, children: [
+                          const Icon(Icons.psychology_rounded,
+                              size: 15, color: Color(0xFF8B5CF6)),
+                          const SizedBox(width: 8),
+                          Text('Mémoire WinAI',
+                              style: WinType.manrope(
+                                  size: 13,
+                                  weight: FontWeight.w600,
+                                  color: const Color(0xFF8B5CF6))),
+                          const SizedBox(width: 6),
+                          const Icon(Icons.arrow_forward_ios_rounded,
+                              size: 11, color: Color(0xFF8B5CF6)),
+                        ]),
+                      ),
+                    ),
+                    const Spacer(),
+                  ]),
+                )
+              : ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: _msgs.length + (_thinking ? 1 : 0),
+                  itemBuilder: (_, i) {
+                    if (_thinking && i == _msgs.length) {
+                      return Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          margin: const EdgeInsets.only(bottom: 12),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 14, vertical: 12),
+                          decoration: BoxDecoration(
+                              color: s.cardBg,
+                              border: Border.all(color: s.cardBorder),
+                              borderRadius: BorderRadius.circular(WinRadii.lg)),
+                          child: Row(mainAxisSize: MainAxisSize.min, children: [
+                            SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: CircularProgressIndicator(
+                                    strokeWidth: 2, color: s.primary)),
+                            const SizedBox(width: 8),
+                            Text('WinAI réfléchit…',
+                                style: WinType.bodyS(s.onMuted)),
+                          ]),
+                        ),
+                      );
+                    }
+                    final m = _msgs[i];
                     return Align(
-                      alignment: Alignment.centerLeft,
+                      alignment:
+                          m.me ? Alignment.centerRight : Alignment.centerLeft,
                       child: Container(
                         margin: const EdgeInsets.only(bottom: 12),
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 14, vertical: 12),
+                            horizontal: 14, vertical: 10),
+                        constraints: const BoxConstraints(maxWidth: 280),
                         decoration: BoxDecoration(
-                            color: s.cardBg,
-                            border: Border.all(color: s.cardBorder),
-                            borderRadius: BorderRadius.circular(18)),
-                        child: Row(mainAxisSize: MainAxisSize.min, children: [
-                          SizedBox(
-                              width: 16,
-                              height: 16,
-                              child: CircularProgressIndicator(
-                                  strokeWidth: 2, color: s.primary)),
-                          const SizedBox(width: 8),
-                          Text('WinAI réfléchit…',
-                              style: WinType.bodyS(s.onMuted)),
-                        ]),
+                          color: m.me ? WinColors.ink800 : s.cardBg,
+                          border: m.me ? null : Border.all(color: s.cardBorder),
+                          borderRadius: BorderRadius.circular(WinRadii.lg),
+                        ),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (m.attachment != null)
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 6),
+                                  child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                            m.attachment == 'image'
+                                                ? Icons.image_outlined
+                                                : Icons.attach_file,
+                                            size: 14,
+                                            color: m.me
+                                                ? WinColors.teal300
+                                                : s.primary),
+                                        const SizedBox(width: 4),
+                                        Text('Pièce jointe',
+                                            style: WinType.labelS(m.me
+                                                ? WinColors.teal300
+                                                : s.primary)),
+                                      ]),
+                                ),
+                              Text(m.text,
+                                  style: WinType.bodyM(
+                                      m.me ? WinColors.cream50 : s.onSurface)),
+                            ]),
                       ),
                     );
-                  }
-                  final m = _msgs[i];
-                  return Align(
-                    alignment:
-                        m.me ? Alignment.centerRight : Alignment.centerLeft,
-                    child: Container(
-                      margin: const EdgeInsets.only(bottom: 12),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 14, vertical: 10),
-                      constraints: const BoxConstraints(maxWidth: 280),
-                      decoration: BoxDecoration(
-                        color: m.me ? WinColors.ink800 : s.cardBg,
-                        border: m.me ? null : Border.all(color: s.cardBorder),
-                        borderRadius: BorderRadius.circular(18),
-                      ),
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            if (m.attachment != null)
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 6),
-                                child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(
-                                          m.attachment == 'image'
-                                              ? Icons.image_outlined
-                                              : Icons.attach_file,
-                                          size: 14,
-                                          color: m.me
-                                              ? WinColors.teal300
-                                              : s.primary),
-                                      const SizedBox(width: 4),
-                                      Text('Pièce jointe',
-                                          style: WinType.labelS(m.me
-                                              ? WinColors.teal300
-                                              : s.primary)),
-                                    ]),
-                              ),
-                            Text(m.text,
-                                style: WinType.bodyM(
-                                    m.me ? WinColors.cream50 : s.onSurface)),
-                          ]),
-                    ),
-                  );
-                },
-              ),
-      ),
-      Padding(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 14),
-        child: Row(children: [
-          GestureDetector(
-            onTap: _showAttachSheet,
-            child: Container(
-              width: 46,
-              height: 50,
-              decoration: BoxDecoration(
-                  color: s.surface2,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: s.outline)),
-              child: Icon(Icons.attach_file, size: 20, color: s.onMuted),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-              child: WinTextField(
-                  hint: 'Pose ta question à WinAI…', controller: _ctrl)),
-          const SizedBox(width: 8),
-          GestureDetector(
-            onTap: _send,
-            child: Container(
-                width: 48,
+                  },
+                ),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 14),
+          child: Row(children: [
+            GestureDetector(
+              onTap: _showAttachSheet,
+              child: Container(
+                width: 46,
                 height: 50,
                 decoration: BoxDecoration(
-                    color: s.primary, borderRadius: BorderRadius.circular(12)),
-                child: Icon(Icons.send, size: 20, color: s.onPrimary)),
-          ),
-        ]),
-      ),
-    ]);
+                    color: s.surface2,
+                    borderRadius: BorderRadius.circular(WinRadii.sm),
+                    border: Border.all(color: s.outline)),
+                child: Icon(Icons.attach_file, size: 20, color: s.onMuted),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+                child: WinTextField(
+                    hint: 'Pose ta question à WinAI…', controller: _ctrl)),
+            const SizedBox(width: 8),
+            GestureDetector(
+              onTap: _send,
+              child: Container(
+                  width: 48,
+                  height: 50,
+                  decoration: BoxDecoration(
+                      color: s.primary,
+                      borderRadius: BorderRadius.circular(WinRadii.sm)),
+                  child: Icon(Icons.send, size: 20, color: s.onPrimary)),
+            ),
+          ]),
+        ),
+      ]),
+    );
   }
 }
 
@@ -767,7 +822,7 @@ class _AttachOption extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
             color: color.withValues(alpha: 0.06),
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(WinRadii.lg),
             border: Border.all(color: color.withValues(alpha: 0.3))),
         child: Row(children: [
           Icon(icon, size: 22, color: color),

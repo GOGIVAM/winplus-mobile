@@ -24,17 +24,24 @@ class _MyCoursesScreenState extends State<MyCoursesScreen> {
   }
 
   Future<void> _load() async {
-    setState(() { _enrollments = null; _error = false; });
+    setState(() {
+      _enrollments = null;
+      _error = false;
+    });
     try {
       final data = await CourseService.instance.myCourses();
       if (mounted) setState(() => _enrollments = data);
     } catch (_) {
-      if (mounted) setState(() { _enrollments = []; _error = true; });
+      if (mounted)
+        setState(() {
+          _enrollments = [];
+          _error = true;
+        });
     }
   }
 
   void _goToCatalog() => Navigator.push(
-        context, MaterialPageRoute(builder: (_) => const CourseCatalogScreen()));
+      context, MaterialPageRoute(builder: (_) => const CourseCatalogScreen()));
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +49,8 @@ class _MyCoursesScreenState extends State<MyCoursesScreen> {
     return Scaffold(
       backgroundColor: s.bg,
       appBar: AppBar(
-        title: Text('Mes formations', style: WinType.archivo(size: 20, color: s.onStrong)),
+        title: Text('Mes formations',
+            style: WinType.archivo(size: 20, color: s.onStrong)),
         backgroundColor: s.surface,
         foregroundColor: s.onStrong,
         elevation: 0,
@@ -57,10 +65,12 @@ class _MyCoursesScreenState extends State<MyCoursesScreen> {
       body: _enrollments == null
           ? const Center(child: CircularProgressIndicator())
           : _error
-              ? Center(child: Column(mainAxisSize: MainAxisSize.min, children: [
+              ? Center(
+                  child: Column(mainAxisSize: MainAxisSize.min, children: [
                   Icon(Icons.wifi_off_outlined, size: 48, color: s.onFaint),
                   const SizedBox(height: 12),
-                  Text('Impossible de charger vos formations.', style: WinType.bodyM(s.onMuted)),
+                  Text('Impossible de charger vos formations.',
+                      style: WinType.bodyM(s.onMuted)),
                   const SizedBox(height: 12),
                   WinButton('Réessayer', onTap: _load),
                 ]))
@@ -77,10 +87,11 @@ class _MyCoursesScreenState extends State<MyCoursesScreen> {
                             enrollment: e,
                             onTap: () => Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (_) => CoursePlayerScreen(
-                                courseId: e.courseId,
-                                courseTitle: e.courseTitle,
-                              )),
+                              MaterialPageRoute(
+                                  builder: (_) => CoursePlayerScreen(
+                                        courseId: e.courseId,
+                                        courseTitle: e.courseTitle,
+                                      )),
                             ).then((_) => _load()),
                           );
                         },
@@ -108,12 +119,14 @@ class _CourseCard extends StatelessWidget {
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           // Thumbnail
           ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(14)),
+            borderRadius:
+                BorderRadius.vertical(top: Radius.circular(WinRadii.lg)),
             child: Stack(children: [
               AspectRatio(
                 aspectRatio: 16 / 9,
                 child: e.thumbnailUrl != null
-                    ? Image.network(e.thumbnailUrl!, fit: BoxFit.cover,
+                    ? Image.network(e.thumbnailUrl!,
+                        fit: BoxFit.cover,
                         errorBuilder: (_, __, ___) => _ThumbPlaceholder())
                     : _ThumbPlaceholder(),
               ),
@@ -122,7 +135,8 @@ class _CourseCard extends StatelessWidget {
                   child: Container(
                     alignment: Alignment.center,
                     color: WinColors.teal600.withValues(alpha: 0.75),
-                    child: const Icon(Icons.workspace_premium, size: 40, color: Colors.white),
+                    child: const Icon(Icons.workspace_premium,
+                        size: 40, color: Colors.white),
                   ),
                 ),
             ]),
@@ -130,22 +144,26 @@ class _CourseCard extends StatelessWidget {
 
           Padding(
             padding: const EdgeInsets.all(14),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               if (e.category != null)
                 Text(e.category!.toUpperCase(),
-                    style: WinType.labelS(s.primary).copyWith(letterSpacing: 0.5)),
+                    style:
+                        WinType.labelS(s.primary).copyWith(letterSpacing: 0.5)),
               const SizedBox(height: 4),
               Text(e.courseTitle,
                   style: WinType.titleM(s.onStrong),
-                  maxLines: 2, overflow: TextOverflow.ellipsis),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis),
               const SizedBox(height: 4),
               Text(e.instructorName, style: WinType.labelM(s.onMuted)),
               const SizedBox(height: 10),
 
               // Progress bar
               Row(children: [
-                Expanded(child: ClipRRect(
-                  borderRadius: BorderRadius.circular(3),
+                Expanded(
+                    child: ClipRRect(
+                  borderRadius: BorderRadius.circular(WinRadii.full),
                   child: LinearProgressIndicator(
                     value: pct / 100,
                     minHeight: 6,
@@ -155,14 +173,16 @@ class _CourseCard extends StatelessWidget {
                 )),
                 const SizedBox(width: 10),
                 Text('${pct.toInt()}%',
-                    style: WinType.labelM(s.primary).copyWith(fontWeight: FontWeight.w700)),
+                    style: WinType.labelM(s.primary)
+                        .copyWith(fontWeight: FontWeight.w700)),
               ]),
               const SizedBox(height: 10),
 
               Row(children: [
                 Icon(Icons.play_circle_outline, size: 14, color: s.onMuted),
                 const SizedBox(width: 4),
-                Text('${e.lessonsCount} leçons', style: WinType.labelM(s.onMuted)),
+                Text('${e.lessonsCount} leçons',
+                    style: WinType.labelM(s.onMuted)),
                 const SizedBox(width: 12),
                 Icon(Icons.schedule_outlined, size: 14, color: s.onMuted),
                 const SizedBox(width: 4),
@@ -170,21 +190,18 @@ class _CourseCard extends StatelessWidget {
               ]),
               const SizedBox(height: 12),
 
-              SizedBox(
-                width: double.infinity,
-                child: FilledButton.icon(
-                  style: FilledButton.styleFrom(
-                    backgroundColor: e.isCompleted ? WinColors.teal100 : s.primary,
-                    foregroundColor: e.isCompleted ? WinColors.teal700 : s.onPrimary,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                  ),
-                  icon: Icon(e.isCompleted ? Icons.replay : Icons.play_arrow, size: 18),
-                  label: Text(
-                    e.isCompleted ? 'Revoir' : pct > 0 ? 'Continuer' : 'Commencer',
-                    style: WinType.titleM(e.isCompleted ? WinColors.teal700 : s.onPrimary),
-                  ),
-                  onPressed: onTap,
-                ),
+              WinButton(
+                e.isCompleted
+                    ? 'Revoir'
+                    : pct > 0
+                        ? 'Continuer'
+                        : 'Commencer',
+                block: true,
+                variant: e.isCompleted
+                    ? WinButtonVariant.outline
+                    : WinButtonVariant.accent,
+                icon: e.isCompleted ? Icons.replay : Icons.play_arrow,
+                onTap: onTap,
               ),
             ]),
           ),
@@ -218,7 +235,8 @@ class _EmptyState extends StatelessWidget {
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           Icon(Icons.school_outlined, size: 72, color: s.onFaint),
           const SizedBox(height: 20),
-          Text('Aucune formation en cours', style: WinType.headlineS(s.onStrong)),
+          Text('Aucune formation en cours',
+              style: WinType.headlineS(s.onStrong)),
           const SizedBox(height: 8),
           Text(
             'Explorez notre catalogue et commencez à apprendre dès aujourd\'hui.',

@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../data/mock_data.dart';
 import '../data/models.dart';
+import '../services/cart_service.dart';
+import '../services/session_manager.dart';
 import '../services/subject_service.dart';
 import '../shared/shop/account_required_purchase_screen.dart';
+import '../shared/shop/cart_screen.dart';
 import '../shared/subscription/subscription_notifier.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
@@ -382,13 +385,16 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                             fillColor: s.surface2,
                             contentPadding: const EdgeInsets.all(12),
                             border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius:
+                                    BorderRadius.circular(WinRadii.md),
                                 borderSide: BorderSide(color: s.outline)),
                             enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius:
+                                    BorderRadius.circular(WinRadii.md),
                                 borderSide: BorderSide(color: s.outline)),
                             focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius:
+                                    BorderRadius.circular(WinRadii.md),
                                 borderSide:
                                     BorderSide(color: s.primary, width: 2)),
                           ),
@@ -468,7 +474,7 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
   }
 }
 
-class _BottomBar extends StatelessWidget {
+class _BottomBar extends StatefulWidget {
   final Content content;
   final bool isPremium;
   final VoidCallback onOpen;
@@ -481,8 +487,55 @@ class _BottomBar extends StatelessWidget {
   });
 
   @override
+  State<_BottomBar> createState() => _BottomBarState();
+}
+
+class _BottomBarState extends State<_BottomBar> {
+  bool _adding = false;
+
+  Future<void> _addToCart(BuildContext context) async {
+    final loggedIn = await SessionManager.isLoggedIn();
+    if (!mounted) return;
+    if (!loggedIn) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (_) =>
+                  AccountRequiredPurchaseScreen(content: widget.content)));
+      return;
+    }
+    final subjectId = int.tryParse(widget.content.id);
+    if (subjectId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Ce contenu de démonstration n'a pas de sujet réel.")));
+      return;
+    }
+    setState(() => _adding = true);
+    final cart = await CartService.instance.addItem(subjectId);
+    if (!mounted) return;
+    setState(() => _adding = false);
+    if (cart != null) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: const Text('Ajouté au panier.'),
+        action: SnackBarAction(
+          label: 'Voir le panier',
+          onPressed: () => Navigator.push(
+              context, MaterialPageRoute(builder: (_) => const CartScreen())),
+        ),
+      ));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Impossible d'ajouter au panier.")));
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
+    final content = widget.content;
+    final isPremium = widget.isPremium;
+    final onOpen = widget.onOpen;
+    final onOpenCorrection = widget.onOpenCorrection;
     Widget btn;
 
     if (content.type == ContentType.quiz) {
@@ -513,14 +566,11 @@ class _BottomBar extends StatelessWidget {
       ]);
     } else {
       btn = Column(mainAxisSize: MainAxisSize.min, children: [
-        WinButton('Acheter  ${fmtXaf(content.price)} XAF',
+        WinButton('Ajouter au panier  ${fmtXaf(content.price)} XAF',
             block: true,
+            loading: _adding,
             icon: Icons.shopping_cart_outlined,
-            onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (_) =>
-                        AccountRequiredPurchaseScreen(content: content)))),
+            onTap: _adding ? null : () => _addToCart(context)),
         const SizedBox(height: 8),
         GestureDetector(
           onTap: () {},

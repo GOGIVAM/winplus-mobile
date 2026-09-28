@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../services/tutor_profile_service.dart';
+import '../../theme/win_colors.dart';
 import '../../theme/win_theme.dart';
 import '../../theme/win_typography.dart';
 import '../../widgets/win_widgets.dart';
@@ -249,40 +250,79 @@ class _TutorResultCard extends StatelessWidget {
               builder: (_) => TutorPublicProfileScreen(userId: tutor.userId))),
       padding: const EdgeInsets.all(12),
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        WinAvatar(tutor.fullName.isEmpty ? '?' : tutor.fullName, size: 52),
-        const SizedBox(width: 12),
+        // Avatar + badge de vérification superposé (même langage que le
+        // cœur favori des cartes catalogue : indicateur incrusté sur
+        // l'image plutôt qu'une ligne de texte séparée).
+        Stack(clipBehavior: Clip.none, children: [
+          WinAvatar(tutor.fullName.isEmpty ? '?' : tutor.fullName, size: 56),
+          if (tutor.isDiplomaVerified)
+            Positioned(
+              bottom: -2,
+              right: -2,
+              child: Container(
+                width: 20,
+                height: 20,
+                decoration: BoxDecoration(
+                  color: WinColors.success,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: s.surface, width: 2),
+                ),
+                child: const Icon(Icons.check_rounded,
+                    size: 12, color: Colors.white),
+              ),
+            ),
+        ]),
+        const SizedBox(width: 14),
         Expanded(
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(tutor.fullName, style: WinType.titleM(s.onStrong)),
+            Row(children: [
+              Expanded(
+                  child: Text(tutor.fullName,
+                      style: WinType.titleM(s.onStrong),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis)),
+              const SizedBox(width: 6),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: s.primaryContainer,
+                  borderRadius: BorderRadius.circular(WinRadii.full),
+                ),
+                child: Text(
+                  tutor.hourlyRateXaf != null
+                      ? '${tutor.hourlyRateXaf!.toStringAsFixed(0)} XAF/h'
+                      : 'Tarif ND',
+                  style: WinType.labelS(s.primary)
+                      .copyWith(fontWeight: FontWeight.w700),
+                ),
+              ),
+            ]),
             if ((tutor.title ?? '').isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(top: 2),
                 child: Text(tutor.title!, style: WinType.labelM(s.onMuted)),
               ),
-            const SizedBox(height: 6),
-            Wrap(spacing: 6, runSpacing: 6, children: [
-              if (tutor.isDiplomaVerified)
-                const WinBadge('Vérifié Diplôme', color: BadgeColor.success),
-              const WinBadge('Avis bientôt disponibles',
-                  color: BadgeColor.neutral),
-            ]),
             if (tutor.subjects.isNotEmpty) ...[
-              const SizedBox(height: 6),
-              Text(tutor.subjects.join(', '),
-                  style: WinType.labelS(s.onFaint),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: tutor.subjects
+                    .take(3)
+                    .map((sub) => Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 3),
+                          decoration: BoxDecoration(
+                            color: s.chipBg,
+                            borderRadius: BorderRadius.circular(WinRadii.full),
+                          ),
+                          child: Text(sub, style: WinType.labelS(s.onMuted)),
+                        ))
+                    .toList(),
+              ),
             ],
           ]),
-        ),
-        const SizedBox(width: 8),
-        Text(
-          tutor.hourlyRateXaf != null
-              ? '${tutor.hourlyRateXaf!.toStringAsFixed(0)} XAF/h'
-              : 'Tarif ND',
-          style:
-              WinType.labelM(s.primary).copyWith(fontWeight: FontWeight.w700),
         ),
       ]),
     );

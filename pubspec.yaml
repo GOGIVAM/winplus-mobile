@@ -25,11 +25,30 @@ dependencies:
 
 dev_dependencies:
   flutter_lints: ^4.0.0
+  flutter_launcher_icons: ^0.14.3
+
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: "assets/winplus-icon-source-white.png"
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/winplus-icon-source.png"
+  web:
+    generate: true
+    image_path: "assets/winplus-icon-source-white.png"
+    background_color: "#FFFFFF"
+    theme_color: "#0d9488"
+  windows:
+    generate: true
+    image_path: "assets/winplus-icon-source-white.png"
+    icon_size: 256
 
 flutter:
   uses-material-design: true
   generate: true
   assets:
     - assets/winplus-logo.png
+    - assets/winplus-icon-source.png
+    - assets/winplus-icon-source-white.png
     - assets/Login.gif
   # Police chargée dynamiquement via google_fonts (Fraunces + Manrope).

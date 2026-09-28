@@ -43,9 +43,12 @@ class _ChildActivityScreenState extends State<ChildActivityScreen>
     // laissait l'écran bloqué indéfiniment sur son indicateur de chargement.
     try {
       final stats = await ParentService.instance.getChildStats(widget.child.id);
-      final activities = await ParentService.instance.getChildActivity(widget.child.id);
-      final alerts = await ParentService.instance.getPersistedAlerts(widget.child.id);
-      final subjectScores = await ParentService.instance.getChildSubjectScores(widget.child.id);
+      final activities =
+          await ParentService.instance.getChildActivity(widget.child.id);
+      final alerts =
+          await ParentService.instance.getPersistedAlerts(widget.child.id);
+      final subjectScores =
+          await ParentService.instance.getChildSubjectScores(widget.child.id);
       if (mounted) {
         setState(() {
           _stats = stats;
@@ -129,7 +132,9 @@ class _ChildActivityScreenState extends State<ChildActivityScreen>
                   stats: _stats!,
                   activities: _activities ?? [],
                 ),
-                _ResultsTab(scores: _subjectScores ?? const ApiChildSubjectScores(subjects: [])),
+                _ResultsTab(
+                    scores: _subjectScores ??
+                        const ApiChildSubjectScores(subjects: [])),
                 GoalProposalTab(child: widget.child),
                 ExamWatchModeTab(child: widget.child),
                 PortfolioTab(child: widget.child),
@@ -218,7 +223,8 @@ class _ActivityTab extends StatelessWidget {
             ? WinColors.warn
             : WinColors.error;
     final weekCounts = _weekCounts();
-    final maxCount = weekCounts.isEmpty ? 0 : weekCounts.reduce((a, b) => a > b ? a : b);
+    final maxCount =
+        weekCounts.isEmpty ? 0 : weekCounts.reduce((a, b) => a > b ? a : b);
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
@@ -291,7 +297,8 @@ class _ActivityTab extends StatelessWidget {
             children: List.generate(7, (i) {
               final val = weekCounts[i];
               const maxH = 60.0;
-              final h = val == 0 || maxCount == 0 ? 4.0 : (val / maxCount) * maxH;
+              final h =
+                  val == 0 || maxCount == 0 ? 4.0 : (val / maxCount) * maxH;
               return Expanded(
                 child: Column(children: [
                   Container(
@@ -301,7 +308,7 @@ class _ActivityTab extends StatelessWidget {
                       color: val == 0
                           ? s.outline2
                           : s.primary.withValues(alpha: 0.7),
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: BorderRadius.circular(WinRadii.full),
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -396,7 +403,8 @@ class _ResultsTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    final subjects = [...scores.subjects]..sort((a, b) => b.averageScore.compareTo(a.averageScore));
+    final subjects = [...scores.subjects]
+      ..sort((a, b) => b.averageScore.compareTo(a.averageScore));
     final quiz = scores.lastQuiz;
 
     if (subjects.isEmpty && quiz == null) {
@@ -426,7 +434,8 @@ class _ResultsTab extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
       children: [
         if (subjects.isNotEmpty) ...[
-          Text('Score moyen par matière (30 jours)', style: WinType.headlineS(s.onStrong)),
+          Text('Score moyen par matière (30 jours)',
+              style: WinType.headlineS(s.onStrong)),
           const SizedBox(height: 16),
           WinCard(
             child: Column(
@@ -438,15 +447,18 @@ class _ResultsTab extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(children: [
-                          Icon(Icons.menu_book_outlined, size: 15, color: color),
+                          Icon(Icons.menu_book_outlined,
+                              size: 15, color: color),
                           const SizedBox(width: 6),
-                          Expanded(child: Text(entry.subjectTitle, style: WinType.labelM(s.onStrong))),
+                          Expanded(
+                              child: Text(entry.subjectTitle,
+                                  style: WinType.labelM(s.onStrong))),
                           Text('${entry.averageScore.round()}%',
                               style: WinType.archivo(size: 14, color: color)),
                         ]),
                         const SizedBox(height: 6),
                         ClipRRect(
-                          borderRadius: BorderRadius.circular(4),
+                          borderRadius: BorderRadius.circular(WinRadii.full),
                           child: LinearProgressIndicator(
                             value: (entry.averageScore / 100).clamp(0, 1),
                             minHeight: 8,
@@ -470,14 +482,18 @@ class _ResultsTab extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(children: [
-                        const Icon(Icons.emoji_events, size: 14, color: WinColors.gold),
+                        const Icon(Icons.emoji_events,
+                            size: 14, color: WinColors.gold),
                         const SizedBox(width: 4),
-                        Text('Meilleure matière', style: WinType.labelS(s.onMuted)),
+                        Text('Meilleure matière',
+                            style: WinType.labelS(s.onMuted)),
                       ]),
                       const SizedBox(height: 4),
-                      Text(best.subjectTitle, style: WinType.titleM(s.onStrong)),
+                      Text(best.subjectTitle,
+                          style: WinType.titleM(s.onStrong)),
                       Text('${best.averageScore.round()}%',
-                          style: WinType.archivo(size: 18, color: WinColors.success)),
+                          style: WinType.archivo(
+                              size: 18, color: WinColors.success)),
                     ]),
               ),
             ),
@@ -489,14 +505,17 @@ class _ResultsTab extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(children: [
-                        const Icon(Icons.warning_amber_rounded, size: 14, color: WinColors.warn),
+                        const Icon(Icons.warning_amber_rounded,
+                            size: 14, color: WinColors.warn),
                         const SizedBox(width: 4),
                         Text('À travailler', style: WinType.labelS(s.onMuted)),
                       ]),
                       const SizedBox(height: 4),
-                      Text(worst.subjectTitle, style: WinType.titleM(s.onStrong)),
+                      Text(worst.subjectTitle,
+                          style: WinType.titleM(s.onStrong)),
                       Text('${worst.averageScore.round()}%',
-                          style: WinType.archivo(size: 18, color: WinColors.warn)),
+                          style:
+                              WinType.archivo(size: 18, color: WinColors.warn)),
                     ]),
               ),
             ),
@@ -510,9 +529,10 @@ class _ResultsTab extends StatelessWidget {
                 height: 40,
                 decoration: BoxDecoration(
                   color: WinColors.successBg,
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(WinRadii.sm),
                 ),
-                child: const Icon(Icons.quiz_outlined, size: 20, color: WinColors.success),
+                child: const Icon(Icons.quiz_outlined,
+                    size: 20, color: WinColors.success),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -521,7 +541,8 @@ class _ResultsTab extends StatelessWidget {
                     children: [
                       Text('Dernier quiz', style: WinType.labelM(s.onMuted)),
                       const SizedBox(height: 2),
-                      Text('${quiz.title} · ${quiz.correctAnswers}/${quiz.totalQuestions}',
+                      Text(
+                          '${quiz.title} · ${quiz.correctAnswers}/${quiz.totalQuestions}',
                           style: WinType.titleM(s.onStrong)),
                     ]),
               ),
@@ -556,7 +577,8 @@ class _AlertsTab extends StatelessWidget {
     if (alerts.isEmpty) {
       return Center(
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-          const Icon(Icons.check_circle_outline, size: 48, color: WinColors.success),
+          const Icon(Icons.check_circle_outline,
+              size: 48, color: WinColors.success),
           const SizedBox(height: 12),
           Text(
             'Tout va bien !',

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../services/tutor_booking_service.dart';
+import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
@@ -119,8 +120,8 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
             decoration: BoxDecoration(
               color: s.surface,
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(24)),
+              borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(WinRadii.xl)),
             ),
             child: Column(
                 mainAxisSize: MainAxisSize.min,

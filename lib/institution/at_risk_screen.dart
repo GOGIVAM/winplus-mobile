@@ -139,7 +139,7 @@ class _AtRiskCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: s.cardBg,
-        borderRadius: BorderRadius.zero,
+        borderRadius: BorderRadius.circular(WinRadii.md),
         border: Border(
           left: BorderSide(color: riskColor, width: 4),
           top: BorderSide(color: s.cardBorder),
@@ -152,8 +152,15 @@ class _AtRiskCard extends StatelessWidget {
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         // Header row
         Row(children: [
-          WinAvatar(student.fullName,
-              size: 40, color: critical ? WinColors.errorBg : WinColors.warnBg),
+          Container(
+            padding: const EdgeInsets.all(2),
+            decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: riskColor, width: 2)),
+            child: WinAvatar(student.fullName,
+                size: 36,
+                color: critical ? WinColors.errorBg : WinColors.warnBg),
+          ),
           const SizedBox(width: 12),
           Expanded(
               child: Column(
@@ -172,17 +179,15 @@ class _AtRiskCard extends StatelessWidget {
         const SizedBox(height: 12),
 
         // Stats row
-        Row(children: [
+        Wrap(spacing: 8, runSpacing: 8, children: [
           _InfoChip(
               Icons.subject_outlined,
               student.weakSubject.isNotEmpty
                   ? '${student.weakSubject}  ${student.weakScore}%'
                   : 'Matière faible ',
               WinColors.error),
-          const SizedBox(width: 10),
           _InfoChip(Icons.bar_chart_outlined, 'Score : ${student.globalScore}%',
               scoreColor),
-          const SizedBox(width: 10),
           _InfoChip(
               Icons.schedule_outlined,
               student.inactiveDays > 0
@@ -229,14 +234,21 @@ class _InfoChip extends StatelessWidget {
   const _InfoChip(this.icon, this.label, this.color);
   @override
   Widget build(BuildContext context) {
-    return Row(mainAxisSize: MainAxisSize.min, children: [
-      Icon(icon, size: 13, color: color),
-      const SizedBox(width: 3),
-      Flexible(
-          child: Text(label,
-              style:
-                  WinType.labelM(color).copyWith(fontWeight: FontWeight.w600),
-              overflow: TextOverflow.ellipsis)),
-    ]);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(WinRadii.full),
+      ),
+      child: Row(mainAxisSize: MainAxisSize.min, children: [
+        Icon(icon, size: 12, color: color),
+        const SizedBox(width: 3),
+        Flexible(
+            child: Text(label,
+                style:
+                    WinType.labelS(color).copyWith(fontWeight: FontWeight.w600),
+                overflow: TextOverflow.ellipsis)),
+      ]),
+    );
   }
 }

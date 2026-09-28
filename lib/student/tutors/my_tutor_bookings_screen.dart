@@ -95,7 +95,7 @@ class _MyTutorBookingsScreenState extends State<MyTutorBookingsScreen> {
             decoration: BoxDecoration(
               color: s.surface,
               borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(24)),
+                  BorderRadius.vertical(top: Radius.circular(WinRadii.xl)),
             ),
             child: Column(
                 mainAxisSize: MainAxisSize.min,

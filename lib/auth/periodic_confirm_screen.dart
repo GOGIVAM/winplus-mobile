@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../services/session_manager.dart';
+import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
@@ -171,11 +172,11 @@ class _PeriodicConfirmScreenState extends State<PeriodicConfirmScreen> {
                       decoration: InputDecoration(
                         counterText: '',
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.zero,
+                          borderRadius: BorderRadius.circular(WinRadii.md),
                           borderSide: BorderSide(color: s.outline, width: 1.5),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.zero,
+                          borderRadius: BorderRadius.circular(WinRadii.md),
                           borderSide: BorderSide(color: s.primary, width: 2),
                         ),
                         filled: true,

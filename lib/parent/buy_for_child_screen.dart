@@ -3,6 +3,7 @@ import '../data/mock_data.dart';
 import '../data/models.dart';
 import '../services/parent_service.dart';
 import '../shared/shop/account_required_purchase_screen.dart';
+import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
@@ -69,7 +70,7 @@ class _BuyForChildScreenState extends State<BuyForChildScreen> {
                         horizontal: 16, vertical: 10),
                     decoration: BoxDecoration(
                       color: sel ? s.primary : s.surface2,
-                      borderRadius: BorderRadius.circular(22),
+                      borderRadius: BorderRadius.circular(WinRadii.full),
                       border: Border.all(color: sel ? s.primary : s.outline),
                     ),
                     child: Text(
@@ -105,7 +106,8 @@ class _BuyForChildScreenState extends State<BuyForChildScreen> {
                       onBuy: () => Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (_) => AccountRequiredPurchaseScreen(content: c)),
+                            builder: (_) =>
+                                AccountRequiredPurchaseScreen(content: c)),
                       ),
                     ))
                 .toList(),
@@ -137,7 +139,7 @@ class _CatalogCard extends StatelessWidget {
             decoration: BoxDecoration(
               color: subj.color.withValues(alpha: 0.12),
               borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(16)),
+                  BorderRadius.vertical(top: Radius.circular(WinRadii.lg)),
             ),
             child: Center(child: Icon(subj.icon, size: 34, color: subj.color)),
           ),

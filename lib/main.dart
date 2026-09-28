@@ -8,6 +8,7 @@ import 'auth/splash_screen.dart';
 import 'shared/subscription/subscription_notifier.dart';
 import 'services/connectivity_service.dart';
 import 'services/local_cache_service.dart';
+import 'services/local_downloads_service.dart';
 import 'services/messaging_service.dart';
 import 'services/outbox_service.dart';
 import 'services/quiz_service.dart';
@@ -25,6 +26,9 @@ Future<void> main() async {
   // Au cas où l'app démarre déjà en ligne avec des actions en attente d'un
   // précédent passage hors ligne.
   unawaited(OutboxService.instance.flush());
+  // Module 44 : épreuves, corrigés et livres ne sont plus téléchargeables ;
+  // on efface les copies en clair laissées par les versions précédentes.
+  unawaited(LocalDownloadsService.instance.purgeLegacyCatalogFiles());
 
   runApp(const WinPlusApp());
 }

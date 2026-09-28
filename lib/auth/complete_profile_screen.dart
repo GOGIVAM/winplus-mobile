@@ -214,7 +214,7 @@ class _StudentProfileWizardState extends State<_StudentProfileWizard> {
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
             decoration: BoxDecoration(
               color: active ? WinColors.ink800 : s.surface,
-              borderRadius: BorderRadius.zero,
+              borderRadius: BorderRadius.circular(WinRadii.full),
               border: Border.all(
                   color: active ? WinColors.ink800 : s.outline, width: 1.5),
             ),
@@ -371,7 +371,7 @@ class _TeacherProfileWizardState extends State<_TeacherProfileWizard> {
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
             decoration: BoxDecoration(
               color: active ? WinColors.ink800 : s.surface,
-              borderRadius: BorderRadius.zero,
+              borderRadius: BorderRadius.circular(WinRadii.full),
               border: Border.all(
                   color: active ? WinColors.ink800 : s.outline, width: 1.5),
             ),

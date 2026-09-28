@@ -8,7 +8,8 @@ import '../widgets/win_widgets.dart';
 class GroupMembersScreen extends StatefulWidget {
   final int groupId;
   final String groupName;
-  const GroupMembersScreen({super.key, required this.groupId, required this.groupName});
+  const GroupMembersScreen(
+      {super.key, required this.groupId, required this.groupName});
 
   @override
   State<GroupMembersScreen> createState() => _GroupMembersScreenState();
@@ -52,7 +53,9 @@ class _GroupMembersScreenState extends State<GroupMembersScreen> {
       body: members == null
           ? const Center(child: CircularProgressIndicator())
           : members.isEmpty
-              ? Center(child: Text('Aucun élève dans ce groupe.', style: WinType.bodyM(s.onMuted)))
+              ? Center(
+                  child: Text('Aucun élève dans ce groupe.',
+                      style: WinType.bodyM(s.onMuted)))
               : ListView.separated(
                   padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
                   itemCount: members.length,
@@ -67,18 +70,37 @@ class _GroupMembersScreenState extends State<GroupMembersScreen> {
                     return WinCard(
                       padding: const EdgeInsets.all(12),
                       child: Row(children: [
-                        WinAvatar(m.fullName, size: 40),
+                        Container(
+                          padding: const EdgeInsets.all(2),
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(color: scoreColor, width: 2)),
+                          child: WinAvatar(m.fullName, size: 36),
+                        ),
                         const SizedBox(width: 12),
-                        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          Text(m.fullName, style: WinType.titleM(s.onStrong)),
-                          if (m.email != null)
-                            Text(m.email!, style: WinType.labelS(s.onFaint)),
-                        ])),
-                        Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                          Text('${m.averageScore.round()}%',
-                              style: WinType.archivo(size: 16, weight: FontWeight.w700, color: scoreColor)),
-                          Text('moy.', style: WinType.labelS(s.onFaint)),
-                        ]),
+                        Expanded(
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                              Text(m.fullName,
+                                  style: WinType.titleM(s.onStrong)),
+                              if (m.email != null)
+                                Text(m.email!,
+                                    style: WinType.labelS(s.onFaint)),
+                            ])),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: scoreColor.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(WinRadii.full),
+                          ),
+                          child: Text('${m.averageScore.round()}%',
+                              style: WinType.archivo(
+                                  size: 14,
+                                  weight: FontWeight.w700,
+                                  color: scoreColor)),
+                        ),
                       ]),
                     );
                   },

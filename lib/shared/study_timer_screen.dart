@@ -90,7 +90,12 @@ class _StudyTimerScreenState extends State<StudyTimerScreen> {
         final s = WinTheme.of(ctx);
         return AlertDialog(
           backgroundColor: s.surface,
-          title: Text(_mode == _TimerMode.pomodoro ? 'Pomodoro terminé !' : 'Pause terminée !',
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(WinRadii.xl)),
+          title: Text(
+              _mode == _TimerMode.pomodoro
+                  ? 'Pomodoro terminé !'
+                  : 'Pause terminée !',
               style: WinType.archivo(size: 18, color: s.onStrong)),
           content: Text(
             _mode == _TimerMode.pomodoro
@@ -100,11 +105,17 @@ class _StudyTimerScreenState extends State<StudyTimerScreen> {
           ),
           actions: [
             TextButton(
-              onPressed: () { Navigator.pop(ctx); _setMode(_TimerMode.shortBreak); },
+              onPressed: () {
+                Navigator.pop(ctx);
+                _setMode(_TimerMode.shortBreak);
+              },
               child: const Text('Pause courte'),
             ),
             TextButton(
-              onPressed: () { Navigator.pop(ctx); _setMode(_TimerMode.pomodoro); },
+              onPressed: () {
+                Navigator.pop(ctx);
+                _setMode(_TimerMode.pomodoro);
+              },
               child: const Text('Nouveau pomodoro'),
             ),
           ],
@@ -144,7 +155,8 @@ class _StudyTimerScreenState extends State<StudyTimerScreen> {
         // Mode selector
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Row(children: _TimerMode.values.map((m) {
+          child: Row(
+              children: _TimerMode.values.map((m) {
             final active = m == _mode;
             return Expanded(
               child: GestureDetector(
@@ -156,7 +168,7 @@ class _StudyTimerScreenState extends State<StudyTimerScreen> {
                   decoration: BoxDecoration(
                     color: active ? color : Colors.transparent,
                     border: Border.all(color: active ? color : s.outline),
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(WinRadii.full),
                   ),
                   alignment: Alignment.center,
                   child: Text(
@@ -190,7 +202,8 @@ class _StudyTimerScreenState extends State<StudyTimerScreen> {
               ),
             ),
             Column(mainAxisSize: MainAxisSize.min, children: [
-              Text(_timeLabel, style: WinType.archivo(size: 52, color: s.onStrong)),
+              Text(_timeLabel,
+                  style: WinType.archivo(size: 52, color: s.onStrong)),
               Text(_modeLabels[_mode]!, style: WinType.labelM(s.onMuted)),
             ]),
           ]),
@@ -229,7 +242,8 @@ class _StudyTimerScreenState extends State<StudyTimerScreen> {
         WinCard(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
           child: Row(mainAxisSize: MainAxisSize.min, children: [
-            const Icon(Icons.local_fire_department_outlined, size: 20, color: WinColors.gold),
+            const Icon(Icons.local_fire_department_outlined,
+                size: 20, color: WinColors.gold),
             const SizedBox(width: 8),
             Text(
               '$_completedPomodoros pomodoro${_completedPomodoros != 1 ? 's' : ''} aujourd\'hui',

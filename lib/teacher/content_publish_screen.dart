@@ -28,10 +28,41 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
   bool _loading = false;
   String? _errorMsg;
 
-  static const _types = ['Épreuve', 'Correction', 'Quiz', 'Livre', 'Pack', 'Fiche'];
-  static const _subjects = ['Mathématiques', 'Physique', 'Chimie', 'Français', 'SVT', 'Anglais', 'Histoire-Géo'];
-  static const _levels = ['BEPC', 'Probatoire', 'BAC A', 'BAC C', 'BAC D', 'Concours'];
-  static const _exams = ['BAC', 'BEPC', 'ENSP', 'Polytechnique', 'ESSEC', 'FMSB', 'ENAM', 'ENS'];
+  static const _types = [
+    'Épreuve',
+    'Correction',
+    'Quiz',
+    'Livre',
+    'Pack',
+    'Fiche'
+  ];
+  static const _subjects = [
+    'Mathématiques',
+    'Physique',
+    'Chimie',
+    'Français',
+    'SVT',
+    'Anglais',
+    'Histoire-Géo'
+  ];
+  static const _levels = [
+    'BEPC',
+    'Probatoire',
+    'BAC A',
+    'BAC C',
+    'BAC D',
+    'Concours'
+  ];
+  static const _exams = [
+    'BAC',
+    'BEPC',
+    'ENSP',
+    'Polytechnique',
+    'ESSEC',
+    'FMSB',
+    'ENAM',
+    'ENS'
+  ];
 
   String _formatFileSize(int bytes) {
     if (bytes < 1024) return '$bytes o';
@@ -58,20 +89,22 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
       if (mounted) setState(() => _errorMsg = 'Veuillez choisir un fichier.');
       return;
     }
-    if (mounted) setState(() { _loading = true; _errorMsg = null; });
+    if (mounted)
+      setState(() {
+        _loading = true;
+        _errorMsg = null;
+      });
     try {
-      final price = _prixLibre
-          ? (int.tryParse(_priceCtrl.text.trim()) ?? 0)
-          : 0;
+      final price =
+          _prixLibre ? (int.tryParse(_priceCtrl.text.trim()) ?? 0) : 0;
       final ok = await TeacherService.instance.publishContent(
         title: _titleCtrl.text.trim(),
         type: _type,
         subjectCategory: _subject,
         level: _level,
         price: price,
-        description: _descCtrl.text.trim().isEmpty
-            ? null
-            : _descCtrl.text.trim(),
+        description:
+            _descCtrl.text.trim().isEmpty ? null : _descCtrl.text.trim(),
       );
       if (!mounted) return;
       if (ok) {
@@ -109,7 +142,7 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
       decoration: BoxDecoration(
         color: s.surface,
         border: Border.all(color: s.outline),
-        borderRadius: BorderRadius.zero,
+        borderRadius: BorderRadius.circular(WinRadii.md),
       ),
       child: DropdownButton<T>(
         value: value,
@@ -162,17 +195,18 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
               filled: true,
               fillColor: s.surface,
               counterStyle: WinType.labelS(s.onFaint),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.zero,
+                borderRadius: BorderRadius.circular(WinRadii.md),
                 borderSide: BorderSide(color: s.outline),
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.zero,
+                borderRadius: BorderRadius.circular(WinRadii.md),
                 borderSide: BorderSide(color: s.outline),
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.zero,
+                borderRadius: BorderRadius.circular(WinRadii.md),
                 borderSide: BorderSide(color: s.primary, width: 1.5),
               ),
             ),
@@ -181,23 +215,33 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
 
           // 2. Type + Matière
           Row(children: [
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              _label('Type'),
-              _styledDropdown<String>(
-                value: _type,
-                items: _types,
-                onChanged: (v) { if (v != null) setState(() => _type = v); },
-              ),
-            ])),
+            Expanded(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                  _label('Type'),
+                  _styledDropdown<String>(
+                    value: _type,
+                    items: _types,
+                    onChanged: (v) {
+                      if (v != null) setState(() => _type = v);
+                    },
+                  ),
+                ])),
             const SizedBox(width: 12),
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              _label('Matière'),
-              _styledDropdown<String>(
-                value: _subject,
-                items: _subjects,
-                onChanged: (v) { if (v != null) setState(() => _subject = v); },
-              ),
-            ])),
+            Expanded(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                  _label('Matière'),
+                  _styledDropdown<String>(
+                    value: _subject,
+                    items: _subjects,
+                    onChanged: (v) {
+                      if (v != null) setState(() => _subject = v);
+                    },
+                  ),
+                ])),
           ]),
           const SizedBox(height: 16),
 
@@ -213,14 +257,15 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
                   child: GestureDetector(
                     onTap: () => setState(() => _level = lvl),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 14, vertical: 8),
                       decoration: BoxDecoration(
                         color: active ? s.primary : Colors.transparent,
                         border: Border.all(
                           color: active ? s.primary : s.outline,
                           width: 1.5,
                         ),
-                        borderRadius: BorderRadius.zero,
+                        borderRadius: BorderRadius.circular(WinRadii.full),
                       ),
                       child: Text(
                         lvl,
@@ -243,7 +288,9 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
           _styledDropdown<String>(
             value: _exam,
             items: _exams,
-            onChanged: (v) { if (v != null) setState(() => _exam = v); },
+            onChanged: (v) {
+              if (v != null) setState(() => _exam = v);
+            },
           ),
           const SizedBox(height: 16),
 
@@ -259,17 +306,18 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
               hintStyle: WinType.bodyM(s.onFaint),
               filled: true,
               fillColor: s.surface,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.zero,
+                borderRadius: BorderRadius.circular(WinRadii.md),
                 borderSide: BorderSide(color: s.outline),
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.zero,
+                borderRadius: BorderRadius.circular(WinRadii.md),
                 borderSide: BorderSide(color: s.outline),
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.zero,
+                borderRadius: BorderRadius.circular(WinRadii.md),
                 borderSide: BorderSide(color: s.primary, width: 1.5),
               ),
             ),
@@ -289,17 +337,18 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
               filled: true,
               fillColor: s.surface,
               counterStyle: WinType.labelS(s.onFaint),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.zero,
+                borderRadius: BorderRadius.circular(WinRadii.md),
                 borderSide: BorderSide(color: s.outline),
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.zero,
+                borderRadius: BorderRadius.circular(WinRadii.md),
                 borderSide: BorderSide(color: s.outline),
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.zero,
+                borderRadius: BorderRadius.circular(WinRadii.md),
                 borderSide: BorderSide(color: s.primary, width: 1.5),
               ),
             ),
@@ -330,11 +379,13 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
               decoration: BoxDecoration(
                 color: WinColors.successBg,
-                border: Border.all(color: WinColors.success.withValues(alpha: 0.5)),
-                borderRadius: BorderRadius.zero,
+                border:
+                    Border.all(color: WinColors.success.withValues(alpha: 0.5)),
+                borderRadius: BorderRadius.circular(WinRadii.md),
               ),
               child: Row(children: [
-                const Icon(Icons.picture_as_pdf_outlined, size: 20, color: WinColors.success),
+                const Icon(Icons.picture_as_pdf_outlined,
+                    size: 20, color: WinColors.success),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
@@ -346,7 +397,8 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
                 ),
                 GestureDetector(
                   onTap: () => setState(() => _pickedFile = null),
-                  child: const Icon(Icons.close, size: 18, color: WinColors.success),
+                  child: const Icon(Icons.close,
+                      size: 18, color: WinColors.success),
                 ),
               ]),
             ),
@@ -404,7 +456,8 @@ class _PrixRow extends StatelessWidget {
         onTap: () => onChanged(false),
         child: Row(children: [
           Container(
-            width: 20, height: 20,
+            width: 20,
+            height: 20,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
@@ -415,7 +468,8 @@ class _PrixRow extends StatelessWidget {
             child: !prixLibre
                 ? Center(
                     child: Container(
-                      width: 10, height: 10,
+                      width: 10,
+                      height: 10,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: s.primary,
@@ -427,7 +481,8 @@ class _PrixRow extends StatelessWidget {
           const SizedBox(width: 10),
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text('Abonnement uniquement', style: WinType.titleM(s.onStrong)),
-            Text('Accessible à tous les abonnés', style: WinType.labelS(s.onMuted)),
+            Text('Accessible à tous les abonnés',
+                style: WinType.labelS(s.onMuted)),
           ]),
         ]),
       ),
@@ -437,7 +492,8 @@ class _PrixRow extends StatelessWidget {
         onTap: () => onChanged(true),
         child: Row(children: [
           Container(
-            width: 20, height: 20,
+            width: 20,
+            height: 20,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
@@ -448,7 +504,8 @@ class _PrixRow extends StatelessWidget {
             child: prixLibre
                 ? Center(
                     child: Container(
-                      width: 10, height: 10,
+                      width: 10,
+                      height: 10,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: s.primary,
@@ -460,7 +517,8 @@ class _PrixRow extends StatelessWidget {
           const SizedBox(width: 10),
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text('Prix libre', style: WinType.titleM(s.onStrong)),
-            Text('Fixez votre propre prix en XAF', style: WinType.labelS(s.onMuted)),
+            Text('Fixez votre propre prix en XAF',
+                style: WinType.labelS(s.onMuted)),
           ]),
         ]),
       ),
@@ -478,17 +536,18 @@ class _PrixRow extends StatelessWidget {
             fillColor: s.surface,
             suffixText: 'XAF',
             suffixStyle: WinType.labelM(s.onMuted),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.zero,
+              borderRadius: BorderRadius.circular(WinRadii.md),
               borderSide: BorderSide(color: s.outline),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.zero,
+              borderRadius: BorderRadius.circular(WinRadii.md),
               borderSide: BorderSide(color: s.outline),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.zero,
+              borderRadius: BorderRadius.circular(WinRadii.md),
               borderSide: BorderSide(color: s.primary, width: 1.5),
             ),
           ),

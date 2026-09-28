@@ -18,15 +18,22 @@ class _TypeMeta {
 }
 
 const _meta = <String, _TypeMeta>{
-  'struggling_topics':   _TypeMeta('Difficulté',  Icons.warning_amber_rounded,        WinColors.error,   WinColors.errorBg),
-  'understood_topics':   _TypeMeta('Maîtrisé',    Icons.check_circle_rounded,         WinColors.success,  WinColors.successBg),
-  'exam_context':        _TypeMeta('Examen',       Icons.track_changes_rounded,        _violet,            _violetBg),
-  'learning_preference': _TypeMeta('Préférence',   Icons.psychology_rounded,           WinColors.blue500,  WinColors.blue50),
-  'motivation_style':    _TypeMeta('Motivation',   Icons.local_fire_department_rounded, WinColors.warn,    WinColors.warnBg),
+  'struggling_topics': _TypeMeta('Difficulté', Icons.warning_amber_rounded,
+      WinColors.error, WinColors.errorBg),
+  'understood_topics': _TypeMeta('Maîtrisé', Icons.check_circle_rounded,
+      WinColors.success, WinColors.successBg),
+  'exam_context':
+      _TypeMeta('Examen', Icons.track_changes_rounded, _violet, _violetBg),
+  'learning_preference': _TypeMeta('Préférence', Icons.psychology_rounded,
+      WinColors.blue500, WinColors.blue50),
+  'motivation_style': _TypeMeta('Motivation',
+      Icons.local_fire_department_rounded, WinColors.warn, WinColors.warnBg),
 };
 
 _TypeMeta _metaFor(String type) =>
-    _meta[type] ?? const _TypeMeta('Mémoire', Icons.note_alt_outlined, WinColors.ink400, WinColors.ink50);
+    _meta[type] ??
+    const _TypeMeta(
+        'Mémoire', Icons.note_alt_outlined, WinColors.ink400, WinColors.ink50);
 
 // ── Fonction d'ouverture ──────────────────────────────────────────────────────
 
@@ -60,12 +67,23 @@ class _WinAIMemoriesSheetState extends State<_WinAIMemoriesSheet> {
   }
 
   Future<void> _load() async {
-    setState(() { _loading = true; _error = null; });
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
     try {
       final data = await ChatbotService.instance.getMemories();
-      if (mounted) setState(() { _memories = data; _loading = false; });
+      if (mounted)
+        setState(() {
+          _memories = data;
+          _loading = false;
+        });
     } catch (_) {
-      if (mounted) setState(() { _error = 'Impossible de charger les mémoires.'; _loading = false; });
+      if (mounted)
+        setState(() {
+          _error = 'Impossible de charger les mémoires.';
+          _loading = false;
+        });
     }
   }
 
@@ -74,7 +92,10 @@ class _WinAIMemoriesSheetState extends State<_WinAIMemoriesSheet> {
     final ok = await ChatbotService.instance.deleteMemory(id);
     if (!mounted) return;
     if (ok) {
-      setState(() { _memories.removeWhere((m) => m.id == id); _deletingId = null; });
+      setState(() {
+        _memories.removeWhere((m) => m.id == id);
+        _deletingId = null;
+      });
     } else {
       setState(() => _deletingId = null);
       ScaffoldMessenger.of(context).showSnackBar(
@@ -101,14 +122,17 @@ class _WinAIMemoriesSheetState extends State<_WinAIMemoriesSheet> {
       constraints: BoxConstraints(maxHeight: maxH),
       decoration: BoxDecoration(
         color: s.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(WinRadii.xl)),
       ),
       child: Column(mainAxisSize: MainAxisSize.min, children: [
         // Handle
         Container(
-          width: 36, height: 4,
+          width: 36,
+          height: 4,
           margin: const EdgeInsets.only(top: 12, bottom: 4),
-          decoration: BoxDecoration(color: s.outline2, borderRadius: BorderRadius.circular(2)),
+          decoration: BoxDecoration(
+              color: s.outline2,
+              borderRadius: BorderRadius.circular(WinRadii.full)),
         ),
 
         // Header
@@ -116,16 +140,25 @@ class _WinAIMemoriesSheetState extends State<_WinAIMemoriesSheet> {
           padding: const EdgeInsets.fromLTRB(20, 8, 16, 12),
           child: Row(children: [
             Container(
-              width: 34, height: 34,
-              decoration: BoxDecoration(color: _violetBg, borderRadius: BorderRadius.circular(10)),
-              child: const Center(child: Icon(Icons.psychology_rounded, size: 20, color: _violet)),
+              width: 34,
+              height: 34,
+              decoration: BoxDecoration(
+                  color: _violetBg,
+                  borderRadius: BorderRadius.circular(WinRadii.sm)),
+              child: const Center(
+                  child:
+                      Icon(Icons.psychology_rounded, size: 20, color: _violet)),
             ),
             const SizedBox(width: 10),
             Expanded(
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text('Mémoire WinAI', style: WinType.archivo(size: 16, color: s.onStrong)),
-                Text('Ce que WinAI a retenu de toi', style: WinType.bodyS(s.onMuted)),
-              ]),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Mémoire WinAI',
+                        style: WinType.archivo(size: 16, color: s.onStrong)),
+                    Text('Ce que WinAI a retenu de toi',
+                        style: WinType.bodyS(s.onMuted)),
+                  ]),
             ),
             IconButton(
               icon: Icon(Icons.refresh_rounded, size: 20, color: s.onMuted),
@@ -147,13 +180,17 @@ class _WinAIMemoriesSheetState extends State<_WinAIMemoriesSheet> {
               : _error != null
                   ? Padding(
                       padding: const EdgeInsets.all(32),
-                      child: Text(_error!, style: WinType.bodyM(WinColors.error), textAlign: TextAlign.center),
+                      child: Text(_error!,
+                          style: WinType.bodyM(WinColors.error),
+                          textAlign: TextAlign.center),
                     )
                   : _memories.isEmpty
                       ? Padding(
                           padding: const EdgeInsets.fromLTRB(24, 32, 24, 32),
-                          child: Column(mainAxisSize: MainAxisSize.min, children: [
-                            const Icon(Icons.eco_outlined, size: 40, color: WinColors.success),
+                          child:
+                              Column(mainAxisSize: MainAxisSize.min, children: [
+                            const Icon(Icons.eco_outlined,
+                                size: 40, color: WinColors.success),
                             const SizedBox(height: 12),
                             Text(
                               'WinAI n\'a pas encore mémorisé d\'informations. Continue à interagir !',
@@ -171,23 +208,27 @@ class _WinAIMemoriesSheetState extends State<_WinAIMemoriesSheet> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Padding(
-                                  padding: const EdgeInsets.only(top: 12, bottom: 6),
+                                  padding:
+                                      const EdgeInsets.only(top: 12, bottom: 6),
                                   child: Row(children: [
                                     Icon(m.icon, size: 13, color: m.color),
                                     const SizedBox(width: 6),
                                     Text(
                                       m.label.toUpperCase(),
-                                      style: WinType.manrope(size: 11, weight: FontWeight.w700, color: m.color)
+                                      style: WinType.manrope(
+                                              size: 11,
+                                              weight: FontWeight.w700,
+                                              color: m.color)
                                           .copyWith(letterSpacing: 0.6),
                                     ),
                                   ]),
                                 ),
                                 ...entry.value.map((mem) => _MemoryRow(
-                                  memory: mem,
-                                  meta: m,
-                                  deleting: _deletingId == mem.id,
-                                  onDelete: () => _delete(mem.id),
-                                )),
+                                      memory: mem,
+                                      meta: m,
+                                      deleting: _deletingId == mem.id,
+                                      onDelete: () => _delete(mem.id),
+                                    )),
                               ],
                             );
                           }).toList(),
@@ -223,7 +264,7 @@ class _MemoryRow extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(12, 10, 8, 10),
       decoration: BoxDecoration(
         color: meta.bg.withValues(alpha: 0.5),
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(WinRadii.sm),
         border: Border.all(color: meta.color.withValues(alpha: 0.18)),
       ),
       child: Row(children: [
@@ -233,12 +274,15 @@ class _MemoryRow extends StatelessWidget {
         const SizedBox(width: 8),
         deleting
             ? const SizedBox(
-                width: 18, height: 18,
-                child: CircularProgressIndicator(strokeWidth: 2, color: WinColors.error),
+                width: 18,
+                height: 18,
+                child: CircularProgressIndicator(
+                    strokeWidth: 2, color: WinColors.error),
               )
             : GestureDetector(
                 onTap: onDelete,
-                child: const Icon(Icons.delete_outline_rounded, size: 18, color: WinColors.error),
+                child: const Icon(Icons.delete_outline_rounded,
+                    size: 18, color: WinColors.error),
               ),
       ]),
     );

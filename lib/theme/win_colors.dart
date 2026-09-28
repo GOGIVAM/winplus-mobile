@@ -66,11 +66,11 @@ class WinSpacing {
       x5 = 64;
 }
 
-/// Rayons de bordure  design zéro-radius identique au web.
-/// full=100 réservé aux avatars circulaires uniquement.
+/// Rayons de bordure  direction visuelle "Funica" (arrondis généreux),
+/// couleurs de marque WinPlus conservées.
 class WinRadii {
   WinRadii._();
-  static const double sm = 0, md = 0, lg = 0, xl = 0, full = 100;
+  static const double sm = 12, md = 16, lg = 20, xl = 28, full = 100;
 }
 
 /// Ombres « ink » (jamais de noir pur).

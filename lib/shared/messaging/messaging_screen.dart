@@ -51,7 +51,8 @@ class _MessagingScreenState extends State<MessagingScreen> {
     return Scaffold(
       backgroundColor: s.bg,
       appBar: AppBar(
-        backgroundColor: s.bg, elevation: 0,
+        backgroundColor: s.bg,
+        elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
@@ -60,25 +61,31 @@ class _MessagingScreenState extends State<MessagingScreen> {
         actions: [
           IconButton(
             icon: Icon(Icons.refresh_outlined, color: s.onStrong),
-            onPressed: () { setState(() => _convos = null); _load(); },
+            onPressed: () {
+              setState(() => _convos = null);
+              _load();
+            },
           ),
         ],
       ),
       body: _convos == null
           ? const Center(child: CircularProgressIndicator())
           : _convos!.isEmpty
-              ? Center(child: Column(mainAxisSize: MainAxisSize.min, children: [
+              ? Center(
+                  child: Column(mainAxisSize: MainAxisSize.min, children: [
                   Icon(Icons.chat_bubble_outline, size: 64, color: s.onFaint),
                   const SizedBox(height: 12),
                   Text('Aucune conversation.', style: WinType.bodyM(s.onMuted)),
                   const SizedBox(height: 8),
                   Text('Contactez un professeur depuis la fiche d\'un élève.',
-                      style: WinType.bodyS(s.onFaint), textAlign: TextAlign.center),
+                      style: WinType.bodyS(s.onFaint),
+                      textAlign: TextAlign.center),
                 ]))
               : ListView.separated(
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                   itemCount: _convos!.length,
-                  separatorBuilder: (_, __) => Divider(color: s.outline, height: 1),
+                  separatorBuilder: (_, __) =>
+                      Divider(color: s.outline, height: 1),
                   itemBuilder: (_, i) {
                     final c = _convos![i];
                     return ListTile(
@@ -87,11 +94,14 @@ class _MessagingScreenState extends State<MessagingScreen> {
                         WinAvatar(c.participantName, size: 46),
                         if (c.unreadCount > 0)
                           Positioned(
-                            right: 0, top: 0,
+                            right: 0,
+                            top: 0,
                             child: Container(
-                              width: 16, height: 16,
+                              width: 16,
+                              height: 16,
                               decoration: const BoxDecoration(
-                                  color: WinColors.error, shape: BoxShape.circle),
+                                  color: WinColors.error,
+                                  shape: BoxShape.circle),
                               child: Center(
                                 child: Text('${c.unreadCount}',
                                     style: WinType.labelS(WinColors.cream50)
@@ -101,25 +111,34 @@ class _MessagingScreenState extends State<MessagingScreen> {
                           ),
                       ]),
                       title: Row(children: [
-                        Expanded(child: Text(c.participantName,
-                            style: WinType.titleM(s.onStrong)
-                                .copyWith(fontWeight: c.unreadCount > 0
-                                    ? FontWeight.w700 : FontWeight.w500))),
+                        Expanded(
+                            child: Text(c.participantName,
+                                style: WinType.titleM(s.onStrong).copyWith(
+                                    fontWeight: c.unreadCount > 0
+                                        ? FontWeight.w700
+                                        : FontWeight.w500))),
                         Text(_relativeTime(c.lastMessageAt),
                             style: WinType.labelS(s.onFaint)),
                       ]),
-                      subtitle: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        WinBadge(_roleLabel(c.participantRole)),
-                        const SizedBox(height: 2),
-                        if (c.lastMessage != null)
-                          Text(c.lastMessage!,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: WinType.bodyS(c.unreadCount > 0
-                                  ? s.onStrong : s.onMuted)),
-                      ]),
-                      onTap: () => Navigator.push(context, MaterialPageRoute(
-                          builder: (_) => ConversationScreen(conversation: c))).then((_) => _load()),
+                      subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            WinBadge(_roleLabel(c.participantRole)),
+                            const SizedBox(height: 2),
+                            if (c.lastMessage != null)
+                              Text(c.lastMessage!,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: WinType.bodyS(c.unreadCount > 0
+                                      ? s.onStrong
+                                      : s.onMuted)),
+                          ]),
+                      onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) =>
+                                      ConversationScreen(conversation: c)))
+                          .then((_) => _load()),
                     );
                   },
                 ),
@@ -156,7 +175,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
 
   Future<void> _load() async {
     try {
-      final data = await MessagingService.instance.getMessages(widget.conversation.id);
+      final data =
+          await MessagingService.instance.getMessages(widget.conversation.id);
       if (mounted) {
         setState(() => _messages = data);
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -177,7 +197,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
     setState(() => _sending = true);
     // Envoyé immédiatement si en ligne, mis en file sinon (jamais perdu)
     // voir MessagingService.sendMessageQueueable.
-    final ok = await MessagingService.instance.sendMessageQueueable(widget.conversation.id, text);
+    final ok = await MessagingService.instance
+        .sendMessageQueueable(widget.conversation.id, text);
     if (!mounted) return;
     setState(() => _sending = false);
     if (ok) _load();
@@ -186,9 +207,9 @@ class _ConversationScreenState extends State<ConversationScreen> {
   String _timeLabel(DateTime dt) {
     final now = DateTime.now();
     if (dt.day == now.day && dt.month == now.month) {
-      return '${dt.hour.toString().padLeft(2,'0')}:${dt.minute.toString().padLeft(2,'0')}';
+      return '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
     }
-    return '${dt.day.toString().padLeft(2,'0')}/${dt.month.toString().padLeft(2,'0')} ${dt.hour.toString().padLeft(2,'0')}:${dt.minute.toString().padLeft(2,'0')}';
+    return '${dt.day.toString().padLeft(2, '0')}/${dt.month.toString().padLeft(2, '0')} ${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
   }
 
   @override
@@ -197,7 +218,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
     return Scaffold(
       backgroundColor: s.bg,
       appBar: AppBar(
-        backgroundColor: s.bg, elevation: 0,
+        backgroundColor: s.bg,
+        elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
@@ -208,7 +230,10 @@ class _ConversationScreenState extends State<ConversationScreen> {
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(widget.conversation.participantName,
                 style: WinType.titleM(s.onStrong)),
-            Text(widget.conversation.participantRole == 'teacher' ? 'Professeur' : 'Parent',
+            Text(
+                widget.conversation.participantRole == 'teacher'
+                    ? 'Professeur'
+                    : 'Parent',
                 style: WinType.labelS(s.onMuted)),
           ]),
         ]),
@@ -218,7 +243,9 @@ class _ConversationScreenState extends State<ConversationScreen> {
           child: _messages == null
               ? const Center(child: CircularProgressIndicator())
               : _messages!.isEmpty
-                  ? Center(child: Text('Commencez la conversation.', style: WinType.bodyM(s.onMuted)))
+                  ? Center(
+                      child: Text('Commencez la conversation.',
+                          style: WinType.bodyM(s.onMuted)))
                   : ListView.builder(
                       controller: _scrollCtrl,
                       padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
@@ -226,32 +253,49 @@ class _ConversationScreenState extends State<ConversationScreen> {
                       itemBuilder: (_, i) {
                         final m = _messages![i];
                         return Align(
-                          alignment: m.isFromMe ? Alignment.centerRight : Alignment.centerLeft,
+                          alignment: m.isFromMe
+                              ? Alignment.centerRight
+                              : Alignment.centerLeft,
                           child: Column(
                             crossAxisAlignment: m.isFromMe
-                                ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                                ? CrossAxisAlignment.end
+                                : CrossAxisAlignment.start,
                             children: [
                               Container(
                                 margin: const EdgeInsets.only(bottom: 4),
-                                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 14, vertical: 10),
                                 constraints: BoxConstraints(
-                                    maxWidth: MediaQuery.of(context).size.width * 0.72),
+                                    maxWidth:
+                                        MediaQuery.of(context).size.width *
+                                            0.72),
                                 decoration: BoxDecoration(
-                                  color: m.isFromMe ? WinColors.ink800 : s.cardBg,
-                                  border: m.isFromMe ? null : Border.all(color: s.cardBorder),
+                                  color:
+                                      m.isFromMe ? WinColors.ink800 : s.cardBg,
+                                  border: m.isFromMe
+                                      ? null
+                                      : Border.all(color: s.cardBorder),
                                   borderRadius: BorderRadius.only(
-                                    topLeft: const Radius.circular(18),
-                                    topRight: const Radius.circular(18),
-                                    bottomLeft: Radius.circular(m.isFromMe ? 18 : 4),
-                                    bottomRight: Radius.circular(m.isFromMe ? 4 : 18),
+                                    topLeft: Radius.circular(WinRadii.lg),
+                                    topRight: Radius.circular(WinRadii.lg),
+                                    bottomLeft: Radius.circular(m.isFromMe
+                                        ? WinRadii.lg
+                                        : WinRadii.sm / 3),
+                                    bottomRight: Radius.circular(m.isFromMe
+                                        ? WinRadii.sm / 3
+                                        : WinRadii.lg),
                                   ),
                                 ),
                                 child: Text(m.content,
-                                    style: WinType.bodyM(m.isFromMe ? WinColors.cream50 : s.onSurface)),
+                                    style: WinType.bodyM(m.isFromMe
+                                        ? WinColors.cream50
+                                        : s.onSurface)),
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(bottom: 12, left: 4, right: 4),
-                                child: Text(_timeLabel(m.sentAt), style: WinType.labelS(s.onFaint)),
+                                padding: const EdgeInsets.only(
+                                    bottom: 12, left: 4, right: 4),
+                                child: Text(_timeLabel(m.sentAt),
+                                    style: WinType.labelS(s.onFaint)),
                               ),
                             ],
                           ),
@@ -266,7 +310,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
             border: Border(top: BorderSide(color: s.outline)),
           ),
           child: Row(children: [
-            Expanded(child: WinTextField(
+            Expanded(
+                child: WinTextField(
               hint: 'Votre message…',
               controller: _ctrl,
             )),
@@ -274,14 +319,19 @@ class _ConversationScreenState extends State<ConversationScreen> {
             GestureDetector(
               onTap: _send,
               child: Container(
-                width: 46, height: 46,
+                width: 46,
+                height: 46,
                 decoration: BoxDecoration(
                   color: _sending ? s.outline : s.primary,
-                  borderRadius: BorderRadius.circular(12),
+                  shape: BoxShape.circle,
                 ),
                 child: _sending
-                    ? const Center(child: SizedBox(width: 20, height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white)))
+                    ? const Center(
+                        child: SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                                strokeWidth: 2, color: Colors.white)))
                     : Icon(Icons.send, size: 20, color: s.onPrimary),
               ),
             ),

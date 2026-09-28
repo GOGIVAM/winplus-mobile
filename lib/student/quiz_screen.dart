@@ -94,8 +94,7 @@ class _QuizActiveScreenState extends State<QuizActiveScreen> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-          builder: (_) =>
-              QuizResultScreen(result: result, quiz: widget.quiz)),
+          builder: (_) => QuizResultScreen(result: result, quiz: widget.quiz)),
     );
   }
 
@@ -143,9 +142,8 @@ class _QuizActiveScreenState extends State<QuizActiveScreen> {
         Expanded(
           child: SingleChildScrollView(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               WinCard(
                 padding: const EdgeInsets.all(20),
                 child: Text(q.question, style: WinType.headlineS(s.onStrong)),
@@ -160,10 +158,8 @@ class _QuizActiveScreenState extends State<QuizActiveScreen> {
                     child: Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: selected
-                            ? s.primaryContainer
-                            : s.cardBg,
-                        borderRadius: BorderRadius.zero,
+                        color: selected ? s.primaryContainer : s.cardBg,
+                        borderRadius: BorderRadius.circular(WinRadii.md),
                         border: Border.all(
                           color: selected ? s.primary : s.cardBorder,
                           width: selected ? 2 : 1,
@@ -183,9 +179,7 @@ class _QuizActiveScreenState extends State<QuizActiveScreen> {
                               style: WinType.manrope(
                                   size: 13,
                                   weight: FontWeight.w700,
-                                  color: selected
-                                      ? s.onPrimary
-                                      : s.onMuted),
+                                  color: selected ? s.onPrimary : s.onMuted),
                             ),
                           ),
                         ),
@@ -219,8 +213,7 @@ class _QuizActiveScreenState extends State<QuizActiveScreen> {
 class QuizResultScreen extends StatelessWidget {
   final QuizResult result;
   final Quiz quiz;
-  const QuizResultScreen(
-      {super.key, required this.result, required this.quiz});
+  const QuizResultScreen({super.key, required this.result, required this.quiz});
 
   @override
   Widget build(BuildContext context) {
@@ -231,8 +224,11 @@ class QuizResultScreen extends StatelessWidget {
         : pct >= 50
             ? WinColors.warn
             : WinColors.error;
-    final String scoreLabel =
-        pct >= 70 ? 'Excellent !' : pct >= 50 ? 'Bon travail' : 'À améliorer';
+    final String scoreLabel = pct >= 70
+        ? 'Excellent !'
+        : pct >= 50
+            ? 'Bon travail'
+            : 'À améliorer';
     final durMin = result.durationSeconds ~/ 60;
     final durSec = result.durationSeconds % 60;
 
@@ -260,8 +256,7 @@ class QuizResultScreen extends StatelessWidget {
                 ),
               ),
               Column(mainAxisSize: MainAxisSize.min, children: [
-                Text('${pct.round()}%',
-                    style: WinType.displayM(scoreColor)),
+                Text('${pct.round()}%', style: WinType.displayM(scoreColor)),
                 Text(scoreLabel, style: WinType.labelM(s.onMuted)),
               ]),
             ]),
@@ -299,8 +294,7 @@ class QuizResultScreen extends StatelessWidget {
           WinButton('Retour au catalogue',
               variant: WinButtonVariant.ghost,
               block: true,
-              onTap: () =>
-                  Navigator.popUntil(context, (r) => r.isFirst)),
+              onTap: () => Navigator.popUntil(context, (r) => r.isFirst)),
         ],
       ),
     );
@@ -320,8 +314,8 @@ class _ResultStat extends StatelessWidget {
         padding: const EdgeInsets.all(14),
         child: Column(children: [
           Text(value,
-              style:
-                  WinType.archivo(size: 22, weight: FontWeight.w700, color: color)),
+              style: WinType.archivo(
+                  size: 22, weight: FontWeight.w700, color: color)),
           const SizedBox(height: 4),
           Text(label, style: WinType.labelM(s.onMuted)),
         ]),
@@ -335,8 +329,7 @@ class _ResultStat extends StatelessWidget {
 class QuizReviewScreen extends StatelessWidget {
   final Quiz quiz;
   final QuizResult result;
-  const QuizReviewScreen(
-      {super.key, required this.quiz, required this.result});
+  const QuizReviewScreen({super.key, required this.quiz, required this.result});
 
   @override
   Widget build(BuildContext context) {
@@ -360,9 +353,8 @@ class QuizReviewScreen extends StatelessWidget {
           final userAnswer = result.answers[i];
           return Padding(
             padding: const EdgeInsets.only(bottom: 20),
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text('${i + 1}. ${q.question}',
                   style: WinType.titleM(s.onStrong)),
               const SizedBox(height: 10),
@@ -385,7 +377,7 @@ class QuizReviewScreen extends StatelessWidget {
                         horizontal: 14, vertical: 10),
                     decoration: BoxDecoration(
                         color: bg,
-                        borderRadius: BorderRadius.zero,
+                        borderRadius: BorderRadius.circular(WinRadii.md),
                         border: Border.all(color: border)),
                     child: Row(children: [
                       Icon(
@@ -403,15 +395,15 @@ class QuizReviewScreen extends StatelessWidget {
                       ),
                       const SizedBox(width: 10),
                       Expanded(
-                          child: Text(e.value,
-                              style: WinType.bodyS(s.onSurface))),
+                          child:
+                              Text(e.value, style: WinType.bodyS(s.onSurface))),
                     ]),
                   ),
                 );
               }),
               const SizedBox(height: 8),
-              WinAlert(q.explain, type: BadgeColor.teal,
-                  icon: Icons.lightbulb_outline),
+              WinAlert(q.explain,
+                  type: BadgeColor.teal, icon: Icons.lightbulb_outline),
             ]),
           );
         },
@@ -470,7 +462,13 @@ class _QuizHubScreenState extends State<QuizHubScreen> {
         actions: [
           IconButton(
             icon: Icon(Icons.refresh_outlined, color: s.onStrong),
-            onPressed: () { setState(() { _quizzes = null; _sub = null; }); _load(); },
+            onPressed: () {
+              setState(() {
+                _quizzes = null;
+                _sub = null;
+              });
+              _load();
+            },
           ),
         ],
       ),
@@ -489,47 +487,110 @@ class _QuizHubScreenState extends State<QuizHubScreen> {
                 const WinSectionHeader('Quiz disponibles'),
                 const SizedBox(height: 12),
                 if (quizzes.isEmpty)
-                  Center(child: Padding(
+                  Center(
+                      child: Padding(
                     padding: const EdgeInsets.all(24),
-                    child: Text('Aucun quiz disponible.', style: WinType.bodyM(s.onMuted)),
+                    child: Text('Aucun quiz disponible.',
+                        style: WinType.bodyM(s.onMuted)),
                   ))
                 else
-                  ...quizzes.map((q) {
-                    final subj = WinData.subjectById(q.subjectCategory ?? 'math');
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
-                      child: WinCard(
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => QuizActiveScreen(quiz: q.toQuiz())),
-                        ),
-                        child: Row(children: [
-                          Container(
-                            width: 48,
-                            height: 48,
-                            color: subj.color.withValues(alpha: 0.12),
-                            child: Icon(subj.icon, size: 24, color: subj.color),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                            Text(q.title,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: WinType.titleM(s.onStrong)),
-                            Text('${q.questions.length} questions · ${q.durationMinutes} min',
-                                style: WinType.labelM(s.onMuted)),
-                          ])),
-                          const SizedBox(width: 8),
-                          Icon(Icons.play_circle_outline, color: s.primary),
-                        ]),
-                      ),
-                    );
-                  }),
+                  GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 12,
+                            crossAxisSpacing: 12,
+                            childAspectRatio: 0.8),
+                    itemCount: quizzes.length,
+                    itemBuilder: (_, i) => _QuizCard(quiz: quizzes[i]),
+                  ),
               ],
             ),
+    );
+  }
+}
+
+/// Carte quiz  même famille visuelle que ContentCard (image dominée par
+/// l'icône de la matière, badge matière incrusté, bouton lecture en
+/// médaillon), pour rester cohérent avec le reste du catalogue plutôt que
+/// garder une tuile horizontale isolée dans ce seul écran.
+class _QuizCard extends StatelessWidget {
+  final ApiQuiz quiz;
+  const _QuizCard({required this.quiz});
+
+  @override
+  Widget build(BuildContext context) {
+    final s = WinTheme.of(context);
+    final subj = WinData.subjectById(quiz.subjectCategory ?? 'math');
+    return WinCard(
+      padding: EdgeInsets.zero,
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (_) => QuizActiveScreen(quiz: quiz.toQuiz())),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Expanded(
+          flex: 6,
+          child: Stack(fit: StackFit.expand, children: [
+            Container(
+              color: subj.color.withValues(alpha: 0.14),
+              child:
+                  Center(child: Icon(subj.icon, size: 40, color: subj.color)),
+            ),
+            Positioned(
+              top: 8,
+              left: 8,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.55),
+                  borderRadius: BorderRadius.circular(WinRadii.full),
+                ),
+                child: Text(subj.short,
+                    style: WinType.labelS(Colors.white)
+                        .copyWith(fontWeight: FontWeight.w600)),
+              ),
+            ),
+            Positioned(
+              bottom: 8,
+              right: 8,
+              child: Container(
+                width: 34,
+                height: 34,
+                decoration: BoxDecoration(
+                  color: s.primary,
+                  shape: BoxShape.circle,
+                  boxShadow: WinShadows.sm,
+                ),
+                child: Icon(Icons.play_arrow_rounded,
+                    size: 20, color: s.onPrimary),
+              ),
+            ),
+          ]),
+        ),
+        Expanded(
+          flex: 4,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(quiz.title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: WinType.titleM(s.onStrong)),
+              const Spacer(),
+              Text(
+                  '${quiz.questions.length} questions · ${quiz.durationMinutes} min',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: WinType.labelS(s.onMuted)),
+            ]),
+          ),
+        ),
+      ]),
     );
   }
 }

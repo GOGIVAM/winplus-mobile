@@ -28,7 +28,9 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
   void dispose() {
     _examCtrl.dispose();
     _dateCtrl.dispose();
-    for (final c in _deadlineCtrls.values) { c.dispose(); }
+    for (final c in _deadlineCtrls.values) {
+      c.dispose();
+    }
     super.dispose();
   }
 
@@ -81,7 +83,8 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
       return Scaffold(
         backgroundColor: s.bg,
         appBar: AppBar(
-          backgroundColor: s.bg, elevation: 0,
+          backgroundColor: s.bg,
+          elevation: 0,
           leading: IconButton(
               icon: Icon(Icons.arrow_back, color: s.onStrong),
               onPressed: () => Navigator.pop(context)),
@@ -90,17 +93,27 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
           child: Padding(
             padding: const EdgeInsets.all(32),
             child: Column(mainAxisSize: MainAxisSize.min, children: [
-              Container(width: 80, height: 80,
-                decoration: const BoxDecoration(color: WinColors.warnBg, shape: BoxShape.circle),
-                child: const Icon(Icons.lock_outline, size: 40, color: WinColors.warn)),
+              Container(
+                  width: 80,
+                  height: 80,
+                  decoration: const BoxDecoration(
+                      color: WinColors.warnBg, shape: BoxShape.circle),
+                  child: const Icon(Icons.lock_outline,
+                      size: 40, color: WinColors.warn)),
               const SizedBox(height: 20),
-              Text('Exam Coach', style: WinType.displayS(s.onStrong), textAlign: TextAlign.center),
+              Text('Exam Coach',
+                  style: WinType.displayS(s.onStrong),
+                  textAlign: TextAlign.center),
               const SizedBox(height: 8),
-              Text('Disponible à partir du plan Standard.\nWinAI génère un planning adapté à tes lacunes.',
-                  style: WinType.bodyM(s.onMuted), textAlign: TextAlign.center),
+              Text(
+                  'Disponible à partir du plan Standard.\nWinAI génère un planning adapté à tes lacunes.',
+                  style: WinType.bodyM(s.onMuted),
+                  textAlign: TextAlign.center),
               const SizedBox(height: 28),
-              WinButton('Voir les plans', block: true,
-                  onTap: () => UpgradeSheet.show(context, featureName: 'Exam Coach', requiredPlan: 'Standard')),
+              WinButton('Voir les plans',
+                  block: true,
+                  onTap: () => UpgradeSheet.show(context,
+                      featureName: 'Exam Coach', requiredPlan: 'Standard')),
             ]),
           ),
         ),
@@ -110,7 +123,8 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
     return Scaffold(
       backgroundColor: s.bg,
       appBar: AppBar(
-        backgroundColor: s.bg, elevation: 0,
+        backgroundColor: s.bg,
+        elevation: 0,
         leading: IconButton(
             icon: Icon(Icons.arrow_back, color: s.onStrong),
             onPressed: () => Navigator.pop(context)),
@@ -134,16 +148,23 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         const WinAlert(
           'WinAI génère un planning semaine par semaine adapté à tes lacunes et tes délais.',
-          type: BadgeColor.teal, icon: Icons.auto_awesome_outlined,
+          type: BadgeColor.teal,
+          icon: Icons.auto_awesome_outlined,
         ),
         const SizedBox(height: 24),
 
         // ── Exam + date ───────────────────────────────────────────
-        WinTextField(label: 'Examen cible', hint: 'BAC C, ENSP, BEPC…',
-            icon: Icons.school_outlined, controller: _examCtrl),
+        WinTextField(
+            label: 'Examen cible',
+            hint: 'BAC C, ENSP, BEPC…',
+            icon: Icons.school_outlined,
+            controller: _examCtrl),
         const SizedBox(height: 16),
-        WinTextField(label: 'Date de l\'examen', hint: 'jj mois aaaa',
-            icon: Icons.calendar_today_outlined, controller: _dateCtrl),
+        WinTextField(
+            label: 'Date de l\'examen',
+            hint: 'jj mois aaaa',
+            icon: Icons.calendar_today_outlined,
+            controller: _dateCtrl),
         const SizedBox(height: 28),
 
         // ── Sélection des matières ────────────────────────────────
@@ -153,27 +174,35 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
             style: WinType.labelM(s.onMuted)),
         const SizedBox(height: 12),
         Wrap(
-          spacing: 8, runSpacing: 8,
+          spacing: 8,
+          runSpacing: 8,
           children: allSubjects.map((subj) {
             final selected = _orderedSubjects.contains(subj.id);
             return GestureDetector(
               onTap: () => _toggleSubject(subj.id),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
-                  color: selected ? subj.color.withValues(alpha: 0.12) : s.surface2,
-                  borderRadius: BorderRadius.circular(20),
+                  color: selected
+                      ? subj.color.withValues(alpha: 0.12)
+                      : s.surface2,
+                  borderRadius: BorderRadius.circular(WinRadii.full),
                   border: Border.all(
                     color: selected ? subj.color : s.outline,
                     width: selected ? 1.5 : 1,
                   ),
                 ),
                 child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  Icon(subj.icon, size: 14, color: selected ? subj.color : s.onFaint),
+                  Icon(subj.icon,
+                      size: 14, color: selected ? subj.color : s.onFaint),
                   const SizedBox(width: 6),
                   Text(subj.short,
                       style: WinType.labelM(selected ? subj.color : s.onMuted)
-                          .copyWith(fontWeight: selected ? FontWeight.w700 : FontWeight.w500)),
+                          .copyWith(
+                              fontWeight: selected
+                                  ? FontWeight.w700
+                                  : FontWeight.w500)),
                 ]),
               ),
             );
@@ -185,7 +214,8 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
           const SizedBox(height: 28),
           Text('Ordre de priorité & délais', style: WinType.titleM(s.onStrong)),
           const SizedBox(height: 4),
-          Text('Réordonne par ordre d\'importance. Ajoute une deadline optionnelle.',
+          Text(
+              'Réordonne par ordre d\'importance. Ajoute une deadline optionnelle.',
               style: WinType.labelM(s.onMuted)),
           const SizedBox(height: 12),
           ..._orderedSubjects.asMap().entries.map((e) {
@@ -197,36 +227,49 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
               padding: const EdgeInsets.fromLTRB(14, 10, 10, 10),
               decoration: BoxDecoration(
                 color: subj.color.withValues(alpha: 0.06),
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(WinRadii.lg),
                 border: Border.all(color: subj.color.withValues(alpha: 0.3)),
               ),
               child: Row(children: [
                 Container(
-                  width: 24, height: 24,
-                  decoration: BoxDecoration(color: subj.color, shape: BoxShape.circle),
-                  child: Center(child: Text('${idx + 1}',
-                      style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w800))),
+                  width: 24,
+                  height: 24,
+                  decoration:
+                      BoxDecoration(color: subj.color, shape: BoxShape.circle),
+                  child: Center(
+                      child: Text('${idx + 1}',
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w800))),
                 ),
                 const SizedBox(width: 10),
                 Icon(subj.icon, size: 16, color: subj.color),
                 const SizedBox(width: 8),
-                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(subj.name, style: WinType.bodyM(s.onStrong).copyWith(fontWeight: FontWeight.w600)),
-                  const SizedBox(height: 4),
-                  TextField(
-                    controller: _deadlineCtrl(id),
-                    style: WinType.labelM(s.onMuted),
-                    decoration: InputDecoration(
-                      hintText: 'Deadline optionnelle (ex: 10 mai)',
-                      hintStyle: WinType.labelM(s.onFaint),
-                      isDense: true,
-                      contentPadding: EdgeInsets.zero,
-                      border: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: subj.color, width: 1)),
-                    ),
-                  ),
-                ])),
+                Expanded(
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                      Text(subj.name,
+                          style: WinType.bodyM(s.onStrong)
+                              .copyWith(fontWeight: FontWeight.w600)),
+                      const SizedBox(height: 4),
+                      TextField(
+                        controller: _deadlineCtrl(id),
+                        style: WinType.labelM(s.onMuted),
+                        decoration: InputDecoration(
+                          hintText: 'Deadline optionnelle (ex: 10 mai)',
+                          hintStyle: WinType.labelM(s.onFaint),
+                          isDense: true,
+                          contentPadding: EdgeInsets.zero,
+                          border: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: subj.color, width: 1)),
+                        ),
+                      ),
+                    ])),
                 Column(children: [
                   GestureDetector(
                     onTap: () => _moveUp(idx),
@@ -236,7 +279,10 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
                   GestureDetector(
                     onTap: () => _moveDown(idx),
                     child: Icon(Icons.keyboard_arrow_down,
-                        size: 20, color: idx == _orderedSubjects.length - 1 ? s.onFaint : s.onMuted),
+                        size: 20,
+                        color: idx == _orderedSubjects.length - 1
+                            ? s.onFaint
+                            : s.onMuted),
                   ),
                 ]),
               ]),
@@ -249,10 +295,13 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
         Text("Heures d'étude par jour", style: WinType.titleM(s.onStrong)),
         const SizedBox(height: 4),
         Text(_fmtHours(_hoursPerDay),
-            style: WinType.archivo(size: 32, weight: FontWeight.w800, color: s.primary)),
+            style: WinType.archivo(
+                size: 32, weight: FontWeight.w800, color: s.primary)),
         Slider(
           value: _hoursPerDay,
-          min: 1, max: 12, divisions: 22,
+          min: 1,
+          max: 12,
+          divisions: 22,
           activeColor: s.primary,
           inactiveColor: s.outline2,
           onChanged: (v) => setState(() => _hoursPerDay = v),
@@ -282,8 +331,9 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
         ),
         if (_orderedSubjects.isEmpty) ...[
           const SizedBox(height: 8),
-          Center(child: Text('Sélectionne au moins une matière.',
-              style: WinType.labelM(WinColors.warn))),
+          Center(
+              child: Text('Sélectionne au moins une matière.',
+                  style: WinType.labelM(WinColors.warn))),
         ],
         const SizedBox(height: 24),
       ]),
@@ -304,24 +354,29 @@ class _PlanView extends StatelessWidget {
       children: [
         WinCard(
           bg: WinColors.ink800,
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(children: [
-              const Icon(Icons.school_outlined, size: 20, color: WinColors.teal400),
+              const Icon(Icons.school_outlined,
+                  size: 20, color: WinColors.teal400),
               const SizedBox(width: 8),
               Text(plan.examName, style: WinType.headlineS(WinColors.cream50)),
               const Spacer(),
-              WinBadge('${WinData.upcomingExams.first.daysLeft}j restants', color: BadgeColor.warn),
+              WinBadge('${WinData.upcomingExams.first.daysLeft}j restants',
+                  color: BadgeColor.warn),
             ]),
             const SizedBox(height: 4),
             Text(plan.examDate, style: WinType.bodyS(WinColors.ink300)),
             const SizedBox(height: 12),
             WinProgressBar(done / total * 100, color: WinColors.teal400),
             const SizedBox(height: 4),
-            Text('$done/$total semaines complétées', style: WinType.labelM(WinColors.ink300)),
+            Text('$done/$total semaines complétées',
+                style: WinType.labelM(WinColors.ink300)),
           ]),
         ),
         const SizedBox(height: 20),
-        Text('Planning semaine par semaine', style: WinType.headlineS(s.onStrong)),
+        Text('Planning semaine par semaine',
+            style: WinType.headlineS(s.onStrong)),
         const SizedBox(height: 12),
         ...plan.weeks.asMap().entries.map((e) {
           final week = e.value;
@@ -329,30 +384,43 @@ class _PlanView extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 12),
             child: WinCard(
               bg: week.done ? WinColors.successBg : null,
-              child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              child:
+                  Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Container(
-                  width: 28, height: 28,
+                  width: 28,
+                  height: 28,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: week.done ? WinColors.success : s.surface2,
                   ),
-                  child: Icon(week.done ? Icons.check : Icons.lock_open_outlined,
-                      size: 16, color: week.done ? Colors.white : s.onFaint),
+                  child: Icon(
+                      week.done ? Icons.check : Icons.lock_open_outlined,
+                      size: 16,
+                      color: week.done ? Colors.white : s.onFaint),
                 ),
                 const SizedBox(width: 12),
-                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(week.label, style: WinType.titleM(s.onStrong)),
-                  const SizedBox(height: 6),
-                  Wrap(spacing: 6, runSpacing: 6,
-                      children: week.topics.map((t) => WinChip(t)).toList()),
-                ])),
+                Expanded(
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                      Text(week.label, style: WinType.titleM(s.onStrong)),
+                      const SizedBox(height: 6),
+                      Wrap(
+                          spacing: 6,
+                          runSpacing: 6,
+                          children:
+                              week.topics.map((t) => WinChip(t)).toList()),
+                    ])),
               ]),
             ),
           );
         }),
         const SizedBox(height: 16),
-        WinButton('Partager mon plan', variant: WinButtonVariant.outline, block: true,
-            icon: Icons.share_outlined, onTap: () {}),
+        WinButton('Partager mon plan',
+            variant: WinButtonVariant.outline,
+            block: true,
+            icon: Icons.share_outlined,
+            onTap: () {}),
       ],
     );
   }

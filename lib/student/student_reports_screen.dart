@@ -67,14 +67,16 @@ class _StudentReportsScreenState extends State<StudentReportsScreen> {
             height: 36,
             child: ListView(
               scrollDirection: Axis.horizontal,
-              children: _periods.map((p) => Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: WinChip(
-                  p,
-                  active: _period == p,
-                  onTap: () => setState(() => _period = p),
-                ),
-              )).toList(),
+              children: _periods
+                  .map((p) => Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: WinChip(
+                          p,
+                          active: _period == p,
+                          onTap: () => setState(() => _period = p),
+                        ),
+                      ))
+                  .toList(),
             ),
           ),
           if (_period != '7 jours') ...[
@@ -105,29 +107,29 @@ class _StudentReportsScreenState extends State<StudentReportsScreen> {
           // 3. Score par matière
           WinSectionHeader('Score par matière'),
           ..._sortedScores.map((e) => Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: Row(children: [
-              SizedBox(
-                width: 72,
-                child: Text(e.key,
-                    style: WinType.bodyM(s.onStrong)
-                        .copyWith(fontWeight: FontWeight.w600)),
-              ),
-              Expanded(
-                child: WinProgressBar(
-                  e.value.toDouble(),
-                  color: _barColor(e.value),
-                ),
-              ),
-              const SizedBox(width: 8),
-              SizedBox(
-                width: 40,
-                child: Text('${e.value}%',
-                    textAlign: TextAlign.right,
-                    style: WinType.labelM(s.onMuted)),
-              ),
-            ]),
-          )),
+                padding: const EdgeInsets.only(bottom: 12),
+                child: Row(children: [
+                  SizedBox(
+                    width: 72,
+                    child: Text(e.key,
+                        style: WinType.bodyM(s.onStrong)
+                            .copyWith(fontWeight: FontWeight.w600)),
+                  ),
+                  Expanded(
+                    child: WinProgressBar(
+                      e.value.toDouble(),
+                      color: _barColor(e.value),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  SizedBox(
+                    width: 40,
+                    child: Text('${e.value}%',
+                        textAlign: TextAlign.right,
+                        style: WinType.labelM(s.onMuted)),
+                  ),
+                ]),
+              )),
           const SizedBox(height: 24),
 
           // 4. Progression hebdomadaire
@@ -151,12 +153,11 @@ class _StudentReportsScreenState extends State<StudentReportsScreen> {
                           height: barH,
                           decoration: BoxDecoration(
                             color: _barColor(score),
-                            borderRadius: BorderRadius.circular(3),
+                            borderRadius: BorderRadius.circular(WinRadii.full),
                           ),
                         ),
                         const SizedBox(height: 4),
-                        Text('S${i + 1}',
-                            style: WinType.labelS(s.onMuted)),
+                        Text('S${i + 1}', style: WinType.labelS(s.onMuted)),
                       ],
                     ),
                   ),
@@ -172,31 +173,38 @@ class _StudentReportsScreenState extends State<StudentReportsScreen> {
             Expanded(
               child: WinCard(
                 padding: const EdgeInsets.all(16),
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text('$_quizTotal',
-                      style: WinType.archivo(size: 28, color: s.onStrong)),
-                  const SizedBox(height: 4),
-                  Text('Quiz réalisés', style: WinType.labelM(s.onMuted)),
-                ]),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('$_quizTotal',
+                          style: WinType.archivo(size: 28, color: s.onStrong)),
+                      const SizedBox(height: 4),
+                      Text('Quiz réalisés', style: WinType.labelM(s.onMuted)),
+                    ]),
               ),
             ),
             const SizedBox(width: 10),
             Expanded(
               child: WinCard(
                 padding: const EdgeInsets.all(16),
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text('$_quizSuccessRate%',
-                      style: WinType.archivo(size: 28, color: WinColors.success)),
-                  const SizedBox(height: 4),
-                  Text('Taux de réussite', style: WinType.labelM(s.onMuted)),
-                ]),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('$_quizSuccessRate%',
+                          style: WinType.archivo(
+                              size: 28, color: WinColors.success)),
+                      const SizedBox(height: 4),
+                      Text('Taux de réussite',
+                          style: WinType.labelM(s.onMuted)),
+                    ]),
               ),
             ),
           ]),
           const SizedBox(height: 12),
           WinCard(
             padding: const EdgeInsets.all(14),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Row(children: [
                 const Icon(Icons.emoji_events, size: 16, color: WinColors.gold),
                 const SizedBox(width: 6),
@@ -206,7 +214,8 @@ class _StudentReportsScreenState extends State<StudentReportsScreen> {
               ]),
               const SizedBox(height: 6),
               Row(children: [
-                const Icon(Icons.warning_amber_rounded, size: 16, color: WinColors.warn),
+                const Icon(Icons.warning_amber_rounded,
+                    size: 16, color: WinColors.warn),
                 const SizedBox(width: 6),
                 Text('À améliorer : Chimie', style: WinType.bodyM(s.onMuted)),
               ]),

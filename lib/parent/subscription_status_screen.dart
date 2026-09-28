@@ -11,7 +11,8 @@ import '../widgets/win_widgets.dart';
 class SubscriptionStatusScreen extends StatefulWidget {
   const SubscriptionStatusScreen({super.key});
   @override
-  State<SubscriptionStatusScreen> createState() => _SubscriptionStatusScreenState();
+  State<SubscriptionStatusScreen> createState() =>
+      _SubscriptionStatusScreenState();
 }
 
 class _SubscriptionStatusScreenState extends State<SubscriptionStatusScreen> {
@@ -34,8 +35,15 @@ class _SubscriptionStatusScreenState extends State<SubscriptionStatusScreen> {
       final children = await ParentService.instance.getChildren();
       // L'historique n'est qu'indicatif  s'il échoue, la carte se contente
       // d'un état vide plutôt que de bloquer tout l'écran.
-      final history = await PaymentService.instance.getHistory().catchError((_) => <Map<String, dynamic>>[]);
-      if (mounted) setState(() { _sub = sub; _children = children; _paymentHistory = history; });
+      final history = await PaymentService.instance
+          .getHistory()
+          .catchError((_) => <Map<String, dynamic>>[]);
+      if (mounted)
+        setState(() {
+          _sub = sub;
+          _children = children;
+          _paymentHistory = history;
+        });
     } catch (_) {
       if (mounted) setState(() => _loadError = true);
     }
@@ -53,7 +61,8 @@ class _SubscriptionStatusScreenState extends State<SubscriptionStatusScreen> {
     return Scaffold(
       backgroundColor: s.bg,
       appBar: AppBar(
-        backgroundColor: s.bg, elevation: 0,
+        backgroundColor: s.bg,
+        elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
@@ -62,142 +71,209 @@ class _SubscriptionStatusScreenState extends State<SubscriptionStatusScreen> {
         actions: [
           IconButton(
             icon: Icon(Icons.refresh_outlined, color: s.onStrong),
-            onPressed: () { setState(() { _sub = null; _children = null; }); _load(); },
+            onPressed: () {
+              setState(() {
+                _sub = null;
+                _children = null;
+              });
+              _load();
+            },
           ),
         ],
       ),
       body: _loadError
-          ? Center(child: Column(mainAxisSize: MainAxisSize.min, children: [
+          ? Center(
+              child: Column(mainAxisSize: MainAxisSize.min, children: [
               Icon(Icons.wifi_off_outlined, size: 48, color: s.onFaint),
               const SizedBox(height: 12),
-              Text('Impossible de charger l\'abonnement.', style: WinType.bodyM(s.onMuted)),
+              Text('Impossible de charger l\'abonnement.',
+                  style: WinType.bodyM(s.onMuted)),
               const SizedBox(height: 12),
-              WinButton('Réessayer', onTap: () { setState(() { _sub = null; _children = null; }); _load(); }),
+              WinButton('Réessayer', onTap: () {
+                setState(() {
+                  _sub = null;
+                  _children = null;
+                });
+                _load();
+              }),
             ]))
           : sub == null
-          ? const Center(child: CircularProgressIndicator())
-          : ListView(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: s.cardBg,
-                    borderRadius: BorderRadius.circular(WinRadii.lg),
-                    border: Border(
-                      top: BorderSide(color: s.primary, width: 4),
-                      left: BorderSide(color: s.cardBorder),
-                      right: BorderSide(color: s.cardBorder),
-                      bottom: BorderSide(color: s.cardBorder),
-                    ),
-                    boxShadow: WinShadows.md,
-                  ),
-                  padding: const EdgeInsets.all(16),
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Row(children: [
-                      Text(sub.planName, style: WinType.displayS(s.onStrong)),
-                      const Spacer(),
-                      WinBadge(sub.isActive ? 'Actif' : 'Inactif',
-                          color: sub.isActive ? BadgeColor.success : BadgeColor.error),
-                    ]),
-                    const SizedBox(height: 6),
-                    Text('Expire le ${_fmtDate(sub.expiresAt)}', style: WinType.bodyS(s.onMuted)),
-                    const SizedBox(height: 4),
-                    Row(children: [
-                      Icon(Icons.refresh, size: 14, color: s.onFaint),
-                      const SizedBox(width: 4),
-                      Text(sub.autoRenew ? 'Renouvellement automatique activé' : 'Renouvellement manuel',
-                          style: WinType.labelM(s.onFaint)),
-                    ]),
-                  ]),
-                ),
-                const SizedBox(height: 20),
-                Text('Utilisation ce mois', style: WinType.headlineS(s.onStrong)),
-                const SizedBox(height: 12),
-                _UsageRow(icon: Icons.download_outlined, label: 'Téléchargements',
-                    used: sub.downloadsUsed, limit: sub.downloadsLimit,
-                    unlimited: sub.downloadsLimit == 0),
-                const SizedBox(height: 10),
-                _UsageRow(icon: Icons.quiz_outlined, label: "Quiz aujourd'hui",
-                    used: sub.quizUsedToday, limit: sub.quizDailyLimit,
-                    unlimited: sub.quizDailyLimit == 0),
-                const SizedBox(height: 10),
-                // Partie 8.3 : usage WinAI présenté en relatif au plan
-                // gratuit, jamais en compteur brut de tokens.
-                _AiUsageRow(multiplier: sub.aiUsageMultiplier,
-                    label: sub.aiUsageLabel, exhausted: sub.aiQuotaExhausted,
-                    limitMessage: sub.aiLimitMessage),
-                if (children.isNotEmpty) ...[
-                  const SizedBox(height: 20),
-                  Text('Mes enfants', style: WinType.headlineS(s.onStrong)),
-                  const SizedBox(height: 12),
-                  ...children.map((child) => Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: WinCard(
-                      padding: const EdgeInsets.all(12),
-                      child: Row(children: [
-                        WinAvatar(child.fullName, size: 40),
-                        const SizedBox(width: 12),
-                        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          Text(child.fullName, style: WinType.titleM(s.onStrong)),
-                          Text(child.level ?? child.schoolName ?? 'Élève', style: WinType.labelM(s.onMuted)),
-                        ])),
-                        const WinBadge('Actif', color: BadgeColor.teal),
-                      ]),
-                    ),
-                  )),
-                ],
-                const SizedBox(height: 20),
-                Text('Historique des paiements', style: WinType.headlineS(s.onStrong)),
-                const SizedBox(height: 12),
-                if (_paymentHistory.isEmpty)
-                  Text('Aucun paiement enregistré pour l\'instant.', style: WinType.bodyM(s.onMuted))
-                else
-                  ..._paymentHistory.map((p) {
-                    final status = (p['status'] as String? ?? '').toLowerCase();
-                    final (label, color) = switch (status) {
-                      'complete' || 'completed' || 'succeeded' => ('Payé', BadgeColor.success),
-                      'failed' || 'expired' || 'cancelled' => ('Échoué', BadgeColor.error),
-                      _ => ('En attente', BadgeColor.warn),
-                    };
-                    final amount = ((p['amount'] ?? 0) as num).round();
-                    final initiatedAt = DateTime.tryParse(p['initiatedAt'] as String? ?? '');
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: WinCard(
-                        padding: const EdgeInsets.all(12),
-                        child: Row(children: [
-                          Icon(Icons.receipt_long_outlined, size: 18, color: s.onFaint),
-                          const SizedBox(width: 10),
-                          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                            Text(sub.planName, style: WinType.titleM(s.onStrong)),
-                            Text(initiatedAt != null ? _fmtDate(initiatedAt) : '', style: WinType.labelM(s.onMuted)),
-                          ])),
-                          Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                            Text('${fmtXaf(amount)} XAF', style: WinType.titleM(s.onStrong)),
-                            WinBadge(label, color: color),
+              ? const Center(child: CircularProgressIndicator())
+              : ListView(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: s.cardBg,
+                        borderRadius: BorderRadius.circular(WinRadii.lg),
+                        border: Border(
+                          top: BorderSide(color: s.primary, width: 4),
+                          left: BorderSide(color: s.cardBorder),
+                          right: BorderSide(color: s.cardBorder),
+                          bottom: BorderSide(color: s.cardBorder),
+                        ),
+                        boxShadow: WinShadows.md,
+                      ),
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(children: [
+                              Text(sub.planName,
+                                  style: WinType.displayS(s.onStrong)),
+                              const Spacer(),
+                              WinBadge(sub.isActive ? 'Actif' : 'Inactif',
+                                  color: sub.isActive
+                                      ? BadgeColor.success
+                                      : BadgeColor.error),
+                            ]),
+                            const SizedBox(height: 6),
+                            Text('Expire le ${_fmtDate(sub.expiresAt)}',
+                                style: WinType.bodyS(s.onMuted)),
+                            const SizedBox(height: 4),
+                            Row(children: [
+                              Icon(Icons.refresh, size: 14, color: s.onFaint),
+                              const SizedBox(width: 4),
+                              Text(
+                                  sub.autoRenew
+                                      ? 'Renouvellement automatique activé'
+                                      : 'Renouvellement manuel',
+                                  style: WinType.labelM(s.onFaint)),
+                            ]),
                           ]),
-                        ]),
-                      ),
-                    );
-                  }),
-                const SizedBox(height: 24),
-                WinButton('Renouveler maintenant',
-                    block: true, icon: Icons.refresh,
-                    onTap: () => showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      backgroundColor: Colors.transparent,
-                      builder: (_) => RenewalSheet(
-                        planId: sub.pricingPlanId,
-                        planName: sub.planName,
-                        price: sub.price,
-                      ),
-                    )),
-                const SizedBox(height: 10),
-                WinButton('Changer de plan',
-                    variant: WinButtonVariant.outline, block: true, onTap: () {}),
-              ],
-            ),
+                    ),
+                    const SizedBox(height: 20),
+                    Text('Utilisation ce mois',
+                        style: WinType.headlineS(s.onStrong)),
+                    const SizedBox(height: 12),
+                    _UsageRow(
+                        icon: Icons.download_outlined,
+                        label: 'Téléchargements',
+                        used: sub.downloadsUsed,
+                        limit: sub.downloadsLimit,
+                        unlimited: sub.downloadsLimit == 0),
+                    const SizedBox(height: 10),
+                    _UsageRow(
+                        icon: Icons.quiz_outlined,
+                        label: "Quiz aujourd'hui",
+                        used: sub.quizUsedToday,
+                        limit: sub.quizDailyLimit,
+                        unlimited: sub.quizDailyLimit == 0),
+                    const SizedBox(height: 10),
+                    // Partie 8.3 : usage WinAI présenté en relatif au plan
+                    // gratuit, jamais en compteur brut de tokens.
+                    _AiUsageRow(
+                        multiplier: sub.aiUsageMultiplier,
+                        label: sub.aiUsageLabel,
+                        exhausted: sub.aiQuotaExhausted,
+                        limitMessage: sub.aiLimitMessage),
+                    if (children.isNotEmpty) ...[
+                      const SizedBox(height: 20),
+                      Text('Mes enfants', style: WinType.headlineS(s.onStrong)),
+                      const SizedBox(height: 12),
+                      ...children.map((child) => Padding(
+                            padding: const EdgeInsets.only(bottom: 8),
+                            child: WinCard(
+                              padding: const EdgeInsets.all(12),
+                              child: Row(children: [
+                                WinAvatar(child.fullName, size: 40),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                    child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                      Text(child.fullName,
+                                          style: WinType.titleM(s.onStrong)),
+                                      Text(
+                                          child.level ??
+                                              child.schoolName ??
+                                              'Élève',
+                                          style: WinType.labelM(s.onMuted)),
+                                    ])),
+                                const WinBadge('Actif', color: BadgeColor.teal),
+                              ]),
+                            ),
+                          )),
+                    ],
+                    const SizedBox(height: 20),
+                    Text('Historique des paiements',
+                        style: WinType.headlineS(s.onStrong)),
+                    const SizedBox(height: 12),
+                    if (_paymentHistory.isEmpty)
+                      Text('Aucun paiement enregistré pour l\'instant.',
+                          style: WinType.bodyM(s.onMuted))
+                    else
+                      ..._paymentHistory.map((p) {
+                        final status =
+                            (p['status'] as String? ?? '').toLowerCase();
+                        final (label, color) = switch (status) {
+                          'complete' || 'completed' || 'succeeded' => (
+                              'Payé',
+                              BadgeColor.success
+                            ),
+                          'failed' || 'expired' || 'cancelled' => (
+                              'Échoué',
+                              BadgeColor.error
+                            ),
+                          _ => ('En attente', BadgeColor.warn),
+                        };
+                        final amount = ((p['amount'] ?? 0) as num).round();
+                        final initiatedAt = DateTime.tryParse(
+                            p['initiatedAt'] as String? ?? '');
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: WinCard(
+                            padding: const EdgeInsets.all(12),
+                            child: Row(children: [
+                              Icon(Icons.receipt_long_outlined,
+                                  size: 18, color: s.onFaint),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                  child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                    Text(sub.planName,
+                                        style: WinType.titleM(s.onStrong)),
+                                    Text(
+                                        initiatedAt != null
+                                            ? _fmtDate(initiatedAt)
+                                            : '',
+                                        style: WinType.labelM(s.onMuted)),
+                                  ])),
+                              Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text('${fmtXaf(amount)} XAF',
+                                        style: WinType.titleM(s.onStrong)),
+                                    WinBadge(label, color: color),
+                                  ]),
+                            ]),
+                          ),
+                        );
+                      }),
+                    const SizedBox(height: 24),
+                    WinButton('Renouveler maintenant',
+                        block: true,
+                        icon: Icons.refresh,
+                        onTap: () => showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              backgroundColor: Colors.transparent,
+                              builder: (_) => RenewalSheet(
+                                planId: sub.pricingPlanId,
+                                planName: sub.planName,
+                                price: sub.price,
+                              ),
+                            )),
+                    const SizedBox(height: 10),
+                    WinButton('Changer de plan',
+                        variant: WinButtonVariant.outline,
+                        block: true,
+                        onTap: () {}),
+                  ],
+                ),
     );
   }
 }
@@ -206,11 +282,15 @@ class _AiUsageRow extends StatelessWidget {
   final int multiplier;
   final String label;
   final bool exhausted;
+
   /// Message serveur (8.10) : quelle limite est atteinte et quand elle se
   /// réinitialise. Jamais de nombre de tokens.
   final String? limitMessage;
-  const _AiUsageRow({required this.multiplier, required this.label,
-      required this.exhausted, this.limitMessage});
+  const _AiUsageRow(
+      {required this.multiplier,
+      required this.label,
+      required this.exhausted,
+      this.limitMessage});
 
   @override
   Widget build(BuildContext context) {
@@ -230,7 +310,8 @@ class _AiUsageRow extends StatelessWidget {
           // 8.10 : plus de plafond mensuel ; limite de session ou de semaine.
           if (exhausted)
             Text('Limite atteinte',
-                style: WinType.labelM(WinColors.error).copyWith(fontWeight: FontWeight.w700)),
+                style: WinType.labelM(WinColors.error)
+                    .copyWith(fontWeight: FontWeight.w700)),
         ]),
         if (exhausted && (limitMessage?.isNotEmpty ?? false)) ...[
           const SizedBox(height: 6),
@@ -246,8 +327,12 @@ class _UsageRow extends StatelessWidget {
   final String label;
   final int used, limit;
   final bool unlimited;
-  const _UsageRow({required this.icon, required this.label,
-      required this.used, required this.limit, required this.unlimited});
+  const _UsageRow(
+      {required this.icon,
+      required this.label,
+      required this.used,
+      required this.limit,
+      required this.unlimited});
 
   @override
   Widget build(BuildContext context) {
@@ -310,7 +395,10 @@ class _RenewalSheetState extends State<RenewalSheet> {
     final digits = _phoneCtrl.text.replaceAll(RegExp(r'\D'), '');
     if (digits.isEmpty) return;
     final phone = digits.startsWith('237') ? digits : '237$digits';
-    setState(() { _loading = true; _error = null; });
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
     try {
       // POST /subscriptions/purchase crée l'Order ET initie le paiement en un
       // seul appel  l'ancien code appelait PaymentService.initiate(planId:...)
@@ -324,15 +412,21 @@ class _RenewalSheetState extends State<RenewalSheet> {
       );
       if (!mounted) return;
       if (paymentId != null) {
-        setState(() { _loading = false; _done = true; });
+        setState(() {
+          _loading = false;
+          _done = true;
+        });
       } else {
         setState(() => _loading = false);
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Erreur lors de l\'initiation du paiement.')));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Erreur lors de l\'initiation du paiement.')));
       }
     } catch (e) {
       if (!mounted) return;
-      setState(() { _loading = false; _error = 'Impossible d\'initier le paiement. Réessayez.'; });
+      setState(() {
+        _loading = false;
+        _error = 'Impossible d\'initier le paiement. Réessayez.';
+      });
     }
   }
 
@@ -353,51 +447,64 @@ class _RenewalSheetState extends State<RenewalSheet> {
                 color: s.outline2,
                 borderRadius: BorderRadius.circular(WinRadii.full)),
             margin: const EdgeInsets.only(bottom: 20)),
-        Text('Renouveler ${widget.planName}', style: WinType.headlineS(s.onStrong)),
+        Text('Renouveler ${widget.planName}',
+            style: WinType.headlineS(s.onStrong)),
         const SizedBox(height: 4),
-        Text('${fmtXaf(widget.price.round())} XAF / ${widget.yearly ? 'an' : 'mois'}', style: WinType.archivo(size: 28, weight: FontWeight.w700, color: s.primary)),
+        Text(
+            '${fmtXaf(widget.price.round())} XAF / ${widget.yearly ? 'an' : 'mois'}',
+            style: WinType.archivo(
+                size: 28, weight: FontWeight.w700, color: s.primary)),
         const SizedBox(height: 20),
         if (_done) ...[
-          const WinAlert('Paiement initié ! Confirmez le paiement sur votre téléphone.',
+          const WinAlert(
+              'Paiement initié ! Confirmez le paiement sur votre téléphone.',
               type: BadgeColor.success),
           const SizedBox(height: 8),
           Text('Vous recevrez une notification USSD pour valider.',
               style: WinType.bodyS(s.onMuted), textAlign: TextAlign.center),
           const SizedBox(height: 16),
-          WinButton('Fermer', block: true, variant: WinButtonVariant.outline,
+          WinButton('Fermer',
+              block: true,
+              variant: WinButtonVariant.outline,
               onTap: () => Navigator.pop(context)),
         ] else ...[
           Row(children: [
-            Expanded(child: GestureDetector(
+            Expanded(
+                child: GestureDetector(
               onTap: () => setState(() => _method = 'mtn'),
               child: Container(
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(WinRadii.md),
-                  border: Border.all(color: _method == 'mtn' ? s.primary : s.outline,
+                  border: Border.all(
+                      color: _method == 'mtn' ? s.primary : s.outline,
                       width: _method == 'mtn' ? 2 : 1),
                   color: _method == 'mtn' ? s.primaryContainer : s.cardBg,
                 ),
                 child: Column(children: [
-                  const Icon(Icons.phone_android, size: 24, color: WinColors.warn),
+                  const Icon(Icons.phone_android,
+                      size: 24, color: WinColors.warn),
                   const SizedBox(height: 4),
                   Text('MTN MoMo', style: WinType.labelM(s.onStrong)),
                 ]),
               ),
             )),
             const SizedBox(width: 10),
-            Expanded(child: GestureDetector(
+            Expanded(
+                child: GestureDetector(
               onTap: () => setState(() => _method = 'orange'),
               child: Container(
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(WinRadii.md),
-                  border: Border.all(color: _method == 'orange' ? s.primary : s.outline,
+                  border: Border.all(
+                      color: _method == 'orange' ? s.primary : s.outline,
                       width: _method == 'orange' ? 2 : 1),
                   color: _method == 'orange' ? s.primaryContainer : s.cardBg,
                 ),
                 child: Column(children: [
-                  const Icon(Icons.phone_android, size: 24, color: WinColors.error),
+                  const Icon(Icons.phone_android,
+                      size: 24, color: WinColors.error),
                   const SizedBox(height: 4),
                   Text('Orange Money', style: WinType.labelM(s.onStrong)),
                 ]),
@@ -405,15 +512,20 @@ class _RenewalSheetState extends State<RenewalSheet> {
             )),
           ]),
           const SizedBox(height: 16),
-          WinTextField(label: 'Numéro de téléphone', hint: '+237 6XX XXX XXX',
-              icon: Icons.phone_outlined, controller: _phoneCtrl,
+          WinTextField(
+              label: 'Numéro de téléphone',
+              hint: '+237 6XX XXX XXX',
+              icon: Icons.phone_outlined,
+              controller: _phoneCtrl,
               keyboardType: TextInputType.phone),
           if (_error != null) ...[
             const SizedBox(height: 8),
-            WinAlert(_error!, type: BadgeColor.error, icon: Icons.error_outline),
+            WinAlert(_error!,
+                type: BadgeColor.error, icon: Icons.error_outline),
           ],
           const SizedBox(height: 20),
-          WinButton('Payer maintenant', block: true, loading: _loading, onTap: _pay),
+          WinButton('Payer maintenant',
+              block: true, loading: _loading, onTap: _pay),
           const SizedBox(height: 10),
           Text('Vous recevrez une notification USSD pour valider.',
               style: WinType.bodyS(s.onFaint), textAlign: TextAlign.center),

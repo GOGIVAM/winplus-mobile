@@ -26,13 +26,18 @@ class UpgradeSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
     return Container(
-      decoration: BoxDecoration(color: s.surface, borderRadius: BorderRadius.zero),
+      decoration: BoxDecoration(
+          color: s.surface,
+          borderRadius:
+              BorderRadius.vertical(top: Radius.circular(WinRadii.xl))),
       padding: const EdgeInsets.fromLTRB(24, 24, 24, 40),
       child: Column(mainAxisSize: MainAxisSize.min, children: [
         Container(
           width: 40,
           height: 4,
-          color: s.outline2,
+          decoration: BoxDecoration(
+              color: s.outline2,
+              borderRadius: BorderRadius.circular(WinRadii.full)),
           margin: const EdgeInsets.only(bottom: 24),
         ),
         Container(

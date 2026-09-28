@@ -43,13 +43,17 @@ class _StudentDirectoryScreenState extends State<StudentDirectoryScreen> {
   }
 
   Future<void> _load() async {
-    final id = _institutionId ?? await InstitutionService.instance.getMyInstitutionId();
+    final id = _institutionId ??
+        await InstitutionService.instance.getMyInstitutionId();
     if (id == null) {
-      if (mounted) { setState(() => _loading = false); }
+      if (mounted) {
+        setState(() => _loading = false);
+      }
       return;
     }
     final results = await Future.wait([
-      InstitutionService.instance.getStudentDirectory(id, q: _query.isEmpty ? null : _query),
+      InstitutionService.instance
+          .getStudentDirectory(id, q: _query.isEmpty ? null : _query),
       InstitutionService.instance.getInstitutionKpis(id),
     ]);
     if (mounted) {
@@ -65,9 +69,11 @@ class _StudentDirectoryScreenState extends State<StudentDirectoryScreen> {
   Future<void> _search(String q) async {
     setState(() => _query = q);
     if (_institutionId == null) return;
-    final students = await InstitutionService.instance.getStudentDirectory(
-      _institutionId!, q: q.isEmpty ? null : q);
-    if (mounted) { setState(() => _students = students); }
+    final students = await InstitutionService.instance
+        .getStudentDirectory(_institutionId!, q: q.isEmpty ? null : q);
+    if (mounted) {
+      setState(() => _students = students);
+    }
   }
 
   Future<void> _addStudent() async {
@@ -75,7 +81,11 @@ class _StudentDirectoryScreenState extends State<StudentDirectoryScreen> {
       setState(() => _addError = 'Email requis');
       return;
     }
-    setState(() { _addLoading = true; _addError = null; _addSuccess = null; });
+    setState(() {
+      _addLoading = true;
+      _addError = null;
+      _addSuccess = null;
+    });
     final ok = await InstitutionService.instance.addInstitutionStudent(
       _institutionId!,
       _addEmail.trim(),
@@ -96,7 +106,10 @@ class _StudentDirectoryScreenState extends State<StudentDirectoryScreen> {
       });
       await _load();
     } else {
-      setState(() { _addLoading = false; _addError = 'Impossible d\'ajouter cet élève'; });
+      setState(() {
+        _addLoading = false;
+        _addError = 'Impossible d\'ajouter cet élève';
+      });
     }
   }
 
@@ -106,58 +119,103 @@ class _StudentDirectoryScreenState extends State<StudentDirectoryScreen> {
     return Scaffold(
       backgroundColor: s.bg,
       appBar: AppBar(
-        backgroundColor: s.bg, elevation: 0,
+        backgroundColor: s.bg,
+        elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Annuaire des élèves', style: WinType.headlineS(s.onStrong)),
+        title:
+            Text('Annuaire des élèves', style: WinType.headlineS(s.onStrong)),
       ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : _institutionId == null
-              ? Center(child: Text('Aucune institution associée.', style: WinType.bodyM(s.onMuted)))
+              ? Center(
+                  child: Text('Aucune institution associée.',
+                      style: WinType.bodyM(s.onMuted)))
               : Column(children: [
                   // KPIs
                   if (_kpis != null)
                     Padding(
                       padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
                       child: Row(children: [
-                        _KpiCard(label: 'Élèves', value: '${_kpis!.totalStudents}', s: s),
+                        _KpiCard(
+                            label: 'Élèves',
+                            value: '${_kpis!.totalStudents}',
+                            s: s),
                         const SizedBox(width: 8),
-                        _KpiCard(label: 'Actifs', value: '${_kpis!.activeStudents}', s: s),
+                        _KpiCard(
+                            label: 'Actifs',
+                            value: '${_kpis!.activeStudents}',
+                            s: s),
                         const SizedBox(width: 8),
-                        _KpiCard(label: 'Moy.', value: '${_kpis!.averageScore.toStringAsFixed(0)}%', s: s),
+                        _KpiCard(
+                            label: 'Moy.',
+                            value: '${_kpis!.averageScore.toStringAsFixed(0)}%',
+                            s: s),
                         const SizedBox(width: 8),
-                        _KpiCard(label: 'Groupes', value: '${_kpis!.groupCount}', s: s),
+                        _KpiCard(
+                            label: 'Groupes',
+                            value: '${_kpis!.groupCount}',
+                            s: s),
                       ]),
                     ),
                   // Add student form
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text('Ajouter un élève', style: WinType.titleM(s.onStrong)),
-                      const SizedBox(height: 8),
-                      Row(children: [
-                        Expanded(child: _buildTextField(s, _emailCtrl, 'Email', (v) => _addEmail = v)),
-                        const SizedBox(width: 8),
-                        SizedBox(width: 90, child: _buildTextField(s, _levelCtrl, 'Niveau', (v) => _addLevel = v)),
-                        const SizedBox(width: 8),
-                        SizedBox(width: 90, child: _buildTextField(s, _groupCtrl, 'Groupe', (v) => _addGroup = v)),
-                        const SizedBox(width: 8),
-                        FilledButton(
-                          onPressed: _addLoading ? null : _addStudent,
-                          style: FilledButton.styleFrom(backgroundColor: s.primary, foregroundColor: s.onPrimary, padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13)),
-                          child: _addLoading
-                              ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                              : const Icon(Icons.add, size: 18),
-                        ),
-                      ]),
-                      if (_addError != null)
-                        Padding(padding: const EdgeInsets.only(top: 4), child: Text(_addError!, style: WinType.labelM(WinColors.error))),
-                      if (_addSuccess != null)
-                        Padding(padding: const EdgeInsets.only(top: 4), child: Text(_addSuccess!, style: WinType.labelM(WinColors.success))),
-                    ]),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Ajouter un élève',
+                              style: WinType.titleM(s.onStrong)),
+                          const SizedBox(height: 8),
+                          Row(children: [
+                            Expanded(
+                                child: _buildTextField(s, _emailCtrl, 'Email',
+                                    (v) => _addEmail = v)),
+                            const SizedBox(width: 8),
+                            SizedBox(
+                                width: 90,
+                                child: _buildTextField(s, _levelCtrl, 'Niveau',
+                                    (v) => _addLevel = v)),
+                            const SizedBox(width: 8),
+                            SizedBox(
+                                width: 90,
+                                child: _buildTextField(s, _groupCtrl, 'Groupe',
+                                    (v) => _addGroup = v)),
+                            const SizedBox(width: 8),
+                            GestureDetector(
+                              onTap: _addLoading ? null : _addStudent,
+                              child: Container(
+                                width: 44,
+                                height: 44,
+                                decoration: BoxDecoration(
+                                    color: s.primary, shape: BoxShape.circle),
+                                alignment: Alignment.center,
+                                child: _addLoading
+                                    ? const SizedBox(
+                                        width: 14,
+                                        height: 14,
+                                        child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            color: Colors.white))
+                                    : Icon(Icons.add,
+                                        size: 20, color: s.onPrimary),
+                              ),
+                            ),
+                          ]),
+                          if (_addError != null)
+                            Padding(
+                                padding: const EdgeInsets.only(top: 4),
+                                child: Text(_addError!,
+                                    style: WinType.labelM(WinColors.error))),
+                          if (_addSuccess != null)
+                            Padding(
+                                padding: const EdgeInsets.only(top: 4),
+                                child: Text(_addSuccess!,
+                                    style: WinType.labelM(WinColors.success))),
+                        ]),
                   ),
                   const SizedBox(height: 10),
                   // Search
@@ -168,13 +226,21 @@ class _StudentDirectoryScreenState extends State<StudentDirectoryScreen> {
                       decoration: InputDecoration(
                         hintText: 'Rechercher par nom ou email…',
                         hintStyle: WinType.bodyS(s.onFaint),
-                        prefixIcon: Icon(Icons.search, size: 20, color: s.onFaint),
+                        prefixIcon:
+                            Icon(Icons.search, size: 20, color: s.onFaint),
                         filled: true,
                         fillColor: s.surface2,
-                        contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: s.outline)),
-                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: s.outline)),
-                        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: s.primary, width: 2)),
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 12),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(WinRadii.md),
+                            borderSide: BorderSide(color: s.outline)),
+                        enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(WinRadii.md),
+                            borderSide: BorderSide(color: s.outline)),
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(WinRadii.md),
+                            borderSide: BorderSide(color: s.primary, width: 2)),
                       ),
                     ),
                   ),
@@ -182,24 +248,31 @@ class _StudentDirectoryScreenState extends State<StudentDirectoryScreen> {
                     padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
                     child: Align(
                       alignment: Alignment.centerLeft,
-                      child: Text('${_students.length} élève${_students.length != 1 ? 's' : ''}', style: WinType.labelM(s.onMuted)),
+                      child: Text(
+                          '${_students.length} élève${_students.length != 1 ? 's' : ''}',
+                          style: WinType.labelM(s.onMuted)),
                     ),
                   ),
                   Expanded(
                     child: _students.isEmpty
-                        ? Center(child: Text('Aucun élève trouvé.', style: WinType.bodyM(s.onMuted)))
+                        ? Center(
+                            child: Text('Aucun élève trouvé.',
+                                style: WinType.bodyM(s.onMuted)))
                         : ListView.separated(
                             padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
                             itemCount: _students.length,
-                            separatorBuilder: (_, __) => const SizedBox(height: 8),
-                            itemBuilder: (_, i) => _StudentRow(student: _students[i], s: s),
+                            separatorBuilder: (_, __) =>
+                                const SizedBox(height: 8),
+                            itemBuilder: (_, i) =>
+                                _StudentRow(student: _students[i], s: s),
                           ),
                   ),
                 ]),
     );
   }
 
-  Widget _buildTextField(WinScheme s, TextEditingController ctrl, String hint, ValueChanged<String> onChanged) {
+  Widget _buildTextField(WinScheme s, TextEditingController ctrl, String hint,
+      ValueChanged<String> onChanged) {
     return TextField(
       controller: ctrl,
       onChanged: onChanged,
@@ -209,10 +282,17 @@ class _StudentDirectoryScreenState extends State<StudentDirectoryScreen> {
         hintStyle: WinType.bodyS(s.onFaint),
         filled: true,
         fillColor: s.surface2,
-        contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: s.outline)),
-        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: s.outline)),
-        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: s.primary, width: 2)),
+        contentPadding:
+            const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+        border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(WinRadii.sm),
+            borderSide: BorderSide(color: s.outline)),
+        enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(WinRadii.sm),
+            borderSide: BorderSide(color: s.outline)),
+        focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(WinRadii.sm),
+            borderSide: BorderSide(color: s.primary, width: 2)),
       ),
     );
   }
@@ -232,7 +312,7 @@ class _KpiCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: s.surface,
           border: Border.all(color: s.outline),
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(WinRadii.md),
         ),
         child: Column(children: [
           Text(value, style: WinType.archivo(size: 18, color: s.primary)),
@@ -262,15 +342,21 @@ class _StudentRow extends StatelessWidget {
     return WinCard(
       padding: const EdgeInsets.all(12),
       child: Row(children: [
-        WinAvatar(student.fullName.isEmpty ? student.email : student.fullName, size: 40),
+        WinAvatar(student.fullName.isEmpty ? student.email : student.fullName,
+            size: 40),
         const SizedBox(width: 12),
-        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Expanded(
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(
             student.fullName.isEmpty ? student.email : student.fullName,
             style: WinType.titleM(s.onStrong),
           ),
           Text(
-            [if (student.level != null) student.level!, if (student.group != null) student.group!].join(' · '),
+            [
+              if (student.level != null) student.level!,
+              if (student.group != null) student.group!
+            ].join(' · '),
             style: WinType.labelM(s.onMuted),
           ),
           if (student.matricule != null)
@@ -278,12 +364,13 @@ class _StudentRow extends StatelessWidget {
         ])),
         if (score != null) ...[
           Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-            Text('${score.toStringAsFixed(0)}%', style: WinType.archivo(size: 14, color: scoreColor)),
+            Text('${score.toStringAsFixed(0)}%',
+                style: WinType.archivo(size: 14, color: scoreColor)),
             const SizedBox(height: 4),
             SizedBox(
               width: 60,
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(3),
+                borderRadius: BorderRadius.circular(WinRadii.full),
                 child: LinearProgressIndicator(
                   value: score / 100,
                   minHeight: 4,
