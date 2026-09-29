@@ -184,6 +184,66 @@ class ApiInstitutionAnalytics {
       );
 }
 
+/// Une action du plan WinAI (réponse Python relayée par
+/// GET /api/institution/action-plan : actions[].priority/action/effort/estimated_impact).
+class ApiActionPlanItem {
+  final int priority;
+  final String action;
+  final String effort;
+  final String estimatedImpact;
+  const ApiActionPlanItem({
+    required this.priority,
+    required this.action,
+    this.effort = '',
+    this.estimatedImpact = '',
+  });
+
+  factory ApiActionPlanItem.fromJson(Map<String, dynamic> j) =>
+      ApiActionPlanItem(
+        priority: (j['priority'] as num?)?.toInt() ?? 0,
+        action: j['action']?.toString() ?? '',
+        effort: j['effort']?.toString() ?? '',
+        estimatedImpact: j['estimated_impact']?.toString() ?? '',
+      );
+}
+
+/// Plan d'action hebdomadaire WinAI de l'établissement.
+class ApiActionPlan {
+  final List<ApiActionPlanItem> actions;
+  final String? weekLabel;
+  final int studentCount;
+  final int atRiskCount;
+  final int inactiveCount;
+
+  /// Renseigné par .NET quand aucun élève n'est rattaché (liste vide légitime).
+  final String? message;
+
+  const ApiActionPlan({
+    this.actions = const [],
+    this.weekLabel,
+    this.studentCount = 0,
+    this.atRiskCount = 0,
+    this.inactiveCount = 0,
+    this.message,
+  });
+
+  factory ApiActionPlan.fromJson(Map<String, dynamic> j) {
+    final ctx = j['context'] as Map<String, dynamic>? ?? const {};
+    return ApiActionPlan(
+      actions: (j['actions'] as List? ?? const [])
+          .whereType<Map<String, dynamic>>()
+          .map(ApiActionPlanItem.fromJson)
+          .where((a) => a.action.isNotEmpty)
+          .toList(),
+      weekLabel: j['week_label'] as String?,
+      studentCount: (ctx['student_count'] as num?)?.toInt() ?? 0,
+      atRiskCount: (ctx['at_risk_count'] as num?)?.toInt() ?? 0,
+      inactiveCount: (ctx['inactive_count'] as num?)?.toInt() ?? 0,
+      message: j['message'] as String?,
+    );
+  }
+}
+
 class InstitutionService {
   InstitutionService._();
   static final InstitutionService instance = InstitutionService._();
@@ -265,13 +325,12 @@ class InstitutionService {
         res.data as Map<String, dynamic>? ?? {});
   }
 
-  Future<String?> getActionPlan() async {
-    try {
-      final res = await _api.dio.get('/institution/action-plan');
-      return (res.data as Map<String, dynamic>?)?['plan'] as String?;
-    } catch (_) {
-      return null;
-    }
+  /// Module 23 : lisait un champ `plan` que Python ne renvoie pas (toujours
+  /// null) et avalait les erreurs. Renvoie désormais le plan réel ; une erreur
+  /// réseau ou serveur remonte à l'écran, qui affiche un état d'échec.
+  Future<ApiActionPlan> getActionPlan() async {
+    final res = await _api.dio.get('/institution/action-plan');
+    return ApiActionPlan.fromJson(res.data as Map<String, dynamic>? ?? {});
   }
 
   Future<int?> getMyInstitutionId() async {

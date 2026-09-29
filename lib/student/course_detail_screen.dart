@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/win_motion.dart';
 import '../services/course_service.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
@@ -101,7 +102,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
       if (!mounted) return;
       Navigator.pushReplacement(
           context,
-          MaterialPageRoute(
+          WinPageRoute(
             builder: (_) =>
                 CoursePlayerScreen(courseId: c.id, courseTitle: c.title),
           ));
@@ -260,7 +261,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                             if (c.isEnrolled) {
                               Navigator.push(
                                   context,
-                                  MaterialPageRoute(
+                                  WinPageRoute(
                                     builder: (_) => CoursePlayerScreen(
                                         courseId: c.id, courseTitle: c.title),
                                   ));

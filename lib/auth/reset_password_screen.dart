@@ -20,17 +20,28 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   bool get _has8 => _pwCtrl.text.length >= 8;
   bool get _hasMaj => _pwCtrl.text.contains(RegExp(r'[A-Z]'));
   bool get _hasNum => _pwCtrl.text.contains(RegExp(r'[0-9]'));
-  bool get _matches => _pwCtrl.text == _confirmCtrl.text && _pwCtrl.text.isNotEmpty;
+  bool get _matches =>
+      _pwCtrl.text == _confirmCtrl.text && _pwCtrl.text.isNotEmpty;
 
   Future<void> _submit() async {
     if (!_has8 || !_hasMaj || !_hasNum || !_matches) return;
-    setState(() { _loading = true; _error = null; });
-    final result = await AuthService.instance.resetPassword(widget.token, _pwCtrl.text);
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+    final result =
+        await AuthService.instance.resetPassword(widget.token, _pwCtrl.text);
     if (!mounted) return;
     if (result.success) {
-      setState(() { _loading = false; _done = true; });
+      setState(() {
+        _loading = false;
+        _done = true;
+      });
     } else {
-      setState(() { _loading = false; _error = result.message ?? 'Erreur réseau.'; });
+      setState(() {
+        _loading = false;
+        _error = result.message ?? 'Erreur réseau.';
+      });
     }
   }
 
@@ -50,11 +61,13 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             const SizedBox(height: 16),
             Text('Nouveau mot de passe', style: WinType.displayS(s.onStrong)),
             const SizedBox(height: 8),
-            Text('Choisissez un mot de passe sécurisé.', style: WinType.bodyM(s.onMuted)),
+            Text('Choisissez un mot de passe sécurisé.',
+                style: WinType.bodyM(s.onMuted)),
             const SizedBox(height: 32),
             if (_done) ...[
               const WinAlert(
@@ -71,7 +84,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 icon: Icons.lock_outline,
                 obscure: !_showPw,
                 controller: _pwCtrl,
-                suffixIcon: _showPw ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                suffixIcon: _showPw
+                    ? Icons.visibility_off_outlined
+                    : Icons.visibility_outlined,
                 onSuffixTap: () => setState(() => _showPw = !_showPw),
                 onChanged: (_) => setState(() {}),
               ),
@@ -82,7 +97,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 icon: Icons.lock_outline,
                 obscure: !_showConfirm,
                 controller: _confirmCtrl,
-                suffixIcon: _showConfirm ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                suffixIcon: _showConfirm
+                    ? Icons.visibility_off_outlined
+                    : Icons.visibility_outlined,
                 onSuffixTap: () => setState(() => _showConfirm = !_showConfirm),
                 onChanged: (_) => setState(() {}),
               ),
@@ -118,8 +135,7 @@ class _Constraint extends StatelessWidget {
     final s = WinTheme.of(context);
     return Row(children: [
       Icon(ok ? Icons.check_circle : Icons.radio_button_unchecked,
-          size: 16,
-          color: ok ? s.primary : s.onFaint),
+          size: 16, color: ok ? s.primary : s.onFaint),
       const SizedBox(width: 8),
       Text(label, style: WinType.bodyS(ok ? s.primary : s.onMuted)),
     ]);

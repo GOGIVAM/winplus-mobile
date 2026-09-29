@@ -4,7 +4,8 @@ class ForumService {
   static final instance = ForumService._();
   ForumService._();
 
-  Future<Map<String, dynamic>> getThreads({String? category, int page = 1, int pageSize = 20}) async {
+  Future<Map<String, dynamic>> getThreads(
+      {String? category, int page = 1, int pageSize = 20}) async {
     final qs = <String, dynamic>{'page': page, 'pageSize': pageSize};
     if (category != null && category != 'all') qs['category'] = category;
     final resp = await ApiClient.instance.get('/forums/threads', params: qs);
@@ -12,7 +13,8 @@ class ForumService {
   }
 
   Future<List<dynamic>> getPosts(int threadId) async {
-    final resp = await ApiClient.instance.get('/forums/threads/$threadId/posts');
+    final resp =
+        await ApiClient.instance.get('/forums/threads/$threadId/posts');
     if (resp is Map) return (resp['posts'] as List?) ?? [];
     return resp as List;
   }
@@ -32,10 +34,12 @@ class ForumService {
   }
 
   Future<void> reply(int threadId, String content) async {
-    await ApiClient.instance.post('/forums/threads/$threadId/posts', data: {'content': content});
+    await ApiClient.instance
+        .post('/forums/threads/$threadId/posts', data: {'content': content});
   }
 
   Future<void> vote(int postId, String type) async {
-    await ApiClient.instance.post('/forums/posts/$postId/vote', data: {'type': type});
+    await ApiClient.instance
+        .post('/forums/posts/$postId/vote', data: {'type': type});
   }
 }

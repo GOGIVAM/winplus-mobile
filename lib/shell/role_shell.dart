@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/win_motion.dart';
 import '../app_state.dart';
 import '../data/mock_data.dart';
 import '../data/models.dart';
@@ -52,8 +53,8 @@ class _RoleShellState extends State<RoleShell> {
   }
 
   Future<void> _openNotifications() async {
-    await Navigator.push(context,
-        MaterialPageRoute(builder: (_) => const NotificationsScreen()));
+    await Navigator.push(
+        context, WinPageRoute(builder: (_) => const NotificationsScreen()));
     _loadUnread();
   }
 

@@ -76,8 +76,7 @@ class ApiClient {
   }
 
   Future<T> get<T>(String path,
-      {Map<String, dynamic>? params,
-      T Function(dynamic)? fromJson}) async {
+      {Map<String, dynamic>? params, T Function(dynamic)? fromJson}) async {
     final r = await _dio.get(path, queryParameters: params);
     return fromJson != null ? fromJson(r.data) : r.data as T;
   }

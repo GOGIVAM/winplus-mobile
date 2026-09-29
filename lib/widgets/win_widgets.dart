@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import '../theme/win_colors.dart';
+import '../theme/win_motion.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
+import 'win_motion_widgets.dart';
 
 /// WINPLUS  Widgets réutilisables  direction visuelle "Funica" (arrondis
 /// généreux, boutons/chips en pilule), couleurs de marque WinPlus conservées.
 
 enum WinButtonVariant { primary, accent, outline, ghost, danger, secondary }
 
-class WinButton extends StatelessWidget {
+class WinButton extends StatefulWidget {
   final String label;
   final WinButtonVariant variant;
   final bool block, small, loading;
@@ -24,7 +26,21 @@ class WinButton extends StatelessWidget {
       this.onTap});
 
   @override
+  State<WinButton> createState() => _WinButtonState();
+}
+
+class _WinButtonState extends State<WinButton> {
+  bool _pressed = false;
+
+  @override
   Widget build(BuildContext context) {
+    final label = widget.label;
+    final variant = widget.variant;
+    final block = widget.block;
+    final small = widget.small;
+    final loading = widget.loading;
+    final icon = widget.icon;
+    final onTap = widget.onTap;
     final s = WinTheme.of(context);
     late Color bg, fg, bd;
     switch (variant) {
@@ -80,22 +96,29 @@ class WinButton extends StatelessWidget {
                         weight: FontWeight.w600,
                         color: fg)),
               ]);
-    return SizedBox(
-      width: block ? double.infinity : null,
-      height: height,
-      child: Material(
-        color: bg,
-        borderRadius: BorderRadius.circular(WinRadii.full),
-        child: InkWell(
+    return AnimatedScale(
+      scale: _pressed ? 0.97 : 1.0,
+      duration: WinDurations.fast,
+      curve: WinCurves.tap,
+      child: SizedBox(
+        width: block ? double.infinity : null,
+        height: height,
+        child: Material(
+          color: bg,
           borderRadius: BorderRadius.circular(WinRadii.full),
-          onTap: loading ? null : onTap,
-          child: Container(
-            alignment: Alignment.center,
-            padding: EdgeInsets.symmetric(horizontal: small ? 14 : 20),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(WinRadii.full),
-                border: Border.all(color: bd, width: 1.5)),
-            child: child,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(WinRadii.full),
+            onTap: loading ? null : onTap,
+            onHighlightChanged:
+                loading ? null : (v) => setState(() => _pressed = v),
+            child: Container(
+              alignment: Alignment.center,
+              padding: EdgeInsets.symmetric(horizontal: small ? 14 : 20),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(WinRadii.full),
+                  border: Border.all(color: bd, width: 1.5)),
+              child: child,
+            ),
           ),
         ),
       ),
@@ -103,7 +126,7 @@ class WinButton extends StatelessWidget {
   }
 }
 
-class WinCard extends StatelessWidget {
+class WinCard extends StatefulWidget {
   final Widget child;
   final EdgeInsets padding;
   final VoidCallback? onTap;
@@ -116,27 +139,40 @@ class WinCard extends StatelessWidget {
       this.bg});
 
   @override
+  State<WinCard> createState() => _WinCardState();
+}
+
+class _WinCardState extends State<WinCard> {
+  bool _pressed = false;
+
+  @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
     final content = Container(
-      padding: padding,
+      padding: widget.padding,
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: bg ?? s.cardBg,
+        color: widget.bg ?? s.cardBg,
         borderRadius: BorderRadius.circular(WinRadii.lg),
         border: Border.all(color: s.cardBorder),
         boxShadow: WinShadows.sm,
       ),
-      child: child,
+      child: widget.child,
     );
-    if (onTap == null) return content;
-    return Material(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(WinRadii.lg),
-        child: InkWell(
-            borderRadius: BorderRadius.circular(WinRadii.lg),
-            onTap: onTap,
-            child: content));
+    if (widget.onTap == null) return content;
+    return AnimatedScale(
+      scale: _pressed ? 0.98 : 1.0,
+      duration: WinDurations.fast,
+      curve: WinCurves.tap,
+      child: Material(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(WinRadii.lg),
+          child: InkWell(
+              borderRadius: BorderRadius.circular(WinRadii.lg),
+              onTap: widget.onTap,
+              onHighlightChanged: (v) => setState(() => _pressed = v),
+              child: content)),
+    );
   }
 }
 
@@ -151,9 +187,12 @@ class WinChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    return GestureDetector(
+    return WinTapScale(
       onTap: onTap,
-      child: Container(
+      pressedScale: 0.94,
+      child: AnimatedContainer(
+        duration: WinDurations.fast,
+        curve: WinCurves.tap,
         height: 34,
         padding: const EdgeInsets.symmetric(horizontal: 12),
         decoration: BoxDecoration(

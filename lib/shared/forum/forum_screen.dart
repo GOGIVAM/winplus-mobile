@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../theme/win_motion.dart';
 import '../../services/forum_service.dart';
 import '../../theme/win_colors.dart';
 import '../../theme/win_theme.dart';
@@ -92,7 +93,7 @@ class _ForumScreenState extends State<ForumScreen> {
           IconButton(
             icon: Icon(Icons.add, color: s.primary),
             onPressed: () => Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => const NewThreadScreen()))
+                    WinPageRoute(builder: (_) => const NewThreadScreen()))
                 .then((_) => _load(reset: true)),
           ),
         ],
@@ -152,7 +153,7 @@ class _ForumScreenState extends State<ForumScreen> {
                                   onTap: () {
                                     Navigator.push(
                                         context,
-                                        MaterialPageRoute(
+                                        WinPageRoute(
                                             builder: (_) =>
                                                 ThreadDetailScreen(thread: t)));
                                   });

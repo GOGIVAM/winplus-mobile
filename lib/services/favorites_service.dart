@@ -16,7 +16,8 @@ class ApiFavorite {
         id: j['id'] as int,
         subjectId: j['subjectId'] as int,
         subjectTitle: j['subjectTitle'] as String? ?? '',
-        addedAt: DateTime.tryParse(j['addedAt'] as String? ?? '') ?? DateTime.now(),
+        addedAt:
+            DateTime.tryParse(j['addedAt'] as String? ?? '') ?? DateTime.now(),
       );
 }
 
@@ -29,7 +30,9 @@ class FavoritesService {
   Future<List<ApiFavorite>> getAll() async {
     final res = await _api.dio.get('/favorites');
     final list = res.data as List? ?? [];
-    return list.map((e) => ApiFavorite.fromJson(e as Map<String, dynamic>)).toList();
+    return list
+        .map((e) => ApiFavorite.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
   Future<bool> add(int subjectId) async {

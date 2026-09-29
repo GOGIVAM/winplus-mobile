@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/win_motion.dart';
 import '../services/institution_service.dart';
 import '../shared/messaging/messaging_screen.dart';
 import '../theme/win_colors.dart';
@@ -213,14 +214,14 @@ class _AtRiskCard extends StatelessWidget {
               small: true,
               icon: Icons.message_outlined,
               onTap: () => Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => const MessagingScreen()))),
+                  WinPageRoute(builder: (_) => const MessagingScreen()))),
           const SizedBox(width: 8),
           WinButton("Plan d'action",
               small: true,
               variant: WinButtonVariant.outline,
               icon: Icons.checklist_outlined,
               onTap: () => Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => const ActionPlanScreen()))),
+                  WinPageRoute(builder: (_) => const ActionPlanScreen()))),
         ]),
       ]),
     );

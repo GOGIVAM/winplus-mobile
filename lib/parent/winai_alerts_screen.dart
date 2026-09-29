@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/win_motion.dart';
 import '../services/parent_service.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
@@ -164,7 +165,7 @@ class _WinAIAlertsScreenState extends State<WinAIAlertsScreen> {
                           icon: Icons.timeline_outlined,
                           onTap: () => Navigator.push(
                               context,
-                              MaterialPageRoute(
+                              WinPageRoute(
                                   builder: (_) =>
                                       ChildActivityScreen(child: child)))),
                     ],

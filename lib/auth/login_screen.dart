@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import '../theme/win_motion.dart';
 import '../app_state.dart';
 import '../data/models.dart';
 import '../l10n/gen/app_localizations.dart';
@@ -65,7 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
       }
       SubscriptionScope.of(context).loadFromApi();
       Navigator.pushAndRemoveUntil(context,
-          MaterialPageRoute(builder: (_) => const RoleShell()), (r) => false);
+          WinPageRoute(builder: (_) => const RoleShell()), (r) => false);
     } else {
       setState(() {
         _loading = false;
@@ -162,7 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: GestureDetector(
                       onTap: () => Navigator.push(
                           context,
-                          MaterialPageRoute(
+                          WinPageRoute(
                               builder: (_) => const ForgotPasswordScreen())),
                       child: Text(l10n.forgotPassword,
                           style: WinType.labelM(s.primaryStrong)),
@@ -202,7 +203,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 24),
                   GestureDetector(
                     onTap: () => Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (_) => const RoleScreen())),
+                        WinPageRoute(builder: (_) => const RoleScreen())),
                     child: Center(
                       child: Text.rich(TextSpan(
                         style: WinType.bodyS(s.onMuted),

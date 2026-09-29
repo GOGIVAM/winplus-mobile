@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../theme/win_motion.dart';
 import '../../services/tutor_booking_service.dart';
 import '../../services/tutor_profile_service.dart';
 import '../../theme/win_colors.dart';
@@ -67,7 +68,7 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
     if (p == null) return;
     Navigator.push(
         context,
-        MaterialPageRoute(
+        WinPageRoute(
           builder: (_) => TutorBookingFlowScreen(
             profile: p,
             occurrences: _occurrences,

@@ -4,6 +4,7 @@ import '../shared/subscription/subscription_notifier.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
+import '../widgets/win_motion_widgets.dart';
 import '../widgets/win_widgets.dart';
 
 class FavoritesScreen extends StatefulWidget {
@@ -136,8 +137,10 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
               crossAxisSpacing: 12,
               childAspectRatio: 0.78),
           itemCount: favs.length,
-          itemBuilder: (_, i) =>
-              _FavoriteCard(fav: favs[i], onRemove: () => _remove(favs[i])),
+          itemBuilder: (_, i) => WinStaggerFade(
+              index: i,
+              child: _FavoriteCard(
+                  fav: favs[i], onRemove: () => _remove(favs[i]))),
         ),
       ),
     ]);

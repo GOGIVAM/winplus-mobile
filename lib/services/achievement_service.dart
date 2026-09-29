@@ -16,10 +16,18 @@ class AchievementService {
 
   final _api = ApiClient.instance;
 
+  /// Module 25 : `GET /achievements/me` n'existe pas côté serveur (404
+  /// systématique, l'écran restait sur ses valeurs de démonstration). La
+  /// série de jours réelle est servie par GET /users/profile/statistics
+  /// (currentStreak, même calcul que le tableau de bord web).
+  ///
+  /// Aucun endpoint serveur ne fournit de badges « plateforme » : la liste
+  /// reste celle de démonstration tant que le product owner n'a pas tranché
+  /// (construire le système de badges, ou retirer la grille de l'écran).
   Future<AchievementResult> getMyAchievements() async {
-    final res = await _api.dio.get('/achievements/me');
+    final res = await _api.dio.get('/users/profile/statistics');
     final data = res.data as Map<String, dynamic>? ?? {};
-    final streak = data['streak'] as int? ?? WinData.streak;
+    final streak = (data['currentStreak'] as num?)?.toInt() ?? 0;
     final rawBadges = data['badges'] as List? ?? [];
     final badges = rawBadges.isEmpty
         ? WinData.badges

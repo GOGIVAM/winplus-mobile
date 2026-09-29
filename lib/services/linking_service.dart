@@ -9,7 +9,8 @@ class LinkingService {
       ApiClient.instance.get('/student/links');
 
   Future<List<dynamic>> searchUsers(String q) async {
-    final resp = await ApiClient.instance.get('/teacher-links/search', params: {'q': q});
+    final resp =
+        await ApiClient.instance.get('/teacher-links/search', params: {'q': q});
     return resp as List;
   }
 
@@ -17,7 +18,8 @@ class LinkingService {
   /// (requireOnline).
   Future<void> invite(int targetUserId) {
     requireOnline();
-    return ApiClient.instance.post('/teacher-links/invite', data: {'targetUserId': targetUserId});
+    return ApiClient.instance
+        .post('/teacher-links/invite', data: {'targetUserId': targetUserId});
   }
 
   Future<List<dynamic>> getPendingInvitations() async {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/win_motion.dart';
 import '../app_state.dart';
 import '../auth/welcome_screen.dart';
 import '../data/mock_data.dart';
@@ -90,7 +91,7 @@ class _GroupRow extends StatelessWidget {
               icon: Icons.people_outline,
               onTap: () => Navigator.push(
                   context,
-                  MaterialPageRoute(
+                  WinPageRoute(
                       builder: (_) => GroupMembersScreen(
                           groupId: g.id, groupName: g.name))),
             )),
@@ -302,7 +303,7 @@ class _InstitutionDashTabState extends State<InstitutionDashTab> {
                 WinCard(
                   bg: WinColors.errorBg,
                   onTap: () => Navigator.push(context,
-                      MaterialPageRoute(builder: (_) => const AtRiskScreen())),
+                      WinPageRoute(builder: (_) => const AtRiskScreen())),
                   child: Row(children: [
                     const Icon(Icons.warning_amber_rounded,
                         color: WinColors.error),
@@ -323,10 +324,8 @@ class _InstitutionDashTabState extends State<InstitutionDashTab> {
               WinButton("Plan d'action IA",
                   block: true,
                   icon: Icons.auto_awesome_outlined,
-                  onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => const ActionPlanScreen()))),
+                  onTap: () => Navigator.push(context,
+                      WinPageRoute(builder: (_) => const ActionPlanScreen()))),
               const SizedBox(height: 16),
               // Section matières les plus étudiées
               Text('Matières les plus étudiées',
@@ -379,7 +378,7 @@ class _InstitutionDashTabState extends State<InstitutionDashTab> {
                         icon: Icons.people_outline,
                         onTap: () => Navigator.push(
                             context,
-                            MaterialPageRoute(
+                            WinPageRoute(
                                 builder: (_) =>
                                     const StudentDirectoryScreen())))),
                 const SizedBox(width: 10),
@@ -390,7 +389,7 @@ class _InstitutionDashTabState extends State<InstitutionDashTab> {
                         icon: Icons.bar_chart_outlined,
                         onTap: () => Navigator.push(
                             context,
-                            MaterialPageRoute(
+                            WinPageRoute(
                                 builder: (_) => const ReportsScreen())))),
               ]),
               const SizedBox(height: 24),
@@ -469,7 +468,7 @@ class _InstitutionGroupsTabState extends State<InstitutionGroupsTab> {
                           icon: Icons.add, onTap: () async {
                         await Navigator.push(
                             context,
-                            MaterialPageRoute(
+                            WinPageRoute(
                                 builder: (_) => const GroupCreateScreen()));
                         _load();
                       }),
@@ -637,16 +636,14 @@ class _InstitutionAnalyticsTabState extends State<InstitutionAnalyticsTab> {
                 block: true,
                 icon: Icons.warning_amber_outlined,
                 onTap: () => Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => const AtRiskScreen()))),
+                    WinPageRoute(builder: (_) => const AtRiskScreen()))),
             const SizedBox(height: 10),
             WinButton('Plan d\'action WinAI',
                 variant: WinButtonVariant.ghost,
                 block: true,
                 icon: Icons.auto_awesome_outlined,
-                onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => const ActionPlanScreen()))),
+                onTap: () => Navigator.push(context,
+                    WinPageRoute(builder: (_) => const ActionPlanScreen()))),
             const SizedBox(height: 20),
             if (_groups == null)
               const Center(child: CircularProgressIndicator())
@@ -797,7 +794,7 @@ class InstitutionAccountTab extends StatelessWidget {
             const _Row(Icons.receipt_long_outlined, 'Facturation & reçus'),
             _Row(Icons.bar_chart_outlined, 'Rapports exportables',
                 onTap: () => Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => const ReportsScreen()))),
+                    WinPageRoute(builder: (_) => const ReportsScreen()))),
             _Row(Icons.dark_mode_outlined, 'Mode sombre',
                 trailing: Switch(
                     value: state.dark,
@@ -810,7 +807,7 @@ class InstitutionAccountTab extends StatelessWidget {
                   await AuthService.instance.signOut();
                   if (!context.mounted) return;
                   Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (_) => const WelcomeScreen()),
+                    WinPageRoute(builder: (_) => const WelcomeScreen()),
                     (r) => false,
                   );
                 },

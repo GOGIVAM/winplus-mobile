@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/win_motion.dart';
 import '../data/models.dart';
 import '../services/auth_service.dart';
 import '../theme/win_colors.dart';
@@ -73,7 +74,7 @@ class _SignupScreenState extends State<SignupScreen> {
     if (result.success) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => VerifyCodeScreen(email: email)),
+        WinPageRoute(builder: (_) => VerifyCodeScreen(email: email)),
       );
     } else {
       setState(() {

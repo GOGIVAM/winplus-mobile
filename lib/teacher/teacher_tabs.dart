@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/win_motion.dart';
 import '../data/mock_data.dart';
 import '../data/models.dart';
 import '../services/chatbot_service.dart';
@@ -190,7 +191,7 @@ class _TeacherDashTabState extends State<TeacherDashTab> {
                                         : () async {
                                             await Navigator.push(
                                                 context,
-                                                MaterialPageRoute(
+                                                WinPageRoute(
                                                     builder: (_) =>
                                                         const ContentPublishScreen()));
                                             setState(() => _content = null);
@@ -233,7 +234,7 @@ class _TeacherDashTabState extends State<TeacherDashTab> {
                                   child: GestureDetector(
                                     onTap: () => Navigator.push(
                                         context,
-                                        MaterialPageRoute(
+                                        WinPageRoute(
                                             builder: (_) =>
                                                 const CorrectionQueueScreen())),
                                     child: Container(
@@ -490,7 +491,7 @@ class _TeacherContentTabState extends State<TeacherContentTab> {
       // Bannière formations structurées
       GestureDetector(
         onTap: () => Navigator.push(context,
-            MaterialPageRoute(builder: (_) => const TeacherCoursesScreen())),
+            WinPageRoute(builder: (_) => const TeacherCoursesScreen())),
         child: Container(
           margin: const EdgeInsets.fromLTRB(16, 8, 16, 8),
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -736,28 +737,22 @@ class _TeacherStudentsTabState extends State<TeacherStudentsTab> {
                 variant: WinButtonVariant.outline,
                 block: true,
                 icon: Icons.link_outlined,
-                onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => const TeacherLinksScreen()))),
+                onTap: () => Navigator.push(context,
+                    WinPageRoute(builder: (_) => const TeacherLinksScreen()))),
             const SizedBox(height: 10),
             WinButton('Mode Tuteur',
                 variant: WinButtonVariant.outline,
                 block: true,
                 icon: Icons.school_outlined,
-                onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => const TutorProfileScreen()))),
+                onTap: () => Navigator.push(context,
+                    WinPageRoute(builder: (_) => const TutorProfileScreen()))),
             const SizedBox(height: 10),
             WinButton('Mes réservations élèves',
                 variant: WinButtonVariant.outline,
                 block: true,
                 icon: Icons.event_available_outlined,
-                onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => const TutorBookingsScreen()))),
+                onTap: () => Navigator.push(context,
+                    WinPageRoute(builder: (_) => const TutorBookingsScreen()))),
             const SizedBox(height: 24),
             Text('Étudiants',
                 style: WinType.archivo(size: 18, color: s.onStrong)),
@@ -790,7 +785,7 @@ class _TeacherStudentsTabState extends State<TeacherStudentsTab> {
                       GestureDetector(
                         onTap: () => Navigator.push(
                             context,
-                            MaterialPageRoute(
+                            WinPageRoute(
                                 builder: (_) => const MessagingScreen())),
                         child: Icon(Icons.chat_outlined,
                             size: 20, color: s.primary),
@@ -885,10 +880,8 @@ class TeacherSessionsTab extends StatelessWidget {
                 variant: WinButtonVariant.outline,
                 block: true,
                 icon: Icons.add,
-                onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => const SessionCreateScreen()))),
+                onTap: () => Navigator.push(context,
+                    WinPageRoute(builder: (_) => const SessionCreateScreen()))),
           ])),
     ]);
   }

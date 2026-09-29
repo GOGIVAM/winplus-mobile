@@ -143,10 +143,16 @@ class TeacherService {
     String? description,
   }) async {
     try {
-      await _api.dio.post('/teacher/contents', data: {
+      // Module 25 : `POST /teacher/contents` n'existe pas (ce préfixe ne sert
+      // que la lecture et la modification des publications) : la soumission
+      // échouait toujours. La création passe par POST /subjects
+      // (SubjectCreateRequest : title, description, category, level, price ;
+      // publication toujours décidée par l'administration). Category porte la
+      // matière, comme Subject.Category ; le type de contenu n'a pas de champ
+      // correspondant à la création et n'est donc pas transmis.
+      await _api.dio.post('/subjects', data: {
         'title': title,
-        'category': type,
-        'subjectCategory': subjectCategory,
+        'category': subjectCategory,
         'level': level,
         'price': price,
         if (description != null) 'description': description,

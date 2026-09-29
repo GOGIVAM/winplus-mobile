@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import '../theme/win_motion.dart';
 import '../app_state.dart';
 import '../auth/welcome_screen.dart';
 import '../data/mock_data.dart';
@@ -215,7 +216,7 @@ class _ParentDashTabState extends State<ParentDashTab> {
                 small: true,
                 onTap: () => Navigator.push(
                     context,
-                    MaterialPageRoute(
+                    WinPageRoute(
                         builder: (_) => const SubscriptionStatusScreen()))),
           ]),
         ),
@@ -223,8 +224,8 @@ class _ParentDashTabState extends State<ParentDashTab> {
         // ── Alertes WinAI ─────────────────────────────────────────
         const SizedBox(height: 20),
         GestureDetector(
-          onTap: () => Navigator.push(context,
-              MaterialPageRoute(builder: (_) => const WinAIAlertsScreen())),
+          onTap: () => Navigator.push(
+              context, WinPageRoute(builder: (_) => const WinAIAlertsScreen())),
           child: Row(children: [
             const WinAIOrb(size: 20),
             const SizedBox(width: 10),
@@ -293,7 +294,7 @@ class _ParentDashTabState extends State<ParentDashTab> {
               ? null
               : () => Navigator.push(
                   context,
-                  MaterialPageRoute(
+                  WinPageRoute(
                       builder: (_) => BuyForChildScreen(children: kids))),
         ),
       ],
@@ -337,7 +338,7 @@ class ChildCard extends StatelessWidget {
     final s = WinTheme.of(context);
     return WinCard(
       onTap: () => Navigator.push(context,
-          MaterialPageRoute(builder: (_) => ChildActivityScreen(child: child))),
+          WinPageRoute(builder: (_) => ChildActivityScreen(child: child))),
       child: Row(children: [
         WinAvatar(child.fullName, size: 48, color: WinColors.blue100),
         const SizedBox(width: 14),
@@ -402,7 +403,7 @@ class _TrackedChildCard extends StatelessWidget {
     return GestureDetector(
       onTap: () => Navigator.push(
           context,
-          MaterialPageRoute(
+          WinPageRoute(
               builder: (_) => ChildActivityScreen(
                   child: ApiChild(
                       id: child.id.hashCode,
@@ -467,10 +468,8 @@ class _EventTile extends StatelessWidget {
         days <= 0 ? "aujourd'hui" : 'dans $days jour${days > 1 ? 's' : ''}';
     return GestureDetector(
       onTap: isRenewal
-          ? () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (_) => const SubscriptionStatusScreen()))
+          ? () => Navigator.push(context,
+              WinPageRoute(builder: (_) => const SubscriptionStatusScreen()))
           : null,
       child: WinCard(
         child: Row(children: [
@@ -551,7 +550,7 @@ class _ParentChildrenTabState extends State<ParentChildrenTab> {
                             icon: Icons.lock_outline,
                             onTap: () => Navigator.push(
                                 context,
-                                MaterialPageRoute(
+                                WinPageRoute(
                                     builder: (_) => const PricingScreen())))
                       else
                         WinButton('Ajouter un enfant',
@@ -560,7 +559,7 @@ class _ParentChildrenTabState extends State<ParentChildrenTab> {
                             icon: Icons.add, onTap: () async {
                           await Navigator.push(
                               context,
-                              MaterialPageRoute(
+                              WinPageRoute(
                                   builder: (_) => const AddChildScreen()));
                           _load();
                         }),
@@ -657,7 +656,7 @@ class _ParentResourcesTabState extends State<ParentResourcesTab> {
                   ? null
                   : () => Navigator.push(
                       context,
-                      MaterialPageRoute(
+                      WinPageRoute(
                           builder: (_) =>
                               BuyForChildScreen(children: _children))),
             ),
@@ -857,7 +856,7 @@ class ParentProfileTab extends StatelessWidget {
                 child: GestureDetector(
                   onTap: () => Navigator.push(
                       context,
-                      MaterialPageRoute(
+                      WinPageRoute(
                           builder: (_) => ChildActivityScreen(
                               child: ApiChild(
                                   id: c.id.hashCode,
@@ -914,16 +913,16 @@ class ParentProfileTab extends StatelessWidget {
         _Row(Icons.account_balance_wallet_outlined, 'Mon abonnement',
             onTap: () => Navigator.push(
                 context,
-                MaterialPageRoute(
+                WinPageRoute(
                     builder: (_) => const SubscriptionStatusScreen()))),
         _Row(Icons.autorenew, 'Gérer l\'abonnement',
             onTap: () => Navigator.push(
                 context,
-                MaterialPageRoute(
+                WinPageRoute(
                     builder: (_) => const SubscriptionStatusScreen()))),
         _Row(Icons.payment_outlined, 'Paiements & historique',
             onTap: () => Navigator.push(context,
-                MaterialPageRoute(builder: (_) => const _PaymentsScreen()))),
+                WinPageRoute(builder: (_) => const _PaymentsScreen()))),
         _Row(Icons.notifications_outlined, 'Notifications',
             trailing: Switch(
                 value: true, activeThumbColor: s.primary, onChanged: (_) {})),
@@ -943,7 +942,7 @@ class ParentProfileTab extends StatelessWidget {
             await AuthService.instance.signOut();
             if (!context.mounted) return;
             Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (_) => const WelcomeScreen()),
+              WinPageRoute(builder: (_) => const WelcomeScreen()),
               (r) => false,
             );
           },

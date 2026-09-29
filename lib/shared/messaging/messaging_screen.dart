@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../theme/win_motion.dart';
 import '../../services/messaging_service.dart';
 import '../../theme/win_colors.dart';
 import '../../theme/win_theme.dart';
@@ -135,7 +136,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
                           ]),
                       onTap: () => Navigator.push(
                               context,
-                              MaterialPageRoute(
+                              WinPageRoute(
                                   builder: (_) =>
                                       ConversationScreen(conversation: c)))
                           .then((_) => _load()),

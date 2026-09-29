@@ -100,6 +100,7 @@ class SubscriptionScope extends InheritedNotifier<SubscriptionNotifier> {
     required super.child,
   });
 
-  static SubscriptionNotifier of(BuildContext context) =>
-      context.dependOnInheritedWidgetOfExactType<SubscriptionScope>()!.notifier!;
+  static SubscriptionNotifier of(BuildContext context) => context
+      .dependOnInheritedWidgetOfExactType<SubscriptionScope>()!
+      .notifier!;
 }

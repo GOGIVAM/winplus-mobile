@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../theme/win_motion.dart';
 import '../../theme/win_colors.dart';
 import '../../theme/win_theme.dart';
 import '../../theme/win_typography.dart';
@@ -17,8 +18,8 @@ class UpgradeSheet extends StatelessWidget {
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (_) => UpgradeSheet(
-          featureName: featureName, requiredPlan: requiredPlan),
+      builder: (_) =>
+          UpgradeSheet(featureName: featureName, requiredPlan: requiredPlan),
     );
   }
 
@@ -44,15 +45,13 @@ class UpgradeSheet extends StatelessWidget {
           width: 72,
           height: 72,
           decoration: const BoxDecoration(
-              color: WinColors.warnBg,
-              shape: BoxShape.circle),
-          child: const Icon(Icons.lock_outline,
-              size: 36, color: WinColors.warn),
+              color: WinColors.warnBg, shape: BoxShape.circle),
+          child:
+              const Icon(Icons.lock_outline, size: 36, color: WinColors.warn),
         ),
         const SizedBox(height: 20),
         Text('Fonctionnalité $requiredPlan',
-            style: WinType.displayS(s.onStrong),
-            textAlign: TextAlign.center),
+            style: WinType.displayS(s.onStrong), textAlign: TextAlign.center),
         const SizedBox(height: 10),
         Text(
           '$featureName est disponible à partir du plan $requiredPlan.',
@@ -64,12 +63,11 @@ class UpgradeSheet extends StatelessWidget {
             style: WinType.labelM(s.primary)
                 .copyWith(fontWeight: FontWeight.w700)),
         const SizedBox(height: 28),
-        WinButton('Voir les plans',
-            block: true, onTap: () {
-              Navigator.pop(context);
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => const PricingScreen()));
-            }),
+        WinButton('Voir les plans', block: true, onTap: () {
+          Navigator.pop(context);
+          Navigator.push(
+              context, WinPageRoute(builder: (_) => const PricingScreen()));
+        }),
         const SizedBox(height: 10),
         WinButton('Plus tard',
             variant: WinButtonVariant.ghost,

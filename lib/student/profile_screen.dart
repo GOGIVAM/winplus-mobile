@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/win_motion.dart';
 import '../services/auth_service.dart';
 import '../services/subscription_service.dart';
 import '../services/user_service.dart';
@@ -415,7 +416,7 @@ class _TabCompteState extends State<_TabCompte> {
     await AuthService.instance.signOut();
     if (!mounted) return;
     Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (_) => const WelcomeScreen()),
+      WinPageRoute(builder: (_) => const WelcomeScreen()),
       (r) => false,
     );
   }

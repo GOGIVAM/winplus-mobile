@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/win_motion.dart';
 import '../app_state.dart';
 import '../data/models.dart';
 import '../services/session_manager.dart';
@@ -27,21 +28,21 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   WinRole _roleFromString(String? role) => switch (role) {
-        'teacher'     => WinRole.teacher,
-        'parent'      => WinRole.parent,
+        'teacher' => WinRole.teacher,
+        'parent' => WinRole.parent,
         'institution' => WinRole.institution,
-        _             => WinRole.student,
+        _ => WinRole.student,
       };
 
   Future<void> _route() async {
     if (!mounted) return;
 
-    final loggedIn  = await SessionManager.isLoggedIn();
+    final loggedIn = await SessionManager.isLoggedIn();
     if (!mounted) return;
 
     if (!loggedIn) {
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const WelcomeScreen()),
+        WinPageRoute(builder: (_) => const WelcomeScreen()),
       );
       return;
     }
@@ -53,8 +54,7 @@ class _SplashScreenState extends State<SplashScreen>
       final email = await SessionManager.getUserEmail() ?? '';
       if (!mounted) return;
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-            builder: (_) => PeriodicConfirmScreen(email: email)),
+        WinPageRoute(builder: (_) => PeriodicConfirmScreen(email: email)),
       );
       return;
     }
@@ -64,7 +64,7 @@ class _SplashScreenState extends State<SplashScreen>
     if (!mounted) return;
     WinAppScope.of(context).setRole(_roleFromString(roleStr));
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => const RoleShell()),
+      WinPageRoute(builder: (_) => const RoleShell()),
     );
   }
 
@@ -87,9 +87,7 @@ class _SplashScreenState extends State<SplashScreen>
           const SizedBox(height: 18),
           Text('WinPlus',
               style: WinType.archivo(
-                  size: 30,
-                  weight: FontWeight.w700,
-                  color: WinColors.cream50)),
+                  size: 30, weight: FontWeight.w700, color: WinColors.cream50)),
           const SizedBox(height: 4),
           Text('Ta réussite, notre mission',
               style: WinType.bodyS(WinColors.ink300)),

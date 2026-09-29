@@ -16,13 +16,15 @@ class ApiCertificate {
     this.score,
   });
 
+  /// Module 25 : lit les champs réellement renvoyés par CertificateDto
+  /// (subjectTitle, fileUrl, grade), en gardant les anciens noms en repli.
   factory ApiCertificate.fromJson(Map<String, dynamic> j) => ApiCertificate(
-        id: j['id'] as int? ?? 0,
-        title: j['title'] as String? ?? '',
-        subjectName: j['subjectName'] as String? ?? '',
-        issuedAt: j['issuedAt'] as String? ?? '',
-        pdfUrl: j['pdfUrl'] as String?,
-        score: j['score'] as int?,
+        id: (j['id'] as num?)?.toInt() ?? 0,
+        title: (j['subjectTitle'] ?? j['title'])?.toString() ?? '',
+        subjectName: (j['subjectTitle'] ?? j['subjectName'])?.toString() ?? '',
+        issuedAt: j['issuedAt']?.toString() ?? '',
+        pdfUrl: (j['fileUrl'] ?? j['pdfUrl']) as String?,
+        score: ((j['grade'] ?? j['score']) as num?)?.round(),
       );
 }
 
@@ -32,12 +34,16 @@ class CertificateService {
 
   final _api = ApiClient.instance;
 
+  /// Module 25 : `GET /certificates` n'existe pas (la racine n'accepte que
+  /// POST, émission). Les certificats de l'utilisateur connecté sont servis
+  /// par GET /certificates/user/my-certificates, enveloppés dans { success, data }.
   Future<List<ApiCertificate>> getCertificates() async {
-    final res = await _api.dio.get('/certificates');
+    final res = await _api.dio.get('/certificates/user/my-certificates');
     final raw = res.data;
+    final map = raw is Map<String, dynamic> ? raw : null;
     final list = raw is List
         ? raw
-        : (raw as Map<String, dynamic>?)?['items'] as List? ?? [];
+        : (map?['data'] ?? map?['items']) as List? ?? [];
     return list
         .map((e) => ApiCertificate.fromJson(e as Map<String, dynamic>))
         .toList();

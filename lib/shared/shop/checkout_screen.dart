@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import '../../theme/win_motion.dart';
 import '../../data/models.dart' show fmtXaf;
 import '../../services/cart_service.dart';
 import '../../services/order_service.dart';
@@ -7,6 +8,7 @@ import '../../services/payment_service.dart';
 import '../../theme/win_colors.dart';
 import '../../theme/win_theme.dart';
 import '../../theme/win_typography.dart';
+import '../../widgets/win_motion_widgets.dart';
 import '../../widgets/win_widgets.dart';
 import 'orders_screen.dart';
 
@@ -241,7 +243,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             keyboardType: TextInputType.phone),
         if (_submitError != null) ...[
           const SizedBox(height: 12),
-          WinAlert(_submitError!, type: BadgeColor.error),
+          WinErrorShake(child: WinAlert(_submitError!, type: BadgeColor.error)),
         ],
         const SizedBox(height: 24),
         WinButton('Payer ${fmtXaf(cart.total.round())} XAF',
@@ -268,7 +270,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       child: Padding(
         padding: const EdgeInsets.all(32),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-          const CircularProgressIndicator(),
+          const WinPendingPulse(
+              child: CircularProgressIndicator(strokeWidth: 3)),
           const SizedBox(height: 20),
           Text('En attente de confirmation…',
               style: WinType.titleM(s.onStrong), textAlign: TextAlign.center),
@@ -308,8 +311,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           const SizedBox(height: 10),
           WinButton('Voir mes commandes',
               variant: WinButtonVariant.ghost,
-              onTap: () => Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (_) => const OrdersScreen()))),
+              onTap: () => Navigator.pushReplacement(
+                  context, WinPageRoute(builder: (_) => const OrdersScreen()))),
         ]),
       ),
     );
@@ -320,7 +323,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       child: Padding(
         padding: const EdgeInsets.all(32),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-          const Icon(Icons.cancel_outlined, size: 48, color: WinColors.error),
+          const WinErrorShake(
+              child: Icon(Icons.cancel_outlined,
+                  size: 48, color: WinColors.error)),
           const SizedBox(height: 16),
           Text('Paiement échoué',
               style: WinType.titleM(s.onStrong), textAlign: TextAlign.center),
@@ -345,46 +350,67 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       padding: const EdgeInsets.all(16),
       children: [
         const SizedBox(height: 12),
-        const Icon(Icons.check_circle_outline,
-            size: 56, color: WinColors.success),
+        const Center(child: WinSuccessCheck(size: 72)),
         const SizedBox(height: 12),
-        Center(
-          child: Text('Paiement confirmé !',
-              style: WinType.archivo(size: 20, color: s.onStrong),
-              textAlign: TextAlign.center),
+        WinStaggerFade(
+          index: 0,
+          child: Center(
+            child: Text('Paiement confirmé !',
+                style: WinType.archivo(size: 20, color: s.onStrong),
+                textAlign: TextAlign.center),
+          ),
         ),
         const SizedBox(height: 8),
-        Center(
-          child: Text('Vos contenus sont maintenant disponibles.',
-              style: WinType.bodyS(s.onMuted), textAlign: TextAlign.center),
+        WinStaggerFade(
+          index: 1,
+          child: Center(
+            child: Text('Vos contenus sont maintenant disponibles.',
+                style: WinType.bodyS(s.onMuted), textAlign: TextAlign.center),
+          ),
         ),
         if (_order != null) ...[
           const SizedBox(height: 20),
-          WinCard(
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                _RecapRow(
-                    icon: Icons.receipt_long_outlined,
-                    label: 'Commande',
-                    value: _order!.orderNumber),
-                const SizedBox(height: 10),
-                _RecapRow(
-                    icon: Icons.payments_outlined,
-                    label: 'Montant',
-                    value: '${fmtXaf(_order!.totalAmount.round())} XAF'),
-              ])),
+          WinStaggerFade(
+            index: 2,
+            child: WinCard(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                  _RecapRow(
+                      icon: Icons.receipt_long_outlined,
+                      label: 'Commande',
+                      value: _order!.orderNumber),
+                  const SizedBox(height: 10),
+                  Row(children: [
+                    Icon(Icons.payments_outlined, size: 18, color: s.onFaint),
+                    const SizedBox(width: 10),
+                    Text('Montant', style: WinType.bodyS(s.onMuted)),
+                    const Spacer(),
+                    WinAnimatedCounter(
+                      value: _order!.totalAmount.round(),
+                      style: WinType.titleM(s.onStrong),
+                      format: (v) => '${fmtXaf(v)} XAF',
+                    ),
+                  ]),
+                ])),
+          ),
         ],
         const SizedBox(height: 24),
-        WinButton('Voir mes commandes',
-            block: true,
-            onTap: () => Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (_) => const OrdersScreen()))),
+        WinStaggerFade(
+          index: 3,
+          child: WinButton('Voir mes commandes',
+              block: true,
+              onTap: () => Navigator.pushReplacement(
+                  context, WinPageRoute(builder: (_) => const OrdersScreen()))),
+        ),
         const SizedBox(height: 10),
-        WinButton('Retour au catalogue',
-            variant: WinButtonVariant.outline,
-            block: true,
-            onTap: () => Navigator.of(context).popUntil((r) => r.isFirst)),
+        WinStaggerFade(
+          index: 4,
+          child: WinButton('Retour au catalogue',
+              variant: WinButtonVariant.outline,
+              block: true,
+              onTap: () => Navigator.of(context).popUntil((r) => r.isFirst)),
+        ),
       ],
     );
   }

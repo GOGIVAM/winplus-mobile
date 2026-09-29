@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/win_motion.dart';
 import '../app_state.dart';
 import '../auth/welcome_screen.dart';
 import '../services/auth_service.dart';
@@ -77,7 +78,7 @@ class _ProfileHubTabState extends State<ProfileHubTab> {
     await AuthService.instance.signOut();
     if (!mounted) return;
     Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (_) => const WelcomeScreen()),
+      WinPageRoute(builder: (_) => const WelcomeScreen()),
       (r) => false,
     );
   }
@@ -86,7 +87,7 @@ class _ProfileHubTabState extends State<ProfileHubTab> {
       .showSnackBar(const SnackBar(content: Text('Bientôt disponible !')));
 
   void _go(Widget screen) =>
-      Navigator.push(context, MaterialPageRoute(builder: (_) => screen));
+      Navigator.push(context, WinPageRoute(builder: (_) => screen));
 
   @override
   Widget build(BuildContext context) {

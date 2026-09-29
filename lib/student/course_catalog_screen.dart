@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import '../theme/win_motion.dart';
 import '../services/course_service.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
+import '../widgets/win_motion_widgets.dart';
 import '../widgets/win_widgets.dart';
 import 'course_detail_screen.dart';
 
@@ -284,13 +286,16 @@ class _CourseCatalogScreenState extends State<CourseCatalogScreen> {
                             }
                             return const SizedBox.shrink();
                           }
-                          return _CourseCard(
-                            course: _items![i],
-                            onTap: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => CourseDetailScreen(
-                                        courseId: _items![i].id))),
+                          return WinStaggerFade(
+                            index: i,
+                            child: _CourseCard(
+                              course: _items![i],
+                              onTap: () => Navigator.push(
+                                  context,
+                                  WinPageRoute(
+                                      builder: (_) => CourseDetailScreen(
+                                          courseId: _items![i].id))),
+                            ),
                           );
                         },
                       ),

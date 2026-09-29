@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/win_motion.dart';
 import '../data/mock_data.dart';
 import '../data/models.dart';
 import '../services/user_service.dart';
@@ -6,6 +7,7 @@ import '../shared/subscription/subscription_notifier.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
+import '../widgets/win_motion_widgets.dart';
 import '../widgets/win_widgets.dart';
 import 'content_detail_screen.dart';
 import 'pending_goals_panel.dart';
@@ -268,7 +270,7 @@ class _InProgressCard extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         onTap: () => Navigator.push(
             context,
-            MaterialPageRoute(
+            WinPageRoute(
                 builder: (_) => ContentDetailScreen(content: content))),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(children: [
@@ -344,7 +346,7 @@ class _AiRecoCard extends StatelessWidget {
       padding: const EdgeInsets.all(14),
       onTap: () => Navigator.push(
           context,
-          MaterialPageRoute(
+          WinPageRoute(
               builder: (_) => ContentDetailScreen(content: recoContent))),
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Container(
@@ -601,10 +603,8 @@ class _ContentCardState extends State<ContentCard> {
     final content = widget.content;
     final subj = WinData.subjectById(content.subjectId);
     return WinCard(
-      onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (_) => ContentDetailScreen(content: content))),
+      onTap: () => Navigator.push(context,
+          WinPageRoute(builder: (_) => ContentDetailScreen(content: content))),
       padding: EdgeInsets.zero,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Expanded(
@@ -632,21 +632,21 @@ class _ContentCardState extends State<ContentCard> {
             Positioned(
               top: 4,
               right: 4,
-              child: GestureDetector(
-                onTap: () => setState(() {
-                  _fav = !_fav;
-                  content.fav = _fav;
-                }),
-                child: Container(
-                  width: 30,
-                  height: 30,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.9),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(_fav ? Icons.favorite : Icons.favorite_border,
-                      size: 16,
-                      color: _fav ? WinColors.error : WinColors.ink600),
+              child: Container(
+                width: 30,
+                height: 30,
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.9),
+                  shape: BoxShape.circle,
+                ),
+                alignment: Alignment.center,
+                child: WinFavoriteHeart(
+                  active: _fav,
+                  size: 16,
+                  onTap: () => setState(() {
+                    _fav = !_fav;
+                    content.fav = _fav;
+                  }),
                 ),
               ),
             ),

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import '../theme/win_motion.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../data/mock_data.dart';
 import '../data/models.dart';
@@ -499,7 +500,7 @@ class _BottomBarState extends State<_BottomBar> {
     if (!loggedIn) {
       Navigator.push(
           context,
-          MaterialPageRoute(
+          WinPageRoute(
               builder: (_) =>
                   AccountRequiredPurchaseScreen(content: widget.content)));
       return;
@@ -520,7 +521,7 @@ class _BottomBarState extends State<_BottomBar> {
         action: SnackBarAction(
           label: 'Voir le panier',
           onPressed: () => Navigator.push(
-              context, MaterialPageRoute(builder: (_) => const CartScreen())),
+              context, WinPageRoute(builder: (_) => const CartScreen())),
         ),
       ));
     } else {
@@ -542,8 +543,8 @@ class _BottomBarState extends State<_BottomBar> {
       btn = WinButton('Commencer le quiz',
           block: true,
           icon: Icons.play_arrow_rounded,
-          onTap: () => Navigator.push(context,
-              MaterialPageRoute(builder: (_) => const QuizHubScreen())));
+          onTap: () => Navigator.push(
+              context, WinPageRoute(builder: (_) => const QuizHubScreen())));
     } else if (content.free || isPremium) {
       // Lecture dans la visionneuse uniquement : plus de bouton de
       // téléchargement ni de copie hors ligne (Module 44).

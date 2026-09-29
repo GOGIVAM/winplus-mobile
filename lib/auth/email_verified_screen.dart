@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import '../theme/win_motion.dart';
 import '../services/session_manager.dart';
 import '../shell/role_shell.dart';
 import '../theme/win_colors.dart';
@@ -22,8 +23,12 @@ class _EmailVerifiedScreenState extends State<EmailVerifiedScreen>
   late final List<_Particle> _particles;
 
   static const _colors = [
-    WinColors.teal400, WinColors.gold, WinColors.blue500,
-    WinColors.success,  WinColors.error, WinColors.teal500,
+    WinColors.teal400,
+    WinColors.gold,
+    WinColors.blue500,
+    WinColors.success,
+    WinColors.error,
+    WinColors.teal500,
   ];
 
   @override
@@ -43,17 +48,19 @@ class _EmailVerifiedScreenState extends State<EmailVerifiedScreen>
     _iconCtrl.forward();
 
     final rand = Random();
-    _particles = List.generate(60, (i) => _Particle(
-      x: rand.nextDouble(),
-      baseY: -0.05 - rand.nextDouble() * 0.3,
-      speed: 0.55 + rand.nextDouble() * 0.45,
-      drift: (rand.nextDouble() - 0.5) * 0.15,
-      size: 5 + rand.nextDouble() * 8,
-      color: _colors[rand.nextInt(_colors.length)],
-      isRect: rand.nextBool(),
-      rotation: rand.nextDouble() * pi * 2,
-      rotSpeed: (rand.nextDouble() - 0.5) * pi * 3,
-    ));
+    _particles = List.generate(
+        60,
+        (i) => _Particle(
+              x: rand.nextDouble(),
+              baseY: -0.05 - rand.nextDouble() * 0.3,
+              speed: 0.55 + rand.nextDouble() * 0.45,
+              drift: (rand.nextDouble() - 0.5) * 0.15,
+              size: 5 + rand.nextDouble() * 8,
+              color: _colors[rand.nextInt(_colors.length)],
+              isRect: rand.nextBool(),
+              rotation: rand.nextDouble() * pi * 2,
+              rotSpeed: (rand.nextDouble() - 0.5) * pi * 3,
+            ));
   }
 
   @override
@@ -121,19 +128,18 @@ class _EmailVerifiedScreenState extends State<EmailVerifiedScreen>
                             color: WinColors.gold)),
                   ]),
                   const Spacer(),
-                  WinButton('Continuer',
-                      block: true,
-                      onTap: () async {
-                        final role = await SessionManager.getUserRole();
-                        if (!context.mounted) return;
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(builder: (_) => role != null
+                  WinButton('Continuer', block: true, onTap: () async {
+                    final role = await SessionManager.getUserRole();
+                    if (!context.mounted) return;
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      WinPageRoute(
+                          builder: (_) => role != null
                               ? const RoleShell()
                               : const CompleteProfileScreen()),
-                          (r) => false,
-                        );
-                      }),
+                      (r) => false,
+                    );
+                  }),
                 ],
               ),
             ),
@@ -149,9 +155,15 @@ class _Particle {
   final Color color;
   final bool isRect;
   const _Particle({
-    required this.x, required this.baseY, required this.speed,
-    required this.drift, required this.size, required this.color,
-    required this.isRect, required this.rotation, required this.rotSpeed,
+    required this.x,
+    required this.baseY,
+    required this.speed,
+    required this.drift,
+    required this.size,
+    required this.color,
+    required this.isRect,
+    required this.rotation,
+    required this.rotSpeed,
   });
 }
 
@@ -178,7 +190,8 @@ class _ConfettiPainter extends CustomPainter {
 
       if (p.isRect) {
         canvas.drawRect(
-          Rect.fromCenter(center: Offset.zero, width: p.size, height: p.size * 0.5),
+          Rect.fromCenter(
+              center: Offset.zero, width: p.size, height: p.size * 0.5),
           paint,
         );
       } else {

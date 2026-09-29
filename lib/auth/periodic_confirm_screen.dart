@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import '../theme/win_motion.dart';
 import 'package:flutter/services.dart';
 import '../services/session_manager.dart';
 import '../theme/win_colors.dart';
@@ -29,8 +30,12 @@ class _PeriodicConfirmScreenState extends State<PeriodicConfirmScreen> {
   @override
   void dispose() {
     _timer?.cancel();
-    for (final c in _ctrls) { c.dispose(); }
-    for (final n in _nodes) { n.dispose(); }
+    for (final c in _ctrls) {
+      c.dispose();
+    }
+    for (final n in _nodes) {
+      n.dispose();
+    }
     super.dispose();
   }
 
@@ -59,10 +64,16 @@ class _PeriodicConfirmScreenState extends State<PeriodicConfirmScreen> {
   }
 
   Future<void> _sendCode() async {
-    setState(() { _sending = true; _error = null; });
+    setState(() {
+      _sending = true;
+      _error = null;
+    });
     await Future.delayed(const Duration(milliseconds: 1200));
     if (!mounted) return;
-    setState(() { _sending = false; _codeSent = true; });
+    setState(() {
+      _sending = false;
+      _codeSent = true;
+    });
     _startResendCountdown();
     Future.delayed(const Duration(milliseconds: 150), () {
       if (mounted && _nodes.isNotEmpty) _nodes[0].requestFocus();
@@ -71,7 +82,10 @@ class _PeriodicConfirmScreenState extends State<PeriodicConfirmScreen> {
 
   Future<void> _confirm() async {
     if (_code.length < 6) return;
-    setState(() { _loading = true; _error = null; });
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
     // Mock: accept "123456" in devMode
     await Future.delayed(const Duration(milliseconds: 1000));
     if (!mounted) return;
@@ -90,7 +104,7 @@ class _PeriodicConfirmScreenState extends State<PeriodicConfirmScreen> {
     SessionManager.clear();
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (_) => const WelcomeScreen()),
+      WinPageRoute(builder: (_) => const WelcomeScreen()),
       (r) => false,
     );
   }
@@ -113,7 +127,8 @@ class _PeriodicConfirmScreenState extends State<PeriodicConfirmScreen> {
             children: [
               // Shield icon
               Container(
-                width: 80, height: 80,
+                width: 80,
+                height: 80,
                 decoration: BoxDecoration(
                   color: s.primary.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
@@ -135,7 +150,8 @@ class _PeriodicConfirmScreenState extends State<PeriodicConfirmScreen> {
               const SizedBox(height: 8),
               Text(
                 _maskedEmail,
-                style: WinType.bodyM(s.primary).copyWith(fontWeight: FontWeight.w600),
+                style: WinType.bodyM(s.primary)
+                    .copyWith(fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 32),
 
@@ -158,44 +174,54 @@ class _PeriodicConfirmScreenState extends State<PeriodicConfirmScreen> {
                 const SizedBox(height: 24),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: List.generate(6, (i) => SizedBox(
-                    width: 44,
-                    height: 56,
-                    child: TextField(
-                      controller: _ctrls[i],
-                      focusNode: _nodes[i],
-                      textAlign: TextAlign.center,
-                      keyboardType: TextInputType.number,
-                      maxLength: 1,
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      style: WinType.archivo(size: 22, color: s.onStrong),
-                      decoration: InputDecoration(
-                        counterText: '',
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(WinRadii.md),
-                          borderSide: BorderSide(color: s.outline, width: 1.5),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(WinRadii.md),
-                          borderSide: BorderSide(color: s.primary, width: 2),
-                        ),
-                        filled: true,
-                        fillColor: s.surface,
-                      ),
-                      onChanged: (v) {
-                        if (v.isNotEmpty && i < 5) {
-                          _nodes[i + 1].requestFocus();
-                        } else if (v.isEmpty && i > 0) {
-                          _nodes[i - 1].requestFocus();
-                        }
-                        if (_code.length == 6) _confirm();
-                      },
-                    ),
-                  )),
+                  children: List.generate(
+                      6,
+                      (i) => SizedBox(
+                            width: 44,
+                            height: 56,
+                            child: TextField(
+                              controller: _ctrls[i],
+                              focusNode: _nodes[i],
+                              textAlign: TextAlign.center,
+                              keyboardType: TextInputType.number,
+                              maxLength: 1,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
+                              style:
+                                  WinType.archivo(size: 22, color: s.onStrong),
+                              decoration: InputDecoration(
+                                counterText: '',
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.circular(WinRadii.md),
+                                  borderSide:
+                                      BorderSide(color: s.outline, width: 1.5),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.circular(WinRadii.md),
+                                  borderSide:
+                                      BorderSide(color: s.primary, width: 2),
+                                ),
+                                filled: true,
+                                fillColor: s.surface,
+                              ),
+                              onChanged: (v) {
+                                if (v.isNotEmpty && i < 5) {
+                                  _nodes[i + 1].requestFocus();
+                                } else if (v.isEmpty && i > 0) {
+                                  _nodes[i - 1].requestFocus();
+                                }
+                                if (_code.length == 6) _confirm();
+                              },
+                            ),
+                          )),
                 ),
                 if (_error != null) ...[
                   const SizedBox(height: 12),
-                  WinAlert(_error!, type: BadgeColor.error, icon: Icons.error_outline),
+                  WinAlert(_error!,
+                      type: BadgeColor.error, icon: Icons.error_outline),
                 ],
                 const SizedBox(height: 24),
                 WinButton(

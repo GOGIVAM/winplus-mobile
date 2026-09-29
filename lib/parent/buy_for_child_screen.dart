@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/win_motion.dart';
 import '../data/mock_data.dart';
 import '../data/models.dart';
 import '../services/parent_service.dart';
@@ -105,7 +106,7 @@ class _BuyForChildScreenState extends State<BuyForChildScreen> {
                       childName: _selected.firstName,
                       onBuy: () => Navigator.push(
                         context,
-                        MaterialPageRoute(
+                        WinPageRoute(
                             builder: (_) =>
                                 AccountRequiredPurchaseScreen(content: c)),
                       ),

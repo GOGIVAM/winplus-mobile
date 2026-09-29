@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/win_motion.dart';
 import '../services/course_service.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
@@ -41,7 +42,7 @@ class _MyCoursesScreenState extends State<MyCoursesScreen> {
   }
 
   void _goToCatalog() => Navigator.push(
-      context, MaterialPageRoute(builder: (_) => const CourseCatalogScreen()));
+      context, WinPageRoute(builder: (_) => const CourseCatalogScreen()));
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +88,7 @@ class _MyCoursesScreenState extends State<MyCoursesScreen> {
                             enrollment: e,
                             onTap: () => Navigator.push(
                               context,
-                              MaterialPageRoute(
+                              WinPageRoute(
                                   builder: (_) => CoursePlayerScreen(
                                         courseId: e.courseId,
                                         courseTitle: e.courseTitle,

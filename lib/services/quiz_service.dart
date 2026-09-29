@@ -159,7 +159,8 @@ class QuizService {
   }) async {
     if (ConnectivityService.instance.isOnline) {
       try {
-        await submitAttempt(quizId: quizId, answers: answers, durationSeconds: durationSeconds);
+        await submitAttempt(
+            quizId: quizId, answers: answers, durationSeconds: durationSeconds);
         return;
       } catch (_) {
         // Tombe en file ci-dessous  réseau signalé disponible mais

@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import '../../theme/win_motion.dart';
 import 'package:pdfrx/pdfrx.dart';
 import '../../data/models.dart' show fmtXaf;
 import '../../services/order_service.dart';
@@ -164,7 +165,7 @@ class _OrderDetailSheetState extends State<_OrderDetailSheet> {
     Navigator.pop(context);
     Navigator.push(
         context,
-        MaterialPageRoute(
+        WinPageRoute(
             builder: (_) => _InvoiceViewerScreen(order: widget.order)));
   }
 

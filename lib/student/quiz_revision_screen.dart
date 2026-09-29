@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/win_motion.dart';
 import '../data/mock_data.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
@@ -109,12 +110,14 @@ class _QuizRevisionScreenState extends State<QuizRevisionScreen> {
             child: ListView(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              children: _filters.map((f) => Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: WinChip(f,
-                    active: _filter == f,
-                    onTap: () => setState(() => _filter = f)),
-              )).toList(),
+              children: _filters
+                  .map((f) => Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: WinChip(f,
+                            active: _filter == f,
+                            onTap: () => setState(() => _filter = f)),
+                      ))
+                  .toList(),
             ),
           ),
           const SizedBox(height: 12),
@@ -143,9 +146,11 @@ class _QuizRevisionScreenState extends State<QuizRevisionScreen> {
               'Lancer la révision',
               icon: Icons.play_arrow_rounded,
               block: true,
-              onTap: () => Navigator.push(context,
-                  MaterialPageRoute(
-                      builder: (_) => QuizActiveScreen(quiz: WinData.quizDerivees))),
+              onTap: () => Navigator.push(
+                  context,
+                  WinPageRoute(
+                      builder: (_) =>
+                          QuizActiveScreen(quiz: WinData.quizDerivees))),
             ),
           ),
         ],

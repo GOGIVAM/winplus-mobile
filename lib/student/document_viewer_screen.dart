@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import '../theme/win_motion.dart';
 import 'package:pdfrx/pdfrx.dart';
 import '../services/subject_service.dart';
 import '../theme/win_theme.dart';
@@ -87,8 +88,10 @@ class _DocumentViewerScreenState extends State<DocumentViewerScreen> {
         _loading = false;
         _canRetry = status == null || status >= 500;
         _error = switch (status) {
-          401 => 'Votre session a expiré. Reconnectez-vous pour consulter ce document.',
-          403 => 'Ce contenu n\'est pas inclus dans votre accès. Achetez-le ou abonnez-vous pour le consulter.',
+          401 =>
+            'Votre session a expiré. Reconnectez-vous pour consulter ce document.',
+          403 =>
+            'Ce contenu n\'est pas inclus dans votre accès. Achetez-le ou abonnez-vous pour le consulter.',
           404 => widget.kind == ViewerDocumentKind.correction
               ? 'Le corrigé de cette épreuve n\'est pas encore disponible.'
               : 'Ce document n\'est pas disponible pour le moment.',
@@ -132,7 +135,8 @@ class _DocumentViewerScreenState extends State<DocumentViewerScreen> {
               ),
             ),
           Tooltip(
-            message: 'Lecture seule : ni téléchargement, ni partage, ni impression',
+            message:
+                'Lecture seule : ni téléchargement, ni partage, ni impression',
             child: Padding(
               padding: const EdgeInsets.only(right: 14),
               child: Icon(Icons.lock_outline, size: 20, color: s.onMuted),
@@ -198,7 +202,7 @@ void openDocumentViewer(
 }) {
   Navigator.push(
     context,
-    MaterialPageRoute(
+    WinPageRoute(
       builder: (_) => DocumentViewerScreen(
         subjectId: subjectId,
         title: title,

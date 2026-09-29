@@ -23,6 +23,7 @@ class ApiSubject {
   final int downloadCount;
   final bool isFree;
   final double price;
+
   /// Module 44 : l'API ne renvoie jamais l'adresse du fichier, seulement
   /// la disponibilité du corrigé ; le document se lit dans la visionneuse.
   final bool hasCorrection;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/win_motion.dart';
 import '../data/mock_data.dart';
 import '../data/models.dart';
 import '../services/session_manager.dart';
@@ -125,7 +126,7 @@ class _StudentProfileWizardState extends State<_StudentProfileWizard> {
     if (!mounted) return;
     Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
+        WinPageRoute(
             builder: (_) =>
                 const OnboardingSuccessScreen(role: WinRole.student)));
   }
@@ -285,7 +286,7 @@ class _TeacherProfileWizardState extends State<_TeacherProfileWizard> {
     if (!mounted) return;
     Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
+        WinPageRoute(
             builder: (_) =>
                 const OnboardingSuccessScreen(role: WinRole.teacher)));
   }

@@ -1,5 +1,6 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import '../theme/win_motion.dart';
 import '../data/mock_data.dart';
 import '../data/models.dart';
 import '../services/chatbot_service.dart';
@@ -110,14 +111,14 @@ class _StudentCatalogTabState extends State<StudentCatalogTab> {
             icon:
                 Icon(Icons.shopping_cart_outlined, size: 20, color: s.onMuted),
             onPressed: () => Navigator.push(
-                context, MaterialPageRoute(builder: (_) => const CartScreen())),
+                context, WinPageRoute(builder: (_) => const CartScreen())),
           ),
         ]),
       ),
       // Bannière formations
       GestureDetector(
-        onTap: () => Navigator.push(context,
-            MaterialPageRoute(builder: (_) => const CourseCatalogScreen())),
+        onTap: () => Navigator.push(
+            context, WinPageRoute(builder: (_) => const CourseCatalogScreen())),
         child: Container(
           margin: const EdgeInsets.fromLTRB(16, 0, 16, 8),
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -149,8 +150,8 @@ class _StudentCatalogTabState extends State<StudentCatalogTab> {
       ),
       // Bannière répétiteurs (Mode Répétiteur  professeur_complete.md)
       GestureDetector(
-        onTap: () => Navigator.push(context,
-            MaterialPageRoute(builder: (_) => const TutorSearchScreen())),
+        onTap: () => Navigator.push(
+            context, WinPageRoute(builder: (_) => const TutorSearchScreen())),
         child: Container(
           margin: const EdgeInsets.fromLTRB(16, 0, 16, 8),
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -184,7 +185,7 @@ class _StudentCatalogTabState extends State<StudentCatalogTab> {
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: GestureDetector(
           onTap: () => Navigator.push(
-              context, MaterialPageRoute(builder: (_) => const SearchScreen())),
+              context, WinPageRoute(builder: (_) => const SearchScreen())),
           child:
               const WinTextField(icon: Icons.search, hint: 'BAC C Maths 2023…'),
         ),
@@ -268,10 +269,8 @@ class StudentSpaceTab extends StatelessWidget {
                   'Mes formations',
                   Icons.play_lesson_outlined,
                   WinColors.teal600,
-                  () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => const MyCoursesScreen()))),
+                  () => Navigator.push(context,
+                      WinPageRoute(builder: (_) => const MyCoursesScreen()))),
               const SizedBox(height: 10),
               _QuickLink(
                   'Catalogue formations',
@@ -279,17 +278,15 @@ class StudentSpaceTab extends StatelessWidget {
                   WinColors.teal400,
                   () => Navigator.push(
                       context,
-                      MaterialPageRoute(
+                      WinPageRoute(
                           builder: (_) => const CourseCatalogScreen()))),
               const SizedBox(height: 10),
               _QuickLink(
                   'Trouver un tuteur',
                   Icons.person_search_outlined,
                   WinColors.blue500,
-                  () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => const TutorSearchScreen()))),
+                  () => Navigator.push(context,
+                      WinPageRoute(builder: (_) => const TutorSearchScreen()))),
               const SizedBox(height: 10),
               _QuickLink(
                   'Mes réservations',
@@ -297,7 +294,7 @@ class StudentSpaceTab extends StatelessWidget {
                   WinColors.teal500,
                   () => Navigator.push(
                       context,
-                      MaterialPageRoute(
+                      WinPageRoute(
                           builder: (_) => const MyTutorBookingsScreen()))),
               const SizedBox(height: 10),
               Row(children: [
@@ -308,7 +305,7 @@ class StudentSpaceTab extends StatelessWidget {
                         WinColors.error,
                         () => Navigator.push(
                             context,
-                            MaterialPageRoute(
+                            WinPageRoute(
                                 builder: (_) => const FavoritesScreen())))),
                 const SizedBox(width: 10),
                 Expanded(
@@ -318,7 +315,7 @@ class StudentSpaceTab extends StatelessWidget {
                         WinColors.gold,
                         () => Navigator.push(
                             context,
-                            MaterialPageRoute(
+                            WinPageRoute(
                                 builder: (_) => const AchievementsScreen())))),
               ]),
               const SizedBox(height: 10),
@@ -330,7 +327,7 @@ class StudentSpaceTab extends StatelessWidget {
                         WinColors.teal400,
                         () => Navigator.push(
                             context,
-                            MaterialPageRoute(
+                            WinPageRoute(
                                 builder: (_) => const CertificatesScreen())))),
                 const SizedBox(width: 10),
                 Expanded(
@@ -340,7 +337,7 @@ class StudentSpaceTab extends StatelessWidget {
                         WinColors.ink600,
                         () => Navigator.push(
                             context,
-                            MaterialPageRoute(
+                            WinPageRoute(
                                 builder: (_) => const ExamCoachScreen())))),
               ]),
               const SizedBox(height: 10),
@@ -350,10 +347,8 @@ class StudentSpaceTab extends StatelessWidget {
                         'Mon panier',
                         Icons.shopping_cart_outlined,
                         WinColors.teal600,
-                        () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => const CartScreen())))),
+                        () => Navigator.push(context,
+                            WinPageRoute(builder: (_) => const CartScreen())))),
                 const SizedBox(width: 10),
                 Expanded(
                     child: _QuickLink(
@@ -362,7 +357,7 @@ class StudentSpaceTab extends StatelessWidget {
                         WinColors.blue500,
                         () => Navigator.push(
                             context,
-                            MaterialPageRoute(
+                            WinPageRoute(
                                 builder: (_) => const OrdersScreen())))),
               ]),
               const SizedBox(height: 10),
@@ -372,7 +367,7 @@ class StudentSpaceTab extends StatelessWidget {
                   WinColors.ink400,
                   () => Navigator.push(
                       context,
-                      MaterialPageRoute(
+                      WinPageRoute(
                           builder: (_) => const DownloadHistoryScreen()))),
               const SizedBox(height: 10),
               Row(children: [
@@ -383,7 +378,7 @@ class StudentSpaceTab extends StatelessWidget {
                         WinColors.teal600,
                         () => Navigator.push(
                             context,
-                            MaterialPageRoute(
+                            WinPageRoute(
                                 builder: (_) => const StudyGroupsScreen())))),
                 const SizedBox(width: 10),
                 Expanded(
@@ -393,7 +388,7 @@ class StudentSpaceTab extends StatelessWidget {
                         WinColors.blue500,
                         () => Navigator.push(
                             context,
-                            MaterialPageRoute(
+                            WinPageRoute(
                                 builder: (_) =>
                                     const StudentReportsScreen())))),
               ]),
@@ -404,7 +399,7 @@ class StudentSpaceTab extends StatelessWidget {
                   WinColors.warn,
                   () => Navigator.push(
                       context,
-                      MaterialPageRoute(
+                      WinPageRoute(
                           builder: (_) => const QuizRevisionScreen()))),
               const SizedBox(height: 16),
               Text('Performance par matière',

@@ -19,13 +19,22 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   Future<void> _send() async {
     final email = _ctrl.text.trim();
     if (email.isEmpty) return;
-    setState(() { _loading = true; _error = null; });
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
     final result = await AuthService.instance.forgotPassword(email);
     if (!mounted) return;
     if (result.success) {
-      setState(() { _loading = false; _sent = true; });
+      setState(() {
+        _loading = false;
+        _sent = true;
+      });
     } else {
-      setState(() { _loading = false; _error = result.message ?? 'Erreur réseau.'; });
+      setState(() {
+        _loading = false;
+        _error = result.message ?? 'Erreur réseau.';
+      });
     }
   }
 
@@ -62,7 +71,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   type: BadgeColor.success,
                 ),
                 const SizedBox(height: 24),
-                Text('Vous n\'avez pas reçu l\'email ?', style: WinType.bodyM(s.onMuted)),
+                Text('Vous n\'avez pas reçu l\'email ?',
+                    style: WinType.bodyM(s.onMuted)),
                 const SizedBox(height: 12),
                 WinButton('Renvoyer l\'email',
                     variant: WinButtonVariant.outline,
@@ -82,9 +92,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 ],
                 const SizedBox(height: 24),
                 WinButton('Envoyer le lien',
-                    block: true,
-                    loading: _loading,
-                    onTap: _send),
+                    block: true, loading: _loading, onTap: _send),
               ],
               const SizedBox(height: 16),
               Center(

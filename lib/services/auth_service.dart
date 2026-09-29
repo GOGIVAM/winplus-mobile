@@ -8,7 +8,8 @@ class AuthResult {
   final String? message;
   final String? errorCode;
   final String? locale;
-  const AuthResult({required this.success, this.message, this.errorCode, this.locale});
+  const AuthResult(
+      {required this.success, this.message, this.errorCode, this.locale});
 }
 
 class AuthService {
@@ -26,12 +27,12 @@ class AuthService {
       final d = res.data as Map<String, dynamic>;
       final u = d['user'] as Map<String, dynamic>;
       await SessionManager.save(
-        accessToken:  d['accessToken'] as String,
+        accessToken: d['accessToken'] as String,
         refreshToken: d['refreshToken'] as String,
         userId: u['id'] as int,
-        email:  u['email'] as String,
-        role:   (u['role'] as String?) ?? 'student',
-        name:   '${u['firstName'] ?? ''} ${u['lastName'] ?? ''}'.trim(),
+        email: u['email'] as String,
+        role: (u['role'] as String?) ?? 'student',
+        name: '${u['firstName'] ?? ''} ${u['lastName'] ?? ''}'.trim(),
       );
       return AuthResult(success: true, locale: u['locale'] as String?);
     } on DioException catch (e) {
@@ -137,7 +138,8 @@ class AuthService {
       return const AuthResult(success: true);
     } on DioException catch (e) {
       final data = e.response?.data as Map<String, dynamic>?;
-      return AuthResult(success: false,
+      return AuthResult(
+          success: false,
           message: data?['error'] as String? ?? 'Erreur réseau');
     }
   }
@@ -148,7 +150,8 @@ class AuthService {
       return const AuthResult(success: true);
     } on DioException catch (e) {
       final data = e.response?.data as Map<String, dynamic>?;
-      return AuthResult(success: false,
+      return AuthResult(
+          success: false,
           message: data?['error'] as String? ?? 'Erreur réseau');
     }
   }

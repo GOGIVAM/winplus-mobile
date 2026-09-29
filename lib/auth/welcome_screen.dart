@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/win_motion.dart';
 import '../app_state.dart';
 import '../l10n/gen/app_localizations.dart';
 import '../theme/win_colors.dart';
@@ -75,8 +76,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               if (!isLast) ...[
                 const SizedBox(width: 8),
                 TextButton(
-                  onPressed: () => _pageCtrl.animateToPage(
-                      _slides.length - 1,
+                  onPressed: () => _pageCtrl.animateToPage(_slides.length - 1,
                       duration: const Duration(milliseconds: 320),
                       curve: Curves.easeOut),
                   child: Text('Passer',
@@ -122,7 +122,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       variant: WinButtonVariant.accent,
                       block: true,
                       onTap: () => Navigator.push(context,
-                          MaterialPageRoute(builder: (_) => const RoleScreen())),
+                          WinPageRoute(builder: (_) => const RoleScreen())),
                     ),
                     const SizedBox(height: 12),
                     WinButton(
@@ -130,7 +130,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       variant: WinButtonVariant.outline,
                       block: true,
                       onTap: () => Navigator.push(context,
-                          MaterialPageRoute(builder: (_) => const LoginScreen())),
+                          WinPageRoute(builder: (_) => const LoginScreen())),
                     ),
                   ])
                 : WinButton('Suivant',
@@ -180,8 +180,7 @@ class _SlidePanel extends StatelessWidget {
         ),
         const SizedBox(height: 28),
         Text(slide.title,
-            textAlign: TextAlign.center,
-            style: WinType.displayS(s.onStrong)),
+            textAlign: TextAlign.center, style: WinType.displayS(s.onStrong)),
         const SizedBox(height: 10),
         Text(slide.subtitle,
             textAlign: TextAlign.center, style: WinType.bodyM(s.onMuted)),

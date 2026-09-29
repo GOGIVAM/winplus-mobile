@@ -7,7 +7,8 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 /// doivent échouer explicitement, jamais silencieusement ni en attente.
 class OfflineActionException implements Exception {
   final String message;
-  const OfflineActionException([this.message = 'Cette action nécessite une connexion internet.']);
+  const OfflineActionException(
+      [this.message = 'Cette action nécessite une connexion internet.']);
   @override
   String toString() => message;
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/win_motion.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
@@ -11,12 +12,12 @@ class LegalScreen extends StatelessWidget {
 
   static Future<void> showCgu(BuildContext context) => Navigator.push(
         context,
-        MaterialPageRoute(builder: (_) => const LegalScreen(doc: LegalDoc.cgu)),
+        WinPageRoute(builder: (_) => const LegalScreen(doc: LegalDoc.cgu)),
       );
 
   static Future<void> showPrivacy(BuildContext context) => Navigator.push(
         context,
-        MaterialPageRoute(
+        WinPageRoute(
             builder: (_) => const LegalScreen(doc: LegalDoc.confidentialite)),
       );
 

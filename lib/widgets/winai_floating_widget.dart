@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/win_motion.dart';
 import '../data/models.dart';
 import '../institution/institution_tabs.dart' show InstitutionWinAITab;
 import '../parent/parent_tabs.dart' show ParentWinAITab;
@@ -104,7 +105,7 @@ class _WinAIFloatingWidgetState extends State<WinAIFloatingWidget> {
     setState(() => _open = false);
     Navigator.push(
       context,
-      MaterialPageRoute(
+      WinPageRoute(
         builder: (ctx) => _screenFor(widget.role, initialMessage),
       ),
     );

@@ -4,6 +4,7 @@ import '../services/subject_service.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_typography.dart';
+import '../widgets/win_motion_widgets.dart';
 import '../widgets/win_widgets.dart';
 import 'student_home.dart' show ContentCard;
 
@@ -178,8 +179,9 @@ class _SearchScreenState extends State<SearchScreen> {
                                   crossAxisSpacing: 12,
                                   childAspectRatio: 0.72),
                           itemCount: _results.length,
-                          itemBuilder: (_, i) =>
-                              ContentCard(content: _results[i]),
+                          itemBuilder: (_, i) => WinStaggerFade(
+                              index: i,
+                              child: ContentCard(content: _results[i])),
                         ),
         ),
       ]),

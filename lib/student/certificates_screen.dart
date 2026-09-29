@@ -24,9 +24,17 @@ class _CertificatesScreenState extends State<CertificatesScreen> {
   Future<void> _load() async {
     try {
       final data = await CertificateService.instance.getCertificates();
-      if (mounted) setState(() { _certs = data; _error = null; });
+      if (mounted)
+        setState(() {
+          _certs = data;
+          _error = null;
+        });
     } catch (_) {
-      if (mounted) setState(() { _certs = []; _error = 'Impossible de charger les certificats.'; });
+      if (mounted)
+        setState(() {
+          _certs = [];
+          _error = 'Impossible de charger les certificats.';
+        });
     }
   }
 
@@ -38,7 +46,8 @@ class _CertificatesScreenState extends State<CertificatesScreen> {
     return Scaffold(
       backgroundColor: s.bg,
       appBar: AppBar(
-        backgroundColor: s.bg, elevation: 0,
+        backgroundColor: s.bg,
+        elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
@@ -47,15 +56,20 @@ class _CertificatesScreenState extends State<CertificatesScreen> {
         actions: [
           IconButton(
             icon: Icon(Icons.refresh_outlined, color: s.onStrong),
-            onPressed: () { setState(() => _certs = null); _load(); },
+            onPressed: () {
+              setState(() => _certs = null);
+              _load();
+            },
           ),
         ],
       ),
       body: certs == null
           ? const Center(child: CircularProgressIndicator())
           : certs.isEmpty
-              ? Center(child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  Icon(Icons.workspace_premium_outlined, size: 64, color: s.onFaint),
+              ? Center(
+                  child: Column(mainAxisSize: MainAxisSize.min, children: [
+                  Icon(Icons.workspace_premium_outlined,
+                      size: 64, color: s.onFaint),
                   const SizedBox(height: 12),
                   Text(
                     _error ?? 'Aucun certificat pour l\'instant',
@@ -80,84 +94,96 @@ class _CertificatesScreenState extends State<CertificatesScreen> {
                     final isHigh = score >= 80;
                     return WinCard(
                       padding: EdgeInsets.zero,
-                      child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                        // Gold header band
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 18),
-                          color: WinColors.goldBg,
-                          child: Row(children: [
+                            // Gold header band
                             Container(
-                              width: 56, height: 56,
-                              decoration: const BoxDecoration(
-                                color: WinColors.gold,
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Icon(Icons.workspace_premium,
-                                  size: 30, color: Colors.white),
-                            ),
-                            const SizedBox(width: 14),
-                            Expanded(child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                              Text(cert.title,
-                                  style: WinType.headlineS(WinColors.ink800),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis),
-                              const SizedBox(height: 4),
-                              Text('Délivré le ${cert.issuedAt}',
-                                  style: WinType.labelM(WinColors.ink500)),
-                            ])),
-                          ]),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(14),
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                            if (score > 0) ...[
-                              Row(children: [
-                                WinBadge('$score%',
-                                    color: isHigh
-                                        ? BadgeColor.success
-                                        : BadgeColor.warn),
-                                const SizedBox(width: 8),
-                                Text(isHigh ? 'Mention Très Bien' : 'Mention Bien',
-                                    style: WinType.labelM(
-                                        isHigh ? WinColors.success : WinColors.warn)),
+                              width: double.infinity,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 18),
+                              color: WinColors.goldBg,
+                              child: Row(children: [
+                                Container(
+                                  width: 56,
+                                  height: 56,
+                                  decoration: const BoxDecoration(
+                                    color: WinColors.gold,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Icon(Icons.workspace_premium,
+                                      size: 30, color: Colors.white),
+                                ),
+                                const SizedBox(width: 14),
+                                Expanded(
+                                    child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                      Text(cert.title,
+                                          style: WinType.headlineS(
+                                              WinColors.ink800),
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis),
+                                      const SizedBox(height: 4),
+                                      Text('Délivré le ${cert.issuedAt}',
+                                          style:
+                                              WinType.labelM(WinColors.ink500)),
+                                    ])),
                               ]),
-                              const SizedBox(height: 14),
-                            ],
-                            Row(children: [
-                              Expanded(
-                                child: WinButton('Télécharger PDF',
-                                    variant: WinButtonVariant.outline,
-                                    small: true,
-                                    icon: Icons.download_outlined,
-                                    onTap: cert.pdfUrl != null ? () {} : null),
-                              ),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: WinButton('Partager',
-                                    variant: WinButtonVariant.ghost,
-                                    small: true,
-                                    icon: Icons.share_outlined,
-                                    onTap: () {}),
-                              ),
-                            ]),
-                            const SizedBox(height: 10),
-                            Row(children: [
-                              Icon(Icons.verified_outlined,
-                                  size: 14, color: s.primary),
-                              const SizedBox(width: 6),
-                              Text(cert.subjectName,
-                                  style: WinType.labelM(s.onMuted)),
-                            ]),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(14),
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    if (score > 0) ...[
+                                      Row(children: [
+                                        WinBadge('$score%',
+                                            color: isHigh
+                                                ? BadgeColor.success
+                                                : BadgeColor.warn),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                            isHigh
+                                                ? 'Mention Très Bien'
+                                                : 'Mention Bien',
+                                            style: WinType.labelM(isHigh
+                                                ? WinColors.success
+                                                : WinColors.warn)),
+                                      ]),
+                                      const SizedBox(height: 14),
+                                    ],
+                                    Row(children: [
+                                      Expanded(
+                                        child: WinButton('Télécharger PDF',
+                                            variant: WinButtonVariant.outline,
+                                            small: true,
+                                            icon: Icons.download_outlined,
+                                            onTap: cert.pdfUrl != null
+                                                ? () {}
+                                                : null),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                        child: WinButton('Partager',
+                                            variant: WinButtonVariant.ghost,
+                                            small: true,
+                                            icon: Icons.share_outlined,
+                                            onTap: () {}),
+                                      ),
+                                    ]),
+                                    const SizedBox(height: 10),
+                                    Row(children: [
+                                      Icon(Icons.verified_outlined,
+                                          size: 14, color: s.primary),
+                                      const SizedBox(width: 6),
+                                      Text(cert.subjectName,
+                                          style: WinType.labelM(s.onMuted)),
+                                    ]),
+                                  ]),
+                            ),
                           ]),
-                        ),
-                      ]),
                     );
                   },
                 ),

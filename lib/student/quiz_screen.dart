@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import '../theme/win_motion.dart';
 import '../data/mock_data.dart';
 import '../data/models.dart';
 import '../services/quiz_service.dart';
@@ -7,6 +8,7 @@ import '../services/subscription_service.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
+import '../widgets/win_motion_widgets.dart';
 import '../widgets/win_widgets.dart';
 
 // ===================== QUIZ ACTIF =====================
@@ -93,7 +95,7 @@ class _QuizActiveScreenState extends State<QuizActiveScreen> {
 
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(
+      WinPageRoute(
           builder: (_) => QuizResultScreen(result: result, quiz: widget.quiz)),
     );
   }
@@ -276,7 +278,7 @@ class QuizResultScreen extends StatelessWidget {
               icon: Icons.rate_review_outlined,
               onTap: () => Navigator.push(
                     context,
-                    MaterialPageRoute(
+                    WinPageRoute(
                         builder: (_) =>
                             QuizReviewScreen(quiz: quiz, result: result)),
                   )),
@@ -287,8 +289,7 @@ class QuizResultScreen extends StatelessWidget {
               icon: Icons.refresh,
               onTap: () => Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(
-                        builder: (_) => QuizActiveScreen(quiz: quiz)),
+                    WinPageRoute(builder: (_) => QuizActiveScreen(quiz: quiz)),
                   )),
           const SizedBox(height: 10),
           WinButton('Retour au catalogue',
@@ -504,7 +505,8 @@ class _QuizHubScreenState extends State<QuizHubScreen> {
                             crossAxisSpacing: 12,
                             childAspectRatio: 0.8),
                     itemCount: quizzes.length,
-                    itemBuilder: (_, i) => _QuizCard(quiz: quizzes[i]),
+                    itemBuilder: (_, i) => WinStaggerFade(
+                        index: i, child: _QuizCard(quiz: quizzes[i])),
                   ),
               ],
             ),
@@ -528,8 +530,7 @@ class _QuizCard extends StatelessWidget {
       padding: EdgeInsets.zero,
       onTap: () => Navigator.push(
         context,
-        MaterialPageRoute(
-            builder: (_) => QuizActiveScreen(quiz: quiz.toQuiz())),
+        WinPageRoute(builder: (_) => QuizActiveScreen(quiz: quiz.toQuiz())),
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Expanded(

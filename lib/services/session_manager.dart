@@ -73,7 +73,8 @@ class SessionManager {
 
   static Future<void> markPeriodicCheckDone() async {
     final p = await SharedPreferences.getInstance();
-    await p.setInt(_keyLastPeriodicCheck, DateTime.now().millisecondsSinceEpoch);
+    await p.setInt(
+        _keyLastPeriodicCheck, DateTime.now().millisecondsSinceEpoch);
   }
 
   static Future<bool> needsReconfirmation() async {
@@ -86,7 +87,8 @@ class SessionManager {
 
   static Future<void> setLastConfirmed() async {
     final p = await SharedPreferences.getInstance();
-    await p.setInt(_keyLastPeriodicCheck, DateTime.now().millisecondsSinceEpoch);
+    await p.setInt(
+        _keyLastPeriodicCheck, DateTime.now().millisecondsSinceEpoch);
   }
 
   static Future<void> clear() async {

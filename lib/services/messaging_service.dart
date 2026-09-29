@@ -47,7 +47,8 @@ class ApiMessage {
         id: j['id'] as int? ?? 0,
         content: j['content'] as String? ?? '',
         isFromMe: j['isFromMe'] as bool? ?? false,
-        sentAt: DateTime.tryParse(j['sentAt'] as String? ?? '') ?? DateTime.now(),
+        sentAt:
+            DateTime.tryParse(j['sentAt'] as String? ?? '') ?? DateTime.now(),
       );
 }
 
@@ -66,7 +67,8 @@ class MessagingService {
   }
 
   Future<List<ApiMessage>> getMessages(int conversationId) async {
-    final res = await _api.dio.get('/messages/conversations/$conversationId/messages');
+    final res =
+        await _api.dio.get('/messages/conversations/$conversationId/messages');
     final list = res.data as List? ?? [];
     return list
         .map((e) => ApiMessage.fromJson(e as Map<String, dynamic>))
@@ -87,7 +89,8 @@ class MessagingService {
 
   Future<bool> sendMessage(int conversationId, String content) async {
     try {
-      await _api.dio.post('/messages/conversations/$conversationId/messages', data: {
+      await _api.dio
+          .post('/messages/conversations/$conversationId/messages', data: {
         'content': content,
       });
       return true;
@@ -111,7 +114,8 @@ class MessagingService {
     return true; // mis en file avec succès  affiché comme envoyé/en attente côté UI
   }
 
-  Future<int?> startConversation(int recipientId, {String firstMessage = ''}) async {
+  Future<int?> startConversation(int recipientId,
+      {String firstMessage = ''}) async {
     try {
       final res = await _api.dio.post('/messages/conversations', data: {
         'participantId': recipientId,

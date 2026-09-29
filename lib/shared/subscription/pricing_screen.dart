@@ -34,7 +34,10 @@ class _PricingScreenState extends State<PricingScreen> {
       };
 
   Future<void> _load() async {
-    setState(() { _plans = null; _hasError = false; });
+    setState(() {
+      _plans = null;
+      _hasError = false;
+    });
     try {
       final role = WinAppScope.of(context).role;
       final results = await Future.wait([
@@ -76,7 +79,8 @@ class _PricingScreenState extends State<PricingScreen> {
       return;
     }
 
-    final ok = await SubscriptionService.instance.subscribe(plan.id, yearly: _yearly);
+    final ok =
+        await SubscriptionService.instance.subscribe(plan.id, yearly: _yearly);
     if (!mounted) return;
     if (ok) {
       messenger.showSnackBar(
@@ -109,7 +113,8 @@ class _PricingScreenState extends State<PricingScreen> {
         ],
       ),
       body: _hasError
-          ? Center(child: Column(mainAxisSize: MainAxisSize.min, children: [
+          ? Center(
+              child: Column(mainAxisSize: MainAxisSize.min, children: [
               Icon(Icons.wifi_off_outlined, size: 48, color: s.onFaint),
               const SizedBox(height: 12),
               Text('Erreur de chargement', style: WinType.bodyM(s.onMuted)),
@@ -138,7 +143,8 @@ class _PricingScreenState extends State<PricingScreen> {
                     ..._plans!.map((plan) {
                       final isCurrent = plan.tier == (_current?.tier ?? '');
                       final price =
-                          (_yearly ? plan.priceYearly : plan.priceMonthly).round();
+                          (_yearly ? plan.priceYearly : plan.priceMonthly)
+                              .round();
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 16),
                         child: _PlanCard(
@@ -210,8 +216,7 @@ class _PlanCard extends StatelessWidget {
                 child: Text(plan.name, style: WinType.headlineS(s.onStrong))),
             if (plan.isPopular)
               const WinBadge('POPULAIRE', color: BadgeColor.teal),
-            if (isCurrent)
-              const WinBadge('ACTUEL', color: BadgeColor.success),
+            if (isCurrent) const WinBadge('ACTUEL', color: BadgeColor.success),
           ]),
         ),
         Padding(
@@ -245,9 +250,8 @@ class _PlanCard extends StatelessWidget {
           child: WinButton(
             isCurrent ? 'Plan actuel' : 'Choisir ce plan',
             block: true,
-            variant: isCurrent
-                ? WinButtonVariant.outline
-                : WinButtonVariant.accent,
+            variant:
+                isCurrent ? WinButtonVariant.outline : WinButtonVariant.accent,
             onTap: isCurrent ? null : onSubscribe,
           ),
         ),

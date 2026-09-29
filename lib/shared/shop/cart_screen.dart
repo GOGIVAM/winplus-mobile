@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import '../../theme/win_motion.dart';
 import '../../data/models.dart' show fmtXaf;
 import '../../services/cart_service.dart';
 import '../../theme/win_colors.dart';
 import '../../theme/win_theme.dart';
 import '../../theme/win_typography.dart';
+import '../../widgets/win_motion_widgets.dart';
 import '../../widgets/win_widgets.dart';
 import 'checkout_screen.dart';
 
@@ -25,6 +27,7 @@ class _CartScreenState extends State<CartScreen> {
   String? _promoError;
   double? _promoDiscount;
   final Set<int> _removing = {};
+  final Set<int> _hiding = {};
 
   @override
   void initState() {
@@ -53,7 +56,16 @@ class _CartScreenState extends State<CartScreen> {
     final ok = await CartService.instance.removeItem(item.id);
     if (!mounted) return;
     if (ok) {
+      // Fait disparaître la carte (fondu + réduction de hauteur) avant de
+      // recharger le panier, pour éviter que l'article ne saute d'un coup.
+      setState(() {
+        _removing.remove(item.id);
+        _hiding.add(item.id);
+      });
+      await Future.delayed(const Duration(milliseconds: 240));
+      if (!mounted) return;
       await _load();
+      if (mounted) setState(() => _hiding.remove(item.id));
     } else {
       setState(() => _removing.remove(item.id));
       ScaffoldMessenger.of(context).showSnackBar(
@@ -126,11 +138,28 @@ class _CartScreenState extends State<CartScreen> {
                       padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                       itemCount: cart.items.length,
                       separatorBuilder: (_, __) => const SizedBox(height: 10),
-                      itemBuilder: (_, i) => _CartItemCard(
-                        item: cart.items[i],
-                        removing: _removing.contains(cart.items[i].id),
-                        onRemove: () => _remove(cart.items[i]),
-                      ),
+                      itemBuilder: (_, i) {
+                        final item = cart.items[i];
+                        final hiding = _hiding.contains(item.id);
+                        return WinStaggerFade(
+                          index: i,
+                          child: AnimatedSize(
+                            duration: const Duration(milliseconds: 240),
+                            curve: Curves.easeInOutCubic,
+                            child: AnimatedOpacity(
+                              opacity: hiding ? 0 : 1,
+                              duration: const Duration(milliseconds: 200),
+                              child: hiding
+                                  ? const SizedBox(width: double.infinity)
+                                  : _CartItemCard(
+                                      item: item,
+                                      removing: _removing.contains(item.id),
+                                      onRemove: () => _remove(item),
+                                    ),
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ),
                   _CartSummary(
@@ -142,7 +171,7 @@ class _CartScreenState extends State<CartScreen> {
                     onApplyPromo: _applyPromo,
                     onCheckout: () => Navigator.push(
                             context,
-                            MaterialPageRoute(
+                            WinPageRoute(
                                 builder: (_) => const CheckoutScreen()))
                         .then((_) => _load()),
                   ),
@@ -287,12 +316,18 @@ class _CartSummary extends StatelessWidget {
           ]),
           if (promoError != null) ...[
             const SizedBox(height: 6),
-            Text(promoError!, style: WinType.labelS(WinColors.error)),
+            WinErrorShake(
+                child:
+                    Text(promoError!, style: WinType.labelS(WinColors.error))),
           ],
           if (promoDiscount != null && promoDiscount! > 0) ...[
             const SizedBox(height: 6),
-            Text('Réduction appliquée : -${fmtXaf(promoDiscount!.round())} XAF',
-                style: WinType.labelS(WinColors.success)),
+            WinStaggerFade(
+              index: 0,
+              child: Text(
+                  'Réduction appliquée : -${fmtXaf(promoDiscount!.round())} XAF',
+                  style: WinType.labelS(WinColors.success)),
+            ),
           ],
           const SizedBox(height: 14),
           _row(s, 'Sous-total', cart.subtotal),
@@ -304,9 +339,12 @@ class _CartSummary extends StatelessWidget {
           Row(children: [
             Text('Total', style: WinType.headlineS(s.onStrong)),
             const Spacer(),
-            Text('${fmtXaf(cart.total.round())} XAF',
-                style: WinType.archivo(
-                    size: 22, weight: FontWeight.w700, color: s.primary)),
+            WinAnimatedCounter(
+              value: cart.total.round(),
+              format: (v) => '${fmtXaf(v)} XAF',
+              style: WinType.archivo(
+                  size: 22, weight: FontWeight.w700, color: s.primary),
+            ),
           ]),
           const SizedBox(height: 16),
           WinButton('Passer la commande',

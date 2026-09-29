@@ -211,7 +211,9 @@ class CourseDetail {
         sections: (j['sections'] as List? ?? [])
             .map((e) => CourseSection.fromJson(e as Map<String, dynamic>))
             .toList(),
-        instructorName: (j['instructor'] as Map<String, dynamic>?)?['name'] as String? ?? '',
+        instructorName:
+            (j['instructor'] as Map<String, dynamic>?)?['name'] as String? ??
+                '',
       );
 
   String get durationStr {
@@ -277,7 +279,8 @@ class CurriculumSection {
     required this.lessons,
   });
 
-  factory CurriculumSection.fromJson(Map<String, dynamic> j) => CurriculumSection(
+  factory CurriculumSection.fromJson(Map<String, dynamic> j) =>
+      CurriculumSection(
         id: j['id'] as int? ?? 0,
         title: j['title'] as String? ?? '',
         position: j['position'] as int? ?? 0,
@@ -451,8 +454,11 @@ class CourseReview {
         comment: j['comment'] as String?,
         isVerified: j['isVerified'] as bool? ?? false,
         createdAt: j['createdAt'] as String? ?? '',
-        authorName: (j['author'] as Map<String, dynamic>?)?['name'] as String? ?? 'Utilisateur',
-        authorAvatarUrl: (j['author'] as Map<String, dynamic>?)?['avatarUrl'] as String?,
+        authorName:
+            (j['author'] as Map<String, dynamic>?)?['name'] as String? ??
+                'Utilisateur',
+        authorAvatarUrl:
+            (j['author'] as Map<String, dynamic>?)?['avatarUrl'] as String?,
       );
 }
 
@@ -491,7 +497,8 @@ class CourseService {
   }
 
   Future<List<CourseListItem>> search(String q, {int page = 1}) async {
-    final res = await _api.dio.get('/courses/search', queryParameters: {'q': q, 'page': page});
+    final res = await _api.dio
+        .get('/courses/search', queryParameters: {'q': q, 'page': page});
     return (res.data as List? ?? [])
         .map((e) => CourseListItem.fromJson(e as Map<String, dynamic>))
         .toList();
@@ -552,12 +559,17 @@ class CourseService {
     final res = await _api.dio.get('/courses/$courseId/reviews',
         queryParameters: {'page': 1, 'pageSize': 10});
     final data = res.data;
-    final list = data is Map ? (data['data'] as List? ?? []) : (data as List? ?? []);
-    return list.map((e) => CourseReview.fromJson(e as Map<String, dynamic>)).toList();
+    final list =
+        data is Map ? (data['data'] as List? ?? []) : (data as List? ?? []);
+    return list
+        .map((e) => CourseReview.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
   Future<void> submitReview(int courseId, int rating, {String? comment}) async {
-    await _api.dio.post('/courses/$courseId/reviews',
-        data: {'rating': rating, if (comment != null && comment.isNotEmpty) 'comment': comment});
+    await _api.dio.post('/courses/$courseId/reviews', data: {
+      'rating': rating,
+      if (comment != null && comment.isNotEmpty) 'comment': comment
+    });
   }
 }

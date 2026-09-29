@@ -50,7 +50,8 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
     return Scaffold(
       backgroundColor: s.bg,
       appBar: AppBar(
-        backgroundColor: s.bg, elevation: 0,
+        backgroundColor: s.bg,
+        elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
@@ -65,26 +66,30 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
                 // Progress header
                 WinCard(
                   bg: WinColors.ink800,
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Row(children: [
-                      WinStreakFlame(_streak, light: true, size: 28),
-                      const SizedBox(width: 12),
-                      Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        Text('Série actuelle',
-                            style: WinType.labelM(WinColors.ink300)),
-                        Text('$_streak jours consécutifs',
-                            style: WinType.titleM(WinColors.cream50)),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(children: [
+                          WinStreakFlame(_streak, light: true, size: 28),
+                          const SizedBox(width: 12),
+                          Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Série actuelle',
+                                    style: WinType.labelM(WinColors.ink300)),
+                                Text('$_streak jours consécutifs',
+                                    style: WinType.titleM(WinColors.cream50)),
+                              ]),
+                        ]),
+                        const SizedBox(height: 16),
+                        Text('$unlocked / $total badges débloqués',
+                            style: WinType.bodyS(WinColors.ink300)),
+                        const SizedBox(height: 6),
+                        WinProgressBar(
+                          total > 0 ? unlocked / total * 100 : 0,
+                          color: WinColors.teal400,
+                        ),
                       ]),
-                    ]),
-                    const SizedBox(height: 16),
-                    Text('$unlocked / $total badges débloqués',
-                        style: WinType.bodyS(WinColors.ink300)),
-                    const SizedBox(height: 6),
-                    WinProgressBar(
-                      total > 0 ? unlocked / total * 100 : 0,
-                      color: WinColors.teal400,
-                    ),
-                  ]),
                 ),
                 const SizedBox(height: 20),
                 Text('Mes badges', style: WinType.headlineS(s.onStrong)),
@@ -121,7 +126,8 @@ class _BadgeCard extends StatelessWidget {
         children: [
           Stack(alignment: Alignment.center, children: [
             Container(
-              width: 64, height: 64,
+              width: 64,
+              height: 64,
               decoration: BoxDecoration(
                 color: badge.unlocked
                     ? badge.color.withValues(alpha: 0.15)
@@ -130,12 +136,11 @@ class _BadgeCard extends StatelessWidget {
               ),
               child: Opacity(
                 opacity: badge.unlocked ? 1.0 : 0.3,
-                child: Icon(badge.icon, size: 32,
-                    color: badge.unlocked ? badge.color : s.onFaint),
+                child: Icon(badge.icon,
+                    size: 32, color: badge.unlocked ? badge.color : s.onFaint),
               ),
             ),
-            if (!badge.unlocked)
-              Icon(Icons.lock, size: 18, color: s.onFaint),
+            if (!badge.unlocked) Icon(Icons.lock, size: 18, color: s.onFaint),
           ]),
           const SizedBox(height: 10),
           Text(badge.name,
@@ -157,8 +162,7 @@ class _BadgeCard extends StatelessWidget {
           if (badge.unlocked && badge.unlockedAt != null)
             Padding(
               padding: const EdgeInsets.only(top: 4),
-              child: Text(badge.unlockedAt!,
-                  style: WinType.labelS(s.onFaint)),
+              child: Text(badge.unlockedAt!, style: WinType.labelS(s.onFaint)),
             ),
         ],
       ),

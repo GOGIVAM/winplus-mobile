@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/win_motion.dart';
 import '../data/models.dart';
 import '../services/teacher_service.dart';
 import '../theme/win_colors.dart';
@@ -222,10 +223,8 @@ class ContentActionsSheet extends StatelessWidget {
               label: 'Modifier les infos',
               onTap: () {
                 Navigator.pop(context);
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => const ContentPublishScreen()));
+                Navigator.push(context,
+                    WinPageRoute(builder: (_) => const ContentPublishScreen()));
               },
             ),
             _ActionRow(

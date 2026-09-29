@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../theme/win_motion.dart';
 import '../../services/tutor_profile_service.dart';
 import '../../theme/win_colors.dart';
 import '../../theme/win_theme.dart';
@@ -246,7 +247,7 @@ class _TutorResultCard extends StatelessWidget {
     return WinCard(
       onTap: () => Navigator.push(
           context,
-          MaterialPageRoute(
+          WinPageRoute(
               builder: (_) => TutorPublicProfileScreen(userId: tutor.userId))),
       padding: const EdgeInsets.all(12),
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [

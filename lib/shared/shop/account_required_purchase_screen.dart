@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../theme/win_motion.dart';
 import '../../auth/login_screen.dart';
 import '../../auth/role_screen.dart';
 import '../../data/models.dart';
@@ -121,14 +122,14 @@ class _AccountRequiredPurchaseScreenState
                 block: true,
                 icon: Icons.login,
                 onTap: () => Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => const LoginScreen()))),
+                    WinPageRoute(builder: (_) => const LoginScreen()))),
             const SizedBox(height: 10),
             WinButton('Créer un compte',
                 block: true,
                 variant: WinButtonVariant.outline,
                 icon: Icons.person_add_alt_1_outlined,
-                onTap: () => Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => const RoleScreen()))),
+                onTap: () => Navigator.push(
+                    context, WinPageRoute(builder: (_) => const RoleScreen()))),
           ] else ...[
             Text('Achat depuis votre compte',
                 style: WinType.headlineS(s.onStrong)),

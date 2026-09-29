@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import '../theme/win_motion.dart';
 import 'package:flutter/services.dart';
 import '../services/auth_service.dart';
 import '../theme/win_theme.dart';
@@ -66,8 +67,8 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
     if (result.success) {
       if (!mounted) return;
       setState(() => _loading = false);
-      await Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (_) => const EmailVerifiedScreen()));
+      await Navigator.pushReplacement(
+          context, WinPageRoute(builder: (_) => const EmailVerifiedScreen()));
     } else {
       setState(() {
         _loading = false;

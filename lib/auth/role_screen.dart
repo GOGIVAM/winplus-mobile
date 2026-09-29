@@ -1,4 +1,5 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import '../theme/win_motion.dart';
 import '../data/mock_data.dart';
 import '../data/models.dart';
 import '../theme/win_colors.dart';
@@ -30,13 +31,25 @@ class _RoleScreenState extends State<RoleScreen> {
             child: ListView(
               padding: const EdgeInsets.fromLTRB(24, 4, 24, 24),
               children: [
-                Center(child: Text('Je suis…', style: WinType.archivo(size: 26, weight: FontWeight.w700, color: s.onStrong))),
+                Center(
+                    child: Text('Je suis…',
+                        style: WinType.archivo(
+                            size: 26,
+                            weight: FontWeight.w700,
+                            color: s.onStrong))),
                 const SizedBox(height: 6),
-                Center(child: Text('Choisis ton profil pour une expérience personnalisée.', textAlign: TextAlign.center, style: WinType.bodyM(s.onMuted))),
+                Center(
+                    child: Text(
+                        'Choisis ton profil pour une expérience personnalisée.',
+                        textAlign: TextAlign.center,
+                        style: WinType.bodyM(s.onMuted))),
                 const SizedBox(height: 24),
                 ...WinData.roles.map((r) => Padding(
                       padding: const EdgeInsets.only(bottom: 12),
-                      child: _RoleCard(info: r, selected: _sel == r.role, onTap: () => setState(() => _sel = r.role)),
+                      child: _RoleCard(
+                          info: r,
+                          selected: _sel == r.role,
+                          onTap: () => setState(() => _sel = r.role)),
                     )),
               ],
             ),
@@ -49,10 +62,8 @@ class _RoleScreenState extends State<RoleScreen> {
               block: true,
               onTap: _sel == null
                   ? null
-                  : () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => SignupScreen(role: _sel!))),
+                  : () => Navigator.push(context,
+                      WinPageRoute(builder: (_) => SignupScreen(role: _sel!))),
             ),
           ),
         ]),
@@ -65,7 +76,8 @@ class _RoleCard extends StatelessWidget {
   final RoleInfo info;
   final bool selected;
   final VoidCallback onTap;
-  const _RoleCard({required this.info, required this.selected, required this.onTap});
+  const _RoleCard(
+      {required this.info, required this.selected, required this.onTap});
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
@@ -76,20 +88,42 @@ class _RoleCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: selected ? s.surface2 : s.cardBg,
           borderRadius: BorderRadius.circular(WinRadii.md),
-          border: Border.all(color: selected ? s.onStrong : s.cardBorder, width: selected ? 2 : 1),
+          border: Border.all(
+              color: selected ? s.onStrong : s.cardBorder,
+              width: selected ? 2 : 1),
         ),
         child: Row(children: [
-          Container(width: 48, height: 48, decoration: BoxDecoration(color: info.color, borderRadius: BorderRadius.circular(WinRadii.sm)), child: Icon(info.icon, color: Colors.white, size: 24)),
-          const SizedBox(width: 14),
-          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(info.label, style: WinType.titleL(s.onStrong)),
-            const SizedBox(height: 2),
-            Text(info.description, style: WinType.bodyS(s.onMuted)),
-          ])),
           Container(
-            width: 22, height: 22,
-            decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: selected ? s.primary : s.outline2, width: 2)),
-            child: selected ? Center(child: Container(width: 12, height: 12, decoration: BoxDecoration(color: s.primary, shape: BoxShape.circle))) : null,
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                  color: info.color,
+                  borderRadius: BorderRadius.circular(WinRadii.sm)),
+              child: Icon(info.icon, color: Colors.white, size: 24)),
+          const SizedBox(width: 14),
+          Expanded(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                Text(info.label, style: WinType.titleL(s.onStrong)),
+                const SizedBox(height: 2),
+                Text(info.description, style: WinType.bodyS(s.onMuted)),
+              ])),
+          Container(
+            width: 22,
+            height: 22,
+            decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                    color: selected ? s.primary : s.outline2, width: 2)),
+            child: selected
+                ? Center(
+                    child: Container(
+                        width: 12,
+                        height: 12,
+                        decoration: BoxDecoration(
+                            color: s.primary, shape: BoxShape.circle)))
+                : null,
           ),
         ]),
       ),
