@@ -10,15 +10,16 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import 'teacher_courses_screen.dart';
+import 'teacher_class_detail_screen.dart';
 import '../widgets/win_widgets.dart';
 import 'content_publish_screen.dart';
 import 'content_actions_sheet.dart';
 import 'correction_queue_screen.dart';
 import 'session_create_screen.dart';
-import '../shared/messaging/messaging_screen.dart';
 import 'teacher_links_screen.dart';
 import 'tutor_profile_screen.dart';
 import 'tutor_bookings_screen.dart';
+import 'teacher_wallet_view.dart';
 
 BadgeColor _statusColor(String s) => switch (s) {
       'Publié' => BadgeColor.success,
@@ -565,236 +566,254 @@ class TeacherStudentsTab extends StatefulWidget {
   State<TeacherStudentsTab> createState() => _TeacherStudentsTabState();
 }
 
+/// Module 12 : classes réelles du professeur (plus de listes codées en dur).
+/// L'onglet « Étudiants » global a été retiré : le seul regroupement
+/// d'élèves que le serveur connaît réellement est par classe (voir l'audit
+/// du module  GET /teacher/students/recent est une route sans rapport,
+/// non filtrée par professeur, qu'il aurait été trompeur de brancher ici).
 class _TeacherStudentsTabState extends State<TeacherStudentsTab> {
-  String _search = '';
-  String _filter = 'Tous';
-  static const _filters = ['Tous', 'Actifs', 'En difficulté'];
+  bool _showArchived = false;
+  List<ApiTeacherClass>? _classes;
+  String? _error;
 
-  static const _allStudents = [
-    (name: 'Ahmed Nkono', level: 'Tle C', avg: 78, up: true),
-    (name: 'Brenda Mballa', level: 'Tle C', avg: 86, up: true),
-    (name: 'Yann Talla', level: 'Tle C', avg: 44, up: false),
-    (name: 'Fatima Koné', level: '1ère D', avg: 71, up: true),
-    (name: 'Paul Essama', level: '1ère D', avg: 38, up: false),
-    (name: 'Alice Nguema', level: 'Tle C', avg: 65, up: true),
-    (name: 'Kevin Nkembi', level: 'Tle C', avg: 82, up: true),
-    (name: 'Marie Atangana', level: '1ère D', avg: 52, up: false),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
 
-  // (name, count, avg)
-  static const _classes = [
-    (name: 'Tle C · Groupe A', count: 28, avg: 74),
-    (name: 'Tle C · Groupe B', count: 31, avg: 68),
-    (name: '1ère D', count: 24, avg: 71),
-  ];
+  Future<void> _load() async {
+    setState(() => _error = null);
+    try {
+      final classes = await TeacherService.instance.getClasses(includeInactive: _showArchived);
+      if (mounted) setState(() => _classes = classes);
+    } catch (_) {
+      if (mounted) setState(() { _classes = []; _error = "Vos classes n'ont pas pu être chargées."; });
+    }
+  }
 
   void _showCreateClassSheet() {
-    final ctrl = TextEditingController();
+    final nameCtrl = TextEditingController();
+    final levelCtrl = TextEditingController();
+    final yearCtrl = TextEditingController();
+    bool busy = false;
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) {
         final s = WinTheme.of(ctx);
-        return Padding(
-          padding:
-              EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
-          child: Container(
-            padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
-            decoration: BoxDecoration(
-              color: s.surface,
-              borderRadius:
-                  BorderRadius.vertical(top: Radius.circular(WinRadii.xl)),
+        return StatefulBuilder(builder: (ctx, setSheetState) {
+          Future<void> submit() async {
+            if (nameCtrl.text.trim().length < 2 || levelCtrl.text.trim().isEmpty || yearCtrl.text.trim().isEmpty) {
+              ScaffoldMessenger.of(ctx).showSnackBar(const SnackBar(content: Text('Nom, niveau et année sont requis.')));
+              return;
+            }
+            setSheetState(() => busy = true);
+            try {
+              await TeacherService.instance.createClass(
+                name: nameCtrl.text.trim(),
+                level: levelCtrl.text.trim(),
+                academicYear: yearCtrl.text.trim(),
+              );
+              if (ctx.mounted) Navigator.pop(ctx);
+              await _load();
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Classe « ${nameCtrl.text.trim()} » créée.')));
+              }
+            } catch (_) {
+              setSheetState(() => busy = false);
+              if (ctx.mounted) {
+                ScaffoldMessenger.of(ctx).showSnackBar(const SnackBar(content: Text("Cette classe n'a pas pu être créée (nom déjà utilisé ?).")));
+              }
+            }
+          }
+
+          return Padding(
+            padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
+              decoration: BoxDecoration(
+                color: s.surface,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(WinRadii.xl)),
+              ),
+              child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                        child: Container(
+                            width: 36,
+                            height: 4,
+                            margin: const EdgeInsets.only(bottom: 16),
+                            decoration: BoxDecoration(color: s.outline, borderRadius: BorderRadius.circular(WinRadii.full)))),
+                    Text('Créer une classe', style: WinType.archivo(size: 18, color: s.onStrong)),
+                    const SizedBox(height: 16),
+                    WinTextField(label: 'Nom de la classe', hint: 'Ex: Terminale C Maths', icon: Icons.class_outlined, controller: nameCtrl),
+                    const SizedBox(height: 12),
+                    WinTextField(label: 'Niveau', hint: 'Ex: Terminale', icon: Icons.school_outlined, controller: levelCtrl),
+                    const SizedBox(height: 12),
+                    WinTextField(label: 'Année académique', hint: 'Ex: 2026-2027', icon: Icons.calendar_today_outlined, controller: yearCtrl),
+                    const SizedBox(height: 20),
+                    WinButton(busy ? 'Création…' : 'Créer', block: true, icon: Icons.add, loading: busy, onTap: submit),
+                  ]),
             ),
-            child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                      child: Container(
-                          width: 36,
-                          height: 4,
-                          margin: const EdgeInsets.only(bottom: 16),
-                          decoration: BoxDecoration(
-                              color: s.outline,
-                              borderRadius:
-                                  BorderRadius.circular(WinRadii.full)))),
-                  Text('Créer une classe',
-                      style: WinType.archivo(size: 18, color: s.onStrong)),
-                  const SizedBox(height: 16),
-                  WinTextField(
-                      label: 'Nom de la classe',
-                      hint: 'Ex: Terminale C Maths',
-                      icon: Icons.class_outlined,
-                      controller: ctrl),
-                  const SizedBox(height: 20),
-                  WinButton('Créer', block: true, icon: Icons.add, onTap: () {
-                    Navigator.pop(ctx);
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text('Classe « ${ctrl.text} » créée.')));
-                  }),
-                ]),
-          ),
-        );
+          );
+        });
       },
     );
+  }
+
+  Future<void> _classAction(ApiTeacherClass klass) async {
+    if (!klass.isActive) {
+      try {
+        await TeacherService.instance.reactivateClass(klass.id);
+        await _load();
+      } catch (_) {
+        if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Cette classe n'a pas pu être réactivée.")));
+      }
+      return;
+    }
+    final result = await Navigator.push<bool>(context,
+        WinPageRoute(builder: (_) => TeacherClassDetailScreen(initialClass: klass)));
+    if (result != false) await _load();
+  }
+
+  Future<void> _deleteOrDeactivate(ApiTeacherClass klass) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(klass.studentCount > 0 ? 'Désactiver la classe ?' : 'Supprimer la classe ?'),
+        content: Text(klass.studentCount > 0
+            ? '« ${klass.name} » contient ${klass.studentCount} élève(s) : elle sera désactivée (pas supprimée) et retirée de la liste.'
+            : 'Supprimer définitivement « ${klass.name} » ?'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Annuler')),
+          TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Confirmer')),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    try {
+      if (klass.studentCount > 0) {
+        await TeacherService.instance.deactivateClass(klass.id);
+      } else {
+        await TeacherService.instance.deleteClass(klass.id);
+      }
+      await _load();
+    } catch (_) {
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Cette action a échoué.")));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    final students = _allStudents.where((st) {
-      final matchSearch = _search.isEmpty ||
-          st.name.toLowerCase().contains(_search.toLowerCase());
-      final matchFilter = _filter == 'Tous' ||
-          (_filter == 'Actifs' && st.avg >= 50) ||
-          (_filter == 'En difficulté' && st.avg < 50);
-      return matchSearch && matchFilter;
-    }).toList();
 
-    return Column(children: [
-      Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: WinTextField(
-              icon: Icons.search,
-              hint: 'Rechercher un étudiant…',
-              onChanged: (v) => setState(() => _search = v))),
-      const SizedBox(height: 8),
-      SizedBox(
-        height: 34,
-        child: ListView(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          children: _filters
-              .map((f) => Padding(
-                    padding: const EdgeInsets.only(right: 6),
-                    child: WinChip(f,
-                        active: _filter == f,
-                        onTap: () => setState(() => _filter = f)),
-                  ))
-              .toList(),
-        ),
-      ),
-      const SizedBox(height: 8),
-      Expanded(
-          child: ListView(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-              children: [
-            Text('Mes classes',
-                style: WinType.archivo(size: 18, color: s.onStrong)),
-            const SizedBox(height: 10),
-            ..._classes.map((cl) => Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+      children: [
+        Row(children: [
+          Expanded(child: Text('Mes classes', style: WinType.archivo(size: 18, color: s.onStrong))),
+          WinChip(_showArchived ? 'Masquer désactivées' : 'Voir désactivées',
+              active: _showArchived,
+              onTap: () { setState(() => _showArchived = !_showArchived); _load(); }),
+        ]),
+        const SizedBox(height: 10),
+        if (_classes == null)
+          const Padding(padding: EdgeInsets.symmetric(vertical: 24), child: Center(child: CircularProgressIndicator()))
+        else if (_error != null)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: Column(children: [
+              Text(_error!, style: WinType.bodyM(s.onMuted), textAlign: TextAlign.center),
+              const SizedBox(height: 8),
+              WinButton('Réessayer', icon: Icons.refresh, onTap: _load),
+            ]),
+          )
+        else if (_classes!.isEmpty)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 24),
+            child: Column(children: [
+              Icon(Icons.class_outlined, size: 48, color: s.onFaint),
+              const SizedBox(height: 8),
+              Text(_showArchived ? 'Aucune classe' : 'Aucune classe pour le moment', style: WinType.bodyM(s.onMuted)),
+            ]),
+          )
+        else
+          ..._classes!.map((cl) => Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Opacity(
+                  opacity: cl.isActive ? 1 : 0.6,
                   child: WinCard(
                     padding: const EdgeInsets.all(14),
-                    child: Row(children: [
-                      Container(
-                        width: 42,
-                        height: 42,
-                        decoration: BoxDecoration(
-                            color: s.primaryContainer,
-                            borderRadius: BorderRadius.circular(WinRadii.sm)),
-                        child: Icon(Icons.class_outlined,
-                            size: 20, color: s.primary),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                            Text(cl.name,
-                                style: WinType.titleM(s.onStrong),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis),
-                            Row(children: [
-                              Text('${cl.count} élèves',
-                                  style: WinType.labelM(s.onMuted)),
-                              const SizedBox(width: 8),
-                              Icon(Icons.bar_chart_outlined,
-                                  size: 12,
-                                  color: cl.avg >= 70
-                                      ? WinColors.success
-                                      : WinColors.warn),
-                              const SizedBox(width: 2),
-                              Text('${cl.avg}% moy.',
-                                  style: WinType.labelM(cl.avg >= 70
-                                      ? WinColors.success
-                                      : WinColors.warn)),
-                            ]),
-                          ])),
-                      const SizedBox(width: 8),
-                      Icon(Icons.chevron_right, size: 18, color: s.onFaint),
-                    ]),
+                    child: InkWell(
+                      onTap: () => _classAction(cl),
+                      child: Row(children: [
+                        Container(
+                          width: 42,
+                          height: 42,
+                          decoration: BoxDecoration(color: s.primaryContainer, borderRadius: BorderRadius.circular(WinRadii.sm)),
+                          child: Icon(Icons.class_outlined, size: 20, color: s.primary),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                              Text(cl.name, style: WinType.titleM(s.onStrong), maxLines: 1, overflow: TextOverflow.ellipsis),
+                              Row(children: [
+                                Text('${cl.studentCount} élève${cl.studentCount != 1 ? 's' : ''}', style: WinType.labelM(s.onMuted)),
+                                if (cl.classAverage != null) ...[
+                                  const SizedBox(width: 8),
+                                  Icon(Icons.bar_chart_outlined, size: 12, color: cl.classAverage! >= 70 ? WinColors.success : WinColors.warn),
+                                  const SizedBox(width: 2),
+                                  Text('${cl.classAverage}% moy.', style: WinType.labelM(cl.classAverage! >= 70 ? WinColors.success : WinColors.warn)),
+                                ],
+                                if (cl.pendingCount > 0) ...[
+                                  const SizedBox(width: 8),
+                                  WinBadge('${cl.pendingCount} à corriger', color: BadgeColor.warn),
+                                ],
+                                if (!cl.isActive) ...[
+                                  const SizedBox(width: 8),
+                                  Text('Désactivée', style: WinType.labelM(s.onFaint)),
+                                ],
+                              ]),
+                            ])),
+                        if (cl.isActive)
+                          IconButton(
+                            icon: Icon(Icons.delete_outline, size: 19, color: s.onFaint),
+                            onPressed: () => _deleteOrDeactivate(cl),
+                          )
+                        else
+                          Icon(Icons.restore, size: 18, color: s.primary),
+                      ]),
+                    ),
                   ),
-                )),
-            WinButton('Créer une classe',
-                variant: WinButtonVariant.outline,
-                block: true,
-                icon: Icons.add,
-                onTap: _showCreateClassSheet),
-            const SizedBox(height: 10),
-            WinButton('Mes liaisons directes',
-                variant: WinButtonVariant.outline,
-                block: true,
-                icon: Icons.link_outlined,
-                onTap: () => Navigator.push(context,
-                    WinPageRoute(builder: (_) => const TeacherLinksScreen()))),
-            const SizedBox(height: 10),
-            WinButton('Mode Tuteur',
-                variant: WinButtonVariant.outline,
-                block: true,
-                icon: Icons.school_outlined,
-                onTap: () => Navigator.push(context,
-                    WinPageRoute(builder: (_) => const TutorProfileScreen()))),
-            const SizedBox(height: 10),
-            WinButton('Mes réservations élèves',
-                variant: WinButtonVariant.outline,
-                block: true,
-                icon: Icons.event_available_outlined,
-                onTap: () => Navigator.push(context,
-                    WinPageRoute(builder: (_) => const TutorBookingsScreen()))),
-            const SizedBox(height: 24),
-            Text('Étudiants',
-                style: WinType.archivo(size: 18, color: s.onStrong)),
-            const SizedBox(height: 10),
-            ...students.map((st) {
-              final col = st.avg < 50
-                  ? WinColors.error
-                  : (st.avg < 75 ? WinColors.warn : WinColors.success);
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: WinCard(
-                    padding: const EdgeInsets.all(12),
-                    child: Row(children: [
-                      WinAvatar(st.name, size: 42),
-                      const SizedBox(width: 12),
-                      Expanded(
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                            Text(st.name, style: WinType.titleM(s.onStrong)),
-                            Text(st.level, style: WinType.labelM(s.onMuted)),
-                          ])),
-                      Icon(st.up ? Icons.trending_up : Icons.trending_down,
-                          size: 14,
-                          color: st.up ? WinColors.success : WinColors.error),
-                      const SizedBox(width: 4),
-                      Text('${st.avg}%',
-                          style: WinType.archivo(size: 16, color: col)),
-                      const SizedBox(width: 8),
-                      GestureDetector(
-                        onTap: () => Navigator.push(
-                            context,
-                            WinPageRoute(
-                                builder: (_) => const MessagingScreen())),
-                        child: Icon(Icons.chat_outlined,
-                            size: 20, color: s.primary),
-                      ),
-                    ])),
-              );
-            }),
-          ])),
-    ]);
+                ),
+              )),
+        WinButton('Créer une classe',
+            variant: WinButtonVariant.outline, block: true, icon: Icons.add, onTap: _showCreateClassSheet),
+        const SizedBox(height: 10),
+        WinButton('Mes liaisons directes',
+            variant: WinButtonVariant.outline,
+            block: true,
+            icon: Icons.link_outlined,
+            onTap: () => Navigator.push(context, WinPageRoute(builder: (_) => const TeacherLinksScreen()))),
+        const SizedBox(height: 10),
+        WinButton('Mode Tuteur',
+            variant: WinButtonVariant.outline,
+            block: true,
+            icon: Icons.school_outlined,
+            onTap: () => Navigator.push(context, WinPageRoute(builder: (_) => const TutorProfileScreen()))),
+        const SizedBox(height: 10),
+        WinButton('Mes réservations élèves',
+            variant: WinButtonVariant.outline,
+            block: true,
+            icon: Icons.event_available_outlined,
+            onTap: () => Navigator.push(context, WinPageRoute(builder: (_) => const TutorBookingsScreen()))),
+      ],
+    );
   }
 }
 
@@ -888,257 +907,15 @@ class TeacherSessionsTab extends StatelessWidget {
 }
 
 /// ===================== REVENUS =====================
-class TeacherRevenueTab extends StatefulWidget {
+/// Lot 2, Module 5 : portefeuille réel (solde unifié, historique du journal,
+/// retrait Mobile Money automatisé, recharge), en parité avec le web. L'ancien
+/// onglet affichait un solde de repli (184 500), une courbe, une commission et
+/// des transactions inventés, y compris quand l'appel réseau échouait.
+class TeacherRevenueTab extends StatelessWidget {
   const TeacherRevenueTab({super.key});
   @override
-  State<TeacherRevenueTab> createState() => _TeacherRevenueTabState();
-}
-
-class _TeacherRevenueTabState extends State<TeacherRevenueTab> {
-  Map<String, dynamic>? _revenue;
-  List<Map<String, dynamic>> _contentRevenue = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _load();
-  }
-
-  Future<void> _load() async {
-    try {
-      final results = await Future.wait([
-        TeacherService.instance.getRevenueSummary(),
-        TeacherService.instance.getContentRevenue(),
-      ]);
-      if (mounted) {
-        setState(() {
-          _revenue = results[0] as Map<String, dynamic>;
-          _contentRevenue = results[1] as List<Map<String, dynamic>>;
-        });
-      }
-    } catch (_) {
-      if (mounted) {
-        setState(() {
-          _revenue = {};
-          _contentRevenue = [];
-        });
-      }
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final s = WinTheme.of(context);
-    final balance = (_revenue?['balance'] as num?)?.toInt() ?? 184500;
-    final rawTx = _revenue?['transactions'] as List? ?? _fallbackTx;
-    final tx = rawTx.map((e) {
-      if (e is Map<String, dynamic>) {
-        return (
-          e['label'] as String? ?? '',
-          e['date'] as String? ?? '',
-          (e['amount'] as num?)?.toInt() ?? 0,
-          e['isCredit'] as bool? ?? true,
-        );
-      }
-      return e as (String, String, int, bool);
-    }).toList();
-
-    final curve = [120, 180, 150, 210, 240, 300, 280, 340, 320, 390, 420, 480];
-    final max = curve.reduce((a, b) => a > b ? a : b);
-
-    return Column(children: [
-      Expanded(
-          child: _revenue == null
-              ? const Center(child: CircularProgressIndicator())
-              : ListView(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-                  children: [
-                      Container(
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(WinRadii.xl),
-                            gradient: LinearGradient(
-                                colors: [s.heroFrom, s.heroTo],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight)),
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('SOLDE DISPONIBLE',
-                                  style: WinType.labelS(WinColors.ink300)
-                                      .copyWith(letterSpacing: 0.8)),
-                              const SizedBox(height: 6),
-                              Text('${fmtXaf(balance)} XAF',
-                                  style: WinType.archivo(
-                                      size: 32, color: WinColors.cream50)),
-                              const SizedBox(height: 14),
-                              const WinButton('Retirer mes gains',
-                                  variant: WinButtonVariant.accent,
-                                  small: true,
-                                  icon: Icons.account_balance_wallet_outlined),
-                            ]),
-                      ),
-                      const SizedBox(height: 16),
-                      WinCard(
-                        child: Row(children: [
-                          Container(
-                            width: 40,
-                            height: 40,
-                            decoration: const BoxDecoration(
-                                color: WinColors.successBg,
-                                shape: BoxShape.circle),
-                            child: const Icon(Icons.percent,
-                                size: 18, color: WinColors.success),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                              child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                Text('Commission Plan Expert',
-                                    style: WinType.labelM(s.onMuted)),
-                                Text('80% pour vous · 20% WinPlus',
-                                    style: WinType.titleM(s.onStrong)),
-                              ])),
-                        ]),
-                      ),
-                      const SizedBox(height: 20),
-                      Text('Revenus mensuels',
-                          style: WinType.archivo(size: 18, color: s.onStrong)),
-                      const SizedBox(height: 12),
-                      WinCard(
-                          child: SizedBox(
-                              height: 110,
-                              child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: curve
-                                      .map((v) => Expanded(
-                                          child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 2),
-                                              child: Container(
-                                                  height: 110.0 * v / max,
-                                                  decoration: BoxDecoration(
-                                                      color: v == max
-                                                          ? s.primary
-                                                          : WinColors.teal100,
-                                                      borderRadius:
-                                                          BorderRadius.vertical(
-                                                              top: Radius.circular(
-                                                                  WinRadii
-                                                                      .full)))))))
-                                      .toList()))),
-                      const SizedBox(height: 20),
-                      Text('Transactions',
-                          style: WinType.archivo(size: 18, color: s.onStrong)),
-                      const SizedBox(height: 12),
-                      WinCard(
-                          padding: const EdgeInsets.symmetric(horizontal: 4),
-                          child: Column(children: [
-                            for (int i = 0; i < tx.length; i++)
-                              Container(
-                                padding: const EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                    border: i < tx.length - 1
-                                        ? Border(
-                                            bottom:
-                                                BorderSide(color: s.outline))
-                                        : null),
-                                child: Row(children: [
-                                  Container(
-                                      width: 36,
-                                      height: 36,
-                                      decoration: BoxDecoration(
-                                          color: tx[i].$4
-                                              ? WinColors.successBg
-                                              : s.surface2,
-                                          shape: BoxShape.circle),
-                                      child: Icon(
-                                          tx[i].$4
-                                              ? Icons.trending_up
-                                              : Icons
-                                                  .account_balance_wallet_outlined,
-                                          size: 16,
-                                          color: tx[i].$4
-                                              ? WinColors.success
-                                              : s.onMuted)),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                      child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                        Text(tx[i].$1,
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: WinType.bodyM(s.onStrong)
-                                                .copyWith(
-                                                    fontWeight:
-                                                        FontWeight.w600)),
-                                        Text(tx[i].$2,
-                                            style: WinType.labelM(s.onMuted))
-                                      ])),
-                                  Text(
-                                      '${tx[i].$4 ? '+' : '−'}${fmtXaf(tx[i].$3)}',
-                                      style: WinType.archivo(
-                                          size: 15,
-                                          color: tx[i].$4
-                                              ? WinColors.success
-                                              : s.onStrong)),
-                                ]),
-                              ),
-                          ])),
-                      if (_contentRevenue.isNotEmpty) ...[
-                        const SizedBox(height: 20),
-                        Text('Revenus par contenu',
-                            style:
-                                WinType.archivo(size: 18, color: s.onStrong)),
-                        const SizedBox(height: 12),
-                        WinCard(
-                            padding: const EdgeInsets.symmetric(horizontal: 4),
-                            child: Column(children: [
-                              for (int i = 0; i < _contentRevenue.length; i++)
-                                Container(
-                                  padding: const EdgeInsets.all(12),
-                                  decoration: BoxDecoration(
-                                      border: i < _contentRevenue.length - 1
-                                          ? Border(
-                                              bottom:
-                                                  BorderSide(color: s.outline))
-                                          : null),
-                                  child: Row(children: [
-                                    Expanded(
-                                        child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                          Text(
-                                              _contentRevenue[i]['title']
-                                                      as String? ??
-                                                  '',
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: WinType.bodyM(s.onStrong)
-                                                  .copyWith(
-                                                      fontWeight:
-                                                          FontWeight.w600)),
-                                          Text(
-                                              '${_contentRevenue[i]['sales'] ?? 0} ventes',
-                                              style: WinType.labelM(s.onMuted)),
-                                        ])),
-                                    Text(
-                                        '+${fmtXaf((_contentRevenue[i]['revenue'] as num?)?.toInt() ?? 0)}',
-                                        style: WinType.archivo(
-                                            size: 15,
-                                            color: WinColors.success)),
-                                  ]),
-                                ),
-                            ])),
-                      ],
-                    ])),
-    ]);
-  }
+  Widget build(BuildContext context) =>
+      const Column(children: [Expanded(child: TeacherWalletView())]);
 }
 
 /// ===================== WINAI =====================
@@ -1354,10 +1131,3 @@ class _TeacherWinAITabState extends State<TeacherWinAITab> {
     );
   }
 }
-
-const _fallbackTx = [
-  ('Pack ENSP  12 ventes', '8 juin', 96000, true),
-  ('Correction BAC C Physique', '6 juin', 27000, true),
-  ('Retrait MTN MoMo', '1 juin', 50000, false),
-  ('Quiz Chimie  8 ventes', '28 mai', 8000, true),
-];
