@@ -10,6 +10,8 @@ class ApiUserProfile {
   final String? level;
   final String? locale;
   final String? avatarUrl;
+  /// Décision 15.3 : facultative, sert à fiabiliser la minorité RGPD.
+  final DateTime? dateOfBirth;
   const ApiUserProfile({
     required this.id,
     required this.email,
@@ -20,6 +22,7 @@ class ApiUserProfile {
     this.level,
     this.locale,
     this.avatarUrl,
+    this.dateOfBirth,
   });
 
   String get fullName => '$firstName $lastName'.trim();
@@ -34,6 +37,9 @@ class ApiUserProfile {
         level: j['level'] as String?,
         locale: j['locale'] as String?,
         avatarUrl: j['avatarUrl'] as String?,
+        dateOfBirth: j['dateOfBirth'] != null
+            ? DateTime.tryParse(j['dateOfBirth'] as String)
+            : null,
       );
 }
 
@@ -120,6 +126,12 @@ class UserService {
     String? parentChildObjective,
     String? parentFollowUpPreference,
     String? learningStyle,
+    // Décision 15.3 (arbitrages lot 7, 2026-10-08) : date de naissance,
+    // facultative et non bloquante, au format "yyyy-MM-dd". Fiabilise la
+    // vérification de minorité de l'export RGPD d'un enfant (module 43).
+    // Parité explicitement exigée web ET mobile dès ce lot (contrairement à
+    // 15.2, reportée au lot 8) : voir CompleteProfileScreen.
+    String? dateOfBirth,
   }) async {
     try {
       await _api.dio.put('/users/profile', data: {
@@ -135,6 +147,7 @@ class UserService {
         if (parentChildObjective != null) 'parentChildObjective': parentChildObjective,
         if (parentFollowUpPreference != null) 'parentFollowUpPreference': parentFollowUpPreference,
         if (learningStyle != null) 'learningStyle': learningStyle,
+        if (dateOfBirth != null) 'dateOfBirth': dateOfBirth,
       });
       return true;
     } catch (_) {

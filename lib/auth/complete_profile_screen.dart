@@ -89,6 +89,10 @@ class _StudentProfileWizardState extends State<_StudentProfileWizard> {
   int _step = 0;
   String? _level, _filiere, _objectif;
   bool _saving = false;
+  // Décision 15.3 (arbitrages lot 7, 2026-10-08) : facultative, jamais
+  // bloquante (_canContinue n'en dépend pas)  demandée ici plutôt que
+  // d'ajouter une étape dédiée, parité avec le web (CompleteProfile.tsx).
+  DateTime? _dateOfBirth;
 
   static const _levels = [
     'BEPC',
@@ -131,6 +135,11 @@ class _StudentProfileWizardState extends State<_StudentProfileWizard> {
       level: _level,
       specialization: _filiere,
       targetExam: _objectif,
+      dateOfBirth: _dateOfBirth == null
+          ? null
+          : '${_dateOfBirth!.year.toString().padLeft(4, '0')}-'
+              '${_dateOfBirth!.month.toString().padLeft(2, '0')}-'
+              '${_dateOfBirth!.day.toString().padLeft(2, '0')}',
     );
     if (!mounted) return;
     Navigator.pushReplacement(
@@ -138,6 +147,18 @@ class _StudentProfileWizardState extends State<_StudentProfileWizard> {
         WinPageRoute(
             builder: (_) =>
                 const OnboardingSuccessScreen(role: WinRole.student)));
+  }
+
+  Future<void> _pickDateOfBirth() async {
+    final now = DateTime.now();
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _dateOfBirth ?? DateTime(now.year - 15, now.month, now.day),
+      firstDate: DateTime(now.year - 100),
+      lastDate: now,
+      helpText: 'Date de naissance (optionnel)',
+    );
+    if (picked != null) setState(() => _dateOfBirth = picked);
   }
 
   @override
@@ -181,7 +202,15 @@ class _StudentProfileWizardState extends State<_StudentProfileWizard> {
             const SizedBox(height: 8),
             Text(_stepSubtitle, style: WinType.bodyM(s.onMuted)),
             const SizedBox(height: 28),
-            Expanded(child: _buildChips(s)),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(child: _buildChips(s)),
+                  if (_step == 0) _buildDateOfBirthField(s),
+                ],
+              ),
+            ),
             WinButton(
               _step < 2 ? 'Continuer' : 'Terminer',
               block: true,
@@ -189,6 +218,33 @@ class _StudentProfileWizardState extends State<_StudentProfileWizard> {
               onTap: _canContinue && !_saving ? _next : null,
             ),
             const SizedBox(height: 24),
+          ]),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDateOfBirthField(WinScheme s) {
+    final label = _dateOfBirth == null
+        ? 'Date de naissance (optionnel)'
+        : 'Né(e) le ${_dateOfBirth!.day.toString().padLeft(2, '0')}/'
+            '${_dateOfBirth!.month.toString().padLeft(2, '0')}/'
+            '${_dateOfBirth!.year}';
+    return Padding(
+      padding: const EdgeInsets.only(top: 16),
+      child: GestureDetector(
+        onTap: _pickDateOfBirth,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          decoration: BoxDecoration(
+            color: s.surface,
+            borderRadius: BorderRadius.circular(WinRadii.md),
+            border: Border.all(color: s.outline, width: 1.5),
+          ),
+          child: Row(children: [
+            Icon(Icons.calendar_today_outlined, size: 16, color: s.onMuted),
+            const SizedBox(width: 10),
+            Text(label, style: WinType.bodyM(s.onMuted)),
           ]),
         ),
       ),
