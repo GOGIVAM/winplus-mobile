@@ -54,10 +54,19 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
       );
     }
 
-    // Parent / institution : pas de données d'onboarding dédiées pour
-    // l'instant  on va directement à l'écran de succès (déjà adapté au rôle).
-    if (_role == WinRole.parent || _role == WinRole.institution) {
+    // Institution : pas de données d'onboarding dédiées  on va directement
+    // à l'écran de succès (déjà adapté au rôle).
+    if (_role == WinRole.institution) {
       return OnboardingSuccessScreen(role: _role!);
+    }
+
+    // Module 15 (lot 6) : le parent a désormais son propre onboarding
+    // (objectif pour l'enfant + préférence de suivi), parité avec le web
+    // (CompleteProfile.tsx, ParentOnboarding). Avant ce module, il sautait
+    // directement à l'écran de succès, par choix produit non documenté
+    // ailleurs qu'en commentaire de code.
+    if (_role == WinRole.parent) {
+      return const _ParentProfileWizard();
     }
 
     return _role == WinRole.teacher
@@ -381,6 +390,197 @@ class _TeacherProfileWizardState extends State<_TeacherProfileWizard> {
                     size: 14,
                     weight: FontWeight.w600,
                     color: active ? WinColors.cream50 : s.onSurface)),
+          ),
+        );
+      }).toList(),
+    );
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Parent  Module 15 (lot 6). Collecte strictement les deux informations
+   citées par la décision produit (SUIVI_VERSEMENTS_ET_CORRECTIONS.md
+   §2.7) : objectif libre pour l'enfant/les enfants, et préférence de suivi.
+   Non bloquant (bouton "Passer" disponible à chaque étape), persisté sur
+   User.ParentChildObjective / User.ParentFollowUpPreference (PUT
+   /users/profile), parité avec ParentOnboarding côté web.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+class _ParentProfileWizard extends StatefulWidget {
+  const _ParentProfileWizard();
+  @override
+  State<_ParentProfileWizard> createState() => _ParentProfileWizardState();
+}
+
+class _ParentProfileWizardState extends State<_ParentProfileWizard> {
+  int _step = 0;
+  final _objectiveCtrl = TextEditingController();
+  String? _followUp;
+  bool _saving = false;
+
+  static const _followUpOptions = [
+    ('close', 'Suivi rapproché', 'Alertes dès qu’un événement important survient.'),
+    ('weekly', 'Rapport hebdomadaire', 'Un résumé de la semaine, sans alerte au fil de l’eau.'),
+    ('minimal', 'Le minimum', 'Je consulterai moi-même l’espace parent.'),
+  ];
+
+  bool get _canContinue =>
+      _step == 0 ? _objectiveCtrl.text.trim().isNotEmpty : _followUp != null;
+
+  Future<void> _skip() async {
+    if (!mounted) return;
+    Navigator.pushReplacement(context,
+        WinPageRoute(builder: (_) => const OnboardingSuccessScreen(role: WinRole.parent)));
+  }
+
+  Future<void> _next() async {
+    if (_step == 0) {
+      setState(() => _step = 1);
+      return;
+    }
+    setState(() => _saving = true);
+    await UserService.instance.updateProfile(
+      parentChildObjective: _objectiveCtrl.text.trim(),
+      parentFollowUpPreference: _followUp,
+    );
+    if (!mounted) return;
+    Navigator.pushReplacement(context,
+        WinPageRoute(builder: (_) => const OnboardingSuccessScreen(role: WinRole.parent)));
+  }
+
+  @override
+  void dispose() {
+    _objectiveCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final s = WinTheme.of(context);
+    final steps = ['Objectif', 'Suivi'];
+    return Scaffold(
+      backgroundColor: s.bg,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            const SizedBox(height: 32),
+            Row(children: [
+              for (int i = 0; i < 2; i++) ...[
+                if (i > 0) const SizedBox(width: 8),
+                Expanded(
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        WinProgressBar(i <= _step ? 100 : 0,
+                            height: 3,
+                            color: i < _step
+                                ? s.primary
+                                : (i == _step ? s.primary : s.outline)),
+                        const SizedBox(height: 4),
+                        Text(steps[i],
+                            style: WinType.labelS(
+                                    i == _step ? s.primary : s.onFaint)
+                                .copyWith(
+                                    fontWeight: i == _step
+                                        ? FontWeight.w700
+                                        : FontWeight.w500)),
+                      ]),
+                ),
+              ],
+            ]),
+            const SizedBox(height: 40),
+            Text(
+                _step == 0
+                    ? 'Quel est votre objectif pour votre enfant ?'
+                    : 'Comment souhaitez-vous suivre sa scolarité ?',
+                style: WinType.displayS(s.onStrong)),
+            const SizedBox(height: 8),
+            Text(
+              _step == 0
+                  ? 'En quelques mots : réussir un examen, combler une lacune, reprendre confiance…'
+                  : 'Vous pourrez changer cette préférence à tout moment.',
+              style: WinType.bodyM(s.onMuted),
+            ),
+            const SizedBox(height: 28),
+            Expanded(child: _step == 0 ? _buildObjectiveField(s) : _buildFollowUpChoices(s)),
+            Row(children: [
+              Expanded(
+                child: TextButton(
+                  onPressed: _saving ? null : _skip,
+                  child: const Text('Passer cette étape'),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: WinButton(
+                  _step == 0 ? 'Continuer' : 'Terminer',
+                  block: true,
+                  loading: _saving,
+                  onTap: _canContinue && !_saving ? _next : null,
+                ),
+              ),
+            ]),
+            const SizedBox(height: 24),
+          ]),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildObjectiveField(WinScheme s) {
+    return TextField(
+      controller: _objectiveCtrl,
+      maxLength: 300,
+      maxLines: 3,
+      decoration: InputDecoration(
+        hintText: 'Ex. Aider mon fils à progresser en maths avant le brevet',
+        filled: true,
+        fillColor: s.surface,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(WinRadii.md),
+          borderSide: BorderSide(color: s.outline),
+        ),
+      ),
+      style: WinType.bodyM(s.onSurface),
+    );
+  }
+
+  Widget _buildFollowUpChoices(WinScheme s) {
+    return Column(
+      children: _followUpOptions.map((opt) {
+        final (value, label, hint) = opt;
+        final active = _followUp == value;
+        return GestureDetector(
+          onTap: () => setState(() => _followUp = value),
+          child: Container(
+            margin: const EdgeInsets.only(bottom: 10),
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: active ? WinColors.ink800 : s.surface,
+              borderRadius: BorderRadius.circular(WinRadii.md),
+              border: Border.all(
+                  color: active ? WinColors.ink800 : s.outline, width: 1.5),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(label,
+                    style: WinType.manrope(
+                        size: 14,
+                        weight: FontWeight.w700,
+                        color: active ? WinColors.cream50 : s.onSurface)),
+                const SizedBox(height: 4),
+                Text(hint,
+                    style: WinType.manrope(
+                        size: 12,
+                        weight: FontWeight.w500,
+                        color: active
+                            ? WinColors.cream50.withValues(alpha: 0.85)
+                            : s.onMuted)),
+              ],
+            ),
           ),
         );
       }).toList(),

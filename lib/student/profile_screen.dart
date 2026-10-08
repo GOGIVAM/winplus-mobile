@@ -8,6 +8,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../auth/welcome_screen.dart';
+import 'learning_style_quiz_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -187,6 +188,18 @@ class _ProfileScreenState extends State<ProfileScreen>
             const SizedBox(height: 28),
             WinButton('Enregistrer les modifications',
                 block: true, loading: _savingProfile, onTap: _saveProfile),
+            const SizedBox(height: 16),
+            // Module 15 (lot 6) : parité mobile du questionnaire VARK, jusqu'ici
+            // web uniquement (LearningStyleQuiz.tsx).
+            WinButton(
+              'Mon style d’apprentissage',
+              block: true,
+              variant: WinButtonVariant.outline,
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const LearningStyleQuizScreen()),
+              ),
+            ),
           ]),
         ),
 

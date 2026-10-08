@@ -115,6 +115,11 @@ class UserService {
     String? targetExam,
     List<String>? teachingSubjects,
     List<String>? teachingLevels,
+    // Module 15 (lot 6) : onboarding parent, parité avec le web
+    // (frontend/src/pages/CompleteProfile.tsx, ParentOnboarding).
+    String? parentChildObjective,
+    String? parentFollowUpPreference,
+    String? learningStyle,
   }) async {
     try {
       await _api.dio.put('/users/profile', data: {
@@ -127,6 +132,9 @@ class UserService {
         if (targetExam != null) 'targetExam': targetExam,
         if (teachingSubjects != null) 'teachingSubjects': teachingSubjects,
         if (teachingLevels != null) 'teachingLevels': teachingLevels,
+        if (parentChildObjective != null) 'parentChildObjective': parentChildObjective,
+        if (parentFollowUpPreference != null) 'parentFollowUpPreference': parentFollowUpPreference,
+        if (learningStyle != null) 'learningStyle': learningStyle,
       });
       return true;
     } catch (_) {
