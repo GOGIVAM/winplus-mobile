@@ -22,6 +22,8 @@ class _BuyForChildScreenState extends State<BuyForChildScreen> {
   int _selectedChildIndex = 0;
   List<Content> _catalog = [];
   bool _loading = true;
+  ApiParentWalletSummary? _wallet;
+  bool _walletLoading = true;
 
   ApiChild get _selected => widget.children[_selectedChildIndex];
 
@@ -29,6 +31,19 @@ class _BuyForChildScreenState extends State<BuyForChildScreen> {
   void initState() {
     super.initState();
     _loadCatalog();
+    _loadWallet();
+  }
+
+  // Module 24 (lot 8, rattrapage 16.1) : solde réel du portefeuille parent
+  // (GET /parent/credits via ParentCreditsController), remplace l'absence
+  // totale d'indication de solde sur cet écran.
+  Future<void> _loadWallet() async {
+    final wallet = await ParentService.instance.getWalletSummary();
+    if (!mounted) return;
+    setState(() {
+      _wallet = wallet;
+      _walletLoading = false;
+    });
   }
 
   // Module 24 (lot 8) : catalogue réel filtré par le niveau de l'enfant
@@ -82,6 +97,8 @@ class _BuyForChildScreenState extends State<BuyForChildScreen> {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
         children: [
+          _WalletBanner(loading: _walletLoading, wallet: _wallet),
+          const SizedBox(height: 20),
           Text('Pour quel enfant ?',
               style: WinType.archivo(size: 18, color: s.onStrong)),
           const SizedBox(height: 12),
@@ -157,6 +174,58 @@ class _BuyForChildScreenState extends State<BuyForChildScreen> {
             ),
         ],
       ),
+    );
+  }
+}
+
+class _WalletBanner extends StatelessWidget {
+  final bool loading;
+  final ApiParentWalletSummary? wallet;
+  const _WalletBanner({required this.loading, required this.wallet});
+
+  @override
+  Widget build(BuildContext context) {
+    final s = WinTheme.of(context);
+    if (loading) {
+      return const WinCard(
+        padding: EdgeInsets.all(16),
+        child: SizedBox(
+            height: 20,
+            child: Center(
+                child: SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(strokeWidth: 2)))),
+      );
+    }
+    final w = wallet;
+    if (w == null) {
+      return WinAlert(
+        'Aucun abonnement payant actif : abonnez-vous pour obtenir des crédits à dépenser pour vos enfants.',
+        type: BadgeColor.neutral,
+        icon: Icons.info_outline,
+      );
+    }
+    return WinCard(
+      padding: const EdgeInsets.all(16),
+      child: Row(children: [
+        Icon(Icons.account_balance_wallet_outlined,
+            size: 22, color: s.primary),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Solde disponible',
+                  style: WinType.labelM(s.onMuted)),
+              Text('${fmtXaf(w.creditsLeft.round())} ${w.currency}',
+                  style: WinType.titleM(s.onStrong)
+                      .copyWith(fontWeight: FontWeight.w700)),
+            ],
+          ),
+        ),
+        if (w.planName != null) WinBadge(w.planName!, color: BadgeColor.teal),
+      ]),
     );
   }
 }

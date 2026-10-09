@@ -5,6 +5,25 @@ import 'local_cache_service.dart';
 /// côté backend : GET /exam-coach/active). Mis en cache (ExamCoachBox) pour
 /// rester consultable hors ligne  c'est une donnée "Haute" priorité (révision
 /// avant examen, moment où le réseau peut manquer).
+class ApiExamCoachDayCompletion {
+  final int dayNumber;
+  final DateTime completedAt;
+  final double? quizScore;
+  const ApiExamCoachDayCompletion({
+    required this.dayNumber,
+    required this.completedAt,
+    this.quizScore,
+  });
+
+  factory ApiExamCoachDayCompletion.fromJson(Map<String, dynamic> j) =>
+      ApiExamCoachDayCompletion(
+        dayNumber: j['dayNumber'] as int? ?? 0,
+        completedAt:
+            DateTime.tryParse(j['completedAt'] as String? ?? '') ?? DateTime.now(),
+        quizScore: (j['quizScore'] as num?)?.toDouble(),
+      );
+}
+
 class ApiExamCoachPlan {
   final int id;
   final String examType;
@@ -12,6 +31,9 @@ class ApiExamCoachPlan {
   final double hoursPerDay;
   final double confidenceScore;
   final bool isActive;
+  final String planJson;
+  final DateTime createdAt;
+  final List<ApiExamCoachDayCompletion> completedDays;
 
   const ApiExamCoachPlan({
     required this.id,
@@ -20,6 +42,9 @@ class ApiExamCoachPlan {
     required this.hoursPerDay,
     required this.confidenceScore,
     required this.isActive,
+    required this.planJson,
+    required this.createdAt,
+    this.completedDays = const [],
   });
 
   factory ApiExamCoachPlan.fromJson(Map<String, dynamic> j) => ApiExamCoachPlan(
@@ -30,6 +55,13 @@ class ApiExamCoachPlan {
         hoursPerDay: ((j['hoursPerDay'] ?? 2) as num).toDouble(),
         confidenceScore: ((j['confidenceScore'] ?? 0) as num).toDouble(),
         isActive: j['isActive'] as bool? ?? true,
+        planJson: j['planJson'] as String? ?? '{}',
+        createdAt:
+            DateTime.tryParse(j['createdAt'] as String? ?? '') ?? DateTime.now(),
+        completedDays: ((j['completedDays'] as List?) ?? [])
+            .map((e) => ApiExamCoachDayCompletion.fromJson(
+                Map<String, dynamic>.from(e as Map)))
+            .toList(),
       );
 }
 
@@ -72,6 +104,38 @@ class ExamCoachService {
       // 404 (pas de plan actif) ou aucune donnée en cache : état vide normal.
       return null;
     }
+  }
+
+  /// POST /exam-coach  génère un nouveau plan WinAI (désactive l'ancien,
+  /// voir ExamCoachController.CreatePlan côté backend  même endpoint que le
+  /// web, examCoachService.ts createPlan).
+  Future<ApiExamCoachPlan> createPlan({
+    required String examType,
+    required DateTime examDate,
+    double hoursPerDay = 2.0,
+  }) async {
+    final res = await _api.dio.post('/exam-coach', data: {
+      'examType': examType,
+      'examDate': examDate.toIso8601String().split('T').first,
+      'hoursPerDay': hoursPerDay,
+    });
+    await LocalCacheService.examCoach.delete('active_plan');
+    return ApiExamCoachPlan.fromJson(res.data as Map<String, dynamic>);
+  }
+
+  /// PUT /exam-coach/{id}/complete-day
+  Future<void> completeDay(int planId, int dayNumber, {double? quizScore}) async {
+    await _api.dio.put('/exam-coach/$planId/complete-day', data: {
+      'dayNumber': dayNumber,
+      if (quizScore != null) 'quizScore': quizScore,
+    });
+    await LocalCacheService.examCoach.delete('active_plan');
+  }
+
+  /// DELETE /exam-coach/{id}
+  Future<void> deactivatePlan(int planId) async {
+    await _api.dio.delete('/exam-coach/$planId');
+    await LocalCacheService.examCoach.delete('active_plan');
   }
 
   // ── Mode veille d'examen (parent) ────────────────────────────────────────

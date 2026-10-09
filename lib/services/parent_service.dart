@@ -217,6 +217,35 @@ class ApiGoal {
       );
 }
 
+/// Solde de portefeuille parent (voir ParentCreditsController.cs côté
+/// backend : GET /parent/credits). Module 24 (lot 8, rattrapage 16.1) :
+/// l'écran "Acheter pour mon enfant" n'affichait jusqu'ici aucun solde réel
+/// bien qu'un endpoint existe déjà  simple câblage, aucune route serveur
+/// nouvelle.
+class ApiParentWalletSummary {
+  final String? planName;
+  final double creditsLeft;
+  final double allocationRemaining;
+  final double permanent;
+  final String currency;
+  const ApiParentWalletSummary({
+    this.planName,
+    required this.creditsLeft,
+    required this.allocationRemaining,
+    required this.permanent,
+    this.currency = 'XAF',
+  });
+
+  factory ApiParentWalletSummary.fromJson(Map<String, dynamic> j) =>
+      ApiParentWalletSummary(
+        planName: j['planName'] as String?,
+        creditsLeft: ((j['creditsLeft'] ?? 0) as num).toDouble(),
+        allocationRemaining: ((j['allocationRemaining'] ?? 0) as num).toDouble(),
+        permanent: ((j['permanent'] ?? 0) as num).toDouble(),
+        currency: j['currency'] as String? ?? 'XAF',
+      );
+}
+
 class ParentService {
   ParentService._();
   static final ParentService instance = ParentService._();
@@ -236,6 +265,21 @@ class ParentService {
       final data = (res.data as Map<String, dynamic>)['data']
           as Map<String, dynamic>?;
       return data == null ? null : ApiParentProfile.fromJson(data);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Solde de portefeuille réel (dotation mensuelle + recharge), pour
+  /// l'écran d'achat pour un enfant. `null` si le parent n'a pas
+  /// d'abonnement payant actif (ParentCreditsController renvoie data: null
+  /// dans ce cas, état normal  pas une erreur).
+  Future<ApiParentWalletSummary?> getWalletSummary() async {
+    try {
+      final res = await _api.dio.get('/parent/credits');
+      final data = (res.data as Map<String, dynamic>)['data']
+          as Map<String, dynamic>?;
+      return data == null ? null : ApiParentWalletSummary.fromJson(data);
     } catch (_) {
       return null;
     }

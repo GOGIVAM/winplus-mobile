@@ -1,27 +1,19 @@
 import 'package:flutter/material.dart';
-import '../data/mock_data.dart';
+import '../services/study_group_service.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 
-// ─── Model ───────────────────────────────────────────────────────────────────
-
-class StudyGroup {
-  final String id, name, subject;
-  final int memberCount;
-  final DateTime lastActivityAt;
-  const StudyGroup({
-    required this.id,
-    required this.name,
-    required this.subject,
-    required this.memberCount,
-    required this.lastActivityAt,
-  });
-}
-
-// ─── Screen ──────────────────────────────────────────────────────────────────
-
+/// Module 24 (lot 8, rattrapage 16.3) : groupes d'étude réels
+/// (StudyGroupsController.cs, mêmes endpoints que le web
+/// student/StudyGroups.tsx), remplace l'écran 100% simulé (classement
+/// fictif, code d'invitation "ABC123" codé en dur, groupes locaux).
+///
+/// Le classement hebdomadaire de l'ancien écran n'est pas repris : aucun
+/// endpoint serveur ne le fournit, et créer une route dédiée pour ça sort du
+/// périmètre de ce portage (décision §16.3 du suivi : réutiliser les
+/// endpoints existants, pas en ajouter sans écart bloquant réel).
 class StudyGroupsScreen extends StatefulWidget {
   const StudyGroupsScreen({super.key});
   @override
@@ -29,38 +21,22 @@ class StudyGroupsScreen extends StatefulWidget {
 }
 
 class _StudyGroupsScreenState extends State<StudyGroupsScreen> {
-  static final _mockGroups = [
-    StudyGroup(
-      id: 'g-001',
-      name: 'BAC C Warriors',
-      subject: 'Mathématiques',
-      memberCount: 5,
-      lastActivityAt: DateTime.now().subtract(const Duration(hours: 2)),
-    ),
-    StudyGroup(
-      id: 'g-002',
-      name: 'Chimie Élite',
-      subject: 'Chimie',
-      memberCount: 3,
-      lastActivityAt: DateTime.now().subtract(const Duration(days: 1)),
-    ),
-    StudyGroup(
-      id: 'g-003',
-      name: 'Physique Squad',
-      subject: 'Physique',
-      memberCount: 8,
-      lastActivityAt: DateTime.now().subtract(const Duration(hours: 5)),
-    ),
-  ];
+  List<ApiStudyGroup>? _groups;
+  String? _error;
 
-  final List<StudyGroup> _groups = List.from(_mockGroups);
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
 
-  String _relTime(DateTime dt) {
-    final d = DateTime.now().difference(dt);
-    if (d.inMinutes < 60) return 'il y a ${d.inMinutes}min';
-    if (d.inHours < 24) return 'il y a ${d.inHours}h';
-    if (d.inDays == 1) return 'hier';
-    return 'il y a ${d.inDays}j';
+  Future<void> _load() async {
+    try {
+      final groups = await StudyGroupService.instance.getMine();
+      if (mounted) setState(() { _groups = groups; _error = null; });
+    } catch (_) {
+      if (mounted) setState(() { _groups = []; _error = "Vos groupes n'ont pas pu être chargés."; });
+    }
   }
 
   void _showCreateSheet() {
@@ -68,9 +44,7 @@ class _StudyGroupsScreenState extends State<StudyGroupsScreen> {
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (_) => _CreateGroupSheet(
-        onCreated: (group) => setState(() => _groups.insert(0, group)),
-      ),
+      builder: (_) => _CreateGroupSheet(onCreated: _load),
     );
   }
 
@@ -80,19 +54,52 @@ class _StudyGroupsScreenState extends State<StudyGroupsScreen> {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (_) => _JoinGroupSheet(
-        onResult: (msg, ok) => ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(msg),
-            backgroundColor: ok ? null : Colors.red.shade700,
-          ),
-        ),
+        onResult: (msg, ok) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(msg), backgroundColor: ok ? null : Colors.red.shade700),
+          );
+          if (ok) _load();
+        },
       ),
+    );
+  }
+
+  Future<void> _leave(ApiStudyGroup group) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Quitter ce groupe ?'),
+        content: Text(group.isOwner
+            ? 'Quitter « ${group.name} » ? Le groupe sera archivé pour tous ses membres.'
+            : 'Quitter « ${group.name} » ?'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Annuler')),
+          TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Quitter')),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    try {
+      await StudyGroupService.instance.leave(group.id);
+      await _load();
+    } catch (_) {
+      if (mounted) setState(() => _error = "Vous n'avez pas pu quitter ce groupe.");
+    }
+  }
+
+  void _openDetail(ApiStudyGroup group) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (_) => _GroupDetailSheet(groupId: group.id),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
+    final groups = _groups;
     return Scaffold(
       backgroundColor: s.bg,
       appBar: AppBar(
@@ -104,79 +111,56 @@ class _StudyGroupsScreenState extends State<StudyGroupsScreen> {
         ),
         title: Text("Groupes d'étude", style: WinType.headlineS(s.onStrong)),
       ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
-        children: [
-          // ── Classement ────────────────────────────────────────────
-          WinSectionHeader('Classement de la semaine'),
-          const SizedBox(height: 8),
-          _Leaderboard(),
-          const SizedBox(height: 20),
-
-          // ── Mes groupes ───────────────────────────────────────────
-          WinSectionHeader('Mes groupes'),
-          ..._groups.map((g) => Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: _GroupCard(
-                  group: g,
-                  relTime: _relTime(g.lastActivityAt),
-                  onTap: () => _showGroupDetail(context, g),
-                ),
-              )),
-          const SizedBox(height: 16),
-
-          // ── Badge plan ────────────────────────────────────────────
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-            decoration: BoxDecoration(
-              color: WinColors.gold.withValues(alpha: 0.15),
-              border: Border.all(
-                  color: WinColors.gold.withValues(alpha: 0.6), width: 1.5),
-              borderRadius: BorderRadius.circular(WinRadii.lg),
+      body: groups == null
+          ? const Center(child: CircularProgressIndicator())
+          : ListView(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+              children: [
+                if (_error != null) ...[
+                  WinAlert(_error!, type: BadgeColor.warn),
+                  const SizedBox(height: 12),
+                ],
+                WinSectionHeader('Mes groupes'),
+                const SizedBox(height: 8),
+                if (groups.isEmpty)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 24),
+                    child: Column(children: [
+                      Icon(Icons.groups_outlined, size: 28, color: s.onFaint),
+                      const SizedBox(height: 8),
+                      Text('Aucun groupe pour le moment.',
+                          style: WinType.bodyM(s.onMuted), textAlign: TextAlign.center),
+                      const SizedBox(height: 4),
+                      Text('Créez un groupe ou rejoignez celui d\'un camarade avec son code.',
+                          style: WinType.labelS(s.onFaint), textAlign: TextAlign.center),
+                    ]),
+                  )
+                else
+                  ...groups.map((g) => Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: _GroupCard(
+                          group: g,
+                          onTap: () => _openDetail(g),
+                          onLeave: () => _leave(g),
+                        ),
+                      )),
+                const SizedBox(height: 16),
+                WinButton("+ Créer un groupe",
+                    block: true, variant: WinButtonVariant.outline, onTap: _showCreateSheet),
+                const SizedBox(height: 10),
+                WinButton('Rejoindre par code',
+                    block: true, variant: WinButtonVariant.ghost, onTap: _showJoinSheet),
+              ],
             ),
-            child: Row(children: [
-              const Icon(Icons.workspace_premium_outlined,
-                  size: 18, color: WinColors.gold),
-              const SizedBox(width: 10),
-              Expanded(
-                  child: Text('Plan Ultime  Groupes illimités',
-                      style: WinType.labelM(WinColors.gold)
-                          .copyWith(fontWeight: FontWeight.w700))),
-            ]),
-          ),
-          const SizedBox(height: 16),
-          WinButton('+ Créer un groupe',
-              block: true,
-              variant: WinButtonVariant.outline,
-              onTap: _showCreateSheet),
-          const SizedBox(height: 10),
-          WinButton('Rejoindre par code',
-              block: true,
-              variant: WinButtonVariant.ghost,
-              onTap: _showJoinSheet),
-        ],
-      ),
-    );
-  }
-
-  void _showGroupDetail(BuildContext context, StudyGroup g) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (_) => _GroupDetailSheet(group: g),
     );
   }
 }
 
-// ─── Group Card ──────────────────────────────────────────────────────────────
-
 class _GroupCard extends StatelessWidget {
-  final StudyGroup group;
-  final String relTime;
+  final ApiStudyGroup group;
   final VoidCallback onTap;
-  const _GroupCard(
-      {required this.group, required this.relTime, required this.onTap});
+  final VoidCallback onLeave;
+  const _GroupCard({required this.group, required this.onTap, required this.onLeave});
 
   @override
   Widget build(BuildContext context) {
@@ -184,35 +168,35 @@ class _GroupCard extends StatelessWidget {
     return WinCard(
       padding: const EdgeInsets.all(14),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(group.name,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: WinType.titleM(s.onStrong)),
+        Row(children: [
+          Expanded(
+              child: Text(group.name,
+                  maxLines: 1, overflow: TextOverflow.ellipsis, style: WinType.titleM(s.onStrong))),
+          if (group.isOwner) const WinBadge('Propriétaire', color: BadgeColor.teal),
+        ]),
         const SizedBox(height: 8),
         Row(children: [
-          WinChip(group.subject),
-          const SizedBox(width: 10),
-          Text('${group.memberCount} membres',
+          if (group.subject != null) ...[WinChip(group.subject!), const SizedBox(width: 10)],
+          Text('${group.memberCount} membre${group.memberCount != 1 ? 's' : ''}',
               style: WinType.labelM(s.onMuted)),
         ]),
-        const SizedBox(height: 6),
-        Text('Dernière activité : $relTime', style: WinType.labelS(s.onFaint)),
+        if (group.description != null && group.description!.isNotEmpty) ...[
+          const SizedBox(height: 8),
+          Text(group.description!, style: WinType.labelM(s.onMuted)),
+        ],
         const SizedBox(height: 10),
-        WinButton(
-          'Voir',
-          small: true,
-          variant: WinButtonVariant.outline,
-          onTap: onTap,
-        ),
+        Row(children: [
+          WinButton('Voir', small: true, variant: WinButtonVariant.outline, onTap: onTap),
+          const SizedBox(width: 8),
+          WinButton('Quitter', small: true, variant: WinButtonVariant.ghost, onTap: onLeave),
+        ]),
       ]),
     );
   }
 }
 
-// ─── Create Sheet ─────────────────────────────────────────────────────────────
-
 class _CreateGroupSheet extends StatefulWidget {
-  final void Function(StudyGroup) onCreated;
+  final VoidCallback onCreated;
   const _CreateGroupSheet({required this.onCreated});
   @override
   State<_CreateGroupSheet> createState() => _CreateGroupSheetState();
@@ -220,33 +204,34 @@ class _CreateGroupSheet extends StatefulWidget {
 
 class _CreateGroupSheetState extends State<_CreateGroupSheet> {
   final _nameCtrl = TextEditingController();
-  String _selectedSubject = 'Maths';
-  static const _subjects = ['Maths', 'Chimie', 'Physique', 'Français'];
+  final _subjectCtrl = TextEditingController();
+  bool _busy = false;
+  String? _error;
 
   @override
   void dispose() {
     _nameCtrl.dispose();
+    _subjectCtrl.dispose();
     super.dispose();
   }
 
-  void _submit() {
+  Future<void> _submit() async {
     final name = _nameCtrl.text.trim();
     if (name.length < 3) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Le nom doit faire au moins 3 caractères.')),
-      );
+      setState(() => _error = 'Le nom doit contenir au moins 3 caractères.');
       return;
     }
-    final group = StudyGroup(
-      id: 'g-${DateTime.now().millisecondsSinceEpoch}',
-      name: name,
-      subject: _selectedSubject,
-      memberCount: 1,
-      lastActivityAt: DateTime.now(),
-    );
-    Navigator.pop(context);
-    widget.onCreated(group);
+    setState(() { _busy = true; _error = null; });
+    try {
+      await StudyGroupService.instance.create(
+        name: name,
+        subject: _subjectCtrl.text.trim().isEmpty ? null : _subjectCtrl.text.trim(),
+      );
+      if (mounted) Navigator.pop(context);
+      widget.onCreated();
+    } catch (_) {
+      if (mounted) setState(() { _busy = false; _error = "Le groupe n'a pas pu être créé."; });
+    }
   }
 
   @override
@@ -254,11 +239,8 @@ class _CreateGroupSheetState extends State<_CreateGroupSheet> {
     final s = WinTheme.of(context);
     return Container(
       decoration: BoxDecoration(
-          color: s.surface,
-          borderRadius:
-              BorderRadius.vertical(top: Radius.circular(WinRadii.xl))),
-      padding: EdgeInsets.fromLTRB(
-          24, 20, 24, MediaQuery.of(context).viewInsets.bottom + 40),
+          color: s.surface, borderRadius: BorderRadius.vertical(top: Radius.circular(WinRadii.xl))),
+      padding: EdgeInsets.fromLTRB(24, 20, 24, MediaQuery.of(context).viewInsets.bottom + 40),
       child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -268,189 +250,21 @@ class _CreateGroupSheetState extends State<_CreateGroupSheet> {
                 width: 40,
                 height: 4,
                 margin: const EdgeInsets.only(bottom: 20),
-                decoration: BoxDecoration(
-                    color: s.outline2,
-                    borderRadius: BorderRadius.circular(WinRadii.full)),
+                decoration: BoxDecoration(color: s.outline2, borderRadius: BorderRadius.circular(WinRadii.full)),
               ),
             ),
-            Text('Créer un groupe',
-                style: WinType.archivo(size: 20, color: s.onStrong)),
+            Text('Créer un groupe', style: WinType.archivo(size: 20, color: s.onStrong)),
             const SizedBox(height: 20),
-            WinTextField(
-                icon: Icons.group,
-                hint: 'Nom du groupe (min 3 chars)',
-                controller: _nameCtrl),
-            const SizedBox(height: 16),
-            Text('Matière principale', style: WinType.labelM(s.onMuted)),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              children: _subjects
-                  .map((sub) => WinChip(
-                        sub,
-                        active: _selectedSubject == sub,
-                        onTap: () => setState(() => _selectedSubject = sub),
-                      ))
-                  .toList(),
-            ),
+            if (_error != null) ...[WinAlert(_error!, type: BadgeColor.error), const SizedBox(height: 12)],
+            WinTextField(icon: Icons.group, hint: 'Nom du groupe (min 3 caractères)', controller: _nameCtrl),
+            const SizedBox(height: 12),
+            WinTextField(icon: Icons.menu_book_outlined, hint: 'Matière principale (optionnel)', controller: _subjectCtrl),
             const SizedBox(height: 24),
-            WinButton('Créer', block: true, onTap: _submit),
+            WinButton(_busy ? 'Création…' : 'Créer', block: true, onTap: _busy ? null : _submit),
           ]),
     );
   }
 }
-
-// ─── Leaderboard ─────────────────────────────────────────────────────────────
-
-class _Leaderboard extends StatelessWidget {
-  static final _entries = [
-    (name: 'Kamga Ahmed', subject: 'math', hours: 24, score: 87, isMe: true),
-    (name: 'Brenda Mbe', subject: 'chimie', hours: 21, score: 92, isMe: false),
-    (name: 'Yann Talla', subject: 'pc', hours: 18, score: 79, isMe: false),
-    (name: 'Aïcha Bello', subject: 'fr', hours: 16, score: 84, isMe: false),
-    (name: 'Steve Nkeng', subject: 'math', hours: 14, score: 76, isMe: false),
-  ];
-
-  static const _medals = [
-    Color(0xFFFFD700),
-    Color(0xFFC0C0C0),
-    Color(0xFFCD7F32),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    final s = WinTheme.of(context);
-    return WinCard(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Column(
-        children: _entries.asMap().entries.map((e) {
-          final rank = e.key;
-          final entry = e.value;
-          final subj = WinData.subjectById(entry.subject);
-          final medal = rank < 3 ? _medals[rank] : null;
-          return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-            decoration: BoxDecoration(
-              color: entry.isMe ? s.primary.withValues(alpha: 0.06) : null,
-              border: rank < _entries.length - 1
-                  ? Border(bottom: BorderSide(color: s.outline, width: 0.8))
-                  : null,
-            ),
-            child: Row(children: [
-              SizedBox(
-                width: 28,
-                child: medal != null
-                    ? Icon(Icons.emoji_events, size: 20, color: medal)
-                    : Text('${rank + 1}',
-                        textAlign: TextAlign.center,
-                        style: WinType.labelM(s.onFaint)),
-              ),
-              const SizedBox(width: 10),
-              WinAvatar(entry.name,
-                  size: 34, color: subj.color.withValues(alpha: 0.2)),
-              const SizedBox(width: 10),
-              Expanded(
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                    Text(entry.name,
-                        style: WinType.titleM(s.onStrong).copyWith(
-                            fontWeight: entry.isMe
-                                ? FontWeight.w700
-                                : FontWeight.w500)),
-                    Text('${entry.hours}h · ${entry.score}%',
-                        style: WinType.labelS(s.onMuted)),
-                  ])),
-              if (entry.isMe)
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                  decoration: BoxDecoration(
-                      color: s.primary.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(WinRadii.full)),
-                  child: Text('Moi',
-                      style: WinType.labelS(s.primary)
-                          .copyWith(fontWeight: FontWeight.w700)),
-                ),
-            ]),
-          );
-        }).toList(),
-      ),
-    );
-  }
-}
-
-// ─── Group Detail Sheet ───────────────────────────────────────────────────────
-
-class _GroupDetailSheet extends StatelessWidget {
-  final StudyGroup group;
-  const _GroupDetailSheet({required this.group});
-
-  @override
-  Widget build(BuildContext context) {
-    final s = WinTheme.of(context);
-    final members = [
-      (name: 'Kamga Ahmed', role: 'Admin', hours: 18),
-      (name: 'Brenda Mbe', role: 'Membre', hours: 12),
-      (name: 'Yann Talla', role: 'Membre', hours: 8),
-    ];
-    return Container(
-      decoration: BoxDecoration(
-          color: s.surface,
-          borderRadius:
-              BorderRadius.vertical(top: Radius.circular(WinRadii.xl))),
-      padding: const EdgeInsets.fromLTRB(24, 16, 24, 40),
-      child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-                child: Container(
-                    width: 36,
-                    height: 4,
-                    margin: const EdgeInsets.only(bottom: 20),
-                    decoration: BoxDecoration(
-                        color: s.outline2,
-                        borderRadius: BorderRadius.circular(WinRadii.full)))),
-            Row(children: [
-              Expanded(
-                  child: Text(group.name,
-                      style: WinType.archivo(size: 20, color: s.onStrong))),
-              WinChip(group.subject),
-            ]),
-            const SizedBox(height: 4),
-            Text('${group.memberCount} membres',
-                style: WinType.bodyS(s.onMuted)),
-            const SizedBox(height: 20),
-            Text('Membres actifs', style: WinType.titleM(s.onStrong)),
-            const SizedBox(height: 10),
-            ...members.map((m) => Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: Row(children: [
-                    WinAvatar(m.name, size: 36),
-                    const SizedBox(width: 10),
-                    Expanded(
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                          Text(m.name, style: WinType.bodyM(s.onStrong)),
-                          Text(m.role, style: WinType.labelS(s.onMuted)),
-                        ])),
-                    Text('${m.hours}h cette semaine',
-                        style: WinType.labelM(s.primary)),
-                  ]),
-                )),
-            const SizedBox(height: 16),
-            WinButton('Envoyer un message au groupe',
-                block: true,
-                icon: Icons.chat_outlined,
-                onTap: () => Navigator.pop(context)),
-          ]),
-    );
-  }
-}
-
-// ─── Join Sheet ───────────────────────────────────────────────────────────────
 
 class _JoinGroupSheet extends StatefulWidget {
   final void Function(String msg, bool ok) onResult;
@@ -461,6 +275,7 @@ class _JoinGroupSheet extends StatefulWidget {
 
 class _JoinGroupSheetState extends State<_JoinGroupSheet> {
   final _codeCtrl = TextEditingController();
+  bool _busy = false;
 
   @override
   void dispose() {
@@ -468,20 +283,25 @@ class _JoinGroupSheetState extends State<_JoinGroupSheet> {
     super.dispose();
   }
 
-  void _submit() {
+  Future<void> _submit() async {
     final code = _codeCtrl.text.trim().toUpperCase();
-    if (code.length != 6) {
+    if (code.length < 4) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Le code doit faire exactement 6 caractères.')),
+        const SnackBar(content: Text("Entrez le code d'invitation complet.")),
       );
       return;
     }
-    Navigator.pop(context);
-    if (code == 'ABC123') {
-      widget.onResult('Groupe rejoint avec succès !', true);
-    } else {
-      widget.onResult('Code invalide ou groupe introuvable.', false);
+    setState(() => _busy = true);
+    try {
+      final res = await StudyGroupService.instance.join(code);
+      if (mounted) Navigator.pop(context);
+      widget.onResult(
+        res.alreadyMember ? 'Vous faites déjà partie de « ${res.name} ».' : 'Groupe « ${res.name} » rejoint avec succès !',
+        true,
+      );
+    } catch (_) {
+      if (mounted) Navigator.pop(context);
+      widget.onResult('Aucun groupe ne correspond à ce code.', false);
     }
   }
 
@@ -490,11 +310,8 @@ class _JoinGroupSheetState extends State<_JoinGroupSheet> {
     final s = WinTheme.of(context);
     return Container(
       decoration: BoxDecoration(
-          color: s.surface,
-          borderRadius:
-              BorderRadius.vertical(top: Radius.circular(WinRadii.xl))),
-      padding: EdgeInsets.fromLTRB(
-          24, 20, 24, MediaQuery.of(context).viewInsets.bottom + 40),
+          color: s.surface, borderRadius: BorderRadius.vertical(top: Radius.circular(WinRadii.xl))),
+      padding: EdgeInsets.fromLTRB(24, 20, 24, MediaQuery.of(context).viewInsets.bottom + 40),
       child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -504,21 +321,116 @@ class _JoinGroupSheetState extends State<_JoinGroupSheet> {
                 width: 40,
                 height: 4,
                 margin: const EdgeInsets.only(bottom: 20),
-                decoration: BoxDecoration(
-                    color: s.outline2,
-                    borderRadius: BorderRadius.circular(WinRadii.full)),
+                decoration: BoxDecoration(color: s.outline2, borderRadius: BorderRadius.circular(WinRadii.full)),
               ),
             ),
-            Text('Rejoindre par code',
-                style: WinType.archivo(size: 20, color: s.onStrong)),
+            Text('Rejoindre par code', style: WinType.archivo(size: 20, color: s.onStrong)),
             const SizedBox(height: 20),
             WinTextField(
                 icon: Icons.vpn_key,
-                hint: 'Code à 6 caractères',
+                hint: "Code d'invitation",
                 controller: _codeCtrl),
             const SizedBox(height: 24),
-            WinButton('Rejoindre', block: true, onTap: _submit),
+            WinButton(_busy ? 'Envoi…' : 'Rejoindre', block: true, onTap: _busy ? null : _submit),
           ]),
+    );
+  }
+}
+
+class _GroupDetailSheet extends StatefulWidget {
+  final int groupId;
+  const _GroupDetailSheet({required this.groupId});
+  @override
+  State<_GroupDetailSheet> createState() => _GroupDetailSheetState();
+}
+
+class _GroupDetailSheetState extends State<_GroupDetailSheet> {
+  ApiStudyGroupDetail? _detail;
+  bool _error = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    try {
+      final d = await StudyGroupService.instance.getOne(widget.groupId);
+      if (mounted) setState(() => _detail = d);
+    } catch (_) {
+      if (mounted) setState(() => _error = true);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final s = WinTheme.of(context);
+    final detail = _detail;
+    return Container(
+      decoration: BoxDecoration(
+          color: s.surface, borderRadius: BorderRadius.vertical(top: Radius.circular(WinRadii.xl))),
+      padding: const EdgeInsets.fromLTRB(24, 16, 24, 40),
+      constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.75),
+      child: detail == null
+          ? SizedBox(
+              height: 160,
+              child: Center(
+                child: _error
+                    ? Text('Impossible de charger ce groupe.', style: WinType.bodyM(s.onMuted))
+                    : const CircularProgressIndicator(),
+              ),
+            )
+          : Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                    child: Container(
+                        width: 36,
+                        height: 4,
+                        margin: const EdgeInsets.only(bottom: 20),
+                        decoration: BoxDecoration(
+                            color: s.outline2, borderRadius: BorderRadius.circular(WinRadii.full)))),
+                Row(children: [
+                  Expanded(child: Text(detail.name, style: WinType.archivo(size: 20, color: s.onStrong))),
+                  if (detail.subject != null) WinChip(detail.subject!),
+                ]),
+                const SizedBox(height: 4),
+                Row(children: [
+                  Text('${detail.members.length} membres', style: WinType.bodyS(s.onMuted)),
+                  const SizedBox(width: 10),
+                  WinButton(detail.joinCode, small: true, variant: WinButtonVariant.outline, onTap: () {}),
+                ]),
+                const SizedBox(height: 20),
+                Text('Membres', style: WinType.titleM(s.onStrong)),
+                const SizedBox(height: 10),
+                Flexible(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: detail.members.length,
+                    itemBuilder: (_, i) {
+                      final m = detail.members[i];
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: Row(children: [
+                          WinAvatar(m.fullName.isEmpty ? '?' : m.fullName, size: 36),
+                          const SizedBox(width: 10),
+                          Expanded(
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                Text(m.fullName.isEmpty ? 'Membre' : m.fullName, style: WinType.bodyM(s.onStrong)),
+                                Text(m.role == 'owner' ? 'Propriétaire' : 'Membre',
+                                    style: WinType.labelS(s.onMuted)),
+                              ])),
+                        ]),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
     );
   }
 }

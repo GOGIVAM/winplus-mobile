@@ -1,77 +1,163 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../data/mock_data.dart';
+import '../services/exam_coach_service.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../shared/subscription/upgrade_sheet.dart';
 
+/// Module 24 (lot 8, rattrapage 16.3) : Exam Coach porté sur les vrais
+/// endpoints déjà utilisés par le web (ExamCoach.tsx/examCoachService.ts) —
+/// GET/POST/PUT/DELETE /exam-coach — remplace le plan 100% simulé
+/// (WinData.examCoachPlan) affiché jusqu'ici.
 class ExamCoachScreen extends StatefulWidget {
   const ExamCoachScreen({super.key});
   @override
   State<ExamCoachScreen> createState() => _ExamCoachScreenState();
 }
 
+const _examTypes = <String, String>{
+  'BEPC': "BEPC — Brevet d'Études du Premier Cycle",
+  'BAC_C': 'BAC C — Mathématiques & Sciences Physiques',
+  'BAC_D': 'BAC D — Sciences & Vie de la Terre',
+  'BAC_A': 'BAC A — Lettres & Sciences Humaines',
+  'BAC_TI': 'BAC TI — Technique Industrielle',
+  'BAC_G': 'BAC G — Sciences Économiques & Sociales',
+  'ENSP': 'ENSP',
+  'UY_L1': 'Université — Licence 1',
+  'CONCOURS': "Concours d'entrée",
+};
+
 class _ExamCoachScreenState extends State<ExamCoachScreen> {
-  bool _planGenerated = false;
-  final _examCtrl = TextEditingController(text: 'BAC C');
-  final _dateCtrl = TextEditingController(text: '18 juin 2026');
-  double _hoursPerDay = 3;
+  bool _loading = true;
+  bool _generating = false;
+  String? _error;
+  ApiExamCoachPlan? _plan;
+  Map<String, dynamic>? _parsed;
 
-  // Matières sélectionnées dans l'ordre de priorité
-  final List<String> _orderedSubjects = ['math', 'pc', 'chimie'];
-
-  // Deadline par matière (optionnel)
-  final Map<String, TextEditingController> _deadlineCtrls = {};
+  // Formulaire de configuration
+  String _examType = 'BAC_C';
+  DateTime? _examDate;
+  double _hoursPerDay = 2;
 
   @override
-  void dispose() {
-    _examCtrl.dispose();
-    _dateCtrl.dispose();
-    for (final c in _deadlineCtrls.values) {
-      c.dispose();
-    }
-    super.dispose();
+  void initState() {
+    super.initState();
+    _load();
   }
 
-  TextEditingController _deadlineCtrl(String subjectId) =>
-      _deadlineCtrls.putIfAbsent(subjectId, () => TextEditingController());
-
-  void _toggleSubject(String id) {
+  Future<void> _load() async {
     setState(() {
-      if (_orderedSubjects.contains(id)) {
-        _orderedSubjects.remove(id);
-        _deadlineCtrls[id]?.dispose();
-        _deadlineCtrls.remove(id);
-      } else {
-        _orderedSubjects.add(id);
+      _loading = true;
+      _error = null;
+    });
+    try {
+      final plan = await ExamCoachService.instance.getActivePlan();
+      Map<String, dynamic>? parsed;
+      if (plan != null) {
+        try {
+          parsed = Map<String, dynamic>.from(jsonDecode(plan.planJson) as Map);
+        } catch (_) {
+          parsed = null;
+        }
       }
-    });
+      if (!mounted) return;
+      setState(() {
+        _plan = plan;
+        _parsed = parsed;
+        _loading = false;
+      });
+    } catch (_) {
+      if (mounted) {
+        setState(() {
+          _loading = false;
+          _error = "Impossible de charger ton plan. Vérifie ta connexion.";
+        });
+      }
+    }
   }
 
-  void _moveUp(int i) {
-    if (i == 0) return;
+  Future<void> _generate() async {
+    if (_examDate == null) return;
     setState(() {
-      final tmp = _orderedSubjects[i - 1];
-      _orderedSubjects[i - 1] = _orderedSubjects[i];
-      _orderedSubjects[i] = tmp;
+      _generating = true;
+      _error = null;
     });
+    try {
+      final plan = await ExamCoachService.instance.createPlan(
+        examType: _examType,
+        examDate: _examDate!,
+        hoursPerDay: _hoursPerDay,
+      );
+      Map<String, dynamic>? parsed;
+      try {
+        parsed = Map<String, dynamic>.from(jsonDecode(plan.planJson) as Map);
+      } catch (_) {
+        parsed = null;
+      }
+      if (!mounted) return;
+      setState(() {
+        _plan = plan;
+        _parsed = parsed;
+        _generating = false;
+      });
+    } catch (_) {
+      if (mounted) {
+        setState(() {
+          _generating = false;
+          _error = "Impossible de générer le plan. Réessaie dans un instant.";
+        });
+      }
+    }
   }
 
-  void _moveDown(int i) {
-    if (i == _orderedSubjects.length - 1) return;
-    setState(() {
-      final tmp = _orderedSubjects[i + 1];
-      _orderedSubjects[i + 1] = _orderedSubjects[i];
-      _orderedSubjects[i] = tmp;
-    });
+  Future<void> _deletePlan() async {
+    final plan = _plan;
+    if (plan == null) return;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Supprimer ce plan ?'),
+        content: const Text('Cette action est irréversible.'),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text('Annuler')),
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text('Supprimer')),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    try {
+      await ExamCoachService.instance.deactivatePlan(plan.id);
+      if (!mounted) return;
+      setState(() {
+        _plan = null;
+        _parsed = null;
+      });
+    } catch (_) {}
   }
 
-  String _fmtHours(double h) {
-    final mins = (h * 60).round();
-    final hh = mins ~/ 60;
-    final mm = mins % 60;
-    return mm == 0 ? '${hh}h' : '${hh}h${mm.toString().padLeft(2, '0')}';
+  int _todayDayNumber() {
+    final created = _plan!.createdAt;
+    final createdDate = DateTime(created.year, created.month, created.day);
+    final today = DateTime.now();
+    final todayDate = DateTime(today.year, today.month, today.day);
+    return (todayDate.difference(createdDate).inDays + 1).clamp(1, 1 << 30);
+  }
+
+  Future<void> _completeToday() async {
+    final plan = _plan;
+    if (plan == null) return;
+    final dayNumber = _todayDayNumber();
+    try {
+      await ExamCoachService.instance.completeDay(plan.id, dayNumber);
+      await _load();
+    } catch (_) {}
   }
 
   @override
@@ -129,298 +215,221 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
             icon: Icon(Icons.arrow_back, color: s.onStrong),
             onPressed: () => Navigator.pop(context)),
         title: Text('Exam Coach', style: WinType.headlineS(s.onStrong)),
-        actions: [
-          if (_planGenerated)
-            TextButton(
-              onPressed: () => setState(() => _planGenerated = false),
-              child: Text('Modifier', style: WinType.labelM(s.primary)),
-            ),
-        ],
       ),
-      body: _planGenerated ? _PlanView() : _buildForm(s),
+      body: _loading
+          ? const Center(child: CircularProgressIndicator())
+          : (_plan == null ? _buildSetup(s) : _buildDashboard(s)),
     );
   }
 
-  Widget _buildForm(WinScheme s) {
-    const allSubjects = WinData.subjects;
+  Widget _buildSetup(WinScheme s) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         const WinAlert(
-          'WinAI génère un planning semaine par semaine adapté à tes lacunes et tes délais.',
+          'WinAI génère un planning jour par jour adapté à ta date d\'examen et ton rythme.',
           type: BadgeColor.teal,
           icon: Icons.auto_awesome_outlined,
         ),
+        if (_error != null) ...[
+          const SizedBox(height: 12),
+          WinAlert(_error!, type: BadgeColor.error),
+        ],
         const SizedBox(height: 24),
-
-        // ── Exam + date ───────────────────────────────────────────
-        WinTextField(
-            label: 'Examen cible',
-            hint: 'BAC C, ENSP, BEPC…',
-            icon: Icons.school_outlined,
-            controller: _examCtrl),
-        const SizedBox(height: 16),
-        WinTextField(
-            label: 'Date de l\'examen',
-            hint: 'jj mois aaaa',
-            icon: Icons.calendar_today_outlined,
-            controller: _dateCtrl),
-        const SizedBox(height: 28),
-
-        // ── Sélection des matières ────────────────────────────────
-        Text('Matières à réviser', style: WinType.titleM(s.onStrong)),
-        const SizedBox(height: 4),
-        Text('Sélectionne les matières à inclure dans ton planning.',
-            style: WinType.labelM(s.onMuted)),
-        const SizedBox(height: 12),
+        Text('Examen cible', style: WinType.titleM(s.onStrong)),
+        const SizedBox(height: 8),
         Wrap(
           spacing: 8,
           runSpacing: 8,
-          children: allSubjects.map((subj) {
-            final selected = _orderedSubjects.contains(subj.id);
+          children: _examTypes.entries.map((e) {
+            final selected = _examType == e.key;
             return GestureDetector(
-              onTap: () => _toggleSubject(subj.id),
+              onTap: () => setState(() => _examType = e.key),
               child: Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
-                  color: selected
-                      ? subj.color.withValues(alpha: 0.12)
-                      : s.surface2,
+                  color: selected ? s.primaryContainer : s.surface2,
                   borderRadius: BorderRadius.circular(WinRadii.full),
-                  border: Border.all(
-                    color: selected ? subj.color : s.outline,
-                    width: selected ? 1.5 : 1,
-                  ),
+                  border: Border.all(color: selected ? s.primary : s.outline),
                 ),
-                child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  Icon(subj.icon,
-                      size: 14, color: selected ? subj.color : s.onFaint),
-                  const SizedBox(width: 6),
-                  Text(subj.short,
-                      style: WinType.labelM(selected ? subj.color : s.onMuted)
-                          .copyWith(
-                              fontWeight: selected
-                                  ? FontWeight.w700
-                                  : FontWeight.w500)),
-                ]),
+                child: Text(e.key,
+                    style: WinType.labelM(selected ? s.primary : s.onMuted)),
               ),
             );
           }).toList(),
         ),
-
-        // ── Ordre de priorité ─────────────────────────────────────
-        if (_orderedSubjects.isNotEmpty) ...[
-          const SizedBox(height: 28),
-          Text('Ordre de priorité & délais', style: WinType.titleM(s.onStrong)),
-          const SizedBox(height: 4),
-          Text(
-              'Réordonne par ordre d\'importance. Ajoute une deadline optionnelle.',
-              style: WinType.labelM(s.onMuted)),
-          const SizedBox(height: 12),
-          ..._orderedSubjects.asMap().entries.map((e) {
-            final idx = e.key;
-            final id = e.value;
-            final subj = WinData.subjectById(id);
-            return Container(
-              margin: const EdgeInsets.only(bottom: 10),
-              padding: const EdgeInsets.fromLTRB(14, 10, 10, 10),
-              decoration: BoxDecoration(
-                color: subj.color.withValues(alpha: 0.06),
-                borderRadius: BorderRadius.circular(WinRadii.lg),
-                border: Border.all(color: subj.color.withValues(alpha: 0.3)),
-              ),
-              child: Row(children: [
-                Container(
-                  width: 24,
-                  height: 24,
-                  decoration:
-                      BoxDecoration(color: subj.color, shape: BoxShape.circle),
-                  child: Center(
-                      child: Text('${idx + 1}',
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 11,
-                              fontWeight: FontWeight.w800))),
-                ),
-                const SizedBox(width: 10),
-                Icon(subj.icon, size: 16, color: subj.color),
-                const SizedBox(width: 8),
-                Expanded(
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                      Text(subj.name,
-                          style: WinType.bodyM(s.onStrong)
-                              .copyWith(fontWeight: FontWeight.w600)),
-                      const SizedBox(height: 4),
-                      TextField(
-                        controller: _deadlineCtrl(id),
-                        style: WinType.labelM(s.onMuted),
-                        decoration: InputDecoration(
-                          hintText: 'Deadline optionnelle (ex: 10 mai)',
-                          hintStyle: WinType.labelM(s.onFaint),
-                          isDense: true,
-                          contentPadding: EdgeInsets.zero,
-                          border: InputBorder.none,
-                          enabledBorder: InputBorder.none,
-                          focusedBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: subj.color, width: 1)),
-                        ),
-                      ),
-                    ])),
-                Column(children: [
-                  GestureDetector(
-                    onTap: () => _moveUp(idx),
-                    child: Icon(Icons.keyboard_arrow_up,
-                        size: 20, color: idx == 0 ? s.onFaint : s.onMuted),
-                  ),
-                  GestureDetector(
-                    onTap: () => _moveDown(idx),
-                    child: Icon(Icons.keyboard_arrow_down,
-                        size: 20,
-                        color: idx == _orderedSubjects.length - 1
-                            ? s.onFaint
-                            : s.onMuted),
-                  ),
-                ]),
-              ]),
+        const SizedBox(height: 24),
+        Text("Date de l'examen", style: WinType.titleM(s.onStrong)),
+        const SizedBox(height: 8),
+        WinButton(
+          _examDate == null
+              ? 'Choisir une date'
+              : '${_examDate!.day}/${_examDate!.month}/${_examDate!.year}',
+          variant: WinButtonVariant.outline,
+          icon: Icons.calendar_today_outlined,
+          block: true,
+          onTap: () async {
+            final picked = await showDatePicker(
+              context: context,
+              initialDate: DateTime.now().add(const Duration(days: 30)),
+              firstDate: DateTime.now(),
+              lastDate: DateTime.now().add(const Duration(days: 730)),
             );
-          }),
-        ],
-
-        // ── Heures par jour ───────────────────────────────────────
+            if (picked != null) setState(() => _examDate = picked);
+          },
+        ),
         const SizedBox(height: 28),
         Text("Heures d'étude par jour", style: WinType.titleM(s.onStrong)),
         const SizedBox(height: 4),
-        Text(_fmtHours(_hoursPerDay),
+        Text('${_hoursPerDay.toStringAsFixed(1)}h',
             style: WinType.archivo(
                 size: 32, weight: FontWeight.w800, color: s.primary)),
         Slider(
           value: _hoursPerDay,
-          min: 1,
-          max: 12,
-          divisions: 22,
+          min: 0.5,
+          max: 6,
+          divisions: 11,
           activeColor: s.primary,
           inactiveColor: s.outline2,
           onChanged: (v) => setState(() => _hoursPerDay = v),
         ),
-        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Text('1h', style: WinType.labelM(s.onFaint)),
-          Text('6h', style: WinType.labelM(s.onFaint)),
-          Text('12h', style: WinType.labelM(s.onFaint)),
-        ]),
-        const SizedBox(height: 8),
-        Text(
-          _hoursPerDay <= 4
-              ? 'Rythme léger · Idéal pour maintenir la régularité.'
-              : _hoursPerDay <= 7
-                  ? 'Rythme modéré · Bon équilibre travail/repos.'
-                  : 'Rythme intensif · Assure-toi de bien dormir !',
-          style: WinType.bodyS(s.onMuted),
-        ),
-        const SizedBox(height: 36),
+        const SizedBox(height: 28),
         WinButton(
-          'Générer mon plan avec WinAI',
+          _generating ? 'Génération…' : 'Générer mon plan avec WinAI',
           block: true,
           icon: Icons.auto_awesome_outlined,
-          onTap: _orderedSubjects.isEmpty
-              ? null
-              : () => setState(() => _planGenerated = true),
+          onTap: (_examDate == null || _generating) ? null : _generate,
         ),
-        if (_orderedSubjects.isEmpty) ...[
-          const SizedBox(height: 8),
-          Center(
-              child: Text('Sélectionne au moins une matière.',
-                  style: WinType.labelM(WinColors.warn))),
-        ],
         const SizedBox(height: 24),
       ]),
     );
   }
-}
 
-class _PlanView extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final s = WinTheme.of(context);
-    const plan = WinData.examCoachPlan;
-    final done = plan.weeks.where((w) => w.done).length;
-    final total = plan.weeks.length;
+  Widget _buildDashboard(WinScheme s) {
+    final plan = _plan!;
+    final parsed = _parsed;
+    final days = plan.examDate.difference(DateTime.now()).inDays.clamp(0, 1 << 30);
+    final todayNum = _todayDayNumber();
+    final isTodayDone = plan.completedDays.any((d) => d.dayNumber == todayNum);
+
+    final allDays = <Map<String, dynamic>>[];
+    if (parsed != null) {
+      for (final w in (parsed['weeks'] as List? ?? [])) {
+        for (final d in ((w as Map)['days'] as List? ?? [])) {
+          allDays.add(Map<String, dynamic>.from(d as Map));
+        }
+      }
+    }
+    final weekStart = ((todayNum - 1) ~/ 7) * 7 + 1;
+    final weekDays =
+        allDays.where((d) => (d['day'] as int) >= weekStart && (d['day'] as int) < weekStart + 7).toList();
+    final totalActive = allDays.where((d) => d['activity_type'] != 'rest').length;
+    final completionPct = totalActive == 0
+        ? 0
+        : (plan.completedDays.length / totalActive * 100).round().clamp(0, 100);
+    final completedSet = plan.completedDays.map((d) => d.dayNumber).toSet();
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
       children: [
         WinCard(
           bg: WinColors.ink800,
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(children: [
-              const Icon(Icons.school_outlined,
-                  size: 20, color: WinColors.teal400),
+              const Icon(Icons.school_outlined, size: 20, color: WinColors.teal400),
               const SizedBox(width: 8),
-              Text(plan.examName, style: WinType.headlineS(WinColors.cream50)),
-              const Spacer(),
-              WinBadge('${WinData.upcomingExams.first.daysLeft}j restants',
-                  color: BadgeColor.warn),
+              Expanded(
+                  child: Text(plan.examType,
+                      style: WinType.headlineS(WinColors.cream50))),
+              WinBadge('$days j restants', color: BadgeColor.warn),
             ]),
             const SizedBox(height: 4),
-            Text(plan.examDate, style: WinType.bodyS(WinColors.ink300)),
+            Text('${plan.examDate.day}/${plan.examDate.month}/${plan.examDate.year}',
+                style: WinType.bodyS(WinColors.ink300)),
             const SizedBox(height: 12),
-            WinProgressBar(done / total * 100, color: WinColors.teal400),
+            WinProgressBar(completionPct.toDouble(), color: WinColors.teal400),
             const SizedBox(height: 4),
-            Text('$done/$total semaines complétées',
+            Text('$completionPct% du plan complété',
+                style: WinType.labelM(WinColors.ink300)),
+            const SizedBox(height: 4),
+            Text('Fiabilité du plan : ${(plan.confidenceScore * 100).round()}%',
                 style: WinType.labelM(WinColors.ink300)),
           ]),
         ),
-        const SizedBox(height: 20),
-        Text('Planning semaine par semaine',
-            style: WinType.headlineS(s.onStrong)),
-        const SizedBox(height: 12),
-        ...plan.weeks.asMap().entries.map((e) {
-          final week = e.value;
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: WinCard(
-              bg: week.done ? WinColors.successBg : null,
-              child:
-                  Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Container(
-                  width: 28,
-                  height: 28,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: week.done ? WinColors.success : s.surface2,
-                  ),
-                  child: Icon(
-                      week.done ? Icons.check : Icons.lock_open_outlined,
-                      size: 16,
-                      color: week.done ? Colors.white : s.onFaint),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                      Text(week.label, style: WinType.titleM(s.onStrong)),
-                      const SizedBox(height: 6),
-                      Wrap(
-                          spacing: 6,
-                          runSpacing: 6,
-                          children:
-                              week.topics.map((t) => WinChip(t)).toList()),
-                    ])),
-              ]),
-            ),
-          );
-        }),
         const SizedBox(height: 16),
-        WinButton('Partager mon plan',
+        WinCard(
+          bg: isTodayDone ? WinColors.successBg : null,
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            WinBadge('Aujourd\'hui · J$todayNum'),
+            const SizedBox(height: 8),
+            if (!isTodayDone)
+              WinButton('Marquer la session du jour comme faite',
+                  icon: Icons.check, block: true, onTap: _completeToday)
+            else
+              Row(children: const [
+                Icon(Icons.check_circle, color: WinColors.success, size: 18),
+                SizedBox(width: 8),
+                Text('Session du jour complétée'),
+              ]),
+          ]),
+        ),
+        const SizedBox(height: 20),
+        Text('Cette semaine', style: WinType.headlineS(s.onStrong)),
+        const SizedBox(height: 12),
+        if (weekDays.isEmpty)
+          Text('Planning indisponible pour cette semaine.',
+              style: WinType.bodyM(s.onMuted))
+        else
+          ...weekDays.map((d) {
+            final dayNum = d['day'] as int;
+            final isDone = completedSet.contains(dayNum);
+            final isToday = dayNum == todayNum;
+            final isRest = d['activity_type'] == 'rest';
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: WinCard(
+                bg: isDone
+                    ? WinColors.successBg
+                    : isToday
+                        ? s.primary.withValues(alpha: 0.06)
+                        : null,
+                child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Container(
+                    width: 26,
+                    height: 26,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: isDone ? WinColors.success : s.surface2,
+                    ),
+                    child: Center(
+                      child: isDone
+                          ? const Icon(Icons.check, size: 14, color: Colors.white)
+                          : Text('$dayNum',
+                              style: WinType.labelS(s.onMuted)),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                        Text(isRest ? 'Repos' : (d['focus_area'] as String? ?? ''),
+                            style: WinType.titleM(s.onStrong)),
+                        if (!isRest)
+                          Text('${d['duration_minutes'] ?? 0} min',
+                              style: WinType.labelS(s.onMuted)),
+                      ])),
+                ]),
+              ),
+            );
+          }),
+        const SizedBox(height: 16),
+        WinButton('Supprimer le plan',
             variant: WinButtonVariant.outline,
             block: true,
-            icon: Icons.share_outlined,
-            onTap: () {}),
+            icon: Icons.delete_outline,
+            onTap: _deletePlan),
       ],
     );
   }
