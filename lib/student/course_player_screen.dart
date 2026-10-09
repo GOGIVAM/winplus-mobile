@@ -1,5 +1,8 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:video_player/video_player.dart';
+import '../services/course_offline_service.dart';
 import '../services/course_service.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
@@ -257,6 +260,7 @@ class _CoursePlayerScreenState extends State<CoursePlayerScreen> {
                           },
                         )
                       : _LessonView(
+                          courseId: widget.courseId,
                           lesson: _lesson,
                           loading: _loadingLesson,
                           courseCompleted: _courseCompleted,
@@ -357,12 +361,14 @@ class _CurriculumPanel extends StatelessWidget {
 // ─── Lesson content view ──────────────────────────────────────────────────────
 
 class _LessonView extends StatelessWidget {
+  final int courseId;
   final LessonContent? lesson;
   final bool loading;
   final bool courseCompleted;
   final VoidCallback onMarkComplete;
 
   const _LessonView({
+    required this.courseId,
     required this.lesson,
     required this.loading,
     required this.courseCompleted,
@@ -385,10 +391,18 @@ class _LessonView extends StatelessWidget {
 
     return SingleChildScrollView(
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        // Video placeholder (real implementation needs video_player package)
+        // Module 27 (lot 8) : lecture vidéo réelle depuis l'URL présignée à
+        // durée limitée renvoyée par le serveur (plus de placeholder), avec
+        // option de téléchargement hors-ligne chiffré lié au compte.
         if (l.lessonType == 'video' && l.videoUrl != null)
-          _VideoPlaceholder(
-              videoUrl: l.videoUrl!, durationSec: l.videoDurationSec),
+          _LessonVideoPlayer(
+            key: ValueKey('video_${courseId}_${l.id}'),
+            courseId: courseId,
+            lessonId: l.id,
+            lessonTitle: l.title,
+            videoUrl: l.videoUrl!,
+            durationSec: l.videoDurationSec,
+          ),
 
         // Article content
         if (l.lessonType == 'article' && l.articleContent != null)
@@ -484,37 +498,221 @@ class _LessonView extends StatelessWidget {
   }
 }
 
-class _VideoPlaceholder extends StatelessWidget {
+/// Module 27 (lot 8) : lecteur vidéo réel (video_player), en ligne via l'URL
+/// présignée à durée limitée du serveur, ou hors-ligne depuis la copie
+/// chiffrée locale si la leçon a été téléchargée (CourseOfflineService).
+/// Bouton de téléchargement/suppression intégré.
+class _LessonVideoPlayer extends StatefulWidget {
+  final int courseId;
+  final int lessonId;
+  final String lessonTitle;
   final String videoUrl;
   final int durationSec;
-  const _VideoPlaceholder({required this.videoUrl, required this.durationSec});
+  const _LessonVideoPlayer({
+    super.key,
+    required this.courseId,
+    required this.lessonId,
+    required this.lessonTitle,
+    required this.videoUrl,
+    required this.durationSec,
+  });
+
+  @override
+  State<_LessonVideoPlayer> createState() => _LessonVideoPlayerState();
+}
+
+class _LessonVideoPlayerState extends State<_LessonVideoPlayer> {
+  VideoPlayerController? _controller;
+  bool _initializing = true;
+  bool _initError = false;
+  bool _isOffline = false;
+  bool _downloaded = false;
+  bool _downloading = false;
+  double _downloadProgress = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkOfflineThenInit();
+  }
+
+  @override
+  void didUpdateWidget(_LessonVideoPlayer old) {
+    super.didUpdateWidget(old);
+    if (old.lessonId != widget.lessonId || old.courseId != widget.courseId) {
+      _controller?.dispose();
+      _controller = null;
+      _initializing = true;
+      _initError = false;
+      _checkOfflineThenInit();
+    }
+  }
+
+  Future<void> _checkOfflineThenInit() async {
+    final downloaded = await CourseOfflineService.instance
+        .isDownloaded(widget.courseId, widget.lessonId);
+    if (mounted) setState(() => _downloaded = downloaded);
+    await _initController(preferOffline: downloaded);
+  }
+
+  Future<void> _initController({required bool preferOffline}) async {
+    try {
+      VideoPlayerController controller;
+      if (preferOffline) {
+        final path = await CourseOfflineService.instance
+            .decryptForPlayback(widget.courseId, widget.lessonId);
+        controller = VideoPlayerController.file(File(path));
+        _isOffline = true;
+      } else {
+        controller =
+            VideoPlayerController.networkUrl(Uri.parse(widget.videoUrl));
+        _isOffline = false;
+      }
+      await controller.initialize();
+      if (!mounted) {
+        controller.dispose();
+        return;
+      }
+      setState(() {
+        _controller = controller;
+        _initializing = false;
+      });
+    } catch (_) {
+      if (mounted) {
+        setState(() {
+          _initializing = false;
+          _initError = true;
+        });
+      }
+    }
+  }
+
+  Future<void> _download() async {
+    setState(() {
+      _downloading = true;
+      _downloadProgress = 0;
+    });
+    try {
+      await CourseOfflineService.instance.downloadLesson(
+        courseId: widget.courseId,
+        lessonId: widget.lessonId,
+        title: widget.lessonTitle,
+        videoUrl: widget.videoUrl,
+        onProgress: (p) {
+          if (mounted) setState(() => _downloadProgress = p);
+        },
+      );
+      if (!mounted) return;
+      setState(() {
+        _downloading = false;
+        _downloaded = true;
+      });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Leçon téléchargée pour un visionnage hors-ligne.')));
+      }
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _downloading = false);
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Téléchargement impossible. Réessaie plus tard.')));
+    }
+  }
+
+  Future<void> _deleteOffline() async {
+    await CourseOfflineService.instance
+        .deleteLesson(widget.courseId, widget.lessonId);
+    if (!mounted) return;
+    setState(() => _downloaded = false);
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final m = durationSec ~/ 60;
-    final s = durationSec % 60;
-    return Container(
-      width: double.infinity,
-      height: 210,
-      color: Colors.black,
-      child: Stack(alignment: Alignment.center, children: [
-        Icon(Icons.play_circle_filled,
-            size: 64, color: Colors.white.withValues(alpha: 0.85)),
-        Positioned(
-          bottom: 12,
-          right: 12,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: Colors.black54,
-              borderRadius: BorderRadius.circular(WinRadii.sm),
+    return Column(children: [
+      AspectRatio(
+        aspectRatio: 16 / 9,
+        child: Container(
+          color: Colors.black,
+          child: _buildVideoArea(),
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+        child: Row(children: [
+          if (_isOffline)
+            const Icon(Icons.offline_pin, size: 16, color: WinColors.teal400),
+          if (_isOffline) const SizedBox(width: 4),
+          if (_isOffline)
+            Text('Lecture hors-ligne',
+                style: WinType.labelS(WinColors.teal400)),
+          const Spacer(),
+          if (_downloading)
+            SizedBox(
+              width: 120,
+              child: LinearProgressIndicator(
+                value: _downloadProgress > 0 ? _downloadProgress : null,
+                color: WinColors.teal400,
+                backgroundColor: Colors.white12,
+              ),
+            )
+          else if (_downloaded)
+            TextButton.icon(
+              onPressed: _deleteOffline,
+              icon: const Icon(Icons.delete_outline,
+                  size: 16, color: Colors.white70),
+              label: Text('Retirer le hors-ligne',
+                  style: WinType.labelS(Colors.white70)),
+            )
+          else
+            TextButton.icon(
+              onPressed: _download,
+              icon: const Icon(Icons.download_outlined,
+                  size: 16, color: WinColors.teal400),
+              label: Text('Télécharger hors-ligne',
+                  style: WinType.labelS(WinColors.teal400)),
             ),
-            child: Text('$m:${s.toString().padLeft(2, '0')}',
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600)),
+        ]),
+      ),
+    ]);
+  }
+
+  Widget _buildVideoArea() {
+    if (_initializing) {
+      return const Center(
+          child: CircularProgressIndicator(color: WinColors.teal400));
+    }
+    if (_initError || _controller == null) {
+      return Center(
+          child: Text('Vidéo indisponible pour le moment.',
+              style: WinType.bodyM(Colors.white38)));
+    }
+    final c = _controller!;
+    return GestureDetector(
+      onTap: () => setState(() => c.value.isPlaying ? c.pause() : c.play()),
+      child: Stack(alignment: Alignment.center, children: [
+        VideoPlayer(c),
+        if (!c.value.isPlaying)
+          Container(
+            decoration: const BoxDecoration(
+                color: Colors.black26, shape: BoxShape.circle),
+            child: const Icon(Icons.play_arrow, size: 56, color: Colors.white),
           ),
+        Positioned(
+          left: 0,
+          right: 0,
+          bottom: 0,
+          child: VideoProgressIndicator(c,
+              allowScrubbing: true,
+              colors: const VideoProgressColors(
+                  playedColor: WinColors.teal400,
+                  bufferedColor: Colors.white24,
+                  backgroundColor: Colors.white10)),
         ),
       ]),
     );

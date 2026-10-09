@@ -17,6 +17,13 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
   List<AchievementBadge> _badges = WinData.badges;
   int _streak = WinData.streak;
   bool _loading = true;
+  // Module 24 (lot 8) : jusqu'ici, un échec réseau retombait silencieusement
+  // sur la série (streak) de démonstration sans que l'utilisateur ne puisse
+  // distinguer un vrai 0 jour d'un faux "7 jours" affiché par erreur. Les
+  // badges restent volontairement en démonstration en l'absence de système
+  // de badges serveur (décision produit non tranchée, voir rapport lot 8) :
+  // seul le streak, lui réel, doit porter une indication d'erreur explicite.
+  bool _error = false;
 
   @override
   void initState() {
@@ -25,6 +32,7 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
   }
 
   Future<void> _load() async {
+    setState(() => _error = false);
     try {
       final result = await AchievementService.instance.getMyAchievements();
       if (mounted) {
@@ -35,8 +43,12 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
         });
       }
     } catch (_) {
-      // Fallback to mock data if the API is unavailable
-      if (mounted) setState(() => _loading = false);
+      if (mounted) {
+        setState(() {
+          _loading = false;
+          _error = true;
+        });
+      }
     }
   }
 
@@ -63,6 +75,12 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
           : ListView(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
               children: [
+                if (_error) ...[
+                  WinAlert(
+                      "Impossible de charger ta série réelle. La série ci-dessous peut ne pas être à jour.",
+                      type: BadgeColor.warn),
+                  const SizedBox(height: 12),
+                ],
                 // Progress header
                 WinCard(
                   bg: WinColors.ink800,

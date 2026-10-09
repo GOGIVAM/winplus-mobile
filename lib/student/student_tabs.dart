@@ -20,6 +20,7 @@ import 'achievements_screen.dart';
 import 'certificates_screen.dart';
 import 'exam_coach_screen.dart';
 import 'study_groups_screen.dart';
+import 'study_session_screen.dart';
 import 'student_reports_screen.dart';
 import 'quiz_revision_screen.dart';
 import 'my_courses_screen.dart';
@@ -340,6 +341,18 @@ class StudentSpaceTab extends StatelessWidget {
                             WinPageRoute(
                                 builder: (_) => const ExamCoachScreen())))),
               ]),
+              const SizedBox(height: 10),
+              // Module 32 (lot 8, décision 14.3) : portage mobile de la
+              // session d'étude guidée (briefing → quiz → synthèse WinAI),
+              // point d'entrée équivalent à StudySessionLauncher côté web.
+              _QuickLink(
+                  'Session d\'étude guidée',
+                  Icons.auto_awesome_outlined,
+                  WinColors.teal500,
+                  () => Navigator.push(
+                      context,
+                      WinPageRoute(
+                          builder: (_) => const StudySessionScreen()))),
               const SizedBox(height: 10),
               Row(children: [
                 Expanded(

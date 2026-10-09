@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'api_client.dart';
+import 'course_offline_service.dart';
 import 'session_manager.dart';
 import '../data/models.dart';
 
@@ -129,6 +130,11 @@ class AuthService {
     try {
       await _api.dio.post('/auth/logout');
     } catch (_) {}
+    // Module 27 (lot 8) : purge la clé de chiffrement et les leçons de
+    // formation téléchargées hors-ligne du compte courant, avant d'effacer
+    // la session elle-même (SessionManager.getUserId() doit encore
+    // répondre).
+    await CourseOfflineService.instance.wipeForLogout();
     await SessionManager.clear();
   }
 

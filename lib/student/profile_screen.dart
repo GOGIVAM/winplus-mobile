@@ -205,6 +205,33 @@ class _ProfileScreenState extends State<ProfileScreen>
 
         // ---- SÉCURITÉ ----
         ListView(padding: const EdgeInsets.all(20), children: [
+          // Module 40 (lot 8, décision 15.2) : changement d'adresse email,
+          // parité avec l'onglet Sécurité web (demande → code → confirmation).
+          _EmailChangeCard(
+            currentEmail: _profile?.email ?? _emailCtrl.text,
+            onChanged: (newEmail) {
+              setState(() {
+                _emailCtrl.text = newEmail;
+                if (_profile != null) {
+                  _profile = ApiUserProfile(
+                    id: _profile!.id,
+                    email: newEmail,
+                    firstName: _profile!.firstName,
+                    lastName: _profile!.lastName,
+                    phone: _profile!.phone,
+                    role: _profile!.role,
+                    level: _profile!.level,
+                    locale: _profile!.locale,
+                    avatarUrl: _profile!.avatarUrl,
+                    dateOfBirth: _profile!.dateOfBirth,
+                  );
+                }
+              });
+            },
+          ),
+          const SizedBox(height: 28),
+          const WinDivider(),
+          const SizedBox(height: 20),
           Text('Changer le mot de passe', style: WinType.headlineS(s.onStrong)),
           const SizedBox(height: 14),
           WinTextField(
@@ -404,6 +431,197 @@ class _ProfileScreenState extends State<ProfileScreen>
         _TabCompte(profile: _profile),
       ]),
     );
+  }
+}
+
+/// Module 40 (lot 8, décision 15.2) : bloc "Adresse e-mail" en 2 étapes
+/// (demande → code), calqué sur frontend/src/pages/Profile.tsx (onglet
+/// Sécurité). Aucun mot de passe redemandé : seule la nouvelle adresse, puis
+/// le code à 6-10 caractères reçu par email (contrainte exacte du serveur,
+/// UserDTOs.ConfirmEmailChangeRequest, plus large que les 6 chiffres affichés
+/// par le web).
+class _EmailChangeCard extends StatefulWidget {
+  final String currentEmail;
+  final ValueChanged<String> onChanged;
+  const _EmailChangeCard({required this.currentEmail, required this.onChanged});
+
+  @override
+  State<_EmailChangeCard> createState() => _EmailChangeCardState();
+}
+
+enum _EmailChangeStep { collapsed, form, code }
+
+class _EmailChangeCardState extends State<_EmailChangeCard> {
+  _EmailChangeStep _step = _EmailChangeStep.collapsed;
+  final _newEmailCtrl = TextEditingController();
+  final _codeCtrl = TextEditingController();
+  String? _pendingEmail;
+  String? _error;
+  bool _loading = false;
+
+  void _reset() {
+    setState(() {
+      _step = _EmailChangeStep.collapsed;
+      _newEmailCtrl.clear();
+      _codeCtrl.clear();
+      _pendingEmail = null;
+      _error = null;
+    });
+  }
+
+  Future<void> _requestCode() async {
+    final newEmail = _newEmailCtrl.text.trim();
+    if (newEmail.isEmpty || !newEmail.contains('@')) {
+      setState(() => _error = 'Adresse email invalide.');
+      return;
+    }
+    if (newEmail.toLowerCase() == widget.currentEmail.toLowerCase()) {
+      setState(() => _error = 'C\'est déjà votre adresse actuelle.');
+      return;
+    }
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+    try {
+      await UserService.instance.requestEmailChange(newEmail);
+      if (!mounted) return;
+      setState(() {
+        _pendingEmail = newEmail;
+        _step = _EmailChangeStep.code;
+        _loading = false;
+      });
+    } on EmailChangeException catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _error = e.message;
+        _loading = false;
+      });
+    }
+  }
+
+  Future<void> _confirmCode() async {
+    final code = _codeCtrl.text.trim();
+    if (code.length < 4) {
+      setState(() => _error = 'Saisis le code reçu par email.');
+      return;
+    }
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+    try {
+      final confirmed = await UserService.instance.confirmEmailChange(code);
+      if (!mounted) return;
+      widget.onChanged(confirmed.isNotEmpty ? confirmed : (_pendingEmail ?? widget.currentEmail));
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Adresse email modifiée.')));
+      _reset();
+    } on EmailChangeException catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _error = e.message;
+        _loading = false;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _newEmailCtrl.dispose();
+    _codeCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final s = WinTheme.of(context);
+
+    if (_step == _EmailChangeStep.collapsed) {
+      return WinCard(
+        child: Row(children: [
+          Expanded(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                Text('Adresse e-mail', style: WinType.titleM(s.onStrong)),
+                const SizedBox(height: 2),
+                Text('Actuelle : ${widget.currentEmail}',
+                    style: WinType.bodyS(s.onMuted)),
+              ])),
+          TextButton(
+            onPressed: () => setState(() => _step = _EmailChangeStep.form),
+            child: Text('Changer',
+                style: WinType.labelM(s.primary)
+                    .copyWith(fontWeight: FontWeight.w600)),
+          ),
+        ]),
+      );
+    }
+
+    if (_step == _EmailChangeStep.form) {
+      return WinCard(
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text('Nouvelle adresse e-mail', style: WinType.titleM(s.onStrong)),
+        const SizedBox(height: 12),
+        WinTextField(
+          label: 'Nouvel email',
+          icon: Icons.email_outlined,
+          controller: _newEmailCtrl,
+          keyboardType: TextInputType.emailAddress,
+        ),
+        if (_error != null) ...[
+          const SizedBox(height: 10),
+          WinAlert(_error!, type: BadgeColor.error),
+        ],
+        const SizedBox(height: 14),
+        Row(children: [
+          Expanded(
+              child: WinButton('Annuler',
+                  variant: WinButtonVariant.ghost, onTap: _reset)),
+          const SizedBox(width: 10),
+          Expanded(
+              child: WinButton('Recevoir un code',
+                  loading: _loading, onTap: _requestCode)),
+        ]),
+      ]));
+    }
+
+    // _EmailChangeStep.code
+    return WinCard(
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Text('Code de confirmation', style: WinType.titleM(s.onStrong)),
+      const SizedBox(height: 6),
+      Text(
+          'Code envoyé à ${_pendingEmail ?? ''}. Il expire après 15 minutes.',
+          style: WinType.bodyS(s.onMuted)),
+      const SizedBox(height: 12),
+      WinTextField(
+        label: 'Code reçu par email',
+        icon: Icons.pin_outlined,
+        controller: _codeCtrl,
+        keyboardType: TextInputType.number,
+      ),
+      if (_error != null) ...[
+        const SizedBox(height: 10),
+        WinAlert(_error!, type: BadgeColor.error),
+      ],
+      const SizedBox(height: 14),
+      WinButton('Confirmer', block: true, loading: _loading, onTap: _confirmCode),
+      const SizedBox(height: 10),
+      Row(children: [
+        Expanded(
+            child: WinButton('Annuler',
+                variant: WinButtonVariant.ghost, onTap: _reset)),
+        const SizedBox(width: 10),
+        Expanded(
+            child: WinButton('Renvoyer le code',
+                variant: WinButtonVariant.outline,
+                loading: _loading,
+                onTap: _requestCode)),
+      ]),
+    ]));
   }
 }
 

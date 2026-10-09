@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'api_client.dart';
 
 class ApiUserProfile {
@@ -215,4 +216,50 @@ class UserService {
       return false;
     }
   }
+
+  // ─── Module 40 (lot 8, décision 15.2) : changement d'adresse email ────────
+  // Parcours demande → code → confirmation, parité exacte avec l'onglet
+  // Sécurité du profil web (frontend/src/pages/Profile.tsx). Les deux routes
+  // existent déjà côté serveur (UsersController.cs, module 20/40) : aucune
+  // modification backend, uniquement le branchement mobile.
+
+  /// POST /users/change-email  envoie un code à 6 chiffres à [newEmail].
+  /// Lance une [EmailChangeException] avec le message serveur en cas d'échec
+  /// (email déjà utilisé, etc.) pour que l'écran affiche l'erreur exacte.
+  Future<void> requestEmailChange(String newEmail) async {
+    try {
+      await _api.dio.post('/users/change-email', data: {'newEmail': newEmail});
+    } on DioException catch (e) {
+      throw EmailChangeException(_serverError(e));
+    }
+  }
+
+  /// POST /users/confirm-email-change  valide le code reçu par email.
+  /// Retourne la nouvelle adresse confirmée par le serveur.
+  Future<String> confirmEmailChange(String verificationCode) async {
+    try {
+      final res = await _api.dio.post('/users/confirm-email-change',
+          data: {'verificationCode': verificationCode});
+      final data = res.data as Map<String, dynamic>;
+      return data['newEmail'] as String? ?? '';
+    } on DioException catch (e) {
+      throw EmailChangeException(_serverError(e));
+    }
+  }
+
+  String _serverError(DioException e) {
+    final data = e.response?.data;
+    if (data is Map && data['error'] is String) return data['error'] as String;
+    return 'Une erreur est survenue. Réessaie.';
+  }
+}
+
+/// Erreur de changement d'email portant le message exact renvoyé par le
+/// serveur (ex. "Email already in use", "Invalid verification code",
+/// "Too many attempts. Request a new code.").
+class EmailChangeException implements Exception {
+  final String message;
+  const EmailChangeException(this.message);
+  @override
+  String toString() => message;
 }

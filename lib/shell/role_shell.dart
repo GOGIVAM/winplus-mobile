@@ -3,6 +3,7 @@ import '../theme/win_motion.dart';
 import '../app_state.dart';
 import '../data/mock_data.dart';
 import '../data/models.dart';
+import '../services/push_service.dart';
 import '../services/user_service.dart';
 import '../student/notifications_screen.dart';
 import '../shared/messaging/messaging_screen.dart';
@@ -32,11 +33,44 @@ class RoleShell extends StatefulWidget {
 class _RoleShellState extends State<RoleShell> {
   int _index = 0;
   int _unreadCount = 0;
+  // Module 24 (lot 8) : initiales réelles pour l'avatar de la barre de
+  // navigation, remplace WinData.userProfile/parentAccount (élève/parent) et
+  // "MF" codé en dur (professeur) — aucun des trois n'était jamais la bonne
+  // personne connectée.
+  String? _avatarInitials;
 
   @override
   void initState() {
     super.initState();
     _loadUnread();
+    _loadProfile();
+    // Module 27 (lot 8) : push ntfy, premier plan uniquement (décision
+    // produit : aucune garantie de livraison app fermée, donc pas de
+    // service natif FCM/APNs). Un évènement SSE rafraîchit juste le badge.
+    PushService.instance.start(_loadUnread);
+  }
+
+  @override
+  void dispose() {
+    PushService.instance.stop();
+    super.dispose();
+  }
+
+  Future<void> _loadProfile() async {
+    try {
+      final p = await UserService.instance.getProfile();
+      final parts = p.fullName.trim().split(RegExp(r'\s+'));
+      final initials = parts
+          .where((w) => w.isNotEmpty)
+          .map((w) => w[0].toUpperCase())
+          .take(2)
+          .join();
+      if (mounted && initials.isNotEmpty) {
+        setState(() => _avatarInitials = initials);
+      }
+    } catch (_) {
+      // Reste sur le fallback mock le temps d'une reconnexion.
+    }
   }
 
   Future<void> _loadUnread() async {
@@ -140,7 +174,7 @@ class _RoleShellState extends State<RoleShell> {
             ),
             alignment: Alignment.center,
             child: Text(
-              WinData.userProfile.avatarInitials,
+              _avatarInitials ?? WinData.userProfile.avatarInitials,
               style: WinType.manrope(
                   size: 12, weight: FontWeight.w600, color: WinColors.teal700),
             ),
@@ -152,11 +186,12 @@ class _RoleShellState extends State<RoleShell> {
                 color: WinColors.blue100, shape: BoxShape.circle),
             alignment: Alignment.center,
             child: Text(
-              WinData.parentAccount.name
-                  .split(' ')
-                  .map((w) => w[0])
-                  .take(2)
-                  .join(),
+              _avatarInitials ??
+                  WinData.parentAccount.name
+                      .split(' ')
+                      .map((w) => w[0])
+                      .take(2)
+                      .join(),
               style: WinType.manrope(
                   size: 12, weight: FontWeight.w600, color: WinColors.teal700),
             ),
@@ -167,7 +202,7 @@ class _RoleShellState extends State<RoleShell> {
             decoration: const BoxDecoration(
                 color: WinColors.cream200, shape: BoxShape.circle),
             alignment: Alignment.center,
-            child: Text('MF',
+            child: Text(_avatarInitials ?? '…',
                 style: WinType.manrope(
                     size: 12,
                     weight: FontWeight.w600,

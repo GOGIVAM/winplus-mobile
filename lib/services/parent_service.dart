@@ -30,6 +30,21 @@ class ApiChild {
       );
 }
 
+class ApiParentProfile {
+  final int parentId;
+  final String name;
+  final String email;
+  const ApiParentProfile(
+      {required this.parentId, required this.name, required this.email});
+
+  factory ApiParentProfile.fromJson(Map<String, dynamic> j) =>
+      ApiParentProfile(
+        parentId: j['parentId'] as int? ?? 0,
+        name: j['name'] as String? ?? '',
+        email: j['email'] as String? ?? '',
+      );
+}
+
 class ApiChildActivity {
   final String type;
   final String description;
@@ -211,6 +226,21 @@ class ParentService {
   /// Liste des enfants liés  mise en cache (ParentDashboardBox) : rejoue la
   /// dernière liste connue quand le réseau est indisponible plutôt que de
   /// laisser l'écran vide.
+  /// Module 24 (lot 8) : GET /parent/profile — nom réel, remplace
+  /// WinData.parentAccount.name utilisé jusqu'ici dans parent_tabs.dart.
+  /// Le plan/les crédits restent sur SubscriptionService.getCurrent(), déjà
+  /// chargé par ParentDashTab (ApiActiveSubscription.planName).
+  Future<ApiParentProfile?> getProfile() async {
+    try {
+      final res = await _api.dio.get('/parent/profile');
+      final data = (res.data as Map<String, dynamic>)['data']
+          as Map<String, dynamic>?;
+      return data == null ? null : ApiParentProfile.fromJson(data);
+    } catch (_) {
+      return null;
+    }
+  }
+
   Future<List<ApiChild>> getChildren() async {
     final result = await LocalCacheService.cachedFetch<List<ApiChild>>(
       box: LocalCacheService.parentDashboard,

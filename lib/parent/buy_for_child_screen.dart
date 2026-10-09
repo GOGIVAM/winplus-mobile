@@ -3,6 +3,7 @@ import '../theme/win_motion.dart';
 import '../data/mock_data.dart';
 import '../data/models.dart';
 import '../services/parent_service.dart';
+import '../services/subject_service.dart';
 import '../shared/shop/account_required_purchase_screen.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
@@ -19,16 +20,48 @@ class BuyForChildScreen extends StatefulWidget {
 
 class _BuyForChildScreenState extends State<BuyForChildScreen> {
   int _selectedChildIndex = 0;
+  List<Content> _catalog = [];
+  bool _loading = true;
 
   ApiChild get _selected => widget.children[_selectedChildIndex];
 
-  List<Content> get _catalog {
-    final all = WinData.catalog;
-    final level = _selected.level;
-    if (level == null || level.isEmpty) return all.take(6).toList();
-    final filtered = all.where((c) => c.level == level).toList();
-    if (filtered.length < 3) return all.take(6).toList();
-    return filtered.take(6).toList();
+  @override
+  void initState() {
+    super.initState();
+    _loadCatalog();
+  }
+
+  // Module 24 (lot 8) : catalogue réel filtré par le niveau de l'enfant
+  // sélectionné (GET /subjects?level=...), remplace WinData.catalog.
+  Future<void> _loadCatalog() async {
+    setState(() => _loading = true);
+    try {
+      final level = _selected.level;
+      var page = await SubjectService.instance
+          .getAll(level: (level == null || level.isEmpty) ? null : level, pageSize: 6);
+      if (page.items.length < 3 && level != null && level.isNotEmpty) {
+        // Pas assez de résultats pour ce niveau précis : retombe sur le
+        // catalogue général plutôt qu'un écran quasi vide.
+        page = await SubjectService.instance.getAll(pageSize: 6);
+      }
+      if (!mounted) return;
+      setState(() {
+        _catalog = page.items.map((s) => s.toContent()).toList();
+        _loading = false;
+      });
+    } catch (_) {
+      if (mounted) {
+        setState(() {
+          _catalog = [];
+          _loading = false;
+        });
+      }
+    }
+  }
+
+  void _selectChild(int i) {
+    setState(() => _selectedChildIndex = i);
+    _loadCatalog();
   }
 
   @override
@@ -65,7 +98,7 @@ class _BuyForChildScreenState extends State<BuyForChildScreen> {
                     ? kid.level!
                     : 'Élève';
                 return GestureDetector(
-                  onTap: () => setState(() => _selectedChildIndex = i),
+                  onTap: () => _selectChild(i),
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 10),
@@ -93,26 +126,35 @@ class _BuyForChildScreenState extends State<BuyForChildScreen> {
             style: WinType.archivo(size: 18, color: s.onStrong),
           ),
           const SizedBox(height: 12),
-          GridView.count(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            crossAxisCount: 2,
-            mainAxisSpacing: 12,
-            crossAxisSpacing: 12,
-            childAspectRatio: 0.62,
-            children: _catalog
-                .map((c) => _CatalogCard(
-                      content: c,
-                      childName: _selected.firstName,
-                      onBuy: () => Navigator.push(
-                        context,
-                        WinPageRoute(
-                            builder: (_) =>
-                                AccountRequiredPurchaseScreen(content: c)),
-                      ),
-                    ))
-                .toList(),
-          ),
+          if (_loading)
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 40),
+              child: Center(child: CircularProgressIndicator()),
+            )
+          else if (_catalog.isEmpty)
+            Text('Aucun contenu disponible pour le moment.',
+                style: WinType.bodyM(s.onMuted))
+          else
+            GridView.count(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisCount: 2,
+              mainAxisSpacing: 12,
+              crossAxisSpacing: 12,
+              childAspectRatio: 0.62,
+              children: _catalog
+                  .map((c) => _CatalogCard(
+                        content: c,
+                        childName: _selected.firstName,
+                        onBuy: () => Navigator.push(
+                          context,
+                          WinPageRoute(
+                              builder: (_) =>
+                                  AccountRequiredPurchaseScreen(content: c)),
+                        ),
+                      ))
+                  .toList(),
+            ),
         ],
       ),
     );

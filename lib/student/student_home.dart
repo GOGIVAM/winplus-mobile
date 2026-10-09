@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../theme/win_motion.dart';
 import '../data/mock_data.dart';
 import '../data/models.dart';
+import '../services/achievement_service.dart';
+import '../services/student_service.dart';
 import '../services/user_service.dart';
 import '../shared/subscription/subscription_notifier.dart';
 import '../theme/win_colors.dart';
@@ -50,10 +52,23 @@ class StudentHomeTab extends StatefulWidget {
 class _StudentHomeTabState extends State<StudentHomeTab> {
   ApiUserProfile? _profile;
 
+  // Module 24 (lot 8) : dashboard étudiant branché sur StudentController.cs
+  // réel (stats, formations en cours, prochaines échéances) et sur le
+  // streak réel déjà câblé par AchievementService (Module 25). `null` tant
+  // que le chargement n'a pas réussi : on retombe alors sur les données de
+  // démonstration plutôt que d'afficher des zéros trompeurs. Les
+  // recommandations WinAI et le flux d'activité restent sur WinData : aucun
+  // endpoint équivalent n'existe encore côté serveur (voir rapport du lot 8).
+  ApiStudentStats? _stats;
+  List<InProgressContent>? _continueLearning;
+  List<ExamCountdown>? _upcomingEvents;
+  int? _streak;
+
   @override
   void initState() {
     super.initState();
     _loadProfile();
+    _loadDashboard();
   }
 
   Future<void> _loadProfile() async {
@@ -62,6 +77,26 @@ class _StudentHomeTabState extends State<StudentHomeTab> {
       if (mounted) {
         setState(() => _profile = p);
       }
+    } catch (_) {}
+  }
+
+  Future<void> _loadDashboard() async {
+    try {
+      final stats = await StudentService.instance.getStats();
+      if (mounted) setState(() => _stats = stats);
+    } catch (_) {}
+    try {
+      final cont = await StudentService.instance.getContinueLearning();
+      if (mounted) setState(() => _continueLearning = cont);
+    } catch (_) {}
+    try {
+      final events =
+          await StudentService.instance.getUpcomingEvents(limit: 3);
+      if (mounted) setState(() => _upcomingEvents = events);
+    } catch (_) {}
+    try {
+      final ach = await AchievementService.instance.getMyAchievements();
+      if (mounted) setState(() => _streak = ach.streak);
     } catch (_) {}
   }
 
@@ -78,8 +113,15 @@ class _StudentHomeTabState extends State<StudentHomeTab> {
     final greeting =
         hour < 12 ? 'Bonjour' : (hour < 18 ? 'Bon après-midi' : 'Bonsoir');
 
-    const stats = WinData.studentStats;
-    final weekHours = '${stats.hoursThisWeek}h';
+    final mockStats = WinData.studentStats;
+    final streakDays = _streak ?? mockStats.streakDays;
+    final avgScore = _stats?.averageScore.round() ?? mockStats.avgScore;
+    final weekHours = _stats != null
+        ? '${_stats!.weeklyStudyHoursTotal.round()}h'
+        : '${mockStats.hoursThisWeek}h';
+    final quizWeek = _stats?.weeklyQuizCompleted ?? WinData.quizWeek;
+    final continueItems = _continueLearning ?? WinData.inProgress;
+    final upcoming = _upcomingEvents ?? WinData.upcomingExams;
 
     final (String planLabel, Color planColor) = switch (effectiveTier) {
       PlanTier.libre => ('Gratuit', WinColors.ink400),
@@ -136,7 +178,7 @@ class _StudentHomeTabState extends State<StudentHomeTab> {
                         children: [
                           TextSpan(text: '$greeting $firstName  '),
                           TextSpan(
-                              text: '${stats.streakDays} jours',
+                              text: '$streakDays jours',
                               style: WinType.archivo(
                                       size: 16, color: WinColors.teal400)
                                   .copyWith(fontStyle: FontStyle.italic)),
@@ -146,14 +188,14 @@ class _StudentHomeTabState extends State<StudentHomeTab> {
                     Row(children: [
                       Expanded(
                           child: _HeroStat(
-                              value: WinStreakFlame(stats.streakDays,
+                              value: WinStreakFlame(streakDays,
                                   light: true, size: 22),
                               title: "jours d'affilée",
                               sub: 'Streak')),
                       const SizedBox(width: 10),
                       Expanded(
                           child: _HeroStat(
-                              value: Text('${stats.avgScore}%',
+                              value: Text('$avgScore%',
                                   style: WinType.archivo(
                                       size: 22, color: WinColors.teal400)),
                               title: 'score moyen',
@@ -193,10 +235,10 @@ class _StudentHomeTabState extends State<StudentHomeTab> {
               height: 100,
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
-                itemCount: WinData.inProgress.length,
+                itemCount: continueItems.length,
                 separatorBuilder: (_, __) => const SizedBox(width: 12),
                 itemBuilder: (_, i) =>
-                    _InProgressCard(item: WinData.inProgress[i]),
+                    _InProgressCard(item: continueItems[i]),
               ),
             ),
             // 2.2  WinAI Reco
@@ -214,7 +256,7 @@ class _StudentHomeTabState extends State<StudentHomeTab> {
             // 2.3  Examens à venir
             const SizedBox(height: 24),
             const _SectionHeader('Examens à venir'),
-            ...WinData.upcomingExams.take(2).map((exam) => Padding(
+            ...upcoming.take(2).map((exam) => Padding(
                   padding: const EdgeInsets.only(bottom: 10),
                   child: _ExamCountdownCard(exam: exam),
                 )),
@@ -227,14 +269,14 @@ class _StudentHomeTabState extends State<StudentHomeTab> {
             Row(children: [
               Expanded(
                   child: _StatCard(Icons.check_circle_outline,
-                      '${WinData.quizWeek}', 'Quiz / sem.')),
+                      '$quizWeek', 'Quiz / sem.')),
               const SizedBox(width: 10),
               Expanded(
                   child: _StatCard(Icons.schedule, weekHours, 'Étude / sem.')),
               const SizedBox(width: 10),
               Expanded(
                   child: _StatCard(Icons.emoji_events_outlined,
-                      '${stats.totalBadges}', 'Badges')),
+                      '${mockStats.totalBadges}', 'Badges')),
             ]),
           ],
         ),

@@ -63,6 +63,11 @@ class _ParentDashTabState extends State<ParentDashTab> {
   List<ApiChild>? _children;
   List<ApiPersistedAlert> _alerts = [];
   ApiActiveSubscription? _sub;
+  ApiParentProfile? _profile;
+  // Module 24 (lot 8) : scores réels par enfant (ParentService.getChildStats),
+  // chargés une fois les enfants connus. `null` tant que non chargé pour
+  // chaque enfant : évite d'afficher un score à 0 trompeur pendant l'attente.
+  final Map<int, double> _childScores = {};
   bool _offline = !ConnectivityService.instance.isOnline;
   StreamSubscription<bool>? _connSub;
 
@@ -92,12 +97,23 @@ class _ParentDashTabState extends State<ParentDashTab> {
       final alerts = await ParentService.instance
           .getAllPersistedAlerts(kids.map((c) => c.id).toList());
       final sub = await SubscriptionService.instance.getCurrent();
+      final profile = await ParentService.instance.getProfile();
       if (mounted)
         setState(() {
           _children = kids;
           _alerts = alerts;
           _sub = sub;
+          _profile = profile;
         });
+      // Scores réels par enfant, en arrière-plan : ne bloque pas l'affichage
+      // de la liste d'enfants si un enfant particulier échoue.
+      for (final child in kids) {
+        ParentService.instance.getChildStats(child.id).then((stats) {
+          if (mounted) {
+            setState(() => _childScores[child.id] = stats.averageScore);
+          }
+        }).catchError((_) {});
+      }
     } catch (_) {
       if (mounted)
         setState(() {
@@ -111,18 +127,42 @@ class _ParentDashTabState extends State<ParentDashTab> {
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
     final kids = _children ?? [];
-    final tracked = WinData.trackedChildren;
+    // Module 24 (lot 8) : les enfants suivis étaient déjà chargés depuis le
+    // serveur (_children) mais l'affichage retombait sur
+    // WinData.trackedChildren (données de démonstration), confirmé par
+    // SUIVI_VERSEMENTS_ET_CORRECTIONS.md. Le score moyen par enfant vient de
+    // ParentService.getChildStats, chargé séparément (voir _load()).
+    final tracked = kids
+        .map((c) => TrackedChild(
+              id: c.id.toString(),
+              name: c.fullName,
+              level: c.level ?? '',
+              avgScore: (_childScores[c.id] ?? 0).round(),
+              trend: Trend.stable,
+              lastActiveAt: DateTime.now(),
+            ))
+        .toList();
+    // Aucun endpoint "upcoming events" n'existe encore côté parent (seul
+    // /parent/payments/upcoming existe, pour les échéances de paiement) :
+    // reste sur la démonstration jusqu'à arbitrage produit (voir rapport
+    // lot 8).
     final events = WinData.upcomingEvents;
 
     final now = DateTime.now();
     final hour = now.hour;
     final greeting =
         hour < 12 ? 'Bonjour' : (hour < 18 ? 'Bon après-midi' : 'Bonsoir');
-    final firstName = WinData.parentAccount.name.split(' ').first;
+    final firstName = (_profile?.name ?? WinData.parentAccount.name)
+        .split(' ')
+        .first;
     final dateLabel =
         '${_jours[now.weekday - 1]} ${now.day} ${_mois[now.month - 1]} ${now.year}';
+    final planLabel = _sub?.planName ?? WinData.parentAccount.plan;
 
-    // Crédits
+    // Crédits : aucun endpoint de solde parent trouvé lors de l'audit du lot
+    // 8 (ParentCreditsController gère des crédits liés aux achats enfants,
+    // pas un solde affiché ici) ; reste sur la démonstration, à trancher
+    // avec le product owner.
     final creditsAvail = WinData.parentAccount.creditsAvailable;
     final creditsTotal = WinData.parentAccount.creditsTotal;
     final creditsPct =
@@ -160,7 +200,7 @@ class _ParentDashTabState extends State<ParentDashTab> {
                 decoration: BoxDecoration(
                     color: WinColors.teal400.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(WinRadii.full)),
-                child: Text('Plan ${WinData.parentAccount.plan}',
+                child: Text('Plan $planLabel',
                     style: WinType.manrope(
                         size: 11,
                         weight: FontWeight.w600,
