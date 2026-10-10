@@ -105,6 +105,53 @@ class StudyGroupJoinResult {
   const StudyGroupJoinResult({required this.id, required this.name, required this.alreadyMember});
 }
 
+/// Classement hebdomadaire réel (restait fictif après le lot 8, voir
+/// GET /api/study-groups/{id}/leaderboard côté backend).
+class ApiStudyGroupRankingEntry {
+  final int userId;
+  final String? firstName;
+  final String? lastName;
+  final String? avatarUrl;
+  final int quizzesPassed;
+  final int studyMinutes;
+  final int points;
+
+  const ApiStudyGroupRankingEntry({
+    required this.userId,
+    this.firstName,
+    this.lastName,
+    this.avatarUrl,
+    required this.quizzesPassed,
+    required this.studyMinutes,
+    required this.points,
+  });
+
+  String get fullName => [firstName, lastName].where((s) => s != null && s.isNotEmpty).join(' ');
+
+  factory ApiStudyGroupRankingEntry.fromJson(Map<String, dynamic> j) => ApiStudyGroupRankingEntry(
+        userId: j['userId'] as int? ?? 0,
+        firstName: j['firstName'] as String?,
+        lastName: j['lastName'] as String?,
+        avatarUrl: j['avatarUrl'] as String?,
+        quizzesPassed: j['quizzesPassed'] as int? ?? 0,
+        studyMinutes: j['studyMinutes'] as int? ?? 0,
+        points: j['points'] as int? ?? 0,
+      );
+}
+
+class ApiStudyGroupLeaderboard {
+  final int periodDays;
+  final List<ApiStudyGroupRankingEntry> ranking;
+  const ApiStudyGroupLeaderboard({required this.periodDays, required this.ranking});
+
+  factory ApiStudyGroupLeaderboard.fromJson(Map<String, dynamic> j) => ApiStudyGroupLeaderboard(
+        periodDays: j['periodDays'] as int? ?? 7,
+        ranking: ((j['ranking'] as List?) ?? [])
+            .map((e) => ApiStudyGroupRankingEntry.fromJson(Map<String, dynamic>.from(e as Map)))
+            .toList(),
+      );
+}
+
 class StudyGroupService {
   StudyGroupService._();
   static final StudyGroupService instance = StudyGroupService._();
@@ -145,5 +192,11 @@ class StudyGroupService {
 
   Future<void> leave(int id) async {
     await _api.dio.delete('/study-groups/$id/leave');
+  }
+
+  Future<ApiStudyGroupLeaderboard> getLeaderboard(int id) async {
+    final res = await _api.dio.get('/study-groups/$id/leaderboard');
+    final data = (res.data as Map<String, dynamic>)['data'] as Map<String, dynamic>;
+    return ApiStudyGroupLeaderboard.fromJson(data);
   }
 }

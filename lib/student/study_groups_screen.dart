@@ -10,10 +10,10 @@ import '../widgets/win_widgets.dart';
 /// student/StudyGroups.tsx), remplace l'écran 100% simulé (classement
 /// fictif, code d'invitation "ABC123" codé en dur, groupes locaux).
 ///
-/// Le classement hebdomadaire de l'ancien écran n'est pas repris : aucun
-/// endpoint serveur ne le fournit, et créer une route dédiée pour ça sort du
-/// périmètre de ce portage (décision §16.3 du suivi : réutiliser les
-/// endpoints existants, pas en ajouter sans écart bloquant réel).
+/// Classement hebdomadaire réel ajouté après coup (GET
+/// /api/study-groups/{id}/leaderboard), calculé sur l'activité des 7
+/// derniers jours à partir de données déjà en base (quiz réussis, minutes
+/// étudiées) -- plus de classement fictif.
 class StudyGroupsScreen extends StatefulWidget {
   const StudyGroupsScreen({super.key});
   @override
@@ -346,6 +346,7 @@ class _GroupDetailSheet extends StatefulWidget {
 
 class _GroupDetailSheetState extends State<_GroupDetailSheet> {
   ApiStudyGroupDetail? _detail;
+  ApiStudyGroupLeaderboard? _leaderboard;
   bool _error = false;
 
   @override
@@ -360,6 +361,13 @@ class _GroupDetailSheetState extends State<_GroupDetailSheet> {
       if (mounted) setState(() => _detail = d);
     } catch (_) {
       if (mounted) setState(() => _error = true);
+      return;
+    }
+    try {
+      final lb = await StudyGroupService.instance.getLeaderboard(widget.groupId);
+      if (mounted) setState(() => _leaderboard = lb);
+    } catch (_) {
+      // Classement non bloquant : la fiche groupe reste utilisable sans lui.
     }
   }
 
@@ -429,6 +437,49 @@ class _GroupDetailSheetState extends State<_GroupDetailSheet> {
                     },
                   ),
                 ),
+                const SizedBox(height: 20),
+                Text('Classement (7 derniers jours)', style: WinType.titleM(s.onStrong)),
+                const SizedBox(height: 10),
+                if (_leaderboard == null)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Text('Classement indisponible pour le moment.',
+                        style: WinType.labelM(s.onFaint)),
+                  )
+                else if (_leaderboard!.ranking.every((r) => r.points == 0))
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Text("Personne n'a encore d'activité cette semaine.",
+                        style: WinType.labelM(s.onFaint)),
+                  )
+                else
+                  ..._leaderboard!.ranking.take(10).toList().asMap().entries.map((entry) {
+                    final rank = entry.key + 1;
+                    final r = entry.value;
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: Row(children: [
+                        SizedBox(
+                          width: 24,
+                          child: Text('$rank', style: WinType.labelM(s.onMuted)),
+                        ),
+                        WinAvatar(r.fullName.isEmpty ? '?' : r.fullName, size: 32),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(r.fullName.isEmpty ? 'Membre' : r.fullName,
+                                  style: WinType.bodyM(s.onStrong)),
+                              Text('${r.quizzesPassed} quiz réussis · ${r.studyMinutes} min étudiées',
+                                  style: WinType.labelS(s.onMuted)),
+                            ],
+                          ),
+                        ),
+                        Text('${r.points} pts', style: WinType.titleM(s.onStrong)),
+                      ]),
+                    );
+                  }),
               ],
             ),
     );
