@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/tutor_booking_service.dart';
 import '../services/tutor_profile_service.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
@@ -124,6 +125,12 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
   final List<TutorPackage> _packages = [];
   int _notice = 24;
   final _maxPerWeekCtrl = TextEditingController();
+  // Lot 9.2 : politique d'annulation du tuteur, dans les bornes fixées par
+  // WinPlus (GET /tutor-policy, même source que le web).
+  int _fullRefundHours = 24;
+  int _partialRefundPercent = 50;
+  int _noRefundHours = 2;
+  Map<String, int> _policyBounds = const {};
   final Set<String> _slotKeys = {}; // "day-period"
   final _titleCtrl = TextEditingController();
   final _bioCtrl = TextEditingController();
@@ -153,6 +160,9 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
       final c = await _service.getCompletion();
       _hydrate(p);
       setState(() => _completion = c);
+      TutorBookingService.instance.getPolicy().then((policy) {
+        if (mounted) setState(() => _policyBounds = policy.bounds);
+      }).catchError((_) {});
     } catch (_) {
       if (mounted)
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -185,6 +195,9 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
         discounts: p.durationDiscounts);
     _notice = p.noticeHours;
     _maxPerWeekCtrl.text = p.maxSessionsPerWeek?.toString() ?? '';
+    _fullRefundHours = p.fullRefundHours;
+    _partialRefundPercent = p.partialRefundPercent;
+    _noRefundHours = p.noRefundHours;
     _slotKeys.clear();
     for (final s in p.availabilitySlots) {
       _slotKeys.add('${s.dayOfWeek}-${s.startTime}');
@@ -237,6 +250,9 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
           'noticeHours': _notice,
           'maxSessionsPerWeek': int.tryParse(_maxPerWeekCtrl.text),
           'availabilitySlots': slots,
+          'fullRefundHours': _fullRefundHours,
+          'partialRefundPercent': _partialRefundPercent,
+          'noRefundHours': _noRefundHours,
         };
       case 4:
         return {
@@ -756,6 +772,48 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
               controller: _maxPerWeekCtrl,
               hint: 'Illimité',
               keyboardType: TextInputType.number),
+          const SizedBox(height: 20),
+          Text("Politique d'annulation", style: WinType.labelM(s.onStrong)),
+          const SizedBox(height: 4),
+          Text(
+              "Ce que l'élève récupère s'il annule lui-même (les frais Mobile Money restent à sa charge).",
+              style: WinType.labelS(s.onMuted)),
+          const SizedBox(height: 10),
+          _policyStepper(s,
+              label: 'Remboursement total si annulé au moins',
+              suffix: 'h avant',
+              value: _fullRefundHours,
+              min: _bound('fullRefundHoursMin', 12),
+              max: _bound('fullRefundHoursMax', 48),
+              step: 1,
+              onChanged: (v) => setState(() {
+                    _fullRefundHours = v;
+                    if (_noRefundHours > v) _noRefundHours = v;
+                  })),
+          _policyStepper(s,
+              label: 'Ensuite, part remboursée',
+              suffix: '%',
+              value: _partialRefundPercent,
+              min: _bound('partialRefundPercentMin', 0),
+              max: _bound('partialRefundPercentMax', 100),
+              step: 10,
+              onChanged: (v) => setState(() => _partialRefundPercent = v)),
+          _policyStepper(s,
+              label: 'Aucun remboursement à moins de',
+              suffix: 'h avant',
+              value: _noRefundHours,
+              min: _bound('noRefundHoursMin', 0),
+              max: [_bound('noRefundHoursMax', 12), _fullRefundHours]
+                  .reduce((a, b) => a < b ? a : b),
+              step: 1,
+              onChanged: (v) => setState(() => _noRefundHours = v)),
+          const SizedBox(height: 6),
+          Text(
+              'Limites fixées par WinPlus : remboursement total entre '
+              '${_bound('fullRefundHoursMin', 12)} h et ${_bound('fullRefundHoursMax', 48)} h avant, '
+              'part remboursée de ${_bound('partialRefundPercentMin', 0)} à ${_bound('partialRefundPercentMax', 100)} %, '
+              'aucun remboursement en dessous de ${_bound('noRefundHoursMin', 0)} à ${_bound('noRefundHoursMax', 12)} h.',
+              style: WinType.labelS(s.onFaint)),
         ]);
 
       case 4:
@@ -812,6 +870,38 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
             ]),
         ]);
     }
+  }
+
+  int _bound(String key, int fallback) => _policyBounds[key] ?? fallback;
+
+  Widget _policyStepper(WinScheme s,
+      {required String label,
+      required String suffix,
+      required int value,
+      required int min,
+      required int max,
+      required int step,
+      required ValueChanged<int> onChanged}) {
+    final v = value.clamp(min, max < min ? min : max);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(children: [
+        Expanded(child: Text(label, style: WinType.bodyS(s.onStrong))),
+        IconButton(
+          icon: const Icon(Icons.remove_circle_outline),
+          onPressed: v > min ? () => onChanged((v - step).clamp(min, max)) : null,
+        ),
+        SizedBox(
+          width: 64,
+          child: Text('$v $suffix',
+              textAlign: TextAlign.center, style: WinType.labelM(s.onStrong)),
+        ),
+        IconButton(
+          icon: const Icon(Icons.add_circle_outline),
+          onPressed: v < max ? () => onChanged((v + step).clamp(min, max)) : null,
+        ),
+      ]),
+    );
   }
 
   Widget _buildActions(WinScheme s) {
