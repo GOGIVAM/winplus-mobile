@@ -4,6 +4,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import 'tutor_pricing_grid_editor.dart';
 
 /// Module 1  Onboarding et profil répétiteur (professeur_complete.md).
 /// Écran unique en 5 étapes (Workflow 1) : matières/niveaux, intervention,
@@ -131,6 +132,8 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
   final _diplomaCtrl = TextEditingController();
   TutorRateSuggestion? _rateSuggestion;
   bool _rateLoading = false;
+  // Lot 9.1 : grille tarifaire (matière/mode, créneaux, dégressivité).
+  TutorPricingGrid _grid = const TutorPricingGrid();
 
   static const _periods = [
     {'label': 'Matin', 'start': '08:00', 'end': '12:00'},
@@ -176,6 +179,10 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
     _packages
       ..clear()
       ..addAll(p.packages);
+    _grid = TutorPricingGrid(
+        rates: p.rates,
+        modifiers: p.rateModifiers,
+        discounts: p.durationDiscounts);
     _notice = p.noticeHours;
     _maxPerWeekCtrl.text = p.maxSessionsPerWeek?.toString() ?? '';
     _slotKeys.clear();
@@ -214,6 +221,7 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
           'trialSessionEnabled': _trialEnabled,
           'trialSessionPriceXaf': num.tryParse(_trialPriceCtrl.text),
           'packages': _packages.map((p) => p.toJson()).toList(),
+          ..._grid.toPayload(),
         };
       case 3:
         final slots = _slotKeys.map((k) {
@@ -654,6 +662,15 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
                     _rateSuggestion!.suggestedRateXaf.toString()),
                 child: const Text('Utiliser ce tarif')),
           ],
+          const SizedBox(height: 16),
+          TutorPricingGridEditor(
+            value: _grid,
+            onChanged: (g) => setState(() => _grid = g),
+            subjects: _subjectsSel.toList(),
+            offersOnline: _online,
+            offersInPerson: _atStudent || _atTutor || _neutral,
+            level: _levelsSel.isNotEmpty ? _levelsSel.first : null,
+          ),
           const SizedBox(height: 16),
           CheckboxListTile(
               value: _trialEnabled,

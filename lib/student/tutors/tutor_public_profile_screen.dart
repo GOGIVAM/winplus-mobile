@@ -7,6 +7,7 @@ import '../../theme/win_theme.dart';
 import '../../theme/win_typography.dart';
 import '../../widgets/win_widgets.dart';
 import 'tutor_booking_flow_screen.dart';
+import 'tutor_pricing_widgets.dart';
 
 const _weekdayShort = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
 
@@ -14,7 +15,11 @@ const _weekdayShort = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
 /// "Fiche répétiteur (vue publique)".
 class TutorPublicProfileScreen extends StatefulWidget {
   final int userId;
-  const TutorPublicProfileScreen({super.key, required this.userId});
+
+  /// Sujets saisis dans la recherche (lot 9.1), repris dans la réservation.
+  final List<String> initialTopics;
+  const TutorPublicProfileScreen(
+      {super.key, required this.userId, this.initialTopics = const []});
 
   @override
   State<TutorPublicProfileScreen> createState() =>
@@ -73,6 +78,7 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
             profile: p,
             occurrences: _occurrences,
             initialOccurrence: preselected,
+            initialTopics: widget.initialTopics,
           ),
         ));
   }
@@ -165,16 +171,30 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(children: [
+              if (p.rates.isNotEmpty)
+                Padding(
+                    padding: const EdgeInsets.only(right: 4, top: 6),
+                    child:
+                        Text('à partir de', style: WinType.labelM(s.onMuted))),
               Text(
-                  p.hourlyRateXaf != null
-                      ? '${p.hourlyRateXaf} XAF'
+                  (p.fromHourlyRateXaf ?? p.hourlyRateXaf) != null
+                      ? '${fmtXaf((p.fromHourlyRateXaf ?? p.hourlyRateXaf)!)} XAF'
                       : 'Tarif non communiqué',
                   style: WinType.archivo(size: 20, color: s.onStrong)),
-              if (p.hourlyRateXaf != null)
+              if ((p.fromHourlyRateXaf ?? p.hourlyRateXaf) != null)
                 Padding(
                     padding: const EdgeInsets.only(left: 4, top: 6),
                     child: Text('/ heure', style: WinType.labelM(s.onMuted))),
             ]),
+            if (p.rates.isNotEmpty ||
+                p.rateModifiers.isNotEmpty ||
+                p.durationDiscounts.isNotEmpty) ...[
+              const SizedBox(height: 10),
+              TutorRateGridSummary(
+                  rates: p.rates,
+                  modifiers: p.rateModifiers,
+                  discounts: p.durationDiscounts),
+            ],
             if (p.trialSessionEnabled) ...[
               const SizedBox(height: 6),
               Text(
@@ -443,7 +463,7 @@ class _AvailabilityCalendarState extends State<_AvailabilityCalendar> {
                     border: Border.all(
                         color: occ.isBookable ? WinColors.success : s.outline),
                   ),
-                  child: Text('${occ.startTime} – ${occ.endTime}',
+                  child: Text(occ.startTime,
                       style: WinType.labelM(
                           occ.isBookable ? WinColors.success : s.onFaint)),
                 ),

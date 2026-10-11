@@ -7,6 +7,7 @@ import '../../theme/win_colors.dart';
 import '../../theme/win_theme.dart';
 import '../../theme/win_typography.dart';
 import '../../widgets/win_widgets.dart';
+import 'tutor_pricing_widgets.dart';
 
 const _weekdayShort = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
 
@@ -31,11 +32,15 @@ class TutorBookingFlowScreen extends StatefulWidget {
   final List<TutorAvailabilityOccurrence> occurrences;
   final TutorAvailabilityOccurrence? initialOccurrence;
 
+  /// Sujets déjà saisis dans la recherche de tuteurs (lot 9.1).
+  final List<String> initialTopics;
+
   const TutorBookingFlowScreen({
     super.key,
     required this.profile,
     this.occurrences = const [],
     this.initialOccurrence,
+    this.initialTopics = const [],
   });
 
   @override
@@ -50,6 +55,16 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
   late DateTime _selectedDay;
   TutorAvailabilityOccurrence? _selectedOccurrence;
   String? _mode;
+
+  // Lot 9.1 : durée libre par tranches de 30 min, matière (tarif de base),
+  // sujets à travailler et devis serveur.
+  int? _durationMinutes;
+  String? _subject;
+  List<String> _topics = [];
+  TutorPriceQuote? _quote;
+  bool _quoteLoading = false;
+  String? _quoteError;
+  int _quoteRequest = 0;
 
   final _phoneCtrl = TextEditingController();
   bool _submitting = false;
@@ -76,6 +91,9 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
     final today = DateTime.now();
     _selectedDay = DateTime(today.year, today.month, today.day);
     _mode = _availableModes.isNotEmpty ? _availableModes.first : null;
+    _subject =
+        widget.profile.subjects.isNotEmpty ? widget.profile.subjects.first : null;
+    _topics = widget.initialTopics.take(kMaxTopics).toList();
 
     if (widget.occurrences.isNotEmpty) {
       _occurrences = widget.occurrences;
@@ -84,12 +102,72 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
     }
 
     if (widget.initialOccurrence != null) {
-      _selectedOccurrence = widget.initialOccurrence;
+      // Le créneau tapé sur la fiche est présélectionné ; l'élève choisit
+      // encore sa durée, sa matière et ses sujets avant le récapitulatif.
       final d = widget.initialOccurrence!.date;
       _selectedDay = DateTime(d.year, d.month, d.day);
-      _step = 1; // saute directement au récap
+      _pickOccurrence(widget.initialOccurrence!);
     }
   }
+
+  void _pickOccurrence(TutorAvailabilityOccurrence occ) {
+    final durations = occ.availableDurationsMinutes;
+    _selectedOccurrence = occ;
+    _durationMinutes = durations.isEmpty
+        ? null
+        : durations.length == 1
+            ? durations.first
+            : (durations.contains(60) ? 60 : durations.first);
+  }
+
+  /// Devis serveur (jamais de prix calculé localement) ; seule la réponse
+  /// à la dernière demande est gardée.
+  Future<void> _refreshQuote() async {
+    final occ = _selectedOccurrence;
+    final duration = _durationMinutes;
+    final mode = _mode;
+    if (occ == null || duration == null || mode == null) return;
+    final req = ++_quoteRequest;
+    setState(() {
+      _quoteLoading = true;
+      _quoteError = null;
+    });
+    try {
+      final q = await TutorBookingService.instance.quote(
+        tutorUserId: widget.profile.userId,
+        sessionDate: occ.date,
+        startTime: occ.startTime,
+        durationMinutes: duration,
+        mode: mode,
+        subject: _subject,
+      );
+      if (!mounted || req != _quoteRequest) return;
+      setState(() {
+        _quote = q;
+        _quoteLoading = false;
+      });
+    } catch (e) {
+      if (!mounted || req != _quoteRequest) return;
+      setState(() {
+        _quote = null;
+        _quoteLoading = false;
+        _quoteError = _apiMessage(e) ?? 'Impossible de calculer le prix.';
+      });
+    }
+  }
+
+  static String? _apiMessage(Object e) {
+    try {
+      final data = (e as dynamic).response?.data;
+      if (data is Map && data['message'] is String) {
+        return data['message'] as String;
+      }
+    } catch (_) {}
+    return null;
+  }
+
+  bool get _quoteReady =>
+      _quote != null && _quote!.isAvailable != false && !_quoteLoading;
 
   @override
   void dispose() {
@@ -143,7 +221,10 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
   Future<void> _submitBooking() async {
     final occ = _selectedOccurrence;
     final mode = _mode;
-    if (occ == null || mode == null) return;
+    final duration = _durationMinutes;
+    if (occ == null || mode == null || duration == null || !_quoteReady) {
+      return;
+    }
     final phone = _normalizePhone(_phoneCtrl.text);
     if (phone.length < 9) {
       setState(() => _submitError = 'Numéro de téléphone invalide.');
@@ -158,9 +239,11 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
         tutorUserId: widget.profile.userId,
         sessionDate: occ.date,
         startTime: occ.startTime,
-        endTime: occ.endTime,
+        durationMinutes: duration,
         mode: mode,
         phone: phone,
+        subject: _subject,
+        topics: _topics,
       );
       if (!mounted) return;
       setState(() {
@@ -168,11 +251,12 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
         _submitting = false;
       });
       _startPolling(result.booking.id);
-    } catch (_) {
+    } catch (e) {
       if (mounted) {
         setState(() {
           _submitting = false;
-          _submitError = 'Erreur lors de la création de la réservation.';
+          _submitError = _apiMessage(e) ??
+              'Erreur lors de la création de la réservation.';
         });
       }
     }
@@ -207,8 +291,9 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
   }
 
   void _goToStep1() {
-    if (_selectedOccurrence == null) return;
+    if (_selectedOccurrence == null || _durationMinutes == null) return;
     setState(() => _step = 1);
+    _refreshQuote();
   }
 
   @override
@@ -335,7 +420,7 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
                 final selected = _selectedOccurrence == occ;
                 return GestureDetector(
                   onTap: occ.isBookable
-                      ? () => setState(() => _selectedOccurrence = occ)
+                      ? () => setState(() => _pickOccurrence(occ))
                       : null,
                   child: Container(
                     padding: const EdgeInsets.symmetric(
@@ -352,7 +437,7 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
                                   ? WinColors.success
                                   : s.outline)),
                     ),
-                    child: Text('${occ.startTime} – ${occ.endTime}',
+                    child: Text(occ.startTime,
                         style: WinType.labelM(selected
                             ? Colors.white
                             : (occ.isBookable
@@ -361,10 +446,60 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
                   ),
                 );
               }).toList()),
+        if (_selectedOccurrence != null) ...[
+          const SizedBox(height: 20),
+          Row(children: [
+            Text('Durée', style: WinType.labelM(s.onStrong)),
+            if (_durationMinutes != null) ...[
+              const SizedBox(width: 8),
+              Text(
+                  '· fin à ${addMinutesToHhmm(_selectedOccurrence!.startTime, _durationMinutes!)}',
+                  style: WinType.labelS(s.onMuted)),
+            ],
+          ]),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: _selectedOccurrence!.availableDurationsMinutes
+                .map((d) => WinChip(formatDurationMinutes(d),
+                    active: _durationMinutes == d,
+                    onTap: () => setState(() => _durationMinutes = d)))
+                .toList(),
+          ),
+          const SizedBox(height: 4),
+          Text('Par tranches de 30 min, jusqu\'à la fin de la plage libre.',
+              style: WinType.labelS(s.onFaint)),
+        ],
+        if (widget.profile.subjects.length > 1) ...[
+          const SizedBox(height: 20),
+          Text('Matière', style: WinType.labelM(s.onStrong)),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: widget.profile.subjects
+                .map((sub) => WinChip(sub,
+                    active: _subject == sub,
+                    onTap: () => setState(() => _subject = sub)))
+                .toList(),
+          ),
+        ],
+        const SizedBox(height: 20),
+        Text('Sujets à travailler (facultatif)',
+            style: WinType.labelM(s.onStrong)),
+        const SizedBox(height: 4),
+        Text('Le tuteur les verra dans ta demande pour préparer la séance.',
+            style: WinType.labelS(s.onFaint)),
+        const SizedBox(height: 6),
+        TopicsField(
+            topics: _topics, onChanged: (t) => setState(() => _topics = t)),
         const SizedBox(height: 28),
         WinButton('Continuer',
             block: true,
-            onTap: _selectedOccurrence != null ? _goToStep1 : null),
+            onTap: _selectedOccurrence != null && _durationMinutes != null
+                ? _goToStep1
+                : null),
       ],
     );
   }
@@ -373,7 +508,7 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
 
   Widget _buildStepRecap(WinScheme s) {
     final occ = _selectedOccurrence!;
-    final price = widget.profile.hourlyRateXaf;
+    final duration = _durationMinutes ?? 0;
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -394,14 +529,43 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
             _RecapRow(
                 icon: Icons.schedule_outlined,
                 label: 'Heure',
-                value: '${occ.startTime} – ${occ.endTime}'),
-            const SizedBox(height: 10),
-            _RecapRow(
-                icon: Icons.payments_outlined,
-                label: 'Prix',
-                value: price != null ? '$price XAF' : 'Selon tarif du tuteur'),
+                value:
+                    '${occ.startTime} – ${addMinutesToHhmm(occ.startTime, duration)} (${formatDurationMinutes(duration)})'),
+            if (_subject != null) ...[
+              const SizedBox(height: 10),
+              _RecapRow(
+                  icon: Icons.menu_book_outlined,
+                  label: 'Matière',
+                  value: _subject!),
+            ],
+            if (_topics.isNotEmpty) ...[
+              const SizedBox(height: 10),
+              Text('Sujets', style: WinType.bodyS(s.onMuted)),
+              const SizedBox(height: 6),
+              TopicChipsRow(_topics),
+            ],
           ]),
         ),
+        const SizedBox(height: 16),
+        Text('Prix', style: WinType.labelM(s.onStrong)),
+        const SizedBox(height: 8),
+        WinCard(
+          child: _quoteLoading
+              ? const Center(
+                  child: Padding(
+                      padding: EdgeInsets.all(8),
+                      child: CircularProgressIndicator()))
+              : _quote != null
+                  ? TutorPriceBreakdownView(quote: _quote!)
+                  : Text(_quoteError ?? 'Prix indisponible.',
+                      style: WinType.bodyS(s.onMuted)),
+        ),
+        if (_quote != null && _quote!.isAvailable == false) ...[
+          const SizedBox(height: 10),
+          WinAlert(
+              _quote!.unavailableReason ?? 'Ce créneau n\'est plus disponible.',
+              type: BadgeColor.error),
+        ],
         const SizedBox(height: 20),
         Text('Mode de séance', style: WinType.labelM(s.onStrong)),
         const SizedBox(height: 8),
@@ -415,7 +579,11 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
               runSpacing: 8,
               children: _availableModes
                   .map((m) => GestureDetector(
-                        onTap: () => setState(() => _mode = m),
+                        onTap: () {
+                          if (_mode == m) return;
+                          setState(() => _mode = m);
+                          _refreshQuote(); // le mode change le tarif de base
+                        },
                         child: Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 14, vertical: 10),
@@ -438,9 +606,14 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
                       ))
                   .toList()),
         const SizedBox(height: 28),
-        WinButton('Payer maintenant',
+        WinButton(
+            _quote != null && _quoteReady
+                ? 'Payer ${fmtXaf(_quote!.totalXaf)} XAF'
+                : 'Payer maintenant',
             block: true,
-            onTap: (_mode != null) ? () => setState(() => _step = 2) : null),
+            onTap: (_mode != null && _quoteReady)
+                ? () => setState(() => _step = 2)
+                : null),
       ],
     );
   }
@@ -471,7 +644,12 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
             WinAlert(_submitError!, type: BadgeColor.error),
           ],
           const SizedBox(height: 24),
-          WinButton(_submitting ? 'Envoi en cours…' : 'Payer',
+          WinButton(
+              _submitting
+                  ? 'Envoi en cours…'
+                  : (_quote != null
+                      ? 'Payer ${fmtXaf(_quote!.totalXaf)} XAF'
+                      : 'Payer'),
               block: true,
               loading: _submitting,
               onTap: _submitting ? null : _submitBooking),
@@ -619,7 +797,7 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
             _RecapRow(
                 icon: Icons.payments_outlined,
                 label: 'Prix',
-                value: '${booking.priceXaf} XAF'),
+                value: '${fmtXaf(booking.priceXaf)} XAF'),
             const SizedBox(height: 10),
             _RecapRow(
                 icon: _modeIcons[booking.mode] ?? Icons.info_outline,

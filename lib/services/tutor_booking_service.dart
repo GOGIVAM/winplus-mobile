@@ -3,25 +3,141 @@ import 'api_client.dart';
 /// Réservation d'une séance de répétition (Module 1  professeur_complete.md).
 /// Mirroir du flow web (bookings + paiement Mobile Money via NotchPay).
 
+/// "HH:mm" + minutes → "HH:mm".
+String addMinutesToHhmm(String hhmm, int minutes) {
+  final parts = hhmm.split(':');
+  final total = int.parse(parts[0]) * 60 + int.parse(parts[1]) + minutes;
+  final h = (total ~/ 60) % 24;
+  final m = total % 60;
+  return '${h.toString().padLeft(2, '0')}:${m.toString().padLeft(2, '0')}';
+}
+
+/// "30 min", "1 h", "1 h 30".
+String formatDurationMinutes(int minutes) {
+  final h = minutes ~/ 60;
+  final m = minutes % 60;
+  if (h == 0) return '$m min';
+  return m == 0 ? '$h h' : '$h h ${m.toString().padLeft(2, '0')}';
+}
+
+/// Point de départ réservable (lot 9.1) : depuis [startTime], l'élève choisit
+/// une durée multiple de 30 min parmi [availableDurationsMinutes], jusqu'à la
+/// fin de la plage libre en continu. Le serveur n'envoie pas d'heure de fin :
+/// elle dépend de la durée choisie.
 class TutorAvailabilityOccurrence {
   final DateTime date;
   final String startTime; // "HH:mm"
-  final String endTime;
+  final List<int> availableDurationsMinutes;
+  final int maxDurationMinutes;
   final bool isBookable;
 
   const TutorAvailabilityOccurrence({
     required this.date,
     required this.startTime,
-    required this.endTime,
+    this.availableDurationsMinutes = const [],
+    this.maxDurationMinutes = 0,
     required this.isBookable,
   });
 
-  factory TutorAvailabilityOccurrence.fromJson(Map<String, dynamic> j) =>
-      TutorAvailabilityOccurrence(
-        date: DateTime.parse(j['date'] as String),
-        startTime: j['startTime'] as String? ?? '08:00',
-        endTime: j['endTime'] as String? ?? '09:00',
-        isBookable: j['isBookable'] as bool? ?? false,
+  factory TutorAvailabilityOccurrence.fromJson(Map<String, dynamic> j) {
+    final durations = (j['availableDurationsMinutes'] as List? ?? [])
+        .map((e) => (e as num).toInt())
+        .toList();
+    return TutorAvailabilityOccurrence(
+      date: DateTime.parse(j['date'] as String),
+      startTime: j['startTime'] as String? ?? '08:00',
+      availableDurationsMinutes: durations,
+      maxDurationMinutes: (j['maxDurationMinutes'] as num?)?.toInt() ??
+          (durations.isEmpty ? 0 : durations.last),
+      isBookable: j['isBookable'] as bool? ?? false,
+    );
+  }
+}
+
+class TutorPriceQuoteSegment {
+  final String startTime;
+  final String endTime;
+  final int minutes;
+  final int modifierPercent;
+  final List<String> modifierLabels;
+  final num effectiveHourlyRateXaf;
+  final num amountXaf;
+
+  const TutorPriceQuoteSegment({
+    required this.startTime,
+    required this.endTime,
+    required this.minutes,
+    required this.modifierPercent,
+    required this.modifierLabels,
+    required this.effectiveHourlyRateXaf,
+    required this.amountXaf,
+  });
+
+  factory TutorPriceQuoteSegment.fromJson(Map<String, dynamic> j) =>
+      TutorPriceQuoteSegment(
+        startTime: j['startTime'] as String? ?? '',
+        endTime: j['endTime'] as String? ?? '',
+        minutes: (j['minutes'] as num?)?.toInt() ?? 0,
+        modifierPercent: (j['modifierPercent'] as num?)?.toInt() ?? 0,
+        modifierLabels: (j['modifierLabels'] as List? ?? [])
+            .map((e) => e.toString())
+            .toList(),
+        effectiveHourlyRateXaf: (j['effectiveHourlyRateXaf'] ?? 0) as num,
+        amountXaf: (j['amountXaf'] ?? 0) as num,
+      );
+}
+
+/// Devis calculé par le serveur (lot 9.1) : l'application n'affiche jamais un
+/// prix calculé localement.
+class TutorPriceQuote {
+  final String startTime;
+  final String endTime;
+  final int durationMinutes;
+  final String modeCategory; // online | in_person
+  final String? subject;
+  final num baseHourlyRateXaf;
+  final List<TutorPriceQuoteSegment> segments;
+  final num subtotalXaf;
+  final int durationDiscountPercent;
+  final num durationDiscountXaf;
+  final num totalXaf;
+  final bool? isAvailable;
+  final String? unavailableReason;
+
+  const TutorPriceQuote({
+    required this.startTime,
+    required this.endTime,
+    required this.durationMinutes,
+    required this.modeCategory,
+    this.subject,
+    required this.baseHourlyRateXaf,
+    required this.segments,
+    required this.subtotalXaf,
+    required this.durationDiscountPercent,
+    required this.durationDiscountXaf,
+    required this.totalXaf,
+    this.isAvailable,
+    this.unavailableReason,
+  });
+
+  factory TutorPriceQuote.fromJson(Map<String, dynamic> j) => TutorPriceQuote(
+        startTime: j['startTime'] as String? ?? '',
+        endTime: j['endTime'] as String? ?? '',
+        durationMinutes: (j['durationMinutes'] as num?)?.toInt() ?? 0,
+        modeCategory: j['modeCategory'] as String? ?? 'online',
+        subject: j['subject'] as String?,
+        baseHourlyRateXaf: (j['baseHourlyRateXaf'] ?? 0) as num,
+        segments: (j['segments'] as List? ?? [])
+            .map((e) =>
+                TutorPriceQuoteSegment.fromJson(e as Map<String, dynamic>))
+            .toList(),
+        subtotalXaf: (j['subtotalXaf'] ?? 0) as num,
+        durationDiscountPercent:
+            (j['durationDiscountPercent'] as num?)?.toInt() ?? 0,
+        durationDiscountXaf: (j['durationDiscountXaf'] ?? 0) as num,
+        totalXaf: (j['totalXaf'] ?? 0) as num,
+        isAvailable: j['isAvailable'] as bool?,
+        unavailableReason: j['unavailableReason'] as String?,
       );
 }
 
@@ -48,6 +164,10 @@ class TutorBookingRecord {
   final String? disputeReason;
   final bool canMarkCompleted;
   final bool canDispute;
+  final String? subject;
+  final List<String> topics;
+  final int durationMinutes;
+  final TutorPriceQuote? priceBreakdown;
 
   const TutorBookingRecord({
     required this.id,
@@ -72,6 +192,10 @@ class TutorBookingRecord {
     this.disputeReason,
     this.canMarkCompleted = false,
     this.canDispute = false,
+    this.subject,
+    this.topics = const [],
+    this.durationMinutes = 0,
+    this.priceBreakdown,
   });
 
   /// Statut "actif" : le paiement a été validé (en attente du répétiteur,
@@ -117,6 +241,14 @@ class TutorBookingRecord {
         disputeReason: j['disputeReason'] as String?,
         canMarkCompleted: j['canMarkCompleted'] as bool? ?? false,
         canDispute: j['canDispute'] as bool? ?? false,
+        subject: j['subject'] as String?,
+        topics:
+            (j['topics'] as List? ?? []).map((e) => e.toString()).toList(),
+        durationMinutes: (j['durationMinutes'] as num?)?.toInt() ?? 0,
+        priceBreakdown: j['priceBreakdown'] is Map<String, dynamic>
+            ? TutorPriceQuote.fromJson(
+                j['priceBreakdown'] as Map<String, dynamic>)
+            : null,
       );
 }
 
@@ -183,23 +315,49 @@ class TutorBookingService {
     return [...results[0], ...results[1]];
   }
 
+  static String _date(DateTime d) =>
+      '${d.year.toString().padLeft(4, '0')}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
+
+  /// Devis serveur avant paiement (lot 9.1) ; le prix est recalculé de toute
+  /// façon à la création de la réservation.
+  Future<TutorPriceQuote> quote({
+    required int tutorUserId,
+    required DateTime sessionDate,
+    required String startTime,
+    required int durationMinutes,
+    required String mode,
+    String? subject,
+  }) async {
+    final res = await _api.dio.post('/tutor-bookings/quote', data: {
+      'tutorUserId': tutorUserId,
+      'sessionDate': _date(sessionDate),
+      'startTime': startTime,
+      'durationMinutes': durationMinutes,
+      'mode': mode,
+      if (subject != null && subject.isNotEmpty) 'subject': subject,
+    });
+    return TutorPriceQuote.fromJson(res.data as Map<String, dynamic>);
+  }
+
   Future<TutorBookingCreatedResult> createBooking({
     required int tutorUserId,
     required DateTime sessionDate,
     required String startTime,
-    required String endTime,
+    required int durationMinutes,
     required String mode,
     required String phone,
+    String? subject,
+    List<String> topics = const [],
   }) async {
-    final dateStr =
-        '${sessionDate.year.toString().padLeft(4, '0')}-${sessionDate.month.toString().padLeft(2, '0')}-${sessionDate.day.toString().padLeft(2, '0')}';
     final res = await _api.dio.post('/tutor-bookings', data: {
       'tutorUserId': tutorUserId,
-      'sessionDate': dateStr,
+      'sessionDate': _date(sessionDate),
       'startTime': startTime,
-      'endTime': endTime,
+      'durationMinutes': durationMinutes,
       'mode': mode,
       'phone': phone,
+      if (subject != null && subject.isNotEmpty) 'subject': subject,
+      'topics': topics,
     });
     return TutorBookingCreatedResult.fromJson(res.data as Map<String, dynamic>);
   }

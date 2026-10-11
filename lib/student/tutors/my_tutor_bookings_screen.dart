@@ -6,6 +6,7 @@ import '../../theme/win_colors.dart';
 import '../../theme/win_theme.dart';
 import '../../theme/win_typography.dart';
 import '../../widgets/win_widgets.dart';
+import 'tutor_pricing_widgets.dart';
 
 const _modeLabels = {
   'online': 'En ligne',
@@ -264,8 +265,17 @@ class _BookingCardState extends State<_BookingCard> {
           const SizedBox(width: 12),
           Icon(Icons.payments_outlined, size: 14, color: s.onFaint),
           const SizedBox(width: 4),
-          Text('${b.priceXaf} XAF', style: WinType.labelM(s.onMuted)),
+          Text('${fmtXaf(b.priceXaf)} XAF', style: WinType.labelM(s.onMuted)),
         ]),
+        if (b.subject != null || b.topics.isNotEmpty) ...[
+          const SizedBox(height: 8),
+          if (b.subject != null)
+            Text(b.subject!, style: WinType.labelM(s.onMuted)),
+          if (b.topics.isNotEmpty) ...[
+            const SizedBox(height: 6),
+            TopicChipsRow(b.topics),
+          ],
+        ],
         if (b.isDisputed && (b.disputeReason ?? '').isNotEmpty) ...[
           const SizedBox(height: 10),
           WinAlert('Signalement envoyé : ${b.disputeReason}',

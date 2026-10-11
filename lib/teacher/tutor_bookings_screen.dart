@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../services/tutor_booking_service.dart';
+import '../student/tutors/tutor_pricing_widgets.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
@@ -15,6 +16,51 @@ const _modeLabels = {
 
 String _fmtDate(DateTime d) =>
     '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year}';
+
+/// Lot 9.1 : matière, sujets à travailler saisis par l'élève et détail du
+/// prix figé à la réservation (absent pour les réservations antérieures).
+class _BookingDetails extends StatefulWidget {
+  final TutorBookingRecord booking;
+  const _BookingDetails(this.booking);
+
+  @override
+  State<_BookingDetails> createState() => _BookingDetailsState();
+}
+
+class _BookingDetailsState extends State<_BookingDetails> {
+  bool _open = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = WinTheme.of(context);
+    final b = widget.booking;
+    final info = [
+      if (b.subject != null) b.subject!,
+      if (b.durationMinutes > 0) formatDurationMinutes(b.durationMinutes),
+    ].join(' · ');
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      if (info.isNotEmpty) ...[
+        const SizedBox(height: 8),
+        Text(info, style: WinType.labelM(s.onMuted)),
+      ],
+      if (b.topics.isNotEmpty) ...[
+        const SizedBox(height: 8),
+        Text('Sujets à travailler', style: WinType.labelS(s.onFaint)),
+        const SizedBox(height: 4),
+        TopicChipsRow(b.topics),
+      ],
+      if (b.priceBreakdown != null) ...[
+        TextButton(
+          style: TextButton.styleFrom(padding: EdgeInsets.zero),
+          onPressed: () => setState(() => _open = !_open),
+          child: Text(
+              _open ? 'Masquer le détail du prix' : 'Voir le détail du prix'),
+        ),
+        if (_open) TutorPriceBreakdownView(quote: b.priceBreakdown!),
+      ],
+    ]);
+  }
+}
 
 /// Espace "Cours particuliers" du répétiteur : demandes en attente
 /// (accepter/refuser avec compte à rebours) et séances à venir/à clôturer
@@ -283,8 +329,9 @@ class _PendingCard extends StatelessWidget {
           const SizedBox(width: 12),
           Icon(Icons.payments_outlined, size: 14, color: s.onFaint),
           const SizedBox(width: 4),
-          Text('${b.priceXaf} XAF', style: WinType.labelM(s.onMuted)),
+          Text('${fmtXaf(b.priceXaf)} XAF', style: WinType.labelM(s.onMuted)),
         ]),
+        _BookingDetails(b),
         const SizedBox(height: 14),
         Row(children: [
           Expanded(
@@ -347,6 +394,7 @@ class _UpcomingCard extends StatelessWidget {
               ])),
           WinBadge(_statusLabel, color: _statusColor),
         ]),
+        _BookingDetails(b),
         if (b.isDisputed && (b.disputeReason ?? '').isNotEmpty) ...[
           const SizedBox(height: 8),
           WinAlert('Motif de contestation : ${b.disputeReason}',

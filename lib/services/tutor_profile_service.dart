@@ -77,6 +77,136 @@ class TutorAvailabilitySlot {
       };
 }
 
+// ── Grille tarifaire (lot 9.1, suivi 17.3) ──────────────────────────────
+
+/// Tarif de base : [subject]/[mode] null = toutes les matières / tous modes.
+class TutorRate {
+  final String? subject;
+  final String? mode; // online | in_person | null
+  final num hourlyRateXaf;
+  const TutorRate({this.subject, this.mode, required this.hourlyRateXaf});
+
+  factory TutorRate.fromJson(Map<String, dynamic> j) => TutorRate(
+        subject: j['subject'] as String?,
+        mode: j['mode'] as String?,
+        hourlyRateXaf: (j['hourlyRateXaf'] ?? 0) as num,
+      );
+
+  Map<String, dynamic> toJson() =>
+      {'subject': subject, 'mode': mode, 'hourlyRateXaf': hourlyRateXaf};
+
+  TutorRate copyWith(
+          {String? subject,
+          bool clearSubject = false,
+          String? mode,
+          bool clearMode = false,
+          num? hourlyRateXaf}) =>
+      TutorRate(
+        subject: clearSubject ? null : (subject ?? this.subject),
+        mode: clearMode ? null : (mode ?? this.mode),
+        hourlyRateXaf: hourlyRateXaf ?? this.hourlyRateXaf,
+      );
+}
+
+/// Modulation par créneau : +/- % sur les tranches de 30 min concernées.
+class TutorRateModifier {
+  final String label;
+  final List<int> daysOfWeek; // 0 = dimanche … 6 = samedi ; vide = tous
+  final String? startTime;
+  final String? endTime;
+  final int percentAdjustment;
+  const TutorRateModifier({
+    required this.label,
+    this.daysOfWeek = const [],
+    this.startTime,
+    this.endTime,
+    required this.percentAdjustment,
+  });
+
+  factory TutorRateModifier.fromJson(Map<String, dynamic> j) =>
+      TutorRateModifier(
+        label: j['label'] as String? ?? '',
+        daysOfWeek: (j['daysOfWeek'] as List? ?? [])
+            .map((e) => (e as num).toInt())
+            .toList(),
+        startTime: j['startTime'] as String?,
+        endTime: j['endTime'] as String?,
+        percentAdjustment: (j['percentAdjustment'] as num?)?.toInt() ?? 0,
+      );
+
+  Map<String, dynamic> toJson() => {
+        'label': label,
+        'daysOfWeek': daysOfWeek,
+        'startTime': startTime,
+        'endTime': endTime,
+        'percentAdjustment': percentAdjustment,
+      };
+}
+
+/// Palier de dégressivité : remise sur toute la séance dès une durée.
+class TutorDurationDiscount {
+  final int minDurationMinutes;
+  final int percentDiscount;
+  const TutorDurationDiscount(
+      {required this.minDurationMinutes, required this.percentDiscount});
+
+  factory TutorDurationDiscount.fromJson(Map<String, dynamic> j) =>
+      TutorDurationDiscount(
+        minDurationMinutes: (j['minDurationMinutes'] as num?)?.toInt() ?? 120,
+        percentDiscount: (j['percentDiscount'] as num?)?.toInt() ?? 0,
+      );
+
+  Map<String, dynamic> toJson() => {
+        'minDurationMinutes': minDurationMinutes,
+        'percentDiscount': percentDiscount,
+      };
+}
+
+/// Grille proposée par WinAI (réponse snake_case relayée telle quelle).
+class TutorRateGridSuggestion {
+  final List<TutorRate> rates;
+  final List<TutorRateModifier> modifiers;
+  final List<TutorDurationDiscount> discounts;
+  final String explanation;
+  const TutorRateGridSuggestion({
+    required this.rates,
+    required this.modifiers,
+    required this.discounts,
+    required this.explanation,
+  });
+
+  factory TutorRateGridSuggestion.fromJson(Map<String, dynamic> j) =>
+      TutorRateGridSuggestion(
+        rates: (j['base_rates'] as List? ?? []).map((e) {
+          final m = e as Map<String, dynamic>;
+          return TutorRate(
+              subject: m['subject'] as String?,
+              mode: m['mode'] as String?,
+              hourlyRateXaf: (m['hourly_rate_xaf'] ?? 0) as num);
+        }).toList(),
+        modifiers: (j['modifiers'] as List? ?? []).map((e) {
+          final m = e as Map<String, dynamic>;
+          return TutorRateModifier(
+            label: m['label'] as String? ?? '',
+            daysOfWeek: (m['days_of_week'] as List? ?? [])
+                .map((d) => (d as num).toInt())
+                .toList(),
+            startTime: m['start_time'] as String?,
+            endTime: m['end_time'] as String?,
+            percentAdjustment: (m['percent_adjustment'] as num?)?.toInt() ?? 0,
+          );
+        }).toList(),
+        discounts: (j['duration_discounts'] as List? ?? []).map((e) {
+          final m = e as Map<String, dynamic>;
+          return TutorDurationDiscount(
+              minDurationMinutes:
+                  (m['min_duration_minutes'] as num?)?.toInt() ?? 120,
+              percentDiscount: (m['percent_discount'] as num?)?.toInt() ?? 0);
+        }).toList(),
+        explanation: j['explanation'] as String? ?? '',
+      );
+}
+
 class TutorVerificationDocument {
   final int id;
   final String documentUrl;
@@ -132,6 +262,10 @@ class TutorProfile {
   final int reviewCount;
   final bool isExperienced;
   final bool isHighlyResponsive;
+  final List<TutorRate> rates;
+  final List<TutorRateModifier> rateModifiers;
+  final List<TutorDurationDiscount> durationDiscounts;
+  final num? fromHourlyRateXaf;
 
   const TutorProfile({
     required this.id,
@@ -167,6 +301,10 @@ class TutorProfile {
     this.reviewCount = 0,
     this.isExperienced = false,
     this.isHighlyResponsive = false,
+    this.rates = const [],
+    this.rateModifiers = const [],
+    this.durationDiscounts = const [],
+    this.fromHourlyRateXaf,
   });
 
   factory TutorProfile.fromJson(Map<String, dynamic> j) => TutorProfile(
@@ -215,6 +353,17 @@ class TutorProfile {
         reviewCount: j['reviewCount'] as int? ?? 0,
         isExperienced: j['isExperienced'] as bool? ?? false,
         isHighlyResponsive: j['isHighlyResponsive'] as bool? ?? false,
+        rates: (j['rates'] as List? ?? [])
+            .map((e) => TutorRate.fromJson(e as Map<String, dynamic>))
+            .toList(),
+        rateModifiers: (j['rateModifiers'] as List? ?? [])
+            .map((e) => TutorRateModifier.fromJson(e as Map<String, dynamic>))
+            .toList(),
+        durationDiscounts: (j['durationDiscounts'] as List? ?? [])
+            .map((e) =>
+                TutorDurationDiscount.fromJson(e as Map<String, dynamic>))
+            .toList(),
+        fromHourlyRateXaf: j['fromHourlyRateXaf'] as num?,
       );
 }
 
@@ -302,6 +451,24 @@ class TutorProfileService {
     return TutorRateSuggestion.fromJson(res.data as Map<String, dynamic>);
   }
 
+  /// Suggestion WinAI d'une grille complète (lot 9.1) : base par matière et
+  /// par mode, modulations, dégressivité. Le tuteur reste libre de l'éditer.
+  Future<TutorRateGridSuggestion?> suggestRateGrid(
+      List<String> subjects, List<String> modes,
+      {String? level}) async {
+    final res = await _api.dio.post('/tutor-profile/me/suggest-rate', data: {
+      'subject': subjects.first,
+      'level': level,
+      'include_grid': true,
+      'subjects': subjects,
+      'modes': modes,
+    });
+    final grid = (res.data as Map<String, dynamic>)['grid'];
+    return grid is Map<String, dynamic>
+        ? TutorRateGridSuggestion.fromJson(grid)
+        : null;
+  }
+
   /// Recherche publique de répétiteurs (élève).
   Future<List<TutorSearchResult>> search({
     String? subject,
@@ -313,10 +480,14 @@ class TutorProfileService {
     String? mode,
     String? city,
     bool? availableSoon,
+
+    /// Sujets de séance (lot 9.1) : classent les tuteurs par correspondance.
+    List<String> topics = const [],
     int page = 1,
     int pageSize = 20,
   }) async {
     final res = await _api.dio.get('/tutor-profile/search', queryParameters: {
+      if (topics.isNotEmpty) 'topics': topics.join(','),
       if (subject != null && subject.isNotEmpty) 'subject': subject,
       if (level != null && level.isNotEmpty) 'level': level,
       if (maxHourlyRateXaf != null) 'maxHourlyRateXaf': maxHourlyRateXaf,
@@ -352,6 +523,8 @@ class TutorSearchResult {
   final int reviewCount;
   final List<String> subjects;
   final List<String> levels;
+  final num? fromHourlyRateXaf;
+  final List<String> matchedTopics;
 
   const TutorSearchResult({
     required this.userId,
@@ -364,10 +537,16 @@ class TutorSearchResult {
     this.reviewCount = 0,
     this.subjects = const [],
     this.levels = const [],
+    this.fromHourlyRateXaf,
+    this.matchedTopics = const [],
   });
 
   factory TutorSearchResult.fromJson(Map<String, dynamic> j) =>
       TutorSearchResult(
+        fromHourlyRateXaf: j['fromHourlyRateXaf'] as num?,
+        matchedTopics: (j['matchedTopics'] as List? ?? [])
+            .map((e) => e.toString())
+            .toList(),
         userId: j['userId'] as int? ?? 0,
         fullName: j['fullName'] as String? ?? '',
         avatarUrl: j['avatarUrl'] as String?,

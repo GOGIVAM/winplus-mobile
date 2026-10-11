@@ -6,6 +6,7 @@ import '../../theme/win_theme.dart';
 import '../../theme/win_typography.dart';
 import '../../widgets/win_widgets.dart';
 import 'tutor_public_profile_screen.dart';
+import 'tutor_pricing_widgets.dart';
 
 const _tutorSubjects = [
   'Mathématiques',
@@ -54,6 +55,9 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
   String? _mode;
   String? _city;
   bool _availableSoon = false;
+  // Sujets de séance (lot 9.1, 17.5) : classent les tuteurs côté serveur et
+  // sont repris dans la réservation.
+  List<String> _topics = [];
   bool _loading = true;
   bool _error = false;
   List<TutorSearchResult> _results = [];
@@ -77,6 +81,7 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
         mode: _mode,
         city: _city,
         availableSoon: _availableSoon ? true : null,
+        topics: _topics,
         pageSize: 30,
       );
       if (mounted)
@@ -108,6 +113,17 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
         title: Text('Trouver un tuteur', style: WinType.headlineS(s.onStrong)),
       ),
       body: Column(children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          child: TopicsField(
+            topics: _topics,
+            hint: 'Sujets à travailler (ex. dérivées, dissertation)',
+            onChanged: (t) {
+              setState(() => _topics = t);
+              _search();
+            },
+          ),
+        ),
         SizedBox(
           height: 40,
           child: ListView.separated(
@@ -229,7 +245,8 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
                           itemCount: _results.length,
                           separatorBuilder: (_, __) =>
                               const SizedBox(height: 10),
-                          itemBuilder: (_, i) => _TutorResultCard(_results[i]),
+                          itemBuilder: (_, i) =>
+                              _TutorResultCard(_results[i], topics: _topics),
                         ),
         ),
       ]),
@@ -239,16 +256,22 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
 
 class _TutorResultCard extends StatelessWidget {
   final TutorSearchResult tutor;
-  const _TutorResultCard(this.tutor);
+  final List<String> topics;
+  const _TutorResultCard(this.tutor, {this.topics = const []});
 
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
+    final rate = tutor.fromHourlyRateXaf ?? tutor.hourlyRateXaf;
+    final from = tutor.fromHourlyRateXaf != null &&
+        tutor.hourlyRateXaf != null &&
+        tutor.fromHourlyRateXaf != tutor.hourlyRateXaf;
     return WinCard(
       onTap: () => Navigator.push(
           context,
           WinPageRoute(
-              builder: (_) => TutorPublicProfileScreen(userId: tutor.userId))),
+              builder: (_) => TutorPublicProfileScreen(
+                  userId: tutor.userId, initialTopics: topics))),
       padding: const EdgeInsets.all(12),
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
         // Avatar + badge de vérification superposé (même langage que le
@@ -291,8 +314,8 @@ class _TutorResultCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(WinRadii.full),
                 ),
                 child: Text(
-                  tutor.hourlyRateXaf != null
-                      ? '${tutor.hourlyRateXaf!.toStringAsFixed(0)} XAF/h'
+                  rate != null
+                      ? '${from ? 'dès ' : ''}${fmtXaf(rate)} XAF/h'
                       : 'Tarif ND',
                   style: WinType.labelS(s.primary)
                       .copyWith(fontWeight: FontWeight.w700),
@@ -322,6 +345,10 @@ class _TutorResultCard extends StatelessWidget {
                         ))
                     .toList(),
               ),
+            ],
+            if (tutor.matchedTopics.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              TopicChipsRow(tutor.matchedTopics, highlight: true),
             ],
           ]),
         ),
