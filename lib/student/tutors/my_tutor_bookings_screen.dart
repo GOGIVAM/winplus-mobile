@@ -8,6 +8,7 @@ import '../../theme/win_typography.dart';
 import '../../widgets/win_widgets.dart';
 import 'tutor_policy_widgets.dart';
 import 'tutor_pricing_widgets.dart';
+import 'tutor_public_profile_screen.dart';
 
 const _modeLabels = {
   'online': 'En ligne',
@@ -46,6 +47,8 @@ class _MyTutorBookingsScreenState extends State<MyTutorBookingsScreen> {
   List<TutorBookingRecord>? _bookings;
   bool _error = false;
   final Set<int> _reviewed = {};
+  // Lot 9.3 : répétiteurs attribués par un parent ou une institution.
+  List<TutorAssignment> _assigned = [];
 
   @override
   void initState() {
@@ -55,6 +58,9 @@ class _MyTutorBookingsScreenState extends State<MyTutorBookingsScreen> {
 
   Future<void> _load() async {
     setState(() => _error = false);
+    TutorBookingService.instance.getAssignmentsForMe().then((a) {
+      if (mounted) setState(() => _assigned = a);
+    }).catchError((Object _) {});
     try {
       final list = await TutorBookingService.instance.getMine();
       list.sort((a, b) => b.sessionDate.compareTo(a.sessionDate));
@@ -170,17 +176,47 @@ class _MyTutorBookingsScreenState extends State<MyTutorBookingsScreen> {
                     ))
                   : RefreshIndicator(
                       onRefresh: _load,
-                      child: ListView.separated(
+                      child: ListView(
                         padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-                        itemCount: bookings.length,
-                        separatorBuilder: (_, __) => const SizedBox(height: 10),
-                        itemBuilder: (_, i) => _BookingCard(
-                          booking: bookings[i],
-                          reviewSent: _reviewed.contains(bookings[i].id),
-                          onReviewed: () =>
-                              setState(() => _reviewed.add(bookings[i].id)),
-                          onDispute: () => _dispute(bookings[i]),
-                        ),
+                        children: [
+                          if (_assigned.isNotEmpty) ...[
+                            Text('Tes répétiteurs attribués', style: WinType.labelM(s.onStrong)),
+                            const SizedBox(height: 8),
+                            ..._assigned.map((a) => Padding(
+                                  padding: const EdgeInsets.only(bottom: 8),
+                                  child: WinCard(
+                                    child: Row(children: [
+                                      WinAvatar(a.tutorName ?? '?', size: 36),
+                                      const SizedBox(width: 10),
+                                      Expanded(
+                                        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                          Text(a.tutorName ?? 'Répétiteur', style: WinType.titleM(s.onStrong)),
+                                          Text('${a.subject != null ? '${a.subject} · ' : ''}attribué par ${a.assignerLabel}',
+                                              style: WinType.labelS(s.onMuted)),
+                                        ]),
+                                      ),
+                                      WinButton('Réserver',
+                                          small: true,
+                                          onTap: () => Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (_) => TutorPublicProfileScreen(
+                                                      userId: a.tutorUserId, assignment: a)))),
+                                    ]),
+                                  ),
+                                )),
+                            const SizedBox(height: 8),
+                          ],
+                          for (final b in bookings) ...[
+                            _BookingCard(
+                              booking: b,
+                              reviewSent: _reviewed.contains(b.id),
+                              onReviewed: () => setState(() => _reviewed.add(b.id)),
+                              onDispute: () => _dispute(b),
+                            ),
+                            const SizedBox(height: 10),
+                          ],
+                        ],
                       ),
                     ),
     );
@@ -282,6 +318,16 @@ class _BookingCardState extends State<_BookingCard> {
             TopicChipsRow(b.topics),
           ],
         ],
+        // Lot 9.3 : pour qui, payée par qui (séance réservée par un parent,
+        // une institution ou un membre du groupe d'étude).
+        if (b.partiesSummary != null) ...[
+          const SizedBox(height: 8),
+          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Icon(Icons.groups_outlined, size: 14, color: s.onFaint),
+            const SizedBox(width: 4),
+            Expanded(child: Text(b.partiesSummary!, style: WinType.labelM(s.onMuted))),
+          ]),
+        ],
         if (b.refundSummary != null) ...[
           const SizedBox(height: 10),
           WinAlert(b.refundSummary!,
@@ -300,7 +346,8 @@ class _BookingCardState extends State<_BookingCard> {
           WinAlert('Signalement envoyé : ${b.disputeReason}',
               type: BadgeColor.error),
         ],
-        if (b.isCompleted && !widget.reviewSent) ...[
+        // Seul un élève qui a suivi la séance la note (pas le parent payeur).
+        if (b.isCompleted && !widget.reviewSent && b.viewerIsParticipant != false) ...[
           const SizedBox(height: 14),
           const WinDivider(),
           const SizedBox(height: 12),

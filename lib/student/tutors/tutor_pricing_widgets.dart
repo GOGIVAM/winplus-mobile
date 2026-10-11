@@ -73,11 +73,22 @@ class TutorPriceBreakdownView extends StatelessWidget {
             '−${fmtXaf(quote.durationDiscountXaf)} XAF',
             color: WinColors.success),
       ],
+      // Lot 9.3 : prix de groupe, appliqué au prix individuel.
+      if (quote.isGroup) ...[
+        line('Prix pour un élève', '${fmtXaf(quote.soloTotalXaf)} XAF', color: s.onMuted),
+        if (quote.groupPricingMethod == 'flat')
+          line('Prix fixe du groupe (${quote.participantCount} élèves)', '${fmtXaf(quote.totalXaf)} XAF',
+              hint: '${quote.groupFlatPercent ?? 100} % du prix individuel · ≈ ${fmtXaf(quote.perStudentXaf)} XAF par élève')
+        else
+          line('${quote.participantCount} élèves × ${fmtXaf(quote.perStudentXaf)} XAF', '${fmtXaf(quote.totalXaf)} XAF',
+              color: quote.groupDiscountPercent > 0 ? WinColors.success : null,
+              hint: quote.groupDiscountPercent > 0 ? 'Prix de groupe : −${quote.groupDiscountPercent} % par élève' : null),
+      ],
       const SizedBox(height: 4),
       const WinDivider(),
       const SizedBox(height: 6),
       Row(children: [
-        Expanded(child: Text('Total', style: WinType.titleM(s.onStrong))),
+        Expanded(child: Text(quote.isGroup ? 'Total (groupe)' : 'Total', style: WinType.titleM(s.onStrong))),
         Text('${fmtXaf(quote.totalXaf)} XAF',
             style: WinType.titleM(s.onStrong)),
       ]),
@@ -186,6 +197,39 @@ class TopicChipsRow extends StatelessWidget {
           .map((t) => WinBadge(t,
               color: highlight ? BadgeColor.success : BadgeColor.neutral))
           .toList(),
+    );
+  }
+}
+
+/// Méthode de prix de groupe du tuteur (lot 9.3), sur la fiche publique.
+class TutorGroupPricingSummary extends StatelessWidget {
+  final TutorProfile profile;
+  const TutorGroupPricingSummary({super.key, required this.profile});
+
+  @override
+  Widget build(BuildContext context) {
+    final s = WinTheme.of(context);
+    if (profile.effectiveMaxGroupSize < 2) return const SizedBox.shrink();
+    final lines = <String>[
+      'Séances de groupe jusqu\'à ${profile.maxGroupSize} élèves.',
+      if (profile.groupPricingMethod == 'flat')
+        'Prix fixe pour le groupe : ${profile.groupFlatPricePercent ?? 100} % du prix d\'une séance individuelle.'
+      else if (profile.groupDiscounts.isEmpty)
+        'Chaque élève paie le prix d\'une séance individuelle.'
+      else
+        ...profile.groupDiscounts.map((d) => 'À partir de ${d.minGroupSize} élèves : −${d.percentDiscount} % par élève'),
+    ];
+    return Padding(
+      padding: const EdgeInsets.only(top: 6),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: lines
+            .map((l) => Padding(
+                  padding: const EdgeInsets.only(bottom: 4),
+                  child: Text('• $l', style: WinType.bodyS(s.onSurface)),
+                ))
+            .toList(),
+      ),
     );
   }
 }

@@ -104,6 +104,14 @@ class TutorPriceQuote {
   final bool? isAvailable;
   final String? unavailableReason;
 
+  // Lot 9.3 : prix de groupe (1 élève = séance individuelle).
+  final int participantCount;
+  final num soloTotalXaf;
+  final String? groupPricingMethod; // per_student | flat
+  final int groupDiscountPercent;
+  final int? groupFlatPercent;
+  final num perStudentXaf;
+
   const TutorPriceQuote({
     required this.startTime,
     required this.endTime,
@@ -118,7 +126,15 @@ class TutorPriceQuote {
     required this.totalXaf,
     this.isAvailable,
     this.unavailableReason,
+    this.participantCount = 1,
+    this.soloTotalXaf = 0,
+    this.groupPricingMethod,
+    this.groupDiscountPercent = 0,
+    this.groupFlatPercent,
+    this.perStudentXaf = 0,
   });
+
+  bool get isGroup => participantCount > 1;
 
   factory TutorPriceQuote.fromJson(Map<String, dynamic> j) => TutorPriceQuote(
         startTime: j['startTime'] as String? ?? '',
@@ -138,7 +154,160 @@ class TutorPriceQuote {
         totalXaf: (j['totalXaf'] ?? 0) as num,
         isAvailable: j['isAvailable'] as bool?,
         unavailableReason: j['unavailableReason'] as String?,
+        participantCount: (j['participantCount'] as num?)?.toInt() ?? 1,
+        soloTotalXaf: (j['soloTotalXaf'] ?? 0) as num,
+        groupPricingMethod: j['groupPricingMethod'] as String?,
+        groupDiscountPercent: (j['groupDiscountPercent'] as num?)?.toInt() ?? 0,
+        groupFlatPercent: (j['groupFlatPercent'] as num?)?.toInt(),
+        perStudentXaf: (j['perStudentXaf'] ?? 0) as num,
       );
+}
+
+/// Élève participant d'une séance ou bénéficiaire d'une attribution (lot 9.3).
+class TutorBookingParticipant {
+  final int userId;
+  final String? name;
+  final String? avatarUrl;
+  final String? groupName;
+  const TutorBookingParticipant({required this.userId, this.name, this.avatarUrl, this.groupName});
+
+  String get label => (name != null && name!.isNotEmpty) ? name! : 'Élève #$userId';
+
+  factory TutorBookingParticipant.fromJson(Map<String, dynamic> j) => TutorBookingParticipant(
+        userId: (j['userId'] as num?)?.toInt() ?? 0,
+        name: j['name'] as String?,
+        avatarUrl: j['avatarUrl'] as String?,
+        groupName: j['groupName'] as String?,
+      );
+}
+
+/// Libellés des types de payeur (17.4).
+const Map<String, String> kPayerTypeLabels = {
+  'student': 'Élève',
+  'parent': 'Parent',
+  'institution': 'Institution',
+  'study_group': "Groupe d'étude",
+};
+
+/// Attribution d'un tuteur par un parent ou une institution (lot 9.3).
+class TutorAssignment {
+  final int id;
+  final int tutorUserId;
+  final String? tutorName;
+  final String? tutorAvatarUrl;
+  final String? assignedByName;
+  final String assignerType; // parent | institution
+  final String? institutionName;
+  final String? groupName;
+  final String? subject;
+  final String? note;
+  final String status; // pending | active | declined | ended
+  final String? responseNote;
+  final List<TutorBookingParticipant> beneficiaries;
+
+  const TutorAssignment({
+    required this.id,
+    required this.tutorUserId,
+    this.tutorName,
+    this.tutorAvatarUrl,
+    this.assignedByName,
+    required this.assignerType,
+    this.institutionName,
+    this.groupName,
+    this.subject,
+    this.note,
+    required this.status,
+    this.responseNote,
+    this.beneficiaries = const [],
+  });
+
+  bool get isActive => status == 'active';
+  bool get isPending => status == 'pending';
+
+  String get statusLabel => switch (status) {
+        'pending' => 'En attente du tuteur',
+        'active' => 'Active',
+        'declined' => 'Refusée',
+        'ended' => 'Terminée',
+        _ => status,
+      };
+
+  String get assignerLabel => assignerType == 'institution'
+      ? (institutionName ?? 'Institution')
+      : (assignedByName ?? 'Parent');
+
+  factory TutorAssignment.fromJson(Map<String, dynamic> j) => TutorAssignment(
+        id: (j['id'] as num?)?.toInt() ?? 0,
+        tutorUserId: (j['tutorUserId'] as num?)?.toInt() ?? 0,
+        tutorName: j['tutorName'] as String?,
+        tutorAvatarUrl: j['tutorAvatarUrl'] as String?,
+        assignedByName: j['assignedByName'] as String?,
+        assignerType: j['assignerType'] as String? ?? 'parent',
+        institutionName: j['institutionName'] as String?,
+        groupName: j['groupName'] as String?,
+        subject: j['subject'] as String?,
+        note: j['note'] as String?,
+        status: j['status'] as String? ?? 'pending',
+        responseNote: j['responseNote'] as String?,
+        beneficiaries: (j['beneficiaries'] as List? ?? [])
+            .map((e) => TutorBookingParticipant.fromJson(e as Map<String, dynamic>))
+            .toList(),
+      );
+}
+
+class TutorStudyGroupOption {
+  final int id;
+  final String name;
+  final List<TutorBookingParticipant> members;
+  const TutorStudyGroupOption({required this.id, required this.name, this.members = const []});
+}
+
+/// Ce que le compte peut réserver pour autrui (lot 9.3) ; revérifié par le serveur.
+class TutorBookingContext {
+  final String role;
+  final List<String> allowedPayerTypes;
+  final List<TutorBookingParticipant> children;
+  final String? institutionName;
+  final List<TutorBookingParticipant> institutionStudents;
+  final List<TutorStudyGroupOption> studyGroups;
+  final List<TutorAssignment> activeAssignments;
+
+  const TutorBookingContext({
+    this.role = '',
+    this.allowedPayerTypes = const [],
+    this.children = const [],
+    this.institutionName,
+    this.institutionStudents = const [],
+    this.studyGroups = const [],
+    this.activeAssignments = const [],
+  });
+
+  bool get isParent => allowedPayerTypes.contains('parent');
+  bool get isInstitution => allowedPayerTypes.contains('institution');
+
+  factory TutorBookingContext.fromJson(Map<String, dynamic> j) {
+    List<TutorBookingParticipant> people(dynamic l) => (l as List? ?? [])
+        .map((e) => TutorBookingParticipant.fromJson(e as Map<String, dynamic>))
+        .toList();
+    return TutorBookingContext(
+      role: j['role'] as String? ?? '',
+      allowedPayerTypes: (j['allowedPayerTypes'] as List? ?? []).map((e) => e.toString()).toList(),
+      children: people(j['children']),
+      institutionName: j['institutionName'] as String?,
+      institutionStudents: people(j['institutionStudents']),
+      studyGroups: (j['studyGroups'] as List? ?? []).map((e) {
+        final m = e as Map<String, dynamic>;
+        return TutorStudyGroupOption(
+          id: (m['id'] as num?)?.toInt() ?? 0,
+          name: m['name'] as String? ?? '',
+          members: people(m['members']),
+        );
+      }).toList(),
+      activeAssignments: (j['activeAssignments'] as List? ?? [])
+          .map((e) => TutorAssignment.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+  }
 }
 
 class TutorBookingRecord {
@@ -181,6 +350,16 @@ class TutorBookingRecord {
   final String? refundFeeBorneBy; // none | payer | tutor | platform
   final num? tutorFeeChargedXaf;
 
+  // Lot 9.3 : payeur, participants et objet.
+  final String payerType; // student | parent | institution | study_group
+  final String? payerName;
+  final String? studyGroupName;
+  final int participantCount;
+  final List<TutorBookingParticipant> participants;
+  final int? tutorAssignmentId;
+  final bool? viewerIsPayer;
+  final bool? viewerIsParticipant;
+
   const TutorBookingRecord({
     required this.id,
     required this.tutorUserId,
@@ -218,7 +397,33 @@ class TutorBookingRecord {
     this.refundFeeXaf,
     this.refundFeeBorneBy,
     this.tutorFeeChargedXaf,
+    this.payerType = 'student',
+    this.payerName,
+    this.studyGroupName,
+    this.participantCount = 1,
+    this.participants = const [],
+    this.tutorAssignmentId,
+    this.viewerIsPayer,
+    this.viewerIsParticipant,
   });
+
+  /// Lot 9.3 : seul le côté payeur annule (un élève dont la séance a été
+  /// payée par son parent demande l'annulation au parent).
+  bool get canCancelAsPayer => viewerIsPayer != false;
+
+  /// Une phrase « pour qui / payée par qui », null pour un élève qui paie seul.
+  String? get partiesSummary {
+    if (payerType == 'student') return null;
+    final names = participants.map((p) => p.label).toList();
+    final payer = payerName ?? kPayerTypeLabels[payerType] ?? payerType;
+    if (viewerIsParticipant == true && viewerIsPayer != true) {
+      return 'Réservée pour toi par $payer'
+          '${studyGroupName != null ? ' (groupe $studyGroupName)' : ''}'
+          '${names.length > 1 ? ' · ${names.length} élèves' : ''}.';
+    }
+    final payerText = payerType == 'study_group' ? '$payer (groupe ${studyGroupName ?? ''})' : payer;
+    return 'Pour : ${names.join(', ')} · payée par $payerText.';
+  }
 
   /// Statut "actif" : le paiement a été validé (en attente du répétiteur,
   /// ou déjà confirmé). Utilisé pour distinguer du paiement en cours.
@@ -253,7 +458,11 @@ class TutorBookingRecord {
         : feeText != null
             ? ' ($feeText)'
             : ' (remboursement intégral)';
-    return '${xaf(amount)} XAF remboursés sur ton portefeuille WinPlus$detail.';
+    if (viewerIsPayer == false) {
+      return '${xaf(amount)} XAF remboursés à ${payerName ?? 'celui qui a payé'}$detail.';
+    }
+    final where = payerType == 'institution' ? "le portefeuille de l'institution" : 'ton portefeuille WinPlus';
+    return '${xaf(amount)} XAF remboursés sur $where$detail.';
   }
 
   static String _fmtXaf(num n) {
@@ -320,6 +529,16 @@ class TutorBookingRecord {
         refundFeeXaf: j['refundFeeXaf'] as num?,
         refundFeeBorneBy: j['refundFeeBorneBy'] as String?,
         tutorFeeChargedXaf: j['tutorFeeChargedXaf'] as num?,
+        payerType: j['payerType'] as String? ?? 'student',
+        payerName: j['payerName'] as String?,
+        studyGroupName: j['studyGroupName'] as String?,
+        participantCount: (j['participantCount'] as num?)?.toInt() ?? 1,
+        participants: (j['participants'] as List? ?? [])
+            .map((e) => TutorBookingParticipant.fromJson(e as Map<String, dynamic>))
+            .toList(),
+        tutorAssignmentId: (j['tutorAssignmentId'] as num?)?.toInt(),
+        viewerIsPayer: j['viewerIsPayer'] as bool?,
+        viewerIsParticipant: j['viewerIsParticipant'] as bool?,
       );
 }
 
@@ -488,6 +707,7 @@ class TutorBookingService {
     required int durationMinutes,
     required String mode,
     String? subject,
+    int participantCount = 1,
   }) async {
     final res = await _api.dio.post('/tutor-bookings/quote', data: {
       'tutorUserId': tutorUserId,
@@ -496,6 +716,7 @@ class TutorBookingService {
       'durationMinutes': durationMinutes,
       'mode': mode,
       if (subject != null && subject.isNotEmpty) 'subject': subject,
+      'participantCount': participantCount,
     });
     return TutorPriceQuote.fromJson(res.data as Map<String, dynamic>);
   }
@@ -510,6 +731,10 @@ class TutorBookingService {
     String paymentMethod = 'mobile_money',
     String? subject,
     List<String> topics = const [],
+    String? payerType,
+    List<int>? participantUserIds,
+    int? studyGroupId,
+    int? tutorAssignmentId,
   }) async {
     final res = await _api.dio.post('/tutor-bookings', data: {
       'tutorUserId': tutorUserId,
@@ -521,6 +746,11 @@ class TutorBookingService {
       if (phone != null && phone.isNotEmpty) 'phone': phone,
       if (subject != null && subject.isNotEmpty) 'subject': subject,
       'topics': topics,
+      // Lot 9.3 : réservation pour autrui (chaque lien revérifié par le serveur).
+      if (payerType != null) 'payerType': payerType,
+      if (participantUserIds != null && participantUserIds.isNotEmpty) 'participantUserIds': participantUserIds,
+      if (studyGroupId != null) 'studyGroupId': studyGroupId,
+      if (tutorAssignmentId != null) 'tutorAssignmentId': tutorAssignmentId,
     });
     return TutorBookingCreatedResult.fromJson(res.data as Map<String, dynamic>);
   }
@@ -532,6 +762,15 @@ class TutorBookingService {
 
   Future<List<TutorBookingRecord>> getMine() async {
     final res = await _api.dio.get('/tutor-bookings/mine');
+    final list = res.data as List? ?? [];
+    return list
+        .map((e) => TutorBookingRecord.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  /// Séances reçues par le répétiteur connecté (GET /tutor-bookings/tutor/mine).
+  Future<List<TutorBookingRecord>> getTutorMine() async {
+    final res = await _api.dio.get('/tutor-bookings/tutor/mine');
     final list = res.data as List? ?? [];
     return list
         .map((e) => TutorBookingRecord.fromJson(e as Map<String, dynamic>))
@@ -581,5 +820,50 @@ class TutorBookingService {
     final res = await _api.dio
         .put('/tutor-bookings/$id/dispute', data: {'reason': reason});
     return TutorBookingRecord.fromJson(res.data as Map<String, dynamic>);
+  }
+
+  // ── Lot 9.3 : réservation pour autrui et attribution de tuteur ──
+
+  List<TutorAssignment> _assignments(dynamic data) => (data as List? ?? [])
+      .map((e) => TutorAssignment.fromJson(e as Map<String, dynamic>))
+      .toList();
+
+  Future<TutorBookingContext> getBookingContext() async {
+    final res = await _api.dio.get('/tutor-assignments/booking-context');
+    return TutorBookingContext.fromJson(res.data as Map<String, dynamic>);
+  }
+
+  /// Attributions créées par le parent ou par l'institution du compte.
+  Future<List<TutorAssignment>> getMyAssignments() async =>
+      _assignments((await _api.dio.get('/tutor-assignments/mine')).data);
+
+  /// Attributions actives dont l'élève connecté est bénéficiaire.
+  Future<List<TutorAssignment>> getAssignmentsForMe() async =>
+      _assignments((await _api.dio.get('/tutor-assignments/for-me')).data);
+
+  Future<List<TutorAssignment>> getTutorAssignments() async =>
+      _assignments((await _api.dio.get('/tutor-assignments/tutor')).data);
+
+  Future<TutorAssignment> createAssignment({
+    required int tutorUserId,
+    List<int> studentUserIds = const [],
+    String? groupName,
+    String? subject,
+    String? note,
+  }) async {
+    final res = await _api.dio.post('/tutor-assignments', data: {
+      'tutorUserId': tutorUserId,
+      'studentUserIds': studentUserIds,
+      if (groupName != null && groupName.isNotEmpty) 'groupName': groupName,
+      if (subject != null && subject.isNotEmpty) 'subject': subject,
+      if (note != null && note.isNotEmpty) 'note': note,
+    });
+    return TutorAssignment.fromJson(res.data as Map<String, dynamic>);
+  }
+
+  Future<TutorAssignment> respondAssignment(int id, {required String action, String? note}) async {
+    // action : accept | decline | end
+    final res = await _api.dio.put('/tutor-assignments/$id/$action', data: {'note': note});
+    return TutorAssignment.fromJson(res.data as Map<String, dynamic>);
   }
 }

@@ -1,12 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import '../../services/session_manager.dart';
 import '../../services/tutor_booking_service.dart';
 import '../../services/tutor_profile_service.dart';
 import '../../theme/win_colors.dart';
 import '../../theme/win_theme.dart';
 import '../../theme/win_typography.dart';
 import '../../widgets/win_widgets.dart';
+import 'tutor_booking_for_whom.dart';
 import 'tutor_policy_widgets.dart';
 import 'tutor_pricing_widgets.dart';
 
@@ -36,12 +38,16 @@ class TutorBookingFlowScreen extends StatefulWidget {
   /// Sujets déjà saisis dans la recherche de tuteurs (lot 9.1).
   final List<String> initialTopics;
 
+  /// Lot 9.3 : réservation en un clic depuis une attribution active.
+  final TutorAssignment? assignment;
+
   const TutorBookingFlowScreen({
     super.key,
     required this.profile,
     this.occurrences = const [],
     this.initialOccurrence,
     this.initialTopics = const [],
+    this.assignment,
   });
 
   @override
@@ -72,6 +78,43 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
   num? _walletAvailable;
   bool _walletLoading = false;
 
+  // Lot 9.3 (17.4) : pour qui (enfants, élèves de l'institution, groupe d'étude).
+  TutorBookingContext? _ctx;
+  ForWhomValue _forWhom = const ForWhomValue();
+  int? _currentUserId;
+
+  int get _maxGroupSize => widget.profile.effectiveMaxGroupSize;
+  int get _participantCount => _forWhom.count < 1 ? 1 : _forWhom.count;
+
+  Future<void> _loadContext() async {
+    _currentUserId = await SessionManager.getUserId();
+    try {
+      final ctx = await TutorBookingService.instance.getBookingContext();
+      if (!mounted) return;
+      final preset = widget.assignment?.beneficiaries.map((b) => b.userId).take(_maxGroupSize < 1 ? 1 : _maxGroupSize).toList();
+      setState(() {
+        _ctx = ctx;
+        _forWhom = ForWhomValue.initial(ctx, preset: preset);
+      });
+    } catch (_) {
+      // Sans contexte : réservation pour soi, comme avant le 9.3.
+    }
+  }
+
+  String get _participantNames {
+    if (_forWhom.payerType == 'student') return 'Moi';
+    final pool = [
+      ...?_ctx?.children,
+      ...?_ctx?.institutionStudents,
+      ...?_ctx?.studyGroups.expand((g) => g.members),
+    ];
+    return _forWhom.participantIds
+        .map((id) => id == _currentUserId
+            ? 'Moi'
+            : (pool.where((p) => p.userId == id).firstOrNull?.label ?? '#$id'))
+        .join(', ');
+  }
+
   final _phoneCtrl = TextEditingController();
   bool _submitting = false;
   String? _submitError;
@@ -100,6 +143,11 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
     _subject =
         widget.profile.subjects.isNotEmpty ? widget.profile.subjects.first : null;
     _topics = widget.initialTopics.take(kMaxTopics).toList();
+    final assignedSubject = widget.assignment?.subject;
+    if (assignedSubject != null && widget.profile.subjects.contains(assignedSubject)) {
+      _subject = assignedSubject;
+    }
+    _loadContext();
 
     if (widget.occurrences.isNotEmpty) {
       _occurrences = widget.occurrences;
@@ -146,6 +194,7 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
         durationMinutes: duration,
         mode: mode,
         subject: _subject,
+        participantCount: _participantCount,
       );
       if (!mounted || req != _quoteRequest) return;
       setState(() {
@@ -277,6 +326,10 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
         paymentMethod: _payMethod,
         subject: _subject,
         topics: _topics,
+        payerType: _forWhom.payerType,
+        participantUserIds: _forWhom.payerType == 'student' ? null : _forWhom.participantIds,
+        studyGroupId: _forWhom.studyGroupId,
+        tutorAssignmentId: widget.assignment?.isActive == true ? widget.assignment!.id : null,
       );
       if (!mounted) return;
       setState(() {
@@ -529,10 +582,20 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
         const SizedBox(height: 6),
         TopicsField(
             topics: _topics, onChanged: (t) => setState(() => _topics = t)),
+        if (_ctx != null && TutorBookingForWhom.hasChoice(_ctx!)) ...[
+          const SizedBox(height: 20),
+          TutorBookingForWhom(
+            context: _ctx!,
+            value: _forWhom,
+            onChanged: (v) => setState(() => _forWhom = v),
+            currentUserId: _currentUserId,
+            maxGroupSize: _maxGroupSize,
+          ),
+        ],
         const SizedBox(height: 28),
         WinButton('Continuer',
             block: true,
-            onTap: _selectedOccurrence != null && _durationMinutes != null
+            onTap: _selectedOccurrence != null && _durationMinutes != null && _forWhom.isValid(_maxGroupSize)
                 ? _goToStep1
                 : null),
       ],
@@ -566,6 +629,13 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
                 label: 'Heure',
                 value:
                     '${occ.startTime} – ${addMinutesToHhmm(occ.startTime, duration)} (${formatDurationMinutes(duration)})'),
+            if (_forWhom.payerType != 'student') ...[
+              const SizedBox(height: 10),
+              _RecapRow(
+                  icon: Icons.groups_outlined,
+                  label: _participantCount > 1 ? 'Élèves ($_participantCount)' : 'Élève',
+                  value: _participantNames),
+            ],
             if (_subject != null) ...[
               const SizedBox(height: 10),
               _RecapRow(

@@ -38,7 +38,19 @@ class _BookingDetailsState extends State<_BookingDetails> {
       if (b.subject != null) b.subject!,
       if (b.durationMinutes > 0) formatDurationMinutes(b.durationMinutes),
     ].join(' · ');
+    // Lot 9.3 : participants, payeur et type de payeur.
+    final names = b.participants.isNotEmpty
+        ? b.participants.map((p) => p.label).join(', ')
+        : (b.studentName ?? 'Élève');
+    final payer = '${b.payerName ?? 'l\'élève'} (${kPayerTypeLabels[b.payerType] ?? b.payerType}'
+        '${b.studyGroupName != null ? ' · ${b.studyGroupName}' : ''})'
+        '${b.tutorAssignmentId != null ? ' · via une attribution' : ''}';
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      const SizedBox(height: 8),
+      Text(
+          '${b.participantCount > 1 ? 'Séance de groupe · ${b.participantCount} élèves' : 'Élève'} : $names',
+          style: WinType.labelM(s.onSurface)),
+      Text('Payée par : $payer', style: WinType.labelM(s.onMuted)),
       if (info.isNotEmpty) ...[
         const SizedBox(height: 8),
         Text(info, style: WinType.labelM(s.onMuted)),
@@ -75,8 +87,25 @@ class TutorBookingsScreen extends StatefulWidget {
 class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
   List<TutorPendingBooking>? _pending;
   List<TutorBookingRecord>? _mine;
+  // Lot 9.3 : attributions reçues (parent, institution).
+  List<TutorAssignment> _assignments = [];
   bool _error = false;
   final Set<int> _busy = {};
+
+  Future<void> _respond(TutorAssignment a, String action) async {
+    setState(() => _busy.add(-a.id));
+    try {
+      final updated = await TutorBookingService.instance.respondAssignment(a.id, action: action);
+      if (!mounted) return;
+      setState(() => _assignments = _assignments.map((x) => x.id == a.id ? updated : x).toList());
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Action impossible.')));
+      }
+    } finally {
+      if (mounted) setState(() => _busy.remove(-a.id));
+    }
+  }
 
   @override
   void initState() {
@@ -89,12 +118,15 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
     try {
       final results = await Future.wait([
         TutorBookingService.instance.getPending(),
-        TutorBookingService.instance.getMine(),
+        // Séances reçues en tant que tuteur (et non réservées en tant qu'élève).
+        TutorBookingService.instance.getTutorMine(),
       ]);
+      final assignments = await TutorBookingService.instance.getTutorAssignments().catchError((Object _) => <TutorAssignment>[]);
       if (!mounted) return;
       setState(() {
         _pending = results[0] as List<TutorPendingBooking>;
         _mine = results[1] as List<TutorBookingRecord>;
+        _assignments = assignments;
       });
     } catch (_) {
       if (mounted) setState(() => _error = true);
@@ -122,7 +154,7 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
         hint: 'Motif (optionnel)',
         // Lot 9.2 (17.9) : refuser rembourse l'élève, frais retenus au tuteur.
         message:
-            'L\'élève sera remboursé intégralement sur son portefeuille WinPlus ; si la séance a été payée par Mobile Money, les frais de l\'opérateur seront retenus sur ton solde.');
+            'Celui qui a payé (élève, parent, institution ou membre du groupe) sera remboursé intégralement sur son portefeuille WinPlus ; si la séance a été payée par Mobile Money, les frais de l\'opérateur seront retenus sur ton solde.');
     if (reason == null) return; // annulé
     setState(() => _busy.add(id));
     try {
@@ -132,8 +164,8 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(fee > 0
-                ? 'Demande refusée : l\'élève est remboursé, ${fmtXaf(fee)} XAF de frais Mobile Money retenus sur ton solde.'
-                : 'Demande refusée : l\'élève est remboursé sur son portefeuille.')));
+                ? 'Demande refusée : le payeur est remboursé, ${fmtXaf(fee)} XAF de frais Mobile Money retenus sur ton solde.'
+                : 'Demande refusée : le payeur est remboursé sur son portefeuille.')));
       }
       await _load();
     } catch (_) {
@@ -277,6 +309,60 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
                                 onDecline: () => _decline(p.booking.id),
                               ),
                             )),
+                      if (_assignments.isNotEmpty) ...[
+                        const SizedBox(height: 24),
+                        Text('Attributions',
+                            style: WinType.archivo(size: 18, color: s.onStrong)),
+                        const SizedBox(height: 10),
+                        ..._assignments.map((a) => Padding(
+                              padding: const EdgeInsets.only(bottom: 10),
+                              child: WinCard(
+                                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                  Row(children: [
+                                    Expanded(
+                                      child: Text(
+                                          '${a.assignerLabel}${a.groupName != null ? ' · ${a.groupName}' : ''}',
+                                          style: WinType.titleM(s.onStrong)),
+                                    ),
+                                    WinBadge(a.statusLabel,
+                                        color: a.isActive ? BadgeColor.success : a.isPending ? BadgeColor.warn : BadgeColor.neutral),
+                                  ]),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                      '${a.assignerType == 'institution' ? 'Institution' : 'Parent'} · ${a.beneficiaries.length} élève(s) : '
+                                      '${a.beneficiaries.take(6).map((b) => b.label).join(', ')}${a.beneficiaries.length > 6 ? '…' : ''}'
+                                      '${a.subject != null ? ' · ${a.subject}' : ''}',
+                                      style: WinType.labelM(s.onMuted)),
+                                  if (a.note != null) Text('« ${a.note} »', style: WinType.labelS(s.onFaint)),
+                                  if (a.isPending || a.isActive) ...[
+                                    const SizedBox(height: 10),
+                                    Row(children: [
+                                      if (a.isPending) ...[
+                                        Expanded(
+                                            child: WinButton('Refuser',
+                                                small: true,
+                                                variant: WinButtonVariant.outline,
+                                                loading: _busy.contains(-a.id),
+                                                onTap: () => _respond(a, 'decline'))),
+                                        const SizedBox(width: 10),
+                                        Expanded(
+                                            child: WinButton('Accepter',
+                                                small: true,
+                                                loading: _busy.contains(-a.id),
+                                                onTap: () => _respond(a, 'accept'))),
+                                      ] else
+                                        Expanded(
+                                            child: WinButton('Mettre fin',
+                                                small: true,
+                                                variant: WinButtonVariant.outline,
+                                                loading: _busy.contains(-a.id),
+                                                onTap: () => _respond(a, 'end'))),
+                                    ]),
+                                  ],
+                                ]),
+                              ),
+                            )),
+                      ],
                       const SizedBox(height: 24),
                       Text('Séances à venir / à clôturer',
                           style: WinType.archivo(size: 18, color: s.onStrong)),

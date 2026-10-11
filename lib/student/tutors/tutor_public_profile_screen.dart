@@ -19,8 +19,11 @@ class TutorPublicProfileScreen extends StatefulWidget {
 
   /// Sujets saisis dans la recherche (lot 9.1), repris dans la réservation.
   final List<String> initialTopics;
+
+  /// Lot 9.3 : attribution active d'où l'on vient (bénéficiaires présélectionnés).
+  final TutorAssignment? assignment;
   const TutorPublicProfileScreen(
-      {super.key, required this.userId, this.initialTopics = const []});
+      {super.key, required this.userId, this.initialTopics = const [], this.assignment});
 
   @override
   State<TutorPublicProfileScreen> createState() =>
@@ -80,6 +83,7 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
             occurrences: _occurrences,
             initialOccurrence: preselected,
             initialTopics: widget.initialTopics,
+            assignment: widget.assignment,
           ),
         ));
   }
@@ -196,6 +200,7 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
                   modifiers: p.rateModifiers,
                   discounts: p.durationDiscounts),
             ],
+            TutorGroupPricingSummary(profile: p),
             if (p.trialSessionEnabled) ...[
               const SizedBox(height: 6),
               Text(

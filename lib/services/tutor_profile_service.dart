@@ -162,6 +162,20 @@ class TutorDurationDiscount {
       };
 }
 
+/// Palier de prix de groupe (lot 9.3) : remise par élève dès une taille de groupe.
+class TutorGroupDiscount {
+  final int minGroupSize;
+  final int percentDiscount;
+  const TutorGroupDiscount({required this.minGroupSize, required this.percentDiscount});
+
+  factory TutorGroupDiscount.fromJson(Map<String, dynamic> j) => TutorGroupDiscount(
+        minGroupSize: (j['minGroupSize'] as num?)?.toInt() ?? 2,
+        percentDiscount: (j['percentDiscount'] as num?)?.toInt() ?? 0,
+      );
+
+  Map<String, dynamic> toJson() => {'minGroupSize': minGroupSize, 'percentDiscount': percentDiscount};
+}
+
 /// Grille proposée par WinAI (réponse snake_case relayée telle quelle).
 class TutorRateGridSuggestion {
   final List<TutorRate> rates;
@@ -272,6 +286,15 @@ class TutorProfile {
   final int partialRefundPercent;
   final int noRefundHours;
 
+  /// Séances de groupe (lot 9.3) : null = individuel seulement.
+  final String? groupPricingMethod; // per_student | flat
+  final int maxGroupSize;
+  final int? groupFlatPricePercent;
+  final List<TutorGroupDiscount> groupDiscounts;
+
+  /// Taille de groupe effective (1 si le tuteur ne propose pas de groupe).
+  int get effectiveMaxGroupSize => groupPricingMethod == null ? 1 : maxGroupSize;
+
   const TutorProfile({
     required this.id,
     required this.userId,
@@ -313,6 +336,10 @@ class TutorProfile {
     this.fullRefundHours = 24,
     this.partialRefundPercent = 50,
     this.noRefundHours = 2,
+    this.groupPricingMethod,
+    this.maxGroupSize = 1,
+    this.groupFlatPricePercent,
+    this.groupDiscounts = const [],
   });
 
   factory TutorProfile.fromJson(Map<String, dynamic> j) => TutorProfile(
@@ -375,6 +402,12 @@ class TutorProfile {
         fullRefundHours: (j['fullRefundHours'] as num?)?.toInt() ?? 24,
         partialRefundPercent: (j['partialRefundPercent'] as num?)?.toInt() ?? 50,
         noRefundHours: (j['noRefundHours'] as num?)?.toInt() ?? 2,
+        groupPricingMethod: j['groupPricingMethod'] as String?,
+        maxGroupSize: (j['maxGroupSize'] as num?)?.toInt() ?? 1,
+        groupFlatPricePercent: (j['groupFlatPricePercent'] as num?)?.toInt(),
+        groupDiscounts: (j['groupDiscounts'] as List? ?? [])
+            .map((e) => TutorGroupDiscount.fromJson(e as Map<String, dynamic>))
+            .toList(),
       );
 }
 

@@ -25,6 +25,7 @@ import 'subscription_status_screen.dart';
 import '../shared/subscription/subscription_notifier.dart';
 import '../shared/subscription/pricing_screen.dart';
 import 'buy_for_child_screen.dart';
+import '../shared/tutoring_for_students_screen.dart';
 import '../shared/legal_screen.dart';
 
 /// ===================== ACCUEIL PARENT =====================
@@ -960,6 +961,10 @@ class ParentProfileTab extends StatelessWidget {
                 context,
                 WinPageRoute(
                     builder: (_) => const SubscriptionStatusScreen()))),
+        // Lot 9.3 : attribuer un tuteur, réserver pour ses enfants.
+        _Row(Icons.school_outlined, 'Cours particuliers de mes enfants',
+            onTap: () => Navigator.push(context,
+                WinPageRoute(builder: (_) => const TutoringForStudentsScreen()))),
         _Row(Icons.payment_outlined, 'Paiements & historique',
             onTap: () => Navigator.push(context,
                 WinPageRoute(builder: (_) => const _PaymentsScreen()))),
