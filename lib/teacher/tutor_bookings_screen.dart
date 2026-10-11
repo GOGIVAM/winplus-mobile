@@ -118,12 +118,23 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
 
   Future<void> _decline(int id) async {
     final reason = await _promptText(context,
-        title: 'Refuser la demande', hint: 'Motif (optionnel)');
+        title: 'Refuser la demande',
+        hint: 'Motif (optionnel)',
+        // Lot 9.2 (17.9) : refuser rembourse l'élève, frais retenus au tuteur.
+        message:
+            'L\'élève sera remboursé intégralement sur son portefeuille WinPlus ; si la séance a été payée par Mobile Money, les frais de l\'opérateur seront retenus sur ton solde.');
     if (reason == null) return; // annulé
     setState(() => _busy.add(id));
     try {
-      await TutorBookingService.instance
+      final updated = await TutorBookingService.instance
           .decline(id, reason: reason.isEmpty ? null : reason);
+      final fee = updated.tutorFeeChargedXaf ?? 0;
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(fee > 0
+                ? 'Demande refusée : l\'élève est remboursé, ${fmtXaf(fee)} XAF de frais Mobile Money retenus sur ton solde.'
+                : 'Demande refusée : l\'élève est remboursé sur son portefeuille.')));
+      }
       await _load();
     } catch (_) {
       if (mounted) {
@@ -151,7 +162,7 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
   }
 
   Future<String?> _promptText(BuildContext context,
-      {required String title, String? hint}) async {
+      {required String title, String? hint, String? message}) async {
     final ctrl = TextEditingController();
     return showModalBottomSheet<String>(
       context: context,
@@ -175,6 +186,10 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
                 children: [
                   Text(title,
                       style: WinType.archivo(size: 18, color: s.onStrong)),
+                  if (message != null) ...[
+                    const SizedBox(height: 8),
+                    Text(message, style: WinType.bodyS(s.onMuted)),
+                  ],
                   const SizedBox(height: 16),
                   WinTextField(hint: hint, controller: ctrl),
                   const SizedBox(height: 20),

@@ -6,6 +6,7 @@ import '../../theme/win_colors.dart';
 import '../../theme/win_theme.dart';
 import '../../theme/win_typography.dart';
 import '../../widgets/win_widgets.dart';
+import 'tutor_policy_widgets.dart';
 import 'tutor_pricing_widgets.dart';
 
 const _modeLabels = {
@@ -32,7 +33,8 @@ String _fmtDate(DateTime d) =>
 
 /// "Mes réservations" élève : historique des séances de répétition avec
 /// possibilité de laisser un avis (séances effectuées) ou de contester dans
-/// la fenêtre de 2h (Module 6  professeur_complete.md).
+/// la fenêtre de contestation (24 h par défaut, réglée côté serveur, lot 9.2),
+/// et remboursements automatiques crédités au portefeuille (lot 9.2).
 class MyTutorBookingsScreen extends StatefulWidget {
   const MyTutorBookingsScreen({super.key});
 
@@ -138,6 +140,10 @@ class _MyTutorBookingsScreenState extends State<MyTutorBookingsScreen> {
         ),
         title: Text('Mes réservations', style: WinType.headlineS(s.onStrong)),
         actions: [
+          IconButton(
+              tooltip: 'Politique de tutorat',
+              icon: Icon(Icons.policy_outlined, color: s.onMuted),
+              onPressed: () => openTutorPolicy(context)),
           IconButton(
               icon: Icon(Icons.refresh_outlined, color: s.onMuted),
               onPressed: _load),
@@ -275,6 +281,19 @@ class _BookingCardState extends State<_BookingCard> {
             const SizedBox(height: 6),
             TopicChipsRow(b.topics),
           ],
+        ],
+        if (b.refundSummary != null) ...[
+          const SizedBox(height: 10),
+          WinAlert(b.refundSummary!,
+              type: (b.refundAmountXaf ?? 0) > 0
+                  ? BadgeColor.success
+                  : BadgeColor.neutral),
+        ],
+        if (b.isCompleted && b.canDispute && b.disputeDeadline != null) ...[
+          const SizedBox(height: 10),
+          Text(
+              'Un problème ? Tu peux contester jusqu\'au ${_fmtDate(b.disputeDeadline!.toLocal())} à ${b.disputeDeadline!.toLocal().hour.toString().padLeft(2, '0')}:${b.disputeDeadline!.toLocal().minute.toString().padLeft(2, '0')} (${b.disputeWindowHours} h après la séance). Ensuite, le paiement est versé au tuteur.',
+              style: WinType.labelS(s.onMuted)),
         ],
         if (b.isDisputed && (b.disputeReason ?? '').isNotEmpty) ...[
           const SizedBox(height: 10),

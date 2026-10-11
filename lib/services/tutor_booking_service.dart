@@ -169,6 +169,18 @@ class TutorBookingRecord {
   final int durationMinutes;
   final TutorPriceQuote? priceBreakdown;
 
+  // Lot 9.2 : contestation 24 h, moyen de paiement, remboursement automatique.
+  final DateTime? disputeDeadline;
+  final int disputeWindowHours;
+  final String? paymentMethod; // mobile_money | wallet
+  final DateTime? refundedAt;
+  final String? refundCause;
+  final int? refundPercent;
+  final num? refundAmountXaf;
+  final num? refundFeeXaf;
+  final String? refundFeeBorneBy; // none | payer | tutor | platform
+  final num? tutorFeeChargedXaf;
+
   const TutorBookingRecord({
     required this.id,
     required this.tutorUserId,
@@ -196,6 +208,16 @@ class TutorBookingRecord {
     this.topics = const [],
     this.durationMinutes = 0,
     this.priceBreakdown,
+    this.disputeDeadline,
+    this.disputeWindowHours = 24,
+    this.paymentMethod,
+    this.refundedAt,
+    this.refundCause,
+    this.refundPercent,
+    this.refundAmountXaf,
+    this.refundFeeXaf,
+    this.refundFeeBorneBy,
+    this.tutorFeeChargedXaf,
   });
 
   /// Statut "actif" : le paiement a été validé (en attente du répétiteur,
@@ -208,6 +230,41 @@ class TutorBookingRecord {
   bool get isExpired => status == 'expired';
   bool get isCancelled => status == 'cancelled';
   bool get isPending => status == 'pending_payment';
+  bool get paidByWallet => paymentMethod == 'wallet';
+
+  /// Remboursement décidé par le serveur et crédité au portefeuille (lot 9.2),
+  /// en une phrase ; null si aucun.
+  String? get refundSummary {
+    if (refundedAt == null) return null;
+    final amount = refundAmountXaf ?? 0;
+    final fee = refundFeeXaf ?? 0;
+    String xaf(num n) => _fmtXaf(n);
+    if (amount <= 0) {
+      return refundPercent == 0
+          ? 'Aucun remboursement : annulation trop tardive selon la politique du tuteur.'
+          : 'Aucun remboursement : les frais Mobile Money (${xaf(fee)} XAF) dépassent la part remboursable.';
+    }
+    final feeText = refundFeeBorneBy == 'payer' && fee > 0
+        ? 'frais Mobile Money de ${xaf(fee)} XAF déduits'
+        : null;
+    final partial = refundCause == 'payer_cancelled' && (refundPercent ?? 100) < 100;
+    final detail = partial
+        ? ' ($refundPercent % selon la politique du tuteur${feeText != null ? ', $feeText' : ''})'
+        : feeText != null
+            ? ' ($feeText)'
+            : ' (remboursement intégral)';
+    return '${xaf(amount)} XAF remboursés sur ton portefeuille WinPlus$detail.';
+  }
+
+  static String _fmtXaf(num n) {
+    final s = n.round().abs().toString();
+    final b = StringBuffer();
+    for (var i = 0; i < s.length; i++) {
+      if (i > 0 && (s.length - i) % 3 == 0) b.write(' ');
+      b.write(s[i]);
+    }
+    return b.toString();
+  }
 
   factory TutorBookingRecord.fromJson(Map<String, dynamic> j) =>
       TutorBookingRecord(
@@ -249,6 +306,20 @@ class TutorBookingRecord {
             ? TutorPriceQuote.fromJson(
                 j['priceBreakdown'] as Map<String, dynamic>)
             : null,
+        disputeDeadline: j['disputeDeadline'] != null
+            ? DateTime.tryParse(j['disputeDeadline'] as String)
+            : null,
+        disputeWindowHours: (j['disputeWindowHours'] as num?)?.toInt() ?? 24,
+        paymentMethod: j['paymentMethod'] as String?,
+        refundedAt: j['refundedAt'] != null
+            ? DateTime.tryParse(j['refundedAt'] as String)
+            : null,
+        refundCause: j['refundCause'] as String?,
+        refundPercent: (j['refundPercent'] as num?)?.toInt(),
+        refundAmountXaf: j['refundAmountXaf'] as num?,
+        refundFeeXaf: j['refundFeeXaf'] as num?,
+        refundFeeBorneBy: j['refundFeeBorneBy'] as String?,
+        tutorFeeChargedXaf: j['tutorFeeChargedXaf'] as num?,
       );
 }
 
@@ -280,6 +351,60 @@ class TutorBookingCreatedResult {
             TutorBookingRecord.fromJson(j['booking'] as Map<String, dynamic>),
         notchpayAuthorizationUrl: j['notchpayAuthorizationUrl'] as String?,
       );
+}
+
+/// Politique de tutorat publique (lot 9.2, 17.10) : texte, bornes des
+/// réglages des tuteurs, délai de contestation et taux de frais servis par
+/// GET /api/tutor-policy, la même source que le web.
+class TutorPolicySection {
+  final String id;
+  final String title;
+  final List<String> paragraphs;
+  const TutorPolicySection(
+      {required this.id, required this.title, this.paragraphs = const []});
+
+  factory TutorPolicySection.fromJson(Map<String, dynamic> j) =>
+      TutorPolicySection(
+        id: j['id'] as String? ?? '',
+        title: j['title'] as String? ?? '',
+        paragraphs: (j['paragraphs'] as List? ?? [])
+            .map((e) => e.toString())
+            .toList(),
+      );
+}
+
+class TutorPolicy {
+  final String version;
+  final int disputeWindowHours;
+  final num notchPayFeePercent;
+  final Map<String, int> bounds;
+  final List<TutorPolicySection> sections;
+  const TutorPolicy({
+    required this.version,
+    required this.disputeWindowHours,
+    required this.notchPayFeePercent,
+    this.bounds = const {},
+    this.sections = const [],
+  });
+
+  factory TutorPolicy.fromJson(Map<String, dynamic> j) => TutorPolicy(
+        version: j['version'] as String? ?? '',
+        disputeWindowHours: (j['disputeWindowHours'] as num?)?.toInt() ?? 24,
+        notchPayFeePercent: (j['notchPayFeePercent'] as num?) ?? 0,
+        bounds: ((j['bounds'] as Map?) ?? {}).map(
+            (k, v) => MapEntry(k.toString(), (v as num?)?.toInt() ?? 0)),
+        sections: (j['sections'] as List? ?? [])
+            .map((e) => TutorPolicySection.fromJson(e as Map<String, dynamic>))
+            .toList(),
+      );
+
+  /// Taux de frais affichable (« 3 », « 2,5 »).
+  String get feePercentLabel {
+    final v = notchPayFeePercent;
+    return v == v.roundToDouble()
+        ? v.round().toString()
+        : v.toString().replaceAll('.', ',');
+  }
 }
 
 class TutorBookingService {
@@ -315,6 +440,42 @@ class TutorBookingService {
     return [...results[0], ...results[1]];
   }
 
+  Future<TutorPolicy>? _policy;
+
+  /// Politique publique (endpoint anonyme), gardée en mémoire pour la
+  /// session ; un échec n'est pas mis en cache.
+  Future<TutorPolicy> getPolicy() {
+    final cached = _policy;
+    if (cached != null) return cached;
+    final future = _api.dio.get('/tutor-policy').then((res) {
+      final data = res.data;
+      final map = data is Map<String, dynamic> && data['data'] is Map<String, dynamic>
+          ? data['data'] as Map<String, dynamic>
+          : data as Map<String, dynamic>;
+      return TutorPolicy.fromJson(map);
+    });
+    _policy = future;
+    future.catchError((Object _) {
+      _policy = null;
+      return const TutorPolicy(version: '', disputeWindowHours: 24, notchPayFeePercent: 0);
+    });
+    return future;
+  }
+
+  /// Solde disponible du portefeuille (GET /wallet/me, lot 2), pour le choix
+  /// du moyen de paiement (lot 9.2). Lecture seule, le serveur refait le
+  /// contrôle au débit. Null si le solde ne peut pas être lu.
+  Future<num?> getWalletAvailableXaf() async {
+    try {
+      final res = await _api.dio.get('/wallet/me');
+      final data = res.data;
+      final map = data is Map && data['data'] is Map ? data['data'] as Map : data;
+      return map is Map ? map['availableXaf'] as num? : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
   static String _date(DateTime d) =>
       '${d.year.toString().padLeft(4, '0')}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
 
@@ -345,7 +506,8 @@ class TutorBookingService {
     required String startTime,
     required int durationMinutes,
     required String mode,
-    required String phone,
+    String? phone,
+    String paymentMethod = 'mobile_money',
     String? subject,
     List<String> topics = const [],
   }) async {
@@ -355,7 +517,8 @@ class TutorBookingService {
       'startTime': startTime,
       'durationMinutes': durationMinutes,
       'mode': mode,
-      'phone': phone,
+      'paymentMethod': paymentMethod,
+      if (phone != null && phone.isNotEmpty) 'phone': phone,
       if (subject != null && subject.isNotEmpty) 'subject': subject,
       'topics': topics,
     });
@@ -397,7 +560,8 @@ class TutorBookingService {
     return TutorBookingRecord.fromJson(res.data as Map<String, dynamic>);
   }
 
-  /// Le répétiteur refuse la demande (remboursement simulé côté serveur).
+  /// Le répétiteur refuse la demande : l'élève est remboursé intégralement sur
+  /// son portefeuille, frais Mobile Money retenus sur le tuteur (lot 9.2).
   Future<TutorBookingRecord> decline(int id, {String? reason}) async {
     final res = await _api.dio
         .put('/tutor-bookings/$id/decline', data: {'reason': reason});
@@ -411,7 +575,8 @@ class TutorBookingService {
     return TutorBookingRecord.fromJson(res.data as Map<String, dynamic>);
   }
 
-  /// L'élève conteste une séance dans la fenêtre de 2h après la fin.
+  /// L'élève conteste une séance dans la fenêtre de contestation (24 h par
+  /// défaut, réglée côté serveur) après qu'elle a été marquée effectuée.
   Future<TutorBookingRecord> dispute(int id, String reason) async {
     final res = await _api.dio
         .put('/tutor-bookings/$id/dispute', data: {'reason': reason});

@@ -6,6 +6,7 @@ import '../../theme/win_colors.dart';
 import '../../theme/win_theme.dart';
 import '../../theme/win_typography.dart';
 import '../../widgets/win_widgets.dart';
+import 'tutor_policy_widgets.dart';
 import 'tutor_booking_flow_screen.dart';
 import 'tutor_pricing_widgets.dart';
 
@@ -224,6 +225,16 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
                   )),
             ],
           ]),
+        ),
+        const SizedBox(height: 16),
+        // Lot 9.2 (17.10) : réglages d'annulation effectifs, lien vers la
+        // politique publique.
+        const _SectionTitle('Politique d\'annulation'),
+        const SizedBox(height: 8),
+        TutorCancellationPolicyCard(
+          fullRefundHours: p.fullRefundHours,
+          partialRefundPercent: p.partialRefundPercent,
+          noRefundHours: p.noRefundHours,
         ),
         const SizedBox(height: 16),
         const _SectionTitle('Disponibilités (14 prochains jours)'),

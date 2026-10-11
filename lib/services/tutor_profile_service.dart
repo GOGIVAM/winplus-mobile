@@ -267,6 +267,11 @@ class TutorProfile {
   final List<TutorDurationDiscount> durationDiscounts;
   final num? fromHourlyRateXaf;
 
+  /// Politique d'annulation effective (bornée par la plateforme, lot 9.2).
+  final int fullRefundHours;
+  final int partialRefundPercent;
+  final int noRefundHours;
+
   const TutorProfile({
     required this.id,
     required this.userId,
@@ -305,6 +310,9 @@ class TutorProfile {
     this.rateModifiers = const [],
     this.durationDiscounts = const [],
     this.fromHourlyRateXaf,
+    this.fullRefundHours = 24,
+    this.partialRefundPercent = 50,
+    this.noRefundHours = 2,
   });
 
   factory TutorProfile.fromJson(Map<String, dynamic> j) => TutorProfile(
@@ -364,6 +372,9 @@ class TutorProfile {
                 TutorDurationDiscount.fromJson(e as Map<String, dynamic>))
             .toList(),
         fromHourlyRateXaf: j['fromHourlyRateXaf'] as num?,
+        fullRefundHours: (j['fullRefundHours'] as num?)?.toInt() ?? 24,
+        partialRefundPercent: (j['partialRefundPercent'] as num?)?.toInt() ?? 50,
+        noRefundHours: (j['noRefundHours'] as num?)?.toInt() ?? 2,
       );
 }
 

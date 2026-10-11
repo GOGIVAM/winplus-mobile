@@ -22,6 +22,7 @@ import 'favorites_screen.dart';
 import 'notifications_screen.dart';
 import 'profile_screen.dart';
 import 'my_links_screen.dart';
+import 'tutors/tutor_policy_widgets.dart';
 import '../shared/forum/forum_screen.dart';
 
 class ProfileHubTab extends StatefulWidget {
@@ -266,6 +267,12 @@ class _ProfileHubTabState extends State<ProfileHubTab> {
               color: s.onFaint,
               label: 'Politique de confidentialité',
               onTap: () => LegalScreen.showPrivacy(context),
+            ),
+            _HubTile(
+              icon: Icons.policy_outlined,
+              color: s.onFaint,
+              label: 'Politique de tutorat',
+              onTap: () => openTutorPolicy(context),
             ),
             const SizedBox(height: 4),
 

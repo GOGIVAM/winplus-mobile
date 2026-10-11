@@ -7,6 +7,7 @@ import '../../theme/win_colors.dart';
 import '../../theme/win_theme.dart';
 import '../../theme/win_typography.dart';
 import '../../widgets/win_widgets.dart';
+import 'tutor_policy_widgets.dart';
 import 'tutor_pricing_widgets.dart';
 
 const _weekdayShort = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
@@ -65,6 +66,11 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
   bool _quoteLoading = false;
   String? _quoteError;
   int _quoteRequest = 0;
+
+  // Lot 9.2 (17.6) : Mobile Money ou solde du portefeuille (lu sur le serveur).
+  String _payMethod = 'mobile_money';
+  num? _walletAvailable;
+  bool _walletLoading = false;
 
   final _phoneCtrl = TextEditingController();
   bool _submitting = false;
@@ -169,6 +175,26 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
   bool get _quoteReady =>
       _quote != null && _quote!.isAvailable != false && !_quoteLoading;
 
+  bool get _walletCovers =>
+      _walletAvailable != null &&
+      _quote != null &&
+      _walletAvailable! >= _quote!.totalXaf;
+
+  Future<void> _loadWallet() async {
+    setState(() => _walletLoading = true);
+    final available = await TutorBookingService.instance.getWalletAvailableXaf();
+    if (!mounted) return;
+    setState(() {
+      _walletAvailable = available;
+      _walletLoading = false;
+    });
+  }
+
+  void _goToPayment() {
+    setState(() => _step = 2);
+    _loadWallet();
+  }
+
   @override
   void dispose() {
     _pollTimer?.cancel();
@@ -225,9 +251,15 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
     if (occ == null || mode == null || duration == null || !_quoteReady) {
       return;
     }
+    final byWallet = _payMethod == 'wallet';
     final phone = _normalizePhone(_phoneCtrl.text);
-    if (phone.length < 9) {
+    if (!byWallet && phone.length < 9) {
       setState(() => _submitError = 'Numéro de téléphone invalide.');
+      return;
+    }
+    if (byWallet && !_walletCovers) {
+      setState(() => _submitError =
+          'Ton solde ne couvre pas le prix de cette séance. Choisis Mobile Money ou recharge ton portefeuille.');
       return;
     }
     setState(() {
@@ -241,7 +273,8 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
         startTime: occ.startTime,
         durationMinutes: duration,
         mode: mode,
-        phone: phone,
+        phone: byWallet ? null : phone,
+        paymentMethod: _payMethod,
         subject: _subject,
         topics: _topics,
       );
@@ -250,7 +283,9 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
         _booking = result.booking;
         _submitting = false;
       });
-      _startPolling(result.booking.id);
+      // Payé par solde : débité avec la création, la demande part tout de
+      // suite au tuteur ; aucune confirmation Mobile Money à attendre.
+      if (!byWallet) _startPolling(result.booking.id);
     } catch (e) {
       if (mounted) {
         setState(() {
@@ -302,7 +337,7 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
     final titles = [
       'Choisir un créneau',
       'Récapitulatif',
-      'Paiement Mobile Money'
+      'Paiement'
     ];
     return Scaffold(
       backgroundColor: s.bg,
@@ -605,40 +640,88 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
                         ),
                       ))
                   .toList()),
+        const SizedBox(height: 20),
+        TutorCancellationPolicyCard(
+          compact: true,
+          fullRefundHours: widget.profile.fullRefundHours,
+          partialRefundPercent: widget.profile.partialRefundPercent,
+          noRefundHours: widget.profile.noRefundHours,
+        ),
         const SizedBox(height: 28),
         WinButton(
             _quote != null && _quoteReady
                 ? 'Payer ${fmtXaf(_quote!.totalXaf)} XAF'
                 : 'Payer maintenant',
             block: true,
-            onTap: (_mode != null && _quoteReady)
-                ? () => setState(() => _step = 2)
-                : null),
+            onTap: (_mode != null && _quoteReady) ? _goToPayment : null),
       ],
     );
   }
 
-  // ---------------- Étape 3 : paiement Mobile Money ----------------
+  // ---------------- Étape 3 : paiement (Mobile Money ou solde) ----------------
 
   Widget _buildStepPayment(WinScheme s) {
     final booking = _booking;
 
     if (booking == null) {
-      // Saisie du numéro et soumission.
+      // Choix du moyen de paiement, puis saisie du numéro (Mobile Money).
+      final byWallet = _payMethod == 'wallet';
+      final walletHint = _walletLoading
+          ? 'Lecture du solde…'
+          : _walletAvailable == null
+              ? 'Solde indisponible'
+              : 'Disponible : ${fmtXaf(_walletAvailable!)} XAF';
       return ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Text('Numéro Mobile Money', style: WinType.labelM(s.onStrong)),
+          Text('Moyen de paiement', style: WinType.labelM(s.onStrong)),
           const SizedBox(height: 8),
-          WinTextField(
-            hint: '6XX XXX XXX',
+          _PayOption(
             icon: Icons.phone_android_outlined,
-            controller: _phoneCtrl,
-            keyboardType: TextInputType.phone,
+            title: 'Mobile Money',
+            hint: 'MTN MoMo ou Orange Money',
+            selected: !byWallet,
+            onTap: () => setState(() {
+              _payMethod = 'mobile_money';
+              _submitError = null;
+            }),
           ),
           const SizedBox(height: 8),
-          Text('Numéro Cameroun sans indicatif pays (ex: 670000000).',
-              style: WinType.labelS(s.onFaint)),
+          _PayOption(
+            icon: Icons.account_balance_wallet_outlined,
+            title: 'Mon solde WinPlus',
+            hint: walletHint,
+            selected: byWallet,
+            onTap: _walletLoading || _walletAvailable == null
+                ? null
+                : () => setState(() {
+                      _payMethod = 'wallet';
+                      _submitError = null;
+                    }),
+          ),
+          if (byWallet && _walletAvailable != null && _quote != null) ...[
+            const SizedBox(height: 8),
+            Text(
+                _walletCovers
+                    ? 'Paiement immédiat et sans frais. Ta demande part tout de suite au tuteur.'
+                    : 'Solde insuffisant : il manque ${fmtXaf(_quote!.totalXaf - _walletAvailable!)} XAF. Choisis Mobile Money ou recharge ton portefeuille.',
+                style: WinType.labelS(
+                    _walletCovers ? s.onMuted : WinColors.error)),
+          ],
+          if (!byWallet) ...[
+            const SizedBox(height: 20),
+            Text('Numéro Mobile Money', style: WinType.labelM(s.onStrong)),
+            const SizedBox(height: 8),
+            WinTextField(
+              hint: '6XX XXX XXX',
+              icon: Icons.phone_android_outlined,
+              controller: _phoneCtrl,
+              keyboardType: TextInputType.phone,
+            ),
+            const SizedBox(height: 8),
+            Text('Numéro Cameroun sans indicatif pays (ex: 670000000).',
+                style: WinType.labelS(s.onFaint)),
+          ],
           if (_submitError != null) ...[
             const SizedBox(height: 12),
             WinAlert(_submitError!, type: BadgeColor.error),
@@ -648,11 +731,13 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
               _submitting
                   ? 'Envoi en cours…'
                   : (_quote != null
-                      ? 'Payer ${fmtXaf(_quote!.totalXaf)} XAF'
+                      ? '${byWallet ? 'Payer avec mon solde' : 'Payer'} ${fmtXaf(_quote!.totalXaf)} XAF'
                       : 'Payer'),
               block: true,
               loading: _submitting,
-              onTap: _submitting ? null : _submitBooking),
+              onTap: _submitting || (byWallet && !_walletCovers)
+                  ? null
+                  : _submitBooking),
         ],
       );
     }
@@ -768,7 +853,7 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
           const SizedBox(height: 8),
           Center(
             child: Text(
-              'Le tuteur doit accepter ta demande. Tu seras notifié·e dès sa réponse.',
+              'Le tuteur doit accepter ta demande. Tu seras notifié·e dès sa réponse, et remboursé·e intégralement sur ton portefeuille WinPlus s\'il refuse ou ne répond pas à temps.',
               style: WinType.bodyS(s.onMuted),
               textAlign: TextAlign.center,
             ),
@@ -859,6 +944,55 @@ class _BookingStepper extends StatelessWidget {
         ),
       ]);
     }));
+  }
+}
+
+/// Option de moyen de paiement (lot 9.2).
+class _PayOption extends StatelessWidget {
+  final IconData icon;
+  final String title, hint;
+  final bool selected;
+  final VoidCallback? onTap;
+  const _PayOption({
+    required this.icon,
+    required this.title,
+    required this.hint,
+    required this.selected,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final s = WinTheme.of(context);
+    return Opacity(
+      opacity: onTap == null && !selected ? 0.55 : 1,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          decoration: BoxDecoration(
+            color: selected ? WinColors.teal50 : s.chipBg,
+            borderRadius: BorderRadius.circular(WinRadii.sm),
+            border: Border.all(
+                color: selected ? WinColors.teal400 : s.outline,
+                width: selected ? 2 : 1),
+          ),
+          child: Row(children: [
+            Icon(icon, size: 20, color: selected ? WinColors.teal700 : s.onMuted),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(title, style: WinType.titleM(s.onStrong)),
+                const SizedBox(height: 2),
+                Text(hint, style: WinType.labelS(s.onMuted)),
+              ]),
+            ),
+            if (selected)
+              const Icon(Icons.check_circle, size: 20, color: WinColors.teal700),
+          ]),
+        ),
+      ),
+    );
   }
 }
 
