@@ -7,6 +7,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import 'tutor_group_pricing_editor.dart';
 import 'tutor_pricing_grid_editor.dart';
+import 'tutor_verification_screen.dart';
 
 /// Module 1  Onboarding et profil répétiteur (professeur_complete.md).
 /// Écran unique en 5 étapes (Workflow 1) : matières/niveaux, intervention,
@@ -219,6 +220,25 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
     });
   }
 
+  /// Lot 9.5 : présentiel possible (vérifié et non suspendu).
+  bool get _inPersonAllowed => _profile?.inPersonAllowed ?? true;
+
+  /// Lot 9.5 : parcours de vérification ; au retour, relit le profil (modes
+  /// présentiels effectifs) sans changer l'étape en cours.
+  Future<void> _openVerification() async {
+    await Navigator.push(context, MaterialPageRoute(builder: (_) => const TutorVerificationScreen()));
+    try {
+      final p = await _service.getMine();
+      if (!mounted) return;
+      setState(() {
+        _profile = p;
+        _atStudent = p.offersAtStudentHome;
+        _atTutor = p.offersAtTutorHome;
+        _neutral = p.offersNeutralPlace;
+      });
+    } catch (_) {}
+  }
+
   Map<String, dynamic> _stepPayload() {
     switch (_step) {
       case 0:
@@ -411,8 +431,12 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
                 style: WinType.archivo(size: 17, color: s.onStrong)),
             const SizedBox(height: 6),
             Wrap(spacing: 6, runSpacing: 6, children: [
+              if (p.isInPersonVerified && !p.inPersonSuspended)
+                const WinBadge('Vérifié pour le présentiel', color: BadgeColor.success),
               if (p.isDiplomaVerified)
-                const WinBadge('Vérifié Diplôme', color: BadgeColor.success),
+                const WinBadge('Diplôme vérifié', color: BadgeColor.teal),
+              for (final n in p.endorsedByInstitutions)
+                WinBadge('Caution : $n', color: BadgeColor.blue),
               const WinBadge('Avis bientôt disponibles',
                   color: BadgeColor.neutral),
             ]),
@@ -583,21 +607,35 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
               title: const Text('En ligne via WinPlus'),
               contentPadding: EdgeInsets.zero,
               controlAffinity: ListTileControlAffinity.leading),
+          // Lot 9.5 (17.11) : présentiel réservé aux tuteurs vérifiés (refusé aussi par le serveur).
+          if (!_inPersonAllowed) ...[
+            WinAlert(
+                _profile?.inPersonBlockedReason ??
+                    'Le présentiel est réservé aux tuteurs vérifiés.',
+                type: BadgeColor.warn),
+            const SizedBox(height: 6),
+            WinButton('Me faire vérifier',
+                small: true,
+                variant: WinButtonVariant.outline,
+                icon: Icons.verified_user_outlined,
+                onTap: _openVerification),
+            const SizedBox(height: 6),
+          ],
           CheckboxListTile(
               value: _atStudent,
-              onChanged: (v) => setState(() => _atStudent = v ?? false),
+              onChanged: !_inPersonAllowed && !_atStudent ? null : (v) => setState(() => _atStudent = v ?? false),
               title: const Text('À domicile chez l\'élève'),
               contentPadding: EdgeInsets.zero,
               controlAffinity: ListTileControlAffinity.leading),
           CheckboxListTile(
               value: _atTutor,
-              onChanged: (v) => setState(() => _atTutor = v ?? false),
+              onChanged: !_inPersonAllowed && !_atTutor ? null : (v) => setState(() => _atTutor = v ?? false),
               title: const Text('À domicile chez moi'),
               contentPadding: EdgeInsets.zero,
               controlAffinity: ListTileControlAffinity.leading),
           CheckboxListTile(
               value: _neutral,
-              onChanged: (v) => setState(() => _neutral = v ?? false),
+              onChanged: !_inPersonAllowed && !_neutral ? null : (v) => setState(() => _neutral = v ?? false),
               title: const Text('Présentiel en espace neutre'),
               contentPadding: EdgeInsets.zero,
               controlAffinity: ListTileControlAffinity.leading),
@@ -854,7 +892,29 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
           const SizedBox(height: 8),
           WinTextField(controller: _videoCtrl, hint: 'https://youtube.com/...'),
           const SizedBox(height: 16),
-          Text('Diplôme (badge "Vérifié Diplôme")',
+          // Lot 9.5 : vérification pour le présentiel (identité, entretien, caution).
+          WinCard(
+            onTap: _openVerification,
+            child: Row(children: [
+              Icon(Icons.verified_user_outlined, color: s.primary),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text('Vérification pour le présentiel', style: WinType.titleM(s.onStrong)),
+                  Text(
+                      _profile?.inPersonSuspended == true
+                          ? 'Présentiel suspendu en attendant un examen'
+                          : _profile?.isInPersonVerified == true
+                              ? 'Vérifié : présentiel ouvert'
+                              : "Pièce d'identité, entretien ou caution d'institution",
+                      style: WinType.labelS(s.onMuted)),
+                ]),
+              ),
+              Icon(Icons.chevron_right, color: s.onFaint),
+            ]),
+          ),
+          const SizedBox(height: 16),
+          Text('Diplôme (facultatif, badge « Diplôme vérifié », sans effet sur le présentiel)',
               style: WinType.labelM(s.onStrong)),
           const SizedBox(height: 8),
           if (_profile?.pendingOrLatestDocument != null)

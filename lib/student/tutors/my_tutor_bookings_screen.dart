@@ -9,6 +9,7 @@ import '../../widgets/win_widgets.dart';
 import 'tutor_policy_widgets.dart';
 import 'tutor_pricing_widgets.dart';
 import 'tutor_public_profile_screen.dart';
+import 'tutor_report_sheet.dart';
 import '../../services/tutor_engagement_service.dart';
 import '../../shared/tutor_engagement_screen.dart';
 
@@ -49,6 +50,8 @@ class _MyTutorBookingsScreenState extends State<MyTutorBookingsScreen> {
   List<TutorBookingRecord>? _bookings;
   bool _error = false;
   final Set<int> _reviewed = {};
+  // Lot 9.5 : séances dont le tuteur a été signalé dans cette session.
+  final Set<int> _reported = {};
   // Lot 9.3 : répétiteurs attribués par un parent ou une institution.
   List<TutorAssignment> _assigned = [];
   // Lot 9.4 : engagements mensuels (payeur ou participant).
@@ -93,6 +96,11 @@ class _MyTutorBookingsScreenState extends State<MyTutorBookingsScreen> {
             content: Text('Impossible d\'envoyer le signalement.')));
       }
     }
+  }
+
+  Future<void> _report(TutorBookingRecord b) async {
+    final sent = await showTutorReportSheet(context, bookingId: b.id, tutorName: b.tutorName);
+    if (sent == true && mounted) setState(() => _reported.add(b.id));
   }
 
   Future<String?> _promptReason(BuildContext context) async {
@@ -235,6 +243,8 @@ class _MyTutorBookingsScreenState extends State<MyTutorBookingsScreen> {
                               reviewSent: _reviewed.contains(b.id),
                               onReviewed: () => setState(() => _reviewed.add(b.id)),
                               onDispute: () => _dispute(b),
+                              reported: _reported.contains(b.id),
+                              onReport: () => _report(b),
                             ),
                             const SizedBox(height: 10),
                           ],
@@ -250,11 +260,16 @@ class _BookingCard extends StatefulWidget {
   final bool reviewSent;
   final VoidCallback onReviewed;
   final VoidCallback onDispute;
+  // Lot 9.5 : signaler le tuteur.
+  final bool reported;
+  final VoidCallback onReport;
   const _BookingCard({
     required this.booking,
     required this.reviewSent,
     required this.onReviewed,
     required this.onDispute,
+    required this.reported,
+    required this.onReport,
   });
 
   @override
@@ -368,8 +383,25 @@ class _BookingCardState extends State<_BookingCard> {
           WinAlert('Signalement envoyé : ${b.disputeReason}',
               type: BadgeColor.error),
         ],
-        // Seul un élève qui a suivi la séance la note (pas le parent payeur).
-        if (b.isCompleted && !widget.reviewSent && b.viewerIsParticipant != false) ...[
+        // Lot 9.5 (17.12, 17.16) : notent les participants et le payeur, une
+        // fois par séance et par personne (décidé par le serveur : canReview).
+        if (b.myReviewRating != null) ...[
+          const SizedBox(height: 10),
+          Text('Ta note : ${b.myReviewRating}/5', style: WinType.labelM(s.onMuted)),
+        ],
+        if (b.hasReported || widget.reported) ...[
+          const SizedBox(height: 8),
+          const WinAlert('Signalement du tuteur envoyé à l\'équipe WinPlus.', type: BadgeColor.neutral),
+        ] else if (b.canReport) ...[
+          const SizedBox(height: 10),
+          WinButton('Signaler le tuteur',
+              block: true,
+              small: true,
+              icon: Icons.flag_outlined,
+              variant: WinButtonVariant.ghost,
+              onTap: widget.onReport),
+        ],
+        if (!widget.reviewSent && (b.canReview ?? (b.isCompleted && b.viewerIsParticipant != false))) ...[
           const SizedBox(height: 14),
           const WinDivider(),
           const SizedBox(height: 12),
@@ -403,7 +435,7 @@ class _BookingCardState extends State<_BookingCard> {
               onTap: _submitting ? null : _submitReview),
           if (b.canDispute) ...[
             const SizedBox(height: 8),
-            WinButton('Signaler un problème',
+            WinButton('Contester la séance',
                 block: true,
                 small: true,
                 variant: WinButtonVariant.outline,
@@ -414,7 +446,7 @@ class _BookingCardState extends State<_BookingCard> {
           const WinAlert('Merci pour votre avis !', type: BadgeColor.success),
         ] else if (b.canDispute) ...[
           const SizedBox(height: 12),
-          WinButton('Signaler un problème',
+          WinButton('Contester la séance',
               block: true,
               small: true,
               variant: WinButtonVariant.outline,

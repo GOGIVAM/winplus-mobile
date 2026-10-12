@@ -365,6 +365,14 @@ class TutorBookingRecord {
   final int? tutorAssignmentId;
   final bool? viewerIsPayer;
   final bool? viewerIsParticipant;
+
+  /// Lot 9.5 (17.12, 17.16) : noter (participants et payeur, une fois par
+  /// séance et par personne) et signaler le tuteur, pour le compte connecté.
+  /// [canReview] null = ancien serveur (règle d'avant : participant d'une séance effectuée).
+  final bool? canReview;
+  final int? myReviewRating;
+  final bool canReport;
+  final bool hasReported;
   /// Lot 9.4 : engagement mensuel d'origine (séance générée), sinon null.
   final int? tutorEngagementId;
 
@@ -413,6 +421,10 @@ class TutorBookingRecord {
     this.tutorAssignmentId,
     this.viewerIsPayer,
     this.viewerIsParticipant,
+    this.canReview,
+    this.myReviewRating,
+    this.canReport = false,
+    this.hasReported = false,
     this.tutorEngagementId,
   });
 
@@ -548,6 +560,10 @@ class TutorBookingRecord {
         tutorAssignmentId: (j['tutorAssignmentId'] as num?)?.toInt(),
         viewerIsPayer: j['viewerIsPayer'] as bool?,
         viewerIsParticipant: j['viewerIsParticipant'] as bool?,
+        canReview: j['canReview'] as bool?,
+        myReviewRating: (j['myReviewRating'] as num?)?.toInt(),
+        canReport: j['canReport'] as bool? ?? false,
+        hasReported: j['hasReported'] as bool? ?? false,
         tutorEngagementId: (j['tutorEngagementId'] as num?)?.toInt(),
       );
 }

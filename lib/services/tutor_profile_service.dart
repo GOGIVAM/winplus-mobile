@@ -295,6 +295,13 @@ class TutorProfile {
   final int? maxSessionsPerWeek;
   final bool isOnVacation;
   final bool isDiplomaVerified;
+
+  /// Lot 9.5 (17.11) : vérifié pour le présentiel, suspension, présentiel possible.
+  final bool isInPersonVerified;
+  final bool inPersonSuspended;
+  final bool inPersonAllowed;
+  final String? inPersonBlockedReason;
+  final List<String> endorsedByInstitutions;
   final bool isActive;
   final int onboardingStep;
   final int completionScore;
@@ -353,6 +360,11 @@ class TutorProfile {
     this.maxSessionsPerWeek,
     this.isOnVacation = false,
     this.isDiplomaVerified = false,
+    this.isInPersonVerified = false,
+    this.inPersonSuspended = false,
+    this.inPersonAllowed = true,
+    this.inPersonBlockedReason,
+    this.endorsedByInstitutions = const [],
     this.isActive = false,
     this.onboardingStep = 0,
     this.completionScore = 0,
@@ -403,6 +415,12 @@ class TutorProfile {
         maxSessionsPerWeek: j['maxSessionsPerWeek'] as int?,
         isOnVacation: j['isOnVacation'] as bool? ?? false,
         isDiplomaVerified: j['isDiplomaVerified'] as bool? ?? false,
+        isInPersonVerified: j['isInPersonVerified'] as bool? ?? false,
+        inPersonSuspended: j['inPersonSuspended'] as bool? ?? false,
+        // Absent (ancien serveur) = autorisé, comme avant le lot 9.5.
+        inPersonAllowed: j['inPersonAllowed'] as bool? ?? true,
+        inPersonBlockedReason: j['inPersonBlockedReason'] as String?,
+        endorsedByInstitutions: (j['endorsedByInstitutions'] as List? ?? []).map((e) => e.toString()).toList(),
         isActive: j['isActive'] as bool? ?? false,
         onboardingStep: j['onboardingStep'] as int? ?? 0,
         completionScore: j['completionScore'] as int? ?? 0,
@@ -572,7 +590,11 @@ class TutorProfileService {
     num? maxHourlyRateXaf,
     bool? verifiedOnly,
 
-    /// online | student_home | tutor_home | neutral_place
+    /// Lot 9.5 : seulement les tuteurs vérifiés pour le présentiel.
+    bool? inPersonVerifiedOnly,
+
+    /// online | in_person | student_home | tutor_home | neutral_place
+    /// (tout mode présentiel ne renvoie que des tuteurs vérifiés, lot 9.5)
     String? mode,
     String? city,
     bool? availableSoon,
@@ -588,6 +610,7 @@ class TutorProfileService {
       if (level != null && level.isNotEmpty) 'level': level,
       if (maxHourlyRateXaf != null) 'maxHourlyRateXaf': maxHourlyRateXaf,
       if (verifiedOnly != null) 'verifiedOnly': verifiedOnly,
+      if (inPersonVerifiedOnly == true) 'inPersonVerifiedOnly': true,
       if (mode != null && mode.isNotEmpty) 'mode': mode,
       if (city != null && city.isNotEmpty) 'city': city,
       if (availableSoon != null) 'availableSoon': availableSoon,
@@ -615,6 +638,11 @@ class TutorSearchResult {
   final String? title;
   final num? hourlyRateXaf;
   final bool isDiplomaVerified;
+
+  /// Lot 9.5 : vérifié pour le présentiel (non suspendu), modes réels, cautions.
+  final bool isInPersonVerified;
+  final bool? offersInPerson;
+  final List<String> endorsedByInstitutions;
   final double? averageRating;
   final int reviewCount;
   final List<String> subjects;
@@ -629,6 +657,9 @@ class TutorSearchResult {
     this.title,
     this.hourlyRateXaf,
     this.isDiplomaVerified = false,
+    this.isInPersonVerified = false,
+    this.offersInPerson,
+    this.endorsedByInstitutions = const [],
     this.averageRating,
     this.reviewCount = 0,
     this.subjects = const [],
@@ -649,6 +680,9 @@ class TutorSearchResult {
         title: j['title'] as String?,
         hourlyRateXaf: j['hourlyRateXaf'] as num?,
         isDiplomaVerified: j['isDiplomaVerified'] as bool? ?? false,
+        isInPersonVerified: j['isInPersonVerified'] as bool? ?? false,
+        offersInPerson: j['offersInPerson'] as bool?,
+        endorsedByInstitutions: (j['endorsedByInstitutions'] as List? ?? []).map((e) => e.toString()).toList(),
         averageRating: (j['averageRating'] as num?)?.toDouble(),
         reviewCount: j['reviewCount'] as int? ?? 0,
         subjects:

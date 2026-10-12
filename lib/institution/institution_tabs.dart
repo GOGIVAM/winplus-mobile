@@ -19,6 +19,7 @@ import 'group_create_screen.dart';
 import 'group_members_screen.dart';
 import 'student_directory_screen.dart';
 import 'reports_screen.dart';
+import 'tutor_endorsements_screen.dart';
 import '../shared/tutoring_for_students_screen.dart';
 
 Widget _statCard(BuildContext c, IconData icon, String value, String label) {
@@ -797,6 +798,10 @@ class InstitutionAccountTab extends StatelessWidget {
             _Row(Icons.school_outlined, 'Tutorat & portefeuille',
                 onTap: () => Navigator.push(context,
                     WinPageRoute(builder: (_) => const TutoringForStudentsScreen()))),
+            // Lot 9.5 (17.11) : caution des répétiteurs rattachés pour le présentiel.
+            _Row(Icons.verified_user_outlined, 'Cautions des répétiteurs',
+                onTap: () => Navigator.push(context,
+                    WinPageRoute(builder: (_) => const TutorEndorsementsScreen()))),
             _Row(Icons.bar_chart_outlined, 'Rapports exportables',
                 onTap: () => Navigator.push(context,
                     WinPageRoute(builder: (_) => const ReportsScreen()))),

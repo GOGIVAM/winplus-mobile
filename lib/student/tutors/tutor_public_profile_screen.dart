@@ -333,7 +333,7 @@ class _HeroHeader extends StatelessWidget {
             Stack(clipBehavior: Clip.none, children: [
               WinAvatar(p.fullName ?? p.title ?? '?',
                   size: 72, color: WinColors.teal400),
-              if (p.isDiplomaVerified)
+              if (p.isInPersonVerified && !p.inPersonSuspended)
                 Positioned(
                   bottom: -2,
                   right: -2,
@@ -366,10 +366,22 @@ class _HeroHeader extends StatelessWidget {
                       ),
                     const SizedBox(height: 10),
                     Wrap(spacing: 6, runSpacing: 6, children: [
-                      if (p.isDiplomaVerified)
-                        const WinBadge('Vérifié Diplôme',
+                      // Lot 9.5 (17.11) : présentiel, diplôme et caution en badges distincts.
+                      if (p.isInPersonVerified && !p.inPersonSuspended)
+                        const WinBadge('Vérifié pour le présentiel',
                             color: BadgeColor.success),
-                      const WinBadge('Avis bientôt disponibles',
+                      if (p.isDiplomaVerified)
+                        const WinBadge('Diplôme vérifié',
+                            color: BadgeColor.teal),
+                      for (final n in p.endorsedByInstitutions)
+                        WinBadge('Caution : $n', color: BadgeColor.blue),
+                      if (!p.inPersonAllowed)
+                        const WinBadge('En ligne uniquement',
+                            color: BadgeColor.neutral),
+                      WinBadge(
+                          p.averageRating != null && p.reviewCount > 0
+                              ? '${p.averageRating!.toStringAsFixed(1)}/5 (${p.reviewCount} avis)'
+                              : "Pas encore d'avis",
                           color: BadgeColor.neutral),
                     ]),
                   ]),

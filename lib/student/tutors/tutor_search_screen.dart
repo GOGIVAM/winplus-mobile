@@ -36,6 +36,8 @@ const _tutorLevels = [
 ];
 const _tutorModes = [
   ('online', 'En ligne'),
+  // Lot 9.5 (17.11) : tout mode présentiel ne renvoie que des tuteurs vérifiés.
+  ('in_person', 'Présentiel (vérifiés)'),
   ('student_home', 'À mon domicile'),
   ('tutor_home', 'Chez le tuteur'),
   ('neutral_place', 'Espace neutre'),
@@ -329,7 +331,8 @@ class _TutorResultCard extends StatelessWidget {
         // l'image plutôt qu'une ligne de texte séparée).
         Stack(clipBehavior: Clip.none, children: [
           WinAvatar(tutor.fullName.isEmpty ? '?' : tutor.fullName, size: 56),
-          if (tutor.isDiplomaVerified)
+          // Lot 9.5 : la coche signale la vérification pour le présentiel.
+          if (tutor.isInPersonVerified)
             Positioned(
               bottom: -2,
               right: -2,
@@ -405,6 +408,16 @@ class _TutorResultCard extends StatelessWidget {
               const SizedBox(height: 8),
               TopicChipsRow(tutor.matchedTopics, highlight: true),
             ],
+            // Lot 9.5 : modes réels (présentiel = tuteur vérifié) et caution.
+            if (tutor.offersInPerson != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 6),
+                child: Text(
+                    '${tutor.offersInPerson! ? 'Présentiel possible' : 'En ligne uniquement'}'
+                    '${tutor.isDiplomaVerified ? ' · Diplôme vérifié' : ''}'
+                    '${tutor.endorsedByInstitutions.isNotEmpty ? ' · Caution : ${tutor.endorsedByInstitutions.first}' : ''}',
+                    style: WinType.labelS(s.onFaint)),
+              ),
           ]),
         ),
       ]),
