@@ -321,6 +321,18 @@ class _TutoringForStudentsScreenState extends State<TutoringForStudentsScreen> w
                                                     builder: (_) => TutorPublicProfileScreen(userId: a.tutorUserId, assignment: a)))),
                                       ),
                                       const SizedBox(width: 10),
+                                      // Lot 9.4 : l'attribution sert de point de départ à un engagement mensuel.
+                                      Expanded(
+                                        child: WinButton('Au mois',
+                                            small: true,
+                                            variant: WinButtonVariant.outline,
+                                            onTap: () => Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (_) => TutorPublicProfileScreen(
+                                                        userId: a.tutorUserId, assignment: a, openMonthly: true)))),
+                                      ),
+                                      const SizedBox(width: 10),
                                     ],
                                     Expanded(
                                         child: WinButton('Mettre fin',

@@ -365,6 +365,8 @@ class TutorBookingRecord {
   final int? tutorAssignmentId;
   final bool? viewerIsPayer;
   final bool? viewerIsParticipant;
+  /// Lot 9.4 : engagement mensuel d'origine (séance générée), sinon null.
+  final int? tutorEngagementId;
 
   const TutorBookingRecord({
     required this.id,
@@ -411,6 +413,7 @@ class TutorBookingRecord {
     this.tutorAssignmentId,
     this.viewerIsPayer,
     this.viewerIsParticipant,
+    this.tutorEngagementId,
   });
 
   /// Lot 9.3 : seul le côté payeur annule (un élève dont la séance a été
@@ -545,6 +548,7 @@ class TutorBookingRecord {
         tutorAssignmentId: (j['tutorAssignmentId'] as num?)?.toInt(),
         viewerIsPayer: j['viewerIsPayer'] as bool?,
         viewerIsParticipant: j['viewerIsParticipant'] as bool?,
+        tutorEngagementId: (j['tutorEngagementId'] as num?)?.toInt(),
       );
 }
 

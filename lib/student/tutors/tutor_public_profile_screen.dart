@@ -8,6 +8,7 @@ import '../../theme/win_typography.dart';
 import '../../widgets/win_widgets.dart';
 import 'tutor_policy_widgets.dart';
 import 'tutor_booking_flow_screen.dart';
+import 'tutor_engagement_flow_screen.dart';
 import 'tutor_pricing_widgets.dart';
 
 const _weekdayShort = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
@@ -22,8 +23,11 @@ class TutorPublicProfileScreen extends StatefulWidget {
 
   /// Lot 9.3 : attribution active d'où l'on vient (bénéficiaires présélectionnés).
   final TutorAssignment? assignment;
+
+  /// Lot 9.4 : ouvre directement l'engagement mensuel (depuis une attribution).
+  final bool openMonthly;
   const TutorPublicProfileScreen(
-      {super.key, required this.userId, this.initialTopics = const [], this.assignment});
+      {super.key, required this.userId, this.initialTopics = const [], this.assignment, this.openMonthly = false});
 
   @override
   State<TutorPublicProfileScreen> createState() =>
@@ -63,6 +67,9 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
           _occurrences = occ;
           _loading = false;
         });
+      if (mounted && widget.openMonthly && profile.monthlyEnabled) {
+        WidgetsBinding.instance.addPostFrameCallback((_) => _openEngagement());
+      }
     } catch (_) {
       if (mounted)
         setState(() {
@@ -82,6 +89,21 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
             profile: p,
             occurrences: _occurrences,
             initialOccurrence: preselected,
+            initialTopics: widget.initialTopics,
+            assignment: widget.assignment,
+          ),
+        ));
+  }
+
+  /// Lot 9.4 : engagement mensuel (mêmes créneaux 4 semaines, payé d'avance).
+  void _openEngagement() {
+    final p = _profile;
+    if (p == null) return;
+    Navigator.push(
+        context,
+        WinPageRoute(
+          builder: (_) => TutorEngagementFlowScreen(
+            profile: p,
             initialTopics: widget.initialTopics,
             assignment: widget.assignment,
           ),
@@ -210,24 +232,23 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
                 style: WinType.labelM(WinColors.success),
               ),
             ],
-            if (p.packages.isNotEmpty) ...[
+            // Lot 9.4 : l'offre mensuelle remplace les anciens forfaits (inertes).
+            if (p.monthlyEnabled) ...[
               const SizedBox(height: 12),
               const WinDivider(),
               const SizedBox(height: 12),
-              ...p.packages.where((pk) => pk.isActive).map((pk) => Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: Row(children: [
-                      Icon(Icons.inventory_2_outlined,
-                          size: 16, color: s.onFaint),
-                      const SizedBox(width: 8),
-                      Expanded(
-                          child: Text('${pk.name}  ${pk.sessionsCount} séances',
-                              style: WinType.bodyS(s.onStrong))),
-                      Text('${pk.totalPriceXaf} XAF',
-                          style: WinType.labelM(s.onStrong)
-                              .copyWith(fontWeight: FontWeight.w700)),
-                    ]),
-                  )),
+              Text('Engagement mensuel'
+                  '${p.monthlyDiscountPercent > 0 ? ' · -${p.monthlyDiscountPercent} %' : ''}',
+                  style: WinType.titleM(s.onStrong)),
+              const SizedBox(height: 4),
+              Text('Mêmes créneaux chaque semaine pendant 4 semaines, payés d\'avance et versés au tuteur séance par séance.',
+                  style: WinType.bodyS(s.onMuted)),
+              const SizedBox(height: 8),
+              WinButton('Réserver au mois',
+                  small: true,
+                  variant: WinButtonVariant.outline,
+                  icon: Icons.event_repeat_outlined,
+                  onTap: _openEngagement),
             ],
           ]),
         ),

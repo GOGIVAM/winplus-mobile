@@ -9,6 +9,8 @@ import '../../widgets/win_widgets.dart';
 import 'tutor_policy_widgets.dart';
 import 'tutor_pricing_widgets.dart';
 import 'tutor_public_profile_screen.dart';
+import '../../services/tutor_engagement_service.dart';
+import '../../shared/tutor_engagement_screen.dart';
 
 const _modeLabels = {
   'online': 'En ligne',
@@ -49,6 +51,8 @@ class _MyTutorBookingsScreenState extends State<MyTutorBookingsScreen> {
   final Set<int> _reviewed = {};
   // Lot 9.3 : répétiteurs attribués par un parent ou une institution.
   List<TutorAssignment> _assigned = [];
+  // Lot 9.4 : engagements mensuels (payeur ou participant).
+  List<TutorEngagementRecord> _engagements = [];
 
   @override
   void initState() {
@@ -60,6 +64,9 @@ class _MyTutorBookingsScreenState extends State<MyTutorBookingsScreen> {
     setState(() => _error = false);
     TutorBookingService.instance.getAssignmentsForMe().then((a) {
       if (mounted) setState(() => _assigned = a);
+    }).catchError((Object _) {});
+    TutorEngagementService.instance.mine().then((e) {
+      if (mounted) setState(() => _engagements = e);
     }).catchError((Object _) {});
     try {
       final list = await TutorBookingService.instance.getMine();
@@ -167,7 +174,7 @@ class _MyTutorBookingsScreenState extends State<MyTutorBookingsScreen> {
                   const SizedBox(height: 12),
                   WinButton('Réessayer', onTap: _load),
                 ]))
-              : bookings!.isEmpty
+              : bookings!.isEmpty && _engagements.isEmpty
                   ? Center(
                       child: Padding(
                       padding: const EdgeInsets.all(24),
@@ -202,9 +209,24 @@ class _MyTutorBookingsScreenState extends State<MyTutorBookingsScreen> {
                                               MaterialPageRoute(
                                                   builder: (_) => TutorPublicProfileScreen(
                                                       userId: a.tutorUserId, assignment: a)))),
+                                      const SizedBox(width: 6),
+                                      WinButton('Au mois',
+                                          small: true,
+                                          variant: WinButtonVariant.outline,
+                                          onTap: () => Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (_) => TutorPublicProfileScreen(
+                                                      userId: a.tutorUserId, assignment: a, openMonthly: true)))),
                                     ]),
                                   ),
                                 )),
+                            const SizedBox(height: 8),
+                          ],
+                          if (_engagements.isNotEmpty) ...[
+                            Text('Engagements mensuels', style: WinType.labelM(s.onStrong)),
+                            const SizedBox(height: 8),
+                            for (final e in _engagements) EngagementListTile(engagement: e, onChanged: _load),
                             const SizedBox(height: 8),
                           ],
                           for (final b in bookings) ...[

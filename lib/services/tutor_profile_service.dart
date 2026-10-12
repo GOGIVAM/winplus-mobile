@@ -325,6 +325,11 @@ class TutorProfile {
   final int? groupFlatPricePercent;
   final List<TutorGroupDiscount> groupDiscounts;
 
+  /// Lot 9.4 : offre d'engagement mensuel et sa remise (0 à 30 %).
+  final bool monthlyEnabled;
+  final int monthlyDiscountPercent;
+  final int monthlyMaxDiscountPercent;
+
   /// Taille de groupe effective (1 si le tuteur ne propose pas de groupe).
   int get effectiveMaxGroupSize => groupPricingMethod == null ? 1 : maxGroupSize;
 
@@ -373,6 +378,9 @@ class TutorProfile {
     this.maxGroupSize = 1,
     this.groupFlatPricePercent,
     this.groupDiscounts = const [],
+    this.monthlyEnabled = false,
+    this.monthlyDiscountPercent = 0,
+    this.monthlyMaxDiscountPercent = 30,
   });
 
   factory TutorProfile.fromJson(Map<String, dynamic> j) => TutorProfile(
@@ -441,6 +449,9 @@ class TutorProfile {
         groupDiscounts: (j['groupDiscounts'] as List? ?? [])
             .map((e) => TutorGroupDiscount.fromJson(e as Map<String, dynamic>))
             .toList(),
+        monthlyEnabled: j['monthlyEnabled'] as bool? ?? false,
+        monthlyDiscountPercent: (j['monthlyDiscountPercent'] as num?)?.toInt() ?? 0,
+        monthlyMaxDiscountPercent: (j['monthlyMaxDiscountPercent'] as num?)?.toInt() ?? 30,
       );
 }
 

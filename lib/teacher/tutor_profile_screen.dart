@@ -123,7 +123,10 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
   final _rateCtrl = TextEditingController();
   bool _trialEnabled = false;
   final _trialPriceCtrl = TextEditingController();
-  final List<TutorPackage> _packages = [];
+  // Lot 9.4 : offre d'engagement mensuel (remplace les anciens forfaits, inertes).
+  bool _monthlyEnabled = false;
+  final _monthlyDiscountCtrl = TextEditingController();
+  int _monthlyMaxDiscount = 30;
   int _notice = 24;
   final _maxPerWeekCtrl = TextEditingController();
   // Lot 9.2 : politique d'annulation du tuteur, dans les bornes fixées par
@@ -189,9 +192,9 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
     _rateCtrl.text = p.hourlyRateXaf?.toString() ?? '';
     _trialEnabled = p.trialSessionEnabled;
     _trialPriceCtrl.text = p.trialSessionPriceXaf?.toString() ?? '';
-    _packages
-      ..clear()
-      ..addAll(p.packages);
+    _monthlyEnabled = p.monthlyEnabled;
+    _monthlyDiscountCtrl.text = p.monthlyDiscountPercent.toString();
+    _monthlyMaxDiscount = p.monthlyMaxDiscountPercent;
     _grid = TutorPricingGrid(
         rates: p.rates,
         modifiers: p.rateModifiers,
@@ -237,7 +240,8 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
           'hourlyRateXaf': num.tryParse(_rateCtrl.text),
           'trialSessionEnabled': _trialEnabled,
           'trialSessionPriceXaf': num.tryParse(_trialPriceCtrl.text),
-          'packages': _packages.map((p) => p.toJson()).toList(),
+          'monthlyEnabled': _monthlyEnabled,
+          'monthlyDiscountPercent': (int.tryParse(_monthlyDiscountCtrl.text.trim()) ?? 0).clamp(0, _monthlyMaxDiscount),
           ..._grid.toPayload(),
           ..._group.toPayload(),
         };
@@ -711,27 +715,22 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
                 hint: 'Prix (0 = gratuite)',
                 keyboardType: TextInputType.number),
           const SizedBox(height: 16),
-          Text('Forfaits (jusqu\'à 3)', style: WinType.labelM(s.onStrong)),
-          const SizedBox(height: 8),
-          ..._packages.map((p) => ListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Text(p.name.isEmpty ? 'Forfait' : p.name),
-                subtitle:
-                    Text('${p.sessionsCount} séances  ${p.totalPriceXaf} XAF'),
-                trailing: IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () => setState(() => _packages.remove(p))),
-              )),
-          if (_packages.length < 3)
-            WinButton('+ Ajouter un forfait',
-                variant: WinButtonVariant.outline,
-                small: true,
-                onTap: () => setState(() {
-                      _packages.add(const TutorPackage(
-                          name: 'Pack 5 séances',
-                          sessionsCount: 5,
-                          totalPriceXaf: 0));
-                    })),
+          // Lot 9.4 (17.7) : engagement mensuel, remise facultative bornée par le serveur.
+          SwitchListTile(
+              value: _monthlyEnabled,
+              onChanged: (v) => setState(() => _monthlyEnabled = v),
+              contentPadding: EdgeInsets.zero,
+              title: const Text('Proposer l\'engagement mensuel'),
+              subtitle: const Text('Mêmes créneaux chaque semaine pendant 4 semaines, payés d\'avance ; tu es payé séance par séance.')),
+          if (_monthlyEnabled) ...[
+            WinTextField(
+                controller: _monthlyDiscountCtrl,
+                hint: 'Remise mensuelle en % (0 à $_monthlyMaxDiscount)',
+                keyboardType: TextInputType.number),
+            const SizedBox(height: 4),
+            Text('Appliquée au prix de chaque séance du mois, calculé par ta grille.',
+                style: WinType.labelS(s.onFaint)),
+          ],
         ]);
 
       case 3:

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../services/tutor_booking_service.dart';
+import '../services/tutor_engagement_service.dart';
+import '../shared/tutor_engagement_screen.dart';
 import '../student/tutors/tutor_pricing_widgets.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
@@ -89,6 +91,9 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
   List<TutorBookingRecord>? _mine;
   // Lot 9.3 : attributions reçues (parent, institution).
   List<TutorAssignment> _assignments = [];
+  // Lot 9.4 : demandes d'engagement mensuel (acceptées ou refusées en entier) et engagements.
+  List<PendingEngagement> _pendingEngagements = [];
+  List<TutorEngagementRecord> _engagements = [];
   bool _error = false;
   final Set<int> _busy = {};
 
@@ -122,8 +127,12 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
         TutorBookingService.instance.getTutorMine(),
       ]);
       final assignments = await TutorBookingService.instance.getTutorAssignments().catchError((Object _) => <TutorAssignment>[]);
+      final pendingEngagements = await TutorEngagementService.instance.pending().catchError((Object _) => <PendingEngagement>[]);
+      final engagements = await TutorEngagementService.instance.tutorMine().catchError((Object _) => <TutorEngagementRecord>[]);
       if (!mounted) return;
       setState(() {
+        _pendingEngagements = pendingEngagements;
+        _engagements = engagements;
         _pending = results[0] as List<TutorPendingBooking>;
         _mine = results[1] as List<TutorBookingRecord>;
         _assignments = assignments;
@@ -175,6 +184,37 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
       }
     } finally {
       if (mounted) setState(() => _busy.remove(id));
+    }
+  }
+
+  Future<void> _respondEngagement(TutorEngagementRecord e, bool accept) async {
+    String? reason;
+    if (!accept) {
+      reason = await _promptText(context,
+          title: 'Refuser l\'engagement entier',
+          hint: 'Motif (optionnel)',
+          message:
+              'Le payeur est remboursé intégralement, séance par séance ; si le mois a été payé par Mobile Money, les frais sont retenus sur ton solde.');
+      if (reason == null) return;
+    }
+    setState(() => _busy.add(-100000 - e.id));
+    try {
+      if (accept) {
+        await TutorEngagementService.instance.accept(e.id);
+      } else {
+        await TutorEngagementService.instance.decline(e.id, reason: reason!.isEmpty ? null : reason);
+      }
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(accept ? 'Engagement accepté : toutes les séances du mois sont confirmées.' : 'Engagement refusé : le payeur est remboursé.')));
+      }
+      await _load();
+    } catch (err) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(TutorEngagementService.errorMessage(err) ?? 'Action impossible.')));
+      }
+    } finally {
+      if (mounted) setState(() => _busy.remove(-100000 - e.id));
     }
   }
 
@@ -309,6 +349,56 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
                                 onDecline: () => _decline(p.booking.id),
                               ),
                             )),
+                      if (_pendingEngagements.isNotEmpty) ...[
+                        const SizedBox(height: 24),
+                        Text('Demandes d\'engagement mensuel',
+                            style: WinType.archivo(size: 18, color: s.onStrong)),
+                        const SizedBox(height: 10),
+                        for (final pe in _pendingEngagements)
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: WinCard(
+                              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                Text(pe.engagement.participantNames.isNotEmpty ? pe.engagement.participantNames : (pe.engagement.payerName ?? 'Élève'),
+                                    style: WinType.titleM(s.onStrong)),
+                                const SizedBox(height: 4),
+                                Text('${pe.engagement.sessionsCount} séances · ${pe.engagement.slotsSummary}',
+                                    style: WinType.bodyS(s.onMuted)),
+                                Text('${fmtXaf(pe.engagement.totalXaf)} XAF payés d\'avance${pe.engagement.discountPercent > 0 ? ' (remise ${pe.engagement.discountPercent} %)' : ''} · versés séance par séance',
+                                    style: WinType.labelS(s.onFaint)),
+                                Text(pe.minutesRemaining > 0 ? '${pe.minutesRemaining} min pour répondre' : 'Expire bientôt',
+                                    style: WinType.labelS(WinColors.error)),
+                                const SizedBox(height: 8),
+                                Wrap(spacing: 8, runSpacing: 6, children: [
+                                  WinButton('Accepter le mois',
+                                      small: true,
+                                      loading: _busy.contains(-100000 - pe.engagement.id),
+                                      onTap: _busy.contains(-100000 - pe.engagement.id) ? null : () => _respondEngagement(pe.engagement, true)),
+                                  WinButton('Refuser',
+                                      small: true,
+                                      variant: WinButtonVariant.outline,
+                                      onTap: _busy.contains(-100000 - pe.engagement.id) ? null : () => _respondEngagement(pe.engagement, false)),
+                                  WinButton('Détail',
+                                      small: true,
+                                      variant: WinButtonVariant.ghost,
+                                      onTap: () async {
+                                        await Navigator.of(context).push(MaterialPageRoute(
+                                            builder: (_) => TutorEngagementScreen(engagementId: pe.engagement.id)));
+                                        _load();
+                                      }),
+                                ]),
+                              ]),
+                            ),
+                          ),
+                      ],
+                      if (_engagements.any((e) => e.status == 'active' || e.status == 'completed')) ...[
+                        const SizedBox(height: 24),
+                        Text('Engagements mensuels',
+                            style: WinType.archivo(size: 18, color: s.onStrong)),
+                        const SizedBox(height: 10),
+                        for (final e in _engagements.where((e) => e.status == 'active' || e.status == 'completed'))
+                          EngagementListTile(engagement: e, tutorView: true, onChanged: _load),
+                      ],
                       if (_assignments.isNotEmpty) ...[
                         const SizedBox(height: 24),
                         Text('Attributions',
