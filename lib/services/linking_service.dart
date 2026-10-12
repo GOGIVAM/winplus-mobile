@@ -44,4 +44,24 @@ class LinkingService {
 
   Future<void> deleteLink(int linkId) =>
       ApiClient.instance.delete('/teacher-links/$linkId');
+
+  // ── Rattachements à un établissement (suivi 17.14) ──────────────────
+  // Tant que l'élève n'a pas accepté, l'établissement ne peut ni réserver, ni
+  // payer, ni attribuer un cours particulier pour lui. Le refus est réversible.
+
+  /// Liste {id, institutionName, city, groupName, status: pending|accepted|refused}.
+  Future<List<Map<String, dynamic>>> getInstitutionAttachments() async {
+    final res = await ApiClient.instance.dio.get('/student/institution-attachments');
+    final data = res.data;
+    final list = data is Map ? data['data'] : data;
+    return (list is List ? list : const [])
+        .map((e) => Map<String, dynamic>.from(e as Map))
+        .toList();
+  }
+
+  Future<void> respondInstitutionAttachment(int id, {required bool accept}) async {
+    requireOnline();
+    await ApiClient.instance.dio
+        .put('/student/institution-attachments/$id/${accept ? 'accept' : 'refuse'}', data: {});
+  }
 }

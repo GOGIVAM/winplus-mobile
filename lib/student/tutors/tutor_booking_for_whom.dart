@@ -140,6 +140,14 @@ class _TutorBookingForWhomState extends State<TutorBookingForWhom> {
         const SizedBox(height: 4),
         Text('${v.participantIds.length} élève(s) choisi(s). Payé par le portefeuille de l\'institution ou Mobile Money.',
             style: WinType.labelS(s.onFaint)),
+        // Suivi 17.14 : les élèves au rattachement non confirmé ne sont pas proposés.
+        if (ctx.institutionPendingConfirmationCount > 0) ...[
+          const SizedBox(height: 4),
+          Text(
+              '${ctx.institutionPendingConfirmationCount} élève(s) rattaché(s) n\'apparaissent pas : ils doivent d\'abord '
+              'confirmer leur rattachement à l\'institution depuis leur compte (Mon réseau).',
+              style: WinType.labelS(s.onFaint)),
+        ],
       ]);
     } else {
       final group = ctx.studyGroups.where((g) => g.id == v.studyGroupId).firstOrNull;

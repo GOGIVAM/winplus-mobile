@@ -176,6 +176,39 @@ class TutorGroupDiscount {
   Map<String, dynamic> toJson() => {'minGroupSize': minGroupSize, 'percentDiscount': percentDiscount};
 }
 
+/// Réglages de prix de groupe proposés par WinAI (suivi 17.14, réponse
+/// snake_case relayée telle quelle).
+class TutorGroupPricingSuggestion {
+  final int maxGroupSize;
+  final List<TutorGroupDiscount> discounts;
+  final int flatPercent;
+  final bool marketData;
+  final int sampleSize;
+  final String explanation;
+  const TutorGroupPricingSuggestion({
+    required this.maxGroupSize,
+    required this.discounts,
+    required this.flatPercent,
+    required this.marketData,
+    required this.sampleSize,
+    required this.explanation,
+  });
+
+  factory TutorGroupPricingSuggestion.fromJson(Map<String, dynamic> j) => TutorGroupPricingSuggestion(
+        maxGroupSize: (j['max_group_size'] as num?)?.toInt() ?? 4,
+        discounts: (j['discounts'] as List? ?? []).map((e) {
+          final m = e as Map<String, dynamic>;
+          return TutorGroupDiscount(
+              minGroupSize: (m['min_group_size'] as num?)?.toInt() ?? 2,
+              percentDiscount: (m['percent_discount'] as num?)?.toInt() ?? 0);
+        }).toList(),
+        flatPercent: (j['flat_price_percent'] as num?)?.toInt() ?? 150,
+        marketData: j['based_on'] == 'market_data',
+        sampleSize: (j['sample_size'] as num?)?.toInt() ?? 0,
+        explanation: j['explanation'] as String? ?? '',
+      );
+}
+
 /// Grille proposée par WinAI (réponse snake_case relayée telle quelle).
 class TutorRateGridSuggestion {
   final List<TutorRate> rates;
@@ -511,6 +544,14 @@ class TutorProfileService {
     return grid is Map<String, dynamic>
         ? TutorRateGridSuggestion.fromJson(grid)
         : null;
+  }
+
+  /// Suivi 17.14 : suggestion WinAI des réglages de prix de groupe (17.3).
+  Future<TutorGroupPricingSuggestion?> suggestGroupPricing(String subject, {String? level}) async {
+    final res = await _api.dio.post('/tutor-profile/me/suggest-rate',
+        data: {'subject': subject, 'level': level, 'include_group': true});
+    final group = (res.data as Map<String, dynamic>)['group'];
+    return group is Map<String, dynamic> ? TutorGroupPricingSuggestion.fromJson(group) : null;
   }
 
   /// Recherche publique de répétiteurs (élève).

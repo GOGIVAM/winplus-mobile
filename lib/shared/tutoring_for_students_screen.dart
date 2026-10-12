@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../services/api_client.dart';
@@ -25,7 +27,7 @@ class TutoringForStudentsScreen extends StatefulWidget {
   State<TutoringForStudentsScreen> createState() => _TutoringForStudentsScreenState();
 }
 
-class _TutoringForStudentsScreenState extends State<TutoringForStudentsScreen> {
+class _TutoringForStudentsScreenState extends State<TutoringForStudentsScreen> with WidgetsBindingObserver {
   TutorBookingContext? _ctx;
   List<TutorAssignment> _assignments = [];
   bool _loading = true;
@@ -36,10 +38,74 @@ class _TutoringForStudentsScreenState extends State<TutoringForStudentsScreen> {
   num _minRecharge = 100;
   List<Map<String, dynamic>> _entries = [];
 
+  // Suivi 17.14 : recharge en attente de confirmation Mobile Money. Le solde
+  // est relu au retour dans l'application et par une interrogation légère du
+  // paiement (toutes les 5 s, 3 min au plus) jusqu'à son issue.
+  int? _pendingRechargePaymentId;
+  Timer? _rechargePoll;
+  DateTime? _rechargeStartedAt;
+  static const _rechargePollEvery = Duration(seconds: 5);
+  static const _rechargePollFor = Duration(minutes: 3);
+
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _load();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _rechargePoll?.cancel();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // Retour après avoir validé le paiement sur le téléphone (USSD / appli opérateur).
+    if (state == AppLifecycleState.resumed && _pendingRechargePaymentId != null) {
+      _checkRecharge();
+    }
+  }
+
+  void _startRechargePolling(int paymentId) {
+    _rechargePoll?.cancel();
+    _pendingRechargePaymentId = paymentId;
+    _rechargeStartedAt = DateTime.now();
+    _rechargePoll = Timer.periodic(_rechargePollEvery, (_) => _checkRecharge());
+  }
+
+  void _stopRechargePolling() {
+    _rechargePoll?.cancel();
+    _rechargePoll = null;
+    _pendingRechargePaymentId = null;
+  }
+
+  Future<void> _checkRecharge() async {
+    final id = _pendingRechargePaymentId;
+    if (id == null || !mounted) return;
+    String? status;
+    try {
+      final res = _unwrap((await ApiClient.instance.dio.get('/payments/$id/status')).data);
+      status = res?['status']?.toString().toLowerCase();
+    } catch (_) {
+      // Réseau : on retente au prochain tour.
+    }
+    final expired = _rechargeStartedAt != null && DateTime.now().difference(_rechargeStartedAt!) > _rechargePollFor;
+    if (status == 'completed' || status == 'failed' || status == 'expired' || status == 'cancelled' || expired) {
+      _stopRechargePolling();
+      await _loadWallet();
+      if (!mounted) return;
+      final msg = status == 'completed'
+          ? 'Recharge confirmée : le solde de l\'institution est à jour.'
+          : status == null || expired
+              ? 'Recharge toujours en attente : tire vers le bas pour actualiser le solde plus tard.'
+              : 'La recharge n\'a pas abouti : aucun montant n\'a été débité.';
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+    } else {
+      await _loadWallet();
+    }
   }
 
   Map<String, dynamic>? _unwrap(dynamic data) {
@@ -114,15 +180,18 @@ class _TutoringForStudentsScreenState extends State<TutoringForStudentsScreen> {
     );
     if (ok != true) return;
     try {
-      await ApiClient.instance.dio.post('/wallet/recharge', data: {
+      final res = await ApiClient.instance.dio.post('/wallet/recharge', data: {
         'amount': num.tryParse(amountCtrl.text.trim()) ?? 0,
         'operator': op,
         'phone': phoneCtrl.text.trim(),
         'clientRequestId': '${DateTime.now().microsecondsSinceEpoch}',
       });
+      final started = _unwrap(res.data);
+      final paymentId = (started?['paymentId'] as num?)?.toInt();
+      if (paymentId != null && paymentId > 0) _startRechargePolling(paymentId);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Confirme le paiement sur ton téléphone ; le solde est crédité dès la confirmation.')));
+            content: Text('Confirme le paiement sur ton téléphone ; le solde s\'actualise dès la confirmation.')));
       }
     } catch (e) {
       final data = (e as dynamic).response?.data;
@@ -190,7 +259,15 @@ class _TutoringForStudentsScreenState extends State<TutoringForStudentsScreen> {
                           Text('Partagé par tous les comptes de l\'institution : il se recharge par Mobile Money, paie les séances et reçoit les remboursements. Il ne se retire pas vers Mobile Money.',
                               style: WinType.labelS(s.onFaint)),
                           const SizedBox(height: 10),
-                          WinButton('Recharger', small: true, onTap: _recharge),
+                          if (_pendingRechargePaymentId != null) ...[
+                            Row(children: [
+                              const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2)),
+                              const SizedBox(width: 8),
+                              Expanded(child: Text('Recharge en attente de confirmation sur le téléphone…', style: WinType.labelS(s.onMuted))),
+                            ]),
+                            const SizedBox(height: 8),
+                          ],
+                          WinButton('Recharger', small: true, onTap: _pendingRechargePaymentId != null ? null : _recharge),
                           if (_entries.isNotEmpty) ...[
                             const SizedBox(height: 12),
                             const WinDivider(),
@@ -377,8 +454,15 @@ class _AssignTutorScreenState extends State<_AssignTutorScreen> {
           ]),
           const SizedBox(height: 8),
         ],
+        if (ctx.isInstitution && ctx.institutionPendingConfirmationCount > 0) ...[
+          Text(
+              '${ctx.institutionPendingConfirmationCount} élève(s) rattaché(s) n\'ont pas encore confirmé leur rattachement : '
+              'ils n\'apparaissent pas ici tant qu\'ils ne l\'ont pas accepté depuis leur compte.',
+              style: WinType.labelS(s.onFaint)),
+          const SizedBox(height: 8),
+        ],
         if (pool.isEmpty)
-          Text(ctx.isInstitution ? 'Aucun élève actif rattaché à ton institution.' : 'Aucun enfant lié (le lien doit être accepté par l\'enfant).',
+          Text(ctx.isInstitution ? 'Aucun élève actif au rattachement confirmé dans ton institution.' : 'Aucun enfant lié (le lien doit être accepté par l\'enfant).',
               style: WinType.bodyS(s.onMuted))
         else
           Wrap(

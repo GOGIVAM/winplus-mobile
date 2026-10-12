@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../theme/win_motion.dart';
+import '../../services/tutor_booking_service.dart';
 import '../../services/tutor_profile_service.dart';
 import '../../theme/win_colors.dart';
 import '../../theme/win_theme.dart';
@@ -61,11 +62,34 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
   bool _loading = true;
   bool _error = false;
   List<TutorSearchResult> _results = [];
+  // Suivi 17.14 (parité web) : répétiteurs attribués à l'élève, ou par ce
+  // parent / cette institution, proposés en tête de la recherche.
+  List<TutorAssignment> _assigned = [];
 
   @override
   void initState() {
     super.initState();
+    _loadAssigned();
     _search();
+  }
+
+  Future<void> _loadAssigned() async {
+    try {
+      final ctx = await TutorBookingService.instance.getBookingContext();
+      if (mounted) setState(() => _assigned = ctx.activeAssignments.where((a) => a.isActive).toList());
+    } catch (_) {
+      // Sans contexte (hors ligne, invité) : recherche simple.
+    }
+  }
+
+  TutorAssignment? _assignmentFor(int tutorUserId) =>
+      _assigned.where((a) => a.tutorUserId == tutorUserId).firstOrNull;
+
+  /// Résultats avec les tuteurs attribués en premier (ordre serveur conservé sinon).
+  List<TutorSearchResult> get _ordered {
+    if (_assigned.isEmpty) return _results;
+    final ids = _assigned.map((a) => a.tutorUserId).toSet();
+    return [..._results.where((r) => ids.contains(r.userId)), ..._results.where((r) => !ids.contains(r.userId))];
   }
 
   Future<void> _search() async {
@@ -212,6 +236,29 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
             },
           ),
         ),
+        if (_assigned.isNotEmpty)
+          SizedBox(
+            height: 40,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              itemCount: _assigned.length + 1,
+              separatorBuilder: (_, __) => const SizedBox(width: 8),
+              itemBuilder: (_, i) {
+                if (i == 0) {
+                  return Center(child: Text('Attribués :', style: WinType.labelS(s.onMuted)));
+                }
+                final a = _assigned[i - 1];
+                return WinChip(a.tutorName ?? 'Répétiteur',
+                    active: false,
+                    icon: Icons.star_outline,
+                    onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => TutorPublicProfileScreen(userId: a.tutorUserId, assignment: a))));
+              },
+            ),
+          ),
         const SizedBox(height: 8),
         Expanded(
           child: _loading
@@ -242,11 +289,12 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
                         ))
                       : ListView.separated(
                           padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
-                          itemCount: _results.length,
+                          itemCount: _ordered.length,
                           separatorBuilder: (_, __) =>
                               const SizedBox(height: 10),
                           itemBuilder: (_, i) =>
-                              _TutorResultCard(_results[i], topics: _topics),
+                              _TutorResultCard(_ordered[i],
+                                  topics: _topics, assignment: _assignmentFor(_ordered[i].userId)),
                         ),
         ),
       ]),
@@ -257,7 +305,9 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
 class _TutorResultCard extends StatelessWidget {
   final TutorSearchResult tutor;
   final List<String> topics;
-  const _TutorResultCard(this.tutor, {this.topics = const []});
+  /// Attribution active vers ce tuteur : mise en avant et réservation depuis l'attribution.
+  final TutorAssignment? assignment;
+  const _TutorResultCard(this.tutor, {this.topics = const [], this.assignment});
 
   @override
   Widget build(BuildContext context) {
@@ -271,7 +321,7 @@ class _TutorResultCard extends StatelessWidget {
           context,
           WinPageRoute(
               builder: (_) => TutorPublicProfileScreen(
-                  userId: tutor.userId, initialTopics: topics))),
+                  userId: tutor.userId, initialTopics: topics, assignment: assignment))),
       padding: const EdgeInsets.all(12),
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
         // Avatar + badge de vérification superposé (même langage que le
@@ -322,6 +372,11 @@ class _TutorResultCard extends StatelessWidget {
                 ),
               ),
             ]),
+            if (assignment != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 2),
+                child: Text('Répétiteur attribué', style: WinType.labelS(s.primary).copyWith(fontWeight: FontWeight.w700)),
+              ),
             if ((tutor.title ?? '').isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(top: 2),

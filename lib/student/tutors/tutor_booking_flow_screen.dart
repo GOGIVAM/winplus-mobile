@@ -229,6 +229,28 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
       _quote != null &&
       _walletAvailable! >= _quote!.totalXaf;
 
+  // Suivi 17.14 : libellés du solde adaptés au payeur (élève, parent,
+  // institution, membre qui paie pour son groupe d'étude).
+  String get _walletTitle => switch (_forWhom.payerType) {
+        'parent' => 'Mon portefeuille parent',
+        'institution' => 'Portefeuille de l\'institution',
+        'study_group' => 'Mon solde WinPlus (je paie pour le groupe)',
+        _ => 'Mon solde WinPlus',
+      };
+
+  String get _walletPayLabel => switch (_forWhom.payerType) {
+        'parent' => 'Payer avec mon portefeuille parent',
+        'institution' => 'Payer avec le portefeuille de l\'institution',
+        _ => 'Payer avec mon solde',
+      };
+
+  String get _walletShortfallHint => switch (_forWhom.payerType) {
+        'parent' => 'Choisis Mobile Money ou recharge ton portefeuille parent.',
+        'institution' =>
+          'Choisis Mobile Money ou recharge le portefeuille de l\'institution (écran Tutorat).',
+        _ => 'Choisis Mobile Money.',
+      };
+
   Future<void> _loadWallet() async {
     setState(() => _walletLoading = true);
     final available = await TutorBookingService.instance.getWalletAvailableXaf();
@@ -308,7 +330,7 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
     }
     if (byWallet && !_walletCovers) {
       setState(() => _submitError =
-          'Ton solde ne couvre pas le prix de cette séance. Choisis Mobile Money ou recharge ton portefeuille.');
+          'Le solde ne couvre pas le prix de cette séance. $_walletShortfallHint');
       return;
     }
     setState(() {
@@ -759,7 +781,7 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
           const SizedBox(height: 8),
           _PayOption(
             icon: Icons.account_balance_wallet_outlined,
-            title: 'Mon solde WinPlus',
+            title: _walletTitle,
             hint: walletHint,
             selected: byWallet,
             onTap: _walletLoading || _walletAvailable == null
@@ -774,7 +796,7 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
             Text(
                 _walletCovers
                     ? 'Paiement immédiat et sans frais. Ta demande part tout de suite au tuteur.'
-                    : 'Solde insuffisant : il manque ${fmtXaf(_quote!.totalXaf - _walletAvailable!)} XAF. Choisis Mobile Money ou recharge ton portefeuille.',
+                    : 'Solde insuffisant : il manque ${fmtXaf(_quote!.totalXaf - _walletAvailable!)} XAF. $_walletShortfallHint',
                 style: WinType.labelS(
                     _walletCovers ? s.onMuted : WinColors.error)),
           ],
@@ -801,7 +823,7 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
               _submitting
                   ? 'Envoi en cours…'
                   : (_quote != null
-                      ? '${byWallet ? 'Payer avec mon solde' : 'Payer'} ${fmtXaf(_quote!.totalXaf)} XAF'
+                      ? '${byWallet ? _walletPayLabel : 'Payer'} ${fmtXaf(_quote!.totalXaf)} XAF'
                       : 'Payer'),
               block: true,
               loading: _submitting,

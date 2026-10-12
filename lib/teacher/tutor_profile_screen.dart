@@ -693,7 +693,11 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
             level: _levelsSel.isNotEmpty ? _levelsSel.first : null,
           ),
           const SizedBox(height: 16),
-          TutorGroupPricingEditor(value: _group, onChanged: (g) => setState(() => _group = g)),
+          TutorGroupPricingEditor(
+              value: _group,
+              onChanged: (g) => setState(() => _group = g),
+              subject: _subjectsSel.isNotEmpty ? _subjectsSel.first : null,
+              level: _levelsSel.isNotEmpty ? _levelsSel.first : null),
           const SizedBox(height: 16),
           CheckboxListTile(
               value: _trialEnabled,

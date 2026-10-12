@@ -269,6 +269,9 @@ class TutorBookingContext {
   final List<TutorBookingParticipant> children;
   final String? institutionName;
   final List<TutorBookingParticipant> institutionStudents;
+  /// Suivi 17.14 : élèves rattachés qui n'ont pas encore confirmé (ou ont
+  /// refusé) leur rattachement ; non réservables par l'institution.
+  final int institutionPendingConfirmationCount;
   final List<TutorStudyGroupOption> studyGroups;
   final List<TutorAssignment> activeAssignments;
 
@@ -278,6 +281,7 @@ class TutorBookingContext {
     this.children = const [],
     this.institutionName,
     this.institutionStudents = const [],
+    this.institutionPendingConfirmationCount = 0,
     this.studyGroups = const [],
     this.activeAssignments = const [],
   });
@@ -295,6 +299,8 @@ class TutorBookingContext {
       children: people(j['children']),
       institutionName: j['institutionName'] as String?,
       institutionStudents: people(j['institutionStudents']),
+      institutionPendingConfirmationCount:
+          (j['institutionPendingConfirmationCount'] as num?)?.toInt() ?? 0,
       studyGroups: (j['studyGroups'] as List? ?? []).map((e) {
         final m = e as Map<String, dynamic>;
         return TutorStudyGroupOption(

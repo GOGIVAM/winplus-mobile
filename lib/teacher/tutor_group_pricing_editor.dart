@@ -46,16 +46,72 @@ class GroupPricingValue {
       };
 }
 
-class TutorGroupPricingEditor extends StatelessWidget {
+class TutorGroupPricingEditor extends StatefulWidget {
   final GroupPricingValue value;
   final ValueChanged<GroupPricingValue> onChanged;
-  const TutorGroupPricingEditor({super.key, required this.value, required this.onChanged});
 
+  /// Matière principale et niveau du tuteur, pour la suggestion WinAI (suivi 17.14).
+  final String? subject;
+  final String? level;
+  const TutorGroupPricingEditor(
+      {super.key, required this.value, required this.onChanged, this.subject, this.level});
+
+  @override
+  State<TutorGroupPricingEditor> createState() => _TutorGroupPricingEditorState();
+}
+
+class _TutorGroupPricingEditorState extends State<TutorGroupPricingEditor> {
   static const _methods = {
     'none': 'Individuel seulement',
     'per_student': 'Prix par élève dégressif',
     'flat': 'Prix fixe pour le groupe',
   };
+
+  TutorGroupPricingSuggestion? _suggestion;
+  bool _loading = false;
+
+  GroupPricingValue get value => widget.value;
+  ValueChanged<GroupPricingValue> get onChanged => widget.onChanged;
+
+  // Suivi 17.14 : WinAI propose les réglages de groupe ; le tuteur les applique
+  // puis les ajuste, le serveur revalide les bornes à l'enregistrement.
+  Future<void> _suggest() async {
+    final subject = widget.subject;
+    if (subject == null || subject.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Choisis d\'abord tes matières.')));
+      return;
+    }
+    setState(() => _loading = true);
+    try {
+      final sug = await TutorProfileService.instance.suggestGroupPricing(subject, level: widget.level);
+      if (!mounted) return;
+      setState(() => _suggestion = sug);
+      if (sug == null) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('WinAI n\'a pas pu proposer de réglages de groupe pour l\'instant.')));
+      }
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('WinAI n\'a pas pu proposer de réglages de groupe pour l\'instant.')));
+      }
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  void _apply(String method) {
+    final sug = _suggestion;
+    if (sug == null) return;
+    onChanged(GroupPricingValue(
+      method: method,
+      maxGroupSize: sug.maxGroupSize.clamp(2, 20),
+      flatPercent: sug.flatPercent.clamp(100, 1000),
+      discounts: sug.discounts,
+    ));
+    setState(() => _suggestion = null);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,10 +125,44 @@ class TutorGroupPricingEditor extends StatelessWidget {
         ]);
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text('Séances de groupe', style: WinType.labelM(s.onStrong)),
+      Row(children: [
+        Expanded(child: Text('Séances de groupe', style: WinType.labelM(s.onStrong))),
+        TextButton.icon(
+          onPressed: _loading ? null : _suggest,
+          icon: const Icon(Icons.auto_awesome_outlined, size: 18),
+          label: Text(_loading ? 'WinAI réfléchit…' : 'Proposer (WinAI)'),
+        ),
+      ]),
       const SizedBox(height: 4),
       Text('Un parent, une institution ou un groupe d\'étude peut réserver pour plusieurs élèves. Une séance de groupe occupe ton créneau une seule fois.',
           style: WinType.labelS(s.onFaint)),
+      if (_suggestion != null) ...[
+        const SizedBox(height: 8),
+        WinCard(
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(
+                'Réglages proposés par WinAI'
+                '${_suggestion!.marketData ? ' (d\'après ${_suggestion!.sampleSize} tuteurs)' : ' (estimation)'}',
+                style: WinType.labelM(s.onStrong)),
+            const SizedBox(height: 6),
+            Text('Taille maximale : ${_suggestion!.maxGroupSize} élèves', style: WinType.bodyS(s.onSurface)),
+            ..._suggestion!.discounts.map((d) => Text(
+                'Prix par élève, dès ${d.minGroupSize} élèves : −${d.percentDiscount} %',
+                style: WinType.bodyS(s.onSurface))),
+            Text('Ou prix fixe pour le groupe : ${_suggestion!.flatPercent} % du prix individuel',
+                style: WinType.bodyS(s.onSurface)),
+            const SizedBox(height: 6),
+            Text(_suggestion!.explanation, style: WinType.labelS(s.onFaint)),
+            const SizedBox(height: 8),
+            Wrap(spacing: 8, runSpacing: 8, children: [
+              WinButton('Prix par élève', small: true, onTap: () => _apply('per_student')),
+              WinButton('Prix fixe', small: true, variant: WinButtonVariant.outline, onTap: () => _apply('flat')),
+              WinButton('Ignorer', small: true, variant: WinButtonVariant.outline,
+                  onTap: () => setState(() => _suggestion = null)),
+            ]),
+          ]),
+        ),
+      ],
       const SizedBox(height: 8),
       Wrap(
         spacing: 8,

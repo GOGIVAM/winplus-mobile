@@ -14,6 +14,8 @@ class MyLinksScreen extends StatefulWidget {
 class _MyLinksScreenState extends State<MyLinksScreen> {
   Map<String, dynamic>? _data;
   List<dynamic> _pending = [];
+  // Suivi 17.14 : rattachements à un établissement, à confirmer par l'élève.
+  List<Map<String, dynamic>> _attachments = [];
   bool _loading = true;
   final Map<int, bool> _actioning = {};
 
@@ -29,8 +31,13 @@ class _MyLinksScreenState extends State<MyLinksScreen> {
         LinkingService.instance.getStudentLinks(),
         LinkingService.instance.getPendingInvitations(),
       ]);
+      List<Map<String, dynamic>> attachments = [];
+      try {
+        attachments = await LinkingService.instance.getInstitutionAttachments();
+      } catch (_) {}
       if (mounted) {
         setState(() {
+          _attachments = attachments;
           _data = results[0] as Map<String, dynamic>;
           _pending = results[1] as List<dynamic>;
           _loading = false;
@@ -52,6 +59,21 @@ class _MyLinksScreenState extends State<MyLinksScreen> {
       if (mounted) {
         setState(() => _actioning.remove(linkId));
       }
+    }
+  }
+
+  Future<void> _respondAttachment(int id, bool accept) async {
+    setState(() => _actioning[-id] = true);
+    try {
+      await LinkingService.instance.respondInstitutionAttachment(id, accept: accept);
+      await _load();
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Action impossible, réessaie.')));
+      }
+    } finally {
+      if (mounted) setState(() => _actioning.remove(-id));
     }
   }
 
@@ -184,6 +206,65 @@ class _MyLinksScreenState extends State<MyLinksScreen> {
                                       )),
                                     ]),
                                   ])),
+                            );
+                          }),
+                          const SizedBox(height: 20),
+                        ],
+                        if (_attachments.isNotEmpty) ...[
+                          Text('Établissements', style: WinType.titleM(s.onStrong)),
+                          const SizedBox(height: 4),
+                          Text(
+                              'En acceptant, l\'établissement peut réserver, payer et attribuer des cours particuliers pour toi. Tu peux changer d\'avis à tout moment.',
+                              style: WinType.labelS(s.onFaint)),
+                          const SizedBox(height: 8),
+                          ..._attachments.map((a) {
+                            final id = (a['id'] as num).toInt();
+                            final status = a['status']?.toString() ?? 'pending';
+                            final busy = _actioning[-id] == true;
+                            final group = a['groupName']?.toString();
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 8),
+                              child: WinCard(
+                                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                Row(children: [
+                                  Icon(Icons.apartment_outlined, color: s.primary),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                    Text(a['institutionName']?.toString() ?? 'Établissement',
+                                        style: WinType.bodyM(s.onStrong).copyWith(fontWeight: FontWeight.w600)),
+                                    Text(
+                                        [
+                                          if (group != null && group.isNotEmpty) 'Classe $group',
+                                          status == 'pending'
+                                              ? 'rattachement en attente de ta réponse'
+                                              : status == 'accepted'
+                                                  ? 'rattachement confirmé'
+                                                  : 'rattachement refusé pour les cours particuliers',
+                                        ].join(' · '),
+                                        style: WinType.labelM(s.onMuted)),
+                                  ])),
+                                ]),
+                                const SizedBox(height: 10),
+                                if (status == 'pending')
+                                  Row(children: [
+                                    Expanded(
+                                        child: WinButton('Accepter',
+                                            small: true, loading: busy, onTap: busy ? null : () => _respondAttachment(id, true))),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                        child: WinButton('Refuser',
+                                            small: true,
+                                            variant: WinButtonVariant.outline,
+                                            onTap: busy ? null : () => _respondAttachment(id, false))),
+                                  ])
+                                else
+                                  WinButton(status == 'accepted' ? 'Retirer mon accord' : 'Accepter',
+                                      small: true,
+                                      variant: WinButtonVariant.outline,
+                                      loading: busy,
+                                      onTap: busy ? null : () => _respondAttachment(id, status != 'accepted')),
+                              ])),
                             );
                           }),
                           const SizedBox(height: 20),
