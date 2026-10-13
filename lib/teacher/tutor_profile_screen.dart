@@ -184,9 +184,11 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
     _levelsSel = p.levels.toSet();
     _specialtiesSel = p.specialties.toSet();
     _online = p.offersOnline;
-    _atStudent = p.offersAtStudentHome;
-    _atTutor = p.offersAtTutorHome;
-    _neutral = p.offersNeutralPlace;
+    // Lot 9.5 (17.17) : choix ENREGISTRÉS (conservés sans vérification), pas
+    // les modes effectifs, pour ne jamais les effacer en réenregistrant.
+    _atStudent = p.savedOffersAtStudentHome ?? p.offersAtStudentHome;
+    _atTutor = p.savedOffersAtTutorHome ?? p.offersAtTutorHome;
+    _neutral = p.savedOffersNeutralPlace ?? p.offersNeutralPlace;
     _zones
       ..clear()
       ..addAll(p.interventionZones);
@@ -223,6 +225,24 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
   /// Lot 9.5 : présentiel possible (vérifié et non suspendu).
   bool get _inPersonAllowed => _profile?.inPersonAllowed ?? true;
 
+  /// Lot 9.5 (17.17) : mode présentiel. Sans vérification (ou pendant une
+  /// suspension), le choix reste modifiable et enregistré, mais coché en gris
+  /// avec « Actif après vérification » : ni proposé ni réservable d'ici là.
+  Widget _inPersonTile(WinScheme s, String label, bool value, ValueChanged<bool> onChanged) {
+    final pending = value && !_inPersonAllowed;
+    final note = _profile?.inPersonSuspended == true
+        ? 'Actif après examen de la suspension'
+        : 'Actif après vérification';
+    return CheckboxListTile(
+        value: value,
+        onChanged: (v) => onChanged(v ?? false),
+        activeColor: pending ? s.onMuted : null,
+        title: Text(label, style: pending ? WinType.bodyM(s.onMuted) : null),
+        subtitle: pending ? Text(note, style: WinType.bodyS(s.onMuted)) : null,
+        contentPadding: EdgeInsets.zero,
+        controlAffinity: ListTileControlAffinity.leading);
+  }
+
   /// Lot 9.5 : parcours de vérification ; au retour, relit le profil (modes
   /// présentiels effectifs) sans changer l'étape en cours.
   Future<void> _openVerification() async {
@@ -232,9 +252,9 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
       if (!mounted) return;
       setState(() {
         _profile = p;
-        _atStudent = p.offersAtStudentHome;
-        _atTutor = p.offersAtTutorHome;
-        _neutral = p.offersNeutralPlace;
+        _atStudent = p.savedOffersAtStudentHome ?? p.offersAtStudentHome;
+        _atTutor = p.savedOffersAtTutorHome ?? p.offersAtTutorHome;
+        _neutral = p.savedOffersNeutralPlace ?? p.offersNeutralPlace;
       });
     } catch (_) {}
   }
@@ -610,8 +630,8 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
           // Lot 9.5 (17.11) : présentiel réservé aux tuteurs vérifiés (refusé aussi par le serveur).
           if (!_inPersonAllowed) ...[
             WinAlert(
-                _profile?.inPersonBlockedReason ??
-                    'Le présentiel est réservé aux tuteurs vérifiés.',
+                '${_profile?.inPersonBlockedReason ?? 'Le présentiel est réservé aux tuteurs vérifiés.'} '
+                '${_profile?.inPersonSuspended == true ? 'Tes choix présentiels restent enregistrés et redeviendront actifs à la levée de la suspension.' : 'Tes choix présentiels sont enregistrés et deviendront actifs dès ta vérification.'}',
                 type: BadgeColor.warn),
             const SizedBox(height: 6),
             WinButton('Me faire vérifier',
@@ -621,24 +641,11 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
                 onTap: _openVerification),
             const SizedBox(height: 6),
           ],
-          CheckboxListTile(
-              value: _atStudent,
-              onChanged: !_inPersonAllowed && !_atStudent ? null : (v) => setState(() => _atStudent = v ?? false),
-              title: const Text('À domicile chez l\'élève'),
-              contentPadding: EdgeInsets.zero,
-              controlAffinity: ListTileControlAffinity.leading),
-          CheckboxListTile(
-              value: _atTutor,
-              onChanged: !_inPersonAllowed && !_atTutor ? null : (v) => setState(() => _atTutor = v ?? false),
-              title: const Text('À domicile chez moi'),
-              contentPadding: EdgeInsets.zero,
-              controlAffinity: ListTileControlAffinity.leading),
-          CheckboxListTile(
-              value: _neutral,
-              onChanged: !_inPersonAllowed && !_neutral ? null : (v) => setState(() => _neutral = v ?? false),
-              title: const Text('Présentiel en espace neutre'),
-              contentPadding: EdgeInsets.zero,
-              controlAffinity: ListTileControlAffinity.leading),
+          // Lot 9.5 (17.17) : choix présentiels conservés, cochés mais grisés
+          // « actif après vérification » tant que le présentiel n'est pas possible.
+          _inPersonTile(s, 'À domicile chez l\'élève', _atStudent, (v) => setState(() => _atStudent = v)),
+          _inPersonTile(s, 'À domicile chez moi', _atTutor, (v) => setState(() => _atTutor = v)),
+          _inPersonTile(s, 'Présentiel en espace neutre', _neutral, (v) => setState(() => _neutral = v)),
           if (_atStudent || _atTutor) ...[
             const SizedBox(height: 12),
             Text('Zones géographiques couvertes',

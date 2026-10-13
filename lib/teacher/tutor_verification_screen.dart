@@ -1,5 +1,6 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../services/tutor_verification_service.dart';
 import '../theme/win_colors.dart';
@@ -82,6 +83,32 @@ class _TutorVerificationScreenState extends State<TutorVerificationScreen> {
       return null;
     }
     return IdentityUpload(f.bytes!, f.name);
+  }
+
+  /// Lot 9.5 (17.17) : selfie pris directement avec l'appareil photo (caméra
+  /// frontale de préférence). Le choix d'un fichier reste possible en secours
+  /// (appareil sans caméra, accès refusé, ordinateur).
+  Future<IdentityUpload?> _takePhoto() async {
+    try {
+      final shot = await ImagePicker().pickImage(
+        source: ImageSource.camera,
+        preferredCameraDevice: CameraDevice.front,
+        maxWidth: 1600,
+        maxHeight: 1600,
+        imageQuality: 85,
+      );
+      if (shot == null) return null;
+      final bytes = await shot.readAsBytes();
+      if (bytes.length > 8 * 1024 * 1024) {
+        _toast('Photo trop volumineuse (8 Mo maximum).');
+        return null;
+      }
+      final name = shot.name.contains('.') ? shot.name : 'selfie.jpg';
+      return IdentityUpload(bytes, name);
+    } catch (_) {
+      _toast("Appareil photo indisponible : choisis plutôt une photo de ton visage dans tes fichiers.");
+      return null;
+    }
   }
 
   Future<void> _run(Future<TutorVerificationStatus> Function() action, String ok) async {
@@ -203,14 +230,27 @@ class _TutorVerificationScreenState extends State<TutorVerificationScreen> {
     );
   }
 
-  Widget _fileRow(WinScheme s, String label, IdentityUpload? file, bool imageOnly, ValueChanged<IdentityUpload?> set) =>
+  Widget _fileRow(WinScheme s, String label, IdentityUpload? file, bool imageOnly, ValueChanged<IdentityUpload?> set,
+          {bool camera = false}) =>
       Padding(
         padding: const EdgeInsets.only(bottom: 8),
         child: Row(children: [
           Expanded(
               child: Text(file == null ? label : '$label : ${file.fileName}',
                   style: WinType.labelM(file == null ? s.onMuted : s.onStrong), overflow: TextOverflow.ellipsis)),
-          WinButton(file == null ? 'Choisir' : 'Changer',
+          if (camera) ...[
+            WinButton(file == null ? 'Prendre' : 'Reprendre',
+                small: true,
+                icon: Icons.photo_camera_outlined,
+                onTap: _busy
+                    ? null
+                    : () async {
+                        final shot = await _takePhoto();
+                        if (shot != null) set(shot);
+                      }),
+            const SizedBox(width: 6),
+          ],
+          WinButton(file == null ? (camera ? 'Fichier' : 'Choisir') : 'Changer',
               small: true,
               variant: WinButtonVariant.outline,
               icon: Icons.upload_file_outlined,
@@ -231,7 +271,7 @@ class _TutorVerificationScreenState extends State<TutorVerificationScreen> {
         const SizedBox(height: 10),
         _fileRow(s, 'Recto de la pièce', _front, false, (f) => setState(() => _front = f)),
         _fileRow(s, 'Verso (si besoin)', _back, false, (f) => setState(() => _back = f)),
-        _fileRow(s, 'Selfie (ton visage)', _selfie, true, (f) => setState(() => _selfie = f)),
+        _fileRow(s, 'Selfie (ton visage)', _selfie, true, (f) => setState(() => _selfie = f), camera: true),
         WinButton("Envoyer pour vérification",
             block: true,
             small: true,

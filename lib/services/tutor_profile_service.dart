@@ -302,6 +302,13 @@ class TutorProfile {
   final bool inPersonAllowed;
   final String? inPersonBlockedReason;
   final List<String> endorsedByInstitutions;
+
+  /// Lot 9.5 (17.17), propriétaire seulement : choix présentiels ENREGISTRÉS,
+  /// conservés même sans vérification (inactifs tant que [inPersonAllowed] est
+  /// faux). null = vue publique ou ancien serveur.
+  final bool? savedOffersAtStudentHome;
+  final bool? savedOffersAtTutorHome;
+  final bool? savedOffersNeutralPlace;
   final bool isActive;
   final int onboardingStep;
   final int completionScore;
@@ -365,6 +372,9 @@ class TutorProfile {
     this.inPersonAllowed = true,
     this.inPersonBlockedReason,
     this.endorsedByInstitutions = const [],
+    this.savedOffersAtStudentHome,
+    this.savedOffersAtTutorHome,
+    this.savedOffersNeutralPlace,
     this.isActive = false,
     this.onboardingStep = 0,
     this.completionScore = 0,
@@ -421,6 +431,9 @@ class TutorProfile {
         inPersonAllowed: j['inPersonAllowed'] as bool? ?? true,
         inPersonBlockedReason: j['inPersonBlockedReason'] as String?,
         endorsedByInstitutions: (j['endorsedByInstitutions'] as List? ?? []).map((e) => e.toString()).toList(),
+        savedOffersAtStudentHome: j['savedOffersAtStudentHome'] as bool?,
+        savedOffersAtTutorHome: j['savedOffersAtTutorHome'] as bool?,
+        savedOffersNeutralPlace: j['savedOffersNeutralPlace'] as bool?,
         isActive: j['isActive'] as bool? ?? false,
         onboardingStep: j['onboardingStep'] as int? ?? 0,
         completionScore: j['completionScore'] as int? ?? 0,

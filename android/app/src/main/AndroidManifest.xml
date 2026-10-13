@@ -41,5 +41,14 @@
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
         </intent>
+        <!-- Lot 9.5 (17.17) : selfie de vérification pris avec l'appareil photo
+             (image_picker, intention de capture : aucune permission CAMERA
+             n'est nécessaire, l'application photo du téléphone prend la vue). -->
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE"/>
+        </intent>
     </queries>
+    <!-- Appareil photo facultatif : l'application reste installable sans caméra
+         (le choix d'un fichier reste possible pour le selfie). -->
+    <uses-feature android:name="android.hardware.camera" android:required="false"/>
 </manifest>
