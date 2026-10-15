@@ -5,6 +5,8 @@ import 'package:video_player/video_player.dart';
 import '../services/course_offline_service.dart';
 import '../services/course_service.dart';
 import '../theme/win_colors.dart';
+import '../theme/win_motion.dart';
+import 'document_viewer_screen.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
@@ -118,6 +120,8 @@ class _CoursePlayerScreenState extends State<CoursePlayerScreen> {
           isPreview: l.isPreview,
           isCompleted: true,
           lastPositionSec: 0,
+          sourceSubjectId: l.sourceSubjectId,
+          quizId: l.quizId,
         );
         _curriculum = _curriculum == null
             ? null
@@ -152,6 +156,13 @@ class _CoursePlayerScreenState extends State<CoursePlayerScreen> {
               );
       });
       if (result.courseCompleted) _showCompletionDialog();
+    } on CourseActionRefused catch (e) {
+      // Lot 9.7b (F12) : complétion refusée par le serveur (vidéo pas assez
+      // regardée, quiz non réussi, leçon ouverte depuis trop peu de temps).
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.message)));
+      }
     } catch (_) {}
   }
 
@@ -415,6 +426,46 @@ class _LessonView extends StatelessWidget {
             ),
             child: Text(l.articleContent!,
                 style: WinType.bodyM(Colors.white).copyWith(height: 1.7)),
+          ),
+
+        // Lot 9.7b (F13, 18.21) : épreuve ou livre du catalogue ajouté à la
+        // formation : jamais téléchargé, ouvert dans la visionneuse sécurisée
+        // (filigrane nominatif), accès par l'inscription à la formation.
+        if (l.sourceSubjectId != null)
+          GestureDetector(
+            onTap: () => Navigator.push(
+                context,
+                WinPageRoute(
+                  builder: (_) => DocumentViewerScreen(
+                    subjectId: l.sourceSubjectId!,
+                    title: l.title,
+                    courseId: courseId,
+                  ),
+                )),
+            child: Container(
+              margin: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: const Color(0xFF1E293B),
+                borderRadius: BorderRadius.circular(WinRadii.lg),
+                border: Border.all(
+                    color: WinColors.teal600.withValues(alpha: 0.4)),
+              ),
+              child: Row(children: [
+                const Icon(Icons.menu_book_outlined,
+                    color: WinColors.teal400, size: 24),
+                const SizedBox(width: 12),
+                Expanded(
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                      Text(l.title, style: WinType.titleM(Colors.white)),
+                      Text('Ouvrir dans la visionneuse (consultation en ligne)',
+                          style: WinType.labelS(Colors.white54)),
+                    ])),
+                const Icon(Icons.visibility_outlined, color: WinColors.teal400),
+              ]),
+            ),
           ),
 
         // File download

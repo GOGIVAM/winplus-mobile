@@ -332,7 +332,8 @@ class _CartSummary extends StatelessWidget {
           const SizedBox(height: 14),
           _row(s, 'Sous-total', cart.subtotal),
           const SizedBox(height: 4),
-          _row(s, 'TVA', cart.tax),
+          // Lot 9.7b (18.21) : prix TTC, TVA incluse (jamais ajoutée).
+          _row(s, 'dont TVA 19,25 % incluse', cart.tax),
           const SizedBox(height: 8),
           const WinDivider(),
           const SizedBox(height: 8),

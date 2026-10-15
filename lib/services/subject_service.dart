@@ -152,10 +152,18 @@ class SubjectService {
   /// de l'affichage dans la visionneuse intégrée, et ne sont écrits nulle
   /// part. Le serveur applique la règle d'accès (gratuit, abonné, acheté ou
   /// assigné) : 401/403/404 remontent en [DioException].
-  Future<Uint8List> viewBytes(int subjectId, {bool correction = false}) async {
+  ///
+  /// Lot 9.7b (F13) : [courseId] ouvre une épreuve ou un livre contenu dans
+  /// une formation suivie (accès par l'inscription à la formation), toujours
+  /// dans la visionneuse et sans téléchargement.
+  Future<Uint8List> viewBytes(int subjectId,
+      {bool correction = false, int? courseId}) async {
     final res = await _api.dio.get<List<int>>(
       '/subjects/$subjectId/view',
-      queryParameters: {if (correction) 'kind': 'correction'},
+      queryParameters: {
+        if (correction) 'kind': 'correction',
+        if (courseId != null) 'courseId': courseId,
+      },
       // Un livre ou une épreuve volumineuse peut dépasser le délai par
       // défaut prévu pour les réponses JSON.
       options: Options(

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import '../theme/win_motion.dart';
+import '../services/cart_service.dart';
 import '../services/course_service.dart';
+import '../services/parent_service.dart';
+import '../services/session_manager.dart';
+import '../shared/shop/checkout_screen.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
@@ -18,6 +22,9 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
   CourseDetail? _course;
   bool _loading = true;
   bool _enrolling = false;
+  bool _buying = false;
+  bool _isTeacher = false;
+  bool _isParent = false;
   String? _error;
   final Set<int> _openSections = {0};
 
@@ -32,6 +39,14 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
   void initState() {
     super.initState();
     _load();
+    SessionManager.getUserRole().then((r) {
+      if (mounted) {
+        setState(() {
+          _isTeacher = r == 'teacher';
+          _isParent = r == 'parent';
+        });
+      }
+    });
   }
 
   @override
@@ -109,10 +124,152 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
     } catch (e) {
       if (mounted)
         setState(() {
-          _error = 'Erreur lors de l\'inscription.';
+          _error = e is CourseActionRefused
+              ? e.message
+              : 'Erreur lors de l\'inscription.';
           _enrolling = false;
         });
     }
+  }
+
+  /// Lot 9.7b (F2) : achat d'une formation payante sur mobile. La formation
+  /// est ajoutée au panier serveur puis payée en Mobile Money (écran de
+  /// paiement existant) ou, pour un professeur, avec son solde WinPlus.
+  /// L'accès s'ouvre à la confirmation du paiement, côté serveur.
+  Future<void> _buy({required bool withBalance}) async {
+    final c = _course;
+    if (c == null) return;
+    setState(() {
+      _buying = true;
+      _error = null;
+    });
+    final addError = await CartService.instance.addCourse(c.id);
+    if (!mounted) return;
+    if (addError != null) {
+      setState(() {
+        _error = addError;
+        _buying = false;
+      });
+      _load();
+      return;
+    }
+    if (withBalance) {
+      final payError = await CourseService.instance.payCartWithBalance();
+      if (!mounted) return;
+      setState(() {
+        _error = payError;
+        _buying = false;
+      });
+      if (payError == null) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Formation achetée : elle est dans « Mes formations ».')));
+      }
+      _load();
+      return;
+    }
+    setState(() => _buying = false);
+    await Navigator.push(
+        context, WinPageRoute(builder: (_) => const CheckoutScreen()));
+    if (mounted) _load();
+  }
+
+  /// Lot 9.7b (F14) : achat pour un enfant lié, débité du portefeuille parent.
+  Future<void> _offerToChild(CourseDetail c) async {
+    List<ApiChild> children;
+    try {
+      children = await ParentService.instance.getChildren();
+    } catch (_) {
+      children = [];
+    }
+    if (!mounted) return;
+    if (children.isEmpty) {
+      setState(() => _error = 'Aucun enfant n\'est rattaché à votre compte.');
+      return;
+    }
+    final s = WinTheme.of(context);
+    final child = await showModalBottomSheet<ApiChild>(
+      context: context,
+      backgroundColor: s.surface,
+      builder: (ctx) => SafeArea(
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text(
+                'Offrir « ${c.title} » (${c.price.toInt()} XAF TTC, débité du portefeuille)',
+                style: WinType.titleM(s.onStrong)),
+          ),
+          ...children.map((ch) => ListTile(
+                leading: const Icon(Icons.child_care),
+                title: Text(ch.firstName, style: WinType.bodyM(s.onStrong)),
+                onTap: () => Navigator.pop(ctx, ch),
+              )),
+        ]),
+      ),
+    );
+    if (child == null || !mounted) return;
+    setState(() {
+      _buying = true;
+      _error = null;
+    });
+    final err = await CourseService.instance.purchaseForChild(c.id, child.id);
+    if (!mounted) return;
+    setState(() {
+      _buying = false;
+      _error = err;
+    });
+    if (err == null) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Formation offerte à ${child.firstName} : accès ouvert.')));
+    }
+  }
+
+  void _openPurchaseSheet(CourseDetail c) {
+    final s = WinTheme.of(context);
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: s.surface,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (ctx) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+          child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Acheter la formation', style: WinType.headlineS(s.onStrong)),
+                const SizedBox(height: 6),
+                Text(
+                    '${c.price.toInt()} XAF TTC (TVA 19,25 % incluse). '
+                    'Formation vendue seule, accès à vie dès la confirmation du paiement.',
+                    style: WinType.bodyS(s.onMuted)),
+                const SizedBox(height: 16),
+                WinButton(
+                  'Payer par Mobile Money',
+                  block: true,
+                  icon: Icons.phone_android,
+                  onTap: () {
+                    Navigator.pop(ctx);
+                    _buy(withBalance: false);
+                  },
+                ),
+                if (_isTeacher) ...[
+                  const SizedBox(height: 10),
+                  WinButton(
+                    'Payer avec mon solde WinPlus',
+                    block: true,
+                    variant: WinButtonVariant.secondary,
+                    icon: Icons.account_balance_wallet_outlined,
+                    onTap: () {
+                      Navigator.pop(ctx);
+                      _buy(withBalance: true);
+                    },
+                  ),
+                ],
+              ]),
+        ),
+      ),
+    );
   }
 
   @override
@@ -228,48 +385,79 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                  Text(
-                    c.isFree
-                        ? 'Gratuit'
-                        : c.isIncludedInSub
-                            ? 'Inclus dans l\'abonnement Premium'
-                            : '${c.price.toInt()} XAF',
-                    style: WinType.archivo(
-                        size: 22,
-                        color: c.isFree || c.isIncludedInSub
-                            ? WinColors.teal600
-                            : s.onStrong),
-                  ),
+                  // Lot 9.7b : prix TTC (18.21) ; formation vendue seule,
+                  // jamais incluse dans un abonnement (18.16).
+                  Row(children: [
+                    Text(
+                      c.isPaid ? '${c.price.toInt()} XAF' : 'Gratuit',
+                      style: WinType.archivo(
+                          size: 22,
+                          color: c.isPaid ? s.onStrong : WinColors.teal600),
+                    ),
+                    if (c.isPaid && (c.isPurchased || c.isEnrolled)) ...[
+                      const SizedBox(width: 8),
+                      const WinBadge('Achetée'),
+                    ],
+                  ]),
+                  if (c.isPaid) ...[
+                    const SizedBox(height: 2),
+                    Text('TTC, TVA 19,25 % incluse · hors abonnement',
+                        style: WinType.labelS(s.onMuted)),
+                  ],
                   if (_error != null) ...[
                     const SizedBox(height: 8),
                     Text(_error!, style: WinType.bodyS(WinColors.error)),
                   ],
                   const SizedBox(height: 12),
-                  WinButton(
-                    c.isEnrolled
-                        ? 'Continuer la formation'
-                        : c.isFree
-                            ? 'Commencer gratuitement'
-                            : 'S\'inscrire',
-                    block: true,
-                    loading: _enrolling,
-                    icon:
-                        c.isEnrolled ? Icons.play_arrow : Icons.school_outlined,
-                    onTap: _enrolling
-                        ? null
-                        : () {
-                            if (c.isEnrolled) {
-                              Navigator.push(
-                                  context,
-                                  WinPageRoute(
-                                    builder: (_) => CoursePlayerScreen(
-                                        courseId: c.id, courseTitle: c.title),
-                                  ));
-                            } else {
-                              _enroll();
-                            }
-                          },
-                  ),
+                  if (c.isEnrolled)
+                    WinButton(
+                      'Continuer la formation',
+                      block: true,
+                      icon: Icons.play_arrow,
+                      onTap: () => Navigator.push(
+                          context,
+                          WinPageRoute(
+                            builder: (_) => CoursePlayerScreen(
+                                courseId: c.id, courseTitle: c.title),
+                          )),
+                    )
+                  else if (c.isOwner)
+                    const WinButton('Votre formation',
+                        block: true, variant: WinButtonVariant.outline)
+                  else if (c.isPurchased)
+                    // Achetée, accès pas encore ouvert (paiement tout juste
+                    // confirmé) : le serveur rattache l'inscription à l'achat.
+                    WinButton(
+                      'Achetée : commencer',
+                      block: true,
+                      loading: _enrolling,
+                      icon: Icons.check_circle_outline,
+                      onTap: _enrolling ? null : _enroll,
+                    )
+                  else if (c.isPaid && _isParent)
+                    WinButton(
+                      'Offrir à mon enfant',
+                      block: true,
+                      loading: _buying,
+                      icon: Icons.card_giftcard_outlined,
+                      onTap: _buying ? null : () => _offerToChild(c),
+                    )
+                  else if (c.isPaid)
+                    WinButton(
+                      'Acheter la formation',
+                      block: true,
+                      loading: _buying,
+                      icon: Icons.shopping_bag_outlined,
+                      onTap: _buying ? null : () => _openPurchaseSheet(c),
+                    )
+                  else
+                    WinButton(
+                      'Commencer gratuitement',
+                      block: true,
+                      loading: _enrolling,
+                      icon: Icons.school_outlined,
+                      onTap: _enrolling ? null : _enroll,
+                    ),
                   if (c.certificateEnabled) ...[
                     const SizedBox(height: 10),
                     Row(mainAxisAlignment: MainAxisAlignment.center, children: [

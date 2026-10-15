@@ -1,5 +1,10 @@
+import 'dart:typed_data';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:pdfrx/pdfrx.dart';
 import '../services/certificate_service.dart';
+import '../services/course_service.dart';
+import '../theme/win_motion.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
@@ -15,6 +20,10 @@ class _CertificatesScreenState extends State<CertificatesScreen> {
   List<ApiCertificate>? _certs;
   String? _error;
 
+  /// Lot 9.7b (F15) : certificats de FORMATION (GET /my-course-certificates),
+  /// distincts des certificats de sujets lus jusqu'ici seuls.
+  List<MyCourseCertificate> _courseCerts = [];
+
   @override
   void initState() {
     super.initState();
@@ -22,6 +31,12 @@ class _CertificatesScreenState extends State<CertificatesScreen> {
   }
 
   Future<void> _load() async {
+    try {
+      final courseCerts = await CourseService.instance
+          .myCourseCertificates()
+          .catchError((_) => <MyCourseCertificate>[]);
+      if (mounted) setState(() => _courseCerts = courseCerts);
+    } catch (_) {}
     try {
       final data = await CertificateService.instance.getCertificates();
       if (mounted)
@@ -65,6 +80,39 @@ class _CertificatesScreenState extends State<CertificatesScreen> {
       ),
       body: certs == null
           ? const Center(child: CircularProgressIndicator())
+          : _courseCerts.isNotEmpty
+              ? ListView(
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
+                  children: [
+                    Text('Formations', style: WinType.titleM(s.onStrong)),
+                    const SizedBox(height: 10),
+                    ..._courseCerts.map((c) => Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: _CourseCertificateCard(cert: c),
+                        )),
+                    if (certs.isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      Text('Épreuves et parcours',
+                          style: WinType.titleM(s.onStrong)),
+                      const SizedBox(height: 10),
+                      ...certs.map((c) => Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: WinCard(
+                              child: Row(children: [
+                                const Icon(Icons.workspace_premium,
+                                    color: WinColors.gold),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                    child: Text(c.title,
+                                        style: WinType.bodyM(s.onStrong))),
+                                if ((c.score ?? 0) > 0)
+                                  WinBadge('${c.score}%'),
+                              ]),
+                            ),
+                          )),
+                    ],
+                  ],
+                )
           : certs.isEmpty
               ? Center(
                   child: Column(mainAxisSize: MainAxisSize.min, children: [
@@ -187,6 +235,117 @@ class _CertificatesScreenState extends State<CertificatesScreen> {
                     );
                   },
                 ),
+    );
+  }
+}
+
+/// Lot 9.7b (F15) : certificat de formation. Le PDF du certificat reste
+/// consultable et téléchargeable (18.21 : seules les épreuves et les livres
+/// ne sortent jamais de l'application) ; il s'affiche ici depuis le lien
+/// présigné renvoyé par le serveur. Le code de vérification publique est
+/// affiché (page /verify-formation/{code}).
+class _CourseCertificateCard extends StatelessWidget {
+  final MyCourseCertificate cert;
+  const _CourseCertificateCard({required this.cert});
+
+  @override
+  Widget build(BuildContext context) {
+    final s = WinTheme.of(context);
+    final issued = cert.issuedAt;
+    final date = issued == null
+        ? ''
+        : '${issued.day.toString().padLeft(2, '0')}/${issued.month.toString().padLeft(2, '0')}/${issued.year}';
+    return WinCard(
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(children: [
+          const Icon(Icons.workspace_premium, color: WinColors.gold, size: 28),
+          const SizedBox(width: 10),
+          Expanded(
+              child: Text(cert.courseTitle,
+                  style: WinType.titleM(s.onStrong),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis)),
+          if (cert.grade != null) WinBadge('${cert.grade!.round()} %'),
+        ]),
+        const SizedBox(height: 6),
+        Text(
+            [
+              if (cert.instructorName != null) cert.instructorName!,
+              if (date.isNotEmpty) 'Délivré le $date',
+            ].join(' · '),
+            style: WinType.labelM(s.onMuted)),
+        const SizedBox(height: 4),
+        SelectableText('Code de vérification : ${cert.verificationCode}',
+            style: WinType.labelS(s.onMuted)),
+        const SizedBox(height: 10),
+        WinButton('Voir le certificat (PDF)',
+            variant: WinButtonVariant.outline,
+            small: true,
+            icon: Icons.picture_as_pdf_outlined,
+            onTap: cert.fileUrl == null
+                ? null
+                : () => Navigator.push(
+                    context,
+                    WinPageRoute(
+                      builder: (_) => _CertificatePdfScreen(
+                          title: cert.courseTitle, url: cert.fileUrl!),
+                    ))),
+      ]),
+    );
+  }
+}
+
+class _CertificatePdfScreen extends StatefulWidget {
+  final String title;
+  final String url;
+  const _CertificatePdfScreen({required this.title, required this.url});
+  @override
+  State<_CertificatePdfScreen> createState() => _CertificatePdfScreenState();
+}
+
+class _CertificatePdfScreenState extends State<_CertificatePdfScreen> {
+  Uint8List? _bytes;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    try {
+      // Lien présigné S3 : requête sans en-tête d'authentification.
+      final res = await Dio().get<List<int>>(widget.url,
+          options: Options(responseType: ResponseType.bytes));
+      if (!mounted) return;
+      setState(() => _bytes = Uint8List.fromList(res.data ?? const []));
+    } catch (_) {
+      if (mounted) {
+        setState(() => _error = 'Le certificat n\'a pas pu être chargé.');
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final s = WinTheme.of(context);
+    return Scaffold(
+      backgroundColor: s.bg,
+      appBar: AppBar(
+        backgroundColor: s.bg,
+        elevation: 0,
+        foregroundColor: s.onStrong,
+        title: Text(widget.title, style: WinType.titleM(s.onStrong)),
+      ),
+      body: _error != null
+          ? Center(child: Text(_error!, style: WinType.bodyM(s.onMuted)))
+          : _bytes == null
+              ? const Center(child: CircularProgressIndicator())
+              : PdfViewer.data(_bytes!,
+                  sourceName:
+                      'winplus-course-cert-${widget.url.hashCode}-${DateTime.now().microsecondsSinceEpoch}',
+                  params: PdfViewerParams(backgroundColor: s.bg)),
     );
   }
 }

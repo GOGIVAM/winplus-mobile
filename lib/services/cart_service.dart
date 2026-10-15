@@ -6,6 +6,9 @@ import 'api_client.dart';
 /// backend, seul celui stocké au panier compte).
 class ApiCartItem {
   final int id, subjectId;
+
+  /// Lot 9.7b (F2) : ligne de formation (subjectId vaut alors 0).
+  final int? courseId;
   final String title;
   final String? description, image;
   final double price;
@@ -13,6 +16,7 @@ class ApiCartItem {
   const ApiCartItem({
     required this.id,
     required this.subjectId,
+    this.courseId,
     required this.title,
     this.description,
     this.image,
@@ -23,6 +27,7 @@ class ApiCartItem {
   factory ApiCartItem.fromJson(Map<String, dynamic> j) => ApiCartItem(
         id: (j['id'] as num?)?.toInt() ?? 0,
         subjectId: (j['subjectId'] as num?)?.toInt() ?? 0,
+        courseId: (j['courseId'] as num?)?.toInt(),
         title: j['title'] as String? ?? '',
         description: j['description'] as String?,
         image: j['image'] as String?,
@@ -32,7 +37,9 @@ class ApiCartItem {
       );
 }
 
-/// Panier complet, TVA incluse côté serveur (19,25 %  voir CartController).
+/// Panier complet. Lot 9.7b (18.21) : prix TTC saisis ; `total` est la
+/// somme des prix, `tax` la TVA 19,25 % INCLUSE dans ces prix (informative,
+/// jamais ajoutée) ; voir CartController et VatPolicy côté serveur.
 class ApiCart {
   final List<ApiCartItem> items;
   final int itemsCount;
@@ -106,6 +113,22 @@ class CartService {
       return ApiCart.fromJson(res.data as Map<String, dynamic>);
     } catch (_) {
       return null;
+    }
+  }
+
+  /// Lot 9.7b (F2) : ajoute une formation payante au panier. Renvoie null en
+  /// cas de succès, sinon le message du serveur (formation déjà achetée, déjà
+  /// suivie, gratuite ou dont on est l'auteur : 409).
+  Future<String?> addCourse(int courseId) async {
+    try {
+      await _api.dio.post('/cart/items', data: {'courseId': courseId});
+      return null;
+    } on DioException catch (e) {
+      final data = e.response?.data;
+      final msg = data is Map ? data['error'] as String? : null;
+      return msg ?? "Impossible d'ajouter la formation au panier.";
+    } catch (_) {
+      return "Impossible d'ajouter la formation au panier.";
     }
   }
 

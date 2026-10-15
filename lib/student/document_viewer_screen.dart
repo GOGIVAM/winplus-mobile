@@ -24,17 +24,23 @@ enum ViewerDocumentKind { document, correction }
 /// - Aucune action de téléchargement, de partage, d'impression ni de
 ///   sélection/copie de texte n'est proposée.
 ///
-/// Les leçons de formation (Course, Module 6/27) ne passent pas par ici.
+/// Les fichiers propres aux leçons de formation (Course, Module 6/27) ne
+/// passent pas par ici ; seules les épreuves et les livres du catalogue
+/// ajoutés à une formation s'y ouvrent, avec [courseId] (lot 9.7b, F13).
 class DocumentViewerScreen extends StatefulWidget {
   final int subjectId;
   final String title;
   final ViewerDocumentKind kind;
+
+  /// Formation suivie qui contient ce document (accès par l'inscription).
+  final int? courseId;
 
   const DocumentViewerScreen({
     super.key,
     required this.subjectId,
     required this.title,
     this.kind = ViewerDocumentKind.document,
+    this.courseId,
   });
 
   @override
@@ -75,6 +81,7 @@ class _DocumentViewerScreenState extends State<DocumentViewerScreen> {
       final bytes = await SubjectService.instance.viewBytes(
         widget.subjectId,
         correction: widget.kind == ViewerDocumentKind.correction,
+        courseId: widget.courseId,
       );
       if (!mounted) return;
       setState(() {

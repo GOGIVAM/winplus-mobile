@@ -387,12 +387,11 @@ class _CourseCard extends StatelessWidget {
   }
 
   Widget _priceTag(CourseListItem c) {
-    if (c.isFree)
+    // Lot 9.7b : plus de badge Premium (18.16, vendue seule) ; prix TTC (18.21).
+    if (c.isFree || c.price <= 0)
       return _PriceBadge('Gratuit', WinColors.teal700, Colors.white);
-    if (c.isIncludedInSub)
-      return _PriceBadge('Premium', WinColors.teal700, Colors.white);
     return _PriceBadge(
-        '${c.price.toInt()} XAF', WinColors.ink800, Colors.white);
+        '${c.price.toInt()} XAF TTC', WinColors.ink800, Colors.white);
   }
 }
 

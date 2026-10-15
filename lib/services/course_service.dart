@@ -1,3 +1,5 @@
+import 'package:dio/dio.dart';
+
 import 'api_client.dart';
 
 // ─── Modèles ──────────────────────────────────────────────────────────────────
@@ -12,7 +14,6 @@ class CourseListItem {
   final String? category;
   final double price;
   final bool isFree;
-  final bool isIncludedInSub;
   final int totalDurationMin;
   final int lessonsCount;
   final int enrolledCount;
@@ -30,7 +31,6 @@ class CourseListItem {
     this.category,
     required this.price,
     required this.isFree,
-    required this.isIncludedInSub,
     required this.totalDurationMin,
     required this.lessonsCount,
     required this.enrolledCount,
@@ -49,7 +49,6 @@ class CourseListItem {
         category: j['category'] as String?,
         price: ((j['price'] ?? 0) as num).toDouble(),
         isFree: j['isFree'] as bool? ?? false,
-        isIncludedInSub: j['isIncludedInSub'] as bool? ?? false,
         totalDurationMin: j['totalDurationMin'] as int? ?? 0,
         lessonsCount: j['lessonsCount'] as int? ?? 0,
         enrolledCount: j['enrolledCount'] as int? ?? 0,
@@ -147,7 +146,6 @@ class CourseDetail {
   final String? category;
   final double price;
   final bool isFree;
-  final bool isIncludedInSub;
   final int totalDurationMin;
   final int lessonsCount;
   final int enrolledCount;
@@ -159,6 +157,17 @@ class CourseDetail {
   final bool isEnrolled;
   final List<CourseSection> sections;
   final String instructorName;
+
+  /// Lot 9.7b (F1, F2) : formation achetée par l'utilisateur, formation dont
+  /// il est l'auteur, et raison d'un achat impossible (free_course,
+  /// own_course, already_enrolled, already_purchased) ou null si achetable.
+  /// Le prix est TTC (18.21) ; une formation n'est jamais incluse dans un
+  /// abonnement (18.16).
+  final bool isPurchased;
+  final bool isOwner;
+  final String? purchaseBlockCode;
+
+  bool get isPaid => !isFree && price > 0;
 
   const CourseDetail({
     required this.id,
@@ -172,7 +181,6 @@ class CourseDetail {
     this.category,
     required this.price,
     required this.isFree,
-    required this.isIncludedInSub,
     required this.totalDurationMin,
     required this.lessonsCount,
     required this.enrolledCount,
@@ -184,6 +192,9 @@ class CourseDetail {
     required this.isEnrolled,
     required this.sections,
     required this.instructorName,
+    this.isPurchased = false,
+    this.isOwner = false,
+    this.purchaseBlockCode,
   });
 
   factory CourseDetail.fromJson(Map<String, dynamic> j) => CourseDetail(
@@ -198,7 +209,6 @@ class CourseDetail {
         category: j['category'] as String?,
         price: ((j['price'] ?? 0) as num).toDouble(),
         isFree: j['isFree'] as bool? ?? false,
-        isIncludedInSub: j['isIncludedInSub'] as bool? ?? false,
         totalDurationMin: j['totalDurationMin'] as int? ?? 0,
         lessonsCount: j['lessonsCount'] as int? ?? 0,
         enrolledCount: j['enrolledCount'] as int? ?? 0,
@@ -214,6 +224,9 @@ class CourseDetail {
         instructorName:
             (j['instructor'] as Map<String, dynamic>?)?['name'] as String? ??
                 '',
+        isPurchased: j['isPurchased'] as bool? ?? false,
+        isOwner: j['isOwner'] as bool? ?? false,
+        purchaseBlockCode: j['purchaseBlockCode'] as String?,
       );
 
   String get durationStr {
@@ -336,6 +349,12 @@ class LessonContent {
   final bool isCompleted;
   final int lastPositionSec;
 
+  /// Lot 9.7b (F13) : épreuve ou livre du catalogue contenu dans la
+  /// formation. Jamais téléchargeable (fileUrl nul) : consulté dans la
+  /// visionneuse sécurisée (/subjects/{id}/view?courseId=…).
+  final int? sourceSubjectId;
+  final int? quizId;
+
   const LessonContent({
     required this.id,
     required this.title,
@@ -349,6 +368,8 @@ class LessonContent {
     required this.isPreview,
     required this.isCompleted,
     required this.lastPositionSec,
+    this.sourceSubjectId,
+    this.quizId,
   });
 
   factory LessonContent.fromJson(Map<String, dynamic> j) {
@@ -366,8 +387,59 @@ class LessonContent {
       isPreview: j['isPreview'] as bool? ?? false,
       isCompleted: prog?['isCompleted'] as bool? ?? false,
       lastPositionSec: prog?['lastPositionSec'] as int? ?? 0,
+      sourceSubjectId: j['sourceSubjectId'] as int?,
+      quizId: j['quizId'] as int?,
     );
   }
+}
+
+/// Lot 9.7b (F15) : certificat de formation de l'utilisateur
+/// (GET /api/my-course-certificates), distinct des certificats de sujets.
+class MyCourseCertificate {
+  final int id;
+  final int courseId;
+  final String courseTitle;
+  final String? instructorName;
+  final String verificationCode;
+  final double? grade;
+
+  /// Lien PDF présigné à durée limitée (les certificats de formation restent
+  /// téléchargeables, 18.21).
+  final String? fileUrl;
+  final DateTime? issuedAt;
+
+  const MyCourseCertificate({
+    required this.id,
+    required this.courseId,
+    required this.courseTitle,
+    this.instructorName,
+    required this.verificationCode,
+    this.grade,
+    this.fileUrl,
+    this.issuedAt,
+  });
+
+  factory MyCourseCertificate.fromJson(Map<String, dynamic> j) =>
+      MyCourseCertificate(
+        id: j['id'] as int? ?? 0,
+        courseId: j['courseId'] as int? ?? 0,
+        courseTitle: j['courseTitle'] as String? ?? 'Formation',
+        instructorName: j['instructorName'] as String?,
+        verificationCode: j['verificationCode'] as String? ?? '',
+        grade: (j['grade'] as num?)?.toDouble(),
+        fileUrl: j['fileUrl'] as String?,
+        issuedAt: DateTime.tryParse(j['issuedAt'] as String? ?? ''),
+      );
+}
+
+/// Lot 9.7b (F12, F3) : refus explicite du serveur (409) : complétion non
+/// validée, ou formation déjà achetée / déjà suivie / gratuite / à soi.
+class CourseActionRefused implements Exception {
+  final String? code;
+  final String message;
+  const CourseActionRefused(this.code, this.message);
+  @override
+  String toString() => message;
 }
 
 class MyEnrollment {
@@ -384,12 +456,16 @@ class MyEnrollment {
   final int totalDurationMin;
   final String instructorName;
 
+  /// Lot 9.7b (F15) : code de vérification du certificat de formation.
+  final String? certificateCode;
+
   const MyEnrollment({
     required this.enrollmentId,
     required this.accessType,
     required this.progressPercent,
     this.completedAt,
     this.certificateUrl,
+    this.certificateCode,
     required this.courseId,
     required this.courseTitle,
     this.thumbnailUrl,
@@ -407,6 +483,7 @@ class MyEnrollment {
       progressPercent: ((j['progressPercent'] ?? 0) as num).toDouble(),
       completedAt: j['completedAt'] as String?,
       certificateUrl: j['certificateUrl'] as String?,
+      certificateCode: j['certificateCode'] as String?,
       courseId: c['id'] as int? ?? 0,
       courseTitle: c['title'] as String? ?? '',
       thumbnailUrl: c['thumbnailUrl'] as String?,
@@ -509,9 +586,70 @@ class CourseService {
     return CourseDetail.fromJson(res.data as Map<String, dynamic>);
   }
 
-  // Inscription
+  // Inscription : lot 9.7b, formations gratuites seulement (ou rattrapage
+  // d'une formation déjà payée). Une formation payante s'achète (panier ou
+  // achat direct) et s'ouvre à la confirmation du paiement.
   Future<void> enroll(int courseId) async {
-    await _api.dio.post('/courses/$courseId/enroll');
+    try {
+      await _api.dio.post('/courses/$courseId/enroll');
+    } on DioException catch (e) {
+      throw _refusal(e) ?? e;
+    }
+  }
+
+  /// Lot 9.7b (F2) : paiement immédiat du panier par le solde WinPlus
+  /// (comptes professeur). Renvoie null en cas de succès (l'inscription est
+  /// créée par le serveur), sinon le message à afficher (solde insuffisant,
+  /// formation déjà achetée…).
+  Future<String?> payCartWithBalance() async {
+    try {
+      await _api.dio.post('/orders/pay-with-balance');
+      return null;
+    } on DioException catch (e) {
+      final data = e.response?.data;
+      final msg = data is Map ? data['error'] as String? : null;
+      return msg ?? 'Le paiement par solde a échoué. Réessaie.';
+    }
+  }
+
+  /// Lot 9.7b (F14) : un parent achète la formation pour un enfant lié,
+  /// depuis son portefeuille. Renvoie null en cas de succès (l'enfant est
+  /// inscrit par le serveur), sinon le message à afficher (solde
+  /// insuffisant, déjà achetée ou déjà suivie par l'enfant…).
+  Future<String?> purchaseForChild(int courseId, int childId) async {
+    try {
+      await _api.dio.post('/parent/purchase-for-child',
+          data: {'childId': childId, 'courseId': courseId});
+      return null;
+    } on DioException catch (e) {
+      final data = e.response?.data;
+      final msg = data is Map ? data['error'] as String? : null;
+      return msg ?? 'L\'achat n\'a pas pu être finalisé.';
+    }
+  }
+
+  /// Lot 9.7b (F15) : mes certificats de formation.
+  Future<List<MyCourseCertificate>> myCourseCertificates() async {
+    final res = await _api.dio.get('/my-course-certificates');
+    final data = res.data;
+    final list =
+        data is Map ? (data['data'] as List? ?? []) : (data as List? ?? []);
+    return list
+        .map((e) => MyCourseCertificate.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  /// Refus métier (400/409) renvoyé par le serveur, avec son message.
+  static CourseActionRefused? _refusal(DioException e) {
+    final status = e.response?.statusCode;
+    final data = e.response?.data;
+    if ((status == 409 || status == 400) && data is Map) {
+      final msg = data['error'] as String?;
+      if (msg != null && msg.isNotEmpty) {
+        return CourseActionRefused(data['code'] as String?, msg);
+      }
+    }
+    return null;
   }
 
   Future<List<MyEnrollment>> myCourses() async {
@@ -539,14 +677,22 @@ class CourseService {
     required int lastPositionSec,
     required bool isCompleted,
   }) async {
-    final res = await _api.dio.post(
-      '/courses/$courseId/play/$lessonId/progress',
-      data: {
-        'watchTimeSec': watchTimeSec,
-        'lastPositionSec': lastPositionSec,
-        'isCompleted': isCompleted,
-      },
-    );
+    // Lot 9.7b (F12) : la complétion est validée par le serveur ; un refus
+    // (vidéo pas assez regardée, quiz non réussi) répond 409 et remonte en
+    // CourseActionRefused avec le message à afficher.
+    final Response res;
+    try {
+      res = await _api.dio.post(
+        '/courses/$courseId/play/$lessonId/progress',
+        data: {
+          'watchTimeSec': watchTimeSec,
+          'lastPositionSec': lastPositionSec,
+          'isCompleted': isCompleted,
+        },
+      );
+    } on DioException catch (e) {
+      throw _refusal(e) ?? e;
+    }
     final d = res.data as Map<String, dynamic>;
     return (
       progressPercent: ((d['progressPercent'] ?? 0) as num).toDouble(),
