@@ -141,7 +141,7 @@ class _PricingScreenState extends State<PricingScreen> {
                     ]),
                     const SizedBox(height: 20),
                     ..._plans!.map((plan) {
-                      final isCurrent = plan.tier == (_current?.tier ?? '');
+                      final isCurrent = _current?.hasPlan == true && plan.id == _current?.pricingPlanId;
                       final price =
                           (_yearly ? plan.priceYearly : plan.priceMonthly)
                               .round();

@@ -47,7 +47,8 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     final s = WinTheme.of(context);
     final sub = SubscriptionScope.of(context);
     final favs = _favs ?? [];
-    final atLimit = sub.isFree && favs.length >= 3;
+    // Lot 9.7b : droit favorites.max (20 en gratuit), appliqué aussi par le serveur.
+    final atLimit = !sub.allowsOneMore(EntitlementKeys.favoritesMax, favs.length);
 
     return Scaffold(
       backgroundColor: s.bg,
@@ -121,10 +122,10 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         ]),
       ),
       if (atLimit)
-        const Padding(
-          padding: EdgeInsets.fromLTRB(16, 0, 16, 12),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
           child: WinAlert(
-            'Plan Libre : limité à 3 favoris. Passez à Standard pour en sauvegarder plus.',
+            'Votre plan permet ${SubscriptionScope.of(context).limit(EntitlementKeys.favoritesMax)} favoris. Passez à un plan supérieur pour en sauvegarder plus.',
             type: BadgeColor.warn,
           ),
         ),

@@ -96,7 +96,7 @@ class _ProfileHubTabState extends State<ProfileHubTab> {
     final appState = WinAppScope.of(context);
     final sub = SubscriptionScope.of(context);
     final name = _profile?.fullName ?? 'Étudiant';
-    final planName = sub.subscription.planName;
+    final planName = sub.planName;
 
     return Column(children: [
       // ── Header ──

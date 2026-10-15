@@ -244,10 +244,10 @@ class _ParentDashTabState extends State<ParentDashTab> {
               Text(' / ${fmtXaf(creditsTotal)} XAF',
                   style: WinType.labelS(s.onMuted)),
             ]),
-            if (_sub != null) ...[
+            if (_sub != null && _sub!.hasPlan && _sub!.expiresAt != null) ...[
               const SizedBox(height: 6),
               Text(
-                'Plan ${_sub!.planName} · Renouvellement dans ${_sub!.expiresAt.difference(DateTime.now()).inDays} jours',
+                'Plan ${_sub!.planName} · Fin de période dans ${_sub!.expiresAt!.difference(DateTime.now()).inDays} jours',
                 style: WinType.labelS(s.onMuted),
               ),
             ],
@@ -565,8 +565,11 @@ class _ParentChildrenTabState extends State<ParentChildrenTab> {
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
     final kids = _children ?? [];
-    final atChildLimit =
-        SubscriptionScope.of(context).isFree && kids.isNotEmpty;
+    // Lot 9.7b : limite children.max du plan (1 sans abonnement), appliquée
+    // aussi par le serveur ; plus de test sur un nom de plan.
+    final sub = SubscriptionScope.of(context);
+    final atChildLimit = !sub.allowsOneMore(EntitlementKeys.childrenMax, kids.length);
+    final childLimit = sub.limit(EntitlementKeys.childrenMax);
     return Column(children: [
       Padding(
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
@@ -585,7 +588,7 @@ class _ParentChildrenTabState extends State<ParentChildrenTab> {
                           child: ChildCard(child: k))),
                       const SizedBox(height: 4),
                       if (atChildLimit)
-                        WinButton('1 enfant max (plan gratuit)',
+                        WinButton('$childLimit enfant${childLimit > 1 ? 's' : ''} max avec votre plan',
                             variant: WinButtonVariant.outline,
                             block: true,
                             icon: Icons.lock_outline,

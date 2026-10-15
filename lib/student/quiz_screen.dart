@@ -4,7 +4,6 @@ import '../theme/win_motion.dart';
 import '../data/mock_data.dart';
 import '../data/models.dart';
 import '../services/quiz_service.dart';
-import '../services/subscription_service.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
@@ -423,7 +422,6 @@ class QuizHubScreen extends StatefulWidget {
 
 class _QuizHubScreenState extends State<QuizHubScreen> {
   List<ApiQuiz>? _quizzes;
-  ApiActiveSubscription? _sub;
 
   @override
   void initState() {
@@ -432,15 +430,9 @@ class _QuizHubScreenState extends State<QuizHubScreen> {
   }
 
   Future<void> _load() async {
-    final results = await Future.wait([
-      QuizService.instance.getAll(),
-      SubscriptionService.instance.getCurrent(),
-    ]);
+    final quizzes = await QuizService.instance.getAll();
     if (mounted) {
-      setState(() {
-        _quizzes = results[0] as List<ApiQuiz>;
-        _sub = results[1] as ApiActiveSubscription?;
-      });
+      setState(() => _quizzes = quizzes);
     }
   }
 
@@ -448,7 +440,6 @@ class _QuizHubScreenState extends State<QuizHubScreen> {
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
     final quizzes = _quizzes;
-    final sub = _sub;
 
     return Scaffold(
       backgroundColor: s.bg,
@@ -466,7 +457,6 @@ class _QuizHubScreenState extends State<QuizHubScreen> {
             onPressed: () {
               setState(() {
                 _quizzes = null;
-                _sub = null;
               });
               _load();
             },
@@ -478,13 +468,8 @@ class _QuizHubScreenState extends State<QuizHubScreen> {
           : ListView(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
               children: [
-                if (sub != null)
-                  WinAlert(
-                    '${sub.quizUsedToday}/${sub.quizDailyLimit == 0 ? '∞' : sub.quizDailyLimit} quiz aujourd\'hui',
-                    type: BadgeColor.neutral,
-                    icon: Icons.info_outline,
-                  ),
-                const SizedBox(height: 16),
+                // Lot 9.7b : plus de compteur « quiz par jour » (aucune limite
+                // de quiz n'existe côté serveur ; étude 9.7b section 3).
                 const WinSectionHeader('Quiz disponibles'),
                 const SizedBox(height: 12),
                 if (quizzes.isEmpty)

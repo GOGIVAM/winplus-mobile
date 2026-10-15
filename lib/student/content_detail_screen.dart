@@ -467,7 +467,8 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
       ),
       bottomNavigationBar: _BottomBar(
         content: c,
-        isPremium: subScope.isPremium,
+        // Lot 9.7b : droit catalog.access (plan élève, plan parent, licence).
+        isPremium: subScope.has(EntitlementKeys.catalogAccess),
         onOpen: () => _open(),
         onOpenCorrection: () => _open(kind: ViewerDocumentKind.correction),
       ),

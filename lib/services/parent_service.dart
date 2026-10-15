@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'api_client.dart';
 import 'connectivity_service.dart';
 import 'local_cache_service.dart';
@@ -299,11 +300,20 @@ class ParentService {
 
   /// Rattachement/déliaison parent-enfant = toujours en ligne, jamais mis en
   /// file (requireOnline).
+  /// Dernier message d'erreur du serveur pour [addChild] (ex. limite
+  /// children.max du plan, lot 9.7b), ou null.
+  String? lastAddChildError;
+
   Future<bool> addChild({required String email}) async {
     requireOnline();
+    lastAddChildError = null;
     try {
       await _api.dio.post('/parent/children', data: {'email': email});
       return true;
+    } on DioException catch (e) {
+      final data = e.response?.data;
+      if (data is Map && data['error'] is String) lastAddChildError = data['error'] as String;
+      return false;
     } catch (_) {
       return false;
     }

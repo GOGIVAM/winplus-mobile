@@ -122,14 +122,25 @@ class _SubscriptionStatusScreenState extends State<SubscriptionStatusScreen> {
                               Text(sub.planName,
                                   style: WinType.displayS(s.onStrong)),
                               const Spacer(),
-                              WinBadge(sub.isActive ? 'Actif' : 'Inactif',
-                                  color: sub.isActive
-                                      ? BadgeColor.success
-                                      : BadgeColor.error),
+                              WinBadge(
+                                  !sub.hasPlan
+                                      ? 'Gratuit'
+                                      : sub.isInGrace
+                                          ? 'Paiement en attente'
+                                          : sub.isTrial
+                                              ? 'Essai'
+                                              : 'Actif',
+                                  color: sub.isInGrace
+                                      ? BadgeColor.warn
+                                      : BadgeColor.success),
                             ]),
                             const SizedBox(height: 6),
-                            Text('Expire le ${_fmtDate(sub.expiresAt)}',
-                                style: WinType.bodyS(s.onMuted)),
+                            if (sub.expiresAt != null)
+                              Text(
+                                  sub.cancelAtPeriodEnd
+                                      ? 'Résilié : accès jusqu\'au ${_fmtDate(sub.expiresAt!)}'
+                                      : 'Période en cours jusqu\'au ${_fmtDate(sub.expiresAt!)}',
+                                  style: WinType.bodyS(s.onMuted)),
                             const SizedBox(height: 4),
                             Row(children: [
                               Icon(Icons.refresh, size: 14, color: s.onFaint),
@@ -143,22 +154,17 @@ class _SubscriptionStatusScreenState extends State<SubscriptionStatusScreen> {
                           ]),
                     ),
                     const SizedBox(height: 20),
-                    Text('Utilisation ce mois',
+                    // Lot 9.7b : droits réellement appliqués (plus de
+                    // téléchargements ni de quiz par jour fictifs).
+                    Text('Ce que comprend votre plan',
                         style: WinType.headlineS(s.onStrong)),
                     const SizedBox(height: 12),
                     _UsageRow(
-                        icon: Icons.download_outlined,
-                        label: 'Téléchargements',
-                        used: sub.downloadsUsed,
-                        limit: sub.downloadsLimit,
-                        unlimited: sub.downloadsLimit == 0),
-                    const SizedBox(height: 10),
-                    _UsageRow(
-                        icon: Icons.quiz_outlined,
-                        label: "Quiz aujourd'hui",
-                        used: sub.quizUsedToday,
-                        limit: sub.quizDailyLimit,
-                        unlimited: sub.quizDailyLimit == 0),
+                        icon: Icons.family_restroom_outlined,
+                        label: 'Enfants suivis',
+                        used: children.length,
+                        limit: sub.entitlements.limit('children.max'),
+                        unlimited: sub.entitlements.isUnlimited('children.max')),
                     const SizedBox(height: 10),
                     // Partie 8.3 : usage WinAI présenté en relatif au plan
                     // gratuit, jamais en compteur brut de tokens.

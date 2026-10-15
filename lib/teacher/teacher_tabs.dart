@@ -132,7 +132,10 @@ class _TeacherDashTabState extends State<TeacherDashTab> {
         ? 0.0
         : published.fold(0.0, (a, c) => a + c.rating) / published.length;
     final subScope = SubscriptionScope.of(context);
-    final atPublishLimit = subScope.isFree && published.length >= 2;
+    // Lot 9.7b (étude section 3) : les publications du catalogue sont
+    // illimitées pour tous les plans ; l'ancien plafond de 2 publications du
+    // plan gratuit (mobile seulement) est retiré.
+    final sharePct = subScope.limit(EntitlementKeys.teacherShare);
 
     final weeklyRev = _stats?.weeklyRevenue ?? [0, 0, 0, 0];
     final maxRev = weeklyRev.reduce((a, b) => a > b ? a : b);
@@ -159,15 +162,15 @@ class _TeacherDashTabState extends State<TeacherDashTab> {
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('PLAN EXPERT',
+                              Text('PLAN ${subScope.planName.toUpperCase()}',
                                   style: WinType.labelS(WinColors.ink300)
                                       .copyWith(letterSpacing: 0.8)),
                               const SizedBox(height: 8),
                               Text.rich(TextSpan(
                                   style: WinType.bodyL(WinColors.cream50),
                                   children: [
-                                    const TextSpan(text: 'Bonjour M. Fotso  '),
-                                    _accent('80% de vos revenus'),
+                                    const TextSpan(text: 'Part sur vos séances : '),
+                                    _accent(sharePct > 0 ? '$sharePct % de vos revenus' : '—'),
                                   ])),
                               const SizedBox(height: 18),
                               Row(children: [
@@ -187,25 +190,20 @@ class _TeacherDashTabState extends State<TeacherDashTab> {
                               Row(children: [
                                 Expanded(
                                   child: GestureDetector(
-                                    onTap: atPublishLimit
-                                        ? null
-                                        : () async {
-                                            await Navigator.push(
-                                                context,
-                                                WinPageRoute(
-                                                    builder: (_) =>
-                                                        const ContentPublishScreen()));
-                                            setState(() => _content = null);
-                                            _load();
-                                          },
+                                    onTap: () async {
+                                      await Navigator.push(
+                                          context,
+                                          WinPageRoute(
+                                              builder: (_) =>
+                                                  const ContentPublishScreen()));
+                                      setState(() => _content = null);
+                                      _load();
+                                    },
                                     child: Container(
                                       padding: const EdgeInsets.symmetric(
                                           vertical: 10),
                                       decoration: BoxDecoration(
-                                        color: atPublishLimit
-                                            ? Colors.white
-                                                .withValues(alpha: 0.08)
-                                            : WinColors.teal400,
+                                        color: WinColors.teal400,
                                         borderRadius: BorderRadius.circular(
                                             WinRadii.full),
                                       ),
@@ -215,17 +213,13 @@ class _TeacherDashTabState extends State<TeacherDashTab> {
                                           children: [
                                             Icon(Icons.add,
                                                 size: 16,
-                                                color: atPublishLimit
-                                                    ? WinColors.ink300
-                                                    : WinColors.ink900),
+                                                color: WinColors.ink900),
                                             const SizedBox(width: 6),
                                             Text('Publier',
                                                 style: WinType.manrope(
                                                     size: 13,
                                                     weight: FontWeight.w700,
-                                                    color: atPublishLimit
-                                                        ? WinColors.ink300
-                                                        : WinColors.ink900)),
+                                                    color: WinColors.ink900)),
                                           ]),
                                     ),
                                   ),

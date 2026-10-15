@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/connectivity_service.dart';
 import '../services/parent_service.dart';
+import '../services/subscription_service.dart';
 import '../shared/subscription/subscription_notifier.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
@@ -53,7 +54,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
     } else {
       setState(() {
         _error = true;
-        _errorMsg = 'Aucun élève trouvé avec cet email, ou déjà lié.';
+        _errorMsg = ParentService.instance.lastAddChildError ?? 'Aucun élève trouvé avec cet email, ou déjà lié.';
       });
     }
   }
@@ -67,7 +68,10 @@ class _AddChildScreenState extends State<AddChildScreen> {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    final isFree = SubscriptionScope.of(context).isFree;
+    // Lot 9.7b : le plan gratuit suit 1 enfant (children.max) ; le serveur
+    // refuse au-delà (403 children_limit). Plus de test sur un nom de plan.
+    final sub = SubscriptionScope.of(context);
+    final maxChildren = sub.limit(EntitlementKeys.childrenMax);
 
     return Scaffold(
       backgroundColor: s.bg,
@@ -83,11 +87,13 @@ class _AddChildScreenState extends State<AddChildScreen> {
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          if (isFree)
-            const Padding(
-              padding: EdgeInsets.only(bottom: 16),
+          if (!sub.has(EntitlementKeys.childrenCatalog))
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16),
               child: WinAlert(
-                'Le plan Boutique Libre n\'inclut pas le suivi parental. Passez au plan Famille pour accéder aux alertes WinAI.',
+                maxChildren == ApiEntitlements.unlimited
+                    ? 'Votre plan n\'ouvre pas le catalogue à vos enfants.'
+                    : 'Votre plan suit $maxChildren enfant${maxChildren > 1 ? 's' : ''}, sans catalogue pour eux. Un plan parent ouvre le catalogue et les alertes WinAI.',
                 type: BadgeColor.warn,
               ),
             ),

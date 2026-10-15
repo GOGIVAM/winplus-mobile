@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import '../data/mock_data.dart';
 import '../services/exam_coach_service.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../shared/subscription/upgrade_sheet.dart';
+import '../shared/subscription/subscription_notifier.dart';
 
 /// Module 24 (lot 8, rattrapage 16.3) : Exam Coach porté sur les vrais
 /// endpoints déjà utilisés par le web (ExamCoach.tsx/examCoachService.ts) —
@@ -163,9 +163,11 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    const sub = WinData.currentSubscription;
+    // Lot 9.7b : verrou sur le droit ai.feature.exam_coach (et plus sur une
+    // maquette d'abonnement) ; le serveur refuse aussi (403) sans ce droit.
+    final sub = SubscriptionScope.of(context);
 
-    if (sub.isFree) {
+    if (!sub.has(EntitlementKeys.examCoach)) {
       return Scaffold(
         backgroundColor: s.bg,
         appBar: AppBar(

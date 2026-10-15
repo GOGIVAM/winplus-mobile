@@ -664,13 +664,13 @@ class _TabCompteState extends State<_TabCompte> {
           Text(sub != null ? 'Plan ${sub.planName}' : 'Chargement…',
               style: WinType.headlineS(s.onStrong)),
           const Spacer(),
-          WinBadge(sub?.isActive == true ? 'Actif' : '…',
+          WinBadge(sub == null ? '…' : sub.hasPlan ? 'Actif' : 'Gratuit',
               color: BadgeColor.success),
         ]),
-        if (sub != null) ...[
+        if (sub != null && sub.expiresAt != null) ...[
           const SizedBox(height: 4),
           Text(
-              'Expire le ${sub.expiresAt.day.toString().padLeft(2, '0')}/${sub.expiresAt.month.toString().padLeft(2, '0')}/${sub.expiresAt.year}',
+              'Fin de période le ${sub.expiresAt!.day.toString().padLeft(2, '0')}/${sub.expiresAt!.month.toString().padLeft(2, '0')}/${sub.expiresAt!.year}',
               style: WinType.bodyS(s.onMuted)),
         ],
         const SizedBox(height: 14),

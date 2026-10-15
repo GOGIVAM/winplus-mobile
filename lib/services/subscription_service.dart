@@ -32,23 +32,56 @@ class ApiPlan {
       );
 }
 
+/// Droits effectifs (lot 9.7b, GET /api/me/entitlements). L'application ne
+/// teste jamais un nom de plan : elle lit ces clés (booléens, ou entiers où
+/// -1 = illimité). Les quotas WinAI ne sont jamais exposés en tokens (8.3).
+class ApiEntitlements {
+  static const int unlimited = -1;
+  final String? audience;
+  final int aiMultiplier;
+  final Map<String, dynamic> values;
+  const ApiEntitlements({this.audience, this.aiMultiplier = 1, this.values = const {}});
+
+  factory ApiEntitlements.fromJson(Map<String, dynamic>? j) => ApiEntitlements(
+        audience: j?['audience'] as String?,
+        aiMultiplier: (j?['aiMultiplier'] as num?)?.toInt() ?? 1,
+        values: (j?['entitlements'] as Map?)?.cast<String, dynamic>() ?? const {},
+      );
+
+  bool has(String key) => values[key] == true;
+
+  /// Valeur entière d'un droit (-1 = illimité).
+  int limit(String key) => (values[key] as num?)?.toInt() ?? 0;
+
+  bool isUnlimited(String key) => limit(key) == unlimited;
+
+  bool allowsOneMore(String key, int current) => isUnlimited(key) || current < limit(key);
+}
+
 class ApiActiveSubscription {
   final int id;
 
-  /// Id du PricingPlan (distinct de [id], celui de la Subscription elle-même)
-  ///  c'est celui-ci qu'il faut envoyer pour se réabonner/renouveler via
-  /// SubscriptionService.purchase.
+  /// Lot 9.7b : vrai si un plan payant (ou un essai) est en vigueur.
+  final bool hasPlan;
+
+  /// Id du plan (famille), requis pour changer de plan ou renouveler.
   final int pricingPlanId;
   final String planName;
-  final String tier;
+
+  /// free, active, trialing (essai), past_due (grâce).
   final String status;
-  final DateTime expiresAt;
+
+  /// monthly, quarterly, yearly (null sans plan).
+  final String? billingPeriod;
+  final DateTime? expiresAt;
+  final DateTime? graceUntil;
   final bool autoRenew;
+  final bool cancelAtPeriodEnd;
+
+  /// Montant TTC réellement payé pour la période en cours.
   final double price;
-  final int downloadsUsed;
-  final int downloadsLimit;
-  final int quizUsedToday;
-  final int quizDailyLimit;
+  final String? pendingPlanName;
+  final ApiEntitlements entitlements;
 
   /// Partie 8.3 : usage WinAI relatif au plan gratuit (1 = gratuit), jamais
   /// un compteur brut. Remplace aiMessagesUsed/aiMessagesLimit, retirés de
@@ -69,17 +102,18 @@ class ApiActiveSubscription {
   final String? aiLimitMessage;
   const ApiActiveSubscription({
     required this.id,
+    required this.hasPlan,
     required this.pricingPlanId,
     required this.planName,
-    required this.tier,
     required this.status,
-    required this.expiresAt,
-    required this.autoRenew,
+    this.billingPeriod,
+    this.expiresAt,
+    this.graceUntil,
+    this.autoRenew = false,
+    this.cancelAtPeriodEnd = false,
     this.price = 0,
-    this.downloadsUsed = 0,
-    this.downloadsLimit = 0,
-    this.quizUsedToday = 0,
-    this.quizDailyLimit = 0,
+    this.pendingPlanName,
+    this.entitlements = const ApiEntitlements(),
     this.aiUsageMultiplier = 1,
     this.aiUsageLabel = '',
     this.aiQuotaExhausted = false,
@@ -88,24 +122,24 @@ class ApiActiveSubscription {
     this.aiLimitMessage,
   });
 
-  bool get isFree => tier == 'free' || tier == 'libre';
-  bool get isActive => status == 'active';
+  bool get isInGrace => status == 'past_due';
+  bool get isTrial => status == 'trialing';
 
   factory ApiActiveSubscription.fromJson(Map<String, dynamic> j) =>
       ApiActiveSubscription(
         id: j['id'] as int? ?? 0,
+        hasPlan: j['hasPlan'] as bool? ?? false,
         pricingPlanId: j['pricingPlanId'] as int? ?? 0,
-        planName: j['planName'] as String? ?? '',
-        tier: j['tier'] as String? ?? 'free',
-        status: j['status'] as String? ?? 'active',
-        expiresAt: DateTime.tryParse(j['expiresAt'] as String? ?? '') ??
-            DateTime.now().add(const Duration(days: 30)),
+        planName: j['planName'] as String? ?? 'Gratuit',
+        status: j['status'] as String? ?? 'free',
+        billingPeriod: j['billingPeriod'] as String?,
+        expiresAt: DateTime.tryParse(j['expiresAt'] as String? ?? ''),
+        graceUntil: DateTime.tryParse(j['graceUntil'] as String? ?? ''),
         autoRenew: j['autoRenew'] as bool? ?? false,
+        cancelAtPeriodEnd: j['cancelAtPeriodEnd'] as bool? ?? false,
         price: ((j['price'] ?? 0) as num).toDouble(),
-        downloadsUsed: j['downloadsUsed'] as int? ?? 0,
-        downloadsLimit: j['downloadsLimit'] as int? ?? 0,
-        quizUsedToday: j['quizUsedToday'] as int? ?? 0,
-        quizDailyLimit: j['quizDailyLimit'] as int? ?? 0,
+        pendingPlanName: j['pendingPlanName'] as String?,
+        entitlements: ApiEntitlements.fromJson(j['entitlements'] as Map<String, dynamic>?),
         aiUsageMultiplier: (j['aiUsageMultiplier'] as num?)?.toInt() ?? 1,
         aiUsageLabel: j['aiUsageLabel'] as String? ?? '',
         aiQuotaExhausted: j['aiQuotaExhausted'] as bool? ?? false,
@@ -129,6 +163,15 @@ class SubscriptionService {
     return list
         .map((e) => ApiPlan.fromJson(e as Map<String, dynamic>))
         .toList();
+  }
+
+  Future<ApiEntitlements?> getEntitlements() async {
+    try {
+      final res = await _api.dio.get('/me/entitlements');
+      return ApiEntitlements.fromJson(res.data as Map<String, dynamic>);
+    } catch (_) {
+      return null;
+    }
   }
 
   Future<ApiActiveSubscription?> getCurrent() async {

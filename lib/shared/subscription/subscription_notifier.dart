@@ -1,96 +1,55 @@
 import 'package:flutter/material.dart';
-import '../../data/models.dart';
 import '../../services/subscription_service.dart';
 
+/// Lot 9.7b : état d'abonnement de l'application, fondé sur les DROITS
+/// effectifs renvoyés par le serveur (GET /api/subscriptions/me, champ
+/// entitlements). Plus aucun palier (PlanTier) ni nom de plan n'est testé :
+/// l'interface demande une clé (catalog.access, ai.feature.exam_coach,
+/// favorites.max…). Le serveur reste seul juge (403 / 402 en cas de refus).
 class SubscriptionNotifier extends ChangeNotifier {
-  ActiveSubscription _sub = const ActiveSubscription(
-    tier: PlanTier.libre,
-    planName: 'Libre',
-    expiresAt: '',
-    autoRenew: false,
-  );
+  ApiActiveSubscription? _sub;
+  ApiEntitlements _ent = const ApiEntitlements();
 
   Future<void> loadFromApi() async {
     final apiSub = await SubscriptionService.instance.getCurrent();
     if (apiSub == null) return;
-    _sub = ActiveSubscription(
-      tier: _parseTier(apiSub.tier),
-      planName: apiSub.planName,
-      expiresAt: apiSub.expiresAt.toIso8601String(),
-      autoRenew: apiSub.autoRenew,
-      downloadsUsed: apiSub.downloadsUsed,
-      downloadsLimit: apiSub.downloadsLimit,
-      quizUsedToday: apiSub.quizUsedToday,
-      quizDailyLimit: apiSub.quizDailyLimit,
-      aiUsageMultiplier: apiSub.aiUsageMultiplier,
-      aiQuotaExhausted: apiSub.aiQuotaExhausted,
-    );
+    _sub = apiSub;
+    _ent = apiSub.entitlements;
     notifyListeners();
   }
 
-  static PlanTier _parseTier(String t) => switch (t) {
-        'standard' => PlanTier.standard,
-        'premium' => PlanTier.premium,
-        'famille' || 'family' || 'family_plus' => PlanTier.famille,
-        _ => PlanTier.libre,
-      };
+  ApiActiveSubscription? get current => _sub;
+  ApiEntitlements get entitlements => _ent;
 
-  ActiveSubscription get subscription => _sub;
-  PlanTier get tier => _sub.tier;
+  /// Vrai si un plan payant (ou un essai) est en vigueur.
+  bool get hasPlan => _sub?.hasPlan ?? false;
+  String get planName => _sub?.planName ?? 'Gratuit';
+  int get aiMultiplier => _ent.aiMultiplier;
 
-  bool get canDownload =>
-      _sub.downloadsLimit == 0 || _sub.downloadsUsed < _sub.downloadsLimit;
-
-  bool get canTakeQuiz =>
-      _sub.quizDailyLimit == 0 || _sub.quizUsedToday < _sub.quizDailyLimit;
+  bool has(String key) => _ent.has(key);
+  int limit(String key) => _ent.limit(key);
+  bool allowsOneMore(String key, int current) => _ent.allowsOneMore(key, current);
 
   /// Indicatif seulement : le serveur reste seul juge (402 à l'épuisement).
-  bool get canUseAI => !_sub.aiQuotaExhausted;
+  bool get canUseAI => !(_sub?.aiQuotaExhausted ?? false);
+}
 
-  bool get isPremium => _sub.isPremium;
-  bool get isFree => _sub.isFree;
-
-  void setPlan(PlanTier tier) {
-    _sub = ActiveSubscription(
-      tier: tier,
-      planName: tier.name,
-      expiresAt: '',
-      autoRenew: true,
-    );
-    notifyListeners();
-  }
-
-  void recordDownload() {
-    _sub = ActiveSubscription(
-      tier: _sub.tier,
-      planName: _sub.planName,
-      expiresAt: _sub.expiresAt,
-      autoRenew: _sub.autoRenew,
-      downloadsUsed: _sub.downloadsUsed + 1,
-      downloadsLimit: _sub.downloadsLimit,
-      quizUsedToday: _sub.quizUsedToday,
-      quizDailyLimit: _sub.quizDailyLimit,
-      aiUsageMultiplier: _sub.aiUsageMultiplier,
-      aiQuotaExhausted: _sub.aiQuotaExhausted,
-    );
-    notifyListeners();
-  }
-
-  void recordQuiz() {
-    _sub = ActiveSubscription(
-      tier: _sub.tier,
-      planName: _sub.planName,
-      expiresAt: _sub.expiresAt,
-      autoRenew: _sub.autoRenew,
-      downloadsUsed: _sub.downloadsUsed,
-      downloadsLimit: _sub.downloadsLimit,
-      quizUsedToday: _sub.quizUsedToday + 1,
-      quizDailyLimit: _sub.quizDailyLimit,
-      aiUsageMultiplier: _sub.aiUsageMultiplier,
-      aiQuotaExhausted: _sub.aiQuotaExhausted,
-    );
-    notifyListeners();
-  }
+/// Clés de droits lues par l'application (Services/Entitlements/EntitlementCatalog.cs).
+class EntitlementKeys {
+  static const catalogAccess = 'catalog.access';
+  static const examCoach = 'ai.feature.exam_coach';
+  static const studySession = 'ai.feature.study_session';
+  static const studyPlan = 'ai.feature.study_plan';
+  static const attachments = 'ai.feature.attachments';
+  static const childrenMax = 'children.max';
+  static const childrenCatalog = 'children.catalog';
+  static const realtimeAlerts = 'parent.realtime_alerts';
+  static const favoritesMax = 'favorites.max';
+  static const groupsMax = 'groups.max_owned';
+  static const teacherShare = 'teacher.revenue_share';
+  static const maxClasses = 'teacher.max_classes';
+  static const quizGeneration = 'ai.feature.quiz_generation';
+  static const correctionAssist = 'ai.feature.correction_assist';
 }
 
 class SubscriptionScope extends InheritedNotifier<SubscriptionNotifier> {

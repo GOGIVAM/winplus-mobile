@@ -103,8 +103,9 @@ class _StudentHomeTabState extends State<StudentHomeTab> {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
+    // Lot 9.7b : plus de palier (PlanTier) ; nom affiché tel que renvoyé
+    // par le serveur, fonctions selon les droits.
     final sub = SubscriptionScope.of(context);
-    final effectiveTier = sub.tier;
 
     final firstName =
         _profile?.firstName ?? WinData.userProfile.name.split(' ').first;
@@ -123,12 +124,12 @@ class _StudentHomeTabState extends State<StudentHomeTab> {
     final continueItems = _continueLearning ?? WinData.inProgress;
     final upcoming = _upcomingEvents ?? WinData.upcomingExams;
 
-    final (String planLabel, Color planColor) = switch (effectiveTier) {
-      PlanTier.libre => ('Gratuit', WinColors.ink400),
-      PlanTier.standard => ('Standard', WinColors.blue500),
-      PlanTier.premium => ('Premium', WinColors.teal500),
-      PlanTier.famille => ('Famille', WinColors.gold),
-    };
+    final String planLabel = sub.planName;
+    final Color planColor = !sub.hasPlan
+        ? WinColors.ink400
+        : sub.has(EntitlementKeys.examCoach)
+            ? WinColors.teal500
+            : WinColors.blue500;
 
     return Column(children: [
       Expanded(
@@ -215,7 +216,7 @@ class _StudentHomeTabState extends State<StudentHomeTab> {
             // Objectifs proposés par un parent, en attente de réponse
             const PendingGoalsPanel(),
             // UPGRADE BANNER  visible uniquement en plan Gratuit hors devMode
-            if (effectiveTier == PlanTier.libre) _UpgradeBanner(s: s),
+            if (!sub.hasPlan) _UpgradeBanner(s: s),
             const SizedBox(height: 4),
             // CHIPS
             SizedBox(
@@ -245,7 +246,7 @@ class _StudentHomeTabState extends State<StudentHomeTab> {
             const SizedBox(height: 24),
             _SectionHeader(
               'Pour toi · WinAI',
-              sub: effectiveTier.index >= PlanTier.premium.index
+              sub: sub.has(EntitlementKeys.examCoach)
                   ? 'Analyse complète · Basé sur tes lacunes en Physique'
                   : 'Basé sur tes résultats récents',
             ),
