@@ -1,35 +1,103 @@
 import 'api_client.dart';
 
-class ApiPlan {
-  final int id;
+/// Droit affiché sur une carte de plan (lot 9.7b) : uniquement des droits
+/// réellement appliqués par le serveur.
+class ApiPlanFeature {
+  final String key, label, display;
+  final bool included;
+  const ApiPlanFeature({required this.key, required this.label, required this.display, required this.included});
+  factory ApiPlanFeature.fromJson(Map<String, dynamic> j) => ApiPlanFeature(
+        key: j['key'] as String? ?? '',
+        label: j['label'] as String? ?? '',
+        display: j['display'] as String? ?? '',
+        included: j['included'] as bool? ?? false,
+      );
+}
+
+/// Carte publique d'un plan (GET /api/pricing/catalog) : version publiée,
+/// prix TTC par période (monthly, quarterly, yearly), droits.
+class ApiPlanCard {
+  final int planId;
   final String name;
-  final String tier;
-  final String category;
-  final double priceMonthly;
-  final double priceYearly;
-  final List<String> features;
-  final bool isPopular;
-  const ApiPlan({
-    required this.id,
+  final String? description;
+  final String audience;
+  final bool isFree, isPopular;
+  final Map<String, double> prices;
+  final int aiMultiplier;
+  final List<ApiPlanFeature> features;
+  const ApiPlanCard({
+    required this.planId,
     required this.name,
-    required this.tier,
-    required this.category,
-    required this.priceMonthly,
-    required this.priceYearly,
+    this.description,
+    required this.audience,
+    required this.isFree,
+    required this.isPopular,
+    required this.prices,
+    required this.aiMultiplier,
     required this.features,
-    this.isPopular = false,
   });
 
-  factory ApiPlan.fromJson(Map<String, dynamic> j) => ApiPlan(
-        id: j['id'] as int? ?? 0,
+  double? priceFor(String period) => prices[period];
+
+  factory ApiPlanCard.fromJson(Map<String, dynamic> j) => ApiPlanCard(
+        planId: j['planId'] as int? ?? 0,
         name: j['name'] as String? ?? '',
-        tier: j['tier'] as String? ?? '',
-        category: j['category'] as String? ?? 'student',
-        priceMonthly: ((j['priceMonthly'] ?? 0) as num).toDouble(),
-        priceYearly: ((j['priceYearly'] ?? 0) as num).toDouble(),
-        features: (j['features'] as List? ?? []).cast<String>(),
+        description: j['description'] as String?,
+        audience: j['audience'] as String? ?? 'student',
+        isFree: j['isFree'] as bool? ?? false,
         isPopular: j['isPopular'] as bool? ?? false,
+        prices: {
+          for (final p in (j['prices'] as List? ?? []).cast<Map<String, dynamic>>())
+            (p['period'] as String? ?? 'monthly'): ((p['priceTtc'] ?? 0) as num).toDouble(),
+        },
+        aiMultiplier: (j['aiMultiplier'] as num?)?.toInt() ?? 1,
+        features: (j['features'] as List? ?? [])
+            .map((e) => ApiPlanFeature.fromJson(e as Map<String, dynamic>))
+            .toList(),
       );
+}
+
+/// Devis d'abonnement (POST /api/subscriptions/quote) : prix réellement facturé.
+class ApiSubscriptionQuote {
+  final String planName, billingPeriod, change, message;
+  final double listPrice, discount, prorataCredit, amountDue;
+  final int? trialDays;
+  final String? promoCode, promoError;
+  const ApiSubscriptionQuote({
+    required this.planName,
+    required this.billingPeriod,
+    required this.change,
+    required this.message,
+    required this.listPrice,
+    required this.discount,
+    required this.prorataCredit,
+    required this.amountDue,
+    this.trialDays,
+    this.promoCode,
+    this.promoError,
+  });
+  factory ApiSubscriptionQuote.fromJson(Map<String, dynamic> j) => ApiSubscriptionQuote(
+        planName: j['planName'] as String? ?? '',
+        billingPeriod: j['billingPeriod'] as String? ?? 'monthly',
+        change: j['change'] as String? ?? 'new',
+        message: j['message'] as String? ?? '',
+        listPrice: ((j['listPriceTtc'] ?? 0) as num).toDouble(),
+        discount: ((j['discountTtc'] ?? 0) as num).toDouble(),
+        prorataCredit: ((j['prorataCreditTtc'] ?? 0) as num).toDouble(),
+        amountDue: ((j['amountDueTtc'] ?? 0) as num).toDouble(),
+        trialDays: (j['trialDays'] as num?)?.toInt(),
+        promoCode: j['promoCode'] as String?,
+        promoError: j['promoError'] as String?,
+      );
+}
+
+/// Résultat d'un achat : activated, scheduled (descente à l'échéance) ou
+/// payment_pending (confirmation Mobile Money attendue).
+class ApiPurchaseResult {
+  final String status, message;
+  final int? paymentId;
+  final double amount;
+  const ApiPurchaseResult({required this.status, required this.message, this.paymentId, this.amount = 0});
 }
 
 /// Droits effectifs (lot 9.7b, GET /api/me/entitlements). L'application ne
@@ -156,13 +224,88 @@ class SubscriptionService {
 
   final _api = ApiClient.instance;
 
-  Future<List<ApiPlan>> getPlans(String category) async {
+  /// Plans en vente d'un public (student, parent, teacher), depuis la grille
+  /// versionnée du serveur (lot 9.7b) : plus aucun plan écrit en dur.
+  Future<List<ApiPlanCard>> getCatalog(String audience) async {
     final res = await _api.dio
-        .get('/pricing/plans', queryParameters: {'category': category});
-    final list = res.data as List? ?? [];
+        .get('/pricing/catalog', queryParameters: {'audience': audience});
+    final data = (res.data as Map<String, dynamic>?)?['data'] as Map<String, dynamic>? ?? {};
+    final list = data[audience] as List? ?? [];
     return list
-        .map((e) => ApiPlan.fromJson(e as Map<String, dynamic>))
+        .map((e) => ApiPlanCard.fromJson(e as Map<String, dynamic>))
         .toList();
+  }
+
+  Future<ApiSubscriptionQuote> quote({required int planId, required String period, String? promoCode}) async {
+    final res = await _api.dio.post('/subscriptions/quote', data: {
+      'planId': planId,
+      'billingPeriod': period,
+      if (promoCode != null && promoCode.isNotEmpty) 'promoCode': promoCode,
+    });
+    return ApiSubscriptionQuote.fromJson(res.data as Map<String, dynamic>);
+  }
+
+  /// Souscription, montée, descente ou essai : solde (balance) ou Mobile
+  /// Money (numéro requis). Lève une erreur Dio portant le message serveur.
+  Future<ApiPurchaseResult> purchasePlan({
+    required int planId,
+    required String period,
+    required String method,
+    String? phone,
+    String? promoCode,
+    bool autoRenew = false,
+  }) async {
+    final res = await _api.dio.post('/subscriptions/purchase', data: {
+      'planId': planId,
+      'billingPeriod': period,
+      'method': method,
+      if (phone != null) 'phone': phone,
+      if (promoCode != null && promoCode.isNotEmpty) 'promoCode': promoCode,
+      'autoRenew': autoRenew,
+    });
+    final d = res.data as Map<String, dynamic>? ?? {};
+    return ApiPurchaseResult(
+      status: d['status'] as String? ?? 'activated',
+      message: d['message'] as String? ?? '',
+      paymentId: (d['paymentId'] as num?)?.toInt(),
+      amount: ((d['amount'] ?? 0) as num).toDouble(),
+    );
+  }
+
+  Future<bool> resume() async {
+    try {
+      await _api.dio.post('/subscriptions/me/resume');
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Future<bool> setAutoRenew(bool enabled) async {
+    try {
+      await _api.dio.put('/subscriptions/me/auto-renew', data: {'enabled': enabled});
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Future<bool> cancelPending() async {
+    try {
+      await _api.dio.delete('/subscriptions/me/pending');
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Recharge de tokens WinAI par le solde (paquets ; prix TTC fixé par l'admin).
+  Future<String> topUpWinAi({int packs = 1}) async {
+    final res = await _api.dio.post('/winai/topup', data: {
+      'packs': packs,
+      'requestId': '${DateTime.now().microsecondsSinceEpoch}',
+    });
+    return (res.data as Map<String, dynamic>?)?['message'] as String? ?? 'Recharge effectuée.';
   }
 
   Future<ApiEntitlements?> getEntitlements() async {
@@ -183,37 +326,6 @@ class SubscriptionService {
     }
   }
 
-  Future<bool> subscribe(int planId, {bool yearly = false}) async {
-    try {
-      await _api.dio.post('/subscriptions', data: {
-        'planId': planId,
-        'billing': yearly ? 'yearly' : 'monthly',
-      });
-      return true;
-    } catch (_) {
-      return false;
-    }
-  }
-
-  /// Souscrit/renouvelle avec paiement Mobile Money (POST /subscriptions/purchase,
-  /// crée l'Order ET initie le paiement NotchPay en un seul appel). Remplace
-  /// l'ancien usage de PaymentService.initiate() pour ce cas : ce dernier
-  /// attend un OrderId déjà existant (Order/{id}), pas un planId  aucun des
-  /// deux DTOs ne correspondait au corps réellement envoyé, donc l'ancien
-  /// appel échouait systématiquement (validation 400 côté backend).
-  Future<int?> purchase({
-    required int planId,
-    required String phone,
-    bool yearly = false,
-  }) async {
-    final res = await _api.dio.post('/subscriptions/purchase', data: {
-      'planId': planId,
-      'phone': phone,
-      'billing': yearly ? 'yearly' : 'monthly',
-    });
-    final d = res.data as Map<String, dynamic>?;
-    return d?['paymentId'] as int?;
-  }
 
   Future<bool> cancel() async {
     try {

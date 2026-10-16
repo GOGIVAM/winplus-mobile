@@ -3,6 +3,8 @@ import '../data/models.dart';
 import '../services/parent_service.dart';
 import '../services/payment_service.dart';
 import '../services/subscription_service.dart';
+import '../shared/subscription/pricing_screen.dart';
+import '../shared/subscription/subscribe_sheet.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
@@ -260,24 +262,71 @@ class _SubscriptionStatusScreenState extends State<SubscriptionStatusScreen> {
                         );
                       }),
                     const SizedBox(height: 24),
-                    WinButton('Renouveler maintenant',
-                        block: true,
-                        icon: Icons.refresh,
-                        onTap: () => showModalBottomSheet(
-                              context: context,
-                              isScrollControlled: true,
-                              backgroundColor: Colors.transparent,
-                              builder: (_) => RenewalSheet(
-                                planId: sub.pricingPlanId,
-                                planName: sub.planName,
-                                price: sub.price,
-                              ),
-                            )),
+                    // Lot 9.7b (18.15) : renouvellement d'une période de plus
+                    // sans perte de jours, changement de plan (montée au
+                    // prorata, descente à l'échéance), résiliation en fin de
+                    // période, reprise, renouvellement automatique par le solde.
+                    if (sub.pendingPlanName != null) ...[
+                      WinAlert('Passage à ${sub.pendingPlanName} programmé à l\'échéance.', type: BadgeColor.neutral),
+                      const SizedBox(height: 8),
+                      WinButton('Annuler ce changement', variant: WinButtonVariant.ghost, block: true, onTap: () async {
+                        await SubscriptionService.instance.cancelPending();
+                        _load();
+                      }),
+                      const SizedBox(height: 10),
+                    ],
+                    if (sub.hasPlan)
+                      WinButton('Renouveler maintenant',
+                          block: true,
+                          icon: Icons.refresh,
+                          onTap: () async {
+                            await SubscribeSheet.show(context,
+                                planId: sub.pricingPlanId, planName: sub.planName, initialPeriod: sub.billingPeriod ?? 'monthly');
+                            _load();
+                          }),
                     const SizedBox(height: 10),
-                    WinButton('Changer de plan',
+                    WinButton(sub.hasPlan ? 'Changer de plan' : 'Voir les plans',
                         variant: WinButtonVariant.outline,
                         block: true,
-                        onTap: () {}),
+                        onTap: () async {
+                          await Navigator.push(context, MaterialPageRoute(builder: (_) => const PricingScreen()));
+                          _load();
+                        }),
+                    if (sub.hasPlan) ...[
+                      const SizedBox(height: 10),
+                      if (!sub.cancelAtPeriodEnd)
+                        WinButton(sub.autoRenew ? 'Désactiver le renouvellement automatique' : 'Renouveler automatiquement avec mon solde',
+                            variant: WinButtonVariant.ghost,
+                            block: true,
+                            onTap: () async {
+                              await SubscriptionService.instance.setAutoRenew(!sub.autoRenew);
+                              _load();
+                            }),
+                      WinButton(sub.cancelAtPeriodEnd ? 'Reprendre l\'abonnement' : 'Résilier',
+                          variant: WinButtonVariant.ghost,
+                          block: true,
+                          onTap: () async {
+                            if (sub.cancelAtPeriodEnd) {
+                              await SubscriptionService.instance.resume();
+                            } else {
+                              final ok = await showDialog<bool>(
+                                context: context,
+                                builder: (ctx) => AlertDialog(
+                                  title: const Text('Résilier ?'),
+                                  content: Text(sub.expiresAt == null
+                                      ? 'Vous repasserez sur l\'offre gratuite.'
+                                      : 'Vous gardez l\'accès jusqu\'au ${_fmtDate(sub.expiresAt!)}, sans remboursement de la période en cours.'),
+                                  actions: [
+                                    TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Annuler')),
+                                    TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Résilier')),
+                                  ],
+                                ),
+                              );
+                              if (ok == true) await SubscriptionService.instance.cancel();
+                            }
+                            _load();
+                          }),
+                    ],
                   ],
                 ),
     );
@@ -358,183 +407,6 @@ class _UsageRow extends StatelessWidget {
         if (!unlimited) ...[
           const SizedBox(height: 8),
           WinProgressBar(limit == 0 ? 0 : used / limit * 100),
-        ],
-      ]),
-    );
-  }
-}
-
-class RenewalSheet extends StatefulWidget {
-  final int planId;
-  final String planName;
-  final double price;
-
-  /// Période facturée. L'écran de tarifs partagé propose mensuel/annuel, et
-  /// cette feuille était figée sur le mensuel : sans ce drapeau, un plan
-  /// annuel choisi côté tarifs était facturé au mois.
-  final bool yearly;
-  const RenewalSheet({
-    super.key,
-    required this.planId,
-    required this.planName,
-    required this.price,
-    this.yearly = false,
-  });
-  @override
-  State<RenewalSheet> createState() => _RenewalSheetState();
-}
-
-class _RenewalSheetState extends State<RenewalSheet> {
-  // Purement visuel : NotchPay détermine l'opérateur à partir du numéro
-  // lui-même, ce choix n'est envoyé nulle part (PurchaseSubscriptionRequest
-  // n'a pas de champ "method").
-  String _method = 'mtn';
-  final _phoneCtrl = TextEditingController();
-  bool _loading = false, _done = false;
-  String? _error;
-
-  Future<void> _pay() async {
-    // Le champ n'affiche que "+237" en préfixe visuel (WinTextField ci-dessous)
-    // sans jamais l'ajouter à la valeur envoyée  sans ceci, un numéro tapé
-    // tel que suggéré par le placeholder ("6XX XXX XXX") partait sans
-    // indicatif pays vers NotchPay.
-    final digits = _phoneCtrl.text.replaceAll(RegExp(r'\D'), '');
-    if (digits.isEmpty) return;
-    final phone = digits.startsWith('237') ? digits : '237$digits';
-    setState(() {
-      _loading = true;
-      _error = null;
-    });
-    try {
-      // POST /subscriptions/purchase crée l'Order ET initie le paiement en un
-      // seul appel  l'ancien code appelait PaymentService.initiate(planId:...)
-      // qui attend en réalité un OrderId déjà existant (pas un planId) et
-      // n'accepte ni méthode ni facturation dans son corps : la requête
-      // échouait systématiquement côté serveur (validation 400).
-      final paymentId = await SubscriptionService.instance.purchase(
-        planId: widget.planId,
-        phone: phone,
-        yearly: widget.yearly,
-      );
-      if (!mounted) return;
-      if (paymentId != null) {
-        setState(() {
-          _loading = false;
-          _done = true;
-        });
-      } else {
-        setState(() => _loading = false);
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Erreur lors de l\'initiation du paiement.')));
-      }
-    } catch (e) {
-      if (!mounted) return;
-      setState(() {
-        _loading = false;
-        _error = 'Impossible d\'initier le paiement. Réessayez.';
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final s = WinTheme.of(context);
-    return Container(
-      decoration: BoxDecoration(
-          color: s.surface,
-          borderRadius:
-              BorderRadius.vertical(top: Radius.circular(WinRadii.xl))),
-      padding: const EdgeInsets.fromLTRB(24, 20, 24, 40),
-      child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Container(
-            width: 40,
-            height: 4,
-            decoration: BoxDecoration(
-                color: s.outline2,
-                borderRadius: BorderRadius.circular(WinRadii.full)),
-            margin: const EdgeInsets.only(bottom: 20)),
-        Text('Renouveler ${widget.planName}',
-            style: WinType.headlineS(s.onStrong)),
-        const SizedBox(height: 4),
-        Text(
-            '${fmtXaf(widget.price.round())} XAF / ${widget.yearly ? 'an' : 'mois'}',
-            style: WinType.archivo(
-                size: 28, weight: FontWeight.w700, color: s.primary)),
-        const SizedBox(height: 20),
-        if (_done) ...[
-          const WinAlert(
-              'Paiement initié ! Confirmez le paiement sur votre téléphone.',
-              type: BadgeColor.success),
-          const SizedBox(height: 8),
-          Text('Vous recevrez une notification USSD pour valider.',
-              style: WinType.bodyS(s.onMuted), textAlign: TextAlign.center),
-          const SizedBox(height: 16),
-          WinButton('Fermer',
-              block: true,
-              variant: WinButtonVariant.outline,
-              onTap: () => Navigator.pop(context)),
-        ] else ...[
-          Row(children: [
-            Expanded(
-                child: GestureDetector(
-              onTap: () => setState(() => _method = 'mtn'),
-              child: Container(
-                padding: const EdgeInsets.all(14),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(WinRadii.md),
-                  border: Border.all(
-                      color: _method == 'mtn' ? s.primary : s.outline,
-                      width: _method == 'mtn' ? 2 : 1),
-                  color: _method == 'mtn' ? s.primaryContainer : s.cardBg,
-                ),
-                child: Column(children: [
-                  const Icon(Icons.phone_android,
-                      size: 24, color: WinColors.warn),
-                  const SizedBox(height: 4),
-                  Text('MTN MoMo', style: WinType.labelM(s.onStrong)),
-                ]),
-              ),
-            )),
-            const SizedBox(width: 10),
-            Expanded(
-                child: GestureDetector(
-              onTap: () => setState(() => _method = 'orange'),
-              child: Container(
-                padding: const EdgeInsets.all(14),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(WinRadii.md),
-                  border: Border.all(
-                      color: _method == 'orange' ? s.primary : s.outline,
-                      width: _method == 'orange' ? 2 : 1),
-                  color: _method == 'orange' ? s.primaryContainer : s.cardBg,
-                ),
-                child: Column(children: [
-                  const Icon(Icons.phone_android,
-                      size: 24, color: WinColors.error),
-                  const SizedBox(height: 4),
-                  Text('Orange Money', style: WinType.labelM(s.onStrong)),
-                ]),
-              ),
-            )),
-          ]),
-          const SizedBox(height: 16),
-          WinTextField(
-              label: 'Numéro de téléphone',
-              hint: '+237 6XX XXX XXX',
-              icon: Icons.phone_outlined,
-              controller: _phoneCtrl,
-              keyboardType: TextInputType.phone),
-          if (_error != null) ...[
-            const SizedBox(height: 8),
-            WinAlert(_error!,
-                type: BadgeColor.error, icon: Icons.error_outline),
-          ],
-          const SizedBox(height: 20),
-          WinButton('Payer maintenant',
-              block: true, loading: _loading, onTap: _pay),
-          const SizedBox(height: 10),
-          Text('Vous recevrez une notification USSD pour valider.',
-              style: WinType.bodyS(s.onFaint), textAlign: TextAlign.center),
         ],
       ]),
     );
