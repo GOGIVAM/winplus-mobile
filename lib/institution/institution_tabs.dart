@@ -3,7 +3,6 @@ import '../theme/win_motion.dart';
 import '../app_state.dart';
 import '../auth/welcome_screen.dart';
 import '../data/mock_data.dart';
-import '../data/models.dart';
 import '../services/auth_service.dart';
 import '../services/chatbot_service.dart';
 import '../services/institution_service.dart';
@@ -20,6 +19,7 @@ import 'group_members_screen.dart';
 import 'student_directory_screen.dart';
 import 'reports_screen.dart';
 import 'tutor_endorsements_screen.dart';
+import 'license_screen.dart';
 import '../shared/tutoring_for_students_screen.dart';
 
 Widget _statCard(BuildContext c, IconData icon, String value, String label) {
@@ -751,43 +751,23 @@ class InstitutionAccountTab extends StatelessWidget {
               const SizedBox(height: 12),
               Text(WinData.institutionStats.name,
                   style: WinType.archivo(size: 22, color: s.onStrong)),
-              Text('Plan ${WinData.institutionStats.plan} · Compte actif',
-                  style: WinType.bodyM(s.onMuted)),
+              Text('Compte établissement', style: WinType.bodyM(s.onMuted)),
             ])),
             const SizedBox(height: 20),
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                  color: s.inkCard,
-                  borderRadius: BorderRadius.circular(WinRadii.lg)),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(children: [
-                      const Icon(Icons.shield_outlined,
-                          size: 20, color: WinColors.teal400),
-                      const SizedBox(width: 8),
-                      Expanded(
-                          child: Text('Licence Établissement',
-                              style: WinType.titleL(WinColors.cream50))),
-                      const WinBadge('Active', color: BadgeColor.teal),
-                    ]),
-                    const SizedBox(height: 12),
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('Licences utilisées',
-                              style: WinType.bodyS(WinColors.ink200)),
-                          Text(
-                              '${fmtXaf(WinData.institutionStats.licensesUsed)} / ${fmtXaf(WinData.institutionStats.licensesTotal)}',
-                              style: WinType.bodyS(WinColors.cream50)
-                                  .copyWith(fontWeight: FontWeight.w600)),
-                        ]),
-                    const SizedBox(height: 8),
-                    WinProgressBar(WinData.institutionStats.licensesUsed /
-                        WinData.institutionStats.licensesTotal *
-                        100),
-                  ]),
+            // Lot 9.7b, étape 4 : licence réelle (sièges, renouvellement),
+            // à la place de la carte « Licences utilisées » fictive.
+            GestureDetector(
+              onTap: () => Navigator.push(context, WinPageRoute(builder: (_) => const LicenseScreen())),
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(color: s.inkCard, borderRadius: BorderRadius.circular(WinRadii.lg)),
+                child: Row(children: [
+                  const Icon(Icons.shield_outlined, size: 20, color: WinColors.teal400),
+                  const SizedBox(width: 8),
+                  Expanded(child: Text('Licence WinPlus : sièges et renouvellement', style: WinType.titleL(WinColors.cream50))),
+                  const Icon(Icons.chevron_right, color: WinColors.cream50),
+                ]),
+              ),
             ),
             const SizedBox(height: 20),
             const _Row(Icons.people_outline, 'Administrateurs',
