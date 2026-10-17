@@ -27,24 +27,26 @@ class _OnboardingSuccessScreenState extends State<OnboardingSuccessScreen>
 
   static const _features = <WinRole, List<String>>{
     WinRole.student: [
-      'Accédez à 10 000+ ressources',
+      // Lot 9.7b (restes) : « 10 000+ ressources » et « certifications
+      // reconnues » n'étaient pas vrais ; seuls des avantages réels restent.
+      'Annales et corrigés à lire dans l’application',
       'Quiz IA personnalisés',
-      'Certifications reconnues',
+      'Certificats de vos formations terminées',
     ],
     WinRole.parent: [
-      'Suivez vos enfants en temps réel',
+      'Suivez la progression de vos enfants',
       'Alertes WinAI',
       'Achetez des contenus pour eux',
     ],
     WinRole.teacher: [
       'Publiez et monétisez vos contenus',
       'Gérez vos classes',
-      '80% de commission',
+      'Revenus sur vos ventes et vos séances',
     ],
     WinRole.institution: [
       'Dashboard centralisé',
       'Licences multi-élèves',
-      'Analytics temps réel',
+      'Indicateurs de vos élèves',
     ],
   };
 

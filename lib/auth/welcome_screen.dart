@@ -42,7 +42,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     _OnboardSlide(
       Icons.groups_rounded,
       'Toute la famille impliquée',
-      'Parents, professeurs, élèves : chacun suit la progression en temps réel.',
+      'Parents, professeurs, élèves : chacun suit la progression de l’élève.',
     ),
   ];
 
