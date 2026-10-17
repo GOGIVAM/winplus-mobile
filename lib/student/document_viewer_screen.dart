@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../theme/win_motion.dart';
 import 'package:pdfrx/pdfrx.dart';
 import '../services/subject_service.dart';
+import '../shared/subscription/pricing_screen.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
@@ -35,12 +36,17 @@ class DocumentViewerScreen extends StatefulWidget {
   /// Formation suivie qui contient ce document (accès par l'inscription).
   final int? courseId;
 
+  /// Lot 9.7b (aperçu du catalogue) : ajout au panier proposé dans le
+  /// bandeau d'aperçu ; sans lui, seule l'invitation à s'abonner apparaît.
+  final VoidCallback? onPurchase;
+
   const DocumentViewerScreen({
     super.key,
     required this.subjectId,
     required this.title,
     this.kind = ViewerDocumentKind.document,
     this.courseId,
+    this.onPurchase,
   });
 
   @override
@@ -54,6 +60,9 @@ class _DocumentViewerScreenState extends State<DocumentViewerScreen> {
   bool _loading = true;
   int _page = 1;
   int _pageCount = 0;
+  // Aperçu décidé et découpé par le serveur (seules ces pages sont reçues).
+  int? _previewPages;
+  int? _totalPages;
 
   // Identifiant de source unique par ouverture : pdfrx s'en sert comme clé
   // interne, il ne doit pas réutiliser un document d'une ouverture précédente.
@@ -78,14 +87,16 @@ class _DocumentViewerScreenState extends State<DocumentViewerScreen> {
       _error = null;
     });
     try {
-      final bytes = await SubjectService.instance.viewBytes(
+      final doc = await SubjectService.instance.view(
         widget.subjectId,
         correction: widget.kind == ViewerDocumentKind.correction,
         courseId: widget.courseId,
       );
       if (!mounted) return;
       setState(() {
-        _bytes = bytes;
+        _bytes = doc.bytes;
+        _previewPages = doc.previewPages;
+        _totalPages = doc.totalPages;
         _loading = false;
       });
     } on DioException catch (e) {
@@ -180,7 +191,7 @@ class _DocumentViewerScreenState extends State<DocumentViewerScreen> {
 
     // Le document est entièrement en mémoire une fois chargé : une coupure
     // réseau pendant la lecture n'interrompt pas la consultation en cours.
-    return PdfViewer.data(
+    final viewer = PdfViewer.data(
       _bytes!,
       sourceName: _sourceName,
       params: PdfViewerParams(
@@ -196,6 +207,69 @@ class _DocumentViewerScreenState extends State<DocumentViewerScreen> {
         },
       ),
     );
+    final preview = _previewPages;
+    if (preview == null) return viewer;
+    return Column(children: [
+      _PreviewBanner(
+        pages: preview,
+        total: _totalPages,
+        onPurchase: widget.onPurchase == null
+            ? null
+            : () {
+                Navigator.pop(context);
+                widget.onPurchase!();
+              },
+        onPlans: () => Navigator.pushReplacement(
+            context, WinPageRoute(builder: (_) => const PricingScreen())),
+      ),
+      Expanded(child: viewer),
+    ]);
+  }
+}
+
+/// Bandeau « Aperçu : N pages sur M » (lot 9.7b, droit catalog.preview_pages).
+class _PreviewBanner extends StatelessWidget {
+  final int pages;
+  final int? total;
+  final VoidCallback? onPurchase;
+  final VoidCallback onPlans;
+  const _PreviewBanner({required this.pages, required this.total, required this.onPurchase, required this.onPlans});
+
+  @override
+  Widget build(BuildContext context) {
+    final s = WinTheme.of(context);
+    final p = pages > 1 ? 's' : '';
+    final label = total != null
+        ? 'Aperçu : $pages page$p sur $total'
+        : 'Aperçu : $pages première$p page$p';
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
+      decoration: BoxDecoration(
+          color: s.surface2, border: Border(bottom: BorderSide(color: s.outline))),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(children: [
+          Icon(Icons.lock_outline, size: 16, color: s.onStrong),
+          const SizedBox(width: 8),
+          Expanded(child: Text(label, style: WinType.titleS(s.onStrong))),
+        ]),
+        const SizedBox(height: 4),
+        Text("La suite se débloque avec l'achat de ce contenu ou un abonnement qui inclut le catalogue.",
+            style: WinType.bodyS(s.onMuted)),
+        const SizedBox(height: 10),
+        Row(children: [
+          if (onPurchase != null) ...[
+            Expanded(
+                child: WinButton('Ajouter au panier',
+                    icon: Icons.shopping_cart_outlined, onTap: onPurchase)),
+            const SizedBox(width: 8),
+          ],
+          Expanded(
+              child: WinButton('Abonnements',
+                  variant: WinButtonVariant.outline, onTap: onPlans)),
+        ]),
+      ]),
+    );
   }
 }
 
@@ -206,6 +280,7 @@ void openDocumentViewer(
   required int subjectId,
   required String title,
   ViewerDocumentKind kind = ViewerDocumentKind.document,
+  VoidCallback? onPurchase,
 }) {
   Navigator.push(
     context,
@@ -214,6 +289,7 @@ void openDocumentViewer(
         subjectId: subjectId,
         title: title,
         kind: kind,
+        onPurchase: onPurchase,
       ),
     ),
   );

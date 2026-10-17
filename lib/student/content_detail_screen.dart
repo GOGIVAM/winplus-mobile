@@ -495,6 +495,32 @@ class _BottomBar extends StatefulWidget {
 
 class _BottomBarState extends State<_BottomBar> {
   bool _adding = false;
+  // Lot 9.7b : accès calculé par le serveur (achat, abonnement, parent,
+  // licence) et aperçu des premières pages (droit catalog.preview_pages).
+  SubjectViewAccess? _access;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAccess();
+  }
+
+  Future<void> _loadAccess() async {
+    final id = int.tryParse(widget.content.id);
+    if (id == null || widget.content.free) return;
+    if (!await SessionManager.isLoggedIn()) return;
+    final access = await SubjectService.instance.viewAccess(id);
+    if (mounted) setState(() => _access = access);
+  }
+
+  void _openPreview(BuildContext context) {
+    final id = int.tryParse(widget.content.id);
+    if (id == null) return;
+    openDocumentViewer(context,
+        subjectId: id,
+        title: widget.content.title,
+        onPurchase: () => _addToCart(context));
+  }
 
   Future<void> _addToCart(BuildContext context) async {
     final loggedIn = await SessionManager.isLoggedIn();
@@ -536,7 +562,9 @@ class _BottomBarState extends State<_BottomBar> {
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
     final content = widget.content;
-    final isPremium = widget.isPremium;
+    final isPremium = widget.isPremium || (_access?.canRead ?? false);
+    final canReadCorrection = content.free || widget.isPremium || (_access?.canReadCorrection ?? false);
+    final previewPages = _access?.hasPreview == true ? _access!.previewPages : 0;
     final onOpen = widget.onOpen;
     final onOpenCorrection = widget.onOpenCorrection;
     Widget btn;
@@ -558,7 +586,7 @@ class _BottomBarState extends State<_BottomBar> {
             block: true,
             icon: Icons.menu_book_outlined,
             onTap: onOpen),
-        if (content.hasCorrection) ...[
+        if (content.hasCorrection && canReadCorrection) ...[
           const SizedBox(height: 8),
           WinButton('Voir le corrigé',
               block: true,
@@ -569,6 +597,14 @@ class _BottomBarState extends State<_BottomBar> {
       ]);
     } else {
       btn = Column(mainAxisSize: MainAxisSize.min, children: [
+        if (previewPages > 0) ...[
+          WinButton("Lire l'aperçu ($previewPages pages)",
+              block: true,
+              variant: WinButtonVariant.outline,
+              icon: Icons.visibility_outlined,
+              onTap: () => _openPreview(context)),
+          const SizedBox(height: 8),
+        ],
         WinButton('Ajouter au panier  ${fmtXaf(content.price)} XAF',
             block: true,
             loading: _adding,

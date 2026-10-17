@@ -157,6 +157,14 @@ class SubjectService {
   /// une formation suivie (accès par l'inscription à la formation), toujours
   /// dans la visionneuse et sans téléchargement.
   Future<Uint8List> viewBytes(int subjectId,
+          {bool correction = false, int? courseId}) async =>
+      (await view(subjectId, correction: correction, courseId: courseId)).bytes;
+
+  /// Lot 9.7b (droit catalog.preview_pages) : comme [viewBytes], avec
+  /// l'aperçu décidé par le serveur. Sans accès au contenu, le serveur ne
+  /// sert que ses premières pages (en-têtes X-WinPlus-Preview-Pages et
+  /// X-WinPlus-Total-Pages) ; le reste ne quitte jamais le serveur.
+  Future<SubjectViewDocument> view(int subjectId,
       {bool correction = false, int? courseId}) async {
     final res = await _api.dio.get<List<int>>(
       '/subjects/$subjectId/view',
@@ -175,6 +183,58 @@ class SubjectService {
     if (data == null || data.isEmpty) {
       throw StateError('Document vide');
     }
-    return data is Uint8List ? data : Uint8List.fromList(data);
+    int? header(String name) {
+      final n = int.tryParse(res.headers.value(name) ?? '');
+      return n != null && n > 0 ? n : null;
+    }
+
+    return SubjectViewDocument(
+      bytes: data is Uint8List ? data : Uint8List.fromList(data),
+      previewPages: header('x-winplus-preview-pages'),
+      totalPages: header('x-winplus-total-pages'),
+    );
   }
+
+  /// Lot 9.7b : accès du compte connecté à un contenu du catalogue
+  /// (GET /subjects/{id}/view-access) : complet, aperçu ou fermé. Null si
+  /// le serveur ne répond pas (le bouton d'achat reste proposé).
+  Future<SubjectViewAccess?> viewAccess(int subjectId) async {
+    try {
+      final res = await _api.dio.get('/subjects/$subjectId/view-access');
+      final data = res.data;
+      return data is Map<String, dynamic> ? SubjectViewAccess.fromJson(data) : null;
+    } catch (_) {
+      return null;
+    }
+  }
+}
+
+/// Document servi à la visionneuse, avec l'aperçu éventuel (lot 9.7b).
+class SubjectViewDocument {
+  final Uint8List bytes;
+
+  /// Pages servies en aperçu ; null = document complet.
+  final int? previewPages;
+
+  /// Pages du document complet, si le serveur les a comptées.
+  final int? totalPages;
+  const SubjectViewDocument({required this.bytes, this.previewPages, this.totalPages});
+}
+
+/// Accès à un contenu du catalogue (lot 9.7b) : full, preview ou locked.
+class SubjectViewAccess {
+  final String document;
+  final String correction;
+  final int previewPages;
+  const SubjectViewAccess({required this.document, required this.correction, required this.previewPages});
+
+  bool get canRead => document == 'full';
+  bool get canReadCorrection => correction == 'full';
+  bool get hasPreview => document == 'preview' && previewPages > 0;
+
+  factory SubjectViewAccess.fromJson(Map<String, dynamic> j) => SubjectViewAccess(
+        document: j['document'] as String? ?? 'locked',
+        correction: j['correction'] as String? ?? 'locked',
+        previewPages: (j['previewPages'] as num?)?.toInt() ?? 0,
+      );
 }
