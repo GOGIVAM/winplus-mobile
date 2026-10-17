@@ -171,7 +171,7 @@ class _ProfileHubTabState extends State<ProfileHubTab> {
               icon: Icons.favorite_border,
               color: WinColors.error,
               label: 'Mes favoris',
-              subtitle: 'Illimités',
+              subtitle: 'Vos contenus enregistrés',
               onTap: () => _go(const FavoritesScreen()),
             ),
             _HubTile(

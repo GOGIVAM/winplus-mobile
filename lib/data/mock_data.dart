@@ -434,86 +434,8 @@ class WinData {
 
   // ---- ABONNEMENT ----
 
-  static const pricingPlans = <PricingPlan>[
-    PricingPlan(
-      tier: PlanTier.libre,
-      name: 'Boutique Libre',
-      tagline: 'Accès limité, achat à l\'unité',
-      priceMonthly: 0,
-      priceYearly: 0,
-      downloadLimit: 5,
-      quizDailyLimit: 3,
-      aiMessages: 10,
-      features: [
-        PricingFeature('5 téléchargements/mois', included: true),
-        PricingFeature('3 quiz par jour', included: true),
-        PricingFeature('10 messages WinAI', included: true),
-        PricingFeature('Accès catalogue complet',
-            included: false, detail: 'Achat à l\'unité seulement'),
-        PricingFeature('Exam Coach IA', included: false),
-        PricingFeature('Téléchargement hors-ligne', included: false),
-        PricingFeature('Corrections prioritaires', included: false),
-      ],
-    ),
-    PricingPlan(
-      tier: PlanTier.standard,
-      name: 'Standard',
-      tagline: 'L\'essentiel pour réviser',
-      priceMonthly: 2500,
-      priceYearly: 25000,
-      downloadLimit: 30,
-      quizDailyLimit: 20,
-      aiMessages: 100,
-      features: [
-        PricingFeature('30 téléchargements/mois', included: true),
-        PricingFeature('20 quiz par jour', included: true),
-        PricingFeature('100 messages WinAI', included: true),
-        PricingFeature('Catalogue complet inclus', included: true),
-        PricingFeature('Exam Coach IA', included: false),
-        PricingFeature('Téléchargement hors-ligne', included: true),
-        PricingFeature('Support prioritaire', included: false),
-      ],
-    ),
-    PricingPlan(
-      tier: PlanTier.premium,
-      name: 'Premium',
-      tagline: 'Tout, sans limite',
-      priceMonthly: 5000,
-      priceYearly: 50000,
-      popular: true,
-      downloadLimit: null,
-      quizDailyLimit: null,
-      aiMessages: null,
-      features: [
-        PricingFeature('Téléchargements illimités', included: true),
-        PricingFeature('Quiz illimités', included: true),
-        PricingFeature('WinAI illimité', included: true),
-        PricingFeature('Exam Coach IA', included: true),
-        PricingFeature('Téléchargement hors-ligne', included: true),
-        PricingFeature('Certificats & badges', included: true),
-        PricingFeature('Support prioritaire 24h', included: true),
-      ],
-    ),
-    PricingPlan(
-      tier: PlanTier.famille,
-      name: 'Famille',
-      tagline: 'Premium pour toute la famille',
-      priceMonthly: 8000,
-      priceYearly: 80000,
-      downloadLimit: null,
-      quizDailyLimit: null,
-      aiMessages: null,
-      features: [
-        PricingFeature('Jusqu\'à 4 enfants', included: true),
-        PricingFeature('Dashboard parent avancé', included: true),
-        PricingFeature('WinAI Alerts par enfant', included: true),
-        PricingFeature('Tout Premium inclus', included: true),
-        PricingFeature('Rapport hebdo par email', included: true),
-        PricingFeature('Support prioritaire 24h', included: true),
-        PricingFeature('Encouragements personnalisés', included: true),
-      ],
-    ),
-  ];
+  // Lot 9.7b : plus aucun plan de maquette ; la grille vient de l'API
+  // (/pricing/catalog, voir services/subscription_service.dart).
 
   static const currentSubscription = ActiveSubscription(
     tier: PlanTier.standard,

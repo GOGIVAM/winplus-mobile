@@ -9,6 +9,7 @@ import '../services/session_manager.dart';
 import '../services/subject_service.dart';
 import '../shared/shop/account_required_purchase_screen.dart';
 import '../shared/shop/cart_screen.dart';
+import '../shared/subscription/pricing_screen.dart';
 import '../shared/subscription/subscription_notifier.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
@@ -574,9 +575,12 @@ class _BottomBarState extends State<_BottomBar> {
             icon: Icons.shopping_cart_outlined,
             onTap: _adding ? null : () => _addToCart(context)),
         const SizedBox(height: 8),
+        // Lot 9.7b : plus de prix écrit en dur ; les plans et leurs prix TTC
+        // viennent de l'API sur l'écran des tarifs.
         GestureDetector(
-          onTap: () {},
-          child: Text('ou abonnez-vous à partir de 2 500 XAF/mois',
+          onTap: () => Navigator.push(
+              context, WinPageRoute(builder: (_) => const PricingScreen())),
+          child: Text('ou découvrez les abonnements',
               style: WinType.bodyS(s.primary), textAlign: TextAlign.center),
         ),
       ]);

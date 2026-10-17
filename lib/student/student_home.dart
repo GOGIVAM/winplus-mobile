@@ -585,7 +585,7 @@ class _UpgradeBanner extends StatelessWidget {
         const SizedBox(width: 10),
         Expanded(
           child: Text(
-            'Passez Standard pour débloquer les recommandations IA et les téléchargements illimités.',
+            'Avec un abonnement, tout le catalogue s\'ouvre et WinAI vous accompagne davantage.',
             style: WinType.bodyS(WinColors.teal700)
                 .copyWith(fontWeight: FontWeight.w500),
           ),

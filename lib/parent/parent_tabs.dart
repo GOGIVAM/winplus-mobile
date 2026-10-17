@@ -27,6 +27,7 @@ import '../shared/subscription/pricing_screen.dart';
 import 'buy_for_child_screen.dart';
 import '../shared/tutoring_for_students_screen.dart';
 import '../shared/legal_screen.dart';
+import '../widgets/knowledge_base_toggle.dart';
 
 /// ===================== ACCUEIL PARENT =====================
 
@@ -1279,6 +1280,7 @@ class _ParentWinAITabState extends State<ParentWinAITab> {
                   },
                 ),
         ),
+        const KnowledgeBaseToggle(),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 14),
           child: Row(children: [

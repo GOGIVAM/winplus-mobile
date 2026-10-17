@@ -27,6 +27,7 @@ import 'my_courses_screen.dart';
 import 'course_catalog_screen.dart';
 import 'tutors/tutor_search_screen.dart';
 import 'tutors/my_tutor_bookings_screen.dart';
+import '../widgets/knowledge_base_toggle.dart';
 
 export 'student_home.dart' show StudentHomeTab;
 
@@ -778,6 +779,7 @@ class _StudentWinAITabState extends State<StudentWinAITab> {
                   },
                 ),
         ),
+        const KnowledgeBaseToggle(),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 14),
           child: Row(children: [

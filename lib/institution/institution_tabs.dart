@@ -21,6 +21,7 @@ import 'reports_screen.dart';
 import 'tutor_endorsements_screen.dart';
 import 'license_screen.dart';
 import '../shared/tutoring_for_students_screen.dart';
+import '../widgets/knowledge_base_toggle.dart';
 
 Widget _statCard(BuildContext c, IconData icon, String value, String label) {
   final s = WinTheme.of(c);
@@ -1032,6 +1033,7 @@ class _InstitutionWinAITabState extends State<InstitutionWinAITab> {
                   },
                 ),
         ),
+        const KnowledgeBaseToggle(),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 14),
           child: Row(children: [

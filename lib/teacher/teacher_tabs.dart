@@ -20,6 +20,7 @@ import 'teacher_links_screen.dart';
 import 'tutor_profile_screen.dart';
 import 'tutor_bookings_screen.dart';
 import 'teacher_wallet_view.dart';
+import '../widgets/knowledge_base_toggle.dart';
 
 BadgeColor _statusColor(String s) => switch (s) {
       'Publié' => BadgeColor.success,
@@ -1102,6 +1103,7 @@ class _TeacherWinAITabState extends State<TeacherWinAITab> {
                   },
                 ),
         ),
+        const KnowledgeBaseToggle(),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 14),
           child: Row(children: [

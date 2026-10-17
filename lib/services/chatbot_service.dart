@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 
 import 'api_client.dart';
 import 'connectivity_service.dart';
@@ -71,6 +72,12 @@ class ChatbotService {
 
   final _api = ApiClient.instance;
 
+  /// Lot 9.7b (18.21) : mode « base de connaissance » du chat, désactivé
+  /// par défaut, partagé par tous les écrans de chat et envoyé avec chaque
+  /// message (`knowledgeBase`). Activé, la recherche dans les cours et les
+  /// fichiers de l'utilisateur est faite et son coût décompté.
+  final ValueNotifier<bool> knowledgeBase = ValueNotifier<bool>(false);
+
   Future<List<ApiChatSession>> getSessions() async {
     final res = await _api.dio.get('/chatbot/conversations');
     final raw = res.data;
@@ -123,6 +130,7 @@ class ChatbotService {
         if (sessionId != null) 'conversationId': sessionId,
         if (context != null) 'context': context,
         'clientMessageId': _newClientMessageId(),
+        'knowledgeBase': knowledgeBase.value,
       });
       final d = res.data as Map<String, dynamic>?;
       final assistant = d?['assistantMessage'] as Map<String, dynamic>?;
