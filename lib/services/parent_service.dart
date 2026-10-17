@@ -247,6 +247,95 @@ class ApiParentWalletSummary {
       );
 }
 
+/// Lot 9.7b : paiement réel du parent (GET /parent/payments) : commande
+/// (catalogue, formation, abonnement) ou mouvement du portefeuille.
+class ApiParentPayment {
+  final String kind; // order | wallet | recharge
+  final String label;
+  final double amountXaf;
+  final bool isDebit;
+  final String status; // paid | pending | failed | refunded | refund_requested
+  final String method;
+  final DateTime date;
+  const ApiParentPayment({
+    required this.kind,
+    required this.label,
+    required this.amountXaf,
+    required this.isDebit,
+    required this.status,
+    required this.method,
+    required this.date,
+  });
+
+  factory ApiParentPayment.fromJson(Map<String, dynamic> j) => ApiParentPayment(
+        kind: j['kind'] as String? ?? 'order',
+        label: j['label'] as String? ?? 'Paiement',
+        amountXaf: ((j['amountXaf'] ?? 0) as num).toDouble(),
+        isDebit: (j['direction'] as String? ?? 'debit') == 'debit',
+        status: j['status'] as String? ?? 'paid',
+        method: j['method'] as String? ?? '',
+        date: DateTime.tryParse(j['date'] as String? ?? '')?.toLocal() ?? DateTime.now(),
+      );
+}
+
+class ApiParentPayments {
+  final List<ApiParentPayment> items;
+  final double monthSpentXaf;
+  const ApiParentPayments({required this.items, required this.monthSpentXaf});
+}
+
+/// Lot 9.7b (étude 1.4) : enfant lié et couverture par le plan du parent.
+class ApiCoveredChild {
+  final int studentId;
+  final String name;
+  final bool covered;
+  final bool chosen;
+  const ApiCoveredChild({required this.studentId, required this.name, required this.covered, required this.chosen});
+
+  factory ApiCoveredChild.fromJson(Map<String, dynamic> j) => ApiCoveredChild(
+        studentId: (j['studentId'] as num?)?.toInt() ?? 0,
+        name: j['name'] as String? ?? '',
+        covered: j['covered'] as bool? ?? false,
+        chosen: j['chosen'] as bool? ?? false,
+      );
+}
+
+class ApiCoveredChildren {
+  final int? max;
+  final bool selectionNeeded;
+  final bool customSelection;
+  final bool canChange;
+  final DateTime? nextChangeAt;
+  final List<ApiCoveredChild> children;
+  const ApiCoveredChildren({
+    required this.max,
+    required this.selectionNeeded,
+    required this.customSelection,
+    required this.canChange,
+    required this.nextChangeAt,
+    required this.children,
+  });
+
+  factory ApiCoveredChildren.fromJson(Map<String, dynamic> j) => ApiCoveredChildren(
+        max: (j['max'] as num?)?.toInt(),
+        selectionNeeded: j['selectionNeeded'] as bool? ?? false,
+        customSelection: j['customSelection'] as bool? ?? false,
+        canChange: j['canChange'] as bool? ?? false,
+        nextChangeAt: DateTime.tryParse(j['nextChangeAt'] as String? ?? '')?.toLocal(),
+        children: ((j['children'] as List?) ?? [])
+            .map((e) => ApiCoveredChild.fromJson(e as Map<String, dynamic>))
+            .toList(),
+      );
+}
+
+/// Choix des enfants couverts refusé par le serveur (message en français).
+class CoveredChildrenException implements Exception {
+  final String message;
+  const CoveredChildrenException(this.message);
+  @override
+  String toString() => message;
+}
+
 class ParentService {
   ParentService._();
   static final ParentService instance = ParentService._();
@@ -283,6 +372,49 @@ class ParentService {
       return data == null ? null : ApiParentWalletSummary.fromJson(data);
     } catch (_) {
       return null;
+    }
+  }
+
+  /// Lot 9.7b : historique réel des paiements (remplace la liste fictive de
+  /// l'écran Paiements). Null si le serveur ne répond pas.
+  Future<ApiParentPayments?> getPayments({int limit = 50}) async {
+    try {
+      final res = await _api.dio.get('/parent/payments', queryParameters: {'limit': limit});
+      final data = (res.data as Map<String, dynamic>)['data'] as Map<String, dynamic>?;
+      if (data == null) return null;
+      return ApiParentPayments(
+        items: ((data['items'] as List?) ?? [])
+            .map((e) => ApiParentPayment.fromJson(e as Map<String, dynamic>))
+            .toList(),
+        monthSpentXaf: ((data['monthSpentXaf'] ?? 0) as num).toDouble(),
+      );
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Lot 9.7b : enfants couverts par le plan (GET /parent/covered-children).
+  Future<ApiCoveredChildren?> getCoveredChildren() async {
+    try {
+      final res = await _api.dio.get('/parent/covered-children');
+      return res.data is Map<String, dynamic>
+          ? ApiCoveredChildren.fromJson(res.data as Map<String, dynamic>)
+          : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Enregistre le choix ; lève [CoveredChildrenException] avec le message
+  /// du serveur (choix invalide, changement déjà fait dans la période).
+  Future<ApiCoveredChildren> setCoveredChildren(List<int> studentIds) async {
+    try {
+      final res = await _api.dio.put('/parent/covered-children', data: {'studentIds': studentIds});
+      return ApiCoveredChildren.fromJson(res.data as Map<String, dynamic>);
+    } on DioException catch (e) {
+      final data = e.response?.data;
+      throw CoveredChildrenException(
+          (data is Map ? data['error'] as String? : null) ?? "Le choix n'a pas pu être enregistré.");
     }
   }
 

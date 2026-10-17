@@ -25,6 +25,7 @@ import 'subscription_status_screen.dart';
 import '../shared/subscription/subscription_notifier.dart';
 import '../shared/subscription/pricing_screen.dart';
 import 'buy_for_child_screen.dart';
+import 'covered_children_screen.dart';
 import '../shared/tutoring_for_students_screen.dart';
 import '../shared/legal_screen.dart';
 import '../widgets/knowledge_base_toggle.dart';
@@ -748,17 +749,105 @@ class _ParentContentCard extends StatelessWidget {
 }
 
 /// ===================== PAIEMENTS =====================
-class ParentPaymentsTab extends StatelessWidget {
+/// Lot 9.7b : historique RÉEL des paiements du parent (GET /parent/payments :
+/// commandes payées par Mobile Money ou par le solde, achats pour un enfant,
+/// cours particuliers, recharges). Remplace la liste et le total fictifs.
+class ParentPaymentsTab extends StatefulWidget {
   const ParentPaymentsTab({super.key});
+  @override
+  State<ParentPaymentsTab> createState() => _ParentPaymentsTabState();
+}
+
+class _ParentPaymentsTabState extends State<ParentPaymentsTab> {
+  ApiParentPayments? _data;
+  bool _loading = true;
+  bool _failed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    setState(() {
+      _loading = true;
+      _failed = false;
+    });
+    final data = await ParentService.instance.getPayments();
+    if (!mounted) return;
+    setState(() {
+      _data = data;
+      _failed = data == null;
+      _loading = false;
+    });
+  }
+
+  static const _months = [
+    'janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin',
+    'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.',
+  ];
+
+  String _subtitle(ApiParentPayment p) {
+    final d = p.date;
+    final status = switch (p.status) {
+      'pending' => ' · en attente',
+      'failed' => ' · échoué',
+      'refunded' => ' · remboursé',
+      'refund_requested' => ' · remboursement demandé',
+      _ => '',
+    };
+    return '${d.day} ${_months[d.month - 1]} ${d.year} · ${p.method}$status';
+  }
+
+  Widget _row(WinScheme s, ApiParentPayment p, bool last) {
+    final paid = p.status == 'paid';
+    final icon = paid
+        ? (p.isDebit ? Icons.check : Icons.add)
+        : p.status == 'pending'
+            ? Icons.schedule
+            : Icons.close;
+    final sign = p.isDebit ? '−' : '+';
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+          border: last ? null : Border(bottom: BorderSide(color: s.outline))),
+      child: Row(children: [
+        Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+                color: paid ? WinColors.successBg : s.surface2,
+                shape: BoxShape.circle),
+            child: Icon(icon,
+                size: 16, color: paid ? WinColors.success : s.onMuted)),
+        const SizedBox(width: 12),
+        Expanded(
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+              Text(p.label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: WinType.bodyM(s.onStrong)
+                      .copyWith(fontWeight: FontWeight.w600)),
+              Text(_subtitle(p), style: WinType.labelM(s.onMuted)),
+            ])),
+        Text('$sign${fmtXaf(p.amountXaf.round())}',
+            style: WinType.archivo(size: 15, color: s.onStrong)),
+      ]),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    final history = [
-      ('Pack ENSP 2020–2023', '8 juin · MTN', 8000),
-      ('Abonnement Premium  Ahmed', '1 juin · Orange', 5000),
-      ('Correction BAC C Physique', '28 mai · MTN', 3000),
-      ('Abonnement Standard  Léa', '25 mai · Orange', 2500),
-    ];
+    final items = _data?.items ?? const <ApiParentPayment>[];
+    final spent = _loading
+        ? '…'
+        : _data == null
+            ? ''
+            : '${fmtXaf(_data!.monthSpentXaf.round())} XAF';
     return Column(children: [
       Padding(
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
@@ -767,72 +856,61 @@ class ParentPaymentsTab extends StatelessWidget {
               child: Text('Paiements',
                   style: WinType.archivo(size: 22, color: s.onStrong)))),
       Expanded(
-          child: ListView(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-              children: [
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(WinRadii.xl),
-                  gradient: LinearGradient(
-                      colors: [s.heroFrom, s.heroTo],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight)),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('DÉPENSES CE MOIS',
-                        style: WinType.labelS(WinColors.ink300)
-                            .copyWith(letterSpacing: 0.8)),
-                    const SizedBox(height: 6),
-                    Text('18 500 XAF',
-                        style: WinType.archivo(
-                            size: 32, color: WinColors.cream50)),
-                  ]),
-            ),
-            const SizedBox(height: 20),
-            Text('Historique',
-                style: WinType.archivo(size: 18, color: s.onStrong)),
-            const SizedBox(height: 12),
-            WinCard(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
-                child: Column(children: [
-                  for (int i = 0; i < history.length; i++)
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                          border: i < history.length - 1
-                              ? Border(bottom: BorderSide(color: s.outline))
-                              : null),
-                      child: Row(children: [
-                        Container(
-                            width: 36,
-                            height: 36,
-                            decoration: const BoxDecoration(
-                                color: WinColors.successBg,
-                                shape: BoxShape.circle),
-                            child: const Icon(Icons.check,
-                                size: 16, color: WinColors.success)),
-                        const SizedBox(width: 12),
-                        Expanded(
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                              Text(history[i].$1,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: WinType.bodyM(s.onStrong)
-                                      .copyWith(fontWeight: FontWeight.w600)),
-                              Text(history[i].$2,
-                                  style: WinType.labelM(s.onMuted)),
-                            ])),
-                        Text('−${fmtXaf(history[i].$3)}',
-                            style:
-                                WinType.archivo(size: 15, color: s.onStrong)),
-                      ]),
-                    ),
-                ])),
-          ])),
+          child: RefreshIndicator(
+        onRefresh: _load,
+        child: ListView(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+            children: [
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(WinRadii.xl),
+                    gradient: LinearGradient(
+                        colors: [s.heroFrom, s.heroTo],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight)),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('DÉPENSES CE MOIS',
+                          style: WinType.labelS(WinColors.ink300)
+                              .copyWith(letterSpacing: 0.8)),
+                      const SizedBox(height: 6),
+                      Text(spent,
+                          style: WinType.archivo(
+                              size: 32, color: WinColors.cream50)),
+                    ]),
+              ),
+              const SizedBox(height: 20),
+              Text('Historique',
+                  style: WinType.archivo(size: 18, color: s.onStrong)),
+              const SizedBox(height: 12),
+              if (_loading)
+                const Padding(
+                    padding: EdgeInsets.all(24),
+                    child: Center(child: CircularProgressIndicator()))
+              else if (_failed)
+                WinCard(
+                    child: Column(children: [
+                  Text("L'historique n'a pas pu être chargé.",
+                      style: WinType.bodyM(s.onMuted)),
+                  const SizedBox(height: 10),
+                  WinButton('Réessayer', icon: Icons.refresh, onTap: _load),
+                ]))
+              else if (items.isEmpty)
+                WinCard(
+                    child: Text(
+                        'Aucun paiement pour le moment. Vos achats, abonnements et recharges apparaîtront ici.',
+                        style: WinType.bodyM(s.onMuted)))
+              else
+                WinCard(
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    child: Column(children: [
+                      for (int i = 0; i < items.length; i++)
+                        _row(s, items[i], i == items.length - 1),
+                    ])),
+            ]),
+      )),
     ]);
   }
 }
@@ -969,6 +1047,10 @@ class ParentProfileTab extends StatelessWidget {
         _Row(Icons.school_outlined, 'Cours particuliers de mes enfants',
             onTap: () => Navigator.push(context,
                 WinPageRoute(builder: (_) => const TutoringForStudentsScreen()))),
+        // Lot 9.7b : choix des enfants couverts par le plan (catalogue, bonus WinAI, alertes).
+        _Row(Icons.verified_user_outlined, 'Enfants couverts par mon plan',
+            onTap: () => Navigator.push(context,
+                WinPageRoute(builder: (_) => const CoveredChildrenScreen()))),
         _Row(Icons.payment_outlined, 'Paiements & historique',
             onTap: () => Navigator.push(context,
                 WinPageRoute(builder: (_) => const _PaymentsScreen()))),
