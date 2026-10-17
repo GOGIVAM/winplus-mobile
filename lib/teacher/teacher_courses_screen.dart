@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import '../services/api_client.dart';
 import '../theme/win_colors.dart';
@@ -106,6 +107,8 @@ class _TeacherCoursesScreenState extends State<TeacherCoursesScreen> {
   String _activeFilter = _filterAll;
   List<_TeacherCourse>? _courses;
   String? _error;
+  // Lot 9.7b : formations publiées simultanément selon le plan.
+  Map<String, dynamic>? _limit;
 
   @override
   void initState() {
@@ -118,6 +121,13 @@ class _TeacherCoursesScreenState extends State<TeacherCoursesScreen> {
       _courses = null;
       _error = null;
     });
+    ApiClient.instance.dio
+        .get<dynamic>('/teacher/courses/publication-limit')
+        .then((r) {
+      if (mounted && r.data is Map<String, dynamic>) {
+        setState(() => _limit = r.data as Map<String, dynamic>);
+      }
+    }).catchError((_) {});
     try {
       final response =
           await ApiClient.instance.dio.get<dynamic>('/teacher/courses');
@@ -217,6 +227,7 @@ class _TeacherCoursesScreenState extends State<TeacherCoursesScreen> {
             ),
           ),
           const SizedBox(height: 8),
+          if (_limit != null) _LimitBanner(limit: _limit!),
           // List
           Expanded(child: _buildBody(s)),
         ],
@@ -517,77 +528,32 @@ class _CourseOptionsSheetState extends State<_CourseOptionsSheet> {
     );
   }
 
-  // ---- Change status -------------------------------------------------------
+  // ---- Submit for review ------------------------------------------------
+  // La publication passe par la validation de l'équipe : POST /submit. Lot
+  // 9.7b : le serveur applique la limite de formations publiées du plan
+  // (teacher.max_published_courses) et renvoie un message clair si elle est
+  // atteinte. L'ancien sélecteur « Modifier le statut » envoyait un statut
+  // que le serveur ignorait, tout en affichant un succès.
 
-  void _changeStatus() {
-    Navigator.of(context).pop();
-    final s = WinTheme.of(context);
-    const statuses = ['draft', 'pending_review', 'published', 'archived'];
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) => Container(
-        padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
-        decoration: BoxDecoration(
-          color: s.surface,
-          borderRadius:
-              const BorderRadius.vertical(top: Radius.circular(WinRadii.xl)),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Container(
-                width: 36,
-                height: 4,
-                margin: const EdgeInsets.only(bottom: 16),
-                decoration: BoxDecoration(
-                  color: s.outline,
-                  borderRadius: BorderRadius.circular(WinRadii.full),
-                ),
-              ),
-            ),
-            Text('Modifier le statut',
-                style: WinType.archivo(size: 18, color: s.onStrong)),
-            const SizedBox(height: 16),
-            ...statuses.map(
-              (st) => _StatusOption(
-                label: _statusLabel(st),
-                badgeColor: _statusBadgeColor(st),
-                isActive: widget.course.status == st,
-                onTap: () {
-                  Navigator.of(ctx).pop();
-                  _applyStatus(st);
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  bool _submitting = false;
 
-  Future<void> _applyStatus(String newStatus) async {
+  Future<void> _submit() async {
+    setState(() => _submitting = true);
+    final messenger = ScaffoldMessenger.of(context);
     try {
-      await ApiClient.instance.dio.put<dynamic>(
-        '/teacher/courses/${widget.course.id}',
-        data: {'status': newStatus},
-      );
+      await ApiClient.instance.dio
+          .post<dynamic>('/teacher/courses/${widget.course.id}/submit', data: {});
       widget.onRefresh();
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Statut mis à jour : ${_statusLabel(newStatus)}'),
-          ),
-        );
-      }
-    } catch (_) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Échec de la mise à jour du statut.')),
-        );
-      }
+      if (mounted) Navigator.of(context).pop();
+      messenger.showSnackBar(const SnackBar(
+          content: Text('Formation soumise à validation.')));
+    } on DioException catch (e) {
+      final data = e.response?.data;
+      final msg = data is Map ? data['error'] as String? : null;
+      messenger.showSnackBar(SnackBar(
+          content: Text(msg ?? "La formation n'a pas pu être soumise.")));
+    } finally {
+      if (mounted) setState(() => _submitting = false);
     }
   }
 
@@ -708,12 +674,14 @@ class _CourseOptionsSheetState extends State<_CourseOptionsSheet> {
             onTap: _loadingDetail ? null : _viewDetail,
             s: s,
           ),
-          _OptionTile(
-            icon: Icons.swap_horiz_outlined,
-            label: 'Modifier le statut',
-            onTap: _changeStatus,
-            s: s,
-          ),
+          if (widget.course.status == 'draft' || widget.course.status == 'archived')
+            _OptionTile(
+              icon: Icons.send_outlined,
+              label: 'Soumettre à validation',
+              loading: _submitting,
+              onTap: _submitting ? null : _submit,
+              s: s,
+            ),
           _OptionTile(
             icon: Icons.delete_outline,
             label: 'Supprimer',
@@ -780,34 +748,33 @@ class _OptionTile extends StatelessWidget {
   }
 }
 
-class _StatusOption extends StatelessWidget {
-  final String label;
-  final BadgeColor badgeColor;
-  final bool isActive;
-  final VoidCallback onTap;
-
-  const _StatusOption({
-    required this.label,
-    required this.badgeColor,
-    required this.isActive,
-    required this.onTap,
-  });
+/// Lot 9.7b : « Formations publiées : X / max » (droit du plan).
+class _LimitBanner extends StatelessWidget {
+  final Map<String, dynamic> limit;
+  const _LimitBanner({required this.limit});
 
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        child: Row(
-          children: [
-            WinBadge(label, color: badgeColor),
-            const Spacer(),
-            if (isActive) Icon(Icons.check_rounded, size: 18, color: s.primary),
-          ],
-        ),
-      ),
+    final unlimited = limit['unlimited'] == true;
+    final max = (limit['max'] as num?)?.toInt();
+    final published = (limit['published'] as num?)?.toInt() ?? 0;
+    final pending = (limit['pending'] as num?)?.toInt() ?? 0;
+    final remaining = (limit['remaining'] as num?)?.toInt();
+    final text = unlimited
+        ? 'Votre plan permet de publier un nombre illimité de formations.'
+        : 'Formations publiées : $published / ${max ?? 0}'
+            '${pending > 0 ? ' · $pending en attente de validation' : ''}'
+            '${remaining == 0 ? ' · limite de votre plan atteinte : passez à un plan supérieur pour en publier davantage.' : ''}';
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+          color: remaining == 0 ? s.surface2 : s.surface,
+          borderRadius: BorderRadius.circular(WinRadii.md),
+          border: Border.all(color: s.outline)),
+      child: Text(text, style: WinType.bodyS(s.onStrong)),
     );
   }
 }
