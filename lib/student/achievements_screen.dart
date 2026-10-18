@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../data/mock_data.dart';
 import '../data/models.dart';
 import '../services/achievement_service.dart';
 import '../theme/win_colors.dart';
@@ -14,15 +13,11 @@ class AchievementsScreen extends StatefulWidget {
 }
 
 class _AchievementsScreenState extends State<AchievementsScreen> {
-  List<AchievementBadge> _badges = WinData.badges;
-  int _streak = WinData.streak;
+  // Badges et série réels (AchievementService) ; jamais de badges ni de série
+  // de démonstration, même hors ligne : l'erreur est signalée explicitement.
+  List<AchievementBadge> _badges = const [];
+  int _streak = 0;
   bool _loading = true;
-  // Module 24 (lot 8) : jusqu'ici, un échec réseau retombait silencieusement
-  // sur la série (streak) de démonstration sans que l'utilisateur ne puisse
-  // distinguer un vrai 0 jour d'un faux "7 jours" affiché par erreur. Les
-  // badges restent volontairement en démonstration en l'absence de système
-  // de badges serveur (décision produit non tranchée, voir rapport lot 8) :
-  // seul le streak, lui réel, doit porter une indication d'erreur explicite.
   bool _error = false;
 
   @override

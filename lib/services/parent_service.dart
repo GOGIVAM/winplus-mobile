@@ -3,6 +3,21 @@ import 'api_client.dart';
 import 'connectivity_service.dart';
 import 'local_cache_service.dart';
 
+/// Évènement publié sur la plateforme (entité Event, GET /parent/events/upcoming).
+class ApiUpcomingEvent {
+  final String title;
+  final String type;
+  final DateTime? startDate;
+  const ApiUpcomingEvent(
+      {required this.title, required this.type, required this.startDate});
+
+  factory ApiUpcomingEvent.fromJson(Map<String, dynamic> j) => ApiUpcomingEvent(
+        title: j['title'] as String? ?? '',
+        type: j['eventType'] as String? ?? 'event',
+        startDate: DateTime.tryParse(j['startDate'] as String? ?? '')?.toLocal(),
+      );
+}
+
 class ApiChild {
   final int id;
   final String firstName;
@@ -372,6 +387,25 @@ class ParentService {
       return data == null ? null : ApiParentWalletSummary.fromJson(data);
     } catch (_) {
       return null;
+    }
+  }
+
+  /// Évènements à venir publiés sur la plateforme (GET /parent/events/upcoming),
+  /// remplace WinData.upcomingEvents. Liste vide si rien n'est publié ou si le
+  /// serveur ne répond pas : l'accueil masque alors la section.
+  Future<List<ApiUpcomingEvent>> getUpcomingEvents({int limit = 5}) async {
+    try {
+      final res = await _api.dio
+          .get('/parent/events/upcoming', queryParameters: {'limit': limit});
+      final list = (res.data as Map<String, dynamic>)['data'];
+      if (list is! List) return [];
+      return list
+          .whereType<Map<String, dynamic>>()
+          .map(ApiUpcomingEvent.fromJson)
+          .where((e) => e.title.trim().isNotEmpty && e.startDate != null)
+          .toList();
+    } catch (_) {
+      return [];
     }
   }
 

@@ -244,11 +244,65 @@ class ApiActionPlan {
   }
 }
 
+/// Licence en cours de l'établissement (GET /institution/license), résumé
+/// affiché sur l'accueil. `null` côté service quand aucune licence n'est active.
+class ApiInstitutionLicenseSummary {
+  final String tier;
+  final String status;
+  final int studentSeats;
+  final int studentSeatsUsed;
+  const ApiInstitutionLicenseSummary({
+    required this.tier,
+    required this.status,
+    required this.studentSeats,
+    required this.studentSeatsUsed,
+  });
+
+  factory ApiInstitutionLicenseSummary.fromJson(Map<String, dynamic> j) =>
+      ApiInstitutionLicenseSummary(
+        tier: j['tier'] as String? ?? '',
+        status: j['status'] as String? ?? '',
+        studentSeats: (j['studentSeats'] as num?)?.toInt() ?? 0,
+        studentSeatsUsed: (j['studentSeatsUsed'] as num?)?.toInt() ?? 0,
+      );
+}
+
 class InstitutionService {
   InstitutionService._();
   static final InstitutionService instance = InstitutionService._();
 
   final _api = ApiClient.instance;
+
+  /// Nom réel de l'établissement rattaché au compte (GET /institution/me),
+  /// remplace WinData.institutionStats.name. Null si non rattaché.
+  Future<String?> getMyInstitutionName() async {
+    try {
+      final res = await _api.dio.get('/institution/me');
+      final body = res.data;
+      if (body is! Map<String, dynamic>) return null;
+      final data = body['data'] is Map<String, dynamic>
+          ? body['data'] as Map<String, dynamic>
+          : body;
+      final name = (data['name'] as String?)?.trim();
+      return (name == null || name.isEmpty) ? null : name;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Licence en cours (GET /institution/license) ; null sans licence active
+  /// ou en cas d'erreur réseau.
+  Future<ApiInstitutionLicenseSummary?> getLicenseSummary() async {
+    try {
+      final res = await _api.dio.get('/institution/license');
+      final lic = (res.data as Map<String, dynamic>?)?['license'];
+      return lic is Map<String, dynamic>
+          ? ApiInstitutionLicenseSummary.fromJson(lic)
+          : null;
+    } catch (_) {
+      return null;
+    }
+  }
 
   Future<List<ApiGroup>> getGroups() async {
     final res = await _api.dio.get('/institution/groups');
@@ -336,7 +390,12 @@ class InstitutionService {
   Future<int?> getMyInstitutionId() async {
     try {
       final res = await _api.dio.get('/institution/me');
-      return (res.data as Map<String, dynamic>?)?['id'] as int?;
+      // Le serveur enveloppe la réponse : { data: { id, name, ... }, success }.
+      final body = res.data as Map<String, dynamic>?;
+      final data = body?['data'] is Map<String, dynamic>
+          ? body!['data'] as Map<String, dynamic>
+          : body;
+      return (data?['id'] as num?)?.toInt();
     } catch (_) {
       return null;
     }

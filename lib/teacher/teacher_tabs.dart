@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../theme/win_motion.dart';
-import '../data/mock_data.dart';
 import '../data/models.dart';
 import '../services/chatbot_service.dart';
 import '../services/teacher_service.dart';
@@ -349,23 +348,9 @@ class _TeacherDashTabState extends State<TeacherDashTab> {
                       ),
                       const SizedBox(height: 24),
 
-                      // 4. Insights WinAI
-                      Text('Vos insights',
-                          style: WinType.archivo(size: 18, color: s.onStrong)),
-                      const SizedBox(height: 12),
-                      ...WinData.teacherInsights.map((ins) => Padding(
-                            padding: const EdgeInsets.only(bottom: 8),
-                            child: WinCard(
-                              child: Row(children: [
-                                Icon(ins.icon, size: 18, color: s.primary),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                    child: Text(ins.text,
-                                        style: WinType.bodyS(s.onStrong))),
-                              ]),
-                            ),
-                          )),
-                      const SizedBox(height: 24),
+                      // 4. « Vos insights » de démonstration (meilleur vendeur,
+                      // audience, +12 %) retirés : aucun calcul serveur ne
+                      // les produit ; les chiffres réels sont au-dessus.
 
                       // 5. Contenus récents (3 derniers)
                       Text('Contenus récents',

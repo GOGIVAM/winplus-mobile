@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../services/api_client.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
@@ -161,10 +162,41 @@ class _TeacherCoursesScreenState extends State<TeacherCoursesScreen> {
         _ => _statusLabel(f),
       };
 
+  /// Adresse de l'éditeur de formations du site (tableau de bord enseignant).
+  static const _webCourseEditorUrl =
+      'https://winplus.cm/professeur?view=formations';
+
+  /// La création et l'édition d'une formation (leçons, vidéos, quiz) se font
+  /// sur le site : l'application ne propose pas d'éditeur. On l'indique
+  /// clairement, avec l'adresse à ouvrir, plutôt qu'une promesse.
   void _showCourseFab() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Fonctionnalité disponible prochainement'),
+    showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Créer une formation'),
+        content: const Text(
+            "La création et l'édition des formations se font sur le site WinPlus, "
+            'depuis votre espace enseignant, avec le même compte :\n\n'
+            '$_webCourseEditorUrl\n\n'
+            'Vos formations apparaissent ensuite ici.'),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              final messenger = ScaffoldMessenger.of(context);
+              final nav = Navigator.of(ctx);
+              await Clipboard.setData(
+                  const ClipboardData(text: _webCourseEditorUrl));
+              nav.pop();
+              messenger.showSnackBar(const SnackBar(
+                  content: Text('Lien copié : ouvrez-le dans votre navigateur.')));
+            },
+            child: const Text('Copier le lien'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Fermer'),
+          ),
+        ],
       ),
     );
   }

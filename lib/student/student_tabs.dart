@@ -1,11 +1,11 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import '../theme/win_motion.dart';
-import '../data/mock_data.dart';
 import '../data/models.dart';
 import '../services/chatbot_service.dart';
 import '../widgets/winai_memories_sheet.dart';
 import '../services/subject_service.dart';
+import '../services/student_service.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
@@ -76,11 +76,11 @@ class _StudentCatalogTabState extends State<StudentCatalogTab> {
         setState(
             () => _allItems = page.items.map((s) => s.toContent()).toList());
     } catch (_) {
-      // Fallback offline : utiliser le catalogue local
+      // Pas de catalogue de démonstration : erreur affichée avec « Réessayer ».
       if (mounted)
         setState(() {
-          _allItems = List<Content>.from(WinData.catalog);
-          _error = false;
+          _allItems = [];
+          _error = true;
         });
     }
   }
@@ -240,11 +240,31 @@ class _StudentCatalogTabState extends State<StudentCatalogTab> {
 }
 
 /// ===================== MON ESPACE =====================
-class StudentSpaceTab extends StatelessWidget {
+class StudentSpaceTab extends StatefulWidget {
   const StudentSpaceTab({super.key});
+  @override
+  State<StudentSpaceTab> createState() => _StudentSpaceTabState();
+}
+
+/// Statistiques réelles (GET /student/stats) ; « — » tant qu'elles ne sont
+/// pas chargées. Plus de score ni de temps d'étude de démonstration.
+class _StudentSpaceTabState extends State<StudentSpaceTab> {
+  ApiStudentStats? _stats;
+
+  @override
+  void initState() {
+    super.initState();
+    StudentService.instance.getStats().then((st) {
+      if (mounted) setState(() => _stats = st);
+    }).catchError((_) {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
+    final avg = _stats != null ? '${_stats!.averageScore.round()}%' : '—';
+    final week =
+        _stats != null ? '${_stats!.weeklyStudyHoursTotal.round()}h' : '—';
     return Column(children: [
       Padding(
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
@@ -256,13 +276,12 @@ class StudentSpaceTab extends StatelessWidget {
         child: ListView(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
             children: [
-              const Row(children: [
+              Row(children: [
                 Expanded(
-                    child: _MiniStat('${WinData.avgScore}%', 'Score moyen',
-                        Icons.trending_up)),
-                SizedBox(width: 10),
+                    child: _MiniStat(avg, 'Score moyen', Icons.trending_up)),
+                const SizedBox(width: 10),
                 Expanded(
-                    child: _MiniStat(WinData.studyToday, "Étude aujourd'hui",
+                    child: _MiniStat(week, 'Étude cette semaine',
                         Icons.schedule)),
               ]),
               const SizedBox(height: 16),
@@ -415,34 +434,9 @@ class StudentSpaceTab extends StatelessWidget {
                       context,
                       WinPageRoute(
                           builder: (_) => const QuizRevisionScreen()))),
-              const SizedBox(height: 16),
-              Text('Performance par matière',
-                  style: WinType.archivo(size: 18, color: s.onStrong)),
-              const SizedBox(height: 12),
-              ...WinData.subjectScores.entries.map((e) {
-                final subj = WinData.subjectById(e.key);
-                final col = e.value < 50
-                    ? WinColors.warn
-                    : (e.value < 75 ? s.secondary : s.primary);
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: Row(children: [
-                    SizedBox(
-                        width: 80,
-                        child: Text(subj.short,
-                            style: WinType.bodyM(s.onStrong)
-                                .copyWith(fontWeight: FontWeight.w600))),
-                    Expanded(
-                        child: WinProgressBar(e.value.toDouble(), color: col)),
-                    const SizedBox(width: 8),
-                    SizedBox(
-                        width: 32,
-                        child: Text('${e.value}%',
-                            textAlign: TextAlign.right,
-                            style: WinType.labelM(s.onMuted))),
-                  ]),
-                );
-              }),
+              // « Performance par matière » de démonstration retirée : aucun
+              // score par matière n'est servi pour l'élève ; ses résultats
+              // réels sont dans « Mes rapports ».
             ]),
       ),
     ]);
@@ -843,83 +837,5 @@ class _AttachOption extends StatelessWidget {
         ]),
       ),
     );
-  }
-}
-
-/// ===================== COMMUNAUTÉ =====================
-class StudentCommunityTab extends StatelessWidget {
-  const StudentCommunityTab({super.key});
-  @override
-  Widget build(BuildContext context) {
-    final s = WinTheme.of(context);
-    final threads = [
-      (
-        'math',
-        'Comment résoudre une équation du 3e degré ?',
-        'Brenda M.',
-        12,
-        true
-      ),
-      (
-        'pc',
-        'Différence entre tension et intensité (RC) ?',
-        'Yann T.',
-        8,
-        false
-      ),
-      ('pc', 'Correction Chimie ENSP 2022 ?', 'Aïcha B.', 5, false),
-      ('fr', 'Plan de dissertation sur la liberté', 'Steve N.', 15, true),
-    ];
-    return Column(children: [
-      Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-          child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text('Communauté',
-                  style: WinType.archivo(size: 22, color: s.onStrong)))),
-      Expanded(
-        child: ListView.separated(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-          itemCount: threads.length,
-          separatorBuilder: (_, __) => const SizedBox(height: 10),
-          itemBuilder: (_, i) {
-            final t = threads[i];
-            final subj = WinData.subjectById(t.$1);
-            return WinCard(
-              child:
-                  Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Column(children: [
-                  Icon(Icons.arrow_upward, size: 16, color: s.onFaint),
-                  Text('${t.$4 * 3}',
-                      style: WinType.archivo(size: 16, color: s.onStrong))
-                ]),
-                const SizedBox(width: 12),
-                Expanded(
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                      Row(children: [
-                        WinBadge(subj.short),
-                        if (t.$5) ...[
-                          const SizedBox(width: 6),
-                          const WinBadge('Résolu', color: BadgeColor.success)
-                        ]
-                      ]),
-                      const SizedBox(height: 6),
-                      Text(t.$2, style: WinType.titleM(s.onStrong)),
-                      const SizedBox(height: 8),
-                      Row(children: [
-                        WinAvatar(t.$3, size: 22),
-                        const SizedBox(width: 8),
-                        Text('${t.$3} · ${t.$4} réponses',
-                            style: WinType.labelM(s.onMuted))
-                      ]),
-                    ])),
-              ]),
-            );
-          },
-        ),
-      ),
-    ]);
   }
 }

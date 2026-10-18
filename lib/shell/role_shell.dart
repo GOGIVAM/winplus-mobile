@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/win_motion.dart';
 import '../app_state.dart';
-import '../data/mock_data.dart';
 import '../data/models.dart';
 import '../services/push_service.dart';
 import '../services/user_service.dart';
@@ -69,7 +68,7 @@ class _RoleShellState extends State<RoleShell> {
         setState(() => _avatarInitials = initials);
       }
     } catch (_) {
-      // Reste sur le fallback mock le temps d'une reconnexion.
+      // Avatar sans initiales le temps d'une reconnexion.
     }
   }
 
@@ -79,10 +78,8 @@ class _RoleShellState extends State<RoleShell> {
       if (mounted)
         setState(() => _unreadCount = notifs.where((n) => !n.isRead).length);
     } catch (_) {
-      if (mounted) {
-        setState(() =>
-            _unreadCount = WinData.notifications.where((n) => n.unread).length);
-      }
+      // Hors ligne : pas de badge plutôt qu'un compte inventé.
+      if (mounted) setState(() => _unreadCount = 0);
     }
   }
 
@@ -174,7 +171,7 @@ class _RoleShellState extends State<RoleShell> {
             ),
             alignment: Alignment.center,
             child: Text(
-              _avatarInitials ?? WinData.userProfile.avatarInitials,
+              _avatarInitials ?? '',
               style: WinType.manrope(
                   size: 12, weight: FontWeight.w600, color: WinColors.teal700),
             ),
@@ -186,12 +183,8 @@ class _RoleShellState extends State<RoleShell> {
                 color: WinColors.blue100, shape: BoxShape.circle),
             alignment: Alignment.center,
             child: Text(
-              _avatarInitials ??
-                  WinData.parentAccount.name
-                      .split(' ')
-                      .map((w) => w[0])
-                      .take(2)
-                      .join(),
+              _avatarInitials ?? '',
+
               style: WinType.manrope(
                   size: 12, weight: FontWeight.w600, color: WinColors.teal700),
             ),

@@ -168,11 +168,21 @@ class _InstitutionDashTabState extends State<InstitutionDashTab> {
   List<ApiGroup>? _groups;
   int _atRiskCount = 0;
   ApiInstitutionAnalytics? _analytics;
+  // Identité et licence réelles (GET /institution/me, /institution/license),
+  // à la place de WinData.institutionStats (nom, plan, licences fictifs).
+  String? _name;
+  ApiInstitutionLicenseSummary? _license;
 
   @override
   void initState() {
     super.initState();
     _load();
+    InstitutionService.instance.getMyInstitutionName().then((n) {
+      if (mounted) setState(() => _name = n);
+    });
+    InstitutionService.instance.getLicenseSummary().then((l) {
+      if (mounted) setState(() => _license = l);
+    });
   }
 
   Future<void> _load() async {
@@ -215,12 +225,13 @@ class _InstitutionDashTabState extends State<InstitutionDashTab> {
                           child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                            Text(WinData.institutionStats.name,
+                            Text(_name ?? 'Mon établissement',
                                 style: WinType.archivo(
                                     size: 15, color: WinColors.cream50)),
                             const SizedBox(height: 2),
                             Text(
-                                'Plan ${WinData.institutionStats.plan} · ${_analytics?.totalStudents ?? 0} élèves',
+                                '${_license != null ? 'Licence ${_license!.tier}' : 'Sans licence active'}'
+                                '${_analytics != null ? ' · ${_analytics!.totalStudents} élèves' : ''}',
                                 style: WinType.labelS(WinColors.ink300)),
                           ])),
                       Stack(clipBehavior: Clip.none, children: [
@@ -242,13 +253,17 @@ class _InstitutionDashTabState extends State<InstitutionDashTab> {
                     Row(children: [
                       Expanded(
                           child: _instHeroStat(
-                              '${_analytics?.activeStudents ?? WinData.institutionStats.activeStudentsToday}',
-                              'actifs auj.')),
+                              _analytics != null
+                                  ? '${_analytics!.activeStudents}'
+                                  : '—',
+                              'élèves actifs')),
                       const SizedBox(width: 10),
                       Expanded(
                           child: _instHeroStat(
-                              '${_analytics != null ? _analytics!.averageScore.round() : WinData.institutionStats.avgSuccessRate}%',
-                              'taux réussite')),
+                              _analytics != null
+                                  ? '${_analytics!.averageScore.round()}%'
+                                  : '—',
+                              'score moyen')),
                     ]),
                   ]),
             ),
@@ -258,45 +273,49 @@ class _InstitutionDashTabState extends State<InstitutionDashTab> {
             else ...[
               // KPIs grille 2x2
               Builder(builder: (ctx) {
-                final st = WinData.institutionStats;
-                final activeStudents =
-                    _analytics?.activeStudents ?? st.activeStudentsToday;
-                final totalStudents =
-                    _analytics?.totalStudents.clamp(1, 99999) ??
-                        st.licensesTotal;
-                final avgScore =
-                    _analytics?.averageScore.round() ?? st.avgSuccessRate;
-                final quizCount =
-                    _analytics?.quizzesThisMonth ?? st.quizThisWeek;
-                final pctActive =
-                    (activeStudents / totalStudents * 100).round();
-                final pctLic =
-                    (st.licensesUsed / st.licensesTotal * 100).round();
+                // Chiffres réels uniquement (GET /institution/analytics et
+                // /institution/license) ; « — » quand ils manquent.
+                final a = _analytics;
+                final lic = _license;
+                final pctActive = a != null && a.totalStudents > 0
+                    ? ' (${(a.activeStudents / a.totalStudents * 100).round()}%)'
+                    : '';
+                final pctLic = lic != null && lic.studentSeats > 0
+                    ? ' (${(lic.studentSeatsUsed / lic.studentSeats * 100).round()}%)'
+                    : '';
                 return Column(children: [
                   Row(children: [
                     Expanded(
                         child: _statCard(
                             ctx,
                             Icons.people_outline,
-                            '$activeStudents / $totalStudents',
-                            'Élèves actifs ($pctActive%)')),
+                            a != null
+                                ? '${a.activeStudents} / ${a.totalStudents}'
+                                : '—',
+                            'Élèves actifs$pctActive')),
                     const SizedBox(width: 10),
                     Expanded(
-                        child: _statCard(ctx, Icons.trending_up_outlined,
-                            '$avgScore%', 'Taux réussite')),
+                        child: _statCard(
+                            ctx,
+                            Icons.trending_up_outlined,
+                            a != null ? '${a.averageScore.round()}%' : '—',
+                            'Score moyen')),
                   ]),
                   const SizedBox(height: 10),
                   Row(children: [
                     Expanded(
                         child: _statCard(ctx, Icons.psychology_outlined,
-                            '$quizCount', 'Quiz ce mois')),
+                            a != null ? '${a.quizzesThisMonth}' : '—',
+                            'Quiz ce mois')),
                     const SizedBox(width: 10),
                     Expanded(
                         child: _statCard(
                             ctx,
                             Icons.vpn_key_outlined,
-                            '${st.licensesUsed} / ${st.licensesTotal}',
-                            'Licences ($pctLic%)')),
+                            lic != null
+                                ? '${lic.studentSeatsUsed} / ${lic.studentSeats}'
+                                : 'Aucune',
+                            'Sièges élèves$pctLic')),
                   ]),
                 ]);
               }),
@@ -329,46 +348,8 @@ class _InstitutionDashTabState extends State<InstitutionDashTab> {
                   icon: Icons.auto_awesome_outlined,
                   onTap: () => Navigator.push(context,
                       WinPageRoute(builder: (_) => const ActionPlanScreen()))),
-              const SizedBox(height: 16),
-              // Section matières les plus étudiées
-              Text('Matières les plus étudiées',
-                  style: WinType.archivo(size: 18, color: s.onStrong)),
-              const SizedBox(height: 12),
-              ...() {
-                const subjStats = WinData.subjectStats;
-                final maxSess = subjStats.isEmpty
-                    ? 1
-                    : subjStats.fold(
-                        0, (m, st) => st.sessions > m ? st.sessions : m);
-                const rangs = ['1.', '2.', '3.', '4.'];
-                return subjStats.take(4).toList().asMap().entries.map((entry) {
-                  final i = entry.key;
-                  final st = entry.value;
-                  final pct = st.sessions / maxSess * 100;
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: WinCard(
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(children: [
-                              Text(rangs[i],
-                                  style: const TextStyle(fontSize: 16)),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                  child: Text(st.subject,
-                                      style: WinType.titleM(s.onStrong))),
-                              Text('${st.sessions} sessions',
-                                  style: WinType.labelM(s.onMuted)),
-                            ]),
-                            const SizedBox(height: 8),
-                            WinProgressBar(pct),
-                          ],
-                        )),
-                  );
-                });
-              }(),
+              // « Matières les plus étudiées » de démonstration retirée :
+              // aucun endpoint ne fournit ce classement.
               const SizedBox(height: 16),
               Text('Actions rapides',
                   style: WinType.archivo(size: 18, color: s.onStrong)),
@@ -675,46 +656,6 @@ class _InstitutionAnalyticsTabState extends State<InstitutionAnalyticsTab> {
                               style: WinType.labelM(s.onMuted))),
                     ]),
                   )),
-              const SizedBox(height: 12),
-              Text('Matières les plus étudiées',
-                  style: WinType.archivo(size: 18, color: s.onStrong)),
-              const SizedBox(height: 12),
-              ...() {
-                const nameToId = <String, String>{
-                  'Mathématiques': 'math',
-                  'Physique-Chimie': 'pc',
-                  'Français': 'fr',
-                  'SVT': 'svt',
-                };
-                const subjStats = WinData.subjectStats;
-                final maxSess = subjStats.isEmpty
-                    ? 1
-                    : subjStats.fold(
-                        0, (m, st) => st.sessions > m ? st.sessions : m);
-                return subjStats.map((st) {
-                  final subj =
-                      WinData.subjectById(nameToId[st.subject] ?? 'math');
-                  final pct = (st.sessions / maxSess * 100).round();
-                  return Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: Row(children: [
-                        SizedBox(
-                            width: 84,
-                            child: Text(subj.short,
-                                style: WinType.bodyM(s.onStrong)
-                                    .copyWith(fontWeight: FontWeight.w600))),
-                        Expanded(
-                            child: WinProgressBar(pct.toDouble(),
-                                color: subj.color)),
-                        const SizedBox(width: 8),
-                        SizedBox(
-                            width: 32,
-                            child: Text('$pct%',
-                                textAlign: TextAlign.right,
-                                style: WinType.labelM(s.onMuted))),
-                      ]));
-                });
-              }(),
             ],
           ])),
     ]);
@@ -750,8 +691,15 @@ class InstitutionAccountTab extends StatelessWidget {
                   child: const Icon(Icons.apartment_outlined,
                       size: 40, color: WinColors.gold)),
               const SizedBox(height: 12),
-              Text(WinData.institutionStats.name,
-                  style: WinType.archivo(size: 22, color: s.onStrong)),
+              FutureBuilder<String?>(
+                future: InstitutionService.instance.getMyInstitutionName(),
+                builder: (_, snap) => Text(
+                    snap.data ??
+                        (snap.connectionState == ConnectionState.done
+                            ? 'Mon établissement'
+                            : '…'),
+                    style: WinType.archivo(size: 22, color: s.onStrong)),
+              ),
               Text('Compte établissement', style: WinType.bodyM(s.onMuted)),
             ])),
             const SizedBox(height: 20),
@@ -771,8 +719,7 @@ class InstitutionAccountTab extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            const _Row(Icons.people_outline, 'Administrateurs',
-                trailing: WinBadge('3', color: BadgeColor.blue)),
+            const _Row(Icons.people_outline, 'Administrateurs'),
             const _Row(Icons.grid_view_outlined, 'Groupes & classes'),
             const _Row(Icons.receipt_long_outlined, 'Facturation & reçus'),
             // Lot 9.3 : attribution de tuteurs, réservations et portefeuille institution.

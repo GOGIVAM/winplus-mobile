@@ -4,6 +4,7 @@ import '../data/mock_data.dart';
 import '../data/models.dart';
 import '../services/achievement_service.dart';
 import '../services/student_service.dart';
+import '../services/subject_service.dart';
 import '../services/user_service.dart';
 import '../shared/subscription/subscription_notifier.dart';
 import '../theme/win_colors.dart';
@@ -52,17 +53,17 @@ class StudentHomeTab extends StatefulWidget {
 class _StudentHomeTabState extends State<StudentHomeTab> {
   ApiUserProfile? _profile;
 
-  // Module 24 (lot 8) : dashboard étudiant branché sur StudentController.cs
-  // réel (stats, formations en cours, prochaines échéances) et sur le
-  // streak réel déjà câblé par AchievementService (Module 25). `null` tant
-  // que le chargement n'a pas réussi : on retombe alors sur les données de
-  // démonstration plutôt que d'afficher des zéros trompeurs. Les
-  // recommandations WinAI et le flux d'activité restent sur WinData : aucun
-  // endpoint équivalent n'existe encore côté serveur (voir rapport du lot 8).
+  // Dashboard étudiant branché sur StudentController.cs réel (stats,
+  // contenus en cours, prochaines échéances) et sur le streak et les badges
+  // réels (AchievementService). `null` tant que non chargé : la valeur est
+  // affichée « — » et les listes vides masquent leur section. Plus aucune
+  // donnée de démonstration (WinData) : les recommandations WinAI et le flux
+  // d'activité, sans endpoint serveur, ne sont plus affichés.
   ApiStudentStats? _stats;
   List<InProgressContent>? _continueLearning;
   List<ExamCountdown>? _upcomingEvents;
   int? _streak;
+  int? _badges;
 
   @override
   void initState() {
@@ -96,7 +97,12 @@ class _StudentHomeTabState extends State<StudentHomeTab> {
     } catch (_) {}
     try {
       final ach = await AchievementService.instance.getMyAchievements();
-      if (mounted) setState(() => _streak = ach.streak);
+      if (mounted) {
+        setState(() {
+          _streak = ach.streak;
+          _badges = ach.badges.where((b) => b.unlocked).length;
+        });
+      }
     } catch (_) {}
   }
 
@@ -107,22 +113,22 @@ class _StudentHomeTabState extends State<StudentHomeTab> {
     // par le serveur, fonctions selon les droits.
     final sub = SubscriptionScope.of(context);
 
-    final firstName =
-        _profile?.firstName ?? WinData.userProfile.name.split(' ').first;
+    final firstName = (_profile?.firstName ?? '').trim();
     final now = DateTime.now();
     final hour = now.hour;
     final greeting =
         hour < 12 ? 'Bonjour' : (hour < 18 ? 'Bon après-midi' : 'Bonsoir');
 
-    final mockStats = WinData.studentStats;
-    final streakDays = _streak ?? mockStats.streakDays;
-    final avgScore = _stats?.averageScore.round() ?? mockStats.avgScore;
+    final streakDays = _streak ?? 0;
+    final avgScore =
+        _stats != null ? '${_stats!.averageScore.round()}%' : '—';
     final weekHours = _stats != null
         ? '${_stats!.weeklyStudyHoursTotal.round()}h'
-        : '${mockStats.hoursThisWeek}h';
-    final quizWeek = _stats?.weeklyQuizCompleted ?? WinData.quizWeek;
-    final continueItems = _continueLearning ?? WinData.inProgress;
-    final upcoming = _upcomingEvents ?? WinData.upcomingExams;
+        : '—';
+    final quizWeek =
+        _stats != null ? '${_stats!.weeklyQuizCompleted}' : '—';
+    final continueItems = _continueLearning ?? const <InProgressContent>[];
+    final upcoming = _upcomingEvents ?? const <ExamCountdown>[];
 
     final String planLabel = sub.planName;
     final Color planColor = !sub.hasPlan
@@ -177,7 +183,10 @@ class _StudentHomeTabState extends State<StudentHomeTab> {
                     Text.rich(TextSpan(
                         style: WinType.bodyL(WinColors.cream50),
                         children: [
-                          TextSpan(text: '$greeting $firstName  '),
+                          TextSpan(
+                              text: firstName.isEmpty
+                                  ? '$greeting  '
+                                  : '$greeting $firstName  '),
                           TextSpan(
                               text: '$streakDays jours',
                               style: WinType.archivo(
@@ -196,7 +205,7 @@ class _StudentHomeTabState extends State<StudentHomeTab> {
                       const SizedBox(width: 10),
                       Expanded(
                           child: _HeroStat(
-                              value: Text('$avgScore%',
+                              value: Text(avgScore,
                                   style: WinType.archivo(
                                       size: 22, color: WinColors.teal400)),
                               title: 'score moyen',
@@ -208,7 +217,7 @@ class _StudentHomeTabState extends State<StudentHomeTab> {
                           style: WinType.archivo(
                               size: 22, color: WinColors.teal400)),
                       title: "d'étude cette semaine",
-                      sub: 'Objectif 35h',
+                      sub: 'Temps enregistré',
                     ),
                   ]),
             ),
@@ -229,55 +238,43 @@ class _StudentHomeTabState extends State<StudentHomeTab> {
                   SizedBox(width: 8),
                   WinChip('Téléchargements', icon: Icons.download_outlined),
                 ])),
-            // 2.1  Continue Learning
-            const SizedBox(height: 24),
-            const _SectionHeader("Continue où tu t'es arrêté"),
-            SizedBox(
-              height: 100,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemCount: continueItems.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 12),
-                itemBuilder: (_, i) =>
-                    _InProgressCard(item: continueItems[i]),
+            // 2.1  Continue Learning (contenus réellement commencés)
+            if (continueItems.isNotEmpty) ...[
+              const SizedBox(height: 24),
+              const _SectionHeader("Continue où tu t'es arrêté"),
+              SizedBox(
+                height: 100,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: continueItems.length,
+                  separatorBuilder: (_, __) => const SizedBox(width: 12),
+                  itemBuilder: (_, i) =>
+                      _InProgressCard(item: continueItems[i]),
+                ),
               ),
-            ),
-            // 2.2  WinAI Reco
-            const SizedBox(height: 24),
-            _SectionHeader(
-              'Pour toi · WinAI',
-              sub: sub.has(EntitlementKeys.examCoach)
-                  ? 'Analyse complète · Basé sur tes lacunes en Physique'
-                  : 'Basé sur tes résultats récents',
-            ),
-            ...WinData.aiRecommendations.take(2).map((reco) => Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: _AiRecoCard(reco: reco),
-                )),
-            // 2.3  Examens à venir
-            const SizedBox(height: 24),
-            const _SectionHeader('Examens à venir'),
-            ...upcoming.take(2).map((exam) => Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: _ExamCountdownCard(exam: exam),
-                )),
-            // 2.4  Activité récente
-            const SizedBox(height: 24),
-            const _SectionHeader('Activité récente'),
-            ...WinData.activityFeed.take(5).map((e) => _ActivityRow(event: e)),
+            ],
+            // 2.3  Examens à venir (échéances réelles)
+            if (upcoming.isNotEmpty) ...[
+              const SizedBox(height: 24),
+              const _SectionHeader('Examens à venir'),
+              ...upcoming.take(2).map((exam) => Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: _ExamCountdownCard(exam: exam),
+                  )),
+            ],
             // STATS
             const SizedBox(height: 24),
             Row(children: [
               Expanded(
                   child: _StatCard(Icons.check_circle_outline,
-                      '$quizWeek', 'Quiz / sem.')),
+                      quizWeek, 'Quiz / sem.')),
               const SizedBox(width: 10),
               Expanded(
                   child: _StatCard(Icons.schedule, weekHours, 'Étude / sem.')),
               const SizedBox(width: 10),
               Expanded(
                   child: _StatCard(Icons.emoji_events_outlined,
-                      '${mockStats.totalBadges}', 'Badges')),
+                      _badges != null ? '$_badges' : '—', 'Badges')),
             ]),
           ],
         ),
@@ -289,32 +286,33 @@ class _StudentHomeTabState extends State<StudentHomeTab> {
 class _InProgressCard extends StatelessWidget {
   final InProgressContent item;
   const _InProgressCard({required this.item});
+
+  /// Ouvre la vraie fiche du contenu (GET /subjects/{id}) : prix, niveau et
+  /// droits viennent du serveur, jamais d'une fiche reconstituée localement.
+  Future<void> _open(BuildContext context) async {
+    final id = int.tryParse(item.contentId);
+    final messenger = ScaffoldMessenger.of(context);
+    final navigator = Navigator.of(context);
+    if (id == null || id <= 0) return;
+    try {
+      final subject = await SubjectService.instance.getById(id);
+      navigator.push(WinPageRoute(
+          builder: (_) => ContentDetailScreen(content: subject.toContent())));
+    } catch (_) {
+      messenger.showSnackBar(const SnackBar(
+          content: Text("Ce contenu n'a pas pu être ouvert. Réessaie plus tard.")));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
     final subj = WinData.subjectById(item.subjectId);
-    final content = Content(
-      id: 'ip_${item.subjectId}',
-      title: item.title,
-      subjectId: item.subjectId,
-      exam: 'BAC',
-      level: 'Terminale',
-      year: 2024,
-      type: ContentType.epreuve,
-      price: 2500,
-      rating100: 0,
-      ratings: 0,
-      downloads: 0,
-      free: false,
-    );
     return SizedBox(
       width: 220,
       child: WinCard(
         padding: const EdgeInsets.all(12),
-        onTap: () => Navigator.push(
-            context,
-            WinPageRoute(
-                builder: (_) => ContentDetailScreen(content: content))),
+        onTap: () => _open(context),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(children: [
             Icon(subj.icon, size: 18, color: subj.color),
@@ -346,88 +344,6 @@ class _InProgressCard extends StatelessWidget {
           ]),
         ]),
       ),
-    );
-  }
-}
-
-class _AiRecoCard extends StatelessWidget {
-  final AiRecommendation reco;
-  const _AiRecoCard({required this.reco});
-  @override
-  Widget build(BuildContext context) {
-    final s = WinTheme.of(context);
-    final (IconData icon, Color color) = switch (reco.type) {
-      RecoType.weakSubject => (Icons.trending_up, WinColors.error),
-      RecoType.suggestedQuiz => (Icons.quiz_outlined, s.primary),
-      RecoType.examPlan => (Icons.event_note_outlined, WinColors.warn),
-      _ => (Icons.auto_awesome_outlined, s.primary),
-    };
-    final subjId = switch (reco.type) {
-      RecoType.weakSubject => 'pc',
-      RecoType.suggestedQuiz => 'math',
-      RecoType.examPlan => 'math',
-      _ => 'fr',
-    };
-    final subj = WinData.subjectById(subjId);
-    final recoContent = Content(
-      id: 'reco_$subjId',
-      title: reco.title,
-      subjectId: subjId,
-      exam: 'BAC',
-      level: 'Terminale',
-      year: 2024,
-      type: reco.type == RecoType.suggestedQuiz
-          ? ContentType.quiz
-          : ContentType.correction,
-      price: 1500,
-      rating100: 0,
-      ratings: 0,
-      downloads: 0,
-      free: false,
-    );
-    return WinCard(
-      padding: const EdgeInsets.all(14),
-      onTap: () => Navigator.push(
-          context,
-          WinPageRoute(
-              builder: (_) => ContentDetailScreen(content: recoContent))),
-      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(WinRadii.sm)),
-          child: Icon(icon, size: 20, color: color),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(reco.title,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: WinType.titleM(s.onStrong)),
-          const SizedBox(height: 4),
-          Text(reco.body,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: WinType.bodyS(s.onMuted)
-                  .copyWith(fontStyle: FontStyle.italic)),
-          const SizedBox(height: 8),
-          Row(children: [
-            WinChip(subj.short, icon: subj.icon),
-            const Spacer(),
-            Row(mainAxisSize: MainAxisSize.min, children: [
-              Text('Voir',
-                  style: WinType.manrope(
-                      size: 12, weight: FontWeight.w700, color: s.primary)),
-              const SizedBox(width: 2),
-              Icon(Icons.arrow_forward_rounded, size: 12, color: s.primary),
-            ]),
-          ]),
-        ])),
-      ]),
     );
   }
 }
@@ -470,48 +386,6 @@ class _ExamCountdownCard extends StatelessWidget {
               style: WinType.archivo(size: 28, color: urgentColor)),
           Text('jours', style: WinType.labelS(urgentColor)),
         ]),
-      ]),
-    );
-  }
-}
-
-class _ActivityRow extends StatelessWidget {
-  final ActivityEvent event;
-  const _ActivityRow({required this.event});
-  @override
-  Widget build(BuildContext context) {
-    final s = WinTheme.of(context);
-    final (IconData icon, Color color) = switch (event.type) {
-      ActivityType.quiz => (Icons.quiz_outlined, WinColors.teal500),
-      ActivityType.download => (Icons.download_outlined, WinColors.blue500),
-      ActivityType.badge => (Icons.emoji_events_outlined, WinColors.gold),
-      ActivityType.purchase => (Icons.shopping_bag_outlined, WinColors.success),
-      ActivityType.session => (Icons.timer_outlined, WinColors.ink600),
-    };
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
-      child: Row(children: [
-        Container(
-          width: 36,
-          height: 36,
-          decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.12), shape: BoxShape.circle),
-          child: Icon(icon, size: 18, color: color),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(event.title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: WinType.bodyM(s.onStrong)
-                    .copyWith(fontWeight: FontWeight.w600)),
-            Text(event.time, style: WinType.labelM(s.onMuted)),
-          ]),
-        ),
-        const SizedBox(width: 8),
-        Text(event.detail, style: WinType.labelM(s.primary)),
       ]),
     );
   }
@@ -611,20 +485,13 @@ class _UpgradeBanner extends StatelessWidget {
 
 class _SectionHeader extends StatelessWidget {
   final String title;
-  final String? sub;
-  const _SectionHeader(this.title, {this.sub});
+  const _SectionHeader(this.title);
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(title, style: WinType.archivo(size: 18, color: s.onStrong)),
-        if (sub != null)
-          Padding(
-              padding: const EdgeInsets.only(top: 2),
-              child: Text(sub!, style: WinType.bodyS(s.onMuted))),
-      ]),
+      child: Text(title, style: WinType.archivo(size: 18, color: s.onStrong)),
     );
   }
 }
