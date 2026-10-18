@@ -19,7 +19,13 @@ class PushService {
   static final PushService instance = PushService._();
 
   StreamSubscription<List<int>>? _sub;
+  Completer<void>? _done;
+  CancelToken? _cancel;
   bool _active = false;
+  /// Numéro de la boucle en cours : après stop() puis start() (changement de
+  /// compte, retour sur la coquille), l'ancienne boucle encore en attente
+  /// s'arrête au lieu d'ouvrir un second flux en parallèle.
+  int _run = 0;
   Duration _delay = const Duration(seconds: 2);
 
   /// Appelle [onEvent] chaque fois qu'un évènement `data:` arrive sur le
@@ -31,17 +37,24 @@ class PushService {
     if (_active) return;
     _active = true;
     _delay = const Duration(seconds: 2);
-    _loop(onEvent);
+    _loop(onEvent, ++_run);
   }
 
   void stop() {
     _active = false;
+    _run++;
+    _cancel?.cancel();
+    _cancel = null;
     _sub?.cancel();
     _sub = null;
+    // Débloque la boucle en attente de fin de flux (cancel() ne déclenche
+    // pas onDone).
+    if (_done != null && !_done!.isCompleted) _done!.complete();
   }
 
-  Future<void> _loop(void Function() onEvent) async {
-    while (_active) {
+  Future<void> _loop(void Function() onEvent, int run) async {
+    bool alive() => _active && run == _run;
+    while (alive()) {
       final token = await SessionManager.getAccessToken();
       if (token == null || token.isEmpty) {
         await Future.delayed(_delay);
@@ -50,18 +63,24 @@ class PushService {
 
       try {
         final dio = ApiClient.instance.dio;
+        final cancel = CancelToken();
+        _cancel = cancel;
         final res = await dio.get<ResponseBody>(
           '/notifications/sse',
+          cancelToken: cancel,
           options: Options(
             responseType: ResponseType.stream,
             headers: {'Accept': 'text/event-stream'},
           ),
         );
 
-        if (!_active) return;
+        if (!alive()) return;
         _delay = const Duration(seconds: 2);
+        // Une reconnexion peut avoir manqué des évènements : resynchronise.
+        onEvent();
 
         final completer = Completer<void>();
+        _done = completer;
         _sub = res.data?.stream.listen(
           (chunk) {
             final text = String.fromCharCodes(chunk);
@@ -75,13 +94,14 @@ class PushService {
           },
           cancelOnError: true,
         );
+        if (_sub == null && !completer.isCompleted) completer.complete();
         await completer.future;
       } catch (_) {
         // Coupure réseau ou 401 : on retente avec un délai croissant plutôt
         // que de marteler le serveur.
       }
 
-      if (_active) {
+      if (alive()) {
         await Future.delayed(_delay);
         final nextMs = _delay.inMilliseconds * 2;
         _delay = Duration(milliseconds: nextMs > 60000 ? 60000 : nextMs);

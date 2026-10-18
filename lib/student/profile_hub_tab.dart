@@ -33,7 +33,6 @@ class ProfileHubTab extends StatefulWidget {
 
 class _ProfileHubTabState extends State<ProfileHubTab> {
   ApiUserProfile? _profile;
-  int _unreadCount = 0;
 
   @override
   void initState() {
@@ -49,13 +48,9 @@ class _ProfileHubTabState extends State<ProfileHubTab> {
     } catch (_) {}
   }
 
-  Future<void> _loadNotifCount() async {
-    try {
-      final notifs = await UserService.instance.getNotifications();
-      if (mounted)
-        setState(() => _unreadCount = notifs.where((n) => !n.isRead).length);
-    } catch (_) {}
-  }
+  /// Compteur serveur partagé (UserService.unreadNotifications) : il suit
+  /// les lectures faites dans l'écran Notifications sans recharger ce profil.
+  Future<void> _loadNotifCount() => UserService.instance.refreshUnreadCount();
 
   Future<void> _signOut() async {
     final ok = await showDialog<bool>(
@@ -236,12 +231,15 @@ class _ProfileHubTabState extends State<ProfileHubTab> {
 
             const _SectionLabel('Compte'),
             const SizedBox(height: 8),
-            _HubTile(
-              icon: Icons.notifications_outlined,
-              color: WinColors.warn,
-              label: 'Notifications',
-              badge: _unreadCount > 0 ? '$_unreadCount' : null,
-              onTap: () => _go(const NotificationsScreen()),
+            ValueListenableBuilder<int>(
+              valueListenable: UserService.instance.unreadNotifications,
+              builder: (_, count, __) => _HubTile(
+                icon: Icons.notifications_outlined,
+                color: WinColors.warn,
+                label: 'Notifications',
+                badge: count > 0 ? (count > 99 ? '99+' : '$count') : null,
+                onTap: () => _go(const NotificationsScreen()),
+              ),
             ),
             _HubTile(
               icon: Icons.credit_card_outlined,

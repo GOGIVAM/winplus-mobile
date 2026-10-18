@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'api_client.dart';
 import 'course_offline_service.dart';
 import 'session_manager.dart';
+import 'user_service.dart';
 import '../data/models.dart';
 
 class AuthResult {
@@ -136,6 +137,8 @@ class AuthService {
     // répondre).
     await CourseOfflineService.instance.wipeForLogout();
     await SessionManager.clear();
+    // Le badge de notifications ne doit pas survivre au compte précédent.
+    UserService.instance.resetNotifications();
   }
 
   Future<AuthResult> enable2FA() async {

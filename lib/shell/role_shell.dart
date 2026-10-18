@@ -29,9 +29,8 @@ class RoleShell extends StatefulWidget {
   State<RoleShell> createState() => _RoleShellState();
 }
 
-class _RoleShellState extends State<RoleShell> {
+class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
   int _index = 0;
-  int _unreadCount = 0;
   // Module 24 (lot 8) : initiales réelles pour l'avatar de la barre de
   // navigation, remplace WinData.userProfile/parentAccount (élève/parent) et
   // "MF" codé en dur (professeur) — aucun des trois n'était jamais la bonne
@@ -41,6 +40,7 @@ class _RoleShellState extends State<RoleShell> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _loadUnread();
     _loadProfile();
     // Module 27 (lot 8) : push ntfy, premier plan uniquement (décision
@@ -51,8 +51,16 @@ class _RoleShellState extends State<RoleShell> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     PushService.instance.stop();
     super.dispose();
+  }
+
+  /// Retour au premier plan : lectures faites sur le web ou un autre
+  /// appareil, notifications arrivées sans évènement ntfy.
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) _loadUnread();
   }
 
   Future<void> _loadProfile() async {
@@ -72,16 +80,9 @@ class _RoleShellState extends State<RoleShell> {
     }
   }
 
-  Future<void> _loadUnread() async {
-    try {
-      final notifs = await UserService.instance.getNotifications();
-      if (mounted)
-        setState(() => _unreadCount = notifs.where((n) => !n.isRead).length);
-    } catch (_) {
-      // Hors ligne : pas de badge plutôt qu'un compte inventé.
-      if (mounted) setState(() => _unreadCount = 0);
-    }
-  }
+  /// Compteur serveur (toutes pages), partagé avec le profil et l'écran
+  /// Notifications via UserService.unreadNotifications.
+  Future<void> _loadUnread() => UserService.instance.refreshUnreadCount();
 
   Future<void> _openNotifications() async {
     await Navigator.push(
@@ -116,29 +117,38 @@ class _RoleShellState extends State<RoleShell> {
                 icon: Icon(Icons.notifications_outlined, color: s.onSurface),
                 onPressed: _openNotifications,
               ),
-              if (_unreadCount > 0)
-                Positioned(
-                  right: 4,
-                  top: 4,
-                  child: Container(
-                    width: 16,
-                    height: 16,
-                    decoration: const BoxDecoration(
-                      color: WinColors.error,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Center(
-                      child: Text(
-                        '$_unreadCount',
-                        style: const TextStyle(
-                          fontSize: 9,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
+              ValueListenableBuilder<int>(
+                valueListenable: UserService.instance.unreadNotifications,
+                builder: (_, count, __) {
+                  if (count <= 0) return const SizedBox.shrink();
+                  return Positioned(
+                    right: 2,
+                    top: 4,
+                    child: IgnorePointer(
+                      child: Container(
+                        constraints:
+                            const BoxConstraints(minWidth: 16, minHeight: 16),
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        decoration: BoxDecoration(
+                          color: WinColors.error,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Center(
+                          widthFactor: 1,
+                          child: Text(
+                            count > 99 ? '99+' : '$count',
+                            style: const TextStyle(
+                              fontSize: 9,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ),
+                  );
+                },
+              ),
             ],
           ),
           _avatarFor(role),

@@ -12,7 +12,12 @@ class NotificationsScreen extends StatefulWidget {
 }
 
 class _NotificationsScreenState extends State<NotificationsScreen> {
+  static const _page = 20;
+  static const _maxLimit = 100;
+
   List<ApiNotification>? _notifs;
+  int _total = 0;
+  bool _loadingMore = false;
 
   @override
   void initState() {
@@ -22,10 +27,49 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
   Future<void> _load() async {
     try {
-      final notifs = await UserService.instance.getNotifications();
-      if (mounted) setState(() => _notifs = notifs);
+      final page = await UserService.instance.getNotificationsPage(limit: _page);
+      if (mounted) {
+        setState(() {
+          _notifs = page.items;
+          _total = page.total;
+        });
+      }
     } catch (_) {
       if (mounted) setState(() => _notifs = []);
+    }
+  }
+
+  /// Suite de la liste depuis le serveur (avant, seules les 20 premières
+  /// étaient visibles). Jusqu'à 100, la première page est relue en plus
+  /// grand : l'ordre « non lues d'abord » bouge quand on lit, une page 2
+  /// décalée ferait des trous ou des doublons.
+  Future<void> _loadMore() async {
+    final current = _notifs ?? [];
+    if (_loadingMore || current.length >= _total) return;
+    setState(() => _loadingMore = true);
+    try {
+      final NotificationPage page;
+      List<ApiNotification> merged;
+      if (current.length + _page <= _maxLimit) {
+        page = await UserService.instance
+            .getNotificationsPage(limit: current.length + _page);
+        merged = page.items;
+      } else {
+        page = await UserService.instance.getNotificationsPage(
+            page: current.length ~/ _maxLimit + 1, limit: _maxLimit);
+        final seen = current.map((n) => n.id).toSet();
+        merged = [...current, ...page.items.where((n) => !seen.contains(n.id))];
+      }
+      if (mounted) {
+        setState(() {
+          _notifs = merged;
+          _total = page.total;
+        });
+      }
+    } catch (_) {
+      // Hors ligne : la liste déjà affichée reste.
+    } finally {
+      if (mounted) setState(() => _loadingMore = false);
     }
   }
 
@@ -47,7 +91,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
   Future<void> _openNotification(ApiNotification n) async {
     if (n.isRead) return;
-    // Optimiste : l'UI se met à jour tout de suite, sans attendre le réseau.
+    // Optimiste : la carte et le badge changent tout de suite, le serveur
+    // donne ensuite le compte exact.
     setState(() {
       _notifs = _notifs
           ?.map((x) => x.id == n.id ? x.copyWith(isRead: true) : x)
@@ -122,7 +167,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     if (_notifs == null)
       return const Center(child: CircularProgressIndicator());
 
-    if (_notifs!.isEmpty || _notifs!.every((n) => n.isRead)) {
+    // Les notifications lues restent listées (avant, une liste entièrement
+    // lue disparaissait derrière « Tout est à jour ! »).
+    if (_notifs!.isEmpty) {
       return Center(
           child: Column(mainAxisSize: MainAxisSize.min, children: [
         Icon(Icons.check_circle_outline, size: 64, color: s.onFaint),
@@ -144,7 +191,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
-      children: groups.entries
+      children: [
+        ...groups.entries
           .map((entry) => Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -212,8 +260,21 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     );
                   }),
                 ],
-              ))
-          .toList(),
+              )),
+        if (_notifs!.length < _total)
+          Center(
+            child: _loadingMore
+                ? const Padding(
+                    padding: EdgeInsets.all(12),
+                    child: CircularProgressIndicator())
+                : TextButton(
+                    onPressed: _loadMore,
+                    child: Text('Voir plus',
+                        style: WinType.labelM(s.primary)
+                            .copyWith(fontWeight: FontWeight.w600)),
+                  ),
+          ),
+      ],
     );
   }
 }

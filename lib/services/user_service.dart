@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'api_client.dart';
 
 class ApiUserProfile {
@@ -78,6 +79,15 @@ class ApiNotification {
         isRead: isRead ?? this.isRead,
         createdAt: createdAt,
       );
+}
+
+/// Une page de `GET /notifications` avec les compteurs serveur (toutes pages).
+class NotificationPage {
+  final List<ApiNotification> items;
+  final int unread;
+  final int total;
+  const NotificationPage(
+      {required this.items, required this.unread, required this.total});
 }
 
 class ApiDownloadEntry {
@@ -168,34 +178,82 @@ class UserService {
     }
   }
 
-  Future<List<ApiNotification>> getNotifications() async {
-    final res = await _api.dio.get('/notifications');
+  /// Nombre de notifications non lues, toujours issu du serveur (toutes
+  /// pages), partagé par la barre du haut, le profil et l'écran
+  /// Notifications. Avant, chaque écran le recomptait sur la première page
+  /// chargée (20 lignes au plus) et ne se mettait pas à jour après une
+  /// lecture faite ailleurs.
+  final ValueNotifier<int> unreadNotifications = ValueNotifier<int>(0);
+
+  void _applyUnread(dynamic body) {
+    final unread = body is Map ? body['unread'] : null;
+    if (unread is int) unreadNotifications.value = unread < 0 ? 0 : unread;
+  }
+
+  /// Relit le compteur serveur. Sans réseau, le dernier compte connu reste.
+  Future<void> refreshUnreadCount() async {
+    try {
+      final res = await _api.dio.get('/notifications/unread-count');
+      _applyUnread(res.data);
+    } catch (_) {}
+  }
+
+  /// À la déconnexion : aucun badge du compte précédent ne doit rester.
+  void resetNotifications() => unreadNotifications.value = 0;
+
+  Future<NotificationPage> getNotificationsPage(
+      {int page = 1, int limit = 20}) async {
+    final res = await _api.dio
+        .get('/notifications', queryParameters: {'page': page, 'limit': limit});
     final raw = res.data;
     final list = raw is List
         ? raw
         : (raw as Map<String, dynamic>?)?['data'] as List? ?? [];
-    return list
+    final items = list
         .map((e) => ApiNotification.fromJson(e as Map<String, dynamic>))
         .toList();
+    final unread = raw is Map && raw['unread'] is int
+        ? raw['unread'] as int
+        : items.where((n) => !n.isRead).length;
+    final total =
+        raw is Map && raw['total'] is int ? raw['total'] as int : items.length;
+    unreadNotifications.value = unread;
+    return NotificationPage(items: items, unread: unread, total: total);
   }
+
+  Future<List<ApiNotification>> getNotifications() async =>
+      (await getNotificationsPage()).items;
 
   /// Retourne false en cas d'échec réseau plutôt que d'avaler l'erreur
   /// silencieusement  l'écran appelant doit pouvoir distinguer un vrai
   /// succès d'un échec, au lieu d'afficher "tout est à jour" à tort.
+  /// Le badge passe à 0 tout de suite, puis prend la valeur du serveur.
   Future<bool> markAllNotificationsRead() async {
+    final before = unreadNotifications.value;
+    unreadNotifications.value = 0;
     try {
-      await _api.dio.put('/notifications/read-all');
+      final res = await _api.dio.put('/notifications/read-all');
+      _applyUnread(res.data);
       return true;
     } catch (_) {
+      unreadNotifications.value = before;
+      refreshUnreadCount();
       return false;
     }
   }
 
-  Future<bool> markNotificationRead(int id) async {
+  /// [wasUnread] : décrémente le badge tout de suite (optimiste), puis le
+  /// serveur donne la valeur exacte.
+  Future<bool> markNotificationRead(int id, {bool wasUnread = true}) async {
+    if (wasUnread && unreadNotifications.value > 0) {
+      unreadNotifications.value = unreadNotifications.value - 1;
+    }
     try {
-      await _api.dio.put('/notifications/$id/read');
+      final res = await _api.dio.put('/notifications/$id/read');
+      _applyUnread(res.data);
       return true;
     } catch (_) {
+      refreshUnreadCount();
       return false;
     }
   }
