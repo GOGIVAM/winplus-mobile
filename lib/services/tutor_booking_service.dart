@@ -375,6 +375,9 @@ class TutorBookingRecord {
   final bool hasReported;
   /// Lot 9.4 : engagement mensuel d'origine (séance générée), sinon null.
   final int? tutorEngagementId;
+  /// Lot 9.6 : support de séance WinAI (tuteur : draft, shared,
+  /// shared_with_changes ; élèves et payeur : shared), null sinon.
+  final String? sessionMaterialStatus;
 
   const TutorBookingRecord({
     required this.id,
@@ -426,6 +429,7 @@ class TutorBookingRecord {
     this.canReport = false,
     this.hasReported = false,
     this.tutorEngagementId,
+    this.sessionMaterialStatus,
   });
 
   /// Lot 9.3 : seul le côté payeur annule (un élève dont la séance a été
@@ -565,6 +569,7 @@ class TutorBookingRecord {
         canReport: j['canReport'] as bool? ?? false,
         hasReported: j['hasReported'] as bool? ?? false,
         tutorEngagementId: (j['tutorEngagementId'] as num?)?.toInt(),
+        sessionMaterialStatus: j['sessionMaterialStatus'] as String?,
       );
 }
 

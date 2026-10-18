@@ -7,6 +7,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import 'tutor_session_material_screen.dart';
 
 /// Lot 9.4 (suivi 17.7) : vue d'un engagement mensuel côté payeur,
 /// participant et tuteur (parité web). Séances et état de chacune, argent
@@ -315,6 +316,16 @@ class _TutorEngagementScreenState extends State<TutorEngagementScreen> {
           Text('${kSessionStatusLabels[x.status] ?? x.status} · ${kMoneyStateLabels[x.moneyState] ?? x.moneyState}$refund'
               '${x.disputeDeadline != null ? ' · contestation possible jusqu\'au ${_dt(x.disputeDeadline!)}' : ''}',
               style: WinType.labelS(s.onMuted)),
+          // Lot 9.6 : support de séance WinAI, séance par séance.
+          if (const ['confirmed', 'completed', 'disputed'].contains(x.status)) ...[
+            const SizedBox(height: 6),
+            WinButton('Support de séance',
+                small: true,
+                variant: WinButtonVariant.ghost,
+                icon: Icons.menu_book_outlined,
+                onTap: () => Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (_) => TutorSessionMaterialScreen(bookingId: x.id)))),
+          ],
           if (x.canMarkCompleted || x.canDispute || x.canCancel) ...[
             const SizedBox(height: 8),
             Wrap(spacing: 8, runSpacing: 6, children: [

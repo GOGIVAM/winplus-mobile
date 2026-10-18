@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../services/tutor_booking_service.dart';
 import '../services/tutor_engagement_service.dart';
+import '../services/tutor_session_material_service.dart';
 import '../shared/tutor_engagement_screen.dart';
+import '../shared/tutor_session_material_screen.dart';
 import '../student/tutors/tutor_pricing_widgets.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
@@ -63,6 +65,20 @@ class _BookingDetailsState extends State<_BookingDetails> {
         const SizedBox(height: 4),
         TopicChipsRow(b.topics),
       ],
+      // Lot 9.6 : support de séance WinAI (cours, quiz, exercices), préparé et partagé par le tuteur.
+      if (const ['pending_tutor_approval', 'confirmed', 'completed', 'disputed'].contains(b.status)) ...[
+        const SizedBox(height: 8),
+        Wrap(crossAxisAlignment: WrapCrossAlignment.center, spacing: 8, children: [
+          WinButton(b.sessionMaterialStatus != null ? 'Support de séance' : 'Préparer le support avec WinAI',
+              small: true,
+              variant: WinButtonVariant.outline,
+              icon: Icons.auto_awesome,
+              onTap: () => Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (_) => TutorSessionMaterialScreen(bookingId: b.id)))),
+          if (b.sessionMaterialStatus != null)
+            Text(kSessionMaterialStatusLabels[b.sessionMaterialStatus] ?? '', style: WinType.labelS(s.onFaint)),
+        ]),
+      ],
       if (b.priceBreakdown != null) ...[
         TextButton(
           style: TextButton.styleFrom(padding: EdgeInsets.zero),
@@ -118,8 +134,25 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
     _load();
   }
 
+  bool? _autoMaterial;
+
+  Future<void> _setAutoMaterial(bool value) async {
+    try {
+      final v = await TutorSessionMaterialService.instance.setAutoGenerate(value);
+      if (mounted) setState(() => _autoMaterial = v);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(TutorSessionMaterialService.errorMessage(e) ?? 'Réglage impossible.')));
+      }
+    }
+  }
+
   Future<void> _load() async {
     setState(() => _error = false);
+    TutorSessionMaterialService.instance.getAutoGenerate().then((v) {
+      if (mounted) setState(() => _autoMaterial = v);
+    }).catchError((Object _) {});
     try {
       final results = await Future.wait([
         TutorBookingService.instance.getPending(),
@@ -456,6 +489,16 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
                       const SizedBox(height: 24),
                       Text('Séances à venir / à clôturer',
                           style: WinType.archivo(size: 18, color: s.onStrong)),
+                      // Lot 9.6 : génération automatique du support à l'acceptation (désactivée par défaut).
+                      if (_autoMaterial != null)
+                        SwitchListTile(
+                          contentPadding: EdgeInsets.zero,
+                          value: _autoMaterial!,
+                          onChanged: _setAutoMaterial,
+                          title: Text('Support WinAI généré à l\'acceptation', style: WinType.labelM(s.onStrong)),
+                          subtitle: Text('Décompté de ton usage WinAI ; tu le relis avant de le partager.',
+                              style: WinType.labelS(s.onFaint)),
+                        ),
                       const SizedBox(height: 10),
                       if (upcoming.isEmpty)
                         WinCard(

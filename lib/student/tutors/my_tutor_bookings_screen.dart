@@ -12,6 +12,7 @@ import 'tutor_public_profile_screen.dart';
 import 'tutor_report_sheet.dart';
 import '../../services/tutor_engagement_service.dart';
 import '../../shared/tutor_engagement_screen.dart';
+import '../../shared/tutor_session_material_screen.dart';
 
 const _modeLabels = {
   'online': 'En ligne',
@@ -382,6 +383,17 @@ class _BookingCardState extends State<_BookingCard> {
           const SizedBox(height: 10),
           WinAlert('Signalement envoyé : ${b.disputeReason}',
               type: BadgeColor.error),
+        ],
+        // Lot 9.6 : support de séance WinAI partagé par le tuteur.
+        if (b.sessionMaterialStatus == 'shared') ...[
+          const SizedBox(height: 10),
+          WinButton(b.viewerIsParticipant == true ? 'Support, quiz et exercices' : 'Support de séance',
+              block: true,
+              small: true,
+              icon: Icons.menu_book_outlined,
+              variant: WinButtonVariant.outline,
+              onTap: () => Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (_) => TutorSessionMaterialScreen(bookingId: b.id)))),
         ],
         // Lot 9.5 (17.12, 17.16) : notent les participants et le payeur, une
         // fois par séance et par personne (décidé par le serveur : canReview).
