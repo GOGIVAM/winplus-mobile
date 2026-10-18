@@ -20,8 +20,11 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.winplus"
+        // Identifiant Play Store définitif (étude 10, Q20) : il ne pourra plus
+        // changer après la première publication. Aucun Firebase ni Google
+        // Sign-In n'est lié à l'ancien identifiant. Le namespace (package
+        // Kotlin de MainActivity) reste com.example.winplus : il est interne.
+        applicationId = "cm.winplus.app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
