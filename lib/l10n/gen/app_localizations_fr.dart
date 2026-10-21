@@ -429,6 +429,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get commonAll => 'Tout';
 
   @override
+  String get studentSearchLangFr => 'Français';
+
+  @override
+  String get studentSearchLangEn => 'Anglais (GCE)';
+
+  @override
   String get commonBack => 'Retour';
 
   @override

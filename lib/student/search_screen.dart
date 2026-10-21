@@ -20,6 +20,8 @@ class _SearchScreenState extends State<SearchScreen> {
   String _query = '';
   String _typeFilter = 'Tout';
   String _levelFilter = 'Tout';
+  // Lot 10.7 : langue d'origine de l'épreuve (null = toutes).
+  String? _langFilter;
   bool _loading = false;
   List<Content> _results = [];
 
@@ -72,6 +74,7 @@ class _SearchScreenState extends State<SearchScreen> {
         q: q.trim(),
         category: _typeFilter == 'Tout' ? null : _apiTypeMap[_typeFilter],
         level: _levelFilter == 'Tout' ? null : _levelFilter,
+        contentLanguage: _langFilter,
         pageSize: 30,
       );
       if (mounted) {
@@ -171,6 +174,31 @@ class _SearchScreenState extends State<SearchScreen> {
                 _onFilterChanged();
               },
             ),
+          ),
+        ),
+        const SizedBox(height: 6),
+        SizedBox(
+          height: 40,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            children: [
+              for (final (value, label) in [
+                (null, context.l10n.commonAll),
+                ('fr', context.l10n.studentSearchLangFr),
+                ('en', context.l10n.studentSearchLangEn),
+              ]) ...[
+                WinChip(
+                  label,
+                  active: _langFilter == value,
+                  onTap: () {
+                    setState(() => _langFilter = value);
+                    _onFilterChanged();
+                  },
+                ),
+                const SizedBox(width: 8),
+              ],
+            ],
           ),
         ),
         const SizedBox(height: 8),

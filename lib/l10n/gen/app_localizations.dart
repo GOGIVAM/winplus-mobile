@@ -866,6 +866,18 @@ abstract class AppLocalizations {
   /// **'Tout'**
   String get commonAll;
 
+  /// No description provided for @studentSearchLangFr.
+  ///
+  /// In fr, this message translates to:
+  /// **'Français'**
+  String get studentSearchLangFr;
+
+  /// No description provided for @studentSearchLangEn.
+  ///
+  /// In fr, this message translates to:
+  /// **'Anglais (GCE)'**
+  String get studentSearchLangEn;
+
   /// No description provided for @commonBack.
   ///
   /// In fr, this message translates to:

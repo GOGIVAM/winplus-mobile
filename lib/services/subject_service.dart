@@ -29,6 +29,9 @@ class ApiSubject {
   final bool hasCorrection;
   final double? rating;
   final int ratingsCount;
+
+  /// Lot 10.7 : langue d'origine ("en" pour une épreuve GCE, jamais traduite).
+  final String language;
   const ApiSubject({
     required this.id,
     required this.title,
@@ -44,6 +47,7 @@ class ApiSubject {
     this.hasCorrection = false,
     this.rating,
     this.ratingsCount = 0,
+    this.language = 'fr',
   });
 
   factory ApiSubject.fromJson(Map<String, dynamic> j) => ApiSubject(
@@ -61,6 +65,7 @@ class ApiSubject {
         hasCorrection: j['hasCorrection'] as bool? ?? false,
         rating: ((j['averageRating'] ?? 0) as num).toDouble(),
         ratingsCount: j['ratingsCount'] as int? ?? 0,
+        language: j['language'] as String? ?? 'fr',
       );
 }
 
@@ -113,6 +118,8 @@ class SubjectService {
     String? q,
     String? category,
     String? level,
+    /// Lot 10.7 : "fr" ou "en" (langue d'origine de l'épreuve), null = toutes.
+    String? contentLanguage,
     int page = 1,
     int pageSize = 20,
     String sortBy = 'createdAt',
@@ -122,6 +129,7 @@ class SubjectService {
       if (q != null && q.isNotEmpty) 'q': q,
       if (category != null) 'category': category,
       if (level != null) 'level': level,
+      if (contentLanguage != null) 'contentLanguage': contentLanguage,
       'page': page,
       'pageSize': pageSize,
       'sortBy': sortBy,
