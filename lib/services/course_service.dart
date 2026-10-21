@@ -356,6 +356,10 @@ class LessonContent {
   final int? sourceSubjectId;
   final int? quizId;
 
+  /// Fichier consultable seulement (jamais proposé au téléchargement),
+  /// comme `lesson.viewerOnly` côté web.
+  final bool viewerOnly;
+
   const LessonContent({
     required this.id,
     required this.title,
@@ -371,6 +375,7 @@ class LessonContent {
     required this.lastPositionSec,
     this.sourceSubjectId,
     this.quizId,
+    this.viewerOnly = false,
   });
 
   factory LessonContent.fromJson(Map<String, dynamic> j) {
@@ -390,6 +395,7 @@ class LessonContent {
       lastPositionSec: prog?['lastPositionSec'] as int? ?? 0,
       sourceSubjectId: j['sourceSubjectId'] as int?,
       quizId: j['quizId'] as int?,
+      viewerOnly: j['viewerOnly'] as bool? ?? false,
     );
   }
 }

@@ -1,3 +1,4 @@
+import '../l10n/class_levels.dart';
 import 'package:flutter/material.dart';
 import '../l10n/l10n.dart';
 import '../theme/win_motion.dart';
@@ -481,7 +482,7 @@ class _TeacherProfileWizardState extends State<_TeacherProfileWizard> {
       'FMSB Médecine' => l10n.authLvlFmsb,
       'ESSEC Commerce' => l10n.authLvlEssec,
       'ENS École Normale' => l10n.authLvlEns,
-      _ => v,
+      _ => ClassLevels.label(v),
     };
   }
 }

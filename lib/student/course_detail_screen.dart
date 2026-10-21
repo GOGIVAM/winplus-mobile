@@ -1,3 +1,4 @@
+import '../l10n/class_levels.dart';
 import 'package:flutter/material.dart';
 import '../l10n/l10n.dart';
 import '../theme/win_motion.dart';
@@ -339,7 +340,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
             Wrap(spacing: 8, children: [
               if (c.category != null) WinBadge(c.category!),
               if (c.level != null)
-                WinBadge(c.level!, color: BadgeColor.neutral),
+                WinBadge(ClassLevels.label(c.level), color: BadgeColor.neutral),
             ]),
             const SizedBox(height: 12),
 

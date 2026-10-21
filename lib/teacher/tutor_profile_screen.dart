@@ -1,3 +1,4 @@
+import '../l10n/class_levels.dart';
 import 'package:flutter/material.dart';
 import '../services/tutor_booking_service.dart';
 import '../services/tutor_profile_service.dart';
@@ -90,7 +91,7 @@ String _levelLabel(BuildContext context, String l) => switch (l) {
       'ESSEC Commerce' => context.l10n.authLvlEssec,
       'ENAM Administration' => context.l10n.teacherProfileLevelEnam,
       'ENS École Normale' => context.l10n.authLvlEns,
-      _ => l,
+      _ => ClassLevels.label(l),
     };
 
 String _specialtyLabel(BuildContext context, String sp) => switch (sp) {

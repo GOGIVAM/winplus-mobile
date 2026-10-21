@@ -1,3 +1,4 @@
+import '../l10n/class_levels.dart';
 import 'package:flutter/material.dart';
 import '../data/models.dart';
 import '../services/parent_service.dart';
@@ -195,7 +196,7 @@ class _SubscriptionStatusScreenState extends State<SubscriptionStatusScreen> {
                                       Text(child.fullName,
                                           style: WinType.titleM(s.onStrong)),
                                       Text(
-                                          child.level ??
+                                          (child.level != null ? ClassLevels.label(child.level) : null) ??
                                               child.schoolName ??
                                               context.l10n.roleStudent,
                                           style: WinType.labelM(s.onMuted)),

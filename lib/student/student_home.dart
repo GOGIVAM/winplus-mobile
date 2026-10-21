@@ -1,3 +1,4 @@
+import '../l10n/class_levels.dart';
 import 'package:flutter/material.dart';
 import '../l10n/l10n.dart';
 import '../theme/win_motion.dart';
@@ -568,7 +569,7 @@ class _ContentCardState extends State<ContentCard> {
                   overflow: TextOverflow.ellipsis,
                   style: WinType.titleM(s.onStrong)),
               const Spacer(),
-              Text('${subj.short} · ${content.level} · ${content.year}',
+              Text('${subj.short} · ${ClassLevels.label(content.level)} · ${content.year}',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: WinType.labelS(s.onMuted)),

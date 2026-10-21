@@ -1,3 +1,4 @@
+import '../l10n/class_levels.dart';
 import 'package:flutter/material.dart';
 import '../services/parent_service.dart';
 import '../theme/win_colors.dart';
@@ -91,7 +92,7 @@ class _ChildActivityScreenState extends State<ChildActivityScreen>
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(widget.child.firstName, style: WinType.headlineS(s.onStrong)),
             if (widget.child.level != null && widget.child.level!.isNotEmpty)
-              Text(widget.child.level!, style: WinType.labelS(s.onMuted)),
+              Text(ClassLevels.label(widget.child.level), style: WinType.labelS(s.onMuted)),
           ]),
         ]),
         actions: [

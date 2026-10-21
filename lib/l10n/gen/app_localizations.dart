@@ -13030,6 +13030,84 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Email ou mot de passe incorrect.'**
   String get wrongCredentials;
+
+  /// No description provided for @instMonthlyReportTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rapport mensuel par e-mail'**
+  String get instMonthlyReportTitle;
+
+  /// No description provided for @instMonthlyReportSub.
+  ///
+  /// In fr, this message translates to:
+  /// **'Reçu par e-mail le 1er de chaque mois'**
+  String get instMonthlyReportSub;
+
+  /// No description provided for @instMonthlyReportMeta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chiffres du mois, devoirs, annonces, bulletins, élèves à relancer et plan d\'action WinAI.'**
+  String get instMonthlyReportMeta;
+
+  /// No description provided for @instMonthlyReportSendNow.
+  ///
+  /// In fr, this message translates to:
+  /// **'Recevoir maintenant'**
+  String get instMonthlyReportSendNow;
+
+  /// No description provided for @instMonthlyReportSending.
+  ///
+  /// In fr, this message translates to:
+  /// **'Envoi…'**
+  String get instMonthlyReportSending;
+
+  /// No description provided for @instMonthlyReportSent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Envoyé : vérifiez votre boîte de réception (et les indésirables).'**
+  String get instMonthlyReportSent;
+
+  /// No description provided for @instMonthlyReportError.
+  ///
+  /// In fr, this message translates to:
+  /// **'L\'envoi a échoué. Réessayez dans un instant.'**
+  String get instMonthlyReportError;
+
+  /// No description provided for @instMonthlyReportNoEmail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune adresse e-mail sur ce compte.'**
+  String get instMonthlyReportNoEmail;
+
+  /// No description provided for @studentPdfLoadError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le document n\'a pas pu être chargé.'**
+  String get studentPdfLoadError;
+
+  /// No description provided for @studentPlayerTapToOpen.
+  ///
+  /// In fr, this message translates to:
+  /// **'Appuyez pour ouvrir le document'**
+  String get studentPlayerTapToOpen;
+
+  /// No description provided for @studentPlayerOpenOnWeb.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce type de fichier s\'ouvre depuis le site winplus.cm.'**
+  String get studentPlayerOpenOnWeb;
+
+  /// No description provided for @studentCertCopyLink.
+  ///
+  /// In fr, this message translates to:
+  /// **'Copier le lien'**
+  String get studentCertCopyLink;
+
+  /// No description provided for @studentCertLinkCopied.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lien de vérification copié.'**
+  String get studentCertLinkCopied;
 }
 
 class _AppLocalizationsDelegate

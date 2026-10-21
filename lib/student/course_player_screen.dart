@@ -8,6 +8,7 @@ import '../services/course_service.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_motion.dart';
 import 'document_viewer_screen.dart';
+import '../widgets/remote_pdf_screen.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
@@ -469,32 +470,55 @@ class _LessonView extends StatelessWidget {
             ),
           ),
 
-        // File download
-        if (l.lessonType == 'file' && l.fileUrl != null)
-          Container(
-            margin: const EdgeInsets.all(16),
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: const Color(0xFF1E293B),
-              borderRadius: BorderRadius.circular(WinRadii.lg),
-              border:
-                  Border.all(color: WinColors.teal600.withValues(alpha: 0.4)),
-            ),
-            child: Row(children: [
-              const Icon(Icons.attach_file, color: WinColors.teal400, size: 24),
-              const SizedBox(width: 12),
-              Expanded(
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                    Text(l.fileName ?? context.l10n.studentPlayerAttachedFile,
-                        style: WinType.titleM(Colors.white)),
-                    Text(context.l10n.studentPlayerTapToDownload,
-                        style: WinType.labelS(Colors.white54)),
-                  ])),
-              const Icon(Icons.download_outlined, color: WinColors.teal400),
-            ]),
-          ),
+        // Pièce jointe du professeur (lot 10.6) : un PDF s'ouvre dans
+        // l'application depuis le lien du serveur (le web propose le même
+        // fichier en téléchargement) ; un autre format, que l'application ne
+        // sait pas afficher, est signalé comme consultable sur le site.
+        // Jamais une épreuve du catalogue (sourceSubjectId, sans fileUrl).
+        if (l.lessonType == 'file' && l.fileUrl != null && !l.viewerOnly)
+          Builder(builder: (context) {
+            final isPdf = _isPdfAttachment(l);
+            return GestureDetector(
+              onTap: isPdf
+                  ? () => Navigator.push(
+                      context,
+                      WinPageRoute(
+                        builder: (_) => RemotePdfScreen(
+                            title: l.fileName ?? l.title, url: l.fileUrl!),
+                      ))
+                  : null,
+              child: Container(
+                margin: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1E293B),
+                  borderRadius: BorderRadius.circular(WinRadii.lg),
+                  border: Border.all(
+                      color: WinColors.teal600.withValues(alpha: 0.4)),
+                ),
+                child: Row(children: [
+                  const Icon(Icons.attach_file,
+                      color: WinColors.teal400, size: 24),
+                  const SizedBox(width: 12),
+                  Expanded(
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                        Text(l.fileName ?? context.l10n.studentPlayerAttachedFile,
+                            style: WinType.titleM(Colors.white)),
+                        Text(
+                            isPdf
+                                ? context.l10n.studentPlayerTapToOpen
+                                : context.l10n.studentPlayerOpenOnWeb,
+                            style: WinType.labelS(Colors.white54)),
+                      ])),
+                  if (isPdf)
+                    const Icon(Icons.picture_as_pdf_outlined,
+                        color: WinColors.teal400),
+                ]),
+              ),
+            );
+          }),
 
         // Lesson info
         Padding(
@@ -842,4 +866,12 @@ class _BottomNav extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Pièce jointe au format PDF (nom du fichier, sinon chemin du lien présigné).
+bool _isPdfAttachment(LessonContent l) {
+  final name = (l.fileName ?? '').toLowerCase();
+  if (name.endsWith('.pdf')) return true;
+  final path = Uri.tryParse(l.fileUrl ?? '')?.path.toLowerCase() ?? '';
+  return path.endsWith('.pdf');
 }

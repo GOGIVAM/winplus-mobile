@@ -1,3 +1,4 @@
+import '../../l10n/class_levels.dart';
 import 'package:flutter/material.dart';
 import '../../l10n/l10n.dart';
 import '../../theme/win_motion.dart';
@@ -292,7 +293,7 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
                 children: p.levels.isEmpty
                     ? [Text(context.l10n.tutoringNotSpecified, style: WinType.bodyS(s.onFaint))]
                     : p.levels
-                        .map((lvl) => WinBadge(lvl, color: BadgeColor.blue))
+                        .map((lvl) => WinBadge(ClassLevels.label(lvl), color: BadgeColor.blue))
                         .toList()),
           ]),
         ),

@@ -239,20 +239,10 @@ class _StudentReportsScreenState extends State<StudentReportsScreen> {
               ]),
             ]),
           ),
-          const SizedBox(height: 24),
-
-          // 6. Export
-          WinButton(
-            context.l10n.studentReportsExportPdf,
-            icon: Icons.download_outlined,
-            block: true,
-            variant: WinButtonVariant.outline,
-            onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(context.l10n.studentReportsStandardOnly),
-              ),
-            ),
-          ),
+          // Lot 10.6 : plus de bouton « Exporter PDF » : aucun export de
+          // rapport n'existe côté serveur (ni sur le web), le bouton
+          // n'affichait qu'un message d'offre.
+          const SizedBox(height: 8),
         ],
       ),
     );

@@ -1,3 +1,4 @@
+import '../l10n/class_levels.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import '../l10n/l10n.dart';
@@ -390,7 +391,7 @@ class ChildCard extends StatelessWidget {
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(child.fullName, style: WinType.titleL(s.onStrong)),
           const SizedBox(height: 2),
-          Text(child.level ?? child.schoolName ?? context.l10n.roleStudent,
+          Text(child.level != null ? ClassLevels.label(child.level) : child.schoolName ?? context.l10n.roleStudent,
               style: WinType.labelM(s.onMuted)),
         ])),
         const Icon(Icons.chevron_right, color: WinColors.ink300),
@@ -468,7 +469,7 @@ class _TrackedChildCard extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: WinType.titleM(s.onStrong)),
-          Text(child.level,
+          Text(ClassLevels.label(child.level),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: WinType.labelS(s.onMuted)),
@@ -1051,7 +1052,7 @@ class _ParentProfileTabState extends State<ParentProfileTab> {
                             Text(c.firstName.isEmpty ? c.fullName : c.firstName,
                                 style: WinType.bodyM(s.onStrong)
                                     .copyWith(fontWeight: FontWeight.w600)),
-                            Text(c.level ?? c.schoolName ?? context.l10n.roleStudent,
+                            Text(c.level != null ? ClassLevels.label(c.level) : c.schoolName ?? context.l10n.roleStudent,
                                 style: WinType.labelS(s.onMuted)),
                           ])),
                       if (_scores[c.id] != null)

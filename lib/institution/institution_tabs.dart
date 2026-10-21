@@ -1,3 +1,4 @@
+import '../l10n/class_levels.dart';
 import 'package:flutter/material.dart';
 import '../l10n/l10n.dart';
 import '../widgets/language_selector.dart';
@@ -81,7 +82,7 @@ class _GroupRow extends StatelessWidget {
                   children: [
                 Text(g.name, style: WinType.titleM(s.onStrong)),
                 const SizedBox(height: 2),
-                Text(g.level, style: WinType.labelM(s.onMuted)),
+                Text(ClassLevels.label(g.level), style: WinType.labelM(s.onMuted)),
               ])),
           const SizedBox(width: 10),
           Text(context.l10n.instDashStudentsCount(g.memberCount), style: WinType.labelM(s.onFaint)),
@@ -545,7 +546,7 @@ class _InstitutionCatalogTabState extends State<InstitutionCatalogTab> {
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         style: WinType.titleM(s.onStrong)),
-                                    Text('${subj.short} · ${item.level ?? ''}',
+                                    Text('${subj.short} · ${ClassLevels.label(item.level)}',
                                         style: WinType.labelM(s.onMuted)),
                                   ])),
                               WinButton(context.l10n.instCatalogAssign,

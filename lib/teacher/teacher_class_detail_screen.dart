@@ -1,3 +1,4 @@
+import '../l10n/class_levels.dart';
 import 'package:flutter/material.dart';
 import '../services/teacher_service.dart';
 import '../theme/win_colors.dart';
@@ -199,7 +200,7 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
             Expanded(
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(st.displayName, style: WinType.titleM(s.onStrong)),
-              Text(st.level ?? st.email ?? '', style: WinType.labelM(s.onMuted)),
+              Text(st.level != null ? ClassLevels.label(st.level) : st.email ?? '', style: WinType.labelM(s.onMuted)),
             ])),
             Text(hasScore ? '${st.avgScore!.round()}%' : '—', style: WinType.archivo(size: 15, color: col)),
             const SizedBox(width: 6),

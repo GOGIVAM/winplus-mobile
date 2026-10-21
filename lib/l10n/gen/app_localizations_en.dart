@@ -4586,7 +4586,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get teacherAiSuggestCorrection => 'Model worked solution';
 
   @override
-  String get teacherAiSuggestQuiz => 'Terminale C quiz (10 MCQs)';
+  String get teacherAiSuggestQuiz => 'Upper Sixth C quiz (10 MCQs)';
 
   @override
   String get teacherAiSuggestSheet => 'Course sheet';
@@ -4910,7 +4910,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get teacherClassesInactive => 'Deactivated';
 
   @override
-  String get teacherClassesLevelHint => 'E.g. Terminale';
+  String get teacherClassesLevelHint => 'E.g. Upper Sixth';
 
   @override
   String get teacherClassesLoadError => 'Your classes could not be loaded.';
@@ -4925,7 +4925,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get teacherClassesName => 'Class name';
 
   @override
-  String get teacherClassesNameHint => 'E.g. Terminale C Maths';
+  String get teacherClassesNameHint => 'E.g. Upper Sixth C Maths';
 
   @override
   String get teacherClassesNone => 'No classes';
@@ -5560,7 +5560,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get teacherProfileProTitle => 'Professional title';
 
   @override
-  String get teacherProfileProTitleHint => 'e.g. Maths teacher  Terminale C/D';
+  String get teacherProfileProTitleHint =>
+      'e.g. Maths teacher  Upper Sixth C/D';
 
   @override
   String get teacherProfileRate => 'Rate';
@@ -7558,4 +7559,47 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get wrongCredentials => 'Incorrect email or password.';
+
+  @override
+  String get instMonthlyReportTitle => 'Monthly report by email';
+
+  @override
+  String get instMonthlyReportSub => 'Sent by email on the 1st of each month';
+
+  @override
+  String get instMonthlyReportMeta =>
+      'The month\'s figures, homework, announcements, report cards, students to follow up and the WinAI action plan.';
+
+  @override
+  String get instMonthlyReportSendNow => 'Get it now';
+
+  @override
+  String get instMonthlyReportSending => 'Sending…';
+
+  @override
+  String get instMonthlyReportSent =>
+      'Sent: check your inbox (and your spam folder).';
+
+  @override
+  String get instMonthlyReportError => 'Sending failed. Try again in a moment.';
+
+  @override
+  String get instMonthlyReportNoEmail =>
+      'There is no email address on this account.';
+
+  @override
+  String get studentPdfLoadError => 'The document couldn\'t be loaded.';
+
+  @override
+  String get studentPlayerTapToOpen => 'Tap to open the document';
+
+  @override
+  String get studentPlayerOpenOnWeb =>
+      'This type of file opens on the winplus.cm website.';
+
+  @override
+  String get studentCertCopyLink => 'Copy link';
+
+  @override
+  String get studentCertLinkCopied => 'Verification link copied.';
 }

@@ -7630,4 +7630,47 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get wrongCredentials => 'Email ou mot de passe incorrect.';
+
+  @override
+  String get instMonthlyReportTitle => 'Rapport mensuel par e-mail';
+
+  @override
+  String get instMonthlyReportSub => 'Reçu par e-mail le 1er de chaque mois';
+
+  @override
+  String get instMonthlyReportMeta =>
+      'Chiffres du mois, devoirs, annonces, bulletins, élèves à relancer et plan d\'action WinAI.';
+
+  @override
+  String get instMonthlyReportSendNow => 'Recevoir maintenant';
+
+  @override
+  String get instMonthlyReportSending => 'Envoi…';
+
+  @override
+  String get instMonthlyReportSent =>
+      'Envoyé : vérifiez votre boîte de réception (et les indésirables).';
+
+  @override
+  String get instMonthlyReportError =>
+      'L\'envoi a échoué. Réessayez dans un instant.';
+
+  @override
+  String get instMonthlyReportNoEmail => 'Aucune adresse e-mail sur ce compte.';
+
+  @override
+  String get studentPdfLoadError => 'Le document n\'a pas pu être chargé.';
+
+  @override
+  String get studentPlayerTapToOpen => 'Appuyez pour ouvrir le document';
+
+  @override
+  String get studentPlayerOpenOnWeb =>
+      'Ce type de fichier s\'ouvre depuis le site winplus.cm.';
+
+  @override
+  String get studentCertCopyLink => 'Copier le lien';
+
+  @override
+  String get studentCertLinkCopied => 'Lien de vérification copié.';
 }

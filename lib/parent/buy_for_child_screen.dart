@@ -1,3 +1,4 @@
+import '../l10n/class_levels.dart';
 import 'package:flutter/material.dart';
 import '../theme/win_motion.dart';
 import '../data/mock_data.dart';
@@ -113,7 +114,7 @@ class _BuyForChildScreenState extends State<BuyForChildScreen> {
                 final kid = widget.children[i];
                 final sel = i == _selectedChildIndex;
                 final levelLabel = kid.level != null && kid.level!.isNotEmpty
-                    ? kid.level!
+                    ? ClassLevels.label(kid.level)
                     : context.l10n.roleStudent;
                 return GestureDetector(
                   onTap: () => _selectChild(i),
@@ -140,7 +141,7 @@ class _BuyForChildScreenState extends State<BuyForChildScreen> {
           ),
           const SizedBox(height: 24),
           Text(
-            context.l10n.parentBuyRecommended(_selected.firstName, _selected.level != null ? '  ${_selected.level}' : ''),
+            context.l10n.parentBuyRecommended(_selected.firstName, _selected.level != null ? '  ${ClassLevels.label(_selected.level)}' : ''),
             style: WinType.archivo(size: 18, color: s.onStrong),
           ),
           const SizedBox(height: 12),

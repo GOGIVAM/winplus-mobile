@@ -1,3 +1,4 @@
+import '../../l10n/class_levels.dart';
 import 'package:flutter/material.dart';
 import '../../l10n/l10n.dart';
 import '../../theme/win_motion.dart';
@@ -216,7 +217,7 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
                 });
               }
               final lvl = _tutorLevels[i - 2];
-              return WinChip(lvl, active: _level == lvl, onTap: () {
+              return WinChip(ClassLevels.label(lvl), active: _level == lvl, onTap: () {
                 setState(() => _level = _level == lvl ? null : lvl);
                 _search();
               });

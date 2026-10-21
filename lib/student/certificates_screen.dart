@@ -1,8 +1,7 @@
 import '../l10n/l10n.dart';
-import 'dart:typed_data';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:pdfrx/pdfrx.dart';
+import 'package:flutter/services.dart';
+import '../widgets/remote_pdf_screen.dart';
 import '../services/certificate_service.dart';
 import '../services/course_service.dart';
 import '../theme/win_motion.dart';
@@ -203,24 +202,41 @@ class _CertificatesScreenState extends State<CertificatesScreen> {
                                       ]),
                                       const SizedBox(height: 14),
                                     ],
+                                    // Lot 10.6 : boutons branchés sur le vrai certificat
+                                    // (fileUrl du serveur, comme le web) ; un bouton
+                                    // sans donnée derrière n'est pas affiché.
                                     Row(children: [
-                                      Expanded(
-                                        child: WinButton(context.l10n.studentCertDownloadPdf,
-                                            variant: WinButtonVariant.outline,
-                                            small: true,
-                                            icon: Icons.download_outlined,
-                                            onTap: cert.pdfUrl != null
-                                                ? () {}
-                                                : null),
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Expanded(
-                                        child: WinButton(context.l10n.studentCertShare,
-                                            variant: WinButtonVariant.ghost,
-                                            small: true,
-                                            icon: Icons.share_outlined,
-                                            onTap: () {}),
-                                      ),
+                                      if (cert.pdfUrl != null)
+                                        Expanded(
+                                          child: WinButton(context.l10n.studentCertSeePdf,
+                                              variant: WinButtonVariant.outline,
+                                              small: true,
+                                              icon: Icons.picture_as_pdf_outlined,
+                                              onTap: () => Navigator.push(
+                                                  context,
+                                                  WinPageRoute(
+                                                    builder: (_) => RemotePdfScreen(
+                                                        title: cert.title,
+                                                        url: cert.pdfUrl!,
+                                                        errorText: L10n.current.studentCertPdfLoadError),
+                                                  ))),
+                                        ),
+                                      if (cert.pdfUrl != null && cert.verificationCode != null)
+                                        const SizedBox(width: 8),
+                                      if (cert.verificationCode != null)
+                                        Expanded(
+                                          child: WinButton(context.l10n.studentCertCopyLink,
+                                              variant: WinButtonVariant.ghost,
+                                              small: true,
+                                              icon: Icons.link,
+                                              onTap: () async {
+                                                final messenger = ScaffoldMessenger.of(context);
+                                                final done = L10n.current.studentCertLinkCopied;
+                                                await Clipboard.setData(ClipboardData(
+                                                    text: 'https://winplus.cm/verify/${cert.verificationCode}'));
+                                                messenger.showSnackBar(SnackBar(content: Text(done)));
+                                              }),
+                                        ),
                                     ]),
                                     const SizedBox(height: 10),
                                     Row(children: [
@@ -288,65 +304,12 @@ class _CourseCertificateCard extends StatelessWidget {
                 : () => Navigator.push(
                     context,
                     WinPageRoute(
-                      builder: (_) => _CertificatePdfScreen(
-                          title: cert.courseTitle, url: cert.fileUrl!),
+                      builder: (_) => RemotePdfScreen(
+                          title: cert.courseTitle,
+                          url: cert.fileUrl!,
+                          errorText: L10n.current.studentCertPdfLoadError),
                     ))),
       ]),
-    );
-  }
-}
-
-class _CertificatePdfScreen extends StatefulWidget {
-  final String title;
-  final String url;
-  const _CertificatePdfScreen({required this.title, required this.url});
-  @override
-  State<_CertificatePdfScreen> createState() => _CertificatePdfScreenState();
-}
-
-class _CertificatePdfScreenState extends State<_CertificatePdfScreen> {
-  Uint8List? _bytes;
-  String? _error;
-
-  @override
-  void initState() {
-    super.initState();
-    _load();
-  }
-
-  Future<void> _load() async {
-    try {
-      // Lien présigné S3 : requête sans en-tête d'authentification.
-      final res = await Dio().get<List<int>>(widget.url,
-          options: Options(responseType: ResponseType.bytes));
-      if (!mounted) return;
-      setState(() => _bytes = Uint8List.fromList(res.data ?? const []));
-    } catch (_) {
-      if (mounted) {
-        setState(() => _error = L10n.current.studentCertPdfLoadError);
-      }
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final s = WinTheme.of(context);
-    return Scaffold(
-      backgroundColor: s.bg,
-      appBar: AppBar(
-        backgroundColor: s.bg,
-        elevation: 0,
-        foregroundColor: s.onStrong,
-        title: Text(widget.title, style: WinType.titleM(s.onStrong)),
-      ),
-      body: _error != null
-          ? Center(child: Text(_error!, style: WinType.bodyM(s.onMuted)))
-          : _bytes == null
-              ? const Center(child: CircularProgressIndicator())
-              : PdfViewer.data(_bytes!,
-                  sourceName:
-                      'winplus-course-cert-${widget.url.hashCode}-${DateTime.now().microsecondsSinceEpoch}',
-                  params: PdfViewerParams(backgroundColor: s.bg)),
     );
   }
 }

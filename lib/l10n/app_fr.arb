@@ -4658,5 +4658,18 @@
     }
   },
   "widgetOfflineUnknown": "inconnue",
-  "wrongCredentials": "Email ou mot de passe incorrect."
+  "wrongCredentials": "Email ou mot de passe incorrect.",
+  "instMonthlyReportTitle": "Rapport mensuel par e-mail",
+  "instMonthlyReportSub": "Reçu par e-mail le 1er de chaque mois",
+  "instMonthlyReportMeta": "Chiffres du mois, devoirs, annonces, bulletins, élèves à relancer et plan d'action WinAI.",
+  "instMonthlyReportSendNow": "Recevoir maintenant",
+  "instMonthlyReportSending": "Envoi…",
+  "instMonthlyReportSent": "Envoyé : vérifiez votre boîte de réception (et les indésirables).",
+  "instMonthlyReportError": "L'envoi a échoué. Réessayez dans un instant.",
+  "instMonthlyReportNoEmail": "Aucune adresse e-mail sur ce compte.",
+  "studentPdfLoadError": "Le document n'a pas pu être chargé.",
+  "studentPlayerTapToOpen": "Appuyez pour ouvrir le document",
+  "studentPlayerOpenOnWeb": "Ce type de fichier s'ouvre depuis le site winplus.cm.",
+  "studentCertCopyLink": "Copier le lien",
+  "studentCertLinkCopied": "Lien de vérification copié."
 }

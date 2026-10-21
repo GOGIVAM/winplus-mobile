@@ -1,3 +1,4 @@
+import '../l10n/class_levels.dart';
 import 'package:flutter/material.dart';
 import '../services/institution_service.dart';
 import '../theme/win_colors.dart';
@@ -355,7 +356,7 @@ class _StudentRow extends StatelessWidget {
           ),
           Text(
             [
-              if (student.level != null) student.level!,
+              if (student.level != null) ClassLevels.label(student.level),
               if (student.group != null) student.group!
             ].join(' · '),
             style: WinType.labelM(s.onMuted),

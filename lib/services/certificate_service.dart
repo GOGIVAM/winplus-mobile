@@ -7,6 +7,9 @@ class ApiCertificate {
   final String issuedAt;
   final String? pdfUrl;
   final int? score;
+
+  /// Code de vérification publique (page web /verify/{code}).
+  final String? verificationCode;
   const ApiCertificate({
     required this.id,
     required this.title,
@@ -14,6 +17,7 @@ class ApiCertificate {
     required this.issuedAt,
     this.pdfUrl,
     this.score,
+    this.verificationCode,
   });
 
   /// Module 25 : lit les champs réellement renvoyés par CertificateDto
@@ -25,6 +29,9 @@ class ApiCertificate {
         issuedAt: j['issuedAt']?.toString() ?? '',
         pdfUrl: (j['fileUrl'] ?? j['pdfUrl']) as String?,
         score: ((j['grade'] ?? j['score']) as num?)?.round(),
+        verificationCode: (j['verificationCode'] as String?)?.trim().isEmpty ?? true
+            ? null
+            : (j['verificationCode'] as String).trim(),
       );
 }
 

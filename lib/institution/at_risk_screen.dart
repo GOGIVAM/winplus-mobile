@@ -1,3 +1,4 @@
+import '../l10n/class_levels.dart';
 import 'package:flutter/material.dart';
 import '../theme/win_motion.dart';
 import '../services/institution_service.dart';
@@ -177,7 +178,7 @@ class _AtRiskCard extends StatelessWidget {
                 Text(student.fullName, style: WinType.titleM(s.onStrong)),
                 Text(
                     student.level.isNotEmpty
-                        ? student.level
+                        ? ClassLevels.label(student.level)
                         : (student.groupName ?? ''),
                     style: WinType.labelM(s.onMuted)),
               ])),
