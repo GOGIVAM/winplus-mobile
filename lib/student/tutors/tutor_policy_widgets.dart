@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../l10n/l10n.dart';
 import '../../services/tutor_booking_service.dart';
 import '../../theme/win_colors.dart';
 import '../../theme/win_theme.dart';
@@ -54,19 +55,19 @@ class _TutorCancellationPolicyCardState
     final none = widget.noRefundHours;
     final p = _policy;
     final lines = <String>[
-      'Remboursement intégral si tu annules au moins $full h avant la séance.',
+      context.l10n.tutoringPolicyFull(full),
       if (none < full)
-        '${widget.partialRefundPercent} % remboursés entre $none h et $full h avant.',
+        context.l10n.tutoringPolicyPartial(widget.partialRefundPercent, none, full),
       none > 0
-          ? 'Aucun remboursement à moins de $none h.'
-          : 'Remboursement possible jusqu\'au début de la séance.',
+          ? context.l10n.tutoringPolicyNone(none)
+          : context.l10n.tutoringPolicyUntilStart,
       if (!widget.compact)
-        'Si le tuteur annule, refuse ou ne répond pas : remboursement intégral.',
+        context.l10n.tutoringPolicyTutorCancels,
       p != null
-          ? 'Remboursements versés immédiatement sur ton portefeuille WinPlus. Si tu annules une séance payée par Mobile Money, ${p.feePercentLabel} % de frais de l\'opérateur sont déduits ; aucun frais pour un paiement par solde.'
-          : 'Remboursements versés immédiatement sur ton portefeuille WinPlus.',
+          ? context.l10n.tutoringPolicyWalletFee(p.feePercentLabel)
+          : context.l10n.tutoringPolicyWallet,
       if (p != null)
-        'Après la séance, tu as ${p.disputeWindowHours} h pour la contester.',
+        context.l10n.tutoringPolicyDispute(p.disputeWindowHours),
     ];
     return WinCard(
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -75,7 +76,7 @@ class _TutorCancellationPolicyCardState
               size: 18, color: WinColors.teal700),
           const SizedBox(width: 8),
           Expanded(
-              child: Text('Politique d\'annulation de ce tuteur',
+              child: Text(context.l10n.tutoringPolicyCardTitle,
                   style: WinType.titleM(s.onStrong))),
         ]),
         const SizedBox(height: 8),
@@ -89,7 +90,7 @@ class _TutorCancellationPolicyCardState
         const SizedBox(height: 4),
         GestureDetector(
           onTap: () => openTutorPolicy(context),
-          child: Text('Lire la politique de tutorat',
+          child: Text(context.l10n.tutoringPolicyRead,
               style: WinType.labelM(WinColors.teal700)
                   .copyWith(decoration: TextDecoration.underline)),
         ),
@@ -137,7 +138,7 @@ class _TutorPolicyScreenState extends State<TutorPolicyScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         iconTheme: IconThemeData(color: s.onStrong),
-        title: Text('Politique de tutorat', style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.studentHubTutorPolicy, style: WinType.headlineS(s.onStrong)),
       ),
       body: SafeArea(
         child: _error
@@ -145,10 +146,10 @@ class _TutorPolicyScreenState extends State<TutorPolicyScreen> {
                 child: Padding(
                 padding: const EdgeInsets.all(24),
                 child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  const WinAlert('Impossible de charger la politique.',
+                  WinAlert(context.l10n.tutoringPolicyLoadError,
                       type: BadgeColor.error),
                   const SizedBox(height: 12),
-                  WinButton('Réessayer',
+                  WinButton(context.l10n.commonRetry,
                       variant: WinButtonVariant.outline, onTap: _load),
                 ]),
               ))
@@ -158,15 +159,15 @@ class _TutorPolicyScreenState extends State<TutorPolicyScreen> {
                     padding: const EdgeInsets.all(16),
                     children: [
                       Text(
-                          'Les règles communes à toutes les séances de cours particuliers réservées sur WinPlus.',
+                          context.l10n.tutoringPolicyIntro,
                           style: WinType.bodyS(s.onMuted)),
                       const SizedBox(height: 12),
                       Wrap(spacing: 8, runSpacing: 8, children: [
                         _Fact('${p.disputeWindowHours} h',
-                            'pour contester une séance'),
-                        const _Fact('Immédiat', 'remboursement au portefeuille'),
-                        _Fact('${p.feePercentLabel} %',
-                            'de frais Mobile Money si tu annules toi-même'),
+                            context.l10n.tutoringPolicyFactDispute),
+                        _Fact(context.l10n.tutoringPolicyFactImmediate, context.l10n.tutoringPolicyFactRefund),
+                        _Fact(context.l10n.tutoringPercent(p.feePercentLabel),
+                            context.l10n.tutoringPolicyFactFee),
                       ]),
                       const SizedBox(height: 12),
                       ...p.sections.map((sec) => Padding(
@@ -188,7 +189,7 @@ class _TutorPolicyScreenState extends State<TutorPolicyScreen> {
                             ),
                           )),
                       if (p.version.isNotEmpty)
-                        Text('Version du ${_frDate(p.version)}.',
+                        Text(context.l10n.tutoringPolicyVersion(_frDate(p.version)),
                             style: WinType.labelS(s.onFaint)),
                     ],
                   ),
@@ -199,7 +200,7 @@ class _TutorPolicyScreenState extends State<TutorPolicyScreen> {
   static String _frDate(String iso) {
     final d = DateTime.tryParse(iso);
     if (d == null) return iso;
-    return '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year}';
+    return WinFormat.dateNumeric(d);
   }
 }
 

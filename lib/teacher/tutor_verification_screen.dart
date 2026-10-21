@@ -7,6 +7,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import '../l10n/l10n.dart';
 
 /// Lot 9.5 (suivi 17.11, 17.16) : vérification du tuteur pour le présentiel.
 /// Trois voies, une seule suffit :
@@ -26,7 +27,7 @@ String _fmt(DateTime? d) {
   if (d == null) return '';
   final l = d.toLocal();
   String two(int n) => n.toString().padLeft(2, '0');
-  return '${two(l.day)}/${two(l.month)}/${l.year} à ${two(l.hour)}:${two(l.minute)}';
+  return L10n.current.fmtDateAtTime('${two(l.day)}/${two(l.month)}/${l.year}', '${two(l.hour)}:${two(l.minute)}');
 }
 
 class _TutorVerificationScreenState extends State<TutorVerificationScreen> {
@@ -79,7 +80,7 @@ class _TutorVerificationScreenState extends State<TutorVerificationScreen> {
     final f = res?.files.firstOrNull;
     if (f == null || f.bytes == null) return null;
     if (f.size > 8 * 1024 * 1024) {
-      _toast('Fichier trop volumineux (8 Mo maximum).');
+      _toast(L10n.current.teacherVerifFileTooBig);
       return null;
     }
     return IdentityUpload(f.bytes!, f.name);
@@ -100,13 +101,13 @@ class _TutorVerificationScreenState extends State<TutorVerificationScreen> {
       if (shot == null) return null;
       final bytes = await shot.readAsBytes();
       if (bytes.length > 8 * 1024 * 1024) {
-        _toast('Photo trop volumineuse (8 Mo maximum).');
+        _toast(L10n.current.teacherVerifPhotoTooBig);
         return null;
       }
       final name = shot.name.contains('.') ? shot.name : 'selfie.jpg';
       return IdentityUpload(bytes, name);
     } catch (_) {
-      _toast("Appareil photo indisponible : choisis plutôt une photo de ton visage dans tes fichiers.");
+      _toast(L10n.current.teacherVerifCameraUnavailable);
       return null;
     }
   }
@@ -127,13 +128,13 @@ class _TutorVerificationScreenState extends State<TutorVerificationScreen> {
 
   Future<void> _submitIdentity({int? interviewId}) async {
     if (_front == null || _selfie == null) {
-      _toast('Ajoute au moins le recto de ta pièce et un selfie.');
+      _toast(L10n.current.teacherVerifNeedFiles);
       return;
     }
     await _run(
         () => TutorVerificationService.instance.submitIdentity(
             documentType: _docType, front: _front!, back: _back, selfie: _selfie!, interviewId: interviewId),
-        "Documents envoyés. L'équipe WinPlus va les comparer.");
+        L10n.current.teacherVerifSent);
     if (mounted) setState(() { _front = null; _back = null; _selfie = null; });
   }
 
@@ -144,7 +145,7 @@ class _TutorVerificationScreenState extends State<TutorVerificationScreen> {
             availability: _availabilityCtrl.text.trim(),
             city: _format == 'in_person' ? _cityCtrl.text.trim() : null,
             message: _messageCtrl.text.trim()),
-        'Demande envoyée. Un agent WinPlus va te proposer une date.');
+        L10n.current.teacherVerifRequested);
   }
 
   @override
@@ -157,7 +158,7 @@ class _TutorVerificationScreenState extends State<TutorVerificationScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(icon: Icon(Icons.arrow_back, color: s.onStrong), onPressed: () => Navigator.pop(context)),
-        title: Text('Vérification présentiel', style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.teacherVerifTitle, style: WinType.headlineS(s.onStrong)),
       ),
       body: st == null
           ? Center(
@@ -167,7 +168,7 @@ class _TutorVerificationScreenState extends State<TutorVerificationScreen> {
                       child: Column(mainAxisSize: MainAxisSize.min, children: [
                         Text(_loadError!, textAlign: TextAlign.center, style: WinType.bodyM(s.onMuted)),
                         const SizedBox(height: 12),
-                        WinButton('Réessayer', onTap: _load),
+                        WinButton(context.l10n.commonRetry, onTap: _load),
                       ]))
                   : const CircularProgressIndicator())
           : RefreshIndicator(
@@ -182,7 +183,7 @@ class _TutorVerificationScreenState extends State<TutorVerificationScreen> {
                 _institutionCard(s, st),
                 if (st.history.isNotEmpty) ...[
                   const SizedBox(height: 16),
-                  Text('Historique', style: WinType.labelM(s.onStrong)),
+                  Text(context.l10n.teacherVerifHistory, style: WinType.labelM(s.onStrong)),
                   const SizedBox(height: 6),
                   for (final h in st.history)
                     Padding(
@@ -198,32 +199,31 @@ class _TutorVerificationScreenState extends State<TutorVerificationScreen> {
 
   Widget _header(WinScheme s, TutorVerificationStatus st) {
     final (label, color) = st.isSuspended
-        ? ('Présentiel suspendu', BadgeColor.error)
+        ? (context.l10n.teacherVerifSuspended, BadgeColor.error)
         : st.isVerified
-            ? ('Vérifié pour le présentiel', BadgeColor.success)
-            : ('En ligne uniquement', BadgeColor.neutral);
+            ? (context.l10n.tutoringInPersonVerified, BadgeColor.success)
+            : (context.l10n.tutoringOnlineOnly, BadgeColor.neutral);
     return WinCard(
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
           Icon(Icons.verified_user_outlined, color: s.primary),
           const SizedBox(width: 8),
-          Expanded(child: Text('Présentiel', style: WinType.titleM(s.onStrong))),
+          Expanded(child: Text(context.l10n.teacherPricingInPerson, style: WinType.titleM(s.onStrong))),
           WinBadge(label, color: color),
         ]),
         const SizedBox(height: 8),
         Text(
-            "Les séances chez l'élève, chez toi ou en lieu neutre sont réservées aux tuteurs vérifiés. "
-            'Choisis une des trois voies : une seule suffit. Le diplôme reste un badge facultatif.',
+            context.l10n.teacherVerifIntro,
             style: WinType.bodyS(s.onMuted)),
         if (st.isVerified && st.routes.isNotEmpty) ...[
           const SizedBox(height: 6),
-          Text('Voie(s) validée(s) : ${st.routes.map((r) => kVerificationRouteLabels[r] ?? r).join(', ')}',
+          Text(context.l10n.teacherVerifRoutesValidated(st.routes.map((r) => kVerificationRouteLabels[r] ?? r).join(', ')),
               style: WinType.labelS(s.onMuted)),
         ],
         if (st.isSuspended) ...[
           const SizedBox(height: 10),
-          const WinAlert(
-              "Suite à des signalements, tes séances présentielles sont suspendues le temps qu'un membre de l'équipe WinPlus examine la situation. Tes séances en ligne restent possibles.",
+          WinAlert(
+              context.l10n.teacherVerifSuspendedBanner,
               type: BadgeColor.error),
         ],
       ]),
@@ -236,10 +236,10 @@ class _TutorVerificationScreenState extends State<TutorVerificationScreen> {
         padding: const EdgeInsets.only(bottom: 8),
         child: Row(children: [
           Expanded(
-              child: Text(file == null ? label : '$label : ${file.fileName}',
+              child: Text(file == null ? label : context.l10n.teacherVerifFileLine(label, file.fileName),
                   style: WinType.labelM(file == null ? s.onMuted : s.onStrong), overflow: TextOverflow.ellipsis)),
           if (camera) ...[
-            WinButton(file == null ? 'Prendre' : 'Reprendre',
+            WinButton(file == null ? context.l10n.teacherVerifTake : context.l10n.teacherVerifRetake,
                 small: true,
                 icon: Icons.photo_camera_outlined,
                 onTap: _busy
@@ -250,7 +250,7 @@ class _TutorVerificationScreenState extends State<TutorVerificationScreen> {
                       }),
             const SizedBox(width: 6),
           ],
-          WinButton(file == null ? (camera ? 'Fichier' : 'Choisir') : 'Changer',
+          WinButton(file == null ? (camera ? context.l10n.teacherVerifFile : context.l10n.teacherVerifChoose) : context.l10n.studentProfileChange,
               small: true,
               variant: WinButtonVariant.outline,
               icon: Icons.upload_file_outlined,
@@ -262,17 +262,17 @@ class _TutorVerificationScreenState extends State<TutorVerificationScreen> {
       Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         DropdownButtonFormField<String>(
           initialValue: _docType,
-          decoration: const InputDecoration(labelText: 'Type de pièce', border: OutlineInputBorder()),
+          decoration: InputDecoration(labelText: context.l10n.teacherVerifDocType, border: const OutlineInputBorder()),
           items: kIdentityDocumentTypes.entries
               .map((e) => DropdownMenuItem(value: e.key, child: Text(e.value)))
               .toList(),
           onChanged: _busy ? null : (v) => setState(() => _docType = v ?? 'cni'),
         ),
         const SizedBox(height: 10),
-        _fileRow(s, 'Recto de la pièce', _front, false, (f) => setState(() => _front = f)),
-        _fileRow(s, 'Verso (si besoin)', _back, false, (f) => setState(() => _back = f)),
-        _fileRow(s, 'Selfie (ton visage)', _selfie, true, (f) => setState(() => _selfie = f), camera: true),
-        WinButton("Envoyer pour vérification",
+        _fileRow(s, context.l10n.teacherVerifFront, _front, false, (f) => setState(() => _front = f)),
+        _fileRow(s, context.l10n.teacherVerifBack, _back, false, (f) => setState(() => _back = f)),
+        _fileRow(s, context.l10n.teacherVerifSelfie, _selfie, true, (f) => setState(() => _selfie = f), camera: true),
+        WinButton(context.l10n.teacherVerifSubmit,
             block: true,
             small: true,
             loading: _busy,
@@ -280,8 +280,7 @@ class _TutorVerificationScreenState extends State<TutorVerificationScreen> {
             onTap: _busy || _front == null || _selfie == null ? null : () => _submitIdentity(interviewId: interviewId)),
         const SizedBox(height: 6),
         Text(
-            "Fichiers privés, vus seulement par l'équipe WinPlus, jamais affichés sur ton profil. "
-            'Supprimés ${st.retentionDaysAfterApproval} jours après la validation (${st.retentionDaysAfterRejection} jours après un refus) ; seule la décision est conservée.',
+            context.l10n.teacherVerifRetention(st.retentionDaysAfterApproval, st.retentionDaysAfterRejection),
             style: WinType.labelS(s.onFaint)),
       ]);
 
@@ -292,19 +291,19 @@ class _TutorVerificationScreenState extends State<TutorVerificationScreen> {
         Row(children: [
           Icon(Icons.badge_outlined, size: 18, color: s.onMuted),
           const SizedBox(width: 6),
-          Expanded(child: Text("Pièce d'identité et selfie", style: WinType.titleM(s.onStrong))),
-          if (st.hasApprovedIdentity) const WinBadge('Validée', color: BadgeColor.success),
+          Expanded(child: Text(context.l10n.teacherVerifIdentityTitle, style: WinType.titleM(s.onStrong))),
+          if (st.hasApprovedIdentity) WinBadge(context.l10n.teacherVerifValidated, color: BadgeColor.success),
         ]),
         const SizedBox(height: 6),
-        Text('Un administrateur compare la photo de ta pièce et ton visage.', style: WinType.bodyS(s.onMuted)),
+        Text(context.l10n.teacherVerifIdentityText, style: WinType.bodyS(s.onMuted)),
         const SizedBox(height: 10),
         if (st.hasApprovedIdentity)
-          Text("Ta pièce d'identité est validée.", style: WinType.labelM(s.onMuted))
+          Text(context.l10n.teacherVerifIdentityOk, style: WinType.labelM(s.onMuted))
         else if (id?.status == 'pending')
-          WinAlert('En cours de vérification depuis le ${_fmt(id!.submittedAt)}.', type: BadgeColor.warn)
+          WinAlert(context.l10n.teacherVerifPendingSince(_fmt(id!.submittedAt)), type: BadgeColor.warn)
         else ...[
           if (id?.status == 'rejected') ...[
-            WinAlert('Refusée : ${id!.rejectionReason ?? ''}. Tu peux envoyer de nouveaux documents.', type: BadgeColor.error),
+            WinAlert(context.l10n.teacherVerifRejected(id!.rejectionReason ?? ''), type: BadgeColor.error),
             const SizedBox(height: 10),
           ],
           _identityForm(s, st),
@@ -321,44 +320,44 @@ class _TutorVerificationScreenState extends State<TutorVerificationScreen> {
         Row(children: [
           Icon(Icons.video_call_outlined, size: 18, color: s.onMuted),
           const SizedBox(width: 6),
-          Expanded(child: Text('Entretien avec un agent', style: WinType.titleM(s.onStrong))),
+          Expanded(child: Text(context.l10n.teacherVerifInterviewTitle, style: WinType.titleM(s.onStrong))),
           if (it != null)
             WinBadge(kInterviewStatusLabels[it.status] ?? it.status,
                 color: it.status == 'passed' ? BadgeColor.success : open ? BadgeColor.warn : BadgeColor.neutral),
         ]),
         const SizedBox(height: 6),
-        Text("En visio ou en rencontre. L'entretien ne remplace pas l'identité : prépare ta pièce, elle est jointe au dossier avec un selfie.",
+        Text(context.l10n.teacherVerifInterviewText,
             style: WinType.bodyS(s.onMuted)),
         const SizedBox(height: 10),
         if (open) ...[
           if (it.status == 'scheduled')
             Text(
-                'Prévu le ${_fmt(it.scheduledAt)}${it.meetingUrl != null ? '\nLien : ${it.meetingUrl}' : ''}${it.location != null ? '\nLieu : ${it.location}' : ''}',
+                '${context.l10n.teacherVerifScheduledOn(_fmt(it.scheduledAt))}${it.meetingUrl != null ? '\n${context.l10n.teacherVerifLink(it.meetingUrl!)}' : ''}${it.location != null ? '\n${context.l10n.teacherVerifPlace(it.location!)}' : ''}',
                 style: WinType.bodyM(s.onStrong))
           else
-            Text('Demande envoyée le ${_fmt(it.requestedAt)}. Un agent va te proposer une date.', style: WinType.labelM(s.onMuted)),
+            Text(context.l10n.teacherVerifRequestedOn(_fmt(it.requestedAt)), style: WinType.labelM(s.onMuted)),
           if (!it.hasIdentityAttached && !st.hasApprovedIdentity && st.latestIdentity?.status != 'pending') ...[
             const SizedBox(height: 10),
-            Text("Joindre ma pièce et mon selfie à l'entretien", style: WinType.labelM(s.onStrong)),
+            Text(context.l10n.teacherVerifAttach, style: WinType.labelM(s.onStrong)),
             const SizedBox(height: 6),
             _identityForm(s, st, interviewId: it.id),
           ],
           const SizedBox(height: 8),
-          WinButton('Annuler la demande',
+          WinButton(context.l10n.teacherVerifCancelRequest,
               small: true,
               variant: WinButtonVariant.ghost,
-              onTap: _busy ? null : () => _run(() => TutorVerificationService.instance.cancelInterview(it.id), 'Demande annulée.')),
+              onTap: _busy ? null : () => _run(() => TutorVerificationService.instance.cancelInterview(it.id), context.l10n.teacherVerifCancelled)),
         ] else if (st.hasPassedInterview)
           Text(
-              'Entretien réussi.${st.hasApprovedIdentity ? '' : " Il reste à valider ta pièce d'identité et ton selfie pour ouvrir le présentiel."}',
+              '${context.l10n.teacherVerifPassed}${st.hasApprovedIdentity ? '' : ' ${context.l10n.teacherVerifPassedNeedIdentity}'}',
               style: WinType.labelM(s.onMuted))
         else ...[
           if (it?.outcomeReason != null) ...[
-            WinAlert('Dernier entretien : ${it!.outcomeReason}', type: BadgeColor.neutral),
+            WinAlert(context.l10n.teacherVerifLastInterview(it!.outcomeReason!), type: BadgeColor.neutral),
             const SizedBox(height: 8),
           ],
           Row(children: [
-            for (final f in const [('video', 'Visio'), ('in_person', 'Rencontre')]) ...[
+            for (final f in [('video', context.l10n.teacherVerifVideo), ('in_person', context.l10n.teacherVerifMeeting)]) ...[
               Expanded(
                 child: WinButton(f.$2,
                     small: true,
@@ -369,15 +368,15 @@ class _TutorVerificationScreenState extends State<TutorVerificationScreen> {
             ],
           ]),
           const SizedBox(height: 10),
-          WinTextField(label: 'Tes disponibilités', hint: 'Ex. : mardi et jeudi après 17 h', controller: _availabilityCtrl),
+          WinTextField(label: context.l10n.teacherVerifAvailability, hint: context.l10n.teacherVerifAvailabilityHint, controller: _availabilityCtrl),
           if (_format == 'in_person') ...[
             const SizedBox(height: 8),
-            WinTextField(label: 'Ville de la rencontre', hint: 'Douala, Yaoundé…', controller: _cityCtrl),
+            WinTextField(label: context.l10n.teacherVerifMeetingCity, hint: context.l10n.teacherVerifCityHint, controller: _cityCtrl),
           ],
           const SizedBox(height: 8),
-          WinTextField(label: 'Message (facultatif)', controller: _messageCtrl),
+          WinTextField(label: context.l10n.teacherVerifMessage, controller: _messageCtrl),
           const SizedBox(height: 10),
-          WinButton('Demander un entretien',
+          WinButton(context.l10n.teacherVerifRequestInterview,
               block: true, small: true, loading: _busy, icon: Icons.event_available_outlined, onTap: _busy ? null : _requestInterview),
         ],
       ]),
@@ -392,24 +391,23 @@ class _TutorVerificationScreenState extends State<TutorVerificationScreen> {
         Row(children: [
           Icon(Icons.apartment_outlined, size: 18, color: s.onMuted),
           const SizedBox(width: 6),
-          Expanded(child: Text('Caution de ton institution', style: WinType.titleM(s.onStrong))),
-          if (active.any((e) => e.isValid)) const WinBadge('Active', color: BadgeColor.success),
+          Expanded(child: Text(context.l10n.teacherVerifInstitutionTitle, style: WinType.titleM(s.onStrong))),
+          if (active.any((e) => e.isValid)) WinBadge(context.l10n.teacherVerifActive, color: BadgeColor.success),
         ]),
         const SizedBox(height: 6),
         Text(
-            "Si tu es rattaché à un établissement sur WinPlus, il peut te cautionner après t'avoir vérifié par ses propres moyens. "
-            'Si le rattachement ou la caution est retiré, cette voie tombe.',
+            context.l10n.teacherVerifInstitutionText,
             style: WinType.bodyS(s.onMuted)),
         const SizedBox(height: 8),
         if (active.isEmpty)
-          Text('Aucune caution pour le moment. Demande à ton établissement de rattachement (Réseau) de te cautionner.',
+          Text(context.l10n.teacherVerifNoEndorsement,
               style: WinType.labelS(s.onFaint))
         else
           for (final e in active)
-            Text('${e.institutionName ?? 'Établissement'} · vérifié par ${e.verifierName}${e.isValid ? '' : ' (rattachement inactif)'}',
+            Text('${e.institutionName ?? context.l10n.roleInstitution} · ${context.l10n.teacherVerifVerifiedBy(e.verifierName)}${e.isValid ? '' : ' ${context.l10n.teacherVerifInactiveLink}'}',
                 style: WinType.labelM(s.onStrong)),
         for (final e in revoked)
-          Text('Caution de ${e.institutionName ?? ''} retirée le ${_fmt(e.revokedAt)}${e.revocationReason != null ? ' : ${e.revocationReason}' : ''}',
+          Text('${context.l10n.teacherVerifRevoked(e.institutionName ?? '', _fmt(e.revokedAt))}${e.revocationReason != null ? context.l10n.teacherVerifReasonSuffix(e.revocationReason!) : ''}',
               style: WinType.labelS(WinColors.ink400)),
       ]),
     );

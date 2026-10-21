@@ -1,3 +1,4 @@
+import '../l10n/l10n.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import '../services/session_manager.dart';
@@ -106,7 +107,7 @@ class _StudySessionScreenState extends State<StudySessionScreen> {
   Future<void> _startSession() async {
     final subject = _selectedSubject;
     if (subject == null) {
-      setState(() => _launcherError = 'Choisis une matière pour commencer.');
+      setState(() => _launcherError = L10n.current.studentSessionPickSubject);
       return;
     }
     setState(() {
@@ -132,7 +133,7 @@ class _StudySessionScreenState extends State<StudySessionScreen> {
       if (!mounted) return;
       setState(() {
         _starting = false;
-        _launcherError = 'Impossible de démarrer la session. Réessaie.';
+        _launcherError = L10n.current.studentSessionStartError;
       });
     }
   }
@@ -150,7 +151,7 @@ class _StudySessionScreenState extends State<StudySessionScreen> {
       if (questions.isEmpty) {
         setState(() {
           _phase = _Phase.briefing;
-          _launcherError = 'Impossible de générer le quiz. Réessaie dans un instant.';
+          _launcherError = L10n.current.studentSessionQuizError;
         });
         return;
       }
@@ -165,7 +166,7 @@ class _StudySessionScreenState extends State<StudySessionScreen> {
       if (!mounted) return;
       setState(() {
         _phase = _Phase.briefing;
-        _launcherError = 'Impossible de générer le quiz. Réessaie dans un instant.';
+        _launcherError = L10n.current.studentSessionQuizError;
       });
     }
   }
@@ -249,7 +250,7 @@ class _StudySessionScreenState extends State<StudySessionScreen> {
     } catch (_) {
       if (!mounted) return;
       setState(() {
-        _historyError = 'Impossible de charger l\'historique.';
+        _historyError = L10n.current.studentHistLoadError;
         _historyLoading = false;
       });
     }
@@ -290,7 +291,7 @@ class _StudySessionScreenState extends State<StudySessionScreen> {
             }
           },
         ),
-        title: Text("Session d'étude guidée", style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.studentTabsGuidedSession, style: WinType.headlineS(s.onStrong)),
       ),
       body: SafeArea(child: _buildBody(s)),
     );
@@ -318,16 +319,15 @@ class _StudySessionScreenState extends State<StudySessionScreen> {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text('Choisis une matière et une durée. WinAI prépare un briefing, '
-            'un quiz progressif puis une synthèse personnalisée.',
+        Text(context.l10n.studentSessionIntro,
             style: WinType.bodyM(s.onMuted)),
         const SizedBox(height: 24),
-        Text('Matière', style: WinType.titleM(s.onStrong)),
+        Text(context.l10n.commonSubject, style: WinType.titleM(s.onStrong)),
         const SizedBox(height: 10),
         if (_loadingSubjects)
           const Center(child: CircularProgressIndicator())
         else if (_subjects.isEmpty)
-          WinAlert('Aucune matière disponible pour le moment.',
+          WinAlert(context.l10n.studentSessionNoSubjects,
               type: BadgeColor.warn)
         else
           Wrap(
@@ -340,12 +340,12 @@ class _StudySessionScreenState extends State<StudySessionScreen> {
                 .toList(),
           ),
         const SizedBox(height: 24),
-        Text('Durée', style: WinType.titleM(s.onStrong)),
+        Text(context.l10n.commonDuration, style: WinType.titleM(s.onStrong)),
         const SizedBox(height: 10),
         Wrap(
           spacing: 8,
           children: _durations
-              .map((d) => WinChip('$d min',
+              .map((d) => WinChip(context.l10n.studentSessionMinutes(d),
                   active: _selectedDuration == d,
                   onTap: () => setState(() => _selectedDuration = d)))
               .toList(),
@@ -355,14 +355,14 @@ class _StudySessionScreenState extends State<StudySessionScreen> {
           WinAlert(_launcherError!, type: BadgeColor.error),
         ],
         const SizedBox(height: 28),
-        WinButton('Démarrer la session',
+        WinButton(context.l10n.studentSessionStart,
             block: true, loading: _starting, onTap: _startSession),
         const SizedBox(height: 14),
         Center(
           child: TextButton.icon(
             onPressed: _openHistory,
             icon: Icon(Icons.history, size: 18, color: s.primary),
-            label: Text('Voir mes sessions passées',
+            label: Text(context.l10n.studentSessionHistory,
                 style: WinType.labelM(s.primary)
                     .copyWith(fontWeight: FontWeight.w600)),
           ),
@@ -408,7 +408,11 @@ class _StudySessionScreenState extends State<StudySessionScreen> {
           spacing: 8,
           runSpacing: 6,
           children: List.generate(stepOrder.length, (i) {
-            final labels = ['Briefing', 'Quiz progressif', 'Synthèse WinAI'];
+            final labels = [
+              context.l10n.studentSessionStepBriefing,
+              context.l10n.studentSessionStepQuiz,
+              context.l10n.studentSessionStepSummary,
+            ];
             final done = i < currentStepIdx;
             final active = i == currentStepIdx;
             return WinBadge(
@@ -452,7 +456,7 @@ class _StudySessionScreenState extends State<StudySessionScreen> {
           WinAlert(_launcherError!, type: BadgeColor.error),
         ],
         const SizedBox(height: 20),
-        WinButton('Commencer le quiz', block: true, onTap: _startQuiz),
+        WinButton(context.l10n.studentDetailStartQuiz, block: true, onTap: _startQuiz),
       ]),
     );
   }
@@ -465,7 +469,7 @@ class _StudySessionScreenState extends State<StudySessionScreen> {
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text('Question ${_qIndex + 1} / ${_questions.length}',
+        Text(context.l10n.studentVarkQuestionCount(_qIndex + 1, _questions.length),
             style: WinType.labelM(s.onMuted)),
         const SizedBox(height: 10),
         Text(q.question, style: WinType.titleL(s.onStrong)),
@@ -508,8 +512,8 @@ class _StudySessionScreenState extends State<StudySessionScreen> {
           const SizedBox(height: 20),
           WinButton(
             _qIndex < _questions.length - 1
-                ? 'Question suivante'
-                : 'Voir la synthèse',
+                ? context.l10n.studentSessionNextQuestion
+                : context.l10n.studentSessionSeeSummary,
             block: true,
             onTap: _nextQuestion,
           ),
@@ -524,12 +528,12 @@ class _StudySessionScreenState extends State<StudySessionScreen> {
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         WinBadge(
-            '$_correctCount/${_questions.length} correctes · ${_score.round()}%',
+            context.l10n.studentSessionScoreLine(_correctCount, _questions.length, _score.round()),
             color: _score >= 50 ? BadgeColor.success : BadgeColor.warn),
         const SizedBox(height: 16),
         if (_synthesisError)
           WinAlert(
-              "La synthèse n'a pas pu être générée, mais tes réponses sont bien conservées.",
+              context.l10n.studentSessionSummaryError,
               type: BadgeColor.warn)
         else if (summary != null) ...[
           Text(summary.summary, style: WinType.bodyM(s.onSurface).copyWith(height: 1.6)),
@@ -546,7 +550,7 @@ class _StudySessionScreenState extends State<StudySessionScreen> {
               )),
         ],
         const SizedBox(height: 24),
-        WinButton('Terminer la session', block: true, onTap: _finishSession),
+        WinButton(context.l10n.studentSessionFinish, block: true, onTap: _finishSession),
       ]),
     );
   }
@@ -559,13 +563,13 @@ class _StudySessionScreenState extends State<StudySessionScreen> {
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           Icon(Icons.check_circle, size: 72, color: WinColors.teal500),
           const SizedBox(height: 16),
-          Text('Session terminée !', style: WinType.headlineS(s.onStrong)),
+          Text(context.l10n.studentSessionDone, style: WinType.headlineS(s.onStrong)),
           const SizedBox(height: 8),
           Text(
-              'Score : ${_score.round()}% sur ${session?.subject.name ?? ''}',
+              context.l10n.studentSessionDoneScore(_score.round(), session?.subject.name ?? ''),
               style: WinType.bodyM(s.onMuted)),
           const SizedBox(height: 28),
-          WinButton('Retour', block: true, onTap: () => Navigator.pop(context)),
+          WinButton(context.l10n.commonBack, block: true, onTap: () => Navigator.pop(context)),
         ]),
       ),
     );
@@ -587,7 +591,7 @@ class _StudySessionScreenState extends State<StudySessionScreen> {
     final items = _history ?? [];
     if (items.isEmpty) {
       return Center(
-          child: Text('Aucune session terminée pour le moment.',
+          child: Text(context.l10n.studentSessionNoHistory,
               style: WinType.bodyM(s.onMuted)));
     }
     return ListView.builder(
@@ -598,7 +602,7 @@ class _StudySessionScreenState extends State<StudySessionScreen> {
         final date = it.completedAt;
         final dateStr = date == null
             ? ''
-            : '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}';
+            : WinFormat.dateNumeric(date);
         return Padding(
           padding: const EdgeInsets.only(bottom: 10),
           child: WinCard(
@@ -610,7 +614,7 @@ class _StudySessionScreenState extends State<StudySessionScreen> {
                     Text(it.subject, style: WinType.titleM(s.onStrong)),
                     const SizedBox(height: 2),
                     Text(
-                        '${it.duration} min · ${it.score != null ? '${it.score!.round()}%' : 'sans score'} · $dateStr',
+                        context.l10n.studentSessionHistoryLine(it.duration, it.score != null ? '${it.score!.round()}%' : context.l10n.studentSessionNoScore, dateStr),
                         style: WinType.bodyS(s.onMuted)),
                   ])),
             ]),

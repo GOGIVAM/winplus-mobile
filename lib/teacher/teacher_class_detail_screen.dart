@@ -4,6 +4,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import '../l10n/l10n.dart';
 
 /// Module 12 : écran d'une classe (élèves + devoirs), en miroir strict des
 /// opérations exposées par TeacherClassesController côté serveur. Remplace
@@ -39,7 +40,7 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
       final s = await TeacherService.instance.getClassStudents(_klass.id);
       if (mounted) setState(() => _students = s);
     } catch (_) {
-      if (mounted) setState(() { _students = []; _studentsError = "Les élèves n'ont pas pu être chargés."; });
+      if (mounted) setState(() { _students = []; _studentsError = L10n.current.teacherClassStudentsLoadError; });
     }
   }
 
@@ -49,7 +50,7 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
       final all = await TeacherService.instance.getAssignments();
       if (mounted) setState(() => _assignments = all.where((a) => a.teacherClassId == _klass.id).toList());
     } catch (_) {
-      if (mounted) setState(() { _assignments = []; _assignmentsError = "Les devoirs n'ont pas pu être chargés."; });
+      if (mounted) setState(() { _assignments = []; _assignmentsError = L10n.current.teacherClassAssignmentsLoadError; });
     }
   }
 
@@ -60,9 +61,9 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) => _FormSheet(
-        title: 'Ajouter un élève',
-        child: WinTextField(label: 'Email WinPlus de l\'élève', hint: 'eleve@exemple.cm', icon: Icons.email_outlined, controller: ctrl),
-        submitLabel: 'Ajouter',
+        title: context.l10n.teacherClassAddStudent,
+        child: WinTextField(label: context.l10n.teacherClassStudentEmailLabel, hint: context.l10n.teacherClassStudentEmailHint, icon: Icons.email_outlined, controller: ctrl),
+        submitLabel: context.l10n.teacherClassAdd,
         onSubmit: () => Navigator.pop(ctx, ctrl.text.trim()),
       ),
     );
@@ -71,12 +72,12 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
       await TeacherService.instance.addClassStudent(_klass.id, email);
       await _loadStudents();
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Élève ajouté.')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(L10n.current.teacherClassStudentAdded)));
       }
     } catch (e) {
       if (mounted) {
-        final msg = e is Exception ? e.toString() : 'Cet élève n\'a pas pu être ajouté.';
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg.contains('DioException') ? "Cet élève n'a pas pu être ajouté (email inconnu ou déjà membre)." : msg)));
+        final msg = e is Exception ? e.toString() : L10n.current.teacherClassAddStudentError;
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg.contains('DioException') ? L10n.current.teacherClassAddStudentErrorDetail : msg)));
       }
     }
   }
@@ -85,11 +86,11 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Retirer cet élève ?'),
-        content: Text('${s.displayName} sera retiré(e) de « ${_klass.name} ».'),
+        title: Text(ctx.l10n.teacherClassRemoveStudentTitle),
+        content: Text(ctx.l10n.teacherClassRemoveStudentBody(s.displayName, _klass.name)),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Annuler')),
-          TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Retirer')),
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(ctx.l10n.commonCancel)),
+          TextButton(onPressed: () => Navigator.pop(ctx, true), child: Text(ctx.l10n.teacherClassRemove)),
         ],
       ),
     );
@@ -98,7 +99,7 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
       await TeacherService.instance.removeClassStudent(_klass.id, s.studentId);
       await _loadStudents();
     } catch (_) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Cet élève n'a pas pu être retiré.")));
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(L10n.current.teacherClassRemoveStudentError)));
     }
   }
 
@@ -111,15 +112,15 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) => _FormSheet(
-        title: 'Nouveau devoir',
-        submitLabel: 'Créer le devoir',
+        title: context.l10n.teacherClassNewAssignment,
+        submitLabel: context.l10n.teacherClassCreateAssignment,
         onSubmit: () => Navigator.pop(ctx, true),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-          WinTextField(label: 'Titre du devoir', hint: 'Ex. Devoir maison n°3', icon: Icons.assignment_outlined, controller: titleCtrl),
+          WinTextField(label: context.l10n.teacherClassAssignmentTitle, hint: context.l10n.teacherClassAssignmentTitleHint, icon: Icons.assignment_outlined, controller: titleCtrl),
           const SizedBox(height: 12),
-          _MultilineField(label: 'Énoncé (génère le barème WinAI)', hint: 'Colle l\'énoncé…', controller: statementCtrl),
+          _MultilineField(label: context.l10n.teacherClassStatementLabel, hint: context.l10n.teacherClassStatementHint, controller: statementCtrl),
           const SizedBox(height: 12),
-          _MultilineField(label: 'Corrigé de référence (facultatif)', hint: 'Ton propre corrigé…', controller: referenceCtrl),
+          _MultilineField(label: context.l10n.teacherClassReferenceLabel, hint: context.l10n.teacherClassReferenceHint, controller: referenceCtrl),
         ]),
       ),
     );
@@ -132,9 +133,9 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
         referenceAnswerText: referenceCtrl.text.trim().isEmpty ? null : referenceCtrl.text.trim(),
       );
       await _loadAssignments();
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Devoir créé. Les élèves sont notifiés.')));
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(L10n.current.teacherClassAssignmentCreated)));
     } catch (_) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Le devoir n'a pas pu être créé.")));
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(L10n.current.teacherClassAssignmentCreateError)));
     }
   }
 
@@ -153,9 +154,9 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Row(children: [
-            Expanded(child: WinChip('Élèves (${_klass.studentCount})', active: _tabStudents, onTap: () => setState(() => _tabStudents = true))),
+            Expanded(child: WinChip(context.l10n.tutoringStudentsN(_klass.studentCount), active: _tabStudents, onTap: () => setState(() => _tabStudents = true))),
             const SizedBox(width: 8),
-            Expanded(child: WinChip('Devoirs${_assignments != null ? ' (${_assignments!.length})' : ''}', active: !_tabStudents, onTap: () => setState(() => _tabStudents = false))),
+            Expanded(child: WinChip('${context.l10n.teacherClassAssignmentsTab}${_assignments != null ? ' (${_assignments!.length})' : ''}', active: !_tabStudents, onTap: () => setState(() => _tabStudents = false))),
           ]),
         ),
         Expanded(child: _tabStudents ? _buildStudents(s) : _buildAssignments(s)),
@@ -163,7 +164,7 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _tabStudents ? _addStudent : _createAssignment,
         icon: Icon(_tabStudents ? Icons.person_add_outlined : Icons.add),
-        label: Text(_tabStudents ? 'Ajouter un élève' : 'Nouveau devoir'),
+        label: Text(_tabStudents ? context.l10n.teacherClassAddStudent : context.l10n.teacherClassNewAssignment),
       ),
     );
   }
@@ -178,9 +179,9 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
           child: Column(mainAxisSize: MainAxisSize.min, children: [
         Icon(Icons.group_outlined, size: 56, color: s.onFaint),
         const SizedBox(height: 10),
-        Text('Aucun élève dans cette classe', style: WinType.bodyM(s.onMuted)),
+        Text(context.l10n.teacherClassNoStudents, style: WinType.bodyM(s.onMuted)),
         const SizedBox(height: 4),
-        Text('Ajoute un élève par son email WinPlus.', style: WinType.labelM(s.onFaint)),
+        Text(context.l10n.teacherClassNoStudentsHint, style: WinType.labelM(s.onFaint)),
       ]));
     }
     return ListView.separated(
@@ -205,7 +206,7 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
             IconButton(
               icon: Icon(Icons.person_remove_outlined, size: 19, color: s.onFaint),
               onPressed: () => _removeStudent(st),
-              tooltip: 'Retirer de la classe',
+              tooltip: context.l10n.teacherClassRemoveFromClass,
             ),
           ]),
         );
@@ -223,7 +224,7 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
           child: Column(mainAxisSize: MainAxisSize.min, children: [
         Icon(Icons.assignment_outlined, size: 56, color: s.onFaint),
         const SizedBox(height: 10),
-        Text('Aucun devoir pour l\'instant', style: WinType.bodyM(s.onMuted)),
+        Text(context.l10n.teacherClassNoAssignments, style: WinType.bodyM(s.onMuted)),
       ]));
     }
     return ListView.separated(
@@ -237,8 +238,8 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
             Text(a.title, style: WinType.titleM(s.onStrong)),
             const SizedBox(height: 4),
             Text(
-              '${a.submissionCount} copie${a.submissionCount != 1 ? 's' : ''}'
-              '${a.pendingCount > 0 ? '  ${a.pendingCount} à corriger' : ''}',
+              '${context.l10n.teacherClassCopies(a.submissionCount)}'
+              '${a.pendingCount > 0 ? '  ${context.l10n.teacherClassToMark(a.pendingCount)}' : ''}',
               style: WinType.labelM(a.pendingCount > 0 ? WinColors.warn : s.onMuted),
             ),
           ]),
@@ -261,7 +262,7 @@ class _ErrorState extends StatelessWidget {
         const SizedBox(height: 10),
         Text(message, style: WinType.bodyM(s.onMuted), textAlign: TextAlign.center),
         const SizedBox(height: 12),
-        WinButton('Réessayer', icon: Icons.refresh, onTap: onRetry),
+        WinButton(context.l10n.commonRetry, icon: Icons.refresh, onTap: onRetry),
       ]),
     );
   }

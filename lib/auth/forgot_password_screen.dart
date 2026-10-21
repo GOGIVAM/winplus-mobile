@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
 import '../services/auth_service.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
@@ -33,7 +34,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     } else {
       setState(() {
         _loading = false;
-        _error = result.message ?? 'Erreur réseau.';
+        _error = result.message ?? context.l10n.authErrNetwork;
       });
     }
   }
@@ -41,6 +42,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
+    final l10n = context.l10n;
     return Scaffold(
       backgroundColor: s.bg,
       appBar: AppBar(
@@ -58,30 +60,30 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 16),
-              Text('Mot de passe oublié', style: WinType.displayS(s.onStrong)),
+              Text(l10n.authForgotTitle, style: WinType.displayS(s.onStrong)),
               const SizedBox(height: 8),
               Text(
-                'Entrez votre adresse email, nous vous enverrons un lien de réinitialisation.',
+                l10n.authForgotIntro,
                 style: WinType.bodyM(s.onMuted),
               ),
               const SizedBox(height: 32),
               if (_sent) ...[
                 WinAlert(
-                  'Email envoyé à ${_ctrl.text.trim()}. Vérifiez aussi vos spams.',
+                  l10n.authForgotSent(_ctrl.text.trim()),
                   type: BadgeColor.success,
                 ),
                 const SizedBox(height: 24),
-                Text('Vous n\'avez pas reçu l\'email ?',
+                Text(l10n.authForgotNotReceived,
                     style: WinType.bodyM(s.onMuted)),
                 const SizedBox(height: 12),
-                WinButton('Renvoyer l\'email',
+                WinButton(l10n.authResendEmail,
                     variant: WinButtonVariant.outline,
                     block: true,
                     onTap: () => setState(() => _sent = false)),
               ] else ...[
                 WinTextField(
-                  label: 'Adresse email',
-                  hint: 'votre@email.com',
+                  label: l10n.authEmailAddress,
+                  hint: l10n.authEmailHint,
                   icon: Icons.email_outlined,
                   controller: _ctrl,
                   keyboardType: TextInputType.emailAddress,
@@ -91,12 +93,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   WinAlert(_error!, type: BadgeColor.error),
                 ],
                 const SizedBox(height: 24),
-                WinButton('Envoyer le lien',
+                WinButton(l10n.authSendLink,
                     block: true, loading: _loading, onTap: _send),
               ],
               const SizedBox(height: 16),
               Center(
-                child: WinButton('Retour à la connexion',
+                child: WinButton(l10n.authBackToLogin,
                     variant: WinButtonVariant.ghost,
                     onTap: () => Navigator.pop(context)),
               ),

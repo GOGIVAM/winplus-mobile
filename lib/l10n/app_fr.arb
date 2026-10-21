@@ -1,22 +1,4662 @@
 {
   "@@locale": "fr",
-  "welcomeTagline": "Ta réussite, notre mission",
-  "createAccount": "Créer un compte",
-  "login": "Se connecter",
-  "loginTitle": "Bon retour !",
-  "loginSubtitle": "Connecte-toi à ton compte WinPlus.",
-  "email": "Email",
-  "password": "Mot de passe",
-  "forgotPassword": "Mot de passe oublié ?",
-  "orContinueWith": "ou continuer avec",
+  "aiAskHint": "Écris ta question…",
+  "authAccountActive": "Votre compte WinPlus est maintenant actif.",
+  "authAlreadyAccount": "Déjà un compte ? ",
+  "authBackToLogin": "Retour à la connexion",
+  "authBornOn": "Né(e) le {date}",
+  "@authBornOn": {
+    "placeholders": {
+      "date": {
+        "type": "Object"
+      }
+    }
+  },
+  "authChooseProfile": "Choisis ton profil pour une expérience personnalisée.",
+  "authChooseSecure": "Choisissez un mot de passe sécurisé.",
+  "authCodeIncorrect": "Code incorrect. Vérifiez votre email.",
+  "authCodeInvalid": "Code invalide.",
+  "authCodeSentAddress": "Un code à 6 chiffres a été envoyé à votre adresse.",
+  "authCodeSentEmail": "Code envoyé à votre email",
+  "authConfirmPassword": "Confirmer le mot de passe",
+  "authCreateMyAccount": "Créer mon compte",
+  "authDobOptional": "Date de naissance (optionnel)",
+  "authEmailAddress": "Adresse email",
+  "authEmailHint": "votre@email.com",
+  "authEmailVerified": "Email vérifié !",
+  "authErrNetwork": "Erreur réseau.",
+  "authFeatInst1": "Dashboard centralisé",
+  "authFeatInst2": "Licences multi-élèves",
+  "authFeatInst3": "Indicateurs de vos élèves",
+  "authFeatParent1": "Suivez la progression de vos enfants",
+  "authFeatParent3": "Achetez des contenus pour eux",
+  "authFeatStudent1": "Annales et corrigés à lire dans l’application",
+  "authFeatStudent2": "Quiz IA personnalisés",
+  "authFeatStudent3": "Certificats de vos formations terminées",
+  "authFeatTeacher1": "Publiez et monétisez vos contenus",
+  "authFeatTeacher2": "Gérez vos classes",
+  "authFeatTeacher3": "Revenus sur vos ventes et vos séances",
+  "authFillRequired": "Veuillez remplir tous les champs obligatoires.",
+  "authFinish": "Terminer",
+  "authFirstName": "Prénom",
+  "authFollowCloseHint": "Alertes dès qu’un événement important survient.",
+  "authFollowCloseLabel": "Suivi rapproché",
+  "authFollowMinimalHint": "Je consulterai moi-même l’espace parent.",
+  "authFollowMinimalLabel": "Le minimum",
+  "authFollowWeeklyHint": "Un résumé de la semaine, sans alerte au fil de l’eau.",
+  "authFollowWeeklyLabel": "Rapport hebdomadaire",
+  "authForgotIntro": "Entrez votre adresse email, nous vous enverrons un lien de réinitialisation.",
+  "authForgotNotReceived": "Vous n'avez pas reçu l'email ?",
+  "authForgotSent": "Email envoyé à {email}. Vérifiez aussi vos spams.",
+  "@authForgotSent": {
+    "placeholders": {
+      "email": {
+        "type": "Object"
+      }
+    }
+  },
+  "authForgotTitle": "Mot de passe oublié",
+  "authGoToLogin": "Aller à la connexion",
+  "authGoogleSoon": "Google OAuth bientôt disponible !",
+  "authIAm": "Je suis…",
+  "authLastName": "Nom",
+  "authLogMeOut": "Me déconnecter",
+  "authLvlEns": "ENS École Normale",
+  "authLvlEssec": "ESSEC Commerce",
+  "authLvlFmsb": "FMSB Médecine",
+  "authLvlPrepa": "Prépa",
+  "authNewPassword": "Nouveau mot de passe",
+  "authNext": "Suivant",
+  "authOptConcours": "Concours",
+  "authOptEconomics": "Économique",
+  "authOptLiterary": "Littéraire",
+  "authOptOther": "Autre",
+  "authOptPolytechnique": "Polytechnique",
+  "authOptScience": "Scientifique",
+  "authOptTechnical": "Technique",
+  "authParentFollowHint": "Vous pourrez changer cette préférence à tout moment.",
+  "authParentFollowTitle": "Comment souhaitez-vous suivre sa scolarité ?",
+  "authParentGoalHint": "En quelques mots : réussir un examen, combler une lacune, reprendre confiance…",
+  "authParentGoalPlaceholder": "Ex. Aider mon fils à progresser en maths avant le brevet",
+  "authParentGoalTitle": "Quel est votre objectif pour votre enfant ?",
+  "authPeriodicIntro": "Pour votre sécurité, confirmez votre identité (toutes les 20 jours)",
+  "authPhoneOptional": "Téléphone (optionnel)",
+  "authPhoneSoon": "Connexion par téléphone bientôt disponible !",
+  "authPwdCriteria": "Le mot de passe ne respecte pas les critères.",
+  "authPwdUpdated": "Mot de passe mis à jour ! Vous pouvez maintenant vous connecter.",
+  "authResendCode": "Renvoyer le code",
+  "authResendCodeParen": "Renvoyer le code ({seconds}s)",
+  "@authResendCodeParen": {
+    "placeholders": {
+      "seconds": {
+        "type": "Object"
+      }
+    }
+  },
+  "authResendEmail": "Renvoyer l'email",
+  "authResendIn": "Renvoyer le code dans {seconds}s",
+  "@authResendIn": {
+    "placeholders": {
+      "seconds": {
+        "type": "Object"
+      }
+    }
+  },
+  "authReset": "Réinitialiser",
+  "authRoleInstitutionDesc": "Lycée, université ou centre de formation",
+  "authRoleInstitutionLabel": "Institution",
+  "authRoleParentDesc": "Suivi et accompagnement de mes enfants",
+  "authRoleParentLabel": "Parent / Tuteur",
+  "authRoleStudentDesc": "Du BEPC aux concours des grandes écoles",
+  "authRoleStudentLabel": "Étudiant / Apprenant",
+  "authRoleTeacherDesc": "Publication de contenus et suivi des apprenants",
+  "authRoleTeacherLabel": "Professeur / Formateur",
+  "authRule8": "Au moins 8 caractères",
+  "authRuleDigit": "Au moins un chiffre",
+  "authRuleMatch": "Les mots de passe correspondent",
+  "authRuleUpper": "Au moins une majuscule",
+  "authSendCode": "Envoyer le code",
+  "authSendLink": "Envoyer le lien",
+  "authSignupFailed": "Inscription impossible.",
+  "authSignupIntro": "Quelques informations pour commencer.",
+  "authSkip": "Passer",
+  "authSkipStep": "Passer cette étape",
+  "authStart": "Commencer",
+  "authStepFollowUp": "Suivi",
+  "authStepGoal": "Objectif",
+  "authStepLevels": "Niveaux",
+  "authStepStream": "Filière",
+  "authStepSubjects": "Matières",
+  "authStudentGoalHint": "L'exam pour lequel tu veux te préparer.",
+  "authStudentGoalTitle": "Quel est ton objectif ?",
+  "authStudentLevelHint": "WinAI adapte le contenu à ton niveau scolaire.",
+  "authStudentLevelTitle": "Quel est ton niveau ?",
+  "authStudentStreamHint": "Pour mieux cibler les ressources disponibles.",
+  "authStudentStreamTitle": "Quelle est ta filière ?",
+  "authSuccessInstitution": "Gérez votre établissement depuis votre tableau de bord.",
+  "authSuccessParent": "Vous pouvez maintenant suivre vos enfants.",
+  "authSuccessStudent": "Votre profil est prêt. Commencez à réviser !",
+  "authSuccessTeacher": "Publiez votre premier contenu !",
+  "authTeacherLevelsHint": "Utile pour situer tes contenus et, plus tard, ton profil Mode Tuteur.",
+  "authTeacherLevelsTitle": "Quels niveaux couvres-tu ?",
+  "authTeacherSubjectsHint": "On adapte ton espace professeur et les suggestions WinAI à tes matières.",
+  "authTeacherSubjectsTitle": "Quelles matières enseignes-tu ?",
+  "authVerify": "Vérifier",
+  "authVerifyEmailTitle": "Vérification email",
+  "authVerifyItsYou": "Vérifiez que c'est bien vous",
+  "authWelcomeName": "Bienvenue sur WinPlus, {name} !",
+  "@authWelcomeName": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "authWelcomeSlide1Subtitle": "Annales, corrigés et quiz du BEPC aux concours des grandes écoles.",
+  "authWelcomeSlide1Title": "Toutes tes épreuves, réunies",
+  "authWelcomeSlide2Subtitle": "Un assistant pédagogique qui identifie tes lacunes et te propose un plan de révision.",
+  "authWelcomeSlide2Title": "WinAI à tes côtés",
+  "authWelcomeSlide3Subtitle": "Parents, professeurs, élèves : chacun suit la progression de l’élève.",
+  "authWelcomeSlide3Title": "Toute la famille impliquée",
+  "authXpUnlocked": "+50 XP débloqués",
+  "authYouDefault": "toi",
+  "commonAccept": "Accepter",
+  "commonActive": "Actif",
+  "commonAll": "Tout",
+  "commonBack": "Retour",
+  "commonCancel": "Annuler",
+  "commonClose": "Fermer",
+  "commonConfirm": "Confirmer",
+  "commonContinue": "Continuer",
+  "commonDarkMode": "Mode sombre",
+  "commonDecline": "Refuser",
+  "commonDelete": "Supprimer",
+  "commonDescription": "Description",
+  "commonDraft": "Brouillon",
+  "commonDuration": "Durée",
+  "commonEdit": "Modifier",
+  "commonFree": "Gratuit",
+  "commonLevel": "Niveau",
+  "commonLoading": "Chargement…",
+  "commonLogout": "Se déconnecter",
+  "commonNetworkError": "Erreur réseau",
+  "commonOnline": "En ligne",
+  "commonPending": "En attente",
+  "commonPublished": "Publié",
+  "commonRetry": "Réessayer",
+  "commonSave": "Enregistrer",
+  "commonSeeAll": "Voir tout",
+  "commonSend": "Envoyer",
+  "commonSubject": "Matière",
+  "commonToday": "Aujourd'hui",
+  "commonWinaiAlerts": "Alertes WinAI",
+  "commonWinaiMemory": "Mémoire WinAI",
+  "commonWinaiThinking": "WinAI réfléchit…",
+  "commonYesterday": "Hier",
   "continueWithGoogle": "Continuer avec Google",
   "continueWithPhone": "Continuer avec le téléphone",
-  "noAccountYet": "Pas encore de compte ? ",
+  "createAccount": "Créer un compte",
+  "dataSubjectChemistry": "Chimie",
+  "dataSubjectComputing": "Informatique",
+  "dataSubjectComputingShort": "Info",
+  "dataSubjectEnglish": "Anglais",
+  "dataSubjectFrench": "Français",
+  "dataSubjectHistGeo": "Histoire-Géo",
+  "dataSubjectHistGeoShort": "Hist-Géo",
+  "dataSubjectMath": "Mathématiques",
+  "dataSubjectMathShort": "Maths",
+  "dataSubjectPhilosophy": "Philosophie",
+  "dataSubjectPhilosophyShort": "Philo",
+  "dataSubjectPhysics": "Physique",
+  "dataTypeBook": "Livre",
+  "dataTypeCorrection": "Correction",
+  "dataTypePaper": "Épreuve",
+  "email": "Email",
   "fillAllFields": "Veuillez remplir tous les champs.",
-  "wrongCredentials": "Email ou mot de passe incorrect.",
+  "fmtDateAtTime": "{date} à {time}",
+  "@fmtDateAtTime": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "forgotPassword": "Mot de passe oublié ?",
+  "forumAll": "Tous",
+  "forumAnonymous": "Anonyme",
+  "forumCatDiscussions": "Discussions",
+  "forumCatHelp": "Aide",
+  "forumCatQuestions": "Questions",
+  "forumCatResources": "Ressources",
+  "forumCategory": "Catégorie",
+  "forumContentField": "Contenu *",
+  "forumContentHint": "Détaillez votre question…",
+  "forumEmptyCategory": "Aucun thread dans cette catégorie.",
+  "forumError": "Erreur: {error}",
+  "@forumError": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "forumNewThread": "Nouveau thread",
+  "forumPublish": "Publier",
+  "forumReplyHint": "Votre réponse…",
+  "forumRoleTeacher": "Prof",
+  "forumSolved": "Résolu",
+  "forumThread": "Thread",
+  "forumTitle": "Forum",
+  "forumTitleField": "Titre *",
+  "forumTitleHint": "Votre question ou sujet…",
+  "instAccountAdmins": "Administrateurs",
+  "instAccountBilling": "Facturation & reçus",
+  "instAccountGroups": "Groupes & classes",
+  "instAccountLicense": "Licence WinPlus : sièges et renouvellement",
+  "instAccountReports": "Rapports exportables",
+  "instAccountSchool": "Compte établissement",
+  "instAccountTutoring": "Tutorat & portefeuille",
+  "instAiHint": "Analyse, benchmark, plan d'action…",
+  "instAiSuggestion1": "Analyse de cohorte",
+  "instAiSuggestion3": "Plan d'action prioritaire",
+  "instAiSuggestion4": "Benchmark national",
+  "instAiTagline": "Ton auditeur analytique & stratège institutionnel",
+  "instAnalyticsByGroup": "Performance par groupe",
+  "instAnalyticsDownloadsMonth": "Téléch./mois",
+  "instAnalyticsQuizMonth": "Quiz/mois",
+  "instCatalogAssign": "Assigner",
+  "instCatalogLicenseInfo": "Licence établissement : contenus assignables à tous vos groupes.",
+  "instDashActiveStudents": "Élèves actifs{pct}",
+  "@instDashActiveStudents": {
+    "placeholders": {
+      "pct": {
+        "type": "Object"
+      }
+    }
+  },
+  "instDashActiveStudentsLower": "élèves actifs",
+  "instDashAiPlan": "Plan d'action IA",
+  "instDashAlertsInfo": "Analysez les performances de vos groupes et identifiez les élèves à risque.",
+  "instDashDirectory": "Annuaire",
+  "instDashNoLicense": "Sans licence active",
+  "instDashQuickActions": "Actions rapides",
+  "instDashQuizMonth": "Quiz ce mois",
+  "instDashStudentsCount": "{n} élèves",
+  "@instDashStudentsCount": {
+    "placeholders": {
+      "n": {
+        "type": "Object"
+      }
+    }
+  },
+  "instDashUrgent": "{n} élèves nécessitent une attention urgente",
+  "@instDashUrgent": {
+    "placeholders": {
+      "n": {
+        "type": "Object"
+      }
+    }
+  },
+  "instDirActive": "Actifs",
+  "instDirAddError": "Impossible d'ajouter cet élève",
+  "instDirAddSuccess": "Élève ajouté avec succès",
+  "instDirAvg": "Moy.",
+  "instDirCount": "{count} {count, plural, =1{élève} other{élèves}}",
+  "@instDirCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "instDirEmailRequired": "Email requis",
+  "instDirGroup": "Groupe",
+  "instDirNoInstitution": "Aucune institution associée.",
+  "instDirNoStudent": "Aucun élève trouvé.",
+  "instDirSearchHint": "Rechercher par nom ou email…",
+  "instDirStudents": "Élèves",
+  "instDirTitle": "Annuaire des élèves",
+  "instEndorseAction": "Cautionner",
+  "instEndorseBadge": "Cautionné",
+  "instEndorseChangeDate": "Changer la date",
+  "instEndorseConfirm": "Confirmer la caution",
+  "instEndorseEmpty": "Aucun répétiteur rattaché à votre établissement pour le moment.",
+  "instEndorseHowHint": "Entretien, pièce d'identité vue en mains propres, contrat…",
+  "instEndorseHowLabel": "Comment l'avez-vous vérifié ?",
+  "instEndorseIntro": "Si votre établissement a vérifié un répétiteur par ses propres moyens, cautionnez-le : il pourra proposer des séances présentielles. Vous pouvez retirer la caution à tout moment ; retirer le rattachement la retire aussi.",
+  "instEndorseNotEndorsed": "Non cautionné",
+  "instEndorseOnDate": "Le {date}",
+  "@instEndorseOnDate": {
+    "placeholders": {
+      "date": {
+        "type": "Object"
+      }
+    }
+  },
+  "instEndorseOtherRoute": "Déjà vérifié pour le présentiel par une autre voie",
+  "instEndorseReasonLabel": "Motif (transmis au répétiteur)",
+  "instEndorseRevoke": "Retirer la caution",
+  "instEndorseRevokeAction": "Retirer",
+  "instEndorseRevokeText": "S'il n'est pas vérifié par une autre voie, il ne pourra plus proposer de séances présentielles.",
+  "instEndorseRevokeTitle": "Retirer la caution ?",
+  "instEndorseRevoked": "Caution retirée.",
+  "instEndorseSaved": "Caution enregistrée.",
+  "instEndorseScreenTitle": "Cautions des répétiteurs",
+  "instEndorseSheetInfo": "Il pourra proposer des séances présentielles, avec le badge « Caution : votre établissement ».",
+  "instEndorseThisTutor": "ce répétiteur",
+  "instEndorseTitle": "Cautionner {name}",
+  "@instEndorseTitle": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "instEndorseVerifiedBy": "Vérifié par {name}",
+  "@instEndorseVerifiedBy": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "instEndorseVerifierLabel": "Vérifié par (nom et fonction)",
+  "instGroupAddStudents": "Ajouter des élèves",
+  "instGroupAssignInfo": "Sélectionnez des contenus depuis le catalogue pour les affecter à ce groupe.",
+  "instGroupAssignResources": "Attribuer ressources",
+  "instGroupAssignTo": "Attribuer à {name}",
+  "@instGroupAssignTo": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "instGroupBrowseCatalog": "Parcourir le catalogue",
+  "instGroupCreateError": "Erreur lors de la création du groupe.",
+  "instGroupCreateSubmit": "Créer le groupe",
+  "instGroupCreated": "Groupe créé !",
+  "instGroupCreatedSummary": "{name}  {count} élève(s) ajouté(s).",
+  "@instGroupCreatedSummary": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      },
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "instGroupLevelLabel": "Niveau *",
+  "instGroupLevelLicence": "Licence",
+  "instGroupNameLabel": "Nom du groupe *",
+  "instGroupNoMembers": "Aucun élève dans ce groupe.",
+  "instGroupSearch": "Rechercher un groupe…",
+  "instGroupSearchStudent": "Rechercher un élève…",
+  "instGroupSeeStudents": "Voir élèves",
+  "instGroupSelected": "{count} sélectionné(s)",
+  "@instGroupSelected": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "instLicenseAccount": "Compte {id}",
+  "@instLicenseAccount": {
+    "placeholders": {
+      "id": {
+        "type": "Object"
+      }
+    }
+  },
+  "instLicenseAiBudget": "Budget WinAI de l'établissement utilisé : {value} %",
+  "@instLicenseAiBudget": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "instLicenseAutoRenew": "Renouvellement automatique par le portefeuille",
+  "instLicenseGridMin": "Minimum {min} sièges, un siège enseignant pour {perTeacher} élèves.",
+  "@instLicenseGridMin": {
+    "placeholders": {
+      "min": {
+        "type": "Object"
+      },
+      "perTeacher": {
+        "type": "Object"
+      }
+    }
+  },
+  "instLicenseGridPrices": "Prix TTC par élève et par an : {tiers}.",
+  "@instLicenseGridPrices": {
+    "placeholders": {
+      "tiers": {
+        "type": "Object"
+      }
+    }
+  },
+  "instLicenseGridTier": "{price} XAF dès {seats} sièges",
+  "@instLicenseGridTier": {
+    "placeholders": {
+      "price": {
+        "type": "Object"
+      },
+      "seats": {
+        "type": "Object"
+      }
+    }
+  },
+  "instLicenseHeading": "Licence {status}",
+  "@instLicenseHeading": {
+    "placeholders": {
+      "status": {
+        "type": "Object"
+      }
+    }
+  },
+  "instLicenseNegotiated": "Négociée",
+  "instLicensePastDue": "Solde insuffisant au renouvellement : rechargez le portefeuille avant le {date}.",
+  "@instLicensePastDue": {
+    "placeholders": {
+      "date": {
+        "type": "Object"
+      }
+    }
+  },
+  "instLicensePaymentFrom": "Paiement depuis le portefeuille de l'établissement.",
+  "instLicensePeriod": "Du {start} au {end}",
+  "@instLicensePeriod": {
+    "placeholders": {
+      "start": {
+        "type": "Object"
+      },
+      "end": {
+        "type": "Object"
+      }
+    }
+  },
+  "instLicensePromo": "Code promo",
+  "instLicensePurchase": "Souscrire avec le portefeuille",
+  "instLicensePurchaseError": "Souscription impossible.",
+  "instLicenseQuoteLine": "{price} XAF par élève · {teacherSeats} sièges enseignants · jusqu'au {date}",
+  "@instLicenseQuoteLine": {
+    "placeholders": {
+      "price": {
+        "type": "Object"
+      },
+      "teacherSeats": {
+        "type": "Object"
+      },
+      "date": {
+        "type": "Object"
+      }
+    }
+  },
+  "instLicenseQuoteTotal": "Total : {amount} XAF TTC",
+  "@instLicenseQuoteTotal": {
+    "placeholders": {
+      "amount": {
+        "type": "Object"
+      }
+    }
+  },
+  "instLicenseRelease": "Libérer",
+  "instLicenseReleaseError": "Libération impossible.",
+  "instLicenseRenewWallet": "Renouveler avec le portefeuille",
+  "instLicenseSeatBenefits": "Chaque siège ouvre à l'élève le catalogue, le plan d'étude, la session guidée, Exam Coach et un bonus WinAI ; un siège enseignant ouvre les outils du plan Pro et une part de 75 % sur le tutorat.",
+  "instLicenseSeatsInfo": "Un siège élève est attribué quand l'élève accepte son rattachement ; un siège enseignant quand le professeur accepte l'affiliation.",
+  "instLicenseSeatsTitle": "Sièges attribués",
+  "instLicenseStatusEnded": "Terminée",
+  "instLicenseStudentSeats": "Sièges élèves",
+  "instLicenseStudentSeatsUsed": "Sièges élèves : {used} / {total}",
+  "@instLicenseStudentSeatsUsed": {
+    "placeholders": {
+      "used": {
+        "type": "Object"
+      },
+      "total": {
+        "type": "Object"
+      }
+    }
+  },
+  "instLicenseSubscribeTitle": "Souscrire une licence",
+  "instLicenseTeacherSeatsUsed": "Sièges enseignants : {used} / {total}",
+  "@instLicenseTeacherSeatsUsed": {
+    "placeholders": {
+      "used": {
+        "type": "Object"
+      },
+      "total": {
+        "type": "Object"
+      }
+    }
+  },
+  "instLicenseTermQuarter": "Trimestre",
+  "instLicenseTermYear": "Année scolaire",
+  "instLicenseTitle": "Licence WinPlus",
+  "instLicenseTrial": "Essai gratuit ({days} jours, {seats} sièges)",
+  "@instLicenseTrial": {
+    "placeholders": {
+      "days": {
+        "type": "Object"
+      },
+      "seats": {
+        "type": "Object"
+      }
+    }
+  },
+  "instLicenseTrialError": "Essai indisponible.",
+  "instLicenseUnavailable": "Licence indisponible.",
+  "instLicenseUpdateError": "Modification impossible.",
+  "instLicenseWait": "Patientez…",
+  "instMySchool": "Mon établissement",
+  "instPlanActionsDone": "actions réalisées",
+  "instPlanDone": "Réalisé",
+  "instPlanEmpty": "WinAI n'a proposé aucune action pour cette semaine.",
+  "instPlanForbidden": "Votre compte n'a pas accès au plan d'action de l'établissement.",
+  "instPlanImpact": "Impact attendu : {impact}",
+  "@instPlanImpact": {
+    "placeholders": {
+      "impact": {
+        "type": "Object"
+      }
+    }
+  },
+  "instPlanMarkDone": "Marquer comme fait",
+  "instPlanPriority": "Priorité {n}",
+  "@instPlanPriority": {
+    "placeholders": {
+      "n": {
+        "type": "Object"
+      }
+    }
+  },
+  "instPlanSummaryActions": ", et recommande {count} {count, plural, =0{action prioritaire} =1{action prioritaire} other{actions prioritaires}}.",
+  "@instPlanSummaryActions": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "instPlanSummaryAtRisk": ", dont {n} en zone critique",
+  "@instPlanSummaryAtRisk": {
+    "placeholders": {
+      "n": {
+        "type": "Object"
+      }
+    }
+  },
+  "instPlanSummaryStudents": "WinAI a analysé {count} {count, plural, =0{élève} =1{élève} other{élèves}}",
+  "@instPlanSummaryStudents": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "instPlanTitle": "Plan d'action WinAI",
+  "instPlanUnavailable": "Le plan d'action WinAI est indisponible pour le moment.",
+  "instReportAtRiskSub": "Élèves nécessitant une intervention",
+  "instReportAtRiskTitle": "Rapport élèves à risque",
+  "instReportGeneratePdf": "Générer PDF",
+  "instReportGenerated": "Rapport généré !",
+  "instReportGenerating": "Génération en cours...",
+  "instReportGlobalSub": "Vue d'ensemble de tous les élèves",
+  "instReportGlobalTitle": "Rapport de performance global",
+  "instReportGroupSub": "Comparaison des classes, taux de réussite",
+  "instReportGroupTitle": "Rapport par classe",
+  "instReportIndividualSub": "Progression détaillée d'un élève",
+  "instReportIndividualTitle": "Rapport individuel élève",
+  "instReportReady": "Votre rapport \"{title}\" est prêt.",
+  "@instReportReady": {
+    "placeholders": {
+      "title": {
+        "type": "Object"
+      }
+    }
+  },
+  "instReportWait": "Patientez...",
+  "instReportsTitle": "Rapports",
+  "instRiskActionPlan": "Plan d'action",
+  "instRiskContact": "Contacter",
+  "instRiskCritical": "Critique",
+  "instRiskCriticalCount": "{n} critiques",
+  "@instRiskCriticalCount": {
+    "placeholders": {
+      "n": {
+        "type": "Object"
+      }
+    }
+  },
+  "instRiskEmpty": "Aucun élève dans cette catégorie.",
+  "instRiskInactiveFor": "Inactif depuis {n}j",
+  "@instRiskInactiveFor": {
+    "placeholders": {
+      "n": {
+        "type": "Object"
+      }
+    }
+  },
+  "instRiskModerate": "Modéré",
+  "instRiskScore": "Score : {n}%",
+  "@instRiskScore": {
+    "placeholders": {
+      "n": {
+        "type": "Object"
+      }
+    }
+  },
+  "instRiskTitle": "Élèves à risque",
+  "instRiskWeakSubject": "Matière faible ",
+  "instStudentCount": "{count} {count, plural, =0{élève} =1{élève} other{élèves}}",
+  "@instStudentCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "language": "Langue",
+  "languageEnglish": "English",
+  "languageFrench": "Français",
+  "languageHint": "La langue de l'application, des e-mails et des notifications.",
+  "legalCgu1Body": "Les présentes Conditions Générales d'Utilisation (CGU) régissent l'accès et l'utilisation de la plateforme WinPlus, application mobile éducative destinée aux élèves, parents et enseignants du système scolaire camerounais.",
+  "legalCgu1Title": "1. Objet",
+  "legalCgu2Body": "L'accès à WinPlus est ouvert à toute personne disposant d'un appareil compatible et d'une connexion internet. Certaines fonctionnalités nécessitent la création d'un compte. L'inscription est gratuite pour le plan de base.",
+  "legalCgu2Title": "2. Accès à la plateforme",
+  "legalCgu3Body": "Vous êtes responsable de la confidentialité de vos identifiants. Toute activité effectuée depuis votre compte vous est attribuée. En cas de compromission, contactez-nous immédiatement à support@winplus.cm.",
+  "legalCgu3Title": "3. Comptes utilisateurs",
+  "legalCgu4Body": "Les contenus publiés sur WinPlus (épreuves, corrections, quiz) sont protégés par le droit d'auteur. Leur reproduction, redistribution ou revente sans autorisation est strictement interdite.",
+  "legalCgu4Title": "4. Contenu et propriété intellectuelle",
+  "legalCgu5Body": "Les plans payants (Starter, Expert, Institution) sont facturés mensuellement via Mobile Money (MTN MoMo, Orange Money) ou carte bancaire. Les tarifs sont affichés en francs CFA (XAF) et peuvent évoluer avec préavis de 30 jours.",
+  "legalCgu5Title": "5. Abonnements et paiements",
+  "legalCgu6Body": "Vous pouvez résilier votre abonnement à tout moment depuis votre profil. La résiliation prend effet à la fin de la période de facturation en cours. Aucun remboursement partiel n'est accordé.",
+  "legalCgu6Title": "6. Résiliation",
+  "legalCgu7Body": "WinPlus s'efforce de maintenir la plateforme disponible 24h/24, mais ne saurait être tenue responsable des interruptions de service, pertes de données ou inexactitudes dans les contenus.",
+  "legalCgu7Title": "7. Responsabilité",
+  "legalCgu8Body": "Les présentes CGU sont soumises au droit camerounais. Tout litige sera porté devant les juridictions compétentes de Yaoundé, Cameroun.",
+  "legalCgu8Title": "8. Droit applicable",
+  "legalCguTitle": "Conditions Générales d'Utilisation",
+  "legalContactBody": "Pour toute question : support@winplus.cm\nWinPlus SAS  Yaoundé, Cameroun",
+  "legalContactTitle": "Contact",
+  "legalLastUpdated": "Dernière mise à jour : 1er juin 2025",
+  "legalPriv1Body": "WinPlus collecte les données suivantes :\n• Données d'identification : nom, prénom, adresse e-mail\n• Données de navigation : contenus consultés, résultats de quiz\n• Données de paiement : transmises directement à nos prestataires (MTN, Orange)\n• Données d'appareil : modèle, système d'exploitation, identifiant publicitaire",
+  "legalPriv1Title": "1. Données collectées",
+  "legalPriv2Body": "Vos données sont utilisées pour :\n• Fournir et personnaliser les services WinPlus\n• Générer des recommandations pédagogiques via WinAI\n• Traiter vos paiements et gérer votre abonnement\n• Améliorer la plateforme via des analyses agrégées anonymisées",
+  "legalPriv2Title": "2. Finalités du traitement",
+  "legalPriv3Body": "Le traitement repose sur votre consentement (art. 4 loi n° 2010/012 du Cameroun sur les communications électroniques) et sur l'exécution du contrat de service que représentent les présentes CGU.",
+  "legalPriv3Title": "3. Base légale",
+  "legalPriv4Body": "Vos données sont conservées pendant la durée de votre relation contractuelle avec WinPlus, augmentée de 3 ans à des fins de preuve. Les données de navigation sont anonymisées après 13 mois.",
+  "legalPriv4Title": "4. Conservation des données",
+  "legalPriv5Body": "WinPlus ne vend pas vos données. Elles peuvent être partagées avec :\n• Nos hébergeurs (serveurs sécurisés en Europe)\n• Nos prestataires de paiement (MTN, Orange, Stripe)\n• Les autorités compétentes en cas d'obligation légale",
+  "legalPriv5Title": "5. Partage des données",
+  "legalPriv6Body": "Conformément à la législation applicable, vous disposez des droits d'accès, de rectification, d'effacement, de portabilité et d'opposition. Exercez-les en écrivant à privacy@winplus.cm.",
+  "legalPriv6Title": "6. Vos droits",
+  "legalPriv7Body": "L'application utilise des identifiants anonymes pour mesurer les performances et améliorer l'expérience utilisateur. Vous pouvez les désactiver dans les paramètres de votre appareil.",
+  "legalPriv7Title": "7. Cookies et traceurs",
+  "legalPrivacyTitle": "Politique de Confidentialité",
+  "login": "Se connecter",
+  "loginSubtitle": "Connecte-toi à ton compte WinPlus.",
+  "loginTitle": "Bon retour !",
+  "msgDaysAgo": "il y a {n}j",
+  "@msgDaysAgo": {
+    "placeholders": {
+      "n": {
+        "type": "Object"
+      }
+    }
+  },
+  "msgEmpty": "Aucune conversation.",
+  "msgEmptyHint": "Contactez un professeur depuis la fiche d'un élève.",
+  "msgHint": "Votre message…",
+  "msgHoursAgo": "il y a {n}h",
+  "@msgHoursAgo": {
+    "placeholders": {
+      "n": {
+        "type": "Object"
+      }
+    }
+  },
+  "msgMinutesAgo": "il y a {n} min",
+  "@msgMinutesAgo": {
+    "placeholders": {
+      "n": {
+        "type": "Object"
+      }
+    }
+  },
+  "msgNow": "maintenant",
+  "msgRoleUser": "Utilisateur",
+  "msgStartConversation": "Commencez la conversation.",
+  "msgTitle": "Messages",
+  "noAccountYet": "Pas encore de compte ? ",
+  "orContinueWith": "ou continuer avec",
+  "parentAddChildEmailLabel": "Email de l'enfant *",
+  "parentAddChildIntro": "Entrez l'adresse email du compte WinPlus de votre enfant pour le lier à votre espace parent.",
+  "parentAddChildInvalidEmail": "Veuillez saisir un email valide.",
+  "parentAddChildLink": "Lier l'enfant",
+  "parentAddChildNoCatalog": "Votre plan n'ouvre pas le catalogue à vos enfants.",
+  "parentAddChildNotFound": "Aucun élève trouvé avec cet email, ou déjà lié.",
+  "parentAddChildPlanLimit": "Votre plan suit {count} {count, plural, =0{enfant} =1{enfant} other{enfants}}, sans catalogue pour eux. Un plan parent ouvre le catalogue et les alertes WinAI.",
+  "@parentAddChildPlanLimit": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "parentAddChildSuccess": "Enfant ajouté à votre compte avec succès.",
+  "parentAddChildTitle": "Ajouter un enfant",
+  "parentAiHint": "Posez votre question sur la scolarité…",
+  "parentAiSuggestion1": "Mon enfant est en difficulté",
+  "parentAiSuggestion2": "Plan de révision maison",
+  "parentAiSuggestion3": "Analyse ses résultats",
+  "parentAiSuggestion4": "Comment le motiver ?",
+  "parentAiTagline": "Ton conseiller familial chaleureux",
+  "parentAlbumGoals": "Objectifs de l'année",
+  "parentAlbumIntensity": "Moments d'intensité",
+  "parentAlbumMeta": "Année scolaire {year} · mis à jour le {date}",
+  "@parentAlbumMeta": {
+    "placeholders": {
+      "year": {
+        "type": "Object"
+      },
+      "date": {
+        "type": "Object"
+      }
+    }
+  },
+  "parentAlbumNotGenerated": "L'album de {name} n'a pas encore été généré cette année.",
+  "@parentAlbumNotGenerated": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "parentAlbumProgress": "Progression observée",
+  "parentAlbumReportCard": "Bulletin",
+  "parentAlbumSubjects": "Matières travaillées",
+  "parentAlbumTitle": "Album de l'année de {name}",
+  "@parentAlbumTitle": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "parentAlbumTopContents": "Contenus les plus consultés",
+  "parentAlertBadgeHigh": "Alerte",
+  "parentAlertBadgeInfo": "Info",
+  "parentAlertBadgeMedium": "Attention",
+  "parentAlertsAllGood": "Tout va bien pour vos enfants !",
+  "parentAlertsIntro": "WinAI surveille les progrès de vos enfants et vous alerte en temps réel.",
+  "parentAlertsNone": "Aucune alerte active.",
+  "parentAlertsRecent": "Alertes récentes",
+  "parentAlertsSeeActivity": "Voir l'activité",
+  "parentAlertsTip1Text": "Encouragez les sessions courtes régulières plutôt que les longues sessions irrégulières. La rétention est bien meilleure.",
+  "parentAlertsTip1Title": "Sessions courtes et régulières",
+  "parentAlertsTip2Text": "Les quiz quotidiens améliorent la rétention de 40% par rapport à la lecture passive.",
+  "parentAlertsTip2Title": "Quiz quotidiens",
+  "parentAlertsTip3Text": "Fixez un objectif d'examen précis avec votre enfant  une date et un examen concrets  pour le motiver efficacement.",
+  "parentAlertsTip3Title": "Objectif clair",
+  "parentAlertsTipsTitle": "Conseils WinAI",
+  "parentBuyBalance": "Solde disponible",
+  "parentBuyContentForChild": "Acheter du contenu pour un enfant",
+  "parentBuyFor": "Acheter pour {name}",
+  "@parentBuyFor": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "parentBuyNoContent": "Aucun contenu disponible pour le moment.",
+  "parentBuyNoSubscription": "Aucun abonnement payant actif : abonnez-vous pour obtenir des crédits à dépenser pour vos enfants.",
+  "parentBuyRecommended": "Contenu recommandé pour {name}{level}",
+  "@parentBuyRecommended": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      },
+      "level": {
+        "type": "Object"
+      }
+    }
+  },
+  "parentBuyTitle": "Acheter pour…",
+  "parentBuyWhichChild": "Pour quel enfant ?",
+  "parentChildActivityWeek": "Activité cette semaine",
+  "parentChildAiWeek": "IA/sem.",
+  "parentChildAllGood": "Tout va bien !",
+  "parentChildAvgScore30": "Score moyen sur 30 jours",
+  "parentChildAvgScoreShort": "Score moy.",
+  "parentChildBestSubject": "Meilleure matière",
+  "parentChildCatalogFiltered": "Catalogue filtré pour {name}",
+  "@parentChildCatalogFiltered": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "parentChildDownloadsWeek": "Téléch./sem.",
+  "parentChildEncourage": "Encourager",
+  "parentChildGenerateQuiz": "Générer un quiz",
+  "parentChildInactive": "Inactif",
+  "parentChildLastQuiz": "Dernier quiz",
+  "parentChildNoRecentActivity": "Aucune activité récente.",
+  "parentChildNoResults": "Pas encore de résultats ce mois-ci.",
+  "parentChildQuizGenerating": "Quiz en cours de génération...",
+  "parentChildQuizWeek": "Quiz/sem.",
+  "parentChildRecentActivity": "Activité récente",
+  "parentChildRegular": "{name} est régulier(e) dans ses révisions.",
+  "@parentChildRegular": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "parentChildScoreBySubject": "Score moyen par matière (30 jours)",
+  "parentChildSeeResources": "Voir ressources",
+  "parentChildTabActivity": "Activité",
+  "parentChildTabAlbum": "Album",
+  "parentChildTabExamWatch": "Veille examen",
+  "parentChildTabGoals": "Objectifs",
+  "parentChildTabPortrait": "Portrait",
+  "parentChildToWorkOn": "À travailler",
+  "parentChildrenLimit": "{count} {count, plural, =0{enfant} =1{enfant} other{enfants}} max avec votre plan",
+  "@parentChildrenLimit": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "parentCoveredAll": "Votre plan couvre tous vos enfants liés : il n’y a rien à choisir.",
+  "parentCoveredBadge": "Couvert",
+  "parentCoveredCustom": "Choix enregistré",
+  "parentCoveredDefault": "Par défaut, les enfants liés en premier sont couverts",
+  "parentCoveredLoadError": "Les informations n’ont pas pu être chargées.",
+  "parentCoveredMore": "Couvrir plus d’enfants",
+  "parentCoveredNextChange": "prochain changement possible le {date}",
+  "@parentCoveredNextChange": {
+    "placeholders": {
+      "date": {
+        "type": "Object"
+      }
+    }
+  },
+  "parentCoveredOnePerPeriod": "un changement par période d’abonnement",
+  "parentCoveredSave": "Enregistrer le choix",
+  "parentCoveredSaved": "Votre choix est enregistré : il s’applique tout de suite.",
+  "parentCoveredSubMany": "Votre plan couvre {max} enfants sur {total} liés : catalogue, bonus WinAI et alertes.",
+  "@parentCoveredSubMany": {
+    "placeholders": {
+      "max": {
+        "type": "Object"
+      },
+      "total": {
+        "type": "Object"
+      }
+    }
+  },
+  "parentCoveredSubOne": "Votre plan couvre {max} enfant sur {total} liés : catalogue, bonus WinAI et alertes.",
+  "@parentCoveredSubOne": {
+    "placeholders": {
+      "max": {
+        "type": "Object"
+      },
+      "total": {
+        "type": "Object"
+      }
+    }
+  },
+  "parentCoveredTitle": "Enfants couverts",
+  "parentCoveredUpTo": "Votre plan couvre jusqu’à {count} {count, plural, =0{enfant} =1{enfant} other{enfants}} et tous vos enfants liés sont couverts.",
+  "@parentCoveredUpTo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "parentDashAlertsAdvice": "Alertes & conseils WinAI",
+  "parentDashBalance": "Solde",
+  "parentDashChildrenFollowed": "enfants suivis",
+  "parentDashCreditsAvail": "crédits dispo",
+  "parentDashCreditsDetail": "Dont {allocation} XAF de dotation du plan et {topups} XAF de recharges",
+  "@parentDashCreditsDetail": {
+    "placeholders": {
+      "allocation": {
+        "type": "Object"
+      },
+      "topups": {
+        "type": "Object"
+      }
+    }
+  },
+  "parentDashCreditsTitle": "Crédits disponibles",
+  "parentDashLoadingBalance": "Chargement du solde…",
+  "parentDashNoChild": "Aucun enfant suivi. Ajoutez un enfant depuis l'onglet Enfants.",
+  "parentDashNoCredits": "Aucun crédit : les crédits sont versés avec un abonnement parent actif.",
+  "parentDashPeriodEndIn": "Plan {plan} · Fin de période dans {days} jours",
+  "@parentDashPeriodEndIn": {
+    "placeholders": {
+      "plan": {
+        "type": "Object"
+      },
+      "days": {
+        "type": "Object"
+      }
+    }
+  },
+  "parentDashRenewalEvent": "Fin de période · plan {plan}",
+  "@parentDashRenewalEvent": {
+    "placeholders": {
+      "plan": {
+        "type": "Object"
+      }
+    }
+  },
+  "parentDashSeeSubscription": "Voir l'abonnement",
+  "parentDashUpcomingEvents": "Évènements à venir",
+  "parentDaysAgo": "Il y a {count} {count, plural, =0{jour} =1{jour} other{jours}}",
+  "@parentDaysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "parentEncourageChooseTemplate": "Choisir un modèle",
+  "parentEncourageHint": "Votre message...",
+  "parentEncourageOrWrite": "Ou écrire un message personnalisé",
+  "parentEncourageSendError": "Impossible d'envoyer le message. Réessayez.",
+  "parentEncourageSent": "Message envoyé à {name} !",
+  "@parentEncourageSent": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "parentEncourageSub": "Choisissez un message ou écrivez le vôtre",
+  "parentEncourageTitle": "Encourager {name}",
+  "@parentEncourageTitle": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "parentEncourageTpl1": "Continue comme ça {name}, je suis fier(e) de toi !",
+  "@parentEncourageTpl1": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "parentEncourageTpl2": "N'oublie pas de réviser la Chimie ce soir {name} !",
+  "@parentEncourageTpl2": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "parentEncourageTpl3": "{name}, tu peux le faire  le BAC approche !",
+  "@parentEncourageTpl3": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "parentEncourageTpl4": "{name}, {score} cette semaine, c'est excellent !",
+  "@parentEncourageTpl4": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      },
+      "score": {
+        "type": "Object"
+      }
+    }
+  },
+  "parentEncourageYourScore": "ton score",
+  "parentEventInDays": "dans {count} {count, plural, =0{jour} =1{jour} other{jours}}",
+  "@parentEventInDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "parentEventToday": "aujourd'hui",
+  "parentGoalActiveTitle": "Objectifs actifs co-construits",
+  "parentGoalDeadlineOn": "Échéance : {date}",
+  "@parentGoalDeadlineOn": {
+    "placeholders": {
+      "date": {
+        "type": "Object"
+      }
+    }
+  },
+  "parentGoalFieldDescription": "Description (optionnel)",
+  "parentGoalIntro": "Votre proposition attend l'accord de votre enfant : il peut l'accepter telle quelle, l'ajuster, ou la refuser.",
+  "parentGoalNoActive": "Aucun objectif co-construit actif pour le moment.",
+  "parentGoalNoPending": "Aucune proposition en attente de réponse.",
+  "parentGoalPendingTitle": "Propositions en attente",
+  "parentGoalProposeTo": "Proposer un objectif à {name}",
+  "@parentGoalProposeTo": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "parentGoalSent": "Proposition envoyée.",
+  "parentGoalSubmit": "Proposer l'objectif",
+  "parentGoalSubmitError": "La proposition n'a pas pu être envoyée. Réessayez.",
+  "parentGoalTypeAcademic": "Scolaire",
+  "parentGoalTypePersonal": "Personnel",
+  "parentGoalTypeSkill": "Compétence",
+  "parentNoSubscription": "Sans abonnement",
+  "parentPayStatusFailed": "échoué",
+  "parentPayStatusPending": "en attente",
+  "parentPayStatusRefundRequested": "remboursement demandé",
+  "parentPayStatusRefunded": "remboursé",
+  "parentPaymentsEmpty": "Aucun paiement pour le moment. Vos achats, abonnements et recharges apparaîtront ici.",
+  "parentPaymentsLoadError": "L'historique n'a pas pu être chargé.",
+  "parentPaymentsMonthSpent": "DÉPENSES CE MOIS",
+  "parentPaymentsTitle": "Paiements",
+  "parentPlanName": "Plan {plan}",
+  "@parentPlanName": {
+    "placeholders": {
+      "plan": {
+        "type": "Object"
+      }
+    }
+  },
+  "parentPortfolioAutonomy": "Autonomie",
+  "parentPortfolioCuriosity": "Curiosité",
+  "parentPortfolioNoAutonomy": "Pas encore de données d'autonomie pour {name}.",
+  "@parentPortfolioNoAutonomy": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "parentPortfolioNoCuriosity": "Pas encore de données de curiosité pour {name}.",
+  "@parentPortfolioNoCuriosity": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "parentPortfolioNoRegularity": "Pas encore de données de régularité pour {name}.",
+  "@parentPortfolioNoRegularity": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "parentPortfolioNotYet": "Le portrait de {name} sera disponible après le premier calcul mensuel.",
+  "@parentPortfolioNotYet": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "parentPortfolioRegularity": "Régularité",
+  "parentPortfolioTitle": "Portrait de {name}",
+  "@parentPortfolioTitle": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "parentPortfolioUpdatedOn": "Dernière mise à jour le {date}",
+  "@parentPortfolioUpdatedOn": {
+    "placeholders": {
+      "date": {
+        "type": "Object"
+      }
+    }
+  },
+  "parentProfileCovered": "Enfants couverts par mon plan",
+  "parentProfileCredits": "Crédits",
+  "parentProfileManageSub": "Gérer l'abonnement",
+  "parentProfileMyAccount": "Mon compte",
+  "parentProfilePayments": "Paiements & historique",
+  "parentProfileTutoring": "Cours particuliers de mes enfants",
+  "parentResourcesIntro": "D'après les résultats de vos enfants, ces ressources cibleront leurs points faibles.",
+  "parentResourcesRecommended": "Recommandées par WinAI",
+  "parentSubAiFree": "Usage WinAI du plan gratuit",
+  "parentSubAiMultiplier": "{n}x plus d'usage WinAI que le plan gratuit",
+  "@parentSubAiMultiplier": {
+    "placeholders": {
+      "n": {
+        "type": "Object"
+      }
+    }
+  },
+  "parentSubAutoRenewOn": "Renouvellement automatique activé",
+  "parentSubBackToFree": "Vous repasserez sur l'offre gratuite.",
+  "parentSubCancel": "Résilier",
+  "parentSubCancelChange": "Annuler ce changement",
+  "parentSubCancelConfirmTitle": "Résilier ?",
+  "parentSubCancelledUntil": "Résilié : accès jusqu'au {date}",
+  "@parentSubCancelledUntil": {
+    "placeholders": {
+      "date": {
+        "type": "Object"
+      }
+    }
+  },
+  "parentSubChangePlan": "Changer de plan",
+  "parentSubChildrenFollowed": "Enfants suivis",
+  "parentSubDisableAutoRenew": "Désactiver le renouvellement automatique",
+  "parentSubEnableAutoRenew": "Renouveler automatiquement avec mon solde",
+  "parentSubFailed": "Échoué",
+  "parentSubIncludes": "Ce que comprend votre plan",
+  "parentSubKeepAccessUntil": "Vous gardez l'accès jusqu'au {date}, sans remboursement de la période en cours.",
+  "@parentSubKeepAccessUntil": {
+    "placeholders": {
+      "date": {
+        "type": "Object"
+      }
+    }
+  },
+  "parentSubLimitReached": "Limite atteinte",
+  "parentSubLoadError": "Impossible de charger l'abonnement.",
+  "parentSubManualRenew": "Renouvellement manuel",
+  "parentSubMyChildren": "Mes enfants",
+  "parentSubNoPayment": "Aucun paiement enregistré pour l'instant.",
+  "parentSubPaid": "Payé",
+  "parentSubPaymentHistory": "Historique des paiements",
+  "parentSubPaymentPending": "Paiement en attente",
+  "parentSubPendingSwitch": "Passage à {plan} programmé à l'échéance.",
+  "@parentSubPendingSwitch": {
+    "placeholders": {
+      "plan": {
+        "type": "Object"
+      }
+    }
+  },
+  "parentSubPeriodUntil": "Période en cours jusqu'au {date}",
+  "@parentSubPeriodUntil": {
+    "placeholders": {
+      "date": {
+        "type": "Object"
+      }
+    }
+  },
+  "parentSubRenewNow": "Renouveler maintenant",
+  "parentSubResume": "Reprendre l'abonnement",
+  "parentSubTitle": "Mon Abonnement",
+  "parentSubTrial": "Essai",
+  "parentWatchActivate": "Activer la veille",
+  "parentWatchActivateError": "Impossible d'activer la veille pour le moment.",
+  "parentWatchBeforeExam": "avant l'examen",
+  "parentWatchCountdown": "J-{n}",
+  "@parentWatchCountdown": {
+    "placeholders": {
+      "n": {
+        "type": "Object"
+      }
+    }
+  },
+  "parentWatchDeactivate": "Désactiver la veille",
+  "parentWatchDeactivateError": "Impossible de désactiver la veille pour le moment.",
+  "parentWatchExamDate": "Date de l'examen",
+  "parentWatchExamOn": "Examen le {date}",
+  "@parentWatchExamOn": {
+    "placeholders": {
+      "date": {
+        "type": "Object"
+      }
+    }
+  },
+  "parentWatchExamType": "Type d'examen",
+  "parentWatchExamTypeHint": "Ex : BEPC, Baccalauréat série C…",
+  "parentWatchFormRequired": "Choisissez un type d'examen et une date.",
+  "parentWatchIntro": "Un suivi rapproché pendant la période d'examen : WinAI adapte ses conseils et vous propose des questions pertinentes dans l'assistant familial.",
+  "parentWatchSubmitError": "La veille n'a pas pu être activée. Réessayez.",
+  "parentWatchTitle": "Veille d'examen",
+  "password": "Mot de passe",
+  "roleInstitution": "Établissement",
+  "roleParent": "Parent",
+  "roleStudent": "Élève",
+  "roleTeacher": "Professeur",
+  "roleTutor": "Répétiteur",
+  "shellTabAccount": "Compte",
+  "shellTabAnalytics": "Analytics",
+  "shellTabCatalog": "Catalogue",
+  "shellTabChildren": "Enfants",
+  "shellTabContent": "Contenus",
+  "shellTabEarnings": "Revenus",
+  "shellTabGroups": "Groupes",
+  "shellTabHome": "Accueil",
+  "shellTabMe": "Moi",
+  "shellTabMessages": "Messages",
+  "shellTabMySpace": "Mon Espace",
+  "shellTabProfile": "Profil",
+  "shellTabResources": "Ressources",
+  "shellTabSessions": "Sessions",
+  "shellTabStudents": "Étudiants",
+  "shopAccountRequiredBody": "Connectez-vous ou créez un compte avant le paiement : le contenu acheté est rattaché à votre compte et reste accessible sur tous vos appareils.",
+  "shopAccountRequiredTitle": "Un compte est nécessaire pour acheter",
+  "shopAmount": "Montant",
+  "shopApply": "Appliquer",
+  "shopAwaitingConfirmation": "En attente de confirmation…",
+  "shopBackToCatalog": "Retour au catalogue",
+  "shopBuy": "Acheter",
+  "shopBuyFromAccountBody": "Le paiement dans l'application arrive bientôt. En attendant, achetez ce contenu depuis votre compte sur winplus.cm avec les mêmes identifiants : il sera ensuite disponible ici.",
+  "shopBuyFromAccountTitle": "Achat depuis votre compte",
+  "shopCartEmpty": "Votre panier est vide.",
+  "shopCartLoadFailed": "Impossible de charger le panier.",
+  "shopCartRemoveFailed": "Impossible de retirer cet article.",
+  "shopCartTitle": "Mon panier",
+  "shopCheckNow": "Vérifier maintenant",
+  "shopCheckoutStepConfirm": "Confirmation",
+  "shopCheckoutStepSummary": "Récapitulatif & paiement",
+  "shopContentAvailable": "Vos contenus sont maintenant disponibles.",
+  "shopExploreCatalog": "Explorer le catalogue",
+  "shopInvalidPhone": "Numéro de téléphone invalide.",
+  "shopInvoiceLoadFailed": "Impossible de charger la facture.",
+  "shopInvoiceTitle": "Facture {number}",
+  "@shopInvoiceTitle": {
+    "placeholders": {
+      "number": {
+        "type": "Object"
+      }
+    }
+  },
+  "shopItems": "Articles",
+  "shopItemsCount": "{count, plural, =0{0 article} =1{1 article} other{{count} articles}}",
+  "@shopItemsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "shopMyOrders": "Mes commandes",
+  "shopNoOrders": "Aucune commande pour le moment.",
+  "shopOrder": "Commande",
+  "shopOrderCancelled": "Annulée",
+  "shopOrderFailed": "Échouée",
+  "shopOrderPaid": "Payée",
+  "shopOrderRefundRequested": "Remboursement demandé",
+  "shopOrderRefunded": "Remboursée",
+  "shopPayAmount": "Payer {amount} XAF",
+  "@shopPayAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "Object"
+      }
+    }
+  },
+  "shopPaymentConfirmed": "Paiement confirmé !",
+  "shopPaymentFailed": "Paiement échoué",
+  "shopPaymentMethod": "Mode de paiement",
+  "shopPaymentNotConfirmed": "Le paiement n'a pas pu être confirmé.",
+  "shopPhoneNumber": "Numéro de téléphone",
+  "shopPlaceOrder": "Passer la commande",
+  "shopPromoApplied": "Réduction appliquée : -{amount} XAF",
+  "@shopPromoApplied": {
+    "placeholders": {
+      "amount": {
+        "type": "Object"
+      }
+    }
+  },
+  "shopPromoCode": "Code promo",
+  "shopReference": "Réf. : {ref}",
+  "@shopReference": {
+    "placeholders": {
+      "ref": {
+        "type": "Object"
+      }
+    }
+  },
+  "shopRefundFailed": "Impossible d'envoyer la demande.",
+  "shopRefundSent": "Demande de remboursement envoyée.",
+  "shopRequestRefund": "Demander un remboursement",
+  "shopSeeMyOrders": "Voir mes commandes",
+  "shopSlowPayment": "Le paiement met plus de temps que prévu. Vous pouvez vérifier plus tard dans \"Mes commandes\".",
+  "shopStillPending": "Toujours en attente",
+  "shopSubjectFallback": "Sujet #{id}",
+  "@shopSubjectFallback": {
+    "placeholders": {
+      "id": {
+        "type": "Object"
+      }
+    }
+  },
+  "shopSubtotal": "Sous-total",
+  "shopTotal": "Total",
+  "shopTotalTtc": "Total TTC",
+  "shopUnexpectedError": "Erreur inattendue. Réessayez.",
+  "shopUssdNotice": "Vous recevrez une notification USSD pour valider.",
+  "shopValidateUssd": "Valide le paiement via le message USSD envoyé sur ton téléphone.",
+  "shopVatIncluded": "dont TVA 19,25 % incluse",
+  "shopViewInvoice": "Voir la facture",
+  "studentAchBadgesUnlocked": "{unlocked} / {total} badges débloqués",
+  "@studentAchBadgesUnlocked": {
+    "placeholders": {
+      "unlocked": {
+        "type": "Object"
+      },
+      "total": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentAchCurrentStreak": "Série actuelle",
+  "studentAchLocked": "Verrouillé",
+  "studentAchMyBadges": "Mes badges",
+  "studentAchStreakDays": "{count, plural, =1{{count} jours consécutifs} other{{count} jours consécutifs}}",
+  "@studentAchStreakDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "studentAchStreakLoadError": "Impossible de charger ta série réelle. La série ci-dessous peut ne pas être à jour.",
+  "studentAchTitle": "Achievements",
+  "studentAchUnlocked": "Débloqué",
+  "studentCatalogAccess": "Accès",
+  "studentCatalogAllAccess": "Tous",
+  "studentCatalogApply": "Appliquer",
+  "studentCatalogCatSciences": "Sciences",
+  "studentCatalogEmpty": "Aucune formation trouvée.",
+  "studentCatalogFilters": "Filtres",
+  "studentCatalogLevelAdvanced": "avancé",
+  "studentCatalogLevelBeginner": "débutant",
+  "studentCatalogLevelIntermediate": "intermédiaire",
+  "studentCatalogLoadMore": "Charger plus",
+  "studentCatalogPaid": "Payant",
+  "studentCatalogPriceTtc": "{amount} XAF TTC",
+  "@studentCatalogPriceTtc": {
+    "placeholders": {
+      "amount": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentCatalogReset": "Réinitialiser",
+  "studentCatalogSearchHint": "Rechercher une formation…",
+  "studentCertCourses": "Formations",
+  "studentCertDownloadPdf": "Télécharger PDF",
+  "studentCertEmpty": "Aucun certificat pour l'instant",
+  "studentCertEmptyHint": "Complétez des quiz et des parcours pour\ndécrocher vos premiers certificats.",
+  "studentCertIssuedOn": "Délivré le {date}",
+  "@studentCertIssuedOn": {
+    "placeholders": {
+      "date": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentCertLoadError": "Impossible de charger les certificats.",
+  "studentCertMentionGood": "Mention Bien",
+  "studentCertMentionVeryGood": "Mention Très Bien",
+  "studentCertPapersAndPaths": "Épreuves et parcours",
+  "studentCertPdfLoadError": "Le certificat n'a pas pu être chargé.",
+  "studentCertSeePdf": "Voir le certificat (PDF)",
+  "studentCertShare": "Partager",
+  "studentCertTitle": "Mes Certificats",
+  "studentCertVerificationCode": "Code de vérification : {code}",
+  "@studentCertVerificationCode": {
+    "placeholders": {
+      "code": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentCoachCompletion": "{pct}% du plan complété",
+  "@studentCoachCompletion": {
+    "placeholders": {
+      "pct": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentCoachDaysLeft": "{days} j restants",
+  "@studentCoachDaysLeft": {
+    "placeholders": {
+      "days": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentCoachDeleteBody": "Cette action est irréversible.",
+  "studentCoachDeletePlan": "Supprimer le plan",
+  "studentCoachDeleteTitle": "Supprimer ce plan ?",
+  "studentCoachExamDate": "Date de l'examen",
+  "studentCoachGenerate": "Générer mon plan avec WinAI",
+  "studentCoachGenerateError": "Impossible de générer le plan. Réessaie dans un instant.",
+  "studentCoachGenerating": "Génération…",
+  "studentCoachHoursPerDay": "Heures d'étude par jour",
+  "studentCoachIntro": "WinAI génère un planning jour par jour adapté à ta date d'examen et ton rythme.",
+  "studentCoachLoadError": "Impossible de charger ton plan. Vérifie ta connexion.",
+  "studentCoachLocked": "Disponible à partir du plan Standard.\nWinAI génère un planning adapté à tes lacunes.",
+  "studentCoachMarkToday": "Marquer la session du jour comme faite",
+  "studentCoachNoWeek": "Planning indisponible pour cette semaine.",
+  "studentCoachPickDate": "Choisir une date",
+  "studentCoachReliability": "Fiabilité du plan : {value}%",
+  "@studentCoachReliability": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentCoachRest": "Repos",
+  "studentCoachSeePlans": "Voir les plans",
+  "studentCoachTargetExam": "Examen cible",
+  "studentCoachThisWeek": "Cette semaine",
+  "studentCoachTodayDay": "Aujourd'hui · J{day}",
+  "@studentCoachTodayDay": {
+    "placeholders": {
+      "day": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentCoachTodayDone": "Session du jour complétée",
+  "studentCourseBuy": "Acheter la formation",
+  "studentCourseBuyNote": "{amount} XAF TTC (TVA 19,25 % incluse). Formation vendue seule, accès à vie dès la confirmation du paiement.",
+  "@studentCourseBuyNote": {
+    "placeholders": {
+      "amount": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentCourseCertIncluded": "Certificat de réussite inclus",
+  "studentCourseContent": "Contenu",
+  "studentCourseContinue": "Continuer la formation",
+  "studentCourseCurriculumSummary": "{sections} sections · {lessons} leçons · {duration}",
+  "@studentCourseCurriculumSummary": {
+    "placeholders": {
+      "sections": {
+        "type": "Object"
+      },
+      "lessons": {
+        "type": "Object"
+      },
+      "duration": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentCourseEnrolError": "Erreur lors de l'inscription.",
+  "studentCourseEnrolled": "{n} inscrits",
+  "@studentCourseEnrolled": {
+    "placeholders": {
+      "n": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentCourseError": "Erreur",
+  "studentCourseLeaveReview": "Donnez votre avis",
+  "studentCourseLessons": "{n} leçons",
+  "@studentCourseLessons": {
+    "placeholders": {
+      "n": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentCourseNoChild": "Aucun enfant n'est rattaché à votre compte.",
+  "studentCourseNoReviews": "Aucun avis pour le moment.",
+  "studentCourseNotFound": "Formation introuvable.",
+  "studentCourseObjectives": "Ce que vous apprendrez",
+  "studentCourseOfferChild": "Offrir à mon enfant",
+  "studentCourseOfferTitle": "Offrir « {title} » ({amount} XAF TTC, débité du portefeuille)",
+  "@studentCourseOfferTitle": {
+    "placeholders": {
+      "title": {
+        "type": "Object"
+      },
+      "amount": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentCourseOffered": "Formation offerte à {name} : accès ouvert.",
+  "@studentCourseOffered": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentCoursePayBalance": "Payer avec mon solde WinPlus",
+  "studentCoursePayMomo": "Payer par Mobile Money",
+  "studentCoursePostReview": "Publier mon avis",
+  "studentCoursePreview": "Aperçu",
+  "studentCoursePurchased": "Formation achetée : elle est dans « Mes formations ».",
+  "studentCoursePurchasedBadge": "Achetée",
+  "studentCoursePurchasedStart": "Achetée : commencer",
+  "studentCourseRequirements": "Prérequis",
+  "studentCourseReviewHint": "Partagez votre expérience (optionnel)…",
+  "studentCourseReviewSubmitError": "Erreur lors de la soumission.",
+  "studentCourseReviewThanks": "Merci pour votre avis !",
+  "studentCourseReviews": "Avis",
+  "studentCourseStartFree": "Commencer gratuitement",
+  "studentCourseVatNote": "TTC, TVA 19,25 % incluse · hors abonnement",
+  "studentCourseYours": "Votre formation",
+  "studentDetailAddNote": "Ajouter une note",
+  "studentDetailAddNoteHint": "Ajouter une note…",
+  "studentDetailAddToCartError": "Impossible d'ajouter au panier.",
+  "studentDetailAddToCartPrice": "Ajouter au panier  {price} XAF",
+  "@studentDetailAddToCartPrice": {
+    "placeholders": {
+      "price": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentDetailAddedToCart": "Ajouté au panier.",
+  "studentDetailBy": "Par {teacher}",
+  "@studentDetailBy": {
+    "placeholders": {
+      "teacher": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentDetailDefaultDescription": "Contenu éducatif de qualité.",
+  "studentDetailDemoNoDocument": "Ce contenu de démonstration n'a pas de document à afficher.",
+  "studentDetailDemoNoSubject": "Ce contenu de démonstration n'a pas de sujet réel.",
+  "studentDetailMyNotes": "Mes notes",
+  "studentDetailNoReviews": "Aucun avis pour l'instant.",
+  "studentDetailOrSubscriptions": "ou découvrez les abonnements",
+  "studentDetailRatingCount": "{rating} ({count, plural, =1{{count} avis} other{{count} avis}})",
+  "@studentDetailRatingCount": {
+    "placeholders": {
+      "rating": {
+        "type": "Object"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "studentDetailReadBook": "Lire le livre",
+  "studentDetailReadInApp": "Lire dans l'application",
+  "studentDetailReadPreview": "Lire l'aperçu ({pages} pages)",
+  "@studentDetailReadPreview": {
+    "placeholders": {
+      "pages": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentDetailReviewsHeader": "Avis ({count})",
+  "@studentDetailReviewsHeader": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentDetailSimilar": "Contenus similaires",
+  "studentDetailStartQuiz": "Commencer le quiz",
+  "studentDetailTagHard": "Difficile",
+  "studentDetailTagMastered": "Maîtrisé",
+  "studentDetailTagToBuy": "À acheter",
+  "studentDetailTagToRevise": "À réviser",
+  "studentDetailVerified": "Vérifié",
+  "studentDetailViewAnswers": "Voir le corrigé",
+  "studentDetailViewCart": "Voir le panier",
+  "studentDetailViews": "{count, plural, =1{{count} consultations} other{{count} consultations}}",
+  "@studentDetailViews": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "studentFavAddedOn": "Ajouté le {date}",
+  "@studentFavAddedOn": {
+    "placeholders": {
+      "date": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentFavCount": "{count} contenu(s) sauvegardé(s)",
+  "@studentFavCount": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentFavEmpty": "Aucun favori pour l'instant",
+  "studentFavExplore": "Explorer le catalogue",
+  "studentFavLimit": "Votre plan permet {max} favoris. Passez à un plan supérieur pour en sauvegarder plus.",
+  "@studentFavLimit": {
+    "placeholders": {
+      "max": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentFavLoadError": "Impossible de charger les favoris.",
+  "studentFavTitle": "Mes Favoris",
+  "studentGoalsAcceptError": "Impossible d'accepter cet objectif pour le moment.",
+  "studentGoalsDeadlineOn": "Échéance : {date}",
+  "@studentGoalsDeadlineOn": {
+    "placeholders": {
+      "date": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentGoalsFieldDeadline": "Échéance",
+  "studentGoalsFieldTitle": "Titre",
+  "studentGoalsProposedBy": "Proposé par un de vos parents",
+  "studentGoalsRefuseConfirm": "Refuser définitivement ?",
+  "studentGoalsRefuseError": "Impossible de refuser cet objectif pour le moment.",
+  "studentGoalsRequired": "Le titre et l'échéance sont requis.",
+  "studentGoalsSaveActivate": "Enregistrer et activer",
+  "studentGoalsSaveError": "Impossible d'enregistrer les modifications pour le moment.",
+  "studentGoalsTitle": "Objectifs proposés par vos parents",
+  "studentGroupsAlreadyMember": "Vous faites déjà partie de « {name} ».",
+  "@studentGroupsAlreadyMember": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentGroupsCodeIncomplete": "Entrez le code d'invitation complet.",
+  "studentGroupsCodeNotFound": "Aucun groupe ne correspond à ce code.",
+  "studentGroupsCreate": "Créer un groupe",
+  "studentGroupsCreateBtn": "Créer",
+  "studentGroupsCreateError": "Le groupe n'a pas pu être créé.",
+  "studentGroupsCreatePlus": "+ Créer un groupe",
+  "studentGroupsCreating": "Création…",
+  "studentGroupsDetailLoadError": "Impossible de charger ce groupe.",
+  "studentGroupsEmpty": "Aucun groupe pour le moment.",
+  "studentGroupsEmptyHint": "Créez un groupe ou rejoignez celui d'un camarade avec son code.",
+  "studentGroupsInviteCode": "Code d'invitation",
+  "studentGroupsJoin": "Rejoindre",
+  "studentGroupsJoinByCode": "Rejoindre par code",
+  "studentGroupsJoined": "Groupe « {name} » rejoint avec succès !",
+  "@studentGroupsJoined": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentGroupsLeaderboard": "Classement (7 derniers jours)",
+  "studentGroupsLeaderboardUnavailable": "Classement indisponible pour le moment.",
+  "studentGroupsLeave": "Quitter",
+  "studentGroupsLeaveConfirm": "Quitter « {name} » ?",
+  "@studentGroupsLeaveConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentGroupsLeaveError": "Vous n'avez pas pu quitter ce groupe.",
+  "studentGroupsLeaveOwner": "Quitter « {name} » ? Le groupe sera archivé pour tous ses membres.",
+  "@studentGroupsLeaveOwner": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentGroupsLeaveTitle": "Quitter ce groupe ?",
+  "studentGroupsLoadError": "Vos groupes n'ont pas pu être chargés.",
+  "studentGroupsMember": "Membre",
+  "studentGroupsMemberCount": "{count, plural, =1{{count} membre} other{{count} membres}}",
+  "@studentGroupsMemberCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "studentGroupsMembers": "Membres",
+  "studentGroupsMembersCount": "{count, plural, =1{{count} membres} other{{count} membres}}",
+  "@studentGroupsMembersCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "studentGroupsMine": "Mes groupes",
+  "studentGroupsNameHint": "Nom du groupe (min 3 caractères)",
+  "studentGroupsNameTooShort": "Le nom doit contenir au moins 3 caractères.",
+  "studentGroupsNoActivity": "Personne n'a encore d'activité cette semaine.",
+  "studentGroupsOwner": "Propriétaire",
+  "studentGroupsRankLine": "{quizzes} quiz réussis · {minutes} min étudiées",
+  "@studentGroupsRankLine": {
+    "placeholders": {
+      "quizzes": {
+        "type": "Object"
+      },
+      "minutes": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentGroupsSending": "Envoi…",
+  "studentGroupsSubjectHint": "Matière principale (optionnel)",
+  "studentHistCatCourse": "Cours",
+  "studentHistCatDocument": "Document",
+  "studentHistCatExercise": "Exercice",
+  "studentHistCatPaper": "Épreuve",
+  "studentHistCatSummary": "Résumé",
+  "studentHistDaysAgo": "Il y a {n} jours",
+  "@studentHistDaysAgo": {
+    "placeholders": {
+      "n": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentHistEmpty": "Aucun document consulté pour l'instant.",
+  "studentHistEmptyHint": "Ouvre des épreuves depuis le catalogue.",
+  "studentHistEmptyPeriod": "Aucun document consulté sur {period}.",
+  "@studentHistEmptyPeriod": {
+    "placeholders": {
+      "period": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentHistFileCount": "{count, plural, =0{{count} fichier · {period}} =1{{count} fichier · {period}} other{{count} fichiers · {period}}}",
+  "@studentHistFileCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "period": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentHistLoadError": "Impossible de charger l'historique.",
+  "studentHistPeriod1y": "1 an",
+  "studentHistPeriod30d": "30j",
+  "studentHistPeriod7d": "7j",
+  "studentHistPeriod90d": "90j",
+  "studentHistTitle": "Documents consultés",
+  "studentHomeAvgScore": "score moyen",
+  "studentHomeBadges": "Badges",
+  "studentHomeContinue": "Continue où tu t'es arrêté",
+  "studentHomeDate": "{weekday} {date}",
+  "@studentHomeDate": {
+    "placeholders": {
+      "weekday": {
+        "type": "Object"
+      },
+      "date": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentHomeDaysInARow": "jours d'affilée",
+  "studentHomeDaysLabel": "jours",
+  "studentHomeDownloads": "Téléchargements",
+  "studentHomeGoodAfternoon": "Bon après-midi",
+  "studentHomeGoodEvening": "Bonsoir",
+  "studentHomeGoodMorning": "Bonjour",
+  "studentHomeInARow": " d'affilée !",
+  "studentHomeOpenFailed": "Ce contenu n'a pas pu être ouvert. Réessaie plus tard.",
+  "studentHomeQuizPerWeek": "Quiz / sem.",
+  "studentHomeResume": "Reprendre",
+  "studentHomeSee": "Voir",
+  "studentHomeStreak": "Streak",
+  "studentHomeStreakDays": "{count, plural, =1{{count} jours} other{{count} jours}}",
+  "@studentHomeStreakDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "studentHomeStudyPerWeek": "Étude / sem.",
+  "studentHomeStudyThisWeek": "d'étude cette semaine",
+  "studentHomeTimeLogged": "Temps enregistré",
+  "studentHomeUpcomingExams": "Examens à venir",
+  "studentHomeUpgrade": "Avec un abonnement, tout le catalogue s'ouvre et WinAI vous accompagne davantage.",
+  "studentHubAccount": "Compte",
+  "studentHubBadgesSub": "14 débloqués",
+  "studentHubCertificates": "Mes certificats",
+  "studentHubCertificatesSub": "2 signés",
+  "studentHubCommunity": "Communauté",
+  "studentHubDefaultName": "Étudiant",
+  "studentHubFavorites": "Mes favoris",
+  "studentHubFavoritesSub": "Vos contenus enregistrés",
+  "studentHubForum": "Forum communauté",
+  "studentHubForumSub": "Questions & réponses",
+  "studentHubGroups": "Mes groupes d'étude",
+  "studentHubGroupsSub": "3 groupes",
+  "studentHubHistory": "Historique des téléchargements",
+  "studentHubLearning": "Apprentissage",
+  "studentHubLogoutBody": "Vous serez redirigé vers l'écran d'accueil.",
+  "studentHubLogoutConfirm": "Déconnecter",
+  "studentHubLogoutTitle": "Se déconnecter ?",
+  "studentHubNetworkSub": "Parents, profs, établissement",
+  "studentHubPlan": "Plan {planName}",
+  "@studentHubPlan": {
+    "placeholders": {
+      "planName": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentHubPomodoroSub": "25 min focus · 5 min pause",
+  "studentHubPrivacy": "Politique de confidentialité",
+  "studentHubProfileSettings": "Paramètres du profil",
+  "studentHubReports": "Mes rapports de progression",
+  "studentHubRevisionQuiz": "Quiz de révision",
+  "studentHubRevisionQuizSub": "Reprendre les questions ratées",
+  "studentHubSoon": "Bientôt disponible !",
+  "studentHubSubscription": "Mon abonnement",
+  "studentHubSubscriptionSub": "Plan {planName} · Gérer",
+  "@studentHubSubscriptionSub": {
+    "placeholders": {
+      "planName": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentHubTerms": "Conditions d'utilisation",
+  "studentHubTutorPolicy": "Politique de tutorat",
+  "studentHubWinaiSub": "Ton assistant pédagogique",
+  "studentLinksActionFailed": "Action impossible, réessaie.",
+  "studentLinksAttachAccepted": "rattachement confirmé",
+  "studentLinksAttachPending": "rattachement en attente de ta réponse",
+  "studentLinksAttachRefused": "rattachement refusé pour les cours particuliers",
+  "studentLinksClass": "Classe {group}",
+  "@studentLinksClass": {
+    "placeholders": {
+      "group": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentLinksInvitations": "Invitations reçues",
+  "studentLinksLoadError": "Erreur de chargement",
+  "studentLinksParents": "Parents",
+  "studentLinksRoleInstitution": "institution",
+  "studentLinksRoleParent": "parent",
+  "studentLinksSchools": "Établissements",
+  "studentLinksSchoolsHint": "En acceptant, l'établissement peut réserver, payer et attribuer des cours particuliers pour toi. Tu peux changer d'avis à tout moment.",
+  "studentLinksStudyGroups": "Groupes d'étude",
+  "studentLinksTeacherClass": "Professeur · {className}",
+  "@studentLinksTeacherClass": {
+    "placeholders": {
+      "className": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentLinksTeacherPending": "Professeur · invitation en attente",
+  "studentLinksTeachers": "Professeurs",
+  "studentLinksTitle": "Mon réseau",
+  "studentLinksWithdraw": "Retirer mon accord",
+  "studentMyCoursesEmpty": "Aucune formation en cours",
+  "studentMyCoursesEmptyHint": "Explorez notre catalogue et commencez à apprendre dès aujourd'hui.",
+  "studentMyCoursesExplore": "Explorer les formations",
+  "studentMyCoursesLoadError": "Impossible de charger vos formations.",
+  "studentMyCoursesReplay": "Revoir",
+  "studentMyCoursesStart": "Commencer",
+  "studentMyCoursesTitle": "Mes formations",
+  "studentNotifAllCaughtUp": "Tout est à jour !",
+  "studentNotifHoursAgo": "Il y a {n}h",
+  "@studentNotifHoursAgo": {
+    "placeholders": {
+      "n": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentNotifJustNow": "À l'instant",
+  "studentNotifMarkFailed": "Impossible de marquer les notifications comme lues. Réessaie.",
+  "studentNotifMinutesAgo": "Il y a {n} min",
+  "@studentNotifMinutesAgo": {
+    "placeholders": {
+      "n": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentNotifReadAll": "Tout lire",
+  "studentNotifSeeMore": "Voir plus",
+  "studentNotifTitle": "Notifications",
+  "studentPlayerAttachedFile": "Fichier joint",
+  "studentPlayerCertAvailable": "Votre certificat est disponible.",
+  "studentPlayerCertGenerating": "Félicitations ! Votre certificat est en cours de génération.",
+  "studentPlayerCourseDone": "Formation terminée !",
+  "studentPlayerCurriculum": "Curriculum",
+  "studentPlayerDone": "Terminé",
+  "studentPlayerDownloadFailed": "Téléchargement impossible. Réessaie plus tard.",
+  "studentPlayerDownloadOffline": "Télécharger hors-ligne",
+  "studentPlayerDownloaded": "Leçon téléchargée pour un visionnage hors-ligne.",
+  "studentPlayerLessonDone": "Leçon terminée",
+  "studentPlayerMarkDone": "Marquer terminé",
+  "studentPlayerOfflinePlayback": "Lecture hors-ligne",
+  "studentPlayerOpenViewer": "Ouvrir dans la visionneuse (consultation en ligne)",
+  "studentPlayerRemoveOffline": "Retirer le hors-ligne",
+  "studentPlayerSelectLesson": "Sélectionnez une leçon.",
+  "studentPlayerTapToDownload": "Appuyez pour télécharger",
+  "studentPlayerVideoUnavailable": "Vidéo indisponible pour le moment.",
+  "studentProfile2fa": "Authentification à 2 facteurs",
+  "studentProfile2faHint": "Un code email à chaque connexion.",
+  "studentProfileActiveSessions": "Sessions actives",
+  "studentProfileAnonStats": "Statistiques anonymisées",
+  "studentProfileAnonStatsHint": "Aide à améliorer WinPlus.",
+  "studentProfileChange": "Changer",
+  "studentProfileChangePhoto": "Modifier la photo",
+  "studentProfileChangePwd": "Changer le mot de passe",
+  "studentProfileCodeReceived": "Code reçu par email",
+  "studentProfileCodeSent": "Code envoyé à {email}. Il expire après 15 minutes.",
+  "@studentProfileCodeSent": {
+    "placeholders": {
+      "email": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentProfileConfirmCode": "Code de confirmation",
+  "studentProfileCurrentPwd": "Mot de passe actuel",
+  "studentProfileCurrentSession": "Maintenant · Session actuelle",
+  "studentProfileDangerZone": "Zone dangereuse",
+  "studentProfileDeleteAccount": "Supprimer mon compte",
+  "studentProfileDeleteBody": "Cette action est irréversible. Toutes vos données seront perdues.",
+  "studentProfileDeleteTitle": "Supprimer le compte ?",
+  "studentProfileDeleteWarning": "La suppression de votre compte est irréversible.",
+  "studentProfileEmailAddress": "Adresse e-mail",
+  "studentProfileEmailChanged": "Adresse email modifiée.",
+  "studentProfileEmailCurrent": "Actuelle : {email}",
+  "@studentProfileEmailCurrent": {
+    "placeholders": {
+      "email": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentProfileEmailInvalid": "Adresse email invalide.",
+  "studentProfileEmailSame": "C'est déjà votre adresse actuelle.",
+  "studentProfileEnterCode": "Saisis le code reçu par email.",
+  "studentProfileFullName": "Nom complet",
+  "studentProfileGetCode": "Recevoir un code",
+  "studentProfileLearningStyle": "Mon style d’apprentissage",
+  "studentProfileManageSub": "Gérer mon abonnement",
+  "studentProfileNewEmail": "Nouvel email",
+  "studentProfileNewEmailAddress": "Nouvelle adresse e-mail",
+  "studentProfileNotifAi": "Recommandations WinAI",
+  "studentProfileNotifAiSub": "Alertes et conseils personnalisés",
+  "studentProfileNotifCommunitySub": "Réponses à vos questions",
+  "studentProfileNotifExam": "Rappels d'examens",
+  "studentProfileNotifExamSub": "Compte à rebours avant vos examens",
+  "studentProfileNotifPromo": "Offres et promotions",
+  "studentProfileNotifPromoSub": "Nouveaux contenus, promotions",
+  "studentProfileNotifQuiz": "Résultats de quiz",
+  "studentProfileNotifQuizSub": "Recevoir vos scores après chaque quiz",
+  "studentProfilePeriodEnd": "Fin de période le {date}",
+  "@studentProfilePeriodEnd": {
+    "placeholders": {
+      "date": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentProfilePhone": "Téléphone",
+  "studentProfilePwdChanged": "Mot de passe modifié.",
+  "studentProfilePwdMismatch": "Les mots de passe ne correspondent pas.",
+  "studentProfilePwdWrong": "Mot de passe actuel incorrect.",
+  "studentProfileSaveChanges": "Enregistrer les modifications",
+  "studentProfileTabPrivacy": "Confidentialité",
+  "studentProfileTabSecurity": "Sécurité",
+  "studentProfileTitle": "Profil",
+  "studentProfileUpdateError": "Erreur lors de la mise à jour.",
+  "studentProfileUpdated": "Profil mis à jour.",
+  "studentProfileVisible": "Profil visible",
+  "studentProfileVisibleHint": "Visible par la communauté WinPlus.",
+  "studentQuizAvailable": "Quiz disponibles",
+  "studentQuizBackToCatalog": "Retour au catalogue",
+  "studentQuizCorrect": "Correctes",
+  "studentQuizCounter": "Question {current} sur {total}",
+  "@studentQuizCounter": {
+    "placeholders": {
+      "current": {
+        "type": "Object"
+      },
+      "total": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentQuizExcellent": "Excellent !",
+  "studentQuizFinish": "Terminer le quiz",
+  "studentQuizGoodWork": "Bon travail",
+  "studentQuizIncorrect": "Incorrectes",
+  "studentQuizMeta": "{count} questions · {minutes} min",
+  "@studentQuizMeta": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      },
+      "minutes": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentQuizMyQuizzes": "Mes Quiz",
+  "studentQuizNone": "Aucun quiz disponible.",
+  "studentQuizNow": "Maintenant",
+  "studentQuizResults": "Résultats",
+  "studentQuizRetake": "Refaire le quiz",
+  "studentQuizReview": "Révision",
+  "studentQuizReviewAnswers": "Revoir les réponses",
+  "studentQuizToImprove": "À améliorer",
+  "studentReportsAvgScore": "Score moyen",
+  "studentReportsBestSubject": "Meilleure matière : Maths",
+  "studentReportsBySubject": "Score par matière",
+  "studentReportsExportPdf": "Exporter PDF",
+  "studentReportsPeriod30": "30 jours",
+  "studentReportsPeriod7": "7 jours",
+  "studentReportsPeriod90": "90 jours",
+  "studentReportsPlanRequired": "Plan Standard requis pour cette période",
+  "studentReportsQuiz": "Quiz",
+  "studentReportsQuizDone": "Quiz réalisés",
+  "studentReportsStandardOnly": "Disponible avec le Plan Standard",
+  "studentReportsSuccessRate": "Taux de réussite",
+  "studentReportsTitle": "Mes rapports",
+  "studentReportsToImprove": "À améliorer : Chimie",
+  "studentReportsWeekShort": "S{n}",
+  "@studentReportsWeekShort": {
+    "placeholders": {
+      "n": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentReportsWeekly": "Progression hebdomadaire",
+  "studentRevisionAll": "Toutes",
+  "studentRevisionBackToCatalog": "Revoir le catalogue",
+  "studentRevisionDaysAgo": "il y a {n}j",
+  "@studentRevisionDaysAgo": {
+    "placeholders": {
+      "n": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentRevisionEmpty": "Aucune question à réviser !\nTu maîtrises tout.",
+  "studentRevisionHoursAgo": "il y a {n}h",
+  "@studentRevisionHoursAgo": {
+    "placeholders": {
+      "n": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentRevisionLoadError": "Impossible de charger tes erreurs.",
+  "studentRevisionMinutesAgo": "il y a {n}min",
+  "@studentRevisionMinutesAgo": {
+    "placeholders": {
+      "n": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentRevisionSubtitle": "Questions que tu as ratées récemment",
+  "studentRevisionYesterday": "hier",
+  "studentSearchHint": "BAC C Maths, ENSP, SVT…",
+  "studentSearchIdle": "Recherchez dans le catalogue",
+  "studentSearchNoResults": "Aucun résultat pour « {query} »",
+  "@studentSearchNoResults": {
+    "placeholders": {
+      "query": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentSessionDone": "Session terminée !",
+  "studentSessionDoneScore": "Score : {pct}% sur {subject}",
+  "@studentSessionDoneScore": {
+    "placeholders": {
+      "pct": {
+        "type": "Object"
+      },
+      "subject": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentSessionFinish": "Terminer la session",
+  "studentSessionHistory": "Voir mes sessions passées",
+  "studentSessionHistoryLine": "{duration} min · {score} · {date}",
+  "@studentSessionHistoryLine": {
+    "placeholders": {
+      "duration": {
+        "type": "Object"
+      },
+      "score": {
+        "type": "Object"
+      },
+      "date": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentSessionIntro": "Choisis une matière et une durée. WinAI prépare un briefing, un quiz progressif puis une synthèse personnalisée.",
+  "studentSessionMinutes": "{d} min",
+  "@studentSessionMinutes": {
+    "placeholders": {
+      "d": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentSessionNextQuestion": "Question suivante",
+  "studentSessionNoHistory": "Aucune session terminée pour le moment.",
+  "studentSessionNoScore": "sans score",
+  "studentSessionNoSubjects": "Aucune matière disponible pour le moment.",
+  "studentSessionPickSubject": "Choisis une matière pour commencer.",
+  "studentSessionQuizError": "Impossible de générer le quiz. Réessaie dans un instant.",
+  "studentSessionScoreLine": "{correct}/{total} correctes · {pct}%",
+  "@studentSessionScoreLine": {
+    "placeholders": {
+      "correct": {
+        "type": "Object"
+      },
+      "total": {
+        "type": "Object"
+      },
+      "pct": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentSessionSeeSummary": "Voir la synthèse",
+  "studentSessionStart": "Démarrer la session",
+  "studentSessionStartError": "Impossible de démarrer la session. Réessaie.",
+  "studentSessionStepBriefing": "Briefing",
+  "studentSessionStepQuiz": "Quiz progressif",
+  "studentSessionStepSummary": "Synthèse WinAI",
+  "studentSessionSummaryError": "La synthèse n'a pas pu être générée, mais tes réponses sont bien conservées.",
+  "studentTabsAiFileAttached": "Fichier joint : {name}",
+  "@studentTabsAiFileAttached": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentTabsAiFileReceived": "Fichier reçu ! Je l'analyse...",
+  "studentTabsAiHint": "Pose ta question à WinAI…",
+  "studentTabsAiNoReply": "Désolé, je n'ai pas pu répondre. Réessaie.",
+  "studentTabsAiSuggest1": "Explique-moi les dérivées",
+  "studentTabsAiSuggest2": "Plan de révision BAC C",
+  "studentTabsAiSuggest3": "Mes matières faibles ?",
+  "studentTabsAiSuggest4": "Génère un quiz Chimie",
+  "studentTabsAiTagline": "Ton assistant pédagogique personnel",
+  "studentTabsAttachDocument": "Document (PDF, Word…)",
+  "studentTabsAttachFile": "Joindre un fichier",
+  "studentTabsAttachImage": "Image / Photo",
+  "studentTabsAttachVoice": "Message vocal",
+  "studentTabsAttachment": "Pièce jointe",
+  "studentTabsCatalogLoadError": "Impossible de charger le catalogue.",
+  "studentTabsCertificates": "Certificats",
+  "studentTabsCourseCatalog": "Catalogue formations",
+  "studentTabsExamCoach": "Coach Exam",
+  "studentTabsFavorites": "Favoris",
+  "studentTabsFindTutor": "Trouver un tuteur",
+  "studentTabsFindTutorSub": "Cours particuliers en ligne ou à domicile",
+  "studentTabsGuidedSession": "Session d'étude guidée",
+  "studentTabsMyBookings": "Mes réservations",
+  "studentTabsMyCart": "Mon panier",
+  "studentTabsMyOrders": "Mes commandes",
+  "studentTabsNoContent": "Aucun contenu disponible.",
+  "studentTabsSearchHint": "BAC C Maths 2023…",
+  "studentTabsStructuredCourses": "Formations structurées",
+  "studentTabsStructuredCoursesSub": "Apprenez à votre rythme · Certificats inclus",
+  "studentTabsStudyThisWeek": "Étude cette semaine",
+  "studentTabsTypeBooks": "Livres",
+  "studentTabsTypeCorrections": "Corrections",
+  "studentTabsTypePacks": "Packs",
+  "studentTabsTypePapers": "Épreuves",
+  "studentTabsVoiceSoon": "Enregistrement vocal disponible prochainement",
+  "studentVarkApplied": "Style appliqué !",
+  "studentVarkApply": "Appliquer mon style",
+  "studentVarkApplying": "Application…",
+  "studentVarkAuditory": "Apprenant Auditif",
+  "studentVarkKinesthetic": "Apprenant Kinesthésique",
+  "studentVarkMixed": "Profil Mixte",
+  "studentVarkQ1": "Quand tu apprends quelque chose de nouveau, tu préfères…",
+  "studentVarkQ1A": "Écouter une explication orale",
+  "studentVarkQ1K": "Essayer directement par la pratique",
+  "studentVarkQ1R": "Lire un cours écrit détaillé",
+  "studentVarkQ1V": "Dessiner un schéma ou voir un diagramme",
+  "studentVarkQ2": "Pour mémoriser une formule de mathématiques…",
+  "studentVarkQ2A": "La répéter à voix haute plusieurs fois",
+  "studentVarkQ2K": "Résoudre des exercices jusqu'à l'automatisme",
+  "studentVarkQ2R": "L'écrire et la réécrire dans tes notes",
+  "studentVarkQ2V": "La visualiser telle qu'elle est écrite",
+  "studentVarkQ3": "Quand tu bloques sur un exercice difficile…",
+  "studentVarkQ3A": "En parler à quelqu'un pour l'expliquer oralement",
+  "studentVarkQ3K": "Recommencer l'exercice en variant les étapes",
+  "studentVarkQ3R": "Relire tes notes depuis le début",
+  "studentVarkQ3V": "Chercher un exemple illustré",
+  "studentVarkQ4": "En classe, tu retiens mieux quand…",
+  "studentVarkQ4A": "Le prof explique avec des exemples parlés",
+  "studentVarkQ4K": "Il y a des exercices pratiques pendant le cours",
+  "studentVarkQ4R": "Tu as un cours bien structuré à lire",
+  "studentVarkQ4V": "Le prof dessine au tableau ou montre des slides",
+  "studentVarkQ5": "Ta méthode de révision favorite…",
+  "studentVarkQ5A": "M'enregistrer en train de réciter à voix haute",
+  "studentVarkQ5K": "Enchaîner des exercices et annales corrigées",
+  "studentVarkQ5R": "Rédiger des résumés écrits condensés",
+  "studentVarkQ5V": "Créer des fiches avec schémas et couleurs",
+  "studentVarkQ6": "Comment tu sais que tu as vraiment compris quelque chose ?",
+  "studentVarkQ6A": "L'expliquer clairement à voix haute à quelqu'un",
+  "studentVarkQ6K": "Résoudre des exercices variés sans aide",
+  "studentVarkQ6R": "Rédiger un résumé complet de mémoire",
+  "studentVarkQ6V": "Le représenter graphiquement sans regarder tes notes",
+  "studentVarkQuestionCount": "Question {n} / {total}",
+  "@studentVarkQuestionCount": {
+    "placeholders": {
+      "n": {
+        "type": "Object"
+      },
+      "total": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentVarkReadWrite": "Lecteur / Scripteur",
+  "studentVarkSaved": "Ce résultat est enregistré sur ton profil : WinAI et les contenus générés s’y adaptent, sur le web comme sur mobile.",
+  "studentVarkTitle": "Mon style d'apprentissage",
+  "studentVarkVisual": "Apprenant Visuel",
+  "studentViewerAddToCart": "Ajouter au panier",
+  "studentViewerCorrectionTitle": "Corrigé · {title}",
+  "@studentViewerCorrectionTitle": {
+    "placeholders": {
+      "title": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentViewerLoadFailed": "Impossible de charger le document pour le moment.",
+  "studentViewerNoAccess": "Ce contenu n'est pas inclus dans votre accès. Achetez-le ou abonnez-vous pour le consulter.",
+  "studentViewerNoConnection": "Connexion impossible. Vérifiez votre réseau puis réessayez.",
+  "studentViewerNoCorrection": "Le corrigé de cette épreuve n'est pas encore disponible.",
+  "studentViewerNoDocument": "Ce document n'est pas disponible pour le moment.",
+  "studentViewerPreviewFirst": "{pages, plural, =0{Aperçu : {pages} première page} =1{Aperçu : {pages} première page} other{Aperçu : {pages} premières pages}}",
+  "@studentViewerPreviewFirst": {
+    "placeholders": {
+      "pages": {
+        "type": "int"
+      }
+    }
+  },
+  "studentViewerPreviewOf": "{pages, plural, =0{Aperçu : {pages} page sur {total}} =1{Aperçu : {pages} page sur {total}} other{Aperçu : {pages} pages sur {total}}}",
+  "@studentViewerPreviewOf": {
+    "placeholders": {
+      "pages": {
+        "type": "int"
+      },
+      "total": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentViewerReadOnly": "Lecture seule : ni téléchargement, ni partage, ni impression",
+  "studentViewerSessionExpired": "Votre session a expiré. Reconnectez-vous pour consulter ce document.",
+  "studentViewerSubscriptions": "Abonnements",
+  "studentViewerUnlockRest": "La suite se débloque avec l'achat de ce contenu ou un abonnement qui inclut le catalogue.",
+  "subActivate": "Activer",
+  "subActivated": "Abonnement activé.",
+  "subAutoRenew": "Renouveler avec mon solde à l'échéance",
+  "subAutoRenewHint": "3 jours de grâce si le solde manque · résiliable à tout moment",
+  "subBadgeCurrent": "ACTUEL",
+  "subBadgePopular": "POPULAIRE",
+  "subChoosePlan": "Choisir ce plan",
+  "subComputingPrice": "Calcul du prix…",
+  "subDiscount": "Remise {code}",
+  "@subDiscount": {
+    "placeholders": {
+      "code": {
+        "type": "Object"
+      }
+    }
+  },
+  "subDueNow": "À payer maintenant",
+  "subEnterMomoNumber": "Saisissez un numéro Mobile Money (9 chiffres).",
+  "subFeatureAvailableFrom": "{feature} est disponible à partir du plan {plan}.",
+  "@subFeatureAvailableFrom": {
+    "placeholders": {
+      "feature": {
+        "type": "Object"
+      },
+      "plan": {
+        "type": "Object"
+      }
+    }
+  },
+  "subFeatureOfPlan": "Fonctionnalité {plan}",
+  "@subFeatureOfPlan": {
+    "placeholders": {
+      "plan": {
+        "type": "Object"
+      }
+    }
+  },
+  "subFinalizeFailed": "Impossible de finaliser. Réessayez.",
+  "subFooterTtc": "Prix TTC · accès jusqu'à la fin de la période payée en cas de résiliation",
+  "subFromPerMonth": "À partir de {amount} XAF TTC/mois",
+  "@subFromPerMonth": {
+    "placeholders": {
+      "amount": {
+        "type": "Object"
+      }
+    }
+  },
+  "subInstitutionLicenseNote": "Les établissements passent par une licence (sièges élèves, année scolaire) : gérez-la depuis l'onglet Licence de votre espace établissement.",
+  "subLater": "Plus tard",
+  "subLoadError": "Erreur de chargement",
+  "subMyBalance": "Mon solde",
+  "subNotOffered": "Non proposé sur cette période",
+  "subOurPlans": "Nos plans",
+  "subPaymentInitiated": "Paiement initié : confirmez-le sur votre téléphone. Votre abonnement s'active à la confirmation.",
+  "subPerUnitTtc": " XAF TTC / {unit}",
+  "@subPerUnitTtc": {
+    "placeholders": {
+      "unit": {
+        "type": "Object"
+      }
+    }
+  },
+  "subPeriodMonthly": "Mensuel",
+  "subPeriodQuarterly": "Trimestriel",
+  "subPeriodTtc": "{period} · prix TTC",
+  "@subPeriodTtc": {
+    "placeholders": {
+      "period": {
+        "type": "Object"
+      }
+    }
+  },
+  "subPeriodYearly": "Annuel",
+  "subPleaseWait": "Patientez…",
+  "subPricingFootnote": "Prix TTC · MTN Mobile Money, Orange Money ou solde WinPlus · résiliable à tout moment, accès jusqu'à la fin de la période payée",
+  "subQuoteUnavailable": "Devis indisponible.",
+  "subRenewOrChange": "Renouveler ou changer de période",
+  "subScheduleChange": "Programmer le changement",
+  "subSeePlans": "Voir les plans",
+  "subStartTrial": "Commencer l'essai gratuit",
+  "subUnitMonth": "mois",
+  "subUnitQuarter": "trimestre",
+  "subUnitYear": "an",
+  "subUnusedPeriod": "Période en cours non utilisée",
+  "svcAssignmentActive": "Active",
+  "svcAssignmentEnded": "Terminée",
+  "svcBalancePaymentFailed": "Le paiement par solde a échoué. Réessaie.",
+  "svcBookedForOthers": "Pour : {names} · payée par {payer}.",
+  "@svcBookedForOthers": {
+    "placeholders": {
+      "names": {
+        "type": "Object"
+      },
+      "payer": {
+        "type": "Object"
+      }
+    }
+  },
+  "svcBookedForYou": "Réservée pour toi par {payer}{group}{count}.",
+  "@svcBookedForYou": {
+    "placeholders": {
+      "payer": {
+        "type": "Object"
+      },
+      "group": {
+        "type": "Object"
+      },
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "svcCancelFailed": "Annulation impossible.",
+  "svcCartAddCourseFailed": "Impossible d'ajouter la formation au panier.",
+  "svcDurationHours": "{h} h",
+  "@svcDurationHours": {
+    "placeholders": {
+      "h": {
+        "type": "Object"
+      }
+    }
+  },
+  "svcDurationHoursMin": "{h} h {m}",
+  "@svcDurationHoursMin": {
+    "placeholders": {
+      "h": {
+        "type": "Object"
+      },
+      "m": {
+        "type": "Object"
+      }
+    }
+  },
+  "svcDurationMin": "{m} min",
+  "@svcDurationMin": {
+    "placeholders": {
+      "m": {
+        "type": "Object"
+      }
+    }
+  },
+  "svcEndorseFailed": "Caution impossible.",
+  "svcEngStatusActive": "En cours",
+  "svcEngStatusCancelled": "Annulé",
+  "svcEngStatusCompleted": "Terminé",
+  "svcEngStatusExpired": "Expiré (sans réponse)",
+  "svcEngStatusRejected": "Refusé par le tuteur",
+  "svcGenericError": "Une erreur est survenue. Réessaie.",
+  "svcIdDocCni": "Carte nationale d'identité",
+  "svcIdDocDrivingLicense": "Permis de conduire",
+  "svcIdDocOther": "Autre pièce officielle",
+  "svcIdDocPassport": "Passeport",
+  "svcIdDocResidencePermit": "Titre de séjour",
+  "svcInterviewCancelled": "Annulé",
+  "svcInterviewFailed": "Non concluant",
+  "svcInterviewNoShow": "Absent",
+  "svcInterviewPassed": "Réussi",
+  "svcInterviewRequested": "Demandé",
+  "svcInterviewScheduled": "Planifié",
+  "svcInvalidCode": "Code invalide",
+  "svcInvalidPromo": "Code promo invalide.",
+  "svcLoginFailed": "Connexion impossible",
+  "svcMaterialDraft": "Support en brouillon",
+  "svcMaterialShared": "Support partagé",
+  "svcMaterialSharedWithChanges": "Support modifié, non repartagé",
+  "svcMoneyPartial": "Remboursé en partie",
+  "svcMoneyUnpaid": "Non payé",
+  "svcOfflineAction": "Cette action nécessite une connexion internet.",
+  "svcOfflineFileMissing": "Fichier hors-ligne introuvable (a-t-il été effacé par le système ?).",
+  "svcOfflineNotSaved": "Cette leçon n'a pas été téléchargée.",
+  "svcOfflinePlayNoAccount": "Lecture hors-ligne impossible : aucun compte connecté.",
+  "svcOfflineSaveNoAccount": "Téléchargement hors-ligne impossible : aucun compte connecté.",
+  "svcOrderCreateFailed": "Impossible de créer la commande.",
+  "svcPartyCount": " · {n} élèves",
+  "@svcPartyCount": {
+    "placeholders": {
+      "n": {
+        "type": "Object"
+      }
+    }
+  },
+  "svcPartyGroup": " (groupe {name})",
+  "@svcPartyGroup": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "svcPayerInstitution": "Institution",
+  "svcPayerStudyGroup": "Groupe d'étude",
+  "svcPaymentInitFailed": "Impossible d'initier le paiement.",
+  "svcPurchaseNotCompleted": "L'achat n'a pas pu être finalisé.",
+  "svcRefundFeeDeducted": "frais Mobile Money de {fee} XAF déduits",
+  "@svcRefundFeeDeducted": {
+    "placeholders": {
+      "fee": {
+        "type": "Object"
+      }
+    }
+  },
+  "svcRefundFeesExceed": "Aucun remboursement : les frais Mobile Money ({fee} XAF) dépassent la part remboursable.",
+  "@svcRefundFeesExceed": {
+    "placeholders": {
+      "fee": {
+        "type": "Object"
+      }
+    }
+  },
+  "svcRefundFull": " (remboursement intégral)",
+  "svcRefundInstitutionWallet": "le portefeuille de l'institution",
+  "svcRefundMyWallet": "ton portefeuille WinPlus",
+  "svcRefundPartial": " ({percent} % selon la politique du tuteur{fee})",
+  "@svcRefundPartial": {
+    "placeholders": {
+      "percent": {
+        "type": "Object"
+      },
+      "fee": {
+        "type": "Object"
+      }
+    }
+  },
+  "svcRefundTooLate": "Aucun remboursement : annulation trop tardive selon la politique du tuteur.",
+  "svcRefundWhoPaid": "celui qui a payé",
+  "svcRefundedOn": "{amount} XAF remboursés sur {target}{detail}.",
+  "@svcRefundedOn": {
+    "placeholders": {
+      "amount": {
+        "type": "Object"
+      },
+      "target": {
+        "type": "Object"
+      },
+      "detail": {
+        "type": "Object"
+      }
+    }
+  },
+  "svcRefundedTo": "{amount} XAF remboursés à {name}{detail}.",
+  "@svcRefundedTo": {
+    "placeholders": {
+      "amount": {
+        "type": "Object"
+      },
+      "name": {
+        "type": "Object"
+      },
+      "detail": {
+        "type": "Object"
+      }
+    }
+  },
+  "svcReplySendFailed": "Impossible d'envoyer la réponse.",
+  "svcReportFailed": "Signalement impossible.",
+  "svcReportHarassment": "Harcèlement ou propos déplacés",
+  "svcReportIdentity": "Ce n'est pas la personne du profil",
+  "svcReportInappropriate": "Comportement inapproprié",
+  "svcReportNoShow": "Absent à la séance",
+  "svcReportOffPlatform": "Demande de paiement hors WinPlus",
+  "svcReportPoorQuality": "Séance de mauvaise qualité",
+  "svcReportSafety": "Problème de sécurité",
+  "svcRequestFailed": "Demande impossible.",
+  "svcReviewSendFailed": "Impossible d'envoyer l'avis.",
+  "svcSendFailed": "Envoi impossible.",
+  "svcSessionStatusConfirmed": "Prévue",
+  "svcSignupFailed": "Inscription impossible",
+  "svcStudentFallback": "Élève #{id}",
+  "@svcStudentFallback": {
+    "placeholders": {
+      "id": {
+        "type": "Object"
+      }
+    }
+  },
+  "svcTopUpDone": "Recharge effectuée.",
+  "svcTutorsLoadFailed": "Impossible de charger vos répétiteurs.",
+  "svcVerifEventIdentityApproved": "Pièce d'identité validée",
+  "svcVerifEventIdentityFilesPurged": "Fichiers supprimés (conservation limitée)",
+  "svcVerifEventIdentityRejected": "Pièce d'identité refusée",
+  "svcVerifEventIdentitySubmitted": "Pièce d'identité déposée",
+  "svcVerifEventIdentitySuperseded": "Dépôt remplacé",
+  "svcVerifEventInstitutionEndorsed": "Caution d'une institution",
+  "svcVerifEventInstitutionRevoked": "Caution retirée",
+  "svcVerifEventInterviewCancelled": "Entretien annulé",
+  "svcVerifEventInterviewFailed": "Entretien non concluant",
+  "svcVerifEventInterviewNoShow": "Absent à l'entretien",
+  "svcVerifEventInterviewPassed": "Entretien réussi",
+  "svcVerifEventInterviewRequested": "Entretien demandé",
+  "svcVerifEventInterviewScheduled": "Entretien planifié",
+  "svcVerifEventStatusUnverified": "Vérification retirée",
+  "svcVerifEventSuspensionLifted": "Suspension levée",
+  "svcVerifLoadFailed": "Impossible de charger ta vérification.",
+  "svcVerifRouteInstitution": "Caution d'une institution",
+  "svcVerifRouteInterview": "Entretien",
+  "svcWinaiLimit": "Vous avez atteint votre limite WinAI. Passez à un plan supérieur pour continuer.",
+  "svcWinaiUnavailable": "WinAI est momentanément indisponible. Réessayez dans quelques minutes.",
+  "svcWithdrawFailed": "Retrait impossible.",
   "switchToLanguage": "Passer en {lang}",
   "@switchToLanguage": {
-    "placeholders": { "lang": { "type": "String" } }
-  }
+    "placeholders": {
+      "lang": {
+        "type": "String"
+      }
+    }
+  },
+  "teacherAiInputHint": "Génère un quiz, une fiche, une correction…",
+  "teacherAiSuggestCorrection": "Correction type",
+  "teacherAiSuggestQuiz": "Quiz Terminale C (10 QCM)",
+  "teacherAiSuggestSheet": "Fiche de cours",
+  "teacherAiSuggestTitle": "Optimiser un titre",
+  "teacherAiTagline": "Ton assistant éditorial & pédagogique",
+  "teacherBookingAcceptError": "Impossible d'accepter cette demande.",
+  "teacherBookingAcceptMonth": "Accepter le mois",
+  "teacherBookingAssignments": "Attributions",
+  "teacherBookingAutoMaterial": "Support WinAI généré à l'acceptation",
+  "teacherBookingAutoMaterialHint": "Décompté de ton usage WinAI ; tu le relis avant de le partager.",
+  "teacherBookingBeneficiaries": "{count} élève(s) :",
+  "@teacherBookingBeneficiaries": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherBookingCompleteError": "Impossible de clôturer cette séance.",
+  "teacherBookingConfirmedEmpty": "Aucune séance confirmée pour le moment.",
+  "teacherBookingDeclineEngagementMessage": "Le payeur est remboursé intégralement, séance par séance ; si le mois a été payé par Mobile Money, les frais sont retenus sur ton solde.",
+  "teacherBookingDeclineEngagementTitle": "Refuser l'engagement entier",
+  "teacherBookingDeclineError": "Impossible de refuser cette demande.",
+  "teacherBookingDeclineMessage": "Celui qui a payé (élève, parent, institution ou membre du groupe) sera remboursé intégralement sur son portefeuille WinPlus ; si la séance a été payée par Mobile Money, les frais de l'opérateur seront retenus sur ton solde.",
+  "teacherBookingDeclineTitle": "Refuser la demande",
+  "teacherBookingDeclined": "Demande refusée : le payeur est remboursé sur son portefeuille.",
+  "teacherBookingDeclinedFee": "Demande refusée : le payeur est remboursé, {amount} XAF de frais Mobile Money retenus sur ton solde.",
+  "@teacherBookingDeclinedFee": {
+    "placeholders": {
+      "amount": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherBookingDetail": "Détail",
+  "teacherBookingDiscount": "(remise {percent} %)",
+  "@teacherBookingDiscount": {
+    "placeholders": {
+      "percent": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherBookingDisputeReason": "Motif de contestation : {reason}",
+  "@teacherBookingDisputeReason": {
+    "placeholders": {
+      "reason": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherBookingEngagementAccepted": "Engagement accepté : toutes les séances du mois sont confirmées.",
+  "teacherBookingEngagementRequests": "Demandes d'engagement mensuel",
+  "teacherBookingExpiresSoon": "Expire bientôt",
+  "teacherBookingGroupSession": "Séance de groupe · {count} élèves",
+  "@teacherBookingGroupSession": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherBookingHidePrice": "Masquer le détail du prix",
+  "teacherBookingMarkCompleted": "Marquer effectuée",
+  "teacherBookingMinutes": "{count} min",
+  "@teacherBookingMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherBookingMinutesToAnswer": "{count} min pour répondre",
+  "@teacherBookingMinutesToAnswer": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherBookingModeStudentHome": "À domicile (élève)",
+  "teacherBookingPaidBy": "Payée par : {payer}",
+  "@teacherBookingPaidBy": {
+    "placeholders": {
+      "payer": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherBookingPaidInAdvance": "{amount} XAF payés d'avance",
+  "@teacherBookingPaidInAdvance": {
+    "placeholders": {
+      "amount": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherBookingPaidPerSession": "versés séance par séance",
+  "teacherBookingParticipants": "{who} : {names}",
+  "@teacherBookingParticipants": {
+    "placeholders": {
+      "who": {
+        "type": "Object"
+      },
+      "names": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherBookingPendingEmpty": "Aucune demande en attente pour le moment.",
+  "teacherBookingPendingTitle": "Demandes en attente",
+  "teacherBookingPrepareMaterial": "Préparer le support avec WinAI",
+  "teacherBookingQuote": "« {note} »",
+  "@teacherBookingQuote": {
+    "placeholders": {
+      "note": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherBookingReasonHint": "Motif (optionnel)",
+  "teacherBookingSessionsCount": "{count} séances",
+  "@teacherBookingSessionsCount": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherBookingSettingError": "Réglage impossible.",
+  "teacherBookingShowPrice": "Voir le détail du prix",
+  "teacherBookingTheStudent": "l'élève",
+  "teacherBookingTopics": "Sujets à travailler",
+  "teacherBookingUpcomingTitle": "Séances à venir / à clôturer",
+  "teacherBookingViaAssignment": "via une attribution",
+  "teacherClassAdd": "Ajouter",
+  "teacherClassAddStudent": "Ajouter un élève",
+  "teacherClassAddStudentError": "Cet élève n'a pas pu être ajouté.",
+  "teacherClassAddStudentErrorDetail": "Cet élève n'a pas pu être ajouté (email inconnu ou déjà membre).",
+  "teacherClassAssignmentCreateError": "Le devoir n'a pas pu être créé.",
+  "teacherClassAssignmentCreated": "Devoir créé. Les élèves sont notifiés.",
+  "teacherClassAssignmentTitle": "Titre du devoir",
+  "teacherClassAssignmentTitleHint": "Ex. Devoir maison n°3",
+  "teacherClassAssignmentsLoadError": "Les devoirs n'ont pas pu être chargés.",
+  "teacherClassAssignmentsTab": "Devoirs",
+  "teacherClassCopies": "{count, plural, =1{{count} copie} other{{count} copies}}",
+  "@teacherClassCopies": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "teacherClassCreateAssignment": "Créer le devoir",
+  "teacherClassNewAssignment": "Nouveau devoir",
+  "teacherClassNoAssignments": "Aucun devoir pour l'instant",
+  "teacherClassNoStudents": "Aucun élève dans cette classe",
+  "teacherClassNoStudentsHint": "Ajoute un élève par son email WinPlus.",
+  "teacherClassReferenceHint": "Ton propre corrigé…",
+  "teacherClassReferenceLabel": "Corrigé de référence (facultatif)",
+  "teacherClassRemove": "Retirer",
+  "teacherClassRemoveFromClass": "Retirer de la classe",
+  "teacherClassRemoveStudentBody": "{name} sera retiré(e) de « {className} ».",
+  "@teacherClassRemoveStudentBody": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      },
+      "className": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherClassRemoveStudentError": "Cet élève n'a pas pu être retiré.",
+  "teacherClassRemoveStudentTitle": "Retirer cet élève ?",
+  "teacherClassStatementHint": "Colle l'énoncé…",
+  "teacherClassStatementLabel": "Énoncé (génère le barème WinAI)",
+  "teacherClassStudentAdded": "Élève ajouté.",
+  "teacherClassStudentEmailHint": "eleve@exemple.cm",
+  "teacherClassStudentEmailLabel": "Email WinPlus de l'élève",
+  "teacherClassStudentsLoadError": "Les élèves n'ont pas pu être chargés.",
+  "teacherClassToMark": "{count} à corriger",
+  "@teacherClassToMark": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherClassesActionFailed": "Cette action a échoué.",
+  "teacherClassesAverage": "{avg}% moy.",
+  "@teacherClassesAverage": {
+    "placeholders": {
+      "avg": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherClassesCreate": "Créer une classe",
+  "teacherClassesCreateError": "Cette classe n'a pas pu être créée (nom déjà utilisé ?).",
+  "teacherClassesCreated": "Classe « {name} » créée.",
+  "@teacherClassesCreated": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherClassesDeactivateBody": "« {name} » contient {count} élève(s) : elle sera désactivée (pas supprimée) et retirée de la liste.",
+  "@teacherClassesDeactivateBody": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      },
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherClassesDeactivateTitle": "Désactiver la classe ?",
+  "teacherClassesDeleteBody": "Supprimer définitivement « {name} » ?",
+  "@teacherClassesDeleteBody": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherClassesDeleteTitle": "Supprimer la classe ?",
+  "teacherClassesHideInactive": "Masquer désactivées",
+  "teacherClassesInactive": "Désactivée",
+  "teacherClassesLevelHint": "Ex: Terminale",
+  "teacherClassesLoadError": "Vos classes n'ont pas pu être chargées.",
+  "teacherClassesMyBookings": "Mes réservations élèves",
+  "teacherClassesMyLinks": "Mes liaisons directes",
+  "teacherClassesName": "Nom de la classe",
+  "teacherClassesNameHint": "Ex: Terminale C Maths",
+  "teacherClassesNone": "Aucune classe",
+  "teacherClassesNoneYet": "Aucune classe pour le moment",
+  "teacherClassesReactivateError": "Cette classe n'a pas pu être réactivée.",
+  "teacherClassesRequired": "Nom, niveau et année sont requis.",
+  "teacherClassesShowInactive": "Voir désactivées",
+  "teacherClassesStudents": "{count, plural, =1{{count} élève} other{{count} élèves}}",
+  "@teacherClassesStudents": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "teacherClassesTitle": "Mes classes",
+  "teacherClassesYear": "Année académique",
+  "teacherClassesYearHint": "Ex: 2026-2027",
+  "teacherContentChangeStatus": "Changer le statut",
+  "teacherContentComingSoon": "Bientôt disponible",
+  "teacherContentCoursesBanner": "Créez et gérez vos cours structurés",
+  "teacherContentDeleteBody": "« {title} » sera définitivement supprimé.",
+  "@teacherContentDeleteBody": {
+    "placeholders": {
+      "title": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherContentDeleteTitle": "Supprimer ?",
+  "teacherContentDownloadsShort": "Téléch.",
+  "teacherContentEditInfo": "Modifier les infos",
+  "teacherContentEmpty": "Aucun contenu.",
+  "teacherContentManage": "Gérer",
+  "teacherContentRating": "Note",
+  "teacherContentStats": "Statistiques",
+  "teacherContentStatusArchived": "Archivé",
+  "teacherContentStatusChanged": "Statut changé : {status}",
+  "@teacherContentStatusChanged": {
+    "placeholders": {
+      "status": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherContentStatusReview": "En révision",
+  "teacherCorrectionCorrect": "Corriger",
+  "teacherCorrectionEmpty": "Aucune soumission",
+  "teacherCorrectionFeedbackHint": "Commentaires et retours à l'étudiant…",
+  "teacherCorrectionFilterMarked": "Corrigé",
+  "teacherCorrectionGrade": "Note : ",
+  "teacherCorrectionPendingCount": "{count} en attente",
+  "@teacherCorrectionPendingCount": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherCorrectionQueueTitle": "File de corrections",
+  "teacherCorrectionSend": "Envoyer la correction",
+  "teacherCorrectionSendError": "Erreur lors de l'envoi.",
+  "teacherCorrectionSent": "Correction envoyée à {name}.",
+  "@teacherCorrectionSent": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherCorrectionSheetTitle": "Corriger : {name}",
+  "@teacherCorrectionSheetTitle": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherCorrectionView": "Voir la correction",
+  "teacherCoursesCopyLink": "Copier le lien",
+  "teacherCoursesCreateOnWeb": "La création et l'édition des formations se font sur le site WinPlus, depuis votre espace enseignant, avec le même compte :\n\n{url}\n\nVos formations apparaissent ensuite ici.",
+  "@teacherCoursesCreateOnWeb": {
+    "placeholders": {
+      "url": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherCoursesCreateTitle": "Créer une formation",
+  "teacherCoursesDeleteBody": "Cette action est irréversible. La formation « {title} » sera définitivement supprimée.",
+  "@teacherCoursesDeleteBody": {
+    "placeholders": {
+      "title": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherCoursesDeleteError": "Impossible de supprimer la formation.",
+  "teacherCoursesDeleteTitle": "Supprimer la formation ?",
+  "teacherCoursesDeleted": "Formation supprimée.",
+  "teacherCoursesDetailError": "Impossible de charger les détails.",
+  "teacherCoursesEmptyAll": "Vous n'avez pas encore de formation.",
+  "teacherCoursesEmptyStatus": "Aucune formation avec ce statut.",
+  "teacherCoursesEnrolled": "{count, plural, =1{{count} inscrit} other{{count} inscrits}}",
+  "@teacherCoursesEnrolled": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "teacherCoursesEnrolledMany": "{count} inscrits",
+  "@teacherCoursesEnrolledMany": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherCoursesLessons": "{count, plural, =1{{count} leçon} other{{count} leçons}}",
+  "@teacherCoursesLessons": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "teacherCoursesLimitPending": "{count} en attente de validation",
+  "@teacherCoursesLimitPending": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherCoursesLimitPublished": "Formations publiées : {published} / {max}",
+  "@teacherCoursesLimitPublished": {
+    "placeholders": {
+      "published": {
+        "type": "Object"
+      },
+      "max": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherCoursesLimitReached": "limite de votre plan atteinte : passez à un plan supérieur pour en publier davantage.",
+  "teacherCoursesLimitUnlimited": "Votre plan permet de publier un nombre illimité de formations.",
+  "teacherCoursesLinkCopied": "Lien copié : ouvrez-le dans votre navigateur.",
+  "teacherCoursesLoadError": "Impossible de charger les formations.",
+  "teacherCoursesSubmit": "Soumettre à validation",
+  "teacherCoursesSubmitError": "La formation n'a pas pu être soumise.",
+  "teacherCoursesSubmitted": "Formation soumise à validation.",
+  "teacherCoursesViewDetails": "Voir détails",
+  "teacherDashActiveStudents": "Étudiants actifs",
+  "teacherDashAvgRating": "Note moyenne",
+  "teacherDashAvgShort": "note moy.",
+  "teacherDashDownloads": "Téléchargements",
+  "teacherDashDownloadsCount": "{count} téléch.",
+  "@teacherDashDownloadsCount": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherDashLast4Weeks": "4 dernières semaines",
+  "teacherDashMonthRevenue": "Revenus du mois",
+  "teacherDashNoContent": "Aucun contenu publié.",
+  "teacherDashOutOf5": "Sur 5",
+  "teacherDashPlan": "PLAN {plan}",
+  "@teacherDashPlan": {
+    "placeholders": {
+      "plan": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherDashPublished": "publiés",
+  "teacherDashPublishedContent": "Contenus publiés",
+  "teacherDashRecentContent": "Contenus récents",
+  "teacherDashShareLabel": "Part sur vos séances : ",
+  "teacherDashShareValue": "{percent} % de vos revenus",
+  "@teacherDashShareValue": {
+    "placeholders": {
+      "percent": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherDashThisMonth": "{amount} XAF ce mois",
+  "@teacherDashThisMonth": {
+    "placeholders": {
+      "amount": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherGroupApplyFlat": "Prix fixe",
+  "teacherGroupApplyPerStudent": "Prix par élève",
+  "teacherGroupBasedOn": "(d'après {count} tuteurs)",
+  "@teacherGroupBasedOn": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherGroupEstimate": "(estimation)",
+  "teacherGroupFlatExample": "Ex. 150 % : une séance individuelle à 6 000 XAF coûte 9 000 XAF pour le groupe, quel que soit le nombre d'élèves.",
+  "teacherGroupFlatLabel": "Prix du groupe (% du prix individuel)",
+  "teacherGroupFlatLine": "Ou prix fixe pour le groupe : {percent} % du prix individuel",
+  "@teacherGroupFlatLine": {
+    "placeholders": {
+      "percent": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherGroupIntro": "Un parent, une institution ou un groupe d'étude peut réserver pour plusieurs élèves. Une séance de groupe occupe ton créneau une seule fois.",
+  "teacherGroupMaxSizeLabel": "Taille maximale du groupe (élèves)",
+  "teacherGroupMaxSizeLine": "Taille maximale : {count} élèves",
+  "@teacherGroupMaxSizeLine": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherGroupMethodFlat": "Prix fixe pour le groupe",
+  "teacherGroupMethodNone": "Individuel seulement",
+  "teacherGroupMethodPerStudent": "Prix par élève dégressif",
+  "teacherGroupPerStudentLine": "Prix par élève, dès {count} élèves : −{percent} %",
+  "@teacherGroupPerStudentLine": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      },
+      "percent": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherGroupStudents": "{count} élèves",
+  "@teacherGroupStudents": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherGroupSubjectsFirst": "Choisis d'abord tes matières.",
+  "teacherGroupSuggest": "Proposer (WinAI)",
+  "teacherGroupSuggestError": "WinAI n'a pas pu proposer de réglages de groupe pour l'instant.",
+  "teacherGroupSuggested": "Réglages proposés par WinAI",
+  "teacherGroupTierHint": "Seul le palier le plus haut atteint s'applique. Sans palier, chaque élève paie le prix individuel.",
+  "teacherGroupTitle": "Séances de groupe",
+  "teacherLinksInvite": "Inviter un élève",
+  "teacherLinksInviteSent": "Invitation envoyée !",
+  "teacherLinksLinkedTab": "Liés",
+  "teacherLinksNoLinked": "Aucun élève lié",
+  "teacherLinksNoPending": "Aucune invitation en attente",
+  "teacherLinksSearchHint": "Nom, email ou téléphone…",
+  "teacherLinksTitle": "Mes liaisons élèves",
+  "teacherPricingAddMod": "+ Ajouter une modulation",
+  "teacherPricingAddRate": "+ Ajouter un tarif",
+  "teacherPricingAddTier": "Ajouter un palier",
+  "teacherPricingAddTierPlus": "+ Ajouter un palier",
+  "teacherPricingAllDay": "Toute la journée",
+  "teacherPricingAllModes": "Tous modes",
+  "teacherPricingBaseTitle": "Tarif de base par matière et par mode",
+  "teacherPricingDurHint": "Seul le palier le plus haut atteint s'applique.",
+  "teacherPricingDurTitle": "Dégressivité selon la durée",
+  "teacherPricingEnd": "Fin",
+  "teacherPricingFrom": "Dès ",
+  "teacherPricingGridIntro": "Sans grille, ton tarif horaire s'applique partout. Facturation au prorata des tranches de 30 min ; le prix exact est calculé par WinPlus et montré à l'élève avant paiement.",
+  "teacherPricingGridTitle": "Grille tarifaire (facultatif)",
+  "teacherPricingIgnore": "Ignorer",
+  "teacherPricingInPerson": "Présentiel",
+  "teacherPricingModExample": "Ex. +20 % le soir, −10 % en matinée.",
+  "teacherPricingModName": "Nom (ex. Soir)",
+  "teacherPricingModTitle": "Modulation par créneau",
+  "teacherPricingRemoveMod": "Supprimer cette modulation",
+  "teacherPricingRemoveRate": "Supprimer ce tarif",
+  "teacherPricingRemoveTier": "Supprimer ce palier",
+  "teacherPricingSubjectsFirst": "Choisis d'abord tes matières (étape 1).",
+  "teacherPricingSuggest": "Proposer une grille (WinAI)",
+  "teacherPricingSuggestError": "WinAI n'a pas pu proposer de grille.",
+  "teacherPricingSuggested": "Grille proposée par WinAI",
+  "teacherProfileActivate": "Activer",
+  "teacherProfileActivateError": "Complète les champs essentiels avant d'activer ton profil.",
+  "teacherProfileActivated": "Ton profil tuteur est visible dans la recherche !",
+  "teacherProfileActiveAfterSuspension": "Actif après examen de la suspension",
+  "teacherProfileActiveAfterVerification": "Actif après vérification",
+  "teacherProfileAddZone": "Ajouter cette zone",
+  "teacherProfileAiSuggestion": "Suggestion WinAI",
+  "teacherProfileAiUnavailable": "WinAI indisponible pour l'instant.",
+  "teacherProfileAtMyHome": "À domicile chez moi",
+  "teacherProfileAtStudentHome": "À domicile chez l'élève",
+  "teacherProfileBackToEdit": "Retour à l'édition",
+  "teacherProfileBio": "Bio courte (300 caractères max)",
+  "teacherProfileBlockedDefault": "Le présentiel est réservé aux tuteurs vérifiés.",
+  "teacherProfileBookPreview": "Réserver (aperçu  désactivé)",
+  "teacherProfileChooseCity": "Choisir une ville…",
+  "teacherProfileCityOrDistrictHint": "Nom de la ville / quartier",
+  "teacherProfileCompletion": "Complétude du profil",
+  "teacherProfileDiploma": "Diplôme (facultatif, badge « Diplôme vérifié », sans effet sur le présentiel)",
+  "teacherProfileDistrictHint": "Quartier (optionnel)…",
+  "teacherProfileDocStatus": "Statut : {status}",
+  "@teacherProfileDocStatus": {
+    "placeholders": {
+      "status": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherProfileDocUrlHint": "URL du document uploadé",
+  "teacherProfileFullRefund": "Remboursement total si annulé au moins",
+  "teacherProfileGetVerified": "Me faire vérifier",
+  "teacherProfileHourlyRate": "Tarif horaire (XAF)",
+  "teacherProfileHourlyRateHint": "ex: 3000",
+  "teacherProfileHours": "{count} h",
+  "@teacherProfileHours": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherProfileHoursBefore": "h avant",
+  "teacherProfileKeptSuspended": "Tes choix présentiels restent enregistrés et redeviendront actifs à la levée de la suspension.",
+  "teacherProfileKeptUnverified": "Tes choix présentiels sont enregistrés et deviendront actifs dès ta vérification.",
+  "teacherProfileLevelEnam": "ENAM Administration",
+  "teacherProfileLevelsCovered": "Niveaux couverts",
+  "teacherProfileLoadError": "Impossible de charger ton profil tuteur.",
+  "teacherProfileMaxPerWeek": "Séances max par semaine",
+  "teacherProfileModes": "Modes d'intervention",
+  "teacherProfileMonthlyDesc": "Mêmes créneaux chaque semaine pendant 4 semaines, payés d'avance ; tu es payé séance par séance.",
+  "teacherProfileMonthlyDiscountHint": "Remise mensuelle en % (0 à {max})",
+  "@teacherProfileMonthlyDiscountHint": {
+    "placeholders": {
+      "max": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherProfileMonthlyHint": "Appliquée au prix de chaque séance du mois, calculé par ta grille.",
+  "teacherProfileMonthlyToggle": "Proposer l'engagement mensuel",
+  "teacherProfileNeutralPlace": "Présentiel en espace neutre",
+  "teacherProfileNoRefund": "Aucun remboursement à moins de",
+  "teacherProfileNoneF": "Aucune",
+  "teacherProfileNoneM": "Aucun",
+  "teacherProfileNotice": "Délai de préavis minimum",
+  "teacherProfileOnHoliday": "En vacances",
+  "teacherProfileOnlineViaWinplus": "En ligne via WinPlus",
+  "teacherProfileOtherCity": "Autre ville",
+  "teacherProfilePartialRefund": "Ensuite, part remboursée",
+  "teacherProfilePolicyBounds": "Limites fixées par WinPlus : remboursement total entre {fullMin} h et {fullMax} h avant, part remboursée de {partialMin} à {partialMax} %, aucun remboursement en dessous de {noMin} à {noMax} h.",
+  "@teacherProfilePolicyBounds": {
+    "placeholders": {
+      "fullMin": {
+        "type": "Object"
+      },
+      "fullMax": {
+        "type": "Object"
+      },
+      "partialMin": {
+        "type": "Object"
+      },
+      "partialMax": {
+        "type": "Object"
+      },
+      "noMin": {
+        "type": "Object"
+      },
+      "noMax": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherProfilePolicyIntro": "Ce que l'élève récupère s'il annule lui-même (les frais Mobile Money restent à sa charge).",
+  "teacherProfilePreview": "Voir mon profil comme un élève",
+  "teacherProfilePrevious": "Précédent",
+  "teacherProfileProTitle": "Titre professionnel",
+  "teacherProfileProTitleHint": "ex: Prof de Maths  Terminale C/D",
+  "teacherProfileRate": "Tarif",
+  "teacherProfileRateSuggested": "{rate} XAF/h suggéré ({low}-{high}). {explanation}",
+  "@teacherProfileRateSuggested": {
+    "placeholders": {
+      "rate": {
+        "type": "Object"
+      },
+      "low": {
+        "type": "Object"
+      },
+      "high": {
+        "type": "Object"
+      },
+      "explanation": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherProfileReviewsSoon": "Avis bientôt disponibles",
+  "teacherProfileSaveError": "Erreur lors de l'enregistrement.",
+  "teacherProfileSaving": "Enregistrement…",
+  "teacherProfileSpecCatchUp": "Rattrapage express",
+  "teacherProfileSpecContestPrep": "Préparation concours",
+  "teacherProfileSpecHoliday": "Cours de vacances",
+  "teacherProfileSpecSchoolSupport": "Soutien scolaire",
+  "teacherProfileSpecialties": "Spécialités",
+  "teacherProfileStepSaved": "Étape enregistrée.",
+  "teacherProfileStyle": "Style pédagogique",
+  "teacherProfileStyleInteractive": "Interactif",
+  "teacherProfileStyleMixed": "Mixte",
+  "teacherProfileStyleStructured": "Structuré",
+  "teacherProfileSubjectsTaught": "Matières enseignées",
+  "teacherProfileTitle": "Mode Tuteur",
+  "teacherProfileTrialOffered": "Séance d'essai proposée",
+  "teacherProfileTrialPriceHint": "Prix (0 = gratuite)",
+  "teacherProfileTrialToggle": "Proposer une séance d'essai",
+  "teacherProfileUnlimited": "Illimité",
+  "teacherProfileUseRate": "Utiliser ce tarif",
+  "teacherProfileVerifOpen": "Vérifié : présentiel ouvert",
+  "teacherProfileVerifRoutes": "Pièce d'identité, entretien ou caution d'institution",
+  "teacherProfileVerifSuspended": "Présentiel suspendu en attendant un examen",
+  "teacherProfileVerification": "Vérification pour le présentiel",
+  "teacherProfileVideo": "Vidéo de présentation (optionnel)",
+  "teacherProfileWeeklySlots": "Créneaux hebdomadaires (tap pour activer)",
+  "teacherProfileZones": "Zones géographiques couvertes",
+  "teacherPublishAmountHint": "Montant en XAF (ex: 500)",
+  "teacherPublishChooseFile": "Choisir un fichier",
+  "teacherPublishDescriptionHint": "Décrivez le contenu (objectifs, niveau, contenu…)",
+  "teacherPublishFileRequired": "Veuillez choisir un fichier.",
+  "teacherPublishFreePrice": "Prix libre",
+  "teacherPublishFreePriceHint": "Fixez votre propre prix en XAF",
+  "teacherPublishNetworkError": "Erreur réseau. Réessayez.",
+  "teacherPublishReviewNote": "Votre contenu sera examiné avant d'être publié (24-48h)",
+  "teacherPublishSizeBytes": "{size} o",
+  "@teacherPublishSizeBytes": {
+    "placeholders": {
+      "size": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherPublishSizeKb": "{size} Ko",
+  "@teacherPublishSizeKb": {
+    "placeholders": {
+      "size": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherPublishSizeMb": "{size} Mo",
+  "@teacherPublishSizeMb": {
+    "placeholders": {
+      "size": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherPublishSubmit": "Publier pour révision",
+  "teacherPublishSubmitFailed": "Échec de la soumission. Réessayez.",
+  "teacherPublishSubmitted": "Contenu soumis pour révision !",
+  "teacherPublishSubscriptionOnly": "Abonnement uniquement",
+  "teacherPublishSubscriptionOnlyHint": "Accessible à tous les abonnés",
+  "teacherPublishTitle": "Publier un contenu",
+  "teacherPublishTitleHint": "Ex: BAC C Mathématiques 2024",
+  "teacherPublishTitleRequired": "Veuillez saisir un titre.",
+  "teacherPublishType": "Type",
+  "teacherPublishTypePack": "Pack",
+  "teacherPublishTypeSheet": "Fiche",
+  "teacherPublishYear": "Année",
+  "teacherPublishYearHint": "Ex: 2024",
+  "teacherSession30Min": "30 min",
+  "teacherSession3h": "3h",
+  "teacherSessionCreateButton": "Créer la session",
+  "teacherSessionCreateError": "Erreur lors de la création.",
+  "teacherSessionCreateTitle": "Créer une session",
+  "teacherSessionCreated": "Session créée !",
+  "teacherSessionCreatedHint": "Les étudiants inscrits recevront une notification.",
+  "teacherSessionDateHint": "25 août 2026 à 14h00",
+  "teacherSessionDateLabel": "Date et heure",
+  "teacherSessionDuration": "Durée : {minutes} minutes",
+  "@teacherSessionDuration": {
+    "placeholders": {
+      "minutes": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherSessionLinkLabel": "Lien de la session (Zoom, Meet…)",
+  "teacherSessionMaxStudents": "Max étudiants : {count}",
+  "@teacherSessionMaxStudents": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherSessionTitleHint": "Révision Dérivées  BAC C",
+  "teacherSessionTitleLabel": "Titre de la session *",
+  "teacherSessionsDemo1": "Révision Dérivées  Tle C",
+  "teacherSessionsDemo2": "Correction épreuve Physique",
+  "teacherSessionsPlan": "Planifier une session",
+  "teacherSessionsSoon": "● Bientôt",
+  "teacherSessionsToday": "Aujourd'hui, {weekday} {date}",
+  "@teacherSessionsToday": {
+    "placeholders": {
+      "weekday": {
+        "type": "Object"
+      },
+      "date": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherSessionsViewDetails": "Voir les détails",
+  "teacherVerifActive": "Active",
+  "teacherVerifAttach": "Joindre ma pièce et mon selfie à l'entretien",
+  "teacherVerifAvailability": "Tes disponibilités",
+  "teacherVerifAvailabilityHint": "Ex. : mardi et jeudi après 17 h",
+  "teacherVerifBack": "Verso (si besoin)",
+  "teacherVerifCameraUnavailable": "Appareil photo indisponible : choisis plutôt une photo de ton visage dans tes fichiers.",
+  "teacherVerifCancelRequest": "Annuler la demande",
+  "teacherVerifCancelled": "Demande annulée.",
+  "teacherVerifChoose": "Choisir",
+  "teacherVerifCityHint": "Douala, Yaoundé…",
+  "teacherVerifDocType": "Type de pièce",
+  "teacherVerifFile": "Fichier",
+  "teacherVerifFileLine": "{label} : {fileName}",
+  "@teacherVerifFileLine": {
+    "placeholders": {
+      "label": {
+        "type": "Object"
+      },
+      "fileName": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherVerifFileTooBig": "Fichier trop volumineux (8 Mo maximum).",
+  "teacherVerifFront": "Recto de la pièce",
+  "teacherVerifHistory": "Historique",
+  "teacherVerifIdentityOk": "Ta pièce d'identité est validée.",
+  "teacherVerifIdentityText": "Un administrateur compare la photo de ta pièce et ton visage.",
+  "teacherVerifIdentityTitle": "Pièce d'identité et selfie",
+  "teacherVerifInactiveLink": "(rattachement inactif)",
+  "teacherVerifInstitutionText": "Si tu es rattaché à un établissement sur WinPlus, il peut te cautionner après t'avoir vérifié par ses propres moyens. Si le rattachement ou la caution est retiré, cette voie tombe.",
+  "teacherVerifInstitutionTitle": "Caution de ton institution",
+  "teacherVerifInterviewText": "En visio ou en rencontre. L'entretien ne remplace pas l'identité : prépare ta pièce, elle est jointe au dossier avec un selfie.",
+  "teacherVerifInterviewTitle": "Entretien avec un agent",
+  "teacherVerifIntro": "Les séances chez l'élève, chez toi ou en lieu neutre sont réservées aux tuteurs vérifiés. Choisis une des trois voies : une seule suffit. Le diplôme reste un badge facultatif.",
+  "teacherVerifLastInterview": "Dernier entretien : {reason}",
+  "@teacherVerifLastInterview": {
+    "placeholders": {
+      "reason": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherVerifLink": "Lien : {url}",
+  "@teacherVerifLink": {
+    "placeholders": {
+      "url": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherVerifMeeting": "Rencontre",
+  "teacherVerifMeetingCity": "Ville de la rencontre",
+  "teacherVerifMessage": "Message (facultatif)",
+  "teacherVerifNeedFiles": "Ajoute au moins le recto de ta pièce et un selfie.",
+  "teacherVerifNoEndorsement": "Aucune caution pour le moment. Demande à ton établissement de rattachement (Réseau) de te cautionner.",
+  "teacherVerifPassed": "Entretien réussi.",
+  "teacherVerifPassedNeedIdentity": "Il reste à valider ta pièce d'identité et ton selfie pour ouvrir le présentiel.",
+  "teacherVerifPendingSince": "En cours de vérification depuis le {date}.",
+  "@teacherVerifPendingSince": {
+    "placeholders": {
+      "date": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherVerifPhotoTooBig": "Photo trop volumineuse (8 Mo maximum).",
+  "teacherVerifPlace": "Lieu : {place}",
+  "@teacherVerifPlace": {
+    "placeholders": {
+      "place": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherVerifReasonSuffix": " : {reason}",
+  "@teacherVerifReasonSuffix": {
+    "placeholders": {
+      "reason": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherVerifRejected": "Refusée : {reason}. Tu peux envoyer de nouveaux documents.",
+  "@teacherVerifRejected": {
+    "placeholders": {
+      "reason": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherVerifRequestInterview": "Demander un entretien",
+  "teacherVerifRequested": "Demande envoyée. Un agent WinPlus va te proposer une date.",
+  "teacherVerifRequestedOn": "Demande envoyée le {date}. Un agent va te proposer une date.",
+  "@teacherVerifRequestedOn": {
+    "placeholders": {
+      "date": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherVerifRetake": "Reprendre",
+  "teacherVerifRetention": "Fichiers privés, vus seulement par l'équipe WinPlus, jamais affichés sur ton profil. Supprimés {approved} jours après la validation ({rejected} jours après un refus) ; seule la décision est conservée.",
+  "@teacherVerifRetention": {
+    "placeholders": {
+      "approved": {
+        "type": "Object"
+      },
+      "rejected": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherVerifRevoked": "Caution de {name} retirée le {date}",
+  "@teacherVerifRevoked": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      },
+      "date": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherVerifRoutesValidated": "Voie(s) validée(s) : {routes}",
+  "@teacherVerifRoutesValidated": {
+    "placeholders": {
+      "routes": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherVerifScheduledOn": "Prévu le {date}",
+  "@teacherVerifScheduledOn": {
+    "placeholders": {
+      "date": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherVerifSelfie": "Selfie (ton visage)",
+  "teacherVerifSent": "Documents envoyés. L'équipe WinPlus va les comparer.",
+  "teacherVerifSubmit": "Envoyer pour vérification",
+  "teacherVerifSuspended": "Présentiel suspendu",
+  "teacherVerifSuspendedBanner": "Suite à des signalements, tes séances présentielles sont suspendues le temps qu'un membre de l'équipe WinPlus examine la situation. Tes séances en ligne restent possibles.",
+  "teacherVerifTake": "Prendre",
+  "teacherVerifTitle": "Vérification présentiel",
+  "teacherVerifValidated": "Validée",
+  "teacherVerifVerifiedBy": "vérifié par {name}",
+  "@teacherVerifVerifiedBy": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "teacherVerifVideo": "Visio",
+  "timerBackToWork": "Retour au travail !",
+  "timerBreakDone": "Pause terminée !",
+  "timerDoneBody": "Bravo ! Tu as complété {count, plural, =0{{count} pomodoro} =1{{count} pomodoro} other{{count} pomodoros}} aujourd'hui.",
+  "@timerDoneBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "timerModeLongBreak": "Pause longue",
+  "timerModePomodoro": "Pomodoro",
+  "timerModeShortBreak": "Pause courte",
+  "timerNewPomodoro": "Nouveau pomodoro",
+  "timerPomodoroDone": "Pomodoro terminé !",
+  "timerReset": "Réinitialiser",
+  "timerTip": "25 min de focus + 5 min de pause = 1 pomodoro. Après 4 pomodoros, prends une pause longue de 15 min.",
+  "timerTitle": "Timer Pomodoro",
+  "timerTodayCount": "{count, plural, =0{{count} pomodoros aujourd'hui} =1{{count} pomodoro aujourd'hui} other{{count} pomodoros aujourd'hui}}",
+  "@timerTodayCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tutoringActionFailed": "Action impossible.",
+  "tutoringAddTopic": "Ajouter ce sujet",
+  "tutoringAllClasses": "Toutes les classes",
+  "tutoringAllLevels": "Tous niveaux",
+  "tutoringAllSubjects": "Toutes matières",
+  "tutoringAnotherTopic": "Autre sujet…",
+  "tutoringAssignAllClass": "Toute la classe {name}",
+  "@tutoringAssignAllClass": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringAssignChildrenLabel": "Enfants bénéficiaires",
+  "tutoringAssignChooseChild": "Choisis au moins un enfant.",
+  "tutoringAssignChooseStudents": "Choisis des élèves ou une classe.",
+  "tutoringAssignChooseTutor": "Choisis un répétiteur.",
+  "tutoringAssignError": "Attribution impossible.",
+  "tutoringAssignIntro": "Le répétiteur reçoit la demande et l'accepte ou la refuse. L'attribution ne réserve rien : elle le met en avant et présélectionne les élèves pour réserver en un clic.",
+  "tutoringAssignNoChild": "Aucun enfant lié (le lien doit être accepté par l'enfant).",
+  "tutoringAssignNoStudent": "Aucun élève actif au rattachement confirmé dans ton institution.",
+  "tutoringAssignNoTutor": "Aucun répétiteur trouvé.",
+  "tutoringAssignNoWholeClass": "Pas de classe entière",
+  "tutoringAssignNoteHint": "Un mot pour le répétiteur (objectifs, fréquence…)",
+  "tutoringAssignPending": "{count} élève(s) rattaché(s) n'ont pas encore confirmé leur rattachement : ils n'apparaissent pas ici tant qu'ils ne l'ont pas accepté depuis leur compte.",
+  "@tutoringAssignPending": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringAssignResponse": "Réponse : « {note} »",
+  "@tutoringAssignResponse": {
+    "placeholders": {
+      "note": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringAssignStudentsLabel": "Élèves bénéficiaires",
+  "tutoringAssignSubjectHint": "Matière (ex. Mathématiques)",
+  "tutoringAssignSubmit": "Envoyer l'attribution",
+  "tutoringAssignTutor": "Attribuer un tuteur",
+  "tutoringAssignedBy": "attribué par {name}",
+  "@tutoringAssignedBy": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringAssignedLabel": "Attribués :",
+  "tutoringAssignedTitle": "Tes répétiteurs attribués",
+  "tutoringAssignedTutor": "Répétiteur attribué",
+  "tutoringAssignedTutors": "Répétiteurs attribués",
+  "tutoringAvailability14": "Disponibilités (14 prochains jours)",
+  "tutoringAvailableSlots": "Créneaux disponibles",
+  "tutoringAvailableSoon": "Disponible sous 48h",
+  "tutoringBalanceNotCover": "Le solde ne couvre pas le prix de cette séance. {hint}",
+  "@tutoringBalanceNotCover": {
+    "placeholders": {
+      "hint": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringBaseRate": "Tarif de base : {rate} XAF / h",
+  "@tutoringBaseRate": {
+    "placeholders": {
+      "rate": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringBook": "Réserver",
+  "tutoringBookMonthly": "Réserver au mois",
+  "tutoringBookSession": "Réserver une séance",
+  "tutoringBookedSessions": "Séances réservées",
+  "tutoringBookingCancelled": "Réservation annulée",
+  "tutoringBookingCreateError": "Erreur lors de la création de la réservation.",
+  "tutoringBookingsDisputeError": "Impossible d'envoyer le signalement.",
+  "tutoringBookingsDisputeSent": "Votre signalement a été envoyé.",
+  "tutoringBookingsEmpty": "Aucune réservation pour le moment.",
+  "tutoringBookingsLoadError": "Impossible de charger vos réservations.",
+  "tutoringBookingsTitle": "Mes réservations",
+  "tutoringCalendarError": "Impossible de charger les disponibilités.",
+  "tutoringCancellationPolicy": "Politique d'annulation",
+  "tutoringCheckNow": "Vérifier maintenant",
+  "tutoringChooseDay": "Choisissez un jour",
+  "tutoringClassName": "Classe {name}",
+  "@tutoringClassName": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringDate": "Date",
+  "tutoringDefaultName": "Tuteur WinPlus",
+  "tutoringDiplomaVerified": "Diplôme vérifié",
+  "tutoringDispute": "Contester",
+  "tutoringDisputeSentReason": "Signalement envoyé : {reason}",
+  "@tutoringDisputeSentReason": {
+    "placeholders": {
+      "reason": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringDisputeSession": "Contester la séance",
+  "tutoringDisputeUntil": "Un problème ? Tu peux contester jusqu'au {date} à {time} ({hours} h après la séance). Ensuite, le paiement est versé au tuteur.",
+  "@tutoringDisputeUntil": {
+    "placeholders": {
+      "date": {
+        "type": "Object"
+      },
+      "time": {
+        "type": "Object"
+      },
+      "hours": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringDurationHint": "Par tranches de 30 min, jusqu'à la fin de la plage libre.",
+  "tutoringEndAssignment": "Mettre fin",
+  "tutoringEndorsedBy": "Caution : {name}",
+  "@tutoringEndorsedBy": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringEndsAt": "· fin à {time}",
+  "@tutoringEndsAt": {
+    "placeholders": {
+      "time": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringEngAccept": "Accepter l'engagement",
+  "tutoringEngAccepted": "Engagement accepté : les séances sont confirmées.",
+  "tutoringEngAddSlot": "Ajouter un créneau",
+  "tutoringEngAutoFailed": "Renouvellement automatique impossible : {reason}",
+  "@tutoringEngAutoFailed": {
+    "placeholders": {
+      "reason": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringEngAutoOff": "Renouvellement automatique désactivé.",
+  "tutoringEngAutoOn": "Renouvellement automatique activé.",
+  "tutoringEngAutoRenew": "Renouveler automatiquement chaque mois sur le solde",
+  "tutoringEngAutoRenewAt": "Tentative le {date}, si les créneaux sont encore libres et le solde suffisant.",
+  "@tutoringEngAutoRenewAt": {
+    "placeholders": {
+      "date": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringEngAutoRenewHelp": "Mêmes créneaux. Tentative 3 jours avant la fin, après un rappel 7 jours avant ; si le solde ne suffit pas ou si un créneau n'est plus libre, rien n'est débité et tu es prévenu.",
+  "tutoringEngAutoRenewIf": "Si les créneaux sont encore libres et le solde suffisant.",
+  "tutoringEngAutoRenewTitle": "Renouvellement automatique sur le solde",
+  "tutoringEngAutoRenewWalletOnly": "Le renouvellement automatique n'est possible qu'avec un paiement par solde.",
+  "tutoringEngAutoWalletOnly": "Le renouvellement automatique n'est possible que pour un engagement payé par solde.",
+  "tutoringEngCancel": "Annuler l'engagement",
+  "tutoringEngCancelPayerConfirm": "Annuler ? Les séances passées restent dues ; chaque séance à venir est remboursée selon la politique du tuteur.",
+  "tutoringEngCancelSession": "Annuler cette séance",
+  "tutoringEngCancelSessionConfirm": "Annuler seulement la séance du {date} ?",
+  "@tutoringEngCancelSessionConfirm": {
+    "placeholders": {
+      "date": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringEngCancelTutorConfirm": "Annuler ? Les séances à venir sont remboursées intégralement au payeur.",
+  "tutoringEngCancelled": "Engagement annulé, remboursements crédités.",
+  "tutoringEngCreateError": "Création de l'engagement impossible.",
+  "tutoringEngDay": "Jour",
+  "tutoringEngDeclineConfirm": "Refuser l'engagement ? Le payeur est remboursé intégralement.",
+  "tutoringEngDeclined": "Engagement refusé : le payeur est remboursé.",
+  "tutoringEngDiscountNote": "Remise mensuelle {percent} % ({amount} XAF). ",
+  "@tutoringEngDiscountNote": {
+    "placeholders": {
+      "percent": {
+        "type": "Object"
+      },
+      "amount": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringEngDisputePrompt": "Pourquoi contestes-tu cette séance ?",
+  "tutoringEngDisputeUntil": "contestation possible jusqu'au {date}",
+  "@tutoringEngDisputeUntil": {
+    "placeholders": {
+      "date": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringEngDisputed": "Séance contestée : le support va examiner. Les autres séances ne sont pas bloquées.",
+  "tutoringEngEditSlots": "Modifier les créneaux",
+  "tutoringEngExplainProblem": "Explique le problème",
+  "tutoringEngFeesNote": " Frais Mobile Money retenus sur les remboursements : {amount} XAF.",
+  "@tutoringEngFeesNote": {
+    "placeholders": {
+      "amount": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringEngFirstDay": "Premier jour",
+  "tutoringEngHeld": "Bloqué",
+  "tutoringEngIntro": "Les mêmes créneaux chaque semaine pendant 4 semaines, payés d'avance",
+  "tutoringEngIntroDiscount": ", avec {percent} % de remise mensuelle",
+  "@tutoringEngIntroDiscount": {
+    "placeholders": {
+      "percent": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringEngIntroEnd": ". Le tuteur est payé séance par séance, après chaque séance effectuée.",
+  "tutoringEngMarkedCompleted": "Séance marquée effectuée.",
+  "tutoringEngMmSent": "Demande de paiement envoyée sur ton téléphone.",
+  "tutoringEngMomoChip": "Mobile Money (MTN MoMo ou Orange Money)",
+  "tutoringEngMoneyFlow": "L'argent est versé au tuteur séance par séance, après chaque séance effectuée et non contestée.",
+  "tutoringEngMonthlyDiscount": "Remise mensuelle ({percent} %)",
+  "@tutoringEngMonthlyDiscount": {
+    "placeholders": {
+      "percent": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringEngNotFound": "Engagement introuvable.",
+  "tutoringEngNotOffered": "Ce tuteur ne propose pas l'engagement mensuel.",
+  "tutoringEngPaidAdvance": "Payé d'avance",
+  "tutoringEngPaidByLine": "{subject} · payé par {payer} · {method}",
+  "@tutoringEngPaidByLine": {
+    "placeholders": {
+      "subject": {
+        "type": "Object"
+      },
+      "payer": {
+        "type": "Object"
+      },
+      "method": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringEngPayMonth": "Payer le mois",
+  "tutoringEngPaymentNotConfirmed": "Paiement non confirmé",
+  "tutoringEngPaymentPending": "Paiement en attente de confirmation",
+  "tutoringEngPaymentReceived": "Paiement reçu, en attente du tuteur",
+  "tutoringEngPerMonth": "{count} séances sur le mois, vérifiées dans l'agenda du tuteur.",
+  "@tutoringEngPerMonth": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringEngPhoneFormat": "Numéro Mobile Money : 9 chiffres (ex. 670000000).",
+  "tutoringEngQuoteError": "Impossible de calculer le devis.",
+  "tutoringEngQuoteHelp": "Le tuteur accepte ou refuse l'engagement entier ; s'il refuse ou ne répond pas, tout est remboursé. L'argent reste bloqué et n'est versé au tuteur que séance par séance. En cas d'annulation, la politique ci-dessus s'applique à chaque séance à venir.",
+  "tutoringEngQuoteRange": "Du {from} au {to} · {count} séances",
+  "@tutoringEngQuoteRange": {
+    "placeholders": {
+      "from": {
+        "type": "Object"
+      },
+      "to": {
+        "type": "Object"
+      },
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringEngQuoteStudents": " · {count} élèves",
+  "@tutoringEngQuoteStudents": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringEngQuoteUnavailable": "Devis indisponible.",
+  "tutoringEngRangeSummary": "Du {from} au {to} · {slots}",
+  "@tutoringEngRangeSummary": {
+    "placeholders": {
+      "from": {
+        "type": "Object"
+      },
+      "to": {
+        "type": "Object"
+      },
+      "slots": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringEngReason": "Motif : {reason}",
+  "@tutoringEngReason": {
+    "placeholders": {
+      "reason": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringEngRefundedAmount": "{amount} XAF remboursés",
+  "@tutoringEngRefundedAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringEngRefundedTile": "Remboursé",
+  "tutoringEngReleased": "Versé au tuteur",
+  "tutoringEngRemoveSlot": "Retirer ce créneau",
+  "tutoringEngRenewMm": "Renouveler par Mobile Money",
+  "tutoringEngRenewWallet": "Renouveler (payer avec le solde)",
+  "tutoringEngRenewal": "Renouvellement",
+  "tutoringEngRenewedWallet": "Mois suivant réservé et payé par solde.",
+  "tutoringEngReplyBefore": "Réponds avant le {date}",
+  "@tutoringEngReplyBefore": {
+    "placeholders": {
+      "date": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringEngSameSlots": "Mêmes créneaux à partir du {date}. Manuel par défaut ; rappel 7 jours avant la fin.",
+  "@tutoringEngSameSlots": {
+    "placeholders": {
+      "date": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringEngSeeEngagement": "Voir l'engagement",
+  "tutoringEngSeeNextMonth": "Voir le mois suivant",
+  "tutoringEngSeeQuote": "Voir le devis du mois",
+  "tutoringEngSessionCancelled": "Séance annulée.",
+  "tutoringEngSessions": "Séances ({done} effectuée(s) sur {total})",
+  "@tutoringEngSessions": {
+    "placeholders": {
+      "done": {
+        "type": "Object"
+      },
+      "total": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringEngSomeUnavailable": "Certaines séances ne sont pas disponibles : change le jour, l'heure ou la date de début.",
+  "tutoringEngStagePayment": "Paiement d'avance",
+  "tutoringEngStagePlan": "Engagement mensuel",
+  "tutoringEngStageQuote": "Devis du mois",
+  "tutoringEngStageSuccess": "Engagement payé",
+  "tutoringEngStart": "Début",
+  "tutoringEngSubtotal": "Sous-total (grille du tuteur)",
+  "tutoringEngSuccessText": "{count} séances du {from} au {to}. Le tuteur doit accepter l'engagement entier ; s'il refuse ou ne répond pas à temps, tout est remboursé sur le portefeuille WinPlus du payeur.",
+  "@tutoringEngSuccessText": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      },
+      "from": {
+        "type": "Object"
+      },
+      "to": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringEngTileTotal": "{amount} XAF · {done}/{total} séances effectuées",
+  "@tutoringEngTileTotal": {
+    "placeholders": {
+      "amount": {
+        "type": "Object"
+      },
+      "done": {
+        "type": "Object"
+      },
+      "total": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringEngTotalAdvance": "Total payé d'avance",
+  "tutoringEngValidateOnPhone": "Valide le paiement sur ton téléphone",
+  "tutoringEngWalletMissing": "Solde insuffisant : il manque {amount} XAF.",
+  "@tutoringEngWalletMissing": {
+    "placeholders": {
+      "amount": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringEngWalletShort": "Le solde ne couvre pas le total du mois. Choisis Mobile Money ou recharge le portefeuille.",
+  "tutoringEngWeeklySlots": "Créneaux de chaque semaine",
+  "tutoringEngWith": "Avec {name}",
+  "@tutoringEngWith": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringEngagementsTitle": "Engagements mensuels",
+  "tutoringEveryDay": "tous les jours",
+  "tutoringFilterInPerson": "Présentiel (vérifiés)",
+  "tutoringFilterNeutralPlace": "Espace neutre",
+  "tutoringFilterStudentHome": "À mon domicile",
+  "tutoringForMe": "Pour moi",
+  "tutoringForStudentsTitle": "Tutorat de mes élèves",
+  "tutoringForWhomGroupHelp": "C'est toi qui paies la séance du groupe (ton solde ou Mobile Money) et qui reçois un éventuel remboursement.",
+  "tutoringForWhomInstitutionHelp": "{count} élève(s) choisi(s). Payé par le portefeuille de l'institution ou Mobile Money.",
+  "@tutoringForWhomInstitutionHelp": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringForWhomMaxGroup": "Ce tuteur accepte au plus {count} élèves par séance.",
+  "@tutoringForWhomMaxGroup": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringForWhomNoChild": "Aucun enfant lié à ton compte (le lien doit être accepté par l'enfant).",
+  "tutoringForWhomNoGroup": "Ce tuteur ne propose pas de séances de groupe : choisis un seul élève.",
+  "tutoringForWhomNoStudent": "Aucun élève actif rattaché à {name}.",
+  "@tutoringForWhomNoStudent": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringForWhomParentHelp": "Tu paies avec ton portefeuille parent ou Mobile Money ; tes enfants voient la séance dans leur espace.",
+  "tutoringForWhomPendingConfirmation": "{count} élève(s) rattaché(s) n'apparaissent pas : ils doivent d'abord confirmer leur rattachement à l'institution depuis leur compte (Mon réseau).",
+  "@tutoringForWhomPendingConfirmation": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringForWhomTitle": "Pour qui ?",
+  "tutoringFrom": "à partir de",
+  "tutoringFromDuration": "À partir de {duration} : −{percent} %",
+  "@tutoringFromDuration": {
+    "placeholders": {
+      "duration": {
+        "type": "Object"
+      },
+      "percent": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringGroupDiscount": "Prix de groupe : −{percent} % par élève",
+  "@tutoringGroupDiscount": {
+    "placeholders": {
+      "percent": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringGroupEachPays": "Chaque élève paie le prix d'une séance individuelle.",
+  "tutoringGroupFlat": "Prix fixe du groupe ({count} élèves)",
+  "@tutoringGroupFlat": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringGroupFlatHint": "{percent} % du prix individuel · ≈ {amount} XAF par élève",
+  "@tutoringGroupFlatHint": {
+    "placeholders": {
+      "percent": {
+        "type": "Object"
+      },
+      "amount": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringGroupFlatSummary": "Prix fixe pour le groupe : {percent} % du prix d'une séance individuelle.",
+  "@tutoringGroupFlatSummary": {
+    "placeholders": {
+      "percent": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringGroupFromSize": "À partir de {count} élèves : −{percent} % par élève",
+  "@tutoringGroupFromSize": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      },
+      "percent": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringGroupName": "Groupe : {name}",
+  "@tutoringGroupName": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringGroupUpTo": "Séances de groupe jusqu'à {count} élèves.",
+  "@tutoringGroupUpTo": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringInPersonPossible": "Présentiel possible",
+  "tutoringInPersonVerified": "Vérifié pour le présentiel",
+  "tutoringInstitutionWalletHelp": "Partagé par tous les comptes de l'institution : il se recharge par Mobile Money, paie les séances et reçoit les remboursements. Il ne se retire pas vers Mobile Money.",
+  "tutoringIntroVideo": "Vidéo de présentation",
+  "tutoringLeaveReview": "Laisser un avis",
+  "tutoringLevels": "Niveaux",
+  "tutoringLongSession": "Séance longue (−{percent} %)",
+  "@tutoringLongSession": {
+    "placeholders": {
+      "percent": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringMatAddExercise": "Ajouter un exercice",
+  "tutoringMatAddPart": "Ajouter une partie",
+  "tutoringMatAddQuestion": "Ajouter une question",
+  "tutoringMatAnswerLine": "{title} : {answer}",
+  "@tutoringMatAnswerLine": {
+    "placeholders": {
+      "title": {
+        "type": "Object"
+      },
+      "answer": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringMatAnswersSent": "Réponses envoyées à ton tuteur.",
+  "tutoringMatChanged": "Modifié depuis le partage",
+  "tutoringMatCourse": "Cours",
+  "tutoringMatDraftSaved": "Brouillon enregistré.",
+  "tutoringMatEasy": "Facile",
+  "tutoringMatEditTitle": "Modifier le support",
+  "tutoringMatExample": "Exemple : {text}",
+  "@tutoringMatExample": {
+    "placeholders": {
+      "text": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringMatExerciseN": "Exercice {n}",
+  "@tutoringMatExerciseN": {
+    "placeholders": {
+      "n": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringMatExercises": "Exercices",
+  "tutoringMatExercisesSubmitted": "Exercices rendus",
+  "tutoringMatFieldAnswer": "Réponse {id}",
+  "@tutoringMatFieldAnswer": {
+    "placeholders": {
+      "id": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringMatFieldContent": "Contenu",
+  "tutoringMatFieldExample": "Exemple (facultatif)",
+  "tutoringMatFieldExplanation": "Explication",
+  "tutoringMatFieldHints": "Indices (un par ligne)",
+  "tutoringMatFieldKeyPoints": "Points clés (un par ligne)",
+  "tutoringMatFieldObjectives": "Objectifs (un par ligne)",
+  "tutoringMatFieldPartTitle": "Titre de la partie",
+  "tutoringMatFieldSolution": "Corrigé (visible après la réponse de l'élève)",
+  "tutoringMatFieldStatement": "Énoncé",
+  "tutoringMatFieldTitle": "Titre",
+  "tutoringMatGenerate": "Générer avec WinAI",
+  "tutoringMatGenerateHelp": "WinAI prépare un cours, un quiz et des exercices à partir des sujets de la séance. La génération est décomptée de ton usage WinAI ; rien n'est envoyé aux élèves avant que tu partages.",
+  "tutoringMatGenerated": "Support généré : relis-le avant de le partager.",
+  "tutoringMatGroupPrefix": "Groupe ({count} élèves) : ",
+  "@tutoringMatGroupPrefix": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringMatHard": "Difficile",
+  "tutoringMatHints": "Indices",
+  "tutoringMatInstructionsHint": "Consigne pour WinAI (facultatif) : « plus d'exercices », « niveau plus simple »…",
+  "tutoringMatMedium": "Moyen",
+  "tutoringMatNoAnswer": "Aucune réponse pour l'instant.",
+  "tutoringMatNotFound": "Support introuvable.",
+  "tutoringMatNotShared": "Le tuteur n'a pas encore partagé de support pour cette séance.",
+  "tutoringMatNotYet": "Pas encore répondu : {names}",
+  "@tutoringMatNotYet": {
+    "placeholders": {
+      "names": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringMatObjectives": "Objectifs",
+  "tutoringMatOutdated": "Réponses à une version précédente",
+  "tutoringMatPart": "Partie {n}",
+  "@tutoringMatPart": {
+    "placeholders": {
+      "n": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringMatQuizCount": "Quiz ({count} questions)",
+  "@tutoringMatQuizCount": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringMatReadOnly": "Consultation seule : les élèves répondent au quiz et aux exercices dans leur compte.",
+  "tutoringMatRegenerate": "Régénérer",
+  "tutoringMatRegenerateConfirm": "Régénérer remplace ton brouillon actuel (la version partagée reste visible jusqu'au prochain partage). Continuer ?",
+  "tutoringMatResults": "Résultats",
+  "tutoringMatSaveDraft": "Enregistrer le brouillon",
+  "tutoringMatShare": "Partager avec les élèves",
+  "tutoringMatShareNew": "Partager la nouvelle version",
+  "tutoringMatShared": "Partagé",
+  "tutoringMatSharedToast": "Support partagé avec les élèves et le payeur.",
+  "tutoringMatSolution": "Corrigé : {solution}",
+  "@tutoringMatSolution": {
+    "placeholders": {
+      "solution": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringMatStudentAnswers": "Réponses des élèves",
+  "tutoringMatStudentPrefix": "Élève : ",
+  "tutoringMatSubmit": "Envoyer mes réponses",
+  "tutoringMatSummary": "À retenir",
+  "tutoringMatUnanswered": "{count} question(s) sans réponse. Envoyer quand même ? Tu ne pourras plus modifier tes réponses.",
+  "@tutoringMatUnanswered": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringMatYourAnswer": "Ta réponse : {answer}",
+  "@tutoringMatYourAnswer": {
+    "placeholders": {
+      "answer": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringMatYourAnswerHint": "Ta réponse…",
+  "tutoringMaterial": "Support de séance",
+  "tutoringMaterialFull": "Support, quiz et exercices",
+  "tutoringMe": "Moi",
+  "tutoringMode": "Mode",
+  "tutoringModeAll": "tous modes",
+  "tutoringModeInPerson": "présentiel",
+  "tutoringModeNeutralPlace": "Lieu neutre",
+  "tutoringModeOnlineLower": "en ligne",
+  "tutoringModeStudentHome": "À domicile",
+  "tutoringModeStudentHomeMine": "À domicile (chez moi)",
+  "tutoringModeTutorHome": "Chez le tuteur",
+  "tutoringModifierLine": "{label} ({when}) : {adjust}",
+  "@tutoringModifierLine": {
+    "placeholders": {
+      "label": {
+        "type": "Object"
+      },
+      "when": {
+        "type": "Object"
+      },
+      "adjust": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringMomoHint": "MTN MoMo ou Orange Money",
+  "tutoringMomoNumber": "Numéro Mobile Money",
+  "tutoringMonthly": "Au mois",
+  "tutoringMonthlyText": "Mêmes créneaux chaque semaine pendant 4 semaines, payés d'avance et versés au tuteur séance par séance.",
+  "tutoringMustAccept": "Le tuteur doit accepter ta demande. Tu seras notifié·e dès sa réponse, et remboursé·e intégralement sur ton portefeuille WinPlus s'il refuse ou ne répond pas à temps.",
+  "tutoringMyRating": "Ta note : {rating}/5",
+  "@tutoringMyRating": {
+    "placeholders": {
+      "rating": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringNoAssignment": "Aucune attribution pour l'instant.",
+  "tutoringNoModeConfigured": "Ce tuteur n'a pas encore configuré de mode de séance.",
+  "tutoringNoReviewsYet": "Pas encore d'avis",
+  "tutoringNoSlotAvailable": "Aucun créneau disponible pour le moment.",
+  "tutoringNoSlotThatDay": "Aucun créneau ce jour-là.",
+  "tutoringNotSpecified": "Non renseigné",
+  "tutoringOnlineOnly": "En ligne uniquement",
+  "tutoringPay": "Payer",
+  "tutoringPayAmount": "Payer {amount} XAF",
+  "@tutoringPayAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringPayMethod": "Moyen de paiement",
+  "tutoringPayNow": "Payer maintenant",
+  "tutoringPayWithBalance": "Payer avec mon solde",
+  "tutoringPayWithInstitutionWallet": "Payer avec le portefeuille de l'institution",
+  "tutoringPayWithParentWallet": "Payer avec mon portefeuille parent",
+  "tutoringPaymentNotConfirmed": "Le paiement n'a pas pu être confirmé.",
+  "tutoringPaymentReceivedAwaiting": "Paiement reçu  en attente du tuteur",
+  "tutoringPaymentSlow": "Le paiement met plus de temps que prévu. Tu peux vérifier plus tard dans \"Mes séances\".",
+  "tutoringPerHour": "/ heure",
+  "tutoringPerStudentLine": "{count} élèves × {amount} XAF",
+  "@tutoringPerStudentLine": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      },
+      "amount": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringPercent": "{value} %",
+  "@tutoringPercent": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringPhoneHint": "Numéro Cameroun sans indicatif pays (ex: 670000000).",
+  "tutoringPhoneInvalid": "Numéro de téléphone invalide.",
+  "tutoringPolicyCardTitle": "Politique d'annulation de ce tuteur",
+  "tutoringPolicyDispute": "Après la séance, tu as {hours} h pour la contester.",
+  "@tutoringPolicyDispute": {
+    "placeholders": {
+      "hours": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringPolicyFactDispute": "pour contester une séance",
+  "tutoringPolicyFactFee": "de frais Mobile Money si tu annules toi-même",
+  "tutoringPolicyFactImmediate": "Immédiat",
+  "tutoringPolicyFactRefund": "remboursement au portefeuille",
+  "tutoringPolicyFull": "Remboursement intégral si tu annules au moins {hours} h avant la séance.",
+  "@tutoringPolicyFull": {
+    "placeholders": {
+      "hours": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringPolicyIntro": "Les règles communes à toutes les séances de cours particuliers réservées sur WinPlus.",
+  "tutoringPolicyLoadError": "Impossible de charger la politique.",
+  "tutoringPolicyNone": "Aucun remboursement à moins de {hours} h.",
+  "@tutoringPolicyNone": {
+    "placeholders": {
+      "hours": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringPolicyPartial": "{percent} % remboursés entre {min} h et {max} h avant.",
+  "@tutoringPolicyPartial": {
+    "placeholders": {
+      "percent": {
+        "type": "Object"
+      },
+      "min": {
+        "type": "Object"
+      },
+      "max": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringPolicyRead": "Lire la politique de tutorat",
+  "tutoringPolicyTutorCancels": "Si le tuteur annule, refuse ou ne répond pas : remboursement intégral.",
+  "tutoringPolicyUntilStart": "Remboursement possible jusqu'au début de la séance.",
+  "tutoringPolicyVersion": "Version du {date}.",
+  "@tutoringPolicyVersion": {
+    "placeholders": {
+      "date": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringPolicyWallet": "Remboursements versés immédiatement sur ton portefeuille WinPlus.",
+  "tutoringPolicyWalletFee": "Remboursements versés immédiatement sur ton portefeuille WinPlus. Si tu annules une séance payée par Mobile Money, {fee} % de frais de l'opérateur sont déduits ; aucun frais pour un paiement par solde.",
+  "@tutoringPolicyWalletFee": {
+    "placeholders": {
+      "fee": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringPrice": "Prix",
+  "tutoringPriceUnavailable": "Prix indisponible.",
+  "tutoringPrivateLessons": "Cours particuliers",
+  "tutoringProfileLoadError": "Impossible de charger ce profil.",
+  "tutoringProrata": "Facturation au prorata des tranches de 30 min.",
+  "tutoringQuoteError": "Impossible de calculer le prix.",
+  "tutoringRateFrom": "dès {amount} XAF/h",
+  "@tutoringRateFrom": {
+    "placeholders": {
+      "amount": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringRateLine": "{subject} · {mode} : {rate} XAF / h",
+  "@tutoringRateLine": {
+    "placeholders": {
+      "subject": {
+        "type": "Object"
+      },
+      "mode": {
+        "type": "Object"
+      },
+      "rate": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringRateNa": "Tarif ND",
+  "tutoringRateNotGiven": "Tarif non communiqué",
+  "tutoringRatesPackages": "Tarifs & forfaits",
+  "tutoringRatingReviews": "{rating}/5 ({count} avis)",
+  "@tutoringRatingReviews": {
+    "placeholders": {
+      "rating": {
+        "type": "Object"
+      },
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringReasonOptional": "Motif (facultatif)",
+  "tutoringRechargeAmount": "Montant (minimum {amount} FCFA)",
+  "@tutoringRechargeAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringRechargeConfirmOnPhone": "Confirme le paiement sur ton téléphone ; le solde s'actualise dès la confirmation.",
+  "tutoringRechargeConfirmed": "Recharge confirmée : le solde de l'institution est à jour.",
+  "tutoringRechargeFailed": "La recharge n'a pas abouti : aucun montant n'a été débité.",
+  "tutoringRechargePending": "Recharge en attente de confirmation sur le téléphone…",
+  "tutoringRechargePhone": "Numéro (6XXXXXXXX)",
+  "tutoringRechargeStartError": "La recharge n'a pas pu être lancée.",
+  "tutoringRechargeStillPending": "Recharge toujours en attente : tire vers le bas pour actualiser le solde plus tard.",
+  "tutoringRechargeTitle": "Recharger le portefeuille",
+  "tutoringReference": "Réf. : {ref}",
+  "@tutoringReference": {
+    "placeholders": {
+      "ref": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringReportChooseReason": "Choisis un motif.",
+  "tutoringReportDescribe": "Décris ce qui s'est passé (10 caractères au moins).",
+  "tutoringReportDescriptionOptional": "Description (facultative)",
+  "tutoringReportIntro": "Ton signalement est transmis à l'équipe WinPlus, qui l'examine. Le tuteur ne voit pas qui l'a signalé. Pour un remboursement, utilise plutôt « Contester la séance ».",
+  "tutoringReportName": "Signaler {name}",
+  "@tutoringReportName": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringReportPlaceholder": "Ce qui s'est passé, quand, comment.",
+  "tutoringReportProblem": "Signaler un problème",
+  "tutoringReportProblemHint": "Décrivez le problème rencontré pendant cette séance.",
+  "tutoringReportProblemPlaceholder": "Ex : le tuteur ne s'est pas présenté…",
+  "tutoringReportReason": "Motif",
+  "tutoringReportSentTeam": "Signalement du tuteur envoyé à l'équipe WinPlus.",
+  "tutoringReportSubmit": "Envoyer le signalement",
+  "tutoringReportTutor": "Signaler le tuteur",
+  "tutoringReviewChooseRating": "Choisissez une note avant d'envoyer.",
+  "tutoringReviewCommentHint": "Commentaire (optionnel, 300 caractères max)",
+  "tutoringReviewSubmit": "Envoyer mon avis",
+  "tutoringReviewThanks": "Merci pour votre avis !",
+  "tutoringSearchEmpty": "Aucun tuteur trouvé pour ces critères.",
+  "tutoringSearchLoadError": "Impossible de charger les tuteurs.",
+  "tutoringSearchStudent": "Rechercher un élève",
+  "tutoringSearchTopicsHint": "Sujets à travailler (ex. dérivées, dissertation)",
+  "tutoringSending": "Envoi en cours…",
+  "tutoringSession": "Séance",
+  "tutoringSessionConfirmed": "Séance confirmée !",
+  "tutoringSessionMode": "Mode de séance",
+  "tutoringShortfallInstitution": "Choisis Mobile Money ou recharge le portefeuille de l'institution (écran Tutorat).",
+  "tutoringShortfallMine": "Choisis Mobile Money.",
+  "tutoringShortfallParent": "Choisis Mobile Money ou recharge ton portefeuille parent.",
+  "tutoringSlotGone": "Ce créneau n'est plus disponible.",
+  "tutoringSoloPrice": "Prix pour un élève",
+  "tutoringStatusCancelled": "Annulée",
+  "tutoringStatusCompleted": "Effectuée",
+  "tutoringStatusConfirmed": "Confirmée",
+  "tutoringStatusDisputed": "Contestée",
+  "tutoringStatusExpired": "Expirée",
+  "tutoringStatusPendingPayment": "Paiement en cours",
+  "tutoringStatusPendingTutor": "En attente du tuteur",
+  "tutoringStatusRejected": "Refusée",
+  "tutoringStepChooseSlot": "Choisir un créneau",
+  "tutoringStepPayment": "Paiement",
+  "tutoringStepRecap": "Récapitulatif",
+  "tutoringStepSlot": "Créneau",
+  "tutoringStillWaiting": "Toujours en attente",
+  "tutoringStudentFallback": "Élève #{id}",
+  "@tutoringStudentFallback": {
+    "placeholders": {
+      "id": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringStudentsCountPrefix": "{count} élève(s) : ",
+  "@tutoringStudentsCountPrefix": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringStudentsN": "Élèves ({count})",
+  "@tutoringStudentsN": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringSubjectEconomics": "Économie",
+  "tutoringSubjects": "Matières",
+  "tutoringSubjectsLevels": "Matières & niveaux",
+  "tutoringSubtotal": "Sous-total",
+  "tutoringTheTutor": "le tuteur",
+  "tutoringTime": "Heure",
+  "tutoringTopUp": "Recharger",
+  "tutoringTopics": "Sujets",
+  "tutoringTopicsHelp": "Le tuteur les verra dans ta demande pour préparer la séance.",
+  "tutoringTopicsOptional": "Sujets à travailler (facultatif)",
+  "tutoringTopicsPlaceholder": "Ex. équations du second degré",
+  "tutoringTotal": "Total",
+  "tutoringTotalGroup": "Total (groupe)",
+  "tutoringTrialFree": "Séance d'essai gratuite",
+  "tutoringTrialPrice": "Séance d'essai : {amount} XAF",
+  "@tutoringTrialPrice": {
+    "placeholders": {
+      "amount": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringTutor": "Tuteur",
+  "tutoringTutoring": "Tutorat",
+  "tutoringUnavailable": "Indisponible",
+  "tutoringUnavailableParen": "(indisponible)",
+  "tutoringUnavailableShort": "(indisp.)",
+  "tutoringViewMySession": "Voir ma séance",
+  "tutoringWaitingConfirmation": "En attente de confirmation…",
+  "tutoringWaitingUssd": "Valide le paiement via le message USSD envoyé sur ton téléphone.",
+  "tutoringWalletAvailable": "Disponible : {amount} XAF",
+  "@tutoringWalletAvailable": {
+    "placeholders": {
+      "amount": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringWalletInstitution": "Portefeuille de l'institution",
+  "tutoringWalletLoading": "Lecture du solde…",
+  "tutoringWalletMine": "Mon solde WinPlus",
+  "tutoringWalletMineGroup": "Mon solde WinPlus (je paie pour le groupe)",
+  "tutoringWalletMissing": "Solde insuffisant : il manque {amount} XAF. {hint}",
+  "@tutoringWalletMissing": {
+    "placeholders": {
+      "amount": {
+        "type": "Object"
+      },
+      "hint": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringWalletOk": "Paiement immédiat et sans frais. Ta demande part tout de suite au tuteur.",
+  "tutoringWalletParent": "Mon portefeuille parent",
+  "tutoringWalletUnavailable": "Solde indisponible",
+  "tutoringWinplusBalance": "solde WinPlus",
+  "tutoringWithName": "avec {name}",
+  "@tutoringWithName": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "tutoringYourInstitution": "ton institution",
+  "tutoringYourTutor": "ton tuteur",
+  "welcomeTagline": "Ta réussite, notre mission",
+  "widgetKbOff": " · désactivée. L'activer cherche dans les cours et vos fichiers, mais consomme plus de tokens.",
+  "widgetKbOn": " · activée : chaque message consomme nettement plus de tokens.",
+  "widgetKbTitle": "Base de connaissance",
+  "widgetMemDeleteFailed": "Suppression échouée.",
+  "widgetMemDifficulty": "Difficulté",
+  "widgetMemEmpty": "WinAI n'a pas encore mémorisé d'informations. Continue à interagir !",
+  "widgetMemExam": "Examen",
+  "widgetMemLoadError": "Impossible de charger les mémoires.",
+  "widgetMemMastered": "Maîtrisé",
+  "widgetMemMemory": "Mémoire",
+  "widgetMemMotivation": "Motivation",
+  "widgetMemPreference": "Préférence",
+  "widgetMemRefresh": "Actualiser",
+  "widgetMemSubtitle": "Ce que WinAI a retenu de toi",
+  "widgetOfflineBanner": "Hors ligne  dernière mise à jour : {when}",
+  "@widgetOfflineBanner": {
+    "placeholders": {
+      "when": {
+        "type": "Object"
+      }
+    }
+  },
+  "widgetOfflineUnknown": "inconnue",
+  "wrongCredentials": "Email ou mot de passe incorrect."
 }

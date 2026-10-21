@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
 import '../services/study_group_service.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
@@ -35,7 +36,7 @@ class _StudyGroupsScreenState extends State<StudyGroupsScreen> {
       final groups = await StudyGroupService.instance.getMine();
       if (mounted) setState(() { _groups = groups; _error = null; });
     } catch (_) {
-      if (mounted) setState(() { _groups = []; _error = "Vos groupes n'ont pas pu être chargés."; });
+      if (mounted) setState(() { _groups = []; _error = L10n.current.studentGroupsLoadError; });
     }
   }
 
@@ -68,13 +69,13 @@ class _StudyGroupsScreenState extends State<StudyGroupsScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Quitter ce groupe ?'),
+        title: Text(context.l10n.studentGroupsLeaveTitle),
         content: Text(group.isOwner
-            ? 'Quitter « ${group.name} » ? Le groupe sera archivé pour tous ses membres.'
-            : 'Quitter « ${group.name} » ?'),
+            ? context.l10n.studentGroupsLeaveOwner(group.name)
+            : context.l10n.studentGroupsLeaveConfirm(group.name)),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Annuler')),
-          TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Quitter')),
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(context.l10n.commonCancel)),
+          TextButton(onPressed: () => Navigator.pop(ctx, true), child: Text(context.l10n.studentGroupsLeave)),
         ],
       ),
     );
@@ -83,7 +84,7 @@ class _StudyGroupsScreenState extends State<StudyGroupsScreen> {
       await StudyGroupService.instance.leave(group.id);
       await _load();
     } catch (_) {
-      if (mounted) setState(() => _error = "Vous n'avez pas pu quitter ce groupe.");
+      if (mounted) setState(() => _error = L10n.current.studentGroupsLeaveError);
     }
   }
 
@@ -109,7 +110,7 @@ class _StudyGroupsScreenState extends State<StudyGroupsScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text("Groupes d'étude", style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.studentLinksStudyGroups, style: WinType.headlineS(s.onStrong)),
       ),
       body: groups == null
           ? const Center(child: CircularProgressIndicator())
@@ -120,7 +121,7 @@ class _StudyGroupsScreenState extends State<StudyGroupsScreen> {
                   WinAlert(_error!, type: BadgeColor.warn),
                   const SizedBox(height: 12),
                 ],
-                WinSectionHeader('Mes groupes'),
+                WinSectionHeader(context.l10n.studentGroupsMine),
                 const SizedBox(height: 8),
                 if (groups.isEmpty)
                   Padding(
@@ -128,10 +129,10 @@ class _StudyGroupsScreenState extends State<StudyGroupsScreen> {
                     child: Column(children: [
                       Icon(Icons.groups_outlined, size: 28, color: s.onFaint),
                       const SizedBox(height: 8),
-                      Text('Aucun groupe pour le moment.',
+                      Text(context.l10n.studentGroupsEmpty,
                           style: WinType.bodyM(s.onMuted), textAlign: TextAlign.center),
                       const SizedBox(height: 4),
-                      Text('Créez un groupe ou rejoignez celui d\'un camarade avec son code.',
+                      Text(context.l10n.studentGroupsEmptyHint,
                           style: WinType.labelS(s.onFaint), textAlign: TextAlign.center),
                     ]),
                   )
@@ -145,10 +146,10 @@ class _StudyGroupsScreenState extends State<StudyGroupsScreen> {
                         ),
                       )),
                 const SizedBox(height: 16),
-                WinButton("+ Créer un groupe",
+                WinButton(context.l10n.studentGroupsCreatePlus,
                     block: true, variant: WinButtonVariant.outline, onTap: _showCreateSheet),
                 const SizedBox(height: 10),
-                WinButton('Rejoindre par code',
+                WinButton(context.l10n.studentGroupsJoinByCode,
                     block: true, variant: WinButtonVariant.ghost, onTap: _showJoinSheet),
               ],
             ),
@@ -172,12 +173,12 @@ class _GroupCard extends StatelessWidget {
           Expanded(
               child: Text(group.name,
                   maxLines: 1, overflow: TextOverflow.ellipsis, style: WinType.titleM(s.onStrong))),
-          if (group.isOwner) const WinBadge('Propriétaire', color: BadgeColor.teal),
+          if (group.isOwner) WinBadge(context.l10n.studentGroupsOwner, color: BadgeColor.teal),
         ]),
         const SizedBox(height: 8),
         Row(children: [
           if (group.subject != null) ...[WinChip(group.subject!), const SizedBox(width: 10)],
-          Text('${group.memberCount} membre${group.memberCount != 1 ? 's' : ''}',
+          Text(context.l10n.studentGroupsMemberCount(group.memberCount),
               style: WinType.labelM(s.onMuted)),
         ]),
         if (group.description != null && group.description!.isNotEmpty) ...[
@@ -186,9 +187,9 @@ class _GroupCard extends StatelessWidget {
         ],
         const SizedBox(height: 10),
         Row(children: [
-          WinButton('Voir', small: true, variant: WinButtonVariant.outline, onTap: onTap),
+          WinButton(context.l10n.studentHomeSee, small: true, variant: WinButtonVariant.outline, onTap: onTap),
           const SizedBox(width: 8),
-          WinButton('Quitter', small: true, variant: WinButtonVariant.ghost, onTap: onLeave),
+          WinButton(context.l10n.studentGroupsLeave, small: true, variant: WinButtonVariant.ghost, onTap: onLeave),
         ]),
       ]),
     );
@@ -218,7 +219,7 @@ class _CreateGroupSheetState extends State<_CreateGroupSheet> {
   Future<void> _submit() async {
     final name = _nameCtrl.text.trim();
     if (name.length < 3) {
-      setState(() => _error = 'Le nom doit contenir au moins 3 caractères.');
+      setState(() => _error = context.l10n.studentGroupsNameTooShort);
       return;
     }
     setState(() { _busy = true; _error = null; });
@@ -230,7 +231,7 @@ class _CreateGroupSheetState extends State<_CreateGroupSheet> {
       if (mounted) Navigator.pop(context);
       widget.onCreated();
     } catch (_) {
-      if (mounted) setState(() { _busy = false; _error = "Le groupe n'a pas pu être créé."; });
+      if (mounted) setState(() { _busy = false; _error = L10n.current.studentGroupsCreateError; });
     }
   }
 
@@ -253,14 +254,14 @@ class _CreateGroupSheetState extends State<_CreateGroupSheet> {
                 decoration: BoxDecoration(color: s.outline2, borderRadius: BorderRadius.circular(WinRadii.full)),
               ),
             ),
-            Text('Créer un groupe', style: WinType.archivo(size: 20, color: s.onStrong)),
+            Text(context.l10n.studentGroupsCreate, style: WinType.archivo(size: 20, color: s.onStrong)),
             const SizedBox(height: 20),
             if (_error != null) ...[WinAlert(_error!, type: BadgeColor.error), const SizedBox(height: 12)],
-            WinTextField(icon: Icons.group, hint: 'Nom du groupe (min 3 caractères)', controller: _nameCtrl),
+            WinTextField(icon: Icons.group, hint: context.l10n.studentGroupsNameHint, controller: _nameCtrl),
             const SizedBox(height: 12),
-            WinTextField(icon: Icons.menu_book_outlined, hint: 'Matière principale (optionnel)', controller: _subjectCtrl),
+            WinTextField(icon: Icons.menu_book_outlined, hint: context.l10n.studentGroupsSubjectHint, controller: _subjectCtrl),
             const SizedBox(height: 24),
-            WinButton(_busy ? 'Création…' : 'Créer', block: true, onTap: _busy ? null : _submit),
+            WinButton(_busy ? context.l10n.studentGroupsCreating : context.l10n.studentGroupsCreateBtn, block: true, onTap: _busy ? null : _submit),
           ]),
     );
   }
@@ -287,7 +288,7 @@ class _JoinGroupSheetState extends State<_JoinGroupSheet> {
     final code = _codeCtrl.text.trim().toUpperCase();
     if (code.length < 4) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Entrez le code d'invitation complet.")),
+        SnackBar(content: Text(context.l10n.studentGroupsCodeIncomplete)),
       );
       return;
     }
@@ -296,12 +297,12 @@ class _JoinGroupSheetState extends State<_JoinGroupSheet> {
       final res = await StudyGroupService.instance.join(code);
       if (mounted) Navigator.pop(context);
       widget.onResult(
-        res.alreadyMember ? 'Vous faites déjà partie de « ${res.name} ».' : 'Groupe « ${res.name} » rejoint avec succès !',
+        res.alreadyMember ? L10n.current.studentGroupsAlreadyMember(res.name) : L10n.current.studentGroupsJoined(res.name),
         true,
       );
     } catch (_) {
       if (mounted) Navigator.pop(context);
-      widget.onResult('Aucun groupe ne correspond à ce code.', false);
+      widget.onResult(L10n.current.studentGroupsCodeNotFound, false);
     }
   }
 
@@ -324,14 +325,14 @@ class _JoinGroupSheetState extends State<_JoinGroupSheet> {
                 decoration: BoxDecoration(color: s.outline2, borderRadius: BorderRadius.circular(WinRadii.full)),
               ),
             ),
-            Text('Rejoindre par code', style: WinType.archivo(size: 20, color: s.onStrong)),
+            Text(context.l10n.studentGroupsJoinByCode, style: WinType.archivo(size: 20, color: s.onStrong)),
             const SizedBox(height: 20),
             WinTextField(
                 icon: Icons.vpn_key,
-                hint: "Code d'invitation",
+                hint: context.l10n.studentGroupsInviteCode,
                 controller: _codeCtrl),
             const SizedBox(height: 24),
-            WinButton(_busy ? 'Envoi…' : 'Rejoindre', block: true, onTap: _busy ? null : _submit),
+            WinButton(_busy ? context.l10n.studentGroupsSending : context.l10n.studentGroupsJoin, block: true, onTap: _busy ? null : _submit),
           ]),
     );
   }
@@ -385,7 +386,7 @@ class _GroupDetailSheetState extends State<_GroupDetailSheet> {
               height: 160,
               child: Center(
                 child: _error
-                    ? Text('Impossible de charger ce groupe.', style: WinType.bodyM(s.onMuted))
+                    ? Text(context.l10n.studentGroupsDetailLoadError, style: WinType.bodyM(s.onMuted))
                     : const CircularProgressIndicator(),
               ),
             )
@@ -406,12 +407,12 @@ class _GroupDetailSheetState extends State<_GroupDetailSheet> {
                 ]),
                 const SizedBox(height: 4),
                 Row(children: [
-                  Text('${detail.members.length} membres', style: WinType.bodyS(s.onMuted)),
+                  Text(context.l10n.studentGroupsMembersCount(detail.members.length), style: WinType.bodyS(s.onMuted)),
                   const SizedBox(width: 10),
                   WinButton(detail.joinCode, small: true, variant: WinButtonVariant.outline, onTap: () {}),
                 ]),
                 const SizedBox(height: 20),
-                Text('Membres', style: WinType.titleM(s.onStrong)),
+                Text(context.l10n.studentGroupsMembers, style: WinType.titleM(s.onStrong)),
                 const SizedBox(height: 10),
                 Flexible(
                   child: ListView.builder(
@@ -428,8 +429,8 @@ class _GroupDetailSheetState extends State<_GroupDetailSheet> {
                               child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                Text(m.fullName.isEmpty ? 'Membre' : m.fullName, style: WinType.bodyM(s.onStrong)),
-                                Text(m.role == 'owner' ? 'Propriétaire' : 'Membre',
+                                Text(m.fullName.isEmpty ? context.l10n.studentGroupsMember : m.fullName, style: WinType.bodyM(s.onStrong)),
+                                Text(m.role == 'owner' ? context.l10n.studentGroupsOwner : context.l10n.studentGroupsMember,
                                     style: WinType.labelS(s.onMuted)),
                               ])),
                         ]),
@@ -438,18 +439,18 @@ class _GroupDetailSheetState extends State<_GroupDetailSheet> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                Text('Classement (7 derniers jours)', style: WinType.titleM(s.onStrong)),
+                Text(context.l10n.studentGroupsLeaderboard, style: WinType.titleM(s.onStrong)),
                 const SizedBox(height: 10),
                 if (_leaderboard == null)
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: Text('Classement indisponible pour le moment.',
+                    child: Text(context.l10n.studentGroupsLeaderboardUnavailable,
                         style: WinType.labelM(s.onFaint)),
                   )
                 else if (_leaderboard!.ranking.every((r) => r.points == 0))
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: Text("Personne n'a encore d'activité cette semaine.",
+                    child: Text(context.l10n.studentGroupsNoActivity,
                         style: WinType.labelM(s.onFaint)),
                   )
                 else
@@ -469,9 +470,9 @@ class _GroupDetailSheetState extends State<_GroupDetailSheet> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(r.fullName.isEmpty ? 'Membre' : r.fullName,
+                              Text(r.fullName.isEmpty ? context.l10n.studentGroupsMember : r.fullName,
                                   style: WinType.bodyM(s.onStrong)),
-                              Text('${r.quizzesPassed} quiz réussis · ${r.studyMinutes} min étudiées',
+                              Text(context.l10n.studentGroupsRankLine(r.quizzesPassed, r.studyMinutes),
                                   style: WinType.labelS(s.onMuted)),
                             ],
                           ),

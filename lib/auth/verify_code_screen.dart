@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
 import '../theme/win_motion.dart';
 import 'package:flutter/services.dart';
 import '../services/auth_service.dart';
@@ -72,7 +73,7 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
     } else {
       setState(() {
         _loading = false;
-        _error = result.message ?? 'Code invalide.';
+        _error = result.message ?? context.l10n.authCodeInvalid;
       });
     }
   }
@@ -85,6 +86,7 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
+    final l10n = context.l10n;
     return Scaffold(
       backgroundColor: s.bg,
       appBar: AppBar(
@@ -113,11 +115,11 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
                     size: 40, color: s.primary),
               ),
               const SizedBox(height: 24),
-              Text('Vérification email',
+              Text(l10n.authVerifyEmailTitle,
                   style: WinType.displayS(s.onStrong),
                   textAlign: TextAlign.center),
               const SizedBox(height: 8),
-              Text('Un code à 6 chiffres a été envoyé à votre adresse.',
+              Text(l10n.authCodeSentAddress,
                   style: WinType.bodyM(s.onMuted), textAlign: TextAlign.center),
               const SizedBox(height: 8),
               Text(widget.email,
@@ -146,18 +148,18 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
                 WinAlert(_error!, type: BadgeColor.error),
                 const SizedBox(height: 16),
               ],
-              WinButton('Vérifier',
+              WinButton(l10n.authVerify,
                   block: true,
                   loading: _loading,
                   onTap: _code.length == 6 ? _verify : null),
               const SizedBox(height: 20),
               Center(
                 child: _countdown > 0
-                    ? Text('Renvoyer le code (${_countdown}s)',
+                    ? Text(l10n.authResendCodeParen(_countdown),
                         style: WinType.bodyM(s.onFaint))
                     : GestureDetector(
                         onTap: _resend,
-                        child: Text('Renvoyer le code',
+                        child: Text(l10n.authResendCode,
                             style: WinType.bodyM(s.primary)
                                 .copyWith(fontWeight: FontWeight.w600)),
                       ),

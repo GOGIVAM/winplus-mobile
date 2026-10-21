@@ -1,9 +1,21 @@
 import 'package:flutter/material.dart';
+import '../../l10n/l10n.dart';
 import '../../services/forum_service.dart';
 import '../../theme/win_colors.dart';
 import '../../theme/win_theme.dart';
 import '../../theme/win_typography.dart';
 import '../../widgets/win_widgets.dart';
+
+/// Libellé affiché d'une catégorie du forum ; la valeur envoyée à l'API
+/// reste le nom français (lot 10.11).
+String forumCategoryLabel(AppLocalizations l10n, String category) =>
+    switch (category) {
+      'Questions' => l10n.forumCatQuestions,
+      'Discussions' => l10n.forumCatDiscussions,
+      'Ressources' => l10n.forumCatResources,
+      'Aide' => l10n.forumCatHelp,
+      _ => category,
+    };
 
 class NewThreadScreen extends StatefulWidget {
   const NewThreadScreen({super.key});
@@ -41,7 +53,8 @@ class _NewThreadScreenState extends State<NewThreadScreen> {
     } catch (e) {
       if (mounted)
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('Erreur: $e'), backgroundColor: WinColors.error));
+            content: Text(context.l10n.forumError(e)),
+            backgroundColor: WinColors.error));
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -50,6 +63,7 @@ class _NewThreadScreenState extends State<NewThreadScreen> {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
+    final l10n = context.l10n;
     return Scaffold(
       backgroundColor: s.bg,
       appBar: AppBar(
@@ -58,19 +72,19 @@ class _NewThreadScreenState extends State<NewThreadScreen> {
         leading: IconButton(
             icon: Icon(Icons.close, color: s.onStrong),
             onPressed: () => Navigator.pop(context)),
-        title: Text('Nouveau thread', style: WinType.headlineS(s.onStrong)),
+        title: Text(l10n.forumNewThread, style: WinType.headlineS(s.onStrong)),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text('Catégorie', style: WinType.titleM(s.onStrong)),
+          Text(l10n.forumCategory, style: WinType.titleM(s.onStrong)),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
             runSpacing: 8,
             children: _categories
                 .map((cat) => WinChip(
-                      cat,
+                      forumCategoryLabel(l10n, cat),
                       active: cat == _category,
                       onTap: () => setState(() => _category = cat),
                     ))
@@ -78,8 +92,8 @@ class _NewThreadScreenState extends State<NewThreadScreen> {
           ),
           const SizedBox(height: 20),
           WinTextField(
-              label: 'Titre *',
-              hint: 'Votre question ou sujet…',
+              label: l10n.forumTitleField,
+              hint: l10n.forumTitleHint,
               icon: Icons.title,
               controller: _titleCtrl),
           const SizedBox(height: 16),
@@ -87,7 +101,7 @@ class _NewThreadScreenState extends State<NewThreadScreen> {
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Padding(
               padding: const EdgeInsets.only(bottom: 6),
-              child: Text('Contenu *',
+              child: Text(l10n.forumContentField,
                   style: WinType.labelM(s.onStrong)
                       .copyWith(fontWeight: FontWeight.w500)),
             ),
@@ -113,7 +127,7 @@ class _NewThreadScreenState extends State<NewThreadScreen> {
                     decoration: InputDecoration(
                       isDense: true,
                       border: InputBorder.none,
-                      hintText: 'Détaillez votre question…',
+                      hintText: l10n.forumContentHint,
                       hintStyle: WinType.bodyM(s.onFaint),
                     ),
                   ),
@@ -122,7 +136,7 @@ class _NewThreadScreenState extends State<NewThreadScreen> {
             ),
           ]),
           const SizedBox(height: 32),
-          WinButton('Publier',
+          WinButton(l10n.forumPublish,
               block: true, loading: _loading, onTap: _loading ? null : _submit),
         ]),
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
 import '../theme/win_motion.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
@@ -25,6 +26,7 @@ class LegalScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
     final isCgu = doc == LegalDoc.cgu;
+    final l10n = context.l10n;
 
     return Scaffold(
       backgroundColor: s.bg,
@@ -36,121 +38,42 @@ class LegalScreen extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          isCgu
-              ? 'Conditions Générales d\'Utilisation'
-              : 'Politique de Confidentialité',
+          isCgu ? l10n.legalCguTitle : l10n.legalPrivacyTitle,
           style: WinType.headlineS(s.onStrong),
         ),
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 40),
-        children: isCgu ? _cguSections(s) : _privacySections(s),
+        children:
+            isCgu ? _cguSections(s, l10n) : _privacySections(s, l10n),
       ),
     );
   }
 
-  List<Widget> _cguSections(WinScheme s) => [
-        _meta(s, 'Dernière mise à jour : 1er juin 2025'),
-        _section(
-            s,
-            '1. Objet',
-            'Les présentes Conditions Générales d\'Utilisation (CGU) régissent l\'accès et '
-                'l\'utilisation de la plateforme WinPlus, application mobile éducative destinée '
-                'aux élèves, parents et enseignants du système scolaire camerounais.'),
-        _section(
-            s,
-            '2. Accès à la plateforme',
-            'L\'accès à WinPlus est ouvert à toute personne disposant d\'un appareil compatible '
-                'et d\'une connexion internet. Certaines fonctionnalités nécessitent la création d\'un '
-                'compte. L\'inscription est gratuite pour le plan de base.'),
-        _section(
-            s,
-            '3. Comptes utilisateurs',
-            'Vous êtes responsable de la confidentialité de vos identifiants. Toute activité '
-                'effectuée depuis votre compte vous est attribuée. En cas de compromission, '
-                'contactez-nous immédiatement à support@winplus.cm.'),
-        _section(
-            s,
-            '4. Contenu et propriété intellectuelle',
-            'Les contenus publiés sur WinPlus (épreuves, corrections, quiz) sont protégés par '
-                'le droit d\'auteur. Leur reproduction, redistribution ou revente sans autorisation '
-                'est strictement interdite.'),
-        _section(
-            s,
-            '5. Abonnements et paiements',
-            'Les plans payants (Starter, Expert, Institution) sont facturés mensuellement via '
-                'Mobile Money (MTN MoMo, Orange Money) ou carte bancaire. Les tarifs sont affichés '
-                'en francs CFA (XAF) et peuvent évoluer avec préavis de 30 jours.'),
-        _section(
-            s,
-            '6. Résiliation',
-            'Vous pouvez résilier votre abonnement à tout moment depuis votre profil. '
-                'La résiliation prend effet à la fin de la période de facturation en cours. '
-                'Aucun remboursement partiel n\'est accordé.'),
-        _section(
-            s,
-            '7. Responsabilité',
-            'WinPlus s\'efforce de maintenir la plateforme disponible 24h/24, mais ne saurait '
-                'être tenue responsable des interruptions de service, pertes de données ou '
-                'inexactitudes dans les contenus.'),
-        _section(
-            s,
-            '8. Droit applicable',
-            'Les présentes CGU sont soumises au droit camerounais. Tout litige sera porté '
-                'devant les juridictions compétentes de Yaoundé, Cameroun.'),
-        _contact(s),
+  List<Widget> _cguSections(WinScheme s, AppLocalizations l10n) => [
+        _meta(s, l10n.legalLastUpdated),
+        _section(s, l10n.legalCgu1Title, l10n.legalCgu1Body),
+        _section(s, l10n.legalCgu2Title, l10n.legalCgu2Body),
+        _section(s, l10n.legalCgu3Title, l10n.legalCgu3Body),
+        _section(s, l10n.legalCgu4Title, l10n.legalCgu4Body),
+        _section(s, l10n.legalCgu5Title, l10n.legalCgu5Body),
+        _section(s, l10n.legalCgu6Title, l10n.legalCgu6Body),
+        _section(s, l10n.legalCgu7Title, l10n.legalCgu7Body),
+        _section(s, l10n.legalCgu8Title, l10n.legalCgu8Body),
+        _contact(s, l10n),
       ];
 
-  List<Widget> _privacySections(WinScheme s) => [
-        _meta(s, 'Dernière mise à jour : 1er juin 2025'),
-        _section(
-            s,
-            '1. Données collectées',
-            'WinPlus collecte les données suivantes :\n'
-                '• Données d\'identification : nom, prénom, adresse e-mail\n'
-                '• Données de navigation : contenus consultés, résultats de quiz\n'
-                '• Données de paiement : transmises directement à nos prestataires (MTN, Orange)\n'
-                '• Données d\'appareil : modèle, système d\'exploitation, identifiant publicitaire'),
-        _section(
-            s,
-            '2. Finalités du traitement',
-            'Vos données sont utilisées pour :\n'
-                '• Fournir et personnaliser les services WinPlus\n'
-                '• Générer des recommandations pédagogiques via WinAI\n'
-                '• Traiter vos paiements et gérer votre abonnement\n'
-                '• Améliorer la plateforme via des analyses agrégées anonymisées'),
-        _section(
-            s,
-            '3. Base légale',
-            'Le traitement repose sur votre consentement (art. 4 loi n° 2010/012 du Cameroun '
-                'sur les communications électroniques) et sur l\'exécution du contrat de service '
-                'que représentent les présentes CGU.'),
-        _section(
-            s,
-            '4. Conservation des données',
-            'Vos données sont conservées pendant la durée de votre relation contractuelle avec '
-                'WinPlus, augmentée de 3 ans à des fins de preuve. Les données de navigation sont '
-                'anonymisées après 13 mois.'),
-        _section(
-            s,
-            '5. Partage des données',
-            'WinPlus ne vend pas vos données. Elles peuvent être partagées avec :\n'
-                '• Nos hébergeurs (serveurs sécurisés en Europe)\n'
-                '• Nos prestataires de paiement (MTN, Orange, Stripe)\n'
-                '• Les autorités compétentes en cas d\'obligation légale'),
-        _section(
-            s,
-            '6. Vos droits',
-            'Conformément à la législation applicable, vous disposez des droits d\'accès, '
-                'de rectification, d\'effacement, de portabilité et d\'opposition. '
-                'Exercez-les en écrivant à privacy@winplus.cm.'),
-        _section(
-            s,
-            '7. Cookies et traceurs',
-            'L\'application utilise des identifiants anonymes pour mesurer les performances '
-                'et améliorer l\'expérience utilisateur. Vous pouvez les désactiver dans les '
-                'paramètres de votre appareil.'),
-        _contact(s),
+  List<Widget> _privacySections(WinScheme s, AppLocalizations l10n) =>
+      [
+        _meta(s, l10n.legalLastUpdated),
+        _section(s, l10n.legalPriv1Title, l10n.legalPriv1Body),
+        _section(s, l10n.legalPriv2Title, l10n.legalPriv2Body),
+        _section(s, l10n.legalPriv3Title, l10n.legalPriv3Body),
+        _section(s, l10n.legalPriv4Title, l10n.legalPriv4Body),
+        _section(s, l10n.legalPriv5Title, l10n.legalPriv5Body),
+        _section(s, l10n.legalPriv6Title, l10n.legalPriv6Body),
+        _section(s, l10n.legalPriv7Title, l10n.legalPriv7Body),
+        _contact(s, l10n),
       ];
 
   Widget _meta(WinScheme s, String text) => Padding(
@@ -170,16 +93,16 @@ class LegalScreen extends StatelessWidget {
         ),
       );
 
-  Widget _contact(WinScheme s) => Padding(
+  Widget _contact(WinScheme s, AppLocalizations l10n) => Padding(
         padding: const EdgeInsets.only(top: 4),
         child: WinCard(
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('Contact',
+            Text(l10n.legalContactTitle,
                 style: WinType.archivo(size: 15, color: s.onStrong)),
             const SizedBox(height: 8),
             Text(
-                'Pour toute question : support@winplus.cm\nWinPlus SAS  Yaoundé, Cameroun',
+                l10n.legalContactBody,
                 style: WinType.bodyS(s.onMuted)),
           ]),
         ),

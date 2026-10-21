@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../data/models.dart';
+import '../l10n/l10n.dart';
 import '../services/subject_service.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_colors.dart';
@@ -46,6 +47,16 @@ class _SearchScreenState extends State<SearchScreen> {
     'Livre': 'livre',
     'Pack': 'pack',
   };
+
+  // Libellés affichés ; les valeurs des filtres restent celles d'origine.
+  String _label(String v) => switch (v) {
+        'Tout' => context.l10n.commonAll,
+        'Épreuve' => context.l10n.dataTypePaper,
+        'Correction' => context.l10n.dataTypeCorrection,
+        'Livre' => context.l10n.dataTypeBook,
+        'Concours' => context.l10n.authOptConcours,
+        _ => v,
+      };
 
   Future<void> _search(String q) async {
     if (q.trim().isEmpty) {
@@ -109,7 +120,7 @@ class _SearchScreenState extends State<SearchScreen> {
           onChanged: _onChanged,
           style: WinType.manrope(size: 15, color: s.onStrong),
           decoration: InputDecoration(
-            hintText: 'BAC C Maths, ENSP, SVT…',
+            hintText: context.l10n.studentSearchHint,
             hintStyle: WinType.manrope(size: 15, color: s.onFaint),
             border: InputBorder.none,
             suffixIcon: _query.isNotEmpty
@@ -135,7 +146,7 @@ class _SearchScreenState extends State<SearchScreen> {
             itemCount: _types.length,
             separatorBuilder: (_, __) => const SizedBox(width: 8),
             itemBuilder: (_, i) => WinChip(
-              _types[i],
+              _label(_types[i]),
               active: _typeFilter == _types[i],
               onTap: () {
                 setState(() => _typeFilter = _types[i]);
@@ -153,7 +164,7 @@ class _SearchScreenState extends State<SearchScreen> {
             itemCount: _levels.length,
             separatorBuilder: (_, __) => const SizedBox(width: 8),
             itemBuilder: (_, i) => WinChip(
-              _levels[i],
+              _label(_levels[i]),
               active: _levelFilter == _levels[i],
               onTap: () {
                 setState(() => _levelFilter = _levels[i]);
@@ -197,7 +208,7 @@ class _EmptyIdle extends StatelessWidget {
         child: Column(mainAxisSize: MainAxisSize.min, children: [
       Icon(Icons.search, size: 64, color: s.onFaint),
       const SizedBox(height: 12),
-      Text('Recherchez dans le catalogue', style: WinType.bodyM(s.onMuted)),
+      Text(context.l10n.studentSearchIdle, style: WinType.bodyM(s.onMuted)),
     ]));
   }
 }
@@ -214,7 +225,7 @@ class _NoResults extends StatelessWidget {
       child: Column(mainAxisSize: MainAxisSize.min, children: [
         Icon(Icons.search_off, size: 64, color: s.onFaint),
         const SizedBox(height: 12),
-        Text('Aucun résultat pour « $query »',
+        Text(context.l10n.studentSearchNoResults(query),
             style: WinType.bodyM(s.onMuted), textAlign: TextAlign.center),
       ]),
     ));

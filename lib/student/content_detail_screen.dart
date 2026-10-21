@@ -1,3 +1,4 @@
+import '../l10n/l10n.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../theme/win_motion.dart';
@@ -55,9 +56,9 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
     final id = int.tryParse(widget.content.id);
     if (id == null) {
       // Contenu de démonstration (WinData.catalog) : aucun document réel.
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(
-              "Ce contenu de démonstration n'a pas de document à afficher.")));
+              context.l10n.studentDetailDemoNoDocument)));
       return;
     }
     openDocumentViewer(context,
@@ -152,7 +153,7 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                       borderRadius: BorderRadius.circular(WinRadii.full),
                       boxShadow: WinShadows.sm,
                     ),
-                    child: Text(c.free ? 'Gratuit' : '${fmtXaf(c.price)} XAF',
+                    child: Text(c.free ? context.l10n.commonFree : '${fmtXaf(c.price)} XAF',
                         style: WinType.titleM(
                                 c.free ? Colors.white : WinColors.ink800)
                             .copyWith(fontWeight: FontWeight.w700)),
@@ -190,10 +191,10 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                       Row(children: [
                         WinAvatar(c.teacher ?? 'W', size: 32),
                         const SizedBox(width: 10),
-                        Text('Par ${c.teacher ?? 'WinPlus'}',
+                        Text(context.l10n.studentDetailBy(c.teacher ?? 'WinPlus'),
                             style: WinType.bodyM(s.onMuted)),
                         const SizedBox(width: 8),
-                        const WinBadge('Vérifié', color: BadgeColor.teal),
+                        WinBadge(context.l10n.studentDetailVerified, color: BadgeColor.teal),
                       ]),
                       const SizedBox(height: 12),
                       Row(children: [
@@ -208,7 +209,7 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                                 )),
                         const SizedBox(width: 6),
                         Text(
-                            '${c.rating.toStringAsFixed(1)} (${c.ratings} avis)',
+                            context.l10n.studentDetailRatingCount(c.rating.toStringAsFixed(1), c.ratings),
                             style: WinType.bodyS(s.onMuted)),
                       ]),
                       const SizedBox(height: 12),
@@ -216,7 +217,7 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                         Icon(Icons.visibility_outlined,
                             size: 16, color: s.onFaint),
                         const SizedBox(width: 4),
-                        Text('${c.downloads} consultations',
+                        Text(context.l10n.studentDetailViews(c.downloads),
                             style: WinType.labelM(s.onMuted)),
                         const SizedBox(width: 16),
                         Icon(Icons.calendar_today_outlined,
@@ -227,9 +228,9 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                       const SizedBox(height: 20),
                       const WinDivider(),
                       const SizedBox(height: 16),
-                      Text('Description', style: WinType.headlineS(s.onStrong)),
+                      Text(context.l10n.commonDescription, style: WinType.headlineS(s.onStrong)),
                       const SizedBox(height: 8),
-                      Text(c.description ?? 'Contenu éducatif de qualité.',
+                      Text(c.description ?? context.l10n.studentDetailDefaultDescription,
                           style: WinType.bodyM(s.onMuted)),
                       const SizedBox(height: 20),
                       if (c.aiReco != null) ...[
@@ -240,10 +241,10 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                       ],
                       const WinDivider(),
                       const SizedBox(height: 16),
-                      WinSectionHeader('Avis (${c.reviews.length})'),
+                      WinSectionHeader(context.l10n.studentDetailReviewsHeader(c.reviews.length)),
                       const SizedBox(height: 12),
                       if (c.reviews.isEmpty)
-                        Text('Aucun avis pour l\'instant.',
+                        Text(context.l10n.studentDetailNoReviews,
                             style: WinType.bodyM(s.onMuted))
                       else
                         ...c.reviews.map((r) => Padding(
@@ -296,7 +297,7 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                       const SizedBox(height: 20),
                       const WinDivider(),
                       const SizedBox(height: 16),
-                      const WinSectionHeader('Mes notes'),
+                      WinSectionHeader(context.l10n.studentDetailMyNotes),
                       const SizedBox(height: 10),
                       // Tags rapides
                       Wrap(
@@ -335,7 +336,18 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                                   borderRadius:
                                       BorderRadius.circular(WinRadii.full),
                                 ),
-                                child: Text(tag,
+                                child: Text(
+                                    {
+                                          'À réviser': context
+                                              .l10n.studentDetailTagToRevise,
+                                          'Difficile':
+                                              context.l10n.studentDetailTagHard,
+                                          'Maîtrisé': context
+                                              .l10n.studentDetailTagMastered,
+                                          'À acheter':
+                                              context.l10n.studentDetailTagToBuy,
+                                        }[tag] ??
+                                        tag,
                                     style: WinType.manrope(
                                         size: 12,
                                         weight: FontWeight.w600,
@@ -381,7 +393,7 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                           maxLength: 150,
                           decoration: InputDecoration(
                             counterText: '',
-                            hintText: 'Ajouter une note…',
+                            hintText: context.l10n.studentDetailAddNoteHint,
                             hintStyle: WinType.bodyS(s.onFaint),
                             filled: true,
                             fillColor: s.surface2,
@@ -404,7 +416,7 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                         const SizedBox(height: 8),
                         Row(children: [
                           Expanded(
-                            child: WinButton('Enregistrer',
+                            child: WinButton(context.l10n.commonSave,
                                 icon: Icons.check,
                                 block: true,
                                 small: true, onTap: () {
@@ -420,7 +432,7 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                             }),
                           ),
                           const SizedBox(width: 10),
-                          WinButton('Annuler',
+                          WinButton(context.l10n.commonCancel,
                               variant: WinButtonVariant.ghost,
                               small: true,
                               onTap: () => setState(() {
@@ -435,7 +447,7 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                             Icon(Icons.add_circle_outline,
                                 size: 18, color: s.primary),
                             const SizedBox(width: 6),
-                            Text('Ajouter une note',
+                            Text(context.l10n.studentDetailAddNote,
                                 style: WinType.bodyS(s.primary)
                                     .copyWith(fontWeight: FontWeight.w600)),
                           ]),
@@ -444,7 +456,7 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                         const SizedBox(height: 20),
                         const WinDivider(),
                         const SizedBox(height: 16),
-                        const WinSectionHeader('Contenus similaires'),
+                        WinSectionHeader(context.l10n.studentDetailSimilar),
                         const SizedBox(height: 12),
                         SizedBox(
                           height: 210,
@@ -535,8 +547,8 @@ class _BottomBarState extends State<_BottomBar> {
     }
     final subjectId = int.tryParse(widget.content.id);
     if (subjectId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Ce contenu de démonstration n'a pas de sujet réel.")));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(L10n.current.studentDetailDemoNoSubject)));
       return;
     }
     setState(() => _adding = true);
@@ -545,16 +557,16 @@ class _BottomBarState extends State<_BottomBar> {
     setState(() => _adding = false);
     if (cart != null) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: const Text('Ajouté au panier.'),
+        content: Text(L10n.current.studentDetailAddedToCart),
         action: SnackBarAction(
-          label: 'Voir le panier',
+          label: L10n.current.studentDetailViewCart,
           onPressed: () => Navigator.push(
               context, WinPageRoute(builder: (_) => const CartScreen())),
         ),
       ));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Impossible d'ajouter au panier.")));
+          SnackBar(content: Text(L10n.current.studentDetailAddToCartError)));
     }
   }
 
@@ -570,7 +582,7 @@ class _BottomBarState extends State<_BottomBar> {
     Widget btn;
 
     if (content.type == ContentType.quiz) {
-      btn = WinButton('Commencer le quiz',
+      btn = WinButton(context.l10n.studentDetailStartQuiz,
           block: true,
           icon: Icons.play_arrow_rounded,
           onTap: () => Navigator.push(
@@ -581,14 +593,14 @@ class _BottomBarState extends State<_BottomBar> {
       btn = Column(mainAxisSize: MainAxisSize.min, children: [
         WinButton(
             content.type == ContentType.livre
-                ? 'Lire le livre'
-                : "Lire dans l'application",
+                ? context.l10n.studentDetailReadBook
+                : context.l10n.studentDetailReadInApp,
             block: true,
             icon: Icons.menu_book_outlined,
             onTap: onOpen),
         if (content.hasCorrection && canReadCorrection) ...[
           const SizedBox(height: 8),
-          WinButton('Voir le corrigé',
+          WinButton(context.l10n.studentDetailViewAnswers,
               block: true,
               variant: WinButtonVariant.outline,
               icon: Icons.fact_check_outlined,
@@ -598,14 +610,14 @@ class _BottomBarState extends State<_BottomBar> {
     } else {
       btn = Column(mainAxisSize: MainAxisSize.min, children: [
         if (previewPages > 0) ...[
-          WinButton("Lire l'aperçu ($previewPages pages)",
+          WinButton(context.l10n.studentDetailReadPreview(previewPages),
               block: true,
               variant: WinButtonVariant.outline,
               icon: Icons.visibility_outlined,
               onTap: () => _openPreview(context)),
           const SizedBox(height: 8),
         ],
-        WinButton('Ajouter au panier  ${fmtXaf(content.price)} XAF',
+        WinButton(context.l10n.studentDetailAddToCartPrice(fmtXaf(content.price)),
             block: true,
             loading: _adding,
             icon: Icons.shopping_cart_outlined,
@@ -616,7 +628,7 @@ class _BottomBarState extends State<_BottomBar> {
         GestureDetector(
           onTap: () => Navigator.push(
               context, WinPageRoute(builder: (_) => const PricingScreen())),
-          child: Text('ou découvrez les abonnements',
+          child: Text(context.l10n.studentDetailOrSubscriptions,
               style: WinType.bodyS(s.primary), textAlign: TextAlign.center),
         ),
       ]);

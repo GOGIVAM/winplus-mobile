@@ -4,6 +4,7 @@ import '../services/tutor_verification_service.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import '../l10n/l10n.dart';
 
 /// Lot 9.5 (17.11) : l'institution cautionne un répétiteur qui lui est
 /// rattaché, après l'avoir vérifié par ses propres moyens (comment, par qui,
@@ -52,39 +53,39 @@ class _TutorEndorsementsScreenState extends State<TutorEndorsementsScreen> {
           padding: EdgeInsets.fromLTRB(20, 16, 20, 24 + MediaQuery.of(ctx).viewInsets.bottom),
           child: SingleChildScrollView(
             child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('Cautionner ${t.tutorName ?? 'ce répétiteur'}', style: WinType.archivo(size: 18, color: s.onStrong)),
+              Text(ctx.l10n.instEndorseTitle(t.tutorName ?? ctx.l10n.instEndorseThisTutor), style: WinType.archivo(size: 18, color: s.onStrong)),
               const SizedBox(height: 6),
-              Text('Il pourra proposer des séances présentielles, avec le badge « Caution : votre établissement ».',
+              Text(ctx.l10n.instEndorseSheetInfo,
                   style: WinType.bodyS(s.onMuted)),
               const SizedBox(height: 12),
               TextField(
                 controller: statement,
                 maxLines: 3,
                 maxLength: 500,
-                decoration: const InputDecoration(
-                    labelText: "Comment l'avez-vous vérifié ?",
-                    hintText: "Entretien, pièce d'identité vue en mains propres, contrat…",
-                    border: OutlineInputBorder()),
+                decoration: InputDecoration(
+                    labelText: ctx.l10n.instEndorseHowLabel,
+                    hintText: ctx.l10n.instEndorseHowHint,
+                    border: const OutlineInputBorder()),
               ),
               const SizedBox(height: 8),
               TextField(
                 controller: verifier,
                 maxLength: 150,
-                decoration: const InputDecoration(labelText: 'Vérifié par (nom et fonction)', border: OutlineInputBorder()),
+                decoration: InputDecoration(labelText: ctx.l10n.instEndorseVerifierLabel, border: const OutlineInputBorder()),
               ),
               Row(children: [
                 Expanded(
                     child: Text(
-                        'Le ${verifiedOn.day.toString().padLeft(2, '0')}/${verifiedOn.month.toString().padLeft(2, '0')}/${verifiedOn.year}',
+                        ctx.l10n.instEndorseOnDate('${verifiedOn.day.toString().padLeft(2, '0')}/${verifiedOn.month.toString().padLeft(2, '0')}/${verifiedOn.year}'),
                         style: WinType.bodyM(s.onStrong))),
-                WinButton('Changer la date', small: true, variant: WinButtonVariant.outline, onTap: () async {
+                WinButton(ctx.l10n.instEndorseChangeDate, small: true, variant: WinButtonVariant.outline, onTap: () async {
                   final d = await showDatePicker(
                       context: ctx, initialDate: verifiedOn, firstDate: DateTime(2000), lastDate: DateTime.now());
                   if (d != null) setSheet(() => verifiedOn = d);
                 }),
               ]),
               const SizedBox(height: 12),
-              WinButton('Confirmer la caution', block: true, onTap: () => Navigator.pop(ctx, true)),
+              WinButton(ctx.l10n.instEndorseConfirm, block: true, onTap: () => Navigator.pop(ctx, true)),
             ]),
           ),
         );
@@ -95,7 +96,7 @@ class _TutorEndorsementsScreenState extends State<TutorEndorsementsScreen> {
     try {
       await TutorVerificationService.instance.endorse(
           tutorUserId: t.tutorUserId, statement: statement.text.trim(), verifierName: verifier.text.trim(), verifiedOn: verifiedOn);
-      _toast('Caution enregistrée.');
+      _toast(L10n.current.instEndorseSaved);
       await _load();
     } catch (e) {
       _toast(e.toString().replaceFirst('Exception: ', ''));
@@ -109,15 +110,15 @@ class _TutorEndorsementsScreenState extends State<TutorEndorsementsScreen> {
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Retirer la caution ?'),
+        title: Text(ctx.l10n.instEndorseRevokeTitle),
         content: Column(mainAxisSize: MainAxisSize.min, children: [
-          const Text("S'il n'est pas vérifié par une autre voie, il ne pourra plus proposer de séances présentielles."),
+          Text(ctx.l10n.instEndorseRevokeText),
           const SizedBox(height: 8),
-          TextField(controller: reason, decoration: const InputDecoration(labelText: 'Motif (transmis au répétiteur)')),
+          TextField(controller: reason, decoration: InputDecoration(labelText: ctx.l10n.instEndorseReasonLabel)),
         ]),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Annuler')),
-          TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Retirer')),
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(ctx.l10n.commonCancel)),
+          TextButton(onPressed: () => Navigator.pop(ctx, true), child: Text(ctx.l10n.instEndorseRevokeAction)),
         ],
       ),
     );
@@ -125,7 +126,7 @@ class _TutorEndorsementsScreenState extends State<TutorEndorsementsScreen> {
     setState(() => _busy = true);
     try {
       await TutorVerificationService.instance.revokeEndorsement(t.activeEndorsement!.id, reason: reason.text.trim());
-      _toast('Caution retirée.');
+      _toast(L10n.current.instEndorseRevoked);
       await _load();
     } catch (e) {
       _toast(e.toString().replaceFirst('Exception: ', ''));
@@ -144,7 +145,7 @@ class _TutorEndorsementsScreenState extends State<TutorEndorsementsScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(icon: Icon(Icons.arrow_back, color: s.onStrong), onPressed: () => Navigator.pop(context)),
-        title: Text('Cautions des répétiteurs', style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.instEndorseScreenTitle, style: WinType.headlineS(s.onStrong)),
       ),
       body: tutors == null
           ? Center(
@@ -154,41 +155,40 @@ class _TutorEndorsementsScreenState extends State<TutorEndorsementsScreen> {
                       child: Column(mainAxisSize: MainAxisSize.min, children: [
                         Text(_error!, textAlign: TextAlign.center, style: WinType.bodyM(s.onMuted)),
                         const SizedBox(height: 12),
-                        WinButton('Réessayer', onTap: _load),
+                        WinButton(context.l10n.commonRetry, onTap: _load),
                       ]))
                   : const CircularProgressIndicator())
           : RefreshIndicator(
               onRefresh: _load,
               child: ListView(padding: const EdgeInsets.fromLTRB(16, 8, 16, 24), children: [
                 Text(
-                    "Si votre établissement a vérifié un répétiteur par ses propres moyens, cautionnez-le : il pourra proposer des séances présentielles. "
-                    'Vous pouvez retirer la caution à tout moment ; retirer le rattachement la retire aussi.',
+                    context.l10n.instEndorseIntro,
                     style: WinType.bodyS(s.onMuted)),
                 const SizedBox(height: 12),
                 if (tutors.isEmpty)
-                  Text('Aucun répétiteur rattaché à votre établissement pour le moment.', style: WinType.bodyM(s.onMuted)),
+                  Text(context.l10n.instEndorseEmpty, style: WinType.bodyM(s.onMuted)),
                 for (final t in tutors) ...[
                   WinCard(
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       Row(children: [
                         WinAvatar(t.tutorName ?? '?', size: 36),
                         const SizedBox(width: 10),
-                        Expanded(child: Text(t.tutorName ?? 'Répétiteur', style: WinType.titleM(s.onStrong))),
-                        if (t.activeEndorsement != null) const WinBadge('Cautionné', color: BadgeColor.success),
+                        Expanded(child: Text(t.tutorName ?? context.l10n.roleTutor, style: WinType.titleM(s.onStrong))),
+                        if (t.activeEndorsement != null) WinBadge(context.l10n.instEndorseBadge, color: BadgeColor.success),
                       ]),
                       const SizedBox(height: 6),
                       Text(
                           t.activeEndorsement != null
-                              ? 'Vérifié par ${t.activeEndorsement!.verifierName}'
+                              ? context.l10n.instEndorseVerifiedBy(t.activeEndorsement!.verifierName)
                               : t.isInPersonVerified
-                                  ? 'Déjà vérifié pour le présentiel par une autre voie'
-                                  : 'Non cautionné',
+                                  ? context.l10n.instEndorseOtherRoute
+                                  : context.l10n.instEndorseNotEndorsed,
                           style: WinType.labelM(s.onMuted)),
                       const SizedBox(height: 10),
                       t.activeEndorsement != null
-                          ? WinButton('Retirer la caution',
+                          ? WinButton(context.l10n.instEndorseRevoke,
                               small: true, variant: WinButtonVariant.outline, onTap: _busy ? null : () => _revoke(t))
-                          : WinButton('Cautionner', small: true, onTap: _busy ? null : () => _endorse(t)),
+                          : WinButton(context.l10n.instEndorseAction, small: true, onTap: _busy ? null : () => _endorse(t)),
                     ]),
                   ),
                   const SizedBox(height: 10),

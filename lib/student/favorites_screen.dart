@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
 import '../services/favorites_service.dart';
 import '../shared/subscription/subscription_notifier.dart';
 import '../theme/win_colors.dart';
@@ -33,7 +34,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         });
     } catch (_) {
       if (mounted)
-        setState(() => _error = 'Impossible de charger les favoris.');
+        setState(() => _error = L10n.current.studentFavLoadError);
     }
   }
 
@@ -59,7 +60,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Mes Favoris', style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.studentFavTitle, style: WinType.headlineS(s.onStrong)),
         actions: [
           IconButton(
             icon: Icon(Icons.refresh_outlined, color: s.onStrong),
@@ -85,7 +86,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         const SizedBox(height: 12),
         Text(_error!, style: WinType.bodyM(s.onMuted)),
         const SizedBox(height: 16),
-        WinButton('Réessayer', onTap: () {
+        WinButton(context.l10n.commonRetry, onTap: () {
           setState(() {
             _favs = null;
             _error = null;
@@ -104,9 +105,9 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           Icon(Icons.favorite_border, size: 64, color: s.onFaint),
           const SizedBox(height: 12),
-          Text('Aucun favori pour l\'instant', style: WinType.bodyM(s.onMuted)),
+          Text(context.l10n.studentFavEmpty, style: WinType.bodyM(s.onMuted)),
           const SizedBox(height: 20),
-          WinButton('Explorer le catalogue',
+          WinButton(context.l10n.studentFavExplore,
               icon: Icons.explore_outlined,
               onTap: () => Navigator.pop(context)),
         ]),
@@ -117,7 +118,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
         child: Row(children: [
-          Text('${favs.length} contenu(s) sauvegardé(s)',
+          Text(context.l10n.studentFavCount(favs.length),
               style: WinType.labelM(s.onMuted)),
         ]),
       ),
@@ -125,7 +126,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
           child: WinAlert(
-            'Votre plan permet ${SubscriptionScope.of(context).limit(EntitlementKeys.favoritesMax)} favoris. Passez à un plan supérieur pour en sauvegarder plus.',
+            context.l10n.studentFavLimit(SubscriptionScope.of(context).limit(EntitlementKeys.favoritesMax)),
             type: BadgeColor.warn,
           ),
         ),
@@ -200,7 +201,7 @@ class _FavoriteCard extends StatelessWidget {
                   style: WinType.titleM(s.onStrong)),
               const Spacer(),
               Text(
-                'Ajouté le ${fav.addedAt.day.toString().padLeft(2, '0')}/${fav.addedAt.month.toString().padLeft(2, '0')}/${fav.addedAt.year}',
+                context.l10n.studentFavAddedOn(WinFormat.dateNumeric(fav.addedAt)),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: WinType.labelS(s.onFaint),

@@ -9,6 +9,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import '../l10n/l10n.dart';
 
 class BuyForChildScreen extends StatefulWidget {
   final List<ApiChild> children;
@@ -92,14 +93,14 @@ class _BuyForChildScreenState extends State<BuyForChildScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Acheter pour…', style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.parentBuyTitle, style: WinType.headlineS(s.onStrong)),
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
         children: [
           _WalletBanner(loading: _walletLoading, wallet: _wallet),
           const SizedBox(height: 20),
-          Text('Pour quel enfant ?',
+          Text(context.l10n.parentBuyWhichChild,
               style: WinType.archivo(size: 18, color: s.onStrong)),
           const SizedBox(height: 12),
           SizedBox(
@@ -113,7 +114,7 @@ class _BuyForChildScreenState extends State<BuyForChildScreen> {
                 final sel = i == _selectedChildIndex;
                 final levelLabel = kid.level != null && kid.level!.isNotEmpty
                     ? kid.level!
-                    : 'Élève';
+                    : context.l10n.roleStudent;
                 return GestureDetector(
                   onTap: () => _selectChild(i),
                   child: Container(
@@ -139,7 +140,7 @@ class _BuyForChildScreenState extends State<BuyForChildScreen> {
           ),
           const SizedBox(height: 24),
           Text(
-            'Contenu recommandé pour ${_selected.firstName}${_selected.level != null ? '  ${_selected.level}' : ''}',
+            context.l10n.parentBuyRecommended(_selected.firstName, _selected.level != null ? '  ${_selected.level}' : ''),
             style: WinType.archivo(size: 18, color: s.onStrong),
           ),
           const SizedBox(height: 12),
@@ -149,7 +150,7 @@ class _BuyForChildScreenState extends State<BuyForChildScreen> {
               child: Center(child: CircularProgressIndicator()),
             )
           else if (_catalog.isEmpty)
-            Text('Aucun contenu disponible pour le moment.',
+            Text(context.l10n.parentBuyNoContent,
                 style: WinType.bodyM(s.onMuted))
           else
             GridView.count(
@@ -201,7 +202,7 @@ class _WalletBanner extends StatelessWidget {
     final w = wallet;
     if (w == null) {
       return WinAlert(
-        'Aucun abonnement payant actif : abonnez-vous pour obtenir des crédits à dépenser pour vos enfants.',
+        context.l10n.parentBuyNoSubscription,
         type: BadgeColor.neutral,
         icon: Icons.info_outline,
       );
@@ -216,7 +217,7 @@ class _WalletBanner extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Solde disponible',
+              Text(context.l10n.parentBuyBalance,
                   style: WinType.labelM(s.onMuted)),
               Text('${fmtXaf(w.creditsLeft.round())} ${w.currency}',
                   style: WinType.titleM(s.onStrong)
@@ -277,12 +278,12 @@ class _CatalogCard extends StatelessWidget {
                 ]),
                 const SizedBox(height: 6),
                 Text(
-                  content.free ? 'Gratuit' : '${fmtXaf(content.price)} XAF',
+                  content.free ? context.l10n.commonFree : '${fmtXaf(content.price)} XAF',
                   style: WinType.archivo(size: 15, color: s.onStrong),
                 ),
                 const SizedBox(height: 8),
                 WinButton(
-                  'Acheter pour $childName',
+                  context.l10n.parentBuyFor(childName),
                   small: true,
                   block: true,
                   onTap: onBuy,

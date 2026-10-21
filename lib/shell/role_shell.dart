@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
 import '../theme/win_motion.dart';
 import '../app_state.dart';
 import '../data/models.dart';
@@ -14,6 +16,7 @@ import '../student/profile_hub_tab.dart';
 import '../parent/parent_tabs.dart';
 import '../teacher/teacher_tabs.dart';
 import '../institution/institution_tabs.dart';
+import '../widgets/language_selector.dart';
 import '../widgets/winai_floating_widget.dart';
 
 class NavItem {
@@ -66,6 +69,8 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
   Future<void> _loadProfile() async {
     try {
       final p = await UserService.instance.getProfile();
+      // Lot 10.11 : session reprise au démarrage, la langue suit le compte.
+      if (mounted) unawaited(WinAppScope.of(context).applyAccountLocale(p.locale));
       final parts = p.fullName.trim().split(RegExp(r'\s+'));
       final initials = parts
           .where((w) => w.isNotEmpty)
@@ -94,7 +99,7 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
     final role = WinAppScope.of(context).role;
-    final tabs = _tabsFor(role);
+    final tabs = _tabsFor(role, context.l10n);
     final pages = _pagesFor(role);
     final safeIndex = _index.clamp(0, tabs.length - 1);
     final tab = tabs[safeIndex];
@@ -169,9 +174,13 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
   }
 
   Widget _avatarFor(WinRole role) {
+    // Lot 10.11 : l'avatar ouvre le réglage de la langue (le professeur n'a
+    // pas d'écran de réglages ; les autres l'ont aussi dans leur profil).
     return Padding(
       padding: const EdgeInsets.only(right: 4),
-      child: switch (role) {
+      child: GestureDetector(
+        onTap: () => showLanguageSheet(context),
+        child: switch (role) {
         WinRole.student => Container(
             width: 34,
             height: 34,
@@ -220,37 +229,39 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
             child: const Icon(Icons.apartment_outlined,
                 size: 18, color: WinColors.gold),
           ),
-      },
+        },
+      ),
     );
   }
 
-  List<NavItem> _tabsFor(WinRole role) => switch (role) {
-        WinRole.student => const [
-            NavItem('Accueil', Icons.home_outlined),
-            NavItem('Catalogue', Icons.layers_outlined),
-            NavItem('Mon Espace', Icons.grid_view_outlined),
-            NavItem('Moi', Icons.person_outline),
+  List<NavItem> _tabsFor(WinRole role, AppLocalizations l10n) =>
+      switch (role) {
+        WinRole.student => [
+            NavItem(l10n.shellTabHome, Icons.home_outlined),
+            NavItem(l10n.shellTabCatalog, Icons.layers_outlined),
+            NavItem(l10n.shellTabMySpace, Icons.grid_view_outlined),
+            NavItem(l10n.shellTabMe, Icons.person_outline),
           ],
-        WinRole.parent => const [
-            NavItem('Accueil', Icons.home_outlined),
-            NavItem('Enfants', Icons.people_outline),
-            NavItem('Ressources', Icons.layers_outlined),
-            NavItem('Messages', Icons.chat_bubble_outlined),
-            NavItem('Profil', Icons.person_outline),
+        WinRole.parent => [
+            NavItem(l10n.shellTabHome, Icons.home_outlined),
+            NavItem(l10n.shellTabChildren, Icons.people_outline),
+            NavItem(l10n.shellTabResources, Icons.layers_outlined),
+            NavItem(l10n.shellTabMessages, Icons.chat_bubble_outlined),
+            NavItem(l10n.shellTabProfile, Icons.person_outline),
           ],
-        WinRole.teacher => const [
-            NavItem('Accueil', Icons.home_outlined),
-            NavItem('Contenus', Icons.layers_outlined),
-            NavItem('Étudiants', Icons.people_outline),
-            NavItem('Sessions', Icons.event_outlined),
-            NavItem('Revenus', Icons.account_balance_wallet_outlined),
+        WinRole.teacher => [
+            NavItem(l10n.shellTabHome, Icons.home_outlined),
+            NavItem(l10n.shellTabContent, Icons.layers_outlined),
+            NavItem(l10n.shellTabStudents, Icons.people_outline),
+            NavItem(l10n.shellTabSessions, Icons.event_outlined),
+            NavItem(l10n.shellTabEarnings, Icons.account_balance_wallet_outlined),
           ],
-        WinRole.institution => const [
-            NavItem('Accueil', Icons.home_outlined),
-            NavItem('Groupes', Icons.people_outline),
-            NavItem('Catalogue', Icons.layers_outlined),
-            NavItem('Analytics', Icons.bar_chart_outlined),
-            NavItem('Compte', Icons.apartment_outlined),
+        WinRole.institution => [
+            NavItem(l10n.shellTabHome, Icons.home_outlined),
+            NavItem(l10n.shellTabGroups, Icons.people_outline),
+            NavItem(l10n.shellTabCatalog, Icons.layers_outlined),
+            NavItem(l10n.shellTabAnalytics, Icons.bar_chart_outlined),
+            NavItem(l10n.shellTabAccount, Icons.apartment_outlined),
           ],
       };
 

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import '../l10n/l10n.dart';
 
 /// Levée par [requireOnline] pour les actions qui ne doivent jamais être
 /// mises en file hors ligne (paiements, crédits, liaison/déliaison
@@ -7,8 +8,8 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 /// doivent échouer explicitement, jamais silencieusement ni en attente.
 class OfflineActionException implements Exception {
   final String message;
-  const OfflineActionException(
-      [this.message = 'Cette action nécessite une connexion internet.']);
+  OfflineActionException([String? message])
+      : message = message ?? L10n.current.svcOfflineAction;
   @override
   String toString() => message;
 }
@@ -16,7 +17,7 @@ class OfflineActionException implements Exception {
 /// À appeler en tout début des méthodes de service listées ci-dessus.
 void requireOnline() {
   if (!ConnectivityService.instance.isOnline) {
-    throw const OfflineActionException();
+    throw OfflineActionException();
   }
 }
 

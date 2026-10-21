@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../l10n/l10n.dart';
 import '../../services/tutor_booking_service.dart';
 import '../../theme/win_theme.dart';
 import '../../theme/win_typography.dart';
@@ -90,25 +91,25 @@ class _TutorBookingForWhomState extends State<TutorBookingForWhom> {
     final v = widget.value;
     final count = v.count;
     final warning = count > 1 && widget.maxGroupSize < 2
-        ? 'Ce tuteur ne propose pas de séances de groupe : choisis un seul élève.'
+        ? context.l10n.tutoringForWhomNoGroup
         : (count > widget.maxGroupSize && widget.maxGroupSize >= 2)
-            ? 'Ce tuteur accepte au plus ${widget.maxGroupSize} élèves par séance.'
+            ? context.l10n.tutoringForWhomMaxGroup(widget.maxGroupSize)
             : null;
 
     final children = <Widget>[
-      Text('Pour qui ?', style: WinType.labelM(s.onStrong)),
+      Text(context.l10n.tutoringForWhomTitle, style: WinType.labelM(s.onStrong)),
       const SizedBox(height: 8),
     ];
 
     if (v.payerType == 'parent') {
       if (ctx.children.isEmpty) {
-        children.add(Text('Aucun enfant lié à ton compte (le lien doit être accepté par l\'enfant).',
+        children.add(Text(context.l10n.tutoringForWhomNoChild,
             style: WinType.bodyS(s.onMuted)));
       } else {
         children.addAll([
           Wrap(spacing: 8, runSpacing: 8, children: ctx.children.map((c) => _chip(c.userId, c.label)).toList()),
           const SizedBox(height: 4),
-          Text('Tu paies avec ton portefeuille parent ou Mobile Money ; tes enfants voient la séance dans leur espace.',
+          Text(context.l10n.tutoringForWhomParentHelp,
               style: WinType.labelS(s.onFaint)),
         ]);
       }
@@ -122,30 +123,29 @@ class _TutorBookingForWhomState extends State<TutorBookingForWhom> {
           .toList();
       if (classes.isNotEmpty) {
         children.add(Wrap(spacing: 8, runSpacing: 8, children: [
-          WinChip('Toutes les classes', active: _className.isEmpty, onTap: () => setState(() => _className = '')),
+          WinChip(context.l10n.tutoringAllClasses, active: _className.isEmpty, onTap: () => setState(() => _className = '')),
           ...classes.map((c) => WinChip(c, active: _className == c, onTap: () => setState(() => _className = c))),
         ]));
         children.add(const SizedBox(height: 8));
       }
       children.addAll([
         TextField(
-          decoration: const InputDecoration(hintText: 'Rechercher un élève', isDense: true, prefixIcon: Icon(Icons.search)),
+          decoration: InputDecoration(hintText: context.l10n.tutoringSearchStudent, isDense: true, prefixIcon: const Icon(Icons.search)),
           onChanged: (t) => setState(() => _search = t.trim()),
         ),
         const SizedBox(height: 8),
         if (visible.isEmpty)
-          Text('Aucun élève actif rattaché à ${ctx.institutionName ?? 'ton institution'}.', style: WinType.bodyS(s.onMuted))
+          Text(context.l10n.tutoringForWhomNoStudent(ctx.institutionName ?? context.l10n.tutoringYourInstitution), style: WinType.bodyS(s.onMuted))
         else
           Wrap(spacing: 8, runSpacing: 8, children: visible.map((e) => _chip(e.userId, e.label)).toList()),
         const SizedBox(height: 4),
-        Text('${v.participantIds.length} élève(s) choisi(s). Payé par le portefeuille de l\'institution ou Mobile Money.',
+        Text(context.l10n.tutoringForWhomInstitutionHelp(v.participantIds.length),
             style: WinType.labelS(s.onFaint)),
         // Suivi 17.14 : les élèves au rattachement non confirmé ne sont pas proposés.
         if (ctx.institutionPendingConfirmationCount > 0) ...[
           const SizedBox(height: 4),
           Text(
-              '${ctx.institutionPendingConfirmationCount} élève(s) rattaché(s) n\'apparaissent pas : ils doivent d\'abord '
-              'confirmer leur rattachement à l\'institution depuis leur compte (Mon réseau).',
+              context.l10n.tutoringForWhomPendingConfirmation(ctx.institutionPendingConfirmationCount),
               style: WinType.labelS(s.onFaint)),
         ],
       ]);
@@ -153,10 +153,10 @@ class _TutorBookingForWhomState extends State<TutorBookingForWhom> {
       final group = ctx.studyGroups.where((g) => g.id == v.studyGroupId).firstOrNull;
       children.addAll([
         Wrap(spacing: 8, runSpacing: 8, children: [
-          WinChip('Pour moi',
+          WinChip(context.l10n.tutoringForMe,
               active: v.payerType == 'student',
               onTap: () => widget.onChanged(const ForWhomValue())),
-          ...ctx.studyGroups.map((g) => WinChip('Groupe : ${g.name}',
+          ...ctx.studyGroups.map((g) => WinChip(context.l10n.tutoringGroupName(g.name),
               active: v.studyGroupId == g.id,
               onTap: () => widget.onChanged(ForWhomValue(
                     payerType: 'study_group',
@@ -170,10 +170,10 @@ class _TutorBookingForWhomState extends State<TutorBookingForWhom> {
               spacing: 8,
               runSpacing: 8,
               children: group.members
-                  .map((m) => _chip(m.userId, m.userId == widget.currentUserId ? 'Moi' : m.label))
+                  .map((m) => _chip(m.userId, m.userId == widget.currentUserId ? context.l10n.tutoringMe : m.label))
                   .toList()),
           const SizedBox(height: 4),
-          Text('C\'est toi qui paies la séance du groupe (ton solde ou Mobile Money) et qui reçois un éventuel remboursement.',
+          Text(context.l10n.tutoringForWhomGroupHelp,
               style: WinType.labelS(s.onFaint)),
         ],
       ]);

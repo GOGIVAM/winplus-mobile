@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
 import '../services/linking_service.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
@@ -70,7 +71,7 @@ class _MyLinksScreenState extends State<MyLinksScreen> {
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Action impossible, réessaie.')));
+            SnackBar(content: Text(L10n.current.studentLinksActionFailed)));
       }
     } finally {
       if (mounted) setState(() => _actioning.remove(-id));
@@ -105,13 +106,13 @@ class _MyLinksScreenState extends State<MyLinksScreen> {
         leading: IconButton(
             icon: Icon(Icons.arrow_back, color: s.onStrong),
             onPressed: () => Navigator.pop(context)),
-        title: Text('Mon réseau', style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.studentLinksTitle, style: WinType.headlineS(s.onStrong)),
       ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : _data == null
               ? Center(
-                  child: Text('Erreur de chargement',
+                  child: Text(context.l10n.studentLinksLoadError,
                       style: WinType.bodyM(s.onMuted)))
               : SingleChildScrollView(
                   padding: const EdgeInsets.all(16),
@@ -120,7 +121,7 @@ class _MyLinksScreenState extends State<MyLinksScreen> {
                       children: [
                         if (_pending.isNotEmpty) ...[
                           Row(children: [
-                            Text('Invitations reçues',
+                            Text(context.l10n.studentLinksInvitations,
                                 style: WinType.titleM(s.onStrong)),
                             const SizedBox(width: 8),
                             Container(
@@ -171,14 +172,14 @@ class _MyLinksScreenState extends State<MyLinksScreen> {
                                               children: [
                                             Text(
                                                 name.isEmpty
-                                                    ? 'Utilisateur'
+                                                    ? context.l10n.msgRoleUser
                                                     : name,
                                                 style: WinType.bodyM(s.onStrong)
                                                     .copyWith(
                                                         fontWeight:
                                                             FontWeight.w600)),
                                             Text(
-                                                'Professeur · invitation en attente',
+                                                context.l10n.studentLinksTeacherPending,
                                                 style:
                                                     WinType.labelM(s.onMuted)),
                                           ])),
@@ -187,7 +188,7 @@ class _MyLinksScreenState extends State<MyLinksScreen> {
                                     Row(children: [
                                       Expanded(
                                           child: WinButton(
-                                        'Accepter',
+                                        context.l10n.commonAccept,
                                         small: true,
                                         loading: actioning,
                                         onTap: actioning
@@ -197,7 +198,7 @@ class _MyLinksScreenState extends State<MyLinksScreen> {
                                       const SizedBox(width: 8),
                                       Expanded(
                                           child: WinButton(
-                                        'Refuser',
+                                        context.l10n.commonDecline,
                                         small: true,
                                         variant: WinButtonVariant.outline,
                                         onTap: actioning
@@ -211,10 +212,10 @@ class _MyLinksScreenState extends State<MyLinksScreen> {
                           const SizedBox(height: 20),
                         ],
                         if (_attachments.isNotEmpty) ...[
-                          Text('Établissements', style: WinType.titleM(s.onStrong)),
+                          Text(context.l10n.studentLinksSchools, style: WinType.titleM(s.onStrong)),
                           const SizedBox(height: 4),
                           Text(
-                              'En acceptant, l\'établissement peut réserver, payer et attribuer des cours particuliers pour toi. Tu peux changer d\'avis à tout moment.',
+                              context.l10n.studentLinksSchoolsHint,
                               style: WinType.labelS(s.onFaint)),
                           const SizedBox(height: 8),
                           ..._attachments.map((a) {
@@ -231,16 +232,16 @@ class _MyLinksScreenState extends State<MyLinksScreen> {
                                   const SizedBox(width: 10),
                                   Expanded(
                                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                    Text(a['institutionName']?.toString() ?? 'Établissement',
+                                    Text(a['institutionName']?.toString() ?? context.l10n.roleInstitution,
                                         style: WinType.bodyM(s.onStrong).copyWith(fontWeight: FontWeight.w600)),
                                     Text(
                                         [
-                                          if (group != null && group.isNotEmpty) 'Classe $group',
+                                          if (group != null && group.isNotEmpty) context.l10n.studentLinksClass(group),
                                           status == 'pending'
-                                              ? 'rattachement en attente de ta réponse'
+                                              ? context.l10n.studentLinksAttachPending
                                               : status == 'accepted'
-                                                  ? 'rattachement confirmé'
-                                                  : 'rattachement refusé pour les cours particuliers',
+                                                  ? context.l10n.studentLinksAttachAccepted
+                                                  : context.l10n.studentLinksAttachRefused,
                                         ].join(' · '),
                                         style: WinType.labelM(s.onMuted)),
                                   ])),
@@ -249,17 +250,17 @@ class _MyLinksScreenState extends State<MyLinksScreen> {
                                 if (status == 'pending')
                                   Row(children: [
                                     Expanded(
-                                        child: WinButton('Accepter',
+                                        child: WinButton(context.l10n.commonAccept,
                                             small: true, loading: busy, onTap: busy ? null : () => _respondAttachment(id, true))),
                                     const SizedBox(width: 8),
                                     Expanded(
-                                        child: WinButton('Refuser',
+                                        child: WinButton(context.l10n.commonDecline,
                                             small: true,
                                             variant: WinButtonVariant.outline,
                                             onTap: busy ? null : () => _respondAttachment(id, false))),
                                   ])
                                 else
-                                  WinButton(status == 'accepted' ? 'Retirer mon accord' : 'Accepter',
+                                  WinButton(status == 'accepted' ? context.l10n.studentLinksWithdraw : context.l10n.commonAccept,
                                       small: true,
                                       variant: WinButtonVariant.outline,
                                       loading: busy,
@@ -270,17 +271,17 @@ class _MyLinksScreenState extends State<MyLinksScreen> {
                           const SizedBox(height: 20),
                         ],
                         _Section(
-                            title: 'Parents',
+                            title: context.l10n.studentLinksParents,
                             items: (_data!['parents'] as List?) ?? [],
                             role: 'parent',
                             s: s),
                         _Section(
-                            title: 'Professeurs',
+                            title: context.l10n.studentLinksTeachers,
                             items: (_data!['teachers'] as List?) ?? [],
                             role: 'teacher',
                             s: s),
                         if (_data!['institution'] != null) ...[
-                          Text('Établissement',
+                          Text(context.l10n.roleInstitution,
                               style: WinType.titleM(s.onStrong)),
                           const SizedBox(height: 8),
                           _PersonCard(
@@ -292,7 +293,7 @@ class _MyLinksScreenState extends State<MyLinksScreen> {
                         ],
                         if ((_data!['groups'] as List?)?.isNotEmpty ==
                             true) ...[
-                          Text('Groupes d\'étude',
+                          Text(context.l10n.studentLinksStudyGroups,
                               style: WinType.titleM(s.onStrong)),
                           const SizedBox(height: 8),
                           ...(_data!['groups'] as List).map((g) => Padding(
@@ -382,15 +383,19 @@ class _PersonCard extends StatelessWidget {
         Expanded(
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(name.isEmpty ? 'Utilisateur' : name,
+          Text(name.isEmpty ? context.l10n.msgRoleUser : name,
               style: WinType.bodyM(s.onStrong)
                   .copyWith(fontWeight: FontWeight.w600)),
           Text(
             role == 'teacher'
                 ? (person['source'] == 'class'
-                    ? 'Professeur · ${person['className'] ?? ''}'
-                    : 'Professeur')
-                : role,
+                    ? context.l10n.studentLinksTeacherClass(person['className'] ?? '')
+                    : context.l10n.roleTeacher)
+                : ({
+                      'parent': context.l10n.studentLinksRoleParent,
+                      'institution': context.l10n.studentLinksRoleInstitution,
+                    }[role] ??
+                    role),
             style: WinType.labelM(s.onMuted),
           ),
         ])),

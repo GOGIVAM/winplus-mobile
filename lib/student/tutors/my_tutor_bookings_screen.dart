@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../l10n/l10n.dart';
 import '../../services/tutor_booking_service.dart';
 import '../../services/tutor_review_service.dart';
 import '../../theme/win_colors.dart';
@@ -14,25 +15,25 @@ import '../../services/tutor_engagement_service.dart';
 import '../../shared/tutor_engagement_screen.dart';
 import '../../shared/tutor_session_material_screen.dart';
 
-const _modeLabels = {
-  'online': 'En ligne',
-  'student_home': 'À domicile',
-  'tutor_home': 'Chez le tuteur',
-  'neutral_place': 'Lieu neutre',
-};
+String? _modeLabel(String mode) => switch (mode) {
+      'online' => L10n.current.commonOnline,
+      'student_home' => L10n.current.tutoringModeStudentHome,
+      'tutor_home' => L10n.current.tutoringModeTutorHome,
+      'neutral_place' => L10n.current.tutoringModeNeutralPlace,
+      _ => null,
+    };
 
-String _fmtDate(DateTime d) =>
-    '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year}';
+String _fmtDate(DateTime d) => WinFormat.dateNumeric(d);
 
 (BadgeColor, String) _statusInfo(String status) => switch (status) {
-      'pending_payment' => (BadgeColor.neutral, 'Paiement en cours'),
-      'pending_tutor_approval' => (BadgeColor.warn, 'En attente du tuteur'),
-      'confirmed' => (BadgeColor.success, 'Confirmée'),
-      'completed' => (BadgeColor.blue, 'Effectuée'),
-      'disputed' => (BadgeColor.error, 'Contestée'),
-      'rejected' => (BadgeColor.error, 'Refusée'),
-      'expired' => (BadgeColor.error, 'Expirée'),
-      'cancelled' => (BadgeColor.neutral, 'Annulée'),
+      'pending_payment' => (BadgeColor.neutral, L10n.current.tutoringStatusPendingPayment),
+      'pending_tutor_approval' => (BadgeColor.warn, L10n.current.tutoringStatusPendingTutor),
+      'confirmed' => (BadgeColor.success, L10n.current.tutoringStatusConfirmed),
+      'completed' => (BadgeColor.blue, L10n.current.tutoringStatusCompleted),
+      'disputed' => (BadgeColor.error, L10n.current.tutoringStatusDisputed),
+      'rejected' => (BadgeColor.error, L10n.current.tutoringStatusRejected),
+      'expired' => (BadgeColor.error, L10n.current.tutoringStatusExpired),
+      'cancelled' => (BadgeColor.neutral, L10n.current.tutoringStatusCancelled),
       _ => (BadgeColor.neutral, status),
     };
 
@@ -88,13 +89,13 @@ class _MyTutorBookingsScreenState extends State<MyTutorBookingsScreen> {
       await TutorBookingService.instance.dispute(b.id, reason.trim());
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Votre signalement a été envoyé.')));
+            SnackBar(content: Text(L10n.current.tutoringBookingsDisputeSent)));
       }
       await _load();
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Impossible d\'envoyer le signalement.')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(L10n.current.tutoringBookingsDisputeError)));
       }
     }
   }
@@ -126,17 +127,17 @@ class _MyTutorBookingsScreenState extends State<MyTutorBookingsScreen> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Signaler un problème',
+                  Text(ctx.l10n.tutoringReportProblem,
                       style: WinType.archivo(size: 18, color: s.onStrong)),
                   const SizedBox(height: 6),
-                  Text('Décrivez le problème rencontré pendant cette séance.',
+                  Text(ctx.l10n.tutoringReportProblemHint,
                       style: WinType.bodyS(s.onMuted)),
                   const SizedBox(height: 16),
                   WinTextField(
-                      hint: 'Ex : le tuteur ne s\'est pas présenté…',
+                      hint: ctx.l10n.tutoringReportProblemPlaceholder,
                       controller: ctrl),
                   const SizedBox(height: 20),
-                  WinButton('Envoyer',
+                  WinButton(ctx.l10n.commonSend,
                       block: true,
                       variant: WinButtonVariant.danger,
                       onTap: () => Navigator.pop(ctx, ctrl.text)),
@@ -160,10 +161,10 @@ class _MyTutorBookingsScreenState extends State<MyTutorBookingsScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Mes réservations', style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.tutoringBookingsTitle, style: WinType.headlineS(s.onStrong)),
         actions: [
           IconButton(
-              tooltip: 'Politique de tutorat',
+              tooltip: context.l10n.studentHubTutorPolicy,
               icon: Icon(Icons.policy_outlined, color: s.onMuted),
               onPressed: () => openTutorPolicy(context)),
           IconButton(
@@ -178,16 +179,16 @@ class _MyTutorBookingsScreenState extends State<MyTutorBookingsScreen> {
                   child: Column(mainAxisSize: MainAxisSize.min, children: [
                   Icon(Icons.wifi_off_outlined, size: 48, color: s.onFaint),
                   const SizedBox(height: 12),
-                  Text('Impossible de charger vos réservations.',
+                  Text(context.l10n.tutoringBookingsLoadError,
                       style: WinType.bodyM(s.onMuted)),
                   const SizedBox(height: 12),
-                  WinButton('Réessayer', onTap: _load),
+                  WinButton(context.l10n.commonRetry, onTap: _load),
                 ]))
               : bookings!.isEmpty && _engagements.isEmpty
                   ? Center(
                       child: Padding(
                       padding: const EdgeInsets.all(24),
-                      child: Text('Aucune réservation pour le moment.',
+                      child: Text(context.l10n.tutoringBookingsEmpty,
                           style: WinType.bodyM(s.onMuted)),
                     ))
                   : RefreshIndicator(
@@ -196,7 +197,7 @@ class _MyTutorBookingsScreenState extends State<MyTutorBookingsScreen> {
                         padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                         children: [
                           if (_assigned.isNotEmpty) ...[
-                            Text('Tes répétiteurs attribués', style: WinType.labelM(s.onStrong)),
+                            Text(context.l10n.tutoringAssignedTitle, style: WinType.labelM(s.onStrong)),
                             const SizedBox(height: 8),
                             ..._assigned.map((a) => Padding(
                                   padding: const EdgeInsets.only(bottom: 8),
@@ -206,12 +207,12 @@ class _MyTutorBookingsScreenState extends State<MyTutorBookingsScreen> {
                                       const SizedBox(width: 10),
                                       Expanded(
                                         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                          Text(a.tutorName ?? 'Répétiteur', style: WinType.titleM(s.onStrong)),
-                                          Text('${a.subject != null ? '${a.subject} · ' : ''}attribué par ${a.assignerLabel}',
+                                          Text(a.tutorName ?? context.l10n.roleTutor, style: WinType.titleM(s.onStrong)),
+                                          Text('${a.subject != null ? '${a.subject} · ' : ''}${context.l10n.tutoringAssignedBy(a.assignerLabel)}',
                                               style: WinType.labelS(s.onMuted)),
                                         ]),
                                       ),
-                                      WinButton('Réserver',
+                                      WinButton(context.l10n.tutoringBook,
                                           small: true,
                                           onTap: () => Navigator.push(
                                               context,
@@ -219,7 +220,7 @@ class _MyTutorBookingsScreenState extends State<MyTutorBookingsScreen> {
                                                   builder: (_) => TutorPublicProfileScreen(
                                                       userId: a.tutorUserId, assignment: a)))),
                                       const SizedBox(width: 6),
-                                      WinButton('Au mois',
+                                      WinButton(context.l10n.tutoringMonthly,
                                           small: true,
                                           variant: WinButtonVariant.outline,
                                           onTap: () => Navigator.push(
@@ -233,7 +234,7 @@ class _MyTutorBookingsScreenState extends State<MyTutorBookingsScreen> {
                             const SizedBox(height: 8),
                           ],
                           if (_engagements.isNotEmpty) ...[
-                            Text('Engagements mensuels', style: WinType.labelM(s.onStrong)),
+                            Text(context.l10n.tutoringEngagementsTitle, style: WinType.labelM(s.onStrong)),
                             const SizedBox(height: 8),
                             for (final e in _engagements) EngagementListTile(engagement: e, onChanged: _load),
                             const SizedBox(height: 8),
@@ -291,7 +292,7 @@ class _BookingCardState extends State<_BookingCard> {
 
   Future<void> _submitReview() async {
     if (_rating == 0) {
-      setState(() => _error = 'Choisissez une note avant d\'envoyer.');
+      setState(() => _error = context.l10n.tutoringReviewChooseRating);
       return;
     }
     setState(() {
@@ -306,7 +307,7 @@ class _BookingCardState extends State<_BookingCard> {
       if (!mounted) return;
       widget.onReviewed();
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Merci pour votre avis !')));
+          SnackBar(content: Text(context.l10n.tutoringReviewThanks)));
     } catch (e) {
       if (mounted)
         setState(() => _error = e.toString().replaceFirst('Exception: ', ''));
@@ -329,7 +330,7 @@ class _BookingCardState extends State<_BookingCard> {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                Text(b.tutorName ?? 'Tuteur',
+                Text(b.tutorName ?? context.l10n.tutoringTutor,
                     style: WinType.titleM(s.onStrong)),
                 Text(
                     '${_fmtDate(b.sessionDate)} · ${b.startTime} – ${b.endTime}',
@@ -341,7 +342,7 @@ class _BookingCardState extends State<_BookingCard> {
         Row(children: [
           Icon(Icons.place_outlined, size: 14, color: s.onFaint),
           const SizedBox(width: 4),
-          Text(_modeLabels[b.mode] ?? b.mode, style: WinType.labelM(s.onMuted)),
+          Text(_modeLabel(b.mode) ?? b.mode, style: WinType.labelM(s.onMuted)),
           const SizedBox(width: 12),
           Icon(Icons.payments_outlined, size: 14, color: s.onFaint),
           const SizedBox(width: 4),
@@ -376,18 +377,18 @@ class _BookingCardState extends State<_BookingCard> {
         if (b.isCompleted && b.canDispute && b.disputeDeadline != null) ...[
           const SizedBox(height: 10),
           Text(
-              'Un problème ? Tu peux contester jusqu\'au ${_fmtDate(b.disputeDeadline!.toLocal())} à ${b.disputeDeadline!.toLocal().hour.toString().padLeft(2, '0')}:${b.disputeDeadline!.toLocal().minute.toString().padLeft(2, '0')} (${b.disputeWindowHours} h après la séance). Ensuite, le paiement est versé au tuteur.',
+              context.l10n.tutoringDisputeUntil(_fmtDate(b.disputeDeadline!.toLocal()), WinFormat.time(b.disputeDeadline!.toLocal()), b.disputeWindowHours),
               style: WinType.labelS(s.onMuted)),
         ],
         if (b.isDisputed && (b.disputeReason ?? '').isNotEmpty) ...[
           const SizedBox(height: 10),
-          WinAlert('Signalement envoyé : ${b.disputeReason}',
+          WinAlert(context.l10n.tutoringDisputeSentReason('${b.disputeReason}'),
               type: BadgeColor.error),
         ],
         // Lot 9.6 : support de séance WinAI partagé par le tuteur.
         if (b.sessionMaterialStatus == 'shared') ...[
           const SizedBox(height: 10),
-          WinButton(b.viewerIsParticipant == true ? 'Support, quiz et exercices' : 'Support de séance',
+          WinButton(b.viewerIsParticipant == true ? context.l10n.tutoringMaterialFull : context.l10n.tutoringMaterial,
               block: true,
               small: true,
               icon: Icons.menu_book_outlined,
@@ -399,14 +400,14 @@ class _BookingCardState extends State<_BookingCard> {
         // fois par séance et par personne (décidé par le serveur : canReview).
         if (b.myReviewRating != null) ...[
           const SizedBox(height: 10),
-          Text('Ta note : ${b.myReviewRating}/5', style: WinType.labelM(s.onMuted)),
+          Text(context.l10n.tutoringMyRating('${b.myReviewRating}'), style: WinType.labelM(s.onMuted)),
         ],
         if (b.hasReported || widget.reported) ...[
           const SizedBox(height: 8),
-          const WinAlert('Signalement du tuteur envoyé à l\'équipe WinPlus.', type: BadgeColor.neutral),
+          WinAlert(context.l10n.tutoringReportSentTeam, type: BadgeColor.neutral),
         ] else if (b.canReport) ...[
           const SizedBox(height: 10),
-          WinButton('Signaler le tuteur',
+          WinButton(context.l10n.tutoringReportTutor,
               block: true,
               small: true,
               icon: Icons.flag_outlined,
@@ -417,7 +418,7 @@ class _BookingCardState extends State<_BookingCard> {
           const SizedBox(height: 14),
           const WinDivider(),
           const SizedBox(height: 12),
-          Text('Laisser un avis', style: WinType.labelM(s.onStrong)),
+          Text(context.l10n.tutoringLeaveReview, style: WinType.labelM(s.onStrong)),
           const SizedBox(height: 8),
           Row(
               children: List.generate(5, (i) {
@@ -433,21 +434,21 @@ class _BookingCardState extends State<_BookingCard> {
           })),
           const SizedBox(height: 8),
           WinTextField(
-              hint: 'Commentaire (optionnel, 300 caractères max)',
+              hint: context.l10n.tutoringReviewCommentHint,
               controller: _commentCtrl),
           if (_error != null) ...[
             const SizedBox(height: 8),
             WinAlert(_error!, type: BadgeColor.error),
           ],
           const SizedBox(height: 10),
-          WinButton('Envoyer mon avis',
+          WinButton(context.l10n.tutoringReviewSubmit,
               block: true,
               small: true,
               loading: _submitting,
               onTap: _submitting ? null : _submitReview),
           if (b.canDispute) ...[
             const SizedBox(height: 8),
-            WinButton('Contester la séance',
+            WinButton(context.l10n.tutoringDisputeSession,
                 block: true,
                 small: true,
                 variant: WinButtonVariant.outline,
@@ -455,10 +456,10 @@ class _BookingCardState extends State<_BookingCard> {
           ],
         ] else if (b.isCompleted && widget.reviewSent) ...[
           const SizedBox(height: 10),
-          const WinAlert('Merci pour votre avis !', type: BadgeColor.success),
+          WinAlert(context.l10n.tutoringReviewThanks, type: BadgeColor.success),
         ] else if (b.canDispute) ...[
           const SizedBox(height: 12),
-          WinButton('Contester la séance',
+          WinButton(context.l10n.tutoringDisputeSession,
               block: true,
               small: true,
               variant: WinButtonVariant.outline,

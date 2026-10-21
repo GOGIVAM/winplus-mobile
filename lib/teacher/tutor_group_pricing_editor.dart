@@ -4,6 +4,7 @@ import '../services/tutor_profile_service.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import '../l10n/l10n.dart';
 
 /// Lot 9.3 (suivi 17.3) : séances de groupe. Le tuteur choisit sa méthode :
 /// prix par élève dégressif selon la taille du groupe (paliers), ou prix fixe
@@ -61,11 +62,13 @@ class TutorGroupPricingEditor extends StatefulWidget {
 }
 
 class _TutorGroupPricingEditorState extends State<TutorGroupPricingEditor> {
-  static const _methods = {
-    'none': 'Individuel seulement',
-    'per_student': 'Prix par élève dégressif',
-    'flat': 'Prix fixe pour le groupe',
-  };
+  static const _methods = ['none', 'per_student', 'flat'];
+
+  String _methodLabel(BuildContext context, String m) => switch (m) {
+        'per_student' => context.l10n.teacherGroupMethodPerStudent,
+        'flat' => context.l10n.teacherGroupMethodFlat,
+        _ => context.l10n.teacherGroupMethodNone,
+      };
 
   TutorGroupPricingSuggestion? _suggestion;
   bool _loading = false;
@@ -79,7 +82,7 @@ class _TutorGroupPricingEditorState extends State<TutorGroupPricingEditor> {
     final subject = widget.subject;
     if (subject == null || subject.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Choisis d\'abord tes matières.')));
+          SnackBar(content: Text(context.l10n.teacherGroupSubjectsFirst)));
       return;
     }
     setState(() => _loading = true);
@@ -88,13 +91,13 @@ class _TutorGroupPricingEditorState extends State<TutorGroupPricingEditor> {
       if (!mounted) return;
       setState(() => _suggestion = sug);
       if (sug == null) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('WinAI n\'a pas pu proposer de réglages de groupe pour l\'instant.')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(L10n.current.teacherGroupSuggestError)));
       }
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('WinAI n\'a pas pu proposer de réglages de groupe pour l\'instant.')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(L10n.current.teacherGroupSuggestError)));
       }
     } finally {
       if (mounted) setState(() => _loading = false);
@@ -126,38 +129,38 @@ class _TutorGroupPricingEditorState extends State<TutorGroupPricingEditor> {
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Row(children: [
-        Expanded(child: Text('Séances de groupe', style: WinType.labelM(s.onStrong))),
+        Expanded(child: Text(context.l10n.teacherGroupTitle, style: WinType.labelM(s.onStrong))),
         TextButton.icon(
           onPressed: _loading ? null : _suggest,
           icon: const Icon(Icons.auto_awesome_outlined, size: 18),
-          label: Text(_loading ? 'WinAI réfléchit…' : 'Proposer (WinAI)'),
+          label: Text(_loading ? context.l10n.commonWinaiThinking : context.l10n.teacherGroupSuggest),
         ),
       ]),
       const SizedBox(height: 4),
-      Text('Un parent, une institution ou un groupe d\'étude peut réserver pour plusieurs élèves. Une séance de groupe occupe ton créneau une seule fois.',
+      Text(context.l10n.teacherGroupIntro,
           style: WinType.labelS(s.onFaint)),
       if (_suggestion != null) ...[
         const SizedBox(height: 8),
         WinCard(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(
-                'Réglages proposés par WinAI'
-                '${_suggestion!.marketData ? ' (d\'après ${_suggestion!.sampleSize} tuteurs)' : ' (estimation)'}',
+                '${context.l10n.teacherGroupSuggested}'
+                '${_suggestion!.marketData ? ' ${context.l10n.teacherGroupBasedOn(_suggestion!.sampleSize)}' : ' ${context.l10n.teacherGroupEstimate}'}',
                 style: WinType.labelM(s.onStrong)),
             const SizedBox(height: 6),
-            Text('Taille maximale : ${_suggestion!.maxGroupSize} élèves', style: WinType.bodyS(s.onSurface)),
+            Text(context.l10n.teacherGroupMaxSizeLine(_suggestion!.maxGroupSize), style: WinType.bodyS(s.onSurface)),
             ..._suggestion!.discounts.map((d) => Text(
-                'Prix par élève, dès ${d.minGroupSize} élèves : −${d.percentDiscount} %',
+                context.l10n.teacherGroupPerStudentLine(d.minGroupSize, d.percentDiscount),
                 style: WinType.bodyS(s.onSurface))),
-            Text('Ou prix fixe pour le groupe : ${_suggestion!.flatPercent} % du prix individuel',
+            Text(context.l10n.teacherGroupFlatLine(_suggestion!.flatPercent),
                 style: WinType.bodyS(s.onSurface)),
             const SizedBox(height: 6),
             Text(_suggestion!.explanation, style: WinType.labelS(s.onFaint)),
             const SizedBox(height: 8),
             Wrap(spacing: 8, runSpacing: 8, children: [
-              WinButton('Prix par élève', small: true, onTap: () => _apply('per_student')),
-              WinButton('Prix fixe', small: true, variant: WinButtonVariant.outline, onTap: () => _apply('flat')),
-              WinButton('Ignorer', small: true, variant: WinButtonVariant.outline,
+              WinButton(context.l10n.teacherGroupApplyPerStudent, small: true, onTap: () => _apply('per_student')),
+              WinButton(context.l10n.teacherGroupApplyFlat, small: true, variant: WinButtonVariant.outline, onTap: () => _apply('flat')),
+              WinButton(context.l10n.teacherPricingIgnore, small: true, variant: WinButtonVariant.outline,
                   onTap: () => setState(() => _suggestion = null)),
             ]),
           ]),
@@ -167,16 +170,16 @@ class _TutorGroupPricingEditorState extends State<TutorGroupPricingEditor> {
       Wrap(
         spacing: 8,
         runSpacing: 8,
-        children: _methods.entries
-            .map((e) => WinChip(e.value, active: value.method == e.key, onTap: () => onChanged(value.copyWith(method: e.key))))
+        children: _methods
+            .map((k) => WinChip(_methodLabel(context, k), active: value.method == k, onTap: () => onChanged(value.copyWith(method: k))))
             .toList(),
       ),
       if (value.method != 'none')
-        stepper('Taille maximale du groupe (élèves)', value.maxGroupSize, 2, 20, (v) => onChanged(value.copyWith(maxGroupSize: v))),
+        stepper(context.l10n.teacherGroupMaxSizeLabel, value.maxGroupSize, 2, 20, (v) => onChanged(value.copyWith(maxGroupSize: v))),
       if (value.method == 'flat') ...[
-        stepper('Prix du groupe (% du prix individuel)', value.flatPercent, 100, 1000,
+        stepper(context.l10n.teacherGroupFlatLabel, value.flatPercent, 100, 1000,
             (v) => onChanged(value.copyWith(flatPercent: v)), step: 10),
-        Text('Ex. 150 % : une séance individuelle à 6 000 XAF coûte 9 000 XAF pour le groupe, quel que soit le nombre d\'élèves.',
+        Text(context.l10n.teacherGroupFlatExample,
             style: WinType.labelS(s.onFaint)),
       ],
       if (value.method == 'per_student') ...[
@@ -190,10 +193,10 @@ class _TutorGroupPricingEditorState extends State<TutorGroupPricingEditor> {
           }
 
           return Row(children: [
-            Text('Dès ', style: WinType.bodyS(s.onSurface)),
+            Text(context.l10n.teacherPricingFrom, style: WinType.bodyS(s.onSurface)),
             DropdownButton<int>(
               value: d.minGroupSize.clamp(2, value.maxGroupSize),
-              items: sizes.where((n) => n <= value.maxGroupSize).map((n) => DropdownMenuItem(value: n, child: Text('$n élèves'))).toList(),
+              items: sizes.where((n) => n <= value.maxGroupSize).map((n) => DropdownMenuItem(value: n, child: Text(context.l10n.teacherGroupStudents(n)))).toList(),
               onChanged: (n) => update(TutorGroupDiscount(minGroupSize: n ?? 2, percentDiscount: d.percentDiscount)),
             ),
             const SizedBox(width: 8),
@@ -202,7 +205,7 @@ class _TutorGroupPricingEditorState extends State<TutorGroupPricingEditor> {
                   (v) => update(TutorGroupDiscount(minGroupSize: d.minGroupSize, percentDiscount: v)), step: 5),
             ),
             IconButton(
-              tooltip: 'Supprimer ce palier',
+              tooltip: context.l10n.teacherPricingRemoveTier,
               icon: Icon(Icons.delete_outline, color: s.onMuted),
               onPressed: () => onChanged(value.copyWith(discounts: [...value.discounts]..removeAt(i))),
             ),
@@ -211,7 +214,7 @@ class _TutorGroupPricingEditorState extends State<TutorGroupPricingEditor> {
         if (value.discounts.length < 5)
           TextButton.icon(
             icon: const Icon(Icons.add),
-            label: const Text('Ajouter un palier'),
+            label: Text(context.l10n.teacherPricingAddTier),
             onPressed: () => onChanged(value.copyWith(discounts: [
               ...value.discounts,
               TutorGroupDiscount(
@@ -219,7 +222,7 @@ class _TutorGroupPricingEditorState extends State<TutorGroupPricingEditor> {
                   percentDiscount: 10 + value.discounts.length * 5),
             ])),
           ),
-        Text('Seul le palier le plus haut atteint s\'applique. Sans palier, chaque élève paie le prix individuel.',
+        Text(context.l10n.teacherGroupTierHint,
             style: WinType.labelS(s.onFaint)),
       ],
     ]);

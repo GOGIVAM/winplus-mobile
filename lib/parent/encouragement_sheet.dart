@@ -5,6 +5,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import '../l10n/l10n.dart';
 
 class EncouragementSheet extends StatefulWidget {
   final ApiChild child;
@@ -32,22 +33,23 @@ class _EncouragementSheetState extends State<EncouragementSheet> {
 
   List<(IconData, String)> get _templates {
     final name = widget.child.firstName;
+    final l = L10n.current;
     final score =
-        widget.childScore != null ? '${widget.childScore}%' : 'ton score';
+        widget.childScore != null ? '${widget.childScore}%' : l.parentEncourageYourScore;
     return [
       (
         Icons.fitness_center_outlined,
-        'Continue comme ça $name, je suis fier(e) de toi !'
+        l.parentEncourageTpl1(name)
       ),
       (
         Icons.menu_book_outlined,
-        "N'oublie pas de réviser la Chimie ce soir $name !"
+        l.parentEncourageTpl2(name)
       ),
       (
         Icons.track_changes_outlined,
-        '$name, tu peux le faire  le BAC approche !'
+        l.parentEncourageTpl3(name)
       ),
-      (Icons.star_outline, '$name, $score cette semaine, c\'est excellent !'),
+      (Icons.star_outline, l.parentEncourageTpl4(name, score)),
     ];
   }
 
@@ -75,14 +77,14 @@ class _EncouragementSheetState extends State<EncouragementSheet> {
       if (!mounted) return;
       Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Message envoyé à ${widget.child.firstName} !')),
+        SnackBar(content: Text(L10n.current.parentEncourageSent(widget.child.firstName))),
       );
     } catch (_) {
       if (!mounted) return;
       setState(() => _sending = false);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text("Impossible d'envoyer le message. Réessayez.")),
+        SnackBar(
+            content: Text(L10n.current.parentEncourageSendError)),
       );
     }
   }
@@ -114,13 +116,13 @@ class _EncouragementSheetState extends State<EncouragementSheet> {
                 ),
               ),
             ),
-            Text('Encourager ${widget.child.firstName}',
+            Text(context.l10n.parentEncourageTitle(widget.child.firstName),
                 style: WinType.archivo(size: 20, color: s.onStrong)),
             const SizedBox(height: 4),
-            Text('Choisissez un message ou écrivez le vôtre',
+            Text(context.l10n.parentEncourageSub,
                 style: WinType.bodyM(s.onMuted)),
             const SizedBox(height: 20),
-            Text('Choisir un modèle', style: WinType.titleM(s.onStrong)),
+            Text(context.l10n.parentEncourageChooseTemplate, style: WinType.titleM(s.onStrong)),
             const SizedBox(height: 10),
             ...List.generate(templates.length, (i) {
               final t = templates[i];
@@ -161,7 +163,7 @@ class _EncouragementSheetState extends State<EncouragementSheet> {
               );
             }),
             const SizedBox(height: 12),
-            Text('Ou écrire un message personnalisé',
+            Text(context.l10n.parentEncourageOrWrite,
                 style: WinType.labelM(s.onMuted)),
             const SizedBox(height: 8),
             Stack(
@@ -177,7 +179,7 @@ class _EncouragementSheetState extends State<EncouragementSheet> {
                           maxLength}) =>
                       null,
                   decoration: InputDecoration(
-                    hintText: 'Votre message...',
+                    hintText: context.l10n.parentEncourageHint,
                     hintStyle: WinType.bodyS(s.onFaint),
                     filled: true,
                     fillColor: s.surface2,
@@ -211,7 +213,7 @@ class _EncouragementSheetState extends State<EncouragementSheet> {
             ),
             const SizedBox(height: 20),
             WinButton(
-              'Envoyer',
+              context.l10n.commonSend,
               block: true,
               icon: Icons.send_outlined,
               loading: _sending,

@@ -4,6 +4,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import '../l10n/l10n.dart';
 
 class GroupMembersScreen extends StatefulWidget {
   final int groupId;
@@ -46,7 +47,7 @@ class _GroupMembersScreenState extends State<GroupMembersScreen> {
         title: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(widget.groupName, style: WinType.titleM(s.onStrong)),
           if (members != null)
-            Text('${members.length} élève${members.length > 1 ? 's' : ''}',
+            Text(context.l10n.instStudentCount(members.length),
                 style: WinType.labelS(s.onMuted)),
         ]),
       ),
@@ -54,7 +55,7 @@ class _GroupMembersScreenState extends State<GroupMembersScreen> {
           ? const Center(child: CircularProgressIndicator())
           : members.isEmpty
               ? Center(
-                  child: Text('Aucun élève dans ce groupe.',
+                  child: Text(context.l10n.instGroupNoMembers,
                       style: WinType.bodyM(s.onMuted)))
               : ListView.separated(
                   padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),

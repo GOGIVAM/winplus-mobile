@@ -1,5 +1,6 @@
 import 'api_client.dart';
 import 'tutor_booking_service.dart';
+import '../l10n/l10n.dart';
 
 /// Lot 9.4 (suivi 17.7) : engagement mensuel à créneaux fixes, parité web.
 /// Les mêmes créneaux chaque semaine pendant 4 semaines, payés d'avance ; le
@@ -7,36 +8,46 @@ import 'tutor_booking_service.dart';
 /// (effectuée, contestation, annulation d'une séance seule) passent par
 /// [TutorBookingService] : chaque séance garde son propre cycle.
 
-const List<String> kDayNames = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+/// Jours (index 0 = dimanche), dans la langue de l'application (lot 10.11).
+List<String> get kDayNames => [for (final d in const [7, 1, 2, 3, 4, 5, 6]) WinFormat.weekdayCap(d)];
 
-const Map<String, String> kEngagementStatusLabels = {
-  'pending_payment': 'Paiement en cours',
-  'pending_tutor_approval': 'En attente du tuteur',
-  'active': 'En cours',
-  'completed': 'Terminé',
-  'cancelled': 'Annulé',
-  'rejected': 'Refusé par le tuteur',
-  'expired': 'Expiré (sans réponse)',
-};
+Map<String, String> get kEngagementStatusLabels {
+  final l = L10n.current;
+  return {
+    'pending_payment': l.tutoringStatusPendingPayment,
+    'pending_tutor_approval': l.tutoringStatusPendingTutor,
+    'active': l.svcEngStatusActive,
+    'completed': l.svcEngStatusCompleted,
+    'cancelled': l.svcEngStatusCancelled,
+    'rejected': l.svcEngStatusRejected,
+    'expired': l.svcEngStatusExpired,
+  };
+}
 
-const Map<String, String> kMoneyStateLabels = {
-  'held': 'Bloqué',
-  'released': 'Versé au tuteur',
-  'refunded': 'Remboursé',
-  'partial': 'Remboursé en partie',
-  'unpaid': 'Non payé',
-};
+Map<String, String> get kMoneyStateLabels {
+  final l = L10n.current;
+  return {
+    'held': l.tutoringEngHeld,
+    'released': l.tutoringEngReleased,
+    'refunded': l.tutoringEngRefundedTile,
+    'partial': l.svcMoneyPartial,
+    'unpaid': l.svcMoneyUnpaid,
+  };
+}
 
-const Map<String, String> kSessionStatusLabels = {
-  'pending_payment': 'Paiement en cours',
-  'pending_tutor_approval': 'En attente',
-  'confirmed': 'Prévue',
-  'completed': 'Effectuée',
-  'disputed': 'Contestée',
-  'cancelled': 'Annulée',
-  'rejected': 'Refusée',
-  'expired': 'Expirée',
-};
+Map<String, String> get kSessionStatusLabels {
+  final l = L10n.current;
+  return {
+    'pending_payment': l.tutoringStatusPendingPayment,
+    'pending_tutor_approval': l.commonPending,
+    'confirmed': l.svcSessionStatusConfirmed,
+    'completed': l.tutoringStatusCompleted,
+    'disputed': l.tutoringStatusDisputed,
+    'cancelled': l.shopOrderCancelled,
+    'rejected': l.tutoringStatusRejected,
+    'expired': l.tutoringStatusExpired,
+  };
+}
 
 DateTime? _date(dynamic v) => v is String ? DateTime.tryParse(v) : null;
 num _num(dynamic v) => v is num ? v : 0;
@@ -54,7 +65,7 @@ class EngagementSlot {
         durationMinutes: durationMinutes ?? this.durationMinutes,
       );
 
-  String get label => '${kDayNames[dayOfWeek].toLowerCase()} $startTime (${formatDurationMinutes(durationMinutes)})';
+  String get label => '${WinFormat.weekday(dayOfWeek == 0 ? 7 : dayOfWeek)} $startTime (${formatDurationMinutes(durationMinutes)})';
 
   Map<String, dynamic> toJson() => {'dayOfWeek': dayOfWeek, 'startTime': startTime, 'durationMinutes': durationMinutes};
 

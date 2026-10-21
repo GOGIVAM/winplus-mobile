@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../../l10n/l10n.dart';
 import '../../services/session_manager.dart';
 import '../../services/tutor_booking_service.dart';
 import '../../services/tutor_engagement_service.dart';
@@ -32,12 +33,13 @@ class TutorEngagementFlowScreen extends StatefulWidget {
   State<TutorEngagementFlowScreen> createState() => _TutorEngagementFlowScreenState();
 }
 
-const _modeLabels = {
-  'online': 'En ligne',
-  'student_home': 'À domicile',
-  'tutor_home': 'Chez le tuteur',
-  'neutral_place': 'Lieu neutre',
-};
+String? _modeLabel(String mode) => switch (mode) {
+      'online' => L10n.current.commonOnline,
+      'student_home' => L10n.current.tutoringModeStudentHome,
+      'tutor_home' => L10n.current.tutoringModeTutorHome,
+      'neutral_place' => L10n.current.tutoringModeNeutralPlace,
+      _ => null,
+    };
 const _weekOrder = [1, 2, 3, 4, 5, 6, 0];
 const _durations = [30, 60, 90, 120, 150, 180, 240];
 
@@ -49,8 +51,7 @@ int _toMin(String hhmm) {
 String _toHhmm(int m) => '${(m ~/ 60).toString().padLeft(2, '0')}:${(m % 60).toString().padLeft(2, '0')}';
 
 String _shortDate(DateTime d) {
-  const days = ['lun.', 'mar.', 'mer.', 'jeu.', 'ven.', 'sam.', 'dim.'];
-  return '${days[d.weekday - 1]} ${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}';
+  return '${WinFormat.weekdayShort(d.weekday)} ${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}';
 }
 
 class _TutorEngagementFlowScreenState extends State<TutorEngagementFlowScreen> {
@@ -173,7 +174,7 @@ class _TutorEngagementFlowScreenState extends State<TutorEngagementFlowScreen> {
       setState(() {
         _quote = null;
         _quoteLoading = false;
-        _quoteError = TutorEngagementService.errorMessage(e) ?? 'Impossible de calculer le devis.';
+        _quoteError = TutorEngagementService.errorMessage(e) ?? L10n.current.tutoringEngQuoteError;
       });
     }
   }
@@ -204,11 +205,11 @@ class _TutorEngagementFlowScreenState extends State<TutorEngagementFlowScreen> {
     final byWallet = _payMethod == 'wallet';
     final phone = _normalizePhone(_phoneCtrl.text);
     if (!byWallet && phone.length != 9) {
-      setState(() => _submitError = 'Numéro Mobile Money : 9 chiffres (ex. 670000000).');
+      setState(() => _submitError = context.l10n.tutoringEngPhoneFormat);
       return;
     }
     if (byWallet && !_walletCovers) {
-      setState(() => _submitError = 'Le solde ne couvre pas le total du mois. Choisis Mobile Money ou recharge le portefeuille.');
+      setState(() => _submitError = context.l10n.tutoringEngWalletShort);
       return;
     }
     setState(() {
@@ -243,7 +244,7 @@ class _TutorEngagementFlowScreenState extends State<TutorEngagementFlowScreen> {
       if (!mounted) return;
       setState(() {
         _submitting = false;
-        _submitError = TutorEngagementService.errorMessage(e) ?? 'Création de l\'engagement impossible.';
+        _submitError = TutorEngagementService.errorMessage(e) ?? L10n.current.tutoringEngCreateError;
       });
     }
   }
@@ -274,7 +275,7 @@ class _TutorEngagementFlowScreenState extends State<TutorEngagementFlowScreen> {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    const titles = ['Engagement mensuel', 'Devis du mois', 'Paiement d\'avance'];
+    final titles = [context.l10n.tutoringEngStagePlan, context.l10n.tutoringEngStageQuote, context.l10n.tutoringEngStagePayment];
     return Scaffold(
       backgroundColor: s.bg,
       appBar: AppBar(
@@ -290,7 +291,7 @@ class _TutorEngagementFlowScreenState extends State<TutorEngagementFlowScreen> {
             }
           },
         ),
-        title: Text(_created != null ? 'Engagement payé' : titles[_step], style: WinType.headlineS(s.onStrong)),
+        title: Text(_created != null ? context.l10n.tutoringEngStageSuccess : titles[_step], style: WinType.headlineS(s.onStrong)),
       ),
       body: SafeArea(
         child: _created != null
@@ -308,12 +309,12 @@ class _TutorEngagementFlowScreenState extends State<TutorEngagementFlowScreen> {
     final valid = _slots.isNotEmpty && _forWhom.isValid(_maxGroupSize);
     return ListView(padding: const EdgeInsets.all(16), children: [
       Text(
-          'Les mêmes créneaux chaque semaine pendant 4 semaines, payés d\'avance'
-          '${widget.profile.monthlyDiscountPercent > 0 ? ', avec ${widget.profile.monthlyDiscountPercent} % de remise mensuelle' : ''}. '
-          'Le tuteur est payé séance par séance, après chaque séance effectuée.',
+          '${context.l10n.tutoringEngIntro}'
+          '${widget.profile.monthlyDiscountPercent > 0 ? context.l10n.tutoringEngIntroDiscount(widget.profile.monthlyDiscountPercent) : ''}'
+          '${context.l10n.tutoringEngIntroEnd}',
           style: WinType.bodyS(s.onMuted)),
       const SizedBox(height: 16),
-      Text('Premier jour', style: WinType.labelM(s.onStrong)),
+      Text(context.l10n.tutoringEngFirstDay, style: WinType.labelM(s.onStrong)),
       const SizedBox(height: 6),
       WinButton(
         '${_shortDate(_startDate)} ${_startDate.year}',
@@ -330,7 +331,7 @@ class _TutorEngagementFlowScreenState extends State<TutorEngagementFlowScreen> {
         },
       ),
       const SizedBox(height: 16),
-      Text('Créneaux de chaque semaine', style: WinType.labelM(s.onStrong)),
+      Text(context.l10n.tutoringEngWeeklySlots, style: WinType.labelM(s.onStrong)),
       const SizedBox(height: 6),
       for (var i = 0; i < _slots.length; i++) _slotRow(s, i),
       if (_slots.length < 7)
@@ -339,13 +340,13 @@ class _TutorEngagementFlowScreenState extends State<TutorEngagementFlowScreen> {
           child: TextButton.icon(
             onPressed: () => setState(() => _slots = [..._slots, _defaultSlot()]),
             icon: const Icon(Icons.add, size: 18),
-            label: const Text('Ajouter un créneau'),
+            label: Text(context.l10n.tutoringEngAddSlot),
           ),
         ),
-      Text('${_slots.length * 4} séances sur le mois, vérifiées dans l\'agenda du tuteur.', style: WinType.labelS(s.onFaint)),
+      Text(context.l10n.tutoringEngPerMonth(_slots.length * 4), style: WinType.labelS(s.onFaint)),
       if (widget.profile.subjects.length > 1) ...[
         const SizedBox(height: 16),
-        Text('Matière', style: WinType.labelM(s.onStrong)),
+        Text(context.l10n.commonSubject, style: WinType.labelM(s.onStrong)),
         const SizedBox(height: 8),
         Wrap(
             spacing: 8,
@@ -355,12 +356,12 @@ class _TutorEngagementFlowScreenState extends State<TutorEngagementFlowScreen> {
                 .toList()),
       ],
       const SizedBox(height: 16),
-      Text('Mode', style: WinType.labelM(s.onStrong)),
+      Text(context.l10n.tutoringMode, style: WinType.labelM(s.onStrong)),
       const SizedBox(height: 8),
       Wrap(
           spacing: 8,
           runSpacing: 8,
-          children: _modes.map((m) => WinChip(_modeLabels[m] ?? m, active: _mode == m, onTap: () => setState(() => _mode = m))).toList()),
+          children: _modes.map((m) => WinChip(_modeLabel(m) ?? m, active: _mode == m, onTap: () => setState(() => _mode = m))).toList()),
       if (_ctx != null && TutorBookingForWhom.hasChoice(_ctx!)) ...[
         const SizedBox(height: 16),
         TutorBookingForWhom(
@@ -372,11 +373,11 @@ class _TutorEngagementFlowScreenState extends State<TutorEngagementFlowScreen> {
         ),
       ],
       const SizedBox(height: 16),
-      Text('Sujets à travailler (facultatif)', style: WinType.labelM(s.onStrong)),
+      Text(context.l10n.tutoringTopicsOptional, style: WinType.labelM(s.onStrong)),
       const SizedBox(height: 6),
       TopicsField(topics: _topics, onChanged: (t) => setState(() => _topics = t)),
       const SizedBox(height: 24),
-      WinButton('Voir le devis du mois', block: true, onTap: valid ? _loadQuote : null),
+      WinButton(context.l10n.tutoringEngSeeQuote, block: true, onTap: valid ? _loadQuote : null),
     ]);
   }
 
@@ -393,9 +394,9 @@ class _TutorEngagementFlowScreenState extends State<TutorEngagementFlowScreen> {
             key: ValueKey('day-$i-${slot.dayOfWeek}'),
             initialValue: slot.dayOfWeek,
             isExpanded: true,
-            decoration: const InputDecoration(isDense: true, labelText: 'Jour'),
+            decoration: InputDecoration(isDense: true, labelText: context.l10n.tutoringEngDay),
             items: _weekOrder
-                .map((d) => DropdownMenuItem(value: d, child: Text(kDayNames[d] + (_startOptions(d).isEmpty ? ' (indisp.)' : ''))))
+                .map((d) => DropdownMenuItem(value: d, child: Text(WinFormat.weekdayCap(d == 0 ? DateTime.sunday : d) + (_startOptions(d).isEmpty ? ' ${context.l10n.tutoringUnavailableShort}' : ''))))
                 .toList(),
             onChanged: (d) {
               if (d == null) return;
@@ -411,7 +412,7 @@ class _TutorEngagementFlowScreenState extends State<TutorEngagementFlowScreen> {
             key: ValueKey('start-$i-${slot.dayOfWeek}-${slot.startTime}'),
             initialValue: starts.contains(slot.startTime) ? slot.startTime : starts.first,
             isExpanded: true,
-            decoration: const InputDecoration(isDense: true, labelText: 'Début'),
+            decoration: InputDecoration(isDense: true, labelText: context.l10n.tutoringEngStart),
             items: starts.map((t) => DropdownMenuItem(value: t, child: Text(t))).toList(),
             onChanged: (t) => t == null ? null : setState(() => _slots[i] = slot.copyWith(startTime: t)),
           ),
@@ -423,13 +424,13 @@ class _TutorEngagementFlowScreenState extends State<TutorEngagementFlowScreen> {
             key: ValueKey('dur-$i-${slot.durationMinutes}'),
             initialValue: slot.durationMinutes,
             isExpanded: true,
-            decoration: const InputDecoration(isDense: true, labelText: 'Durée'),
+            decoration: InputDecoration(isDense: true, labelText: context.l10n.commonDuration),
             items: _durations.map((d) => DropdownMenuItem(value: d, child: Text(formatDurationMinutes(d)))).toList(),
             onChanged: (d) => d == null ? null : setState(() => _slots[i] = slot.copyWith(durationMinutes: d)),
           ),
         ),
         IconButton(
-          tooltip: 'Retirer ce créneau',
+          tooltip: context.l10n.tutoringEngRemoveSlot,
           icon: Icon(Icons.delete_outline, color: s.onMuted),
           onPressed: _slots.length == 1 ? null : () => setState(() => _slots = [..._slots]..removeAt(i)),
         ),
@@ -442,14 +443,14 @@ class _TutorEngagementFlowScreenState extends State<TutorEngagementFlowScreen> {
     final q = _quote;
     if (q == null) {
       return ListView(padding: const EdgeInsets.all(16), children: [
-        WinAlert(_quoteError ?? 'Devis indisponible.', type: BadgeColor.error),
+        WinAlert(_quoteError ?? context.l10n.tutoringEngQuoteUnavailable, type: BadgeColor.error),
         const SizedBox(height: 16),
-        WinButton('Modifier les créneaux', variant: WinButtonVariant.outline, block: true, onTap: () => setState(() => _step = 0)),
+        WinButton(context.l10n.tutoringEngEditSlots, variant: WinButtonVariant.outline, block: true, onTap: () => setState(() => _step = 0)),
       ]);
     }
     return ListView(padding: const EdgeInsets.all(16), children: [
-      Text('Du ${_shortDate(q.startDate)} au ${_shortDate(q.endDate)} · ${q.sessions.length} séances'
-          '${q.participantCount > 1 ? ' · ${q.participantCount} élèves' : ''}',
+      Text(context.l10n.tutoringEngQuoteRange(_shortDate(q.startDate), _shortDate(q.endDate), q.sessions.length) +
+          (q.participantCount > 1 ? context.l10n.tutoringEngQuoteStudents(q.participantCount) : ''),
           style: WinType.bodyS(s.onMuted)),
       const SizedBox(height: 10),
       WinCard(
@@ -461,7 +462,7 @@ class _TutorEngagementFlowScreenState extends State<TutorEngagementFlowScreen> {
                 Expanded(
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                     Text('${_shortDate(x.sessionDate)} · ${x.startTime}-${x.endTime}', style: WinType.labelM(s.onStrong)),
-                    if (!x.isAvailable) Text(x.unavailableReason ?? 'Indisponible', style: WinType.labelS(WinColors.error)),
+                    if (!x.isAvailable) Text(x.unavailableReason ?? context.l10n.tutoringUnavailable, style: WinType.labelS(WinColors.error)),
                   ]),
                 ),
                 if (x.discountXaf > 0)
@@ -473,15 +474,15 @@ class _TutorEngagementFlowScreenState extends State<TutorEngagementFlowScreen> {
         ]),
       ),
       const SizedBox(height: 12),
-      _totalRow(s, 'Sous-total (grille du tuteur)', '${fmtXaf(q.subtotalXaf)} XAF'),
-      if (q.discountXaf > 0) _totalRow(s, 'Remise mensuelle (${q.discountPercent} %)', '-${fmtXaf(q.discountXaf)} XAF', color: WinColors.success),
-      _totalRow(s, 'Total payé d\'avance', '${fmtXaf(q.totalXaf)} XAF', strong: true),
+      _totalRow(s, context.l10n.tutoringEngSubtotal, '${fmtXaf(q.subtotalXaf)} XAF'),
+      if (q.discountXaf > 0) _totalRow(s, context.l10n.tutoringEngMonthlyDiscount(q.discountPercent), '-${fmtXaf(q.discountXaf)} XAF', color: WinColors.success),
+      _totalRow(s, context.l10n.tutoringEngTotalAdvance, '${fmtXaf(q.totalXaf)} XAF', strong: true),
       if (!q.isAvailable) ...[
         const SizedBox(height: 10),
         WinAlert(
             q.monthlyEnabled
-                ? 'Certaines séances ne sont pas disponibles : change le jour, l\'heure ou la date de début.'
-                : (q.conflicts.isNotEmpty ? q.conflicts.first : 'Ce tuteur ne propose pas l\'engagement mensuel.'),
+                ? context.l10n.tutoringEngSomeUnavailable
+                : (q.conflicts.isNotEmpty ? q.conflicts.first : context.l10n.tutoringEngNotOffered),
             type: BadgeColor.error),
       ],
       const SizedBox(height: 14),
@@ -493,12 +494,10 @@ class _TutorEngagementFlowScreenState extends State<TutorEngagementFlowScreen> {
       ),
       const SizedBox(height: 8),
       Text(
-          'Le tuteur accepte ou refuse l\'engagement entier ; s\'il refuse ou ne répond pas, tout est remboursé. '
-          'L\'argent reste bloqué et n\'est versé au tuteur que séance par séance. En cas d\'annulation, '
-          'la politique ci-dessus s\'applique à chaque séance à venir.',
+          context.l10n.tutoringEngQuoteHelp,
           style: WinType.labelS(s.onFaint)),
       const SizedBox(height: 20),
-      WinButton('Payer le mois', block: true, onTap: q.isAvailable ? _goToPayment : null),
+      WinButton(context.l10n.tutoringEngPayMonth, block: true, onTap: q.isAvailable ? _goToPayment : null),
     ]);
   }
 
@@ -518,7 +517,7 @@ class _TutorEngagementFlowScreenState extends State<TutorEngagementFlowScreen> {
           child: Column(mainAxisSize: MainAxisSize.min, children: [
             const CircularProgressIndicator(),
             const SizedBox(height: 16),
-            Text('Valide le paiement sur ton téléphone', style: WinType.titleM(s.onStrong), textAlign: TextAlign.center),
+            Text(context.l10n.tutoringEngValidateOnPhone, style: WinType.titleM(s.onStrong), textAlign: TextAlign.center),
           ]),
         ),
       );
@@ -526,19 +525,19 @@ class _TutorEngagementFlowScreenState extends State<TutorEngagementFlowScreen> {
     final total = _quote?.totalXaf ?? 0;
     final byWallet = _payMethod == 'wallet';
     final walletTitle = switch (_forWhom.payerType) {
-      'parent' => 'Mon portefeuille parent',
-      'institution' => 'Portefeuille de l\'institution',
-      _ => 'Mon solde WinPlus',
+      'parent' => context.l10n.tutoringWalletParent,
+      'institution' => context.l10n.tutoringWalletInstitution,
+      _ => context.l10n.tutoringWalletMine,
     };
     return ListView(padding: const EdgeInsets.all(16), children: [
-      Text('Moyen de paiement', style: WinType.labelM(s.onStrong)),
+      Text(context.l10n.tutoringPayMethod, style: WinType.labelM(s.onStrong)),
       const SizedBox(height: 8),
-      WinChip('$walletTitle${_walletLoading ? '' : _walletAvailable == null ? ' (indisponible)' : ' · ${fmtXaf(_walletAvailable!)} XAF'}',
+      WinChip('$walletTitle${_walletLoading ? '' : _walletAvailable == null ? ' ${context.l10n.tutoringUnavailableParen}' : ' · ${fmtXaf(_walletAvailable!)} XAF'}',
           icon: Icons.account_balance_wallet_outlined,
           active: byWallet,
           onTap: _walletAvailable == null ? null : () => setState(() => _payMethod = 'wallet')),
       const SizedBox(height: 8),
-      WinChip('Mobile Money (MTN MoMo ou Orange Money)',
+      WinChip(context.l10n.tutoringEngMomoChip,
           icon: Icons.phone_android_outlined,
           active: !byWallet,
           onTap: () => setState(() {
@@ -547,7 +546,7 @@ class _TutorEngagementFlowScreenState extends State<TutorEngagementFlowScreen> {
               })),
       if (byWallet && _walletAvailable != null && !_walletCovers) ...[
         const SizedBox(height: 8),
-        Text('Solde insuffisant : il manque ${fmtXaf(total - _walletAvailable!)} XAF.', style: WinType.labelS(WinColors.error)),
+        Text(context.l10n.tutoringEngWalletMissing(fmtXaf(total - _walletAvailable!)), style: WinType.labelS(WinColors.error)),
       ],
       const SizedBox(height: 14),
       if (byWallet)
@@ -555,24 +554,24 @@ class _TutorEngagementFlowScreenState extends State<TutorEngagementFlowScreen> {
           contentPadding: EdgeInsets.zero,
           value: _autoRenew,
           onChanged: (v) => setState(() => _autoRenew = v ?? false),
-          title: Text('Renouveler automatiquement chaque mois sur le solde', style: WinType.labelM(s.onStrong)),
+          title: Text(context.l10n.tutoringEngAutoRenew, style: WinType.labelM(s.onStrong)),
           subtitle: Text(
-              'Mêmes créneaux. Tentative 3 jours avant la fin, après un rappel 7 jours avant ; si le solde ne suffit pas ou si un créneau n\'est plus libre, rien n\'est débité et tu es prévenu.',
+              context.l10n.tutoringEngAutoRenewHelp,
               style: WinType.labelS(s.onFaint)),
         )
       else ...[
-        Text('Numéro Mobile Money', style: WinType.labelM(s.onStrong)),
+        Text(context.l10n.tutoringMomoNumber, style: WinType.labelM(s.onStrong)),
         const SizedBox(height: 8),
         WinTextField(hint: '6XX XXX XXX', icon: Icons.phone_android_outlined, controller: _phoneCtrl, keyboardType: TextInputType.phone),
         const SizedBox(height: 6),
-        Text('Le renouvellement automatique n\'est possible qu\'avec un paiement par solde.', style: WinType.labelS(s.onFaint)),
+        Text(context.l10n.tutoringEngAutoRenewWalletOnly, style: WinType.labelS(s.onFaint)),
       ],
       if (_submitError != null) ...[
         const SizedBox(height: 12),
         WinAlert(_submitError!, type: BadgeColor.error),
       ],
       const SizedBox(height: 20),
-      WinButton(_submitting ? 'Envoi en cours…' : 'Payer ${fmtXaf(total)} XAF',
+      WinButton(_submitting ? context.l10n.tutoringSending : context.l10n.tutoringPayAmount(fmtXaf(total)),
           block: true, loading: _submitting, onTap: _submitting || (byWallet && !_walletCovers) ? null : _submit),
     ]);
   }
@@ -587,23 +586,22 @@ class _TutorEngagementFlowScreenState extends State<TutorEngagementFlowScreen> {
       Center(
         child: Text(
             failed
-                ? 'Paiement non confirmé'
+                ? context.l10n.tutoringEngPaymentNotConfirmed
                 : e.status == 'pending_payment'
-                    ? 'Paiement en attente de confirmation'
-                    : 'Paiement reçu, en attente du tuteur',
+                    ? context.l10n.tutoringEngPaymentPending
+                    : context.l10n.tutoringEngPaymentReceived,
             style: WinType.titleM(s.onStrong),
             textAlign: TextAlign.center),
       ),
       const SizedBox(height: 8),
       Text(
           failed
-              ? (e.cancellationReason ?? 'Le paiement n\'a pas pu être confirmé.')
-              : '${e.sessionsCount} séances du ${_shortDate(e.startDate)} au ${_shortDate(e.endDate)}. Le tuteur doit accepter l\'engagement entier ; '
-                  's\'il refuse ou ne répond pas à temps, tout est remboursé sur le portefeuille WinPlus du payeur.',
+              ? (e.cancellationReason ?? context.l10n.tutoringPaymentNotConfirmed)
+              : context.l10n.tutoringEngSuccessText(e.sessionsCount, _shortDate(e.startDate), _shortDate(e.endDate)),
           style: WinType.bodyS(s.onMuted),
           textAlign: TextAlign.center),
       const SizedBox(height: 20),
-      WinButton('Voir l\'engagement',
+      WinButton(context.l10n.tutoringEngSeeEngagement,
           block: true,
           onTap: () => Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => TutorEngagementScreen(engagementId: e.id)))),
     ]);

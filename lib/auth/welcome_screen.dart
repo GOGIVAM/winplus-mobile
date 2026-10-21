@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import '../theme/win_motion.dart';
-import '../app_state.dart';
 import '../l10n/gen/app_localizations.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
+import '../widgets/language_selector.dart';
 import '../widgets/win_widgets.dart';
 import 'login_screen.dart';
 import 'role_screen.dart';
@@ -28,26 +28,28 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   final _pageCtrl = PageController();
   int _page = 0;
 
-  static const _slides = [
-    _OnboardSlide(
-      Icons.menu_book_rounded,
-      'Toutes tes épreuves, réunies',
-      'Annales, corrigés et quiz du BEPC aux concours des grandes écoles.',
-    ),
-    _OnboardSlide(
-      Icons.auto_awesome_rounded,
-      'WinAI à tes côtés',
-      'Un assistant pédagogique qui identifie tes lacunes et te propose un plan de révision.',
-    ),
-    _OnboardSlide(
-      Icons.groups_rounded,
-      'Toute la famille impliquée',
-      'Parents, professeurs, élèves : chacun suit la progression de l’élève.',
-    ),
-  ];
+  static const _slideCount = 3;
+
+  List<_OnboardSlide> _slides(AppLocalizations l10n) => [
+        _OnboardSlide(
+          Icons.menu_book_rounded,
+          l10n.authWelcomeSlide1Title,
+          l10n.authWelcomeSlide1Subtitle,
+        ),
+        _OnboardSlide(
+          Icons.auto_awesome_rounded,
+          l10n.authWelcomeSlide2Title,
+          l10n.authWelcomeSlide2Subtitle,
+        ),
+        _OnboardSlide(
+          Icons.groups_rounded,
+          l10n.authWelcomeSlide3Title,
+          l10n.authWelcomeSlide3Subtitle,
+        ),
+      ];
 
   void _goNext() {
-    if (_page < _slides.length - 1) {
+    if (_page < _slideCount - 1) {
       _pageCtrl.nextPage(
           duration: const Duration(milliseconds: 320), curve: Curves.easeOut);
     }
@@ -57,7 +59,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
     final l10n = AppLocalizations.of(context);
-    final isLast = _page == _slides.length - 1;
+    final isLast = _page == _slideCount - 1;
+    final slides = _slides(l10n);
 
     return Scaffold(
       backgroundColor: s.bg,
@@ -72,14 +75,14 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   style: WinType.archivo(
                       size: 18, weight: FontWeight.w700, color: s.onStrong)),
               const Spacer(),
-              const _LanguageToggle(),
+              const LanguageToggle(),
               if (!isLast) ...[
                 const SizedBox(width: 8),
                 TextButton(
-                  onPressed: () => _pageCtrl.animateToPage(_slides.length - 1,
+                  onPressed: () => _pageCtrl.animateToPage(_slideCount - 1,
                       duration: const Duration(milliseconds: 320),
                       curve: Curves.easeOut),
-                  child: Text('Passer',
+                  child: Text(l10n.authSkip,
                       style: WinType.manrope(
                           size: 13, weight: FontWeight.w600, color: s.onMuted)),
                 ),
@@ -89,16 +92,16 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           Expanded(
             child: PageView.builder(
               controller: _pageCtrl,
-              itemCount: _slides.length,
+              itemCount: _slideCount,
               onPageChanged: (i) => setState(() => _page = i),
-              itemBuilder: (_, i) => _SlidePanel(slide: _slides[i]),
+              itemBuilder: (_, i) => _SlidePanel(slide: slides[i]),
             ),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(24, 8, 24, 4),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(_slides.length, (i) {
+              children: List.generate(_slideCount, (i) {
                 final active = i == _page;
                 return AnimatedContainer(
                   duration: const Duration(milliseconds: 250),
@@ -133,7 +136,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                           WinPageRoute(builder: (_) => const LoginScreen())),
                     ),
                   ])
-                : WinButton('Suivant',
+                : WinButton(l10n.authNext,
                     block: true,
                     icon: Icons.arrow_forward_rounded,
                     onTap: _goNext),
@@ -185,48 +188,6 @@ class _SlidePanel extends StatelessWidget {
         Text(slide.subtitle,
             textAlign: TextAlign.center, style: WinType.bodyM(s.onMuted)),
         const SizedBox(height: 12),
-      ]),
-    );
-  }
-}
-
-/// Bascule FR/EN manuelle (US onboarding). Persistée par WinAppState.setLocale
-/// (SharedPreferences + synchro profil si connecté).
-class _LanguageToggle extends StatelessWidget {
-  const _LanguageToggle();
-  @override
-  Widget build(BuildContext context) {
-    final s = WinTheme.of(context);
-    final state = WinAppScope.of(context);
-    final current = state.locale.languageCode;
-    Widget seg(String code) {
-      final active = current == code;
-      return GestureDetector(
-        onTap: () => state.setLocale(code),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-          decoration: BoxDecoration(
-            color: active ? s.onStrong : Colors.transparent,
-            borderRadius: BorderRadius.circular(WinRadii.full),
-          ),
-          child: Text(code.toUpperCase(),
-              style: WinType.manrope(
-                  size: 12,
-                  weight: FontWeight.w700,
-                  color: active ? s.bg : s.onMuted)),
-        ),
-      );
-    }
-
-    return Container(
-      padding: const EdgeInsets.all(2),
-      decoration: BoxDecoration(
-        border: Border.all(color: s.outline, width: 1),
-        borderRadius: BorderRadius.circular(WinRadii.full),
-      ),
-      child: Row(mainAxisSize: MainAxisSize.min, children: [
-        seg('fr'),
-        seg('en'),
       ]),
     );
   }

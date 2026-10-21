@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import '../../data/models.dart' show fmtXaf;
+import '../../l10n/l10n.dart';
 import '../../services/subscription_service.dart';
 import '../../theme/win_colors.dart';
 import '../../theme/win_theme.dart';
@@ -44,7 +45,12 @@ class SubscribeSheet extends StatefulWidget {
   State<SubscribeSheet> createState() => _SubscribeSheetState();
 }
 
-const _periodLabels = {'monthly': 'Mensuel', 'quarterly': 'Trimestriel', 'yearly': 'Annuel'};
+String? _periodLabel(AppLocalizations l, String p) => switch (p) {
+      'monthly' => l.subPeriodMonthly,
+      'quarterly' => l.subPeriodQuarterly,
+      'yearly' => l.subPeriodYearly,
+      _ => null,
+    };
 
 class _SubscribeSheetState extends State<SubscribeSheet> {
   late String _period;
@@ -97,7 +103,7 @@ class _SubscribeSheetState extends State<SubscribeSheet> {
         }
       });
     } catch (e) {
-      if (mounted) setState(() => _quoteError = _serverMessage(e, 'Devis indisponible.'));
+      if (mounted) setState(() => _quoteError = _serverMessage(e, L10n.current.subQuoteUnavailable));
     }
   }
 
@@ -106,7 +112,7 @@ class _SubscribeSheetState extends State<SubscribeSheet> {
   Future<void> _pay() async {
     final digits = _phoneCtrl.text.replaceAll(RegExp(r'\D'), '');
     if (_needsPhone && digits.length < 9) {
-      setState(() => _error = 'Saisissez un numéro Mobile Money (9 chiffres).');
+      setState(() => _error = L10n.current.subEnterMomoNumber);
       return;
     }
     setState(() {
@@ -128,14 +134,14 @@ class _SubscribeSheetState extends State<SubscribeSheet> {
       setState(() {
         _loading = false;
         _done = r.status == 'payment_pending'
-            ? 'Paiement initié : confirmez-le sur votre téléphone. Votre abonnement s\'active à la confirmation.'
-            : (r.message.isNotEmpty ? r.message : 'Abonnement activé.');
+            ? L10n.current.subPaymentInitiated
+            : (r.message.isNotEmpty ? r.message : L10n.current.subActivated);
       });
     } catch (e) {
       if (!mounted) return;
       setState(() {
         _loading = false;
-        _error = _serverMessage(e, 'Impossible de finaliser. Réessayez.');
+        _error = _serverMessage(e, L10n.current.subFinalizeFailed);
       });
     }
   }
@@ -146,13 +152,14 @@ class _SubscribeSheetState extends State<SubscribeSheet> {
     final q = _quote;
     final change = q?.change;
     final due = q?.amountDue ?? 0;
+    final l = context.l10n;
     final label = change == 'downgrade'
-        ? 'Programmer le changement'
+        ? l.subScheduleChange
         : change == 'trial'
-            ? 'Commencer l\'essai gratuit'
+            ? l.subStartTrial
             : due <= 0
-                ? 'Activer'
-                : 'Payer ${fmtXaf(due.round())} XAF';
+                ? l.subActivate
+                : l.shopPayAmount(fmtXaf(due.round()));
     return Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: Container(
@@ -173,12 +180,12 @@ class _SubscribeSheetState extends State<SubscribeSheet> {
             if (_done != null) ...[
               WinAlert(_done!, type: BadgeColor.success),
               const SizedBox(height: 16),
-              WinButton('Fermer', block: true, variant: WinButtonVariant.outline, onTap: () => Navigator.pop(context, true)),
+              WinButton(l.commonClose, block: true, variant: WinButtonVariant.outline, onTap: () => Navigator.pop(context, true)),
             ] else ...[
               if (widget.periods.length > 1)
                 Wrap(spacing: 8, children: [
                   for (final p in widget.periods)
-                    WinChip(_periodLabels[p] ?? p, active: _period == p, onTap: () {
+                    WinChip(_periodLabel(l, p) ?? p, active: _period == p, onTap: () {
                       setState(() => _period = p);
                       _loadQuote();
                     }),
@@ -189,24 +196,24 @@ class _SubscribeSheetState extends State<SubscribeSheet> {
                 decoration: BoxDecoration(
                     color: s.surface2, borderRadius: BorderRadius.circular(WinRadii.md), border: Border.all(color: s.outline)),
                 child: q == null
-                    ? Text(_quoteError ?? 'Calcul du prix…', style: WinType.bodyS(s.onMuted))
+                    ? Text(_quoteError ?? l.subComputingPrice, style: WinType.bodyS(s.onMuted))
                     : Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        _line(s, '${_periodLabels[q.billingPeriod] ?? q.billingPeriod} · prix TTC', '${fmtXaf(q.listPrice.round())} XAF'),
+                        _line(s, l.subPeriodTtc(_periodLabel(l, q.billingPeriod) ?? q.billingPeriod), '${fmtXaf(q.listPrice.round())} XAF'),
                         if (q.discount > 0 && change != 'trial')
-                          _line(s, 'Remise ${q.promoCode ?? ''}', '− ${fmtXaf(q.discount.round())} XAF', color: WinColors.success),
+                          _line(s, l.subDiscount(q.promoCode ?? ''), '− ${fmtXaf(q.discount.round())} XAF', color: WinColors.success),
                         if (q.prorataCredit > 0)
-                          _line(s, 'Période en cours non utilisée', '− ${fmtXaf(q.prorataCredit.round())} XAF', color: WinColors.success),
+                          _line(s, l.subUnusedPeriod, '− ${fmtXaf(q.prorataCredit.round())} XAF', color: WinColors.success),
                         const SizedBox(height: 6),
-                        _line(s, 'À payer maintenant', '${fmtXaf(due.round())} XAF', bold: true),
+                        _line(s, l.subDueNow, '${fmtXaf(due.round())} XAF', bold: true),
                         const SizedBox(height: 6),
                         Text(q.message, style: WinType.labelM(s.onMuted)),
                       ]),
               ),
               const SizedBox(height: 12),
               Row(children: [
-                Expanded(child: WinTextField(controller: _promoCtrl, hint: 'Code promo')),
+                Expanded(child: WinTextField(controller: _promoCtrl, hint: l.shopPromoCode)),
                 const SizedBox(width: 8),
-                WinButton('Appliquer', variant: WinButtonVariant.outline, onTap: () {
+                WinButton(l.shopApply, variant: WinButtonVariant.outline, onTap: () {
                   final code = _promoCtrl.text.trim().toUpperCase();
                   if (code.isEmpty) return;
                   setState(() => _promo = code);
@@ -221,7 +228,7 @@ class _SubscribeSheetState extends State<SubscribeSheet> {
                 const SizedBox(height: 14),
                 Wrap(spacing: 8, children: [
                   WinChip('Mobile Money', active: _method == 'mobile_money', onTap: () => setState(() => _method = 'mobile_money')),
-                  WinChip('Mon solde', active: _method == 'balance', onTap: () => setState(() => _method = 'balance')),
+                  WinChip(l.subMyBalance, active: _method == 'balance', onTap: () => setState(() => _method = 'balance')),
                 ]),
               ],
               if (_needsPhone) ...[
@@ -234,8 +241,8 @@ class _SubscribeSheetState extends State<SubscribeSheet> {
                   contentPadding: EdgeInsets.zero,
                   value: _autoRenew,
                   onChanged: (v) => setState(() => _autoRenew = v),
-                  title: Text('Renouveler avec mon solde à l\'échéance', style: WinType.bodyS(s.onSurface)),
-                  subtitle: Text('3 jours de grâce si le solde manque · résiliable à tout moment', style: WinType.labelS(s.onMuted)),
+                  title: Text(l.subAutoRenew, style: WinType.bodyS(s.onSurface)),
+                  subtitle: Text(l.subAutoRenewHint, style: WinType.labelS(s.onMuted)),
                 ),
               ],
               if (_error != null) ...[
@@ -243,9 +250,9 @@ class _SubscribeSheetState extends State<SubscribeSheet> {
                 WinAlert(_error!, type: BadgeColor.error),
               ],
               const SizedBox(height: 14),
-              WinButton(_loading ? 'Patientez…' : label, block: true, onTap: (_loading || q == null) ? null : _pay),
+              WinButton(_loading ? l.subPleaseWait : label, block: true, onTap: (_loading || q == null) ? null : _pay),
               const SizedBox(height: 8),
-              Text('Prix TTC · accès jusqu\'à la fin de la période payée en cas de résiliation',
+              Text(l.subFooterTtc,
                   style: WinType.labelS(s.onFaint), textAlign: TextAlign.center),
             ],
           ]),

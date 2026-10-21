@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
 import '../theme/win_motion.dart';
 import '../data/mock_data.dart';
 import '../data/models.dart';
@@ -22,6 +23,7 @@ class _RoleScreenState extends State<RoleScreen> {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
+    final l10n = context.l10n;
     return Scaffold(
       backgroundColor: s.bg,
       body: SafeArea(
@@ -32,7 +34,7 @@ class _RoleScreenState extends State<RoleScreen> {
               padding: const EdgeInsets.fromLTRB(24, 4, 24, 24),
               children: [
                 Center(
-                    child: Text('Je suis…',
+                    child: Text(l10n.authIAm,
                         style: WinType.archivo(
                             size: 26,
                             weight: FontWeight.w700,
@@ -40,7 +42,7 @@ class _RoleScreenState extends State<RoleScreen> {
                 const SizedBox(height: 6),
                 Center(
                     child: Text(
-                        'Choisis ton profil pour une expérience personnalisée.',
+                        l10n.authChooseProfile,
                         textAlign: TextAlign.center,
                         style: WinType.bodyM(s.onMuted))),
                 const SizedBox(height: 24),
@@ -57,7 +59,7 @@ class _RoleScreenState extends State<RoleScreen> {
           Padding(
             padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
             child: WinButton(
-              'Continuer',
+              l10n.commonContinue,
               variant: WinButtonVariant.accent,
               block: true,
               onTap: _sel == null
@@ -81,6 +83,17 @@ class _RoleCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
+    final l10n = context.l10n;
+    // Libellés affichés selon la langue (WinData.roles reste en français).
+    final (label, description) = switch (info.role) {
+      WinRole.student => (l10n.authRoleStudentLabel, l10n.authRoleStudentDesc),
+      WinRole.parent => (l10n.authRoleParentLabel, l10n.authRoleParentDesc),
+      WinRole.teacher => (l10n.authRoleTeacherLabel, l10n.authRoleTeacherDesc),
+      WinRole.institution => (
+          l10n.authRoleInstitutionLabel,
+          l10n.authRoleInstitutionDesc
+        ),
+    };
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -105,9 +118,9 @@ class _RoleCard extends StatelessWidget {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                Text(info.label, style: WinType.titleL(s.onStrong)),
+                Text(label, style: WinType.titleL(s.onStrong)),
                 const SizedBox(height: 2),
-                Text(info.description, style: WinType.bodyS(s.onMuted)),
+                Text(description, style: WinType.bodyS(s.onMuted)),
               ])),
           Container(
             width: 22,

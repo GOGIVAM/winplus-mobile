@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
 import '../theme/win_motion.dart';
 import '../data/models.dart';
 import '../services/auth_service.dart';
@@ -51,11 +52,11 @@ class _SignupScreenState extends State<SignupScreen> {
     if (_firstNameCtrl.text.trim().isEmpty ||
         _lastNameCtrl.text.trim().isEmpty ||
         email.isEmpty) {
-      setState(() => _error = 'Veuillez remplir tous les champs obligatoires.');
+      setState(() => _error = context.l10n.authFillRequired);
       return;
     }
     if (!_has8 || !_hasMaj || !_hasNum || !_matches) {
-      setState(() => _error = 'Le mot de passe ne respecte pas les critères.');
+      setState(() => _error = context.l10n.authPwdCriteria);
       return;
     }
     setState(() {
@@ -79,7 +80,7 @@ class _SignupScreenState extends State<SignupScreen> {
     } else {
       setState(() {
         _loading = false;
-        _error = result.message ?? 'Inscription impossible.';
+        _error = result.message ?? context.l10n.authSignupFailed;
       });
     }
   }
@@ -87,6 +88,7 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
+    final l10n = context.l10n;
     final topHeight = 128 + MediaQuery.of(context).padding.top;
 
     return Scaffold(
@@ -135,43 +137,43 @@ class _SignupScreenState extends State<SignupScreen> {
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(24, 24, 24, 28),
                 children: [
-                  Text('Créer un compte',
+                  Text(l10n.createAccount,
                       style: WinType.archivo(
                           size: 22,
                           weight: FontWeight.w700,
                           color: s.onStrong)),
                   const SizedBox(height: 4),
-                  Text('Quelques informations pour commencer.',
+                  Text(l10n.authSignupIntro,
                       style: WinType.bodyS(s.onMuted)),
                   const SizedBox(height: 24),
                   Row(children: [
                     Expanded(
                         child: WinTextField(
-                            label: 'Prénom',
+                            label: l10n.authFirstName,
                             icon: Icons.person_outline,
                             controller: _firstNameCtrl)),
                     const SizedBox(width: 12),
                     Expanded(
                         child: WinTextField(
-                            label: 'Nom', controller: _lastNameCtrl)),
+                            label: l10n.authLastName, controller: _lastNameCtrl)),
                   ]),
                   const SizedBox(height: 14),
                   WinTextField(
-                      label: 'Adresse email',
-                      hint: 'votre@email.com',
+                      label: l10n.authEmailAddress,
+                      hint: l10n.authEmailHint,
                       icon: Icons.mail_outline,
                       controller: _emailCtrl,
                       keyboardType: TextInputType.emailAddress),
                   const SizedBox(height: 14),
                   WinTextField(
-                      label: 'Téléphone (optionnel)',
+                      label: l10n.authPhoneOptional,
                       hint: '+237 6XX XXX XXX',
                       icon: Icons.phone_outlined,
                       controller: _phoneCtrl,
                       keyboardType: TextInputType.phone),
                   const SizedBox(height: 14),
                   WinTextField(
-                      label: 'Mot de passe',
+                      label: l10n.password,
                       hint: '••••••••',
                       icon: Icons.lock_outline,
                       obscure: _obscurePwd,
@@ -184,7 +186,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       onChanged: (_) => setState(() {})),
                   const SizedBox(height: 14),
                   WinTextField(
-                      label: 'Confirmer le mot de passe',
+                      label: l10n.authConfirmPassword,
                       hint: '••••••••',
                       icon: Icons.lock_outline,
                       obscure: _obscureConfirm,
@@ -196,19 +198,19 @@ class _SignupScreenState extends State<SignupScreen> {
                           setState(() => _obscureConfirm = !_obscureConfirm),
                       onChanged: (_) => setState(() {})),
                   const SizedBox(height: 16),
-                  _Constraint('Au moins 8 caractères', _has8),
+                  _Constraint(l10n.authRule8, _has8),
                   const SizedBox(height: 6),
-                  _Constraint('Au moins une majuscule', _hasMaj),
+                  _Constraint(l10n.authRuleUpper, _hasMaj),
                   const SizedBox(height: 6),
-                  _Constraint('Au moins un chiffre', _hasNum),
+                  _Constraint(l10n.authRuleDigit, _hasNum),
                   const SizedBox(height: 6),
-                  _Constraint('Les mots de passe correspondent', _matches),
+                  _Constraint(l10n.authRuleMatch, _matches),
                   if (_error != null) ...[
                     const SizedBox(height: 16),
                     WinAlert(_error!, type: BadgeColor.error),
                   ],
                   const SizedBox(height: 24),
-                  WinButton('Créer mon compte',
+                  WinButton(l10n.authCreateMyAccount,
                       variant: WinButtonVariant.accent,
                       block: true,
                       loading: _loading,
@@ -220,9 +222,9 @@ class _SignupScreenState extends State<SignupScreen> {
                       child: Text.rich(TextSpan(
                         style: WinType.bodyS(s.onMuted),
                         children: [
-                          const TextSpan(text: 'Déjà un compte ? '),
+                          TextSpan(text: l10n.authAlreadyAccount),
                           TextSpan(
-                              text: 'Se connecter',
+                              text: l10n.login,
                               style: WinType.bodyS(s.primary)
                                   .copyWith(fontWeight: FontWeight.w700)),
                         ],

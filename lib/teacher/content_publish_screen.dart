@@ -6,6 +6,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import '../l10n/l10n.dart';
 
 class ContentPublishScreen extends StatefulWidget {
   const ContentPublishScreen({super.key});
@@ -64,10 +65,34 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
     'ENS'
   ];
 
+  // Libellés affichés ; les valeurs envoyées à l'API (_type, _subject, _level) ne changent pas.
+  String _typeLabel(String t) => switch (t) {
+        'Épreuve' => context.l10n.dataTypePaper,
+        'Correction' => context.l10n.dataTypeCorrection,
+        'Quiz' => context.l10n.studentReportsQuiz,
+        'Livre' => context.l10n.dataTypeBook,
+        'Pack' => context.l10n.teacherPublishTypePack,
+        'Fiche' => context.l10n.teacherPublishTypeSheet,
+        _ => t,
+      };
+
+  String _subjectLabel(String sub) => switch (sub) {
+        'Mathématiques' => context.l10n.dataSubjectMath,
+        'Physique' => context.l10n.dataSubjectPhysics,
+        'Chimie' => context.l10n.dataSubjectChemistry,
+        'Français' => context.l10n.dataSubjectFrench,
+        'Anglais' => context.l10n.dataSubjectEnglish,
+        'Histoire-Géo' => context.l10n.dataSubjectHistGeo,
+        _ => sub,
+      };
+
+  String _levelLabel(String lvl) =>
+      lvl == 'Concours' ? context.l10n.authOptConcours : lvl;
+
   String _formatFileSize(int bytes) {
-    if (bytes < 1024) return '$bytes o';
-    if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)} Ko';
-    return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} Mo';
+    if (bytes < 1024) return context.l10n.teacherPublishSizeBytes(bytes);
+    if (bytes < 1024 * 1024) return context.l10n.teacherPublishSizeKb((bytes / 1024).toStringAsFixed(1));
+    return context.l10n.teacherPublishSizeMb((bytes / (1024 * 1024)).toStringAsFixed(1));
   }
 
   Future<void> _pickFile() async {
@@ -82,11 +107,11 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
 
   Future<void> _submit() async {
     if (_titleCtrl.text.trim().isEmpty) {
-      if (mounted) setState(() => _errorMsg = 'Veuillez saisir un titre.');
+      if (mounted) setState(() => _errorMsg = L10n.current.teacherPublishTitleRequired);
       return;
     }
     if (_pickedFile == null) {
-      if (mounted) setState(() => _errorMsg = 'Veuillez choisir un fichier.');
+      if (mounted) setState(() => _errorMsg = L10n.current.teacherPublishFileRequired);
       return;
     }
     if (mounted)
@@ -109,14 +134,14 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
       if (!mounted) return;
       if (ok) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Contenu soumis pour révision !')),
+          SnackBar(content: Text(L10n.current.teacherPublishSubmitted)),
         );
         Navigator.pop(context);
       } else {
-        setState(() => _errorMsg = 'Échec de la soumission. Réessayez.');
+        setState(() => _errorMsg = L10n.current.teacherPublishSubmitFailed);
       }
     } catch (e) {
-      if (mounted) setState(() => _errorMsg = 'Erreur réseau. Réessayez.');
+      if (mounted) setState(() => _errorMsg = L10n.current.teacherPublishNetworkError);
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -178,19 +203,19 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Publier un contenu', style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.teacherPublishTitle, style: WinType.headlineS(s.onStrong)),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           // 1. Titre
-          _label('Titre *'),
+          _label(context.l10n.forumTitleField),
           TextField(
             controller: _titleCtrl,
             maxLength: 100,
             style: WinType.bodyM(s.onStrong),
             decoration: InputDecoration(
-              hintText: 'Ex: BAC C Mathématiques 2024',
+              hintText: context.l10n.teacherPublishTitleHint,
               hintStyle: WinType.bodyM(s.onFaint),
               filled: true,
               fillColor: s.surface,
@@ -219,10 +244,11 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                  _label('Type'),
+                  _label(context.l10n.teacherPublishType),
                   _styledDropdown<String>(
                     value: _type,
                     items: _types,
+                    display: _typeLabel,
                     onChanged: (v) {
                       if (v != null) setState(() => _type = v);
                     },
@@ -233,10 +259,11 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                  _label('Matière'),
+                  _label(context.l10n.commonSubject),
                   _styledDropdown<String>(
                     value: _subject,
                     items: _subjects,
+                    display: _subjectLabel,
                     onChanged: (v) {
                       if (v != null) setState(() => _subject = v);
                     },
@@ -246,7 +273,7 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
           const SizedBox(height: 16),
 
           // 3. Chips niveau
-          _label('Niveau'),
+          _label(context.l10n.commonLevel),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
@@ -268,7 +295,7 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
                         borderRadius: BorderRadius.circular(WinRadii.full),
                       ),
                       child: Text(
-                        lvl,
+                        _levelLabel(lvl),
                         style: WinType.manrope(
                           size: 13,
                           weight: FontWeight.w600,
@@ -284,7 +311,7 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
           const SizedBox(height: 16),
 
           // 4. Examen
-          _label('Examen'),
+          _label(context.l10n.widgetMemExam),
           _styledDropdown<String>(
             value: _exam,
             items: _exams,
@@ -295,14 +322,14 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
           const SizedBox(height: 16),
 
           // 5. Année
-          _label('Année'),
+          _label(context.l10n.teacherPublishYear),
           TextField(
             controller: _yearCtrl,
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             style: WinType.bodyM(s.onStrong),
             decoration: InputDecoration(
-              hintText: 'Ex: 2024',
+              hintText: context.l10n.teacherPublishYearHint,
               hintStyle: WinType.bodyM(s.onFaint),
               filled: true,
               fillColor: s.surface,
@@ -325,14 +352,14 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
           const SizedBox(height: 16),
 
           // 6. Description
-          _label('Description'),
+          _label(context.l10n.commonDescription),
           TextField(
             controller: _descCtrl,
             maxLength: 500,
             maxLines: 4,
             style: WinType.bodyM(s.onStrong),
             decoration: InputDecoration(
-              hintText: 'Décrivez le contenu (objectifs, niveau, contenu…)',
+              hintText: context.l10n.teacherPublishDescriptionHint,
               hintStyle: WinType.bodyM(s.onFaint),
               filled: true,
               fillColor: s.surface,
@@ -356,7 +383,7 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
           const SizedBox(height: 16),
 
           // 7. Prix
-          _label('Prix'),
+          _label(context.l10n.tutoringPrice),
           _PrixRow(
             prixLibre: _prixLibre,
             priceCtrl: _priceCtrl,
@@ -365,10 +392,10 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
           const SizedBox(height: 20),
 
           // 8. Upload fichier
-          _label('Fichier'),
+          _label(context.l10n.teacherVerifFile),
           if (_pickedFile == null)
             WinButton(
-              'Choisir un fichier',
+              context.l10n.teacherPublishChooseFile,
               variant: WinButtonVariant.outline,
               block: true,
               icon: Icons.attach_file,
@@ -414,7 +441,7 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
 
           // 9. Bouton publier
           WinButton(
-            'Publier pour révision',
+            context.l10n.teacherPublishSubmit,
             block: true,
             loading: _loading,
             icon: Icons.send_outlined,
@@ -425,7 +452,7 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
           // 10. Note légale
           Center(
             child: Text(
-              'Votre contenu sera examiné avant d\'être publié (24-48h)',
+              context.l10n.teacherPublishReviewNote,
               style: WinType.labelS(s.onMuted),
               textAlign: TextAlign.center,
             ),
@@ -480,8 +507,8 @@ class _PrixRow extends StatelessWidget {
           ),
           const SizedBox(width: 10),
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('Abonnement uniquement', style: WinType.titleM(s.onStrong)),
-            Text('Accessible à tous les abonnés',
+            Text(context.l10n.teacherPublishSubscriptionOnly, style: WinType.titleM(s.onStrong)),
+            Text(context.l10n.teacherPublishSubscriptionOnlyHint,
                 style: WinType.labelS(s.onMuted)),
           ]),
         ]),
@@ -516,8 +543,8 @@ class _PrixRow extends StatelessWidget {
           ),
           const SizedBox(width: 10),
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('Prix libre', style: WinType.titleM(s.onStrong)),
-            Text('Fixez votre propre prix en XAF',
+            Text(context.l10n.teacherPublishFreePrice, style: WinType.titleM(s.onStrong)),
+            Text(context.l10n.teacherPublishFreePriceHint,
                 style: WinType.labelS(s.onMuted)),
           ]),
         ]),
@@ -530,7 +557,7 @@ class _PrixRow extends StatelessWidget {
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           style: WinType.bodyM(s.onStrong),
           decoration: InputDecoration(
-            hintText: 'Montant en XAF (ex: 500)',
+            hintText: context.l10n.teacherPublishAmountHint,
             hintStyle: WinType.bodyM(s.onFaint),
             filled: true,
             fillColor: s.surface,

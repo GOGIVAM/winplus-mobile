@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
+import '../widgets/language_selector.dart';
 import '../theme/win_motion.dart';
 import '../app_state.dart';
 import '../auth/welcome_screen.dart';
@@ -31,30 +33,6 @@ import '../shared/legal_screen.dart';
 import '../widgets/knowledge_base_toggle.dart';
 
 /// ===================== ACCUEIL PARENT =====================
-
-const _jours = [
-  'Lundi',
-  'Mardi',
-  'Mercredi',
-  'Jeudi',
-  'Vendredi',
-  'Samedi',
-  'Dimanche'
-];
-const _mois = [
-  'janvier',
-  'février',
-  'mars',
-  'avril',
-  'mai',
-  'juin',
-  'juillet',
-  'août',
-  'septembre',
-  'octobre',
-  'novembre',
-  'décembre'
-];
 
 class ParentDashTab extends StatefulWidget {
   const ParentDashTab({super.key});
@@ -162,7 +140,7 @@ class _ParentDashTabState extends State<ParentDashTab> {
           _sub!.expiresAt!.isAfter(DateTime.now()))
         UpcomingEvent(
             type: 'renewal',
-            label: 'Fin de période · plan ${_sub!.planName}',
+            label: context.l10n.parentDashRenewalEvent(_sub!.planName),
             date: _sub!.expiresAt!),
       ..._events.map((e) =>
           UpcomingEvent(type: e.type, label: e.title, date: e.startDate!)),
@@ -171,12 +149,12 @@ class _ParentDashTabState extends State<ParentDashTab> {
     final now = DateTime.now();
     final hour = now.hour;
     final greeting =
-        hour < 12 ? 'Bonjour' : (hour < 18 ? 'Bon après-midi' : 'Bonsoir');
+        hour < 12 ? context.l10n.studentHomeGoodMorning : (hour < 18 ? context.l10n.studentHomeGoodAfternoon : context.l10n.studentHomeGoodEvening);
     final firstName = (_profile?.name ?? '').trim().split(' ').first;
     final dateLabel =
-        '${_jours[now.weekday - 1]} ${now.day} ${_mois[now.month - 1]} ${now.year}';
+        '${WinFormat.weekdayCap(now.weekday)} ${WinFormat.date(now)}';
     final hasPlan = _sub != null && _sub!.hasPlan;
-    final planLabel = hasPlan ? 'Plan ${_sub!.planName}' : 'Sans abonnement';
+    final planLabel = hasPlan ? context.l10n.parentPlanName(_sub!.planName) : context.l10n.parentNoSubscription;
 
     // Crédits : solde réel du portefeuille (GET /parent/credits : dotation du
     // plan restante + recharges). Null sans abonnement payant actif.
@@ -226,13 +204,13 @@ class _ParentDashTabState extends State<ParentDashTab> {
             Row(children: [
               Expanded(
                   child: _PHeroStat(
-                      '${tracked.length}', 'enfants suivis', 'Total')),
+                      '${tracked.length}', context.l10n.parentDashChildrenFollowed, context.l10n.tutoringTotal)),
               const SizedBox(width: 10),
               Expanded(
                   child: _PHeroStat(
                       wallet == null ? '—' : '${fmtXaf(creditsAvail)} XAF',
-                      'crédits dispo',
-                      'Solde')),
+                      context.l10n.parentDashCreditsAvail,
+                      context.l10n.parentDashBalance)),
             ]),
           ]),
         ),
@@ -246,14 +224,14 @@ class _ParentDashTabState extends State<ParentDashTab> {
               const Icon(Icons.account_balance_wallet_outlined,
                   size: 20, color: WinColors.teal500),
               const SizedBox(width: 8),
-              Text('Crédits disponibles', style: WinType.titleM(s.onStrong)),
+              Text(context.l10n.parentDashCreditsTitle, style: WinType.titleM(s.onStrong)),
             ]),
             const SizedBox(height: 12),
             if (!_walletLoaded)
-              Text('Chargement du solde…', style: WinType.labelS(s.onMuted))
+              Text(context.l10n.parentDashLoadingBalance, style: WinType.labelS(s.onMuted))
             else if (wallet == null)
               Text(
-                  'Aucun crédit : les crédits sont versés avec un abonnement parent actif.',
+                  context.l10n.parentDashNoCredits,
                   style: WinType.bodyS(s.onMuted))
             else ...[
               Text('${fmtXaf(creditsAvail)} XAF',
@@ -263,19 +241,18 @@ class _ParentDashTabState extends State<ParentDashTab> {
                       color: WinColors.teal600)),
               const SizedBox(height: 4),
               Text(
-                  'Dont ${fmtXaf(wallet.allocationRemaining.round())} XAF de dotation du plan'
-                  ' et ${fmtXaf(wallet.permanent.round())} XAF de recharges',
+                  context.l10n.parentDashCreditsDetail(fmtXaf(wallet.allocationRemaining.round()), fmtXaf(wallet.permanent.round())),
                   style: WinType.labelS(s.onMuted)),
             ],
             if (_sub != null && _sub!.hasPlan && _sub!.expiresAt != null) ...[
               const SizedBox(height: 6),
               Text(
-                'Plan ${_sub!.planName} · Fin de période dans ${_sub!.expiresAt!.difference(DateTime.now()).inDays} jours',
+                context.l10n.parentDashPeriodEndIn(_sub!.planName, _sub!.expiresAt!.difference(DateTime.now()).inDays),
                 style: WinType.labelS(s.onMuted),
               ),
             ],
             const SizedBox(height: 12),
-            WinButton('Voir l\'abonnement',
+            WinButton(context.l10n.parentDashSeeSubscription,
                 variant: WinButtonVariant.ghost,
                 small: true,
                 onTap: () => Navigator.push(
@@ -293,7 +270,7 @@ class _ParentDashTabState extends State<ParentDashTab> {
           child: Row(children: [
             const WinAIOrb(size: 20),
             const SizedBox(width: 10),
-            Text('Alertes & conseils WinAI',
+            Text(context.l10n.parentDashAlertsAdvice,
                 style: WinType.archivo(size: 16, color: s.onStrong)),
             const Spacer(),
             const Icon(Icons.chevron_right, size: 18, color: WinColors.ink300),
@@ -308,13 +285,13 @@ class _ParentDashTabState extends State<ParentDashTab> {
         // ── Mes enfants (cards horizontales scrollables) ──────────
         const SizedBox(height: 20),
         Row(children: [
-          Text('Mes enfants',
+          Text(context.l10n.parentSubMyChildren,
               style: WinType.archivo(size: 18, color: s.onStrong)),
           const Spacer(),
           if (tracked.isNotEmpty)
             GestureDetector(
               onTap: () {},
-              child: Text('Voir tout', style: WinType.labelM(s.primary)),
+              child: Text(context.l10n.commonSeeAll, style: WinType.labelM(s.primary)),
             ),
         ]),
         const SizedBox(height: 12),
@@ -324,7 +301,7 @@ class _ParentDashTabState extends State<ParentDashTab> {
         else if (tracked.isEmpty)
           WinCard(
             child: Text(
-                'Aucun enfant suivi. Ajoutez un enfant depuis l\'onglet Enfants.',
+                context.l10n.parentDashNoChild,
                 style: WinType.bodyS(s.onMuted)),
           )
         else
@@ -341,7 +318,7 @@ class _ParentDashTabState extends State<ParentDashTab> {
         // ── Évènements à venir (réels uniquement) ─────────────────
         if (events.isNotEmpty) ...[
           const SizedBox(height: 24),
-          Text('Évènements à venir',
+          Text(context.l10n.parentDashUpcomingEvents,
               style: WinType.archivo(size: 18, color: s.onStrong)),
           const SizedBox(height: 12),
           ...events.map((e) => Padding(
@@ -353,7 +330,7 @@ class _ParentDashTabState extends State<ParentDashTab> {
         // ── Acheter pour un enfant ────────────────────────────────
         const SizedBox(height: 8),
         WinButton(
-          'Acheter du contenu pour un enfant',
+          context.l10n.parentBuyContentForChild,
           block: true,
           icon: Icons.shopping_bag_outlined,
           onTap: kids.isEmpty
@@ -413,7 +390,7 @@ class ChildCard extends StatelessWidget {
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(child.fullName, style: WinType.titleL(s.onStrong)),
           const SizedBox(height: 2),
-          Text(child.level ?? child.schoolName ?? 'Élève',
+          Text(child.level ?? child.schoolName ?? context.l10n.roleStudent,
               style: WinType.labelM(s.onMuted)),
         ])),
         const Icon(Icons.chevron_right, color: WinColors.ink300),
@@ -436,13 +413,13 @@ class _TrackedChildCard extends StatelessWidget {
     final String statusLabel;
     if (diff.inHours < 24) {
       statusColor = WinColors.success;
-      statusLabel = 'Actif';
+      statusLabel = context.l10n.commonActive;
     } else if (diff.inDays == 1) {
       statusColor = WinColors.warn;
-      statusLabel = 'Hier';
+      statusLabel = context.l10n.commonYesterday;
     } else {
       statusColor = WinColors.error;
-      statusLabel = 'Inactif';
+      statusLabel = context.l10n.parentChildInactive;
     }
 
     final Color scoreColor = child.avgScore >= 70
@@ -531,7 +508,7 @@ class _EventTile extends StatelessWidget {
     final color = isRenewal ? WinColors.warn : s.primary;
     final days = event.date.difference(DateTime.now()).inDays;
     final daysLabel =
-        days <= 0 ? "aujourd'hui" : 'dans $days jour${days > 1 ? 's' : ''}';
+        days <= 0 ? context.l10n.parentEventToday : context.l10n.parentEventInDays(days);
     return GestureDetector(
       onTap: isRenewal
           ? () => Navigator.push(context,
@@ -600,7 +577,7 @@ class _ParentChildrenTabState extends State<ParentChildrenTab> {
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
           child: Align(
               alignment: Alignment.centerLeft,
-              child: Text('Mes enfants',
+              child: Text(context.l10n.parentSubMyChildren,
                   style: WinType.archivo(size: 22, color: s.onStrong)))),
       Expanded(
           child: _children == null
@@ -613,7 +590,7 @@ class _ParentChildrenTabState extends State<ParentChildrenTab> {
                           child: ChildCard(child: k))),
                       const SizedBox(height: 4),
                       if (atChildLimit)
-                        WinButton('$childLimit enfant${childLimit > 1 ? 's' : ''} max avec votre plan',
+                        WinButton(context.l10n.parentChildrenLimit(childLimit),
                             variant: WinButtonVariant.outline,
                             block: true,
                             icon: Icons.lock_outline,
@@ -622,7 +599,7 @@ class _ParentChildrenTabState extends State<ParentChildrenTab> {
                                 WinPageRoute(
                                     builder: (_) => const PricingScreen())))
                       else
-                        WinButton('Ajouter un enfant',
+                        WinButton(context.l10n.parentAddChildTitle,
                             variant: WinButtonVariant.outline,
                             block: true,
                             icon: Icons.add, onTap: () async {
@@ -682,7 +659,7 @@ class _ParentResourcesTabState extends State<ParentResourcesTab> {
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
           child: Align(
               alignment: Alignment.centerLeft,
-              child: Text('Ressources',
+              child: Text(context.l10n.shellTabResources,
                   style: WinType.archivo(size: 22, color: s.onStrong)))),
       Expanded(
           child: ListView(
@@ -694,17 +671,17 @@ class _ParentResourcesTabState extends State<ParentResourcesTab> {
               const SizedBox(width: 12),
               Expanded(
                   child: Text(
-                      "D'après les résultats de vos enfants, ces ressources cibleront leurs points faibles.",
+                      context.l10n.parentResourcesIntro,
                       style: WinType.bodyS(WinColors.ink700)))
             ])),
             const SizedBox(height: 16),
-            Text('Recommandées par WinAI',
+            Text(context.l10n.parentResourcesRecommended,
                 style: WinType.archivo(size: 18, color: s.onStrong)),
             const SizedBox(height: 12),
             if (reco == null)
               const Center(child: CircularProgressIndicator())
             else if (reco.isEmpty)
-              Text('Aucun contenu disponible.', style: WinType.bodyM(s.onMuted))
+              Text(context.l10n.studentTabsNoContent, style: WinType.bodyM(s.onMuted))
             else
               GridView.count(
                 shrinkWrap: true,
@@ -718,7 +695,7 @@ class _ParentResourcesTabState extends State<ParentResourcesTab> {
               ),
             const SizedBox(height: 20),
             WinButton(
-              'Acheter du contenu pour un enfant',
+              context.l10n.parentBuyContentForChild,
               block: true,
               icon: Icons.shopping_bag_outlined,
               onTap: _children.isEmpty
@@ -806,21 +783,17 @@ class _ParentPaymentsTabState extends State<ParentPaymentsTab> {
     });
   }
 
-  static const _months = [
-    'janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin',
-    'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.',
-  ];
-
   String _subtitle(ApiParentPayment p) {
     final d = p.date;
+    final l = context.l10n;
     final status = switch (p.status) {
-      'pending' => ' · en attente',
-      'failed' => ' · échoué',
-      'refunded' => ' · remboursé',
-      'refund_requested' => ' · remboursement demandé',
+      'pending' => ' · ${l.parentPayStatusPending}',
+      'failed' => ' · ${l.parentPayStatusFailed}',
+      'refunded' => ' · ${l.parentPayStatusRefunded}',
+      'refund_requested' => ' · ${l.parentPayStatusRefundRequested}',
       _ => '',
     };
-    return '${d.day} ${_months[d.month - 1]} ${d.year} · ${p.method}$status';
+    return '${WinFormat.dateShort(d)} · ${p.method}$status';
   }
 
   Widget _row(WinScheme s, ApiParentPayment p, bool last) {
@@ -876,7 +849,7 @@ class _ParentPaymentsTabState extends State<ParentPaymentsTab> {
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
           child: Align(
               alignment: Alignment.centerLeft,
-              child: Text('Paiements',
+              child: Text(context.l10n.parentPaymentsTitle,
                   style: WinType.archivo(size: 22, color: s.onStrong)))),
       Expanded(
           child: RefreshIndicator(
@@ -895,7 +868,7 @@ class _ParentPaymentsTabState extends State<ParentPaymentsTab> {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('DÉPENSES CE MOIS',
+                      Text(context.l10n.parentPaymentsMonthSpent,
                           style: WinType.labelS(WinColors.ink300)
                               .copyWith(letterSpacing: 0.8)),
                       const SizedBox(height: 6),
@@ -905,7 +878,7 @@ class _ParentPaymentsTabState extends State<ParentPaymentsTab> {
                     ]),
               ),
               const SizedBox(height: 20),
-              Text('Historique',
+              Text(context.l10n.teacherVerifHistory,
                   style: WinType.archivo(size: 18, color: s.onStrong)),
               const SizedBox(height: 12),
               if (_loading)
@@ -915,15 +888,15 @@ class _ParentPaymentsTabState extends State<ParentPaymentsTab> {
               else if (_failed)
                 WinCard(
                     child: Column(children: [
-                  Text("L'historique n'a pas pu être chargé.",
+                  Text(context.l10n.parentPaymentsLoadError,
                       style: WinType.bodyM(s.onMuted)),
                   const SizedBox(height: 10),
-                  WinButton('Réessayer', icon: Icons.refresh, onTap: _load),
+                  WinButton(context.l10n.commonRetry, icon: Icons.refresh, onTap: _load),
                 ]))
               else if (items.isEmpty)
                 WinCard(
                     child: Text(
-                        'Aucun paiement pour le moment. Vos achats, abonnements et recharges apparaîtront ici.',
+                        context.l10n.parentPaymentsEmpty,
                         style: WinType.bodyM(s.onMuted)))
               else
                 WinCard(
@@ -1007,7 +980,7 @@ class _ParentProfileTabState extends State<ParentProfileTab> {
             WinAvatar(name.isEmpty ? 'Parent' : name,
                 size: 80, color: WinColors.blue100),
             const SizedBox(height: 12),
-            Text(name.isEmpty ? (_loaded ? 'Mon compte' : '…') : name,
+            Text(name.isEmpty ? (_loaded ? context.l10n.parentProfileMyAccount : '…') : name,
                 style: WinType.archivo(size: 22, color: s.onStrong)),
             if (email.isNotEmpty)
               Text(email, style: WinType.bodyS(s.onMuted)),
@@ -1019,7 +992,7 @@ class _ParentProfileTabState extends State<ParentProfileTab> {
                   borderRadius: BorderRadius.circular(WinRadii.full),
                   border: Border.all(
                       color: WinColors.teal500.withValues(alpha: 0.4))),
-              child: Text(hasPlan ? 'Plan ${_sub!.planName}' : 'Sans abonnement',
+              child: Text(hasPlan ? context.l10n.parentPlanName(_sub!.planName) : context.l10n.parentNoSubscription,
                   style: WinType.manrope(
                       size: 12,
                       weight: FontWeight.w700,
@@ -1032,7 +1005,7 @@ class _ParentProfileTabState extends State<ParentProfileTab> {
         // ── Stats rapides ────────────────────────────────────────
         Row(children: [
           Expanded(
-              child: _StatBox(_loaded ? '${_children.length}' : '…', 'Enfants',
+              child: _StatBox(_loaded ? '${_children.length}' : '…', context.l10n.shellTabChildren,
                   Icons.child_care_outlined, WinColors.blue500)),
           const SizedBox(width: 10),
           Expanded(
@@ -1040,19 +1013,19 @@ class _ParentProfileTabState extends State<ParentProfileTab> {
                   _wallet == null
                       ? '—'
                       : '${fmtXaf(_wallet!.creditsLeft.round())} XAF',
-                  'Crédits',
+                  context.l10n.parentProfileCredits,
                   Icons.account_balance_wallet_outlined,
                   WinColors.teal500)),
           const SizedBox(width: 10),
           Expanded(
-              child: _StatBox(_loaded ? '$_unreadAlerts' : '…', 'Alertes WinAI',
+              child: _StatBox(_loaded ? '$_unreadAlerts' : '…', context.l10n.commonWinaiAlerts,
                   Icons.notifications_outlined, WinColors.warn)),
         ]),
         const SizedBox(height: 20),
 
         // ── Enfants liés ─────────────────────────────────────────
         if (_children.isNotEmpty) ...[
-          Text('Enfants suivis', style: WinType.titleM(s.onStrong)),
+          Text(context.l10n.parentSubChildrenFollowed, style: WinType.titleM(s.onStrong)),
           const SizedBox(height: 10),
           ..._children.map((c) => Padding(
                 padding: const EdgeInsets.only(bottom: 8),
@@ -1078,7 +1051,7 @@ class _ParentProfileTabState extends State<ParentProfileTab> {
                             Text(c.firstName.isEmpty ? c.fullName : c.firstName,
                                 style: WinType.bodyM(s.onStrong)
                                     .copyWith(fontWeight: FontWeight.w600)),
-                            Text(c.level ?? c.schoolName ?? 'Élève',
+                            Text(c.level ?? c.schoolName ?? context.l10n.roleStudent,
                                 style: WinType.labelS(s.onMuted)),
                           ])),
                       if (_scores[c.id] != null)
@@ -1096,39 +1069,40 @@ class _ParentProfileTabState extends State<ParentProfileTab> {
 
         // ── Paramètres ───────────────────────────────────────────
         const SizedBox(height: 4),
-        _Row(Icons.account_balance_wallet_outlined, 'Mon abonnement',
+        _Row(Icons.account_balance_wallet_outlined, context.l10n.studentHubSubscription,
             onTap: () => Navigator.push(
                 context,
                 WinPageRoute(
                     builder: (_) => const SubscriptionStatusScreen()))),
-        _Row(Icons.autorenew, 'Gérer l\'abonnement',
+        _Row(Icons.autorenew, context.l10n.parentProfileManageSub,
             onTap: () => Navigator.push(
                 context,
                 WinPageRoute(
                     builder: (_) => const SubscriptionStatusScreen()))),
         // Lot 9.3 : attribuer un tuteur, réserver pour ses enfants.
-        _Row(Icons.school_outlined, 'Cours particuliers de mes enfants',
+        _Row(Icons.school_outlined, context.l10n.parentProfileTutoring,
             onTap: () => Navigator.push(context,
                 WinPageRoute(builder: (_) => const TutoringForStudentsScreen()))),
         // Lot 9.7b : choix des enfants couverts par le plan (catalogue, bonus WinAI, alertes).
-        _Row(Icons.verified_user_outlined, 'Enfants couverts par mon plan',
+        _Row(Icons.verified_user_outlined, context.l10n.parentProfileCovered,
             onTap: () => Navigator.push(context,
                 WinPageRoute(builder: (_) => const CoveredChildrenScreen()))),
-        _Row(Icons.payment_outlined, 'Paiements & historique',
+        _Row(Icons.payment_outlined, context.l10n.parentProfilePayments,
             onTap: () => Navigator.push(context,
                 WinPageRoute(builder: (_) => const _PaymentsScreen()))),
-        _Row(Icons.notifications_outlined, 'Notifications',
+        _Row(Icons.notifications_outlined, context.l10n.studentNotifTitle,
             trailing: Switch(
                 value: true, activeThumbColor: s.primary, onChanged: (_) {})),
-        _Row(Icons.dark_mode_outlined, 'Mode sombre',
+        _Row(Icons.dark_mode_outlined, context.l10n.commonDarkMode,
             trailing: Switch(
                 value: state.dark,
                 activeThumbColor: s.primary,
                 onChanged: (_) => state.toggleTheme())),
-        const _Row(Icons.language, 'Langue', trailing: WinBadge('FR')),
-        _Row(Icons.shield_outlined, 'Politique de confidentialité',
+        _Row(Icons.language, context.l10n.language,
+            trailing: const LanguageToggle()),
+        _Row(Icons.shield_outlined, context.l10n.studentHubPrivacy,
             onTap: () => LegalScreen.showPrivacy(context)),
-        _Row(Icons.article_outlined, 'Conditions d\'utilisation',
+        _Row(Icons.article_outlined, context.l10n.studentHubTerms,
             onTap: () => LegalScreen.showCgu(context)),
         const SizedBox(height: 16),
         TextButton(
@@ -1140,7 +1114,7 @@ class _ParentProfileTabState extends State<ParentProfileTab> {
               (r) => false,
             );
           },
-          child: Text('Se déconnecter',
+          child: Text(context.l10n.commonLogout,
               style: WinType.manrope(
                   size: 14, weight: FontWeight.w600, color: WinColors.error)),
         ),
@@ -1225,7 +1199,7 @@ class _PaymentsScreen extends StatelessWidget {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Paiements', style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.parentPaymentsTitle, style: WinType.headlineS(s.onStrong)),
       ),
       body: const ParentPaymentsTab(),
     );
@@ -1245,11 +1219,11 @@ class _ParentWinAITabState extends State<ParentWinAITab> {
   final List<({bool me, String text})> _msgs = [];
   bool _thinking = false;
 
-  static const _suggestions = [
-    'Mon enfant est en difficulté',
-    'Plan de révision maison',
-    'Analyse ses résultats',
-    'Comment le motiver ?',
+  List<String> get _suggestions => [
+    context.l10n.parentAiSuggestion1,
+    context.l10n.parentAiSuggestion2,
+    context.l10n.parentAiSuggestion3,
+    context.l10n.parentAiSuggestion4,
   ];
 
   @override
@@ -1275,7 +1249,7 @@ class _ParentWinAITabState extends State<ParentWinAITab> {
       _thinking = false;
       _msgs.add((
         me: false,
-        text: reply ?? 'Désolé, je n\'ai pas pu répondre. Réessaie.'
+        text: reply ?? L10n.current.studentTabsAiNoReply
       ));
     });
   }
@@ -1306,7 +1280,7 @@ class _ParentWinAITabState extends State<ParentWinAITab> {
                     Text('WinAI',
                         style: WinType.archivo(size: 28, color: s.onStrong)),
                     const SizedBox(height: 6),
-                    Text('Ton conseiller familial chaleureux',
+                    Text(context.l10n.parentAiTagline,
                         style: WinType.bodyM(s.onMuted),
                         textAlign: TextAlign.center),
                     const SizedBox(height: 24),
@@ -1358,7 +1332,7 @@ class _ParentWinAITabState extends State<ParentWinAITab> {
                           const Icon(Icons.psychology_rounded,
                               size: 15, color: Color(0xFF8B5CF6)),
                           const SizedBox(width: 8),
-                          Text('Mémoire WinAI',
+                          Text(context.l10n.commonWinaiMemory,
                               style: WinType.manrope(
                                   size: 13,
                                   weight: FontWeight.w600,
@@ -1394,7 +1368,7 @@ class _ParentWinAITabState extends State<ParentWinAITab> {
                                 child: CircularProgressIndicator(
                                     strokeWidth: 2, color: s.primary)),
                             const SizedBox(width: 8),
-                            Text('WinAI réfléchit…',
+                            Text(context.l10n.commonWinaiThinking,
                                 style: WinType.bodyS(s.onMuted)),
                           ]),
                         ),
@@ -1428,7 +1402,7 @@ class _ParentWinAITabState extends State<ParentWinAITab> {
           child: Row(children: [
             Expanded(
                 child: WinTextField(
-                    hint: 'Posez votre question sur la scolarité…',
+                    hint: context.l10n.parentAiHint,
                     controller: _ctrl)),
             const SizedBox(width: 8),
             GestureDetector(

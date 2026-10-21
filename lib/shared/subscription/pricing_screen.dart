@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../app_state.dart';
 import '../../data/models.dart';
+import '../../l10n/l10n.dart';
 import '../../services/subscription_service.dart';
 import '../../theme/win_colors.dart';
 import '../../theme/win_theme.dart';
@@ -21,7 +22,20 @@ class PricingScreen extends StatefulWidget {
   State<PricingScreen> createState() => _PricingScreenState();
 }
 
-const _periods = [('monthly', 'Mensuel', 'mois'), ('quarterly', 'Trimestriel', 'trimestre'), ('yearly', 'Annuel', 'an')];
+// Lot 10.11 : codes de période (API) ; libellés affichés via les clés.
+const _periods = ['monthly', 'quarterly', 'yearly'];
+
+String _periodName(AppLocalizations l, String p) => switch (p) {
+      'quarterly' => l.subPeriodQuarterly,
+      'yearly' => l.subPeriodYearly,
+      _ => l.subPeriodMonthly,
+    };
+
+String _periodUnit(AppLocalizations l, String p) => switch (p) {
+      'quarterly' => l.subUnitQuarter,
+      'yearly' => l.subUnitYear,
+      _ => l.subUnitMonth,
+    };
 
 class _PricingScreenState extends State<PricingScreen> {
   String _period = 'monthly';
@@ -69,7 +83,7 @@ class _PricingScreenState extends State<PricingScreen> {
     await SubscribeSheet.show(context,
         planId: plan.planId,
         planName: plan.name,
-        periods: _periods.map((p) => p.$1).where((p) => plan.prices.containsKey(p)).toList(),
+        periods: _periods.where((p) => plan.prices.containsKey(p)).toList(),
         initialPeriod: _period);
     if (mounted) _load();
   }
@@ -79,14 +93,14 @@ class _PricingScreenState extends State<PricingScreen> {
     final s = WinTheme.of(context);
     final sub = SubscriptionScope.of(context);
     final plans = _plans ?? [];
-    final available = _periods.where((p) => p.$1 == 'monthly' || plans.any((c) => c.prices.containsKey(p.$1))).toList();
+    final available = _periods.where((p) => p == 'monthly' || plans.any((c) => c.prices.containsKey(p))).toList();
     return Scaffold(
       backgroundColor: s.bg,
       appBar: AppBar(
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(icon: Icon(Icons.arrow_back, color: s.onStrong), onPressed: () => Navigator.pop(context)),
-        title: Text('Nos plans', style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.subOurPlans, style: WinType.headlineS(s.onStrong)),
         actions: [IconButton(icon: Icon(Icons.refresh_outlined, color: s.onStrong), onPressed: _load)],
       ),
       body: _hasError
@@ -94,21 +108,20 @@ class _PricingScreenState extends State<PricingScreen> {
               child: Column(mainAxisSize: MainAxisSize.min, children: [
               Icon(Icons.wifi_off_outlined, size: 48, color: s.onFaint),
               const SizedBox(height: 12),
-              Text('Erreur de chargement', style: WinType.bodyM(s.onMuted)),
+              Text(context.l10n.subLoadError, style: WinType.bodyM(s.onMuted)),
               const SizedBox(height: 12),
-              WinButton('Réessayer', onTap: _load),
+              WinButton(context.l10n.commonRetry, onTap: _load),
             ]))
           : _plans == null
               ? const Center(child: CircularProgressIndicator())
               : _institution
                   ? Padding(
                       padding: const EdgeInsets.all(24),
-                      child: Text(
-                          'Les établissements passent par une licence (sièges élèves, année scolaire) : gérez-la depuis l\'onglet Licence de votre espace établissement.',
+                      child: Text(context.l10n.subInstitutionLicenseNote,
                           style: WinType.bodyM(s.onMuted)))
                   : ListView(padding: const EdgeInsets.fromLTRB(16, 8, 16, 32), children: [
                       Wrap(spacing: 8, children: [
-                        for (final p in available) WinChip(p.$2, active: _period == p.$1, onTap: () => setState(() => _period = p.$1)),
+                        for (final p in available) WinChip(_periodName(context.l10n, p), active: _period == p, onTap: () => setState(() => _period = p)),
                       ]),
                       const SizedBox(height: 20),
                       ...plans.map((plan) {
@@ -119,7 +132,7 @@ class _PricingScreenState extends State<PricingScreen> {
                           child: _PlanCard(
                             plan: plan,
                             price: price,
-                            unit: _periods.firstWhere((p) => p.$1 == _period).$3,
+                            unit: _periodUnit(context.l10n, _period),
                             isCurrent: isCurrent || (plan.isFree && !sub.hasPlan),
                             onSubscribe: () => _subscribe(plan),
                           ),
@@ -137,8 +150,7 @@ class _PricingScreenState extends State<PricingScreen> {
                           Icon(Icons.lock_outline, size: 16, color: s.onFaint),
                           const SizedBox(width: 10),
                           Expanded(
-                            child: Text(
-                              'Prix TTC · MTN Mobile Money, Orange Money ou solde WinPlus · résiliable à tout moment, accès jusqu\'à la fin de la période payée',
+                            child: Text(context.l10n.subPricingFootnote,
                               style: WinType.bodyS(s.onMuted),
                             ),
                           ),
@@ -173,8 +185,8 @@ class _PlanCard extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
           child: Row(children: [
             Expanded(child: Text(plan.name, style: WinType.headlineS(s.onStrong))),
-            if (plan.isPopular) const WinBadge('POPULAIRE', color: BadgeColor.teal),
-            if (isCurrent) const WinBadge('ACTUEL', color: BadgeColor.success),
+            if (plan.isPopular) WinBadge(context.l10n.subBadgePopular, color: BadgeColor.teal),
+            if (isCurrent) WinBadge(context.l10n.subBadgeCurrent, color: BadgeColor.success),
           ]),
         ),
         if (plan.description != null && plan.description!.isNotEmpty)
@@ -185,14 +197,14 @@ class _PlanCard extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
           child: price == null
-              ? Text('Non proposé sur cette période', style: WinType.bodyS(s.onMuted))
+              ? Text(context.l10n.subNotOffered, style: WinType.bodyS(s.onMuted))
               : Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                  Text(price == 0 ? 'Gratuit' : fmtXaf(price!.round()), style: WinType.displayM(s.onStrong)),
+                  Text(price == 0 ? context.l10n.commonFree : fmtXaf(price!.round()), style: WinType.displayM(s.onStrong)),
                   if (price! > 0) ...[
                     const SizedBox(width: 4),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 4),
-                      child: Text(' XAF TTC / $unit', style: WinType.labelM(s.onMuted)),
+                      child: Text(context.l10n.subPerUnitTtc(unit), style: WinType.labelM(s.onMuted)),
                     ),
                   ],
                 ]),
@@ -206,7 +218,7 @@ class _PlanCard extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
             child: WinButton(
-              isCurrent ? 'Renouveler ou changer de période' : 'Choisir ce plan',
+              isCurrent ? context.l10n.subRenewOrChange : context.l10n.subChoosePlan,
               block: true,
               variant: isCurrent ? WinButtonVariant.outline : WinButtonVariant.accent,
               onTap: price == null ? null : onSubscribe,

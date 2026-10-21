@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'api_client.dart';
+import '../l10n/l10n.dart';
 
 class ApiOrderItem {
   final int subjectId;
@@ -78,7 +79,7 @@ class OrderService {
     } on DioException catch (e) {
       final data = e.response?.data;
       final msg = data is Map ? data['error'] as String? : null;
-      throw OrderCreateException(msg ?? 'Impossible de créer la commande.');
+      throw OrderCreateException(msg ?? L10n.current.svcOrderCreateFailed);
     }
   }
 

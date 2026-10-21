@@ -7,6 +7,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import '../l10n/l10n.dart';
 
 /// Grille tarifaire du tuteur (lot 9.1, suivi 17.3), parité avec le web :
 /// tarif de base par matière et par mode, modulation par créneau,
@@ -50,7 +51,9 @@ class TutorPricingGridEditor extends StatefulWidget {
   State<TutorPricingGridEditor> createState() => _TutorPricingGridEditorState();
 }
 
-const _dayShort = ['D', 'L', 'M', 'M', 'J', 'V', 'S'];
+/// Initiale du jour (0 = dimanche … 6 = samedi) : « D », « L »… / « S », « M »…
+String _dayShort(int d) =>
+    WinFormat.weekdayCap(d == 0 ? DateTime.sunday : d).substring(0, 1);
 final _timeOptions = [
   for (var i = 0; i < 48; i++)
     '${(i ~/ 2).toString().padLeft(2, '0')}:${i.isOdd ? '30' : '00'}',
@@ -82,8 +85,8 @@ class _TutorPricingGridEditorState extends State<TutorPricingGridEditor> {
 
   Future<void> _suggest() async {
     if (widget.subjects.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Choisis d\'abord tes matières (étape 1).')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(context.l10n.teacherPricingSubjectsFirst)));
       return;
     }
     setState(() => _loading = true);
@@ -94,8 +97,8 @@ class _TutorPricingGridEditorState extends State<TutorPricingGridEditor> {
       if (mounted) setState(() => _suggestion = g);
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('WinAI n\'a pas pu proposer de grille.')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(L10n.current.teacherPricingSuggestError)));
       }
     } finally {
       if (mounted) setState(() => _loading = false);
@@ -114,10 +117,10 @@ class _TutorPricingGridEditorState extends State<TutorPricingGridEditor> {
   }
 
   String _modeLabel(String? m) => m == 'online'
-      ? 'En ligne'
+      ? context.l10n.commonOnline
       : m == 'in_person'
-          ? 'Présentiel'
-          : 'Tous modes';
+          ? context.l10n.teacherPricingInPerson
+          : context.l10n.teacherPricingAllModes;
 
   @override
   Widget build(BuildContext context) {
@@ -129,13 +132,13 @@ class _TutorPricingGridEditorState extends State<TutorPricingGridEditor> {
             borderRadius: BorderRadius.circular(WinRadii.sm)));
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text('Grille tarifaire (facultatif)', style: WinType.labelM(s.onStrong)),
+      Text(context.l10n.teacherPricingGridTitle, style: WinType.labelM(s.onStrong)),
       const SizedBox(height: 4),
       Text(
-          'Sans grille, ton tarif horaire s\'applique partout. Facturation au prorata des tranches de 30 min ; le prix exact est calculé par WinPlus et montré à l\'élève avant paiement.',
+          context.l10n.teacherPricingGridIntro,
           style: WinType.labelS(s.onFaint)),
       const SizedBox(height: 8),
-      WinButton(_loading ? 'WinAI réfléchit…' : 'Proposer une grille (WinAI)',
+      WinButton(_loading ? context.l10n.commonWinaiThinking : context.l10n.teacherPricingSuggest,
           variant: WinButtonVariant.outline,
           small: true,
           icon: Icons.auto_awesome,
@@ -145,7 +148,7 @@ class _TutorPricingGridEditorState extends State<TutorPricingGridEditor> {
         WinCard(
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('Grille proposée par WinAI',
+            Text(context.l10n.teacherPricingSuggested,
                 style: WinType.titleM(s.onStrong)),
             const SizedBox(height: 6),
             TutorRateGridSummary(
@@ -156,9 +159,9 @@ class _TutorPricingGridEditorState extends State<TutorPricingGridEditor> {
             Text(_suggestion!.explanation, style: WinType.labelS(s.onMuted)),
             const SizedBox(height: 8),
             Row(children: [
-              WinButton('Appliquer', small: true, onTap: _apply),
+              WinButton(context.l10n.studentCatalogApply, small: true, onTap: _apply),
               const SizedBox(width: 8),
-              WinButton('Ignorer',
+              WinButton(context.l10n.teacherPricingIgnore,
                   small: true,
                   variant: WinButtonVariant.ghost,
                   onTap: () => setState(() => _suggestion = null)),
@@ -169,7 +172,7 @@ class _TutorPricingGridEditorState extends State<TutorPricingGridEditor> {
 
       // ── Tarifs de base ────────────────────────────────────────────────
       const SizedBox(height: 16),
-      Text('Tarif de base par matière et par mode',
+      Text(context.l10n.teacherPricingBaseTitle,
           style: WinType.labelM(s.onStrong)),
       const SizedBox(height: 6),
       ..._g.rates.asMap().entries.map((e) {
@@ -191,10 +194,10 @@ class _TutorPricingGridEditorState extends State<TutorPricingGridEditor> {
                 key: ValueKey('rs-$_gen-$i'),
                 initialValue: r.subject,
                 isExpanded: true,
-                decoration: deco('Matière'),
+                decoration: deco(context.l10n.commonSubject),
                 items: [
-                  const DropdownMenuItem<String?>(
-                      value: null, child: Text('Toutes matières')),
+                  DropdownMenuItem<String?>(
+                      value: null, child: Text(context.l10n.tutoringAllSubjects)),
                   ...subjectOptions.map((sub) => DropdownMenuItem<String?>(
                       value: sub,
                       child: Text(sub, overflow: TextOverflow.ellipsis))),
@@ -211,7 +214,7 @@ class _TutorPricingGridEditorState extends State<TutorPricingGridEditor> {
                 key: ValueKey('rm-$_gen-$i'),
                 initialValue: r.mode,
                 isExpanded: true,
-                decoration: deco('Mode'),
+                decoration: deco(context.l10n.tutoringMode),
                 items: [null, 'online', 'in_person']
                     .map((m) => DropdownMenuItem<String?>(
                         value: m, child: Text(_modeLabel(m))))
@@ -235,7 +238,7 @@ class _TutorPricingGridEditorState extends State<TutorPricingGridEditor> {
             ),
             IconButton(
                 icon: const Icon(Icons.close),
-                tooltip: 'Supprimer ce tarif',
+                tooltip: context.l10n.teacherPricingRemoveRate,
                 onPressed: () {
                   setState(() => _gen++);
                   _emit(rates: [..._g.rates]..removeAt(i));
@@ -243,7 +246,7 @@ class _TutorPricingGridEditorState extends State<TutorPricingGridEditor> {
           ]),
         );
       }),
-      WinButton('+ Ajouter un tarif',
+      WinButton(context.l10n.teacherPricingAddRate,
           variant: WinButtonVariant.outline,
           small: true,
           onTap: () => _emit(rates: [
@@ -258,9 +261,9 @@ class _TutorPricingGridEditorState extends State<TutorPricingGridEditor> {
 
       // ── Modulations ───────────────────────────────────────────────────
       const SizedBox(height: 16),
-      Text('Modulation par créneau', style: WinType.labelM(s.onStrong)),
+      Text(context.l10n.teacherPricingModTitle, style: WinType.labelM(s.onStrong)),
       const SizedBox(height: 4),
-      Text('Ex. +20 % le soir, −10 % en matinée.',
+      Text(context.l10n.teacherPricingModExample,
           style: WinType.labelS(s.onFaint)),
       const SizedBox(height: 6),
       ..._g.modifiers.asMap().entries.map((e) {
@@ -297,7 +300,7 @@ class _TutorPricingGridEditorState extends State<TutorPricingGridEditor> {
                   key: ValueKey('mod-label-$_gen-$i'),
                   initialValue: m.label,
                   maxLength: 60,
-                  decoration: deco('Nom (ex. Soir)').copyWith(counterText: ''),
+                  decoration: deco(context.l10n.teacherPricingModName).copyWith(counterText: ''),
                   onChanged: (v) => update(copy(label: v)),
                 ),
               ),
@@ -316,7 +319,7 @@ class _TutorPricingGridEditorState extends State<TutorPricingGridEditor> {
               ),
               IconButton(
                   icon: const Icon(Icons.close),
-                  tooltip: 'Supprimer cette modulation',
+                  tooltip: context.l10n.teacherPricingRemoveMod,
                   onPressed: () {
                     setState(() => _gen++);
                     _emit(modifiers: [..._g.modifiers]..removeAt(i));
@@ -328,7 +331,7 @@ class _TutorPricingGridEditorState extends State<TutorPricingGridEditor> {
               children: List.generate(7, (d) {
                 final on = m.daysOfWeek.contains(d);
                 return FilterChip(
-                  label: Text(_dayShort[d]),
+                  label: Text(_dayShort(d)),
                   selected: on,
                   visualDensity: VisualDensity.compact,
                   onSelected: (_) => update(copy(
@@ -345,10 +348,10 @@ class _TutorPricingGridEditorState extends State<TutorPricingGridEditor> {
                   key: ValueKey('ms-$_gen-$i'),
                   initialValue: m.startTime,
                   isExpanded: true,
-                  decoration: deco('Début'),
+                  decoration: deco(context.l10n.tutoringEngStart),
                   items: [
-                    const DropdownMenuItem<String?>(
-                        value: null, child: Text('Toute la journée')),
+                    DropdownMenuItem<String?>(
+                        value: null, child: Text(context.l10n.teacherPricingAllDay)),
                     ..._timeOptions.take(48).map((t) =>
                         DropdownMenuItem<String?>(value: t, child: Text(t))),
                   ],
@@ -368,7 +371,7 @@ class _TutorPricingGridEditorState extends State<TutorPricingGridEditor> {
                     key: ValueKey('me-$_gen-$i-${m.startTime}'),
                     initialValue: m.endTime,
                     isExpanded: true,
-                    decoration: deco('Fin'),
+                    decoration: deco(context.l10n.teacherPricingEnd),
                     items: _timeOptions
                         .where((t) => t.compareTo(m.startTime!) > 0)
                         .map((t) =>
@@ -384,7 +387,7 @@ class _TutorPricingGridEditorState extends State<TutorPricingGridEditor> {
       }),
       if (_g.modifiers.length < 10) ...[
         const SizedBox(height: 6),
-        WinButton('+ Ajouter une modulation',
+        WinButton(context.l10n.teacherPricingAddMod,
             variant: WinButtonVariant.outline,
             small: true,
             onTap: () => _emit(modifiers: [
@@ -400,9 +403,9 @@ class _TutorPricingGridEditorState extends State<TutorPricingGridEditor> {
 
       // ── Dégressivité ──────────────────────────────────────────────────
       const SizedBox(height: 16),
-      Text('Dégressivité selon la durée', style: WinType.labelM(s.onStrong)),
+      Text(context.l10n.teacherPricingDurTitle, style: WinType.labelM(s.onStrong)),
       const SizedBox(height: 4),
-      Text('Seul le palier le plus haut atteint s\'applique.',
+      Text(context.l10n.teacherPricingDurHint,
           style: WinType.labelS(s.onFaint)),
       const SizedBox(height: 6),
       ..._g.discounts.asMap().entries.map((e) {
@@ -417,7 +420,7 @@ class _TutorPricingGridEditorState extends State<TutorPricingGridEditor> {
         return Padding(
           padding: const EdgeInsets.only(bottom: 8),
           child: Row(children: [
-            Text('Dès ', style: WinType.bodyS(s.onMuted)),
+            Text(context.l10n.teacherPricingFrom, style: WinType.bodyS(s.onMuted)),
             Expanded(
               child: DropdownButtonFormField<int>(
                 key: ValueKey('dd-$_gen-$i'),
@@ -425,7 +428,7 @@ class _TutorPricingGridEditorState extends State<TutorPricingGridEditor> {
                     ? d.minDurationMinutes
                     : null,
                 isExpanded: true,
-                decoration: deco('Durée'),
+                decoration: deco(context.l10n.commonDuration),
                 items: _durationOptions
                     .map((m) => DropdownMenuItem<int>(
                         value: m, child: Text(formatDurationMinutes(m))))
@@ -452,7 +455,7 @@ class _TutorPricingGridEditorState extends State<TutorPricingGridEditor> {
             Text(' %', style: WinType.bodyS(s.onMuted)),
             IconButton(
                 icon: const Icon(Icons.close),
-                tooltip: 'Supprimer ce palier',
+                tooltip: context.l10n.teacherPricingRemoveTier,
                 onPressed: () {
                   setState(() => _gen++);
                   _emit(discounts: [..._g.discounts]..removeAt(i));
@@ -461,7 +464,7 @@ class _TutorPricingGridEditorState extends State<TutorPricingGridEditor> {
         );
       }),
       if (_g.discounts.length < 5)
-        WinButton('+ Ajouter un palier',
+        WinButton(context.l10n.teacherPricingAddTierPlus,
             variant: WinButtonVariant.outline,
             small: true,
             onTap: () => _emit(discounts: [

@@ -5,11 +5,12 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import '../l10n/l10n.dart';
 
-const _goalTypes = [
-  ('academic', 'Scolaire'),
-  ('personal', 'Personnel'),
-  ('skill', 'Compétence'),
+List<(String, String)> get _goalTypes => [
+  ('academic', L10n.current.parentGoalTypeAcademic),
+  ('personal', L10n.current.parentGoalTypePersonal),
+  ('skill', L10n.current.parentGoalTypeSkill),
 ];
 
 /// Proposition d'objectifs co-construits parent → enfant (GoalsController).
@@ -66,7 +67,7 @@ class _GoalProposalTabState extends State<GoalProposalTab> {
 
   Future<void> _submit() async {
     if (_titleCtrl.text.trim().isEmpty || _deadline == null) {
-      setState(() => _error = "Le titre et l'échéance sont requis.");
+      setState(() => _error = context.l10n.studentGoalsRequired);
       return;
     }
     setState(() {
@@ -92,7 +93,7 @@ class _GoalProposalTabState extends State<GoalProposalTab> {
       _load();
     } catch (_) {
       setState(
-          () => _error = "La proposition n'a pas pu être envoyée. Réessayez.");
+          () => _error = L10n.current.parentGoalSubmitError);
     } finally {
       setState(() => _submitting = false);
     }
@@ -115,11 +116,11 @@ class _GoalProposalTabState extends State<GoalProposalTab> {
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
       children: [
-        Text('Proposer un objectif à ${widget.child.firstName}',
+        Text(context.l10n.parentGoalProposeTo(widget.child.firstName),
             style: WinType.headlineS(s.onStrong)),
         const SizedBox(height: 6),
         Text(
-          "Votre proposition attend l'accord de votre enfant : il peut l'accepter telle quelle, l'ajuster, ou la refuser.",
+          context.l10n.parentGoalIntro,
           style: WinType.bodyS(s.onMuted),
         ),
         const SizedBox(height: 16),
@@ -127,14 +128,14 @@ class _GoalProposalTabState extends State<GoalProposalTab> {
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             WinTextField(
-                label: 'Titre',
+                label: context.l10n.studentGoalsFieldTitle,
                 controller: _titleCtrl,
                 icon: Icons.flag_outlined),
             const SizedBox(height: 12),
             WinTextField(
-                label: 'Description (optionnel)', controller: _descCtrl),
+                label: context.l10n.parentGoalFieldDescription, controller: _descCtrl),
             const SizedBox(height: 12),
-            Text('Type',
+            Text(context.l10n.teacherPublishType,
                 style: WinType.labelM(s.onStrong)
                     .copyWith(fontWeight: FontWeight.w500)),
             const SizedBox(height: 8),
@@ -147,7 +148,7 @@ class _GoalProposalTabState extends State<GoalProposalTab> {
                   .toList(),
             ),
             const SizedBox(height: 14),
-            Text('Échéance',
+            Text(context.l10n.studentGoalsFieldDeadline,
                 style: WinType.labelM(s.onStrong)
                     .copyWith(fontWeight: FontWeight.w500)),
             const SizedBox(height: 8),
@@ -168,7 +169,7 @@ class _GoalProposalTabState extends State<GoalProposalTab> {
                   Text(
                       _deadline != null
                           ? _fmtDate(_deadline!)
-                          : 'Choisir une date',
+                          : context.l10n.studentCoachPickDate,
                       style: WinType.bodyM(s.onStrong)),
                 ]),
               ),
@@ -179,33 +180,33 @@ class _GoalProposalTabState extends State<GoalProposalTab> {
             ],
             if (_success) ...[
               const SizedBox(height: 8),
-              Text('Proposition envoyée.',
+              Text(context.l10n.parentGoalSent,
                   style: WinType.labelS(WinColors.teal700)),
             ],
             const SizedBox(height: 12),
-            WinButton("Proposer l'objectif",
+            WinButton(context.l10n.parentGoalSubmit,
                 block: true, loading: _submitting, onTap: _submit),
           ]),
         ),
         const SizedBox(height: 20),
-        Text('Propositions en attente', style: WinType.titleM(s.onStrong)),
+        Text(context.l10n.parentGoalPendingTitle, style: WinType.titleM(s.onStrong)),
         const SizedBox(height: 8),
         if (pending.isEmpty)
-          Text('Aucune proposition en attente de réponse.',
+          Text(context.l10n.parentGoalNoPending,
               style: WinType.bodyS(s.onMuted))
         else
           ...pending.map((g) =>
-              _GoalRow(goal: g, label: 'En attente', color: WinColors.warn)),
+              _GoalRow(goal: g, label: context.l10n.commonPending, color: WinColors.warn)),
         const SizedBox(height: 20),
-        Text('Objectifs actifs co-construits',
+        Text(context.l10n.parentGoalActiveTitle,
             style: WinType.titleM(s.onStrong)),
         const SizedBox(height: 8),
         if (active.isEmpty)
-          Text('Aucun objectif co-construit actif pour le moment.',
+          Text(context.l10n.parentGoalNoActive,
               style: WinType.bodyS(s.onMuted))
         else
           ...active.map((g) =>
-              _GoalRow(goal: g, label: 'Actif', color: WinColors.teal600)),
+              _GoalRow(goal: g, label: context.l10n.commonActive, color: WinColors.teal600)),
       ],
     );
   }
@@ -236,7 +237,7 @@ class _GoalRow extends StatelessWidget {
               ],
               const SizedBox(height: 4),
               Text(
-                'Échéance : ${goal.targetDate.day.toString().padLeft(2, '0')}/${goal.targetDate.month.toString().padLeft(2, '0')}/${goal.targetDate.year}',
+                context.l10n.parentGoalDeadlineOn('${goal.targetDate.day.toString().padLeft(2, '0')}/${goal.targetDate.month.toString().padLeft(2, '0')}/${goal.targetDate.year}'),
                 style: WinType.labelS(s.onFaint),
               ),
             ]),

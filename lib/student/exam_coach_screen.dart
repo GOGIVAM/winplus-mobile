@@ -1,3 +1,4 @@
+import '../l10n/l10n.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../services/exam_coach_service.dart';
@@ -73,7 +74,7 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
       if (mounted) {
         setState(() {
           _loading = false;
-          _error = "Impossible de charger ton plan. Vérifie ta connexion.";
+          _error = L10n.current.studentCoachLoadError;
         });
       }
     }
@@ -107,7 +108,7 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
       if (mounted) {
         setState(() {
           _generating = false;
-          _error = "Impossible de générer le plan. Réessaie dans un instant.";
+          _error = L10n.current.studentCoachGenerateError;
         });
       }
     }
@@ -119,15 +120,15 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Supprimer ce plan ?'),
-        content: const Text('Cette action est irréversible.'),
+        title: Text(context.l10n.studentCoachDeleteTitle),
+        content: Text(context.l10n.studentCoachDeleteBody),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(ctx, false),
-              child: const Text('Annuler')),
+              child: Text(context.l10n.commonCancel)),
           TextButton(
               onPressed: () => Navigator.pop(ctx, true),
-              child: const Text('Supprimer')),
+              child: Text(context.l10n.commonDelete)),
         ],
       ),
     );
@@ -194,11 +195,11 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
                   textAlign: TextAlign.center),
               const SizedBox(height: 8),
               Text(
-                  'Disponible à partir du plan Standard.\nWinAI génère un planning adapté à tes lacunes.',
+                  context.l10n.studentCoachLocked,
                   style: WinType.bodyM(s.onMuted),
                   textAlign: TextAlign.center),
               const SizedBox(height: 28),
-              WinButton('Voir les plans',
+              WinButton(context.l10n.studentCoachSeePlans,
                   block: true,
                   onTap: () => UpgradeSheet.show(context,
                       featureName: 'Exam Coach', requiredPlan: 'Standard')),
@@ -228,8 +229,8 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        const WinAlert(
-          'WinAI génère un planning jour par jour adapté à ta date d\'examen et ton rythme.',
+        WinAlert(
+          context.l10n.studentCoachIntro,
           type: BadgeColor.teal,
           icon: Icons.auto_awesome_outlined,
         ),
@@ -238,7 +239,7 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
           WinAlert(_error!, type: BadgeColor.error),
         ],
         const SizedBox(height: 24),
-        Text('Examen cible', style: WinType.titleM(s.onStrong)),
+        Text(context.l10n.studentCoachTargetExam, style: WinType.titleM(s.onStrong)),
         const SizedBox(height: 8),
         Wrap(
           spacing: 8,
@@ -262,11 +263,11 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
           }).toList(),
         ),
         const SizedBox(height: 24),
-        Text("Date de l'examen", style: WinType.titleM(s.onStrong)),
+        Text(context.l10n.studentCoachExamDate, style: WinType.titleM(s.onStrong)),
         const SizedBox(height: 8),
         WinButton(
           _examDate == null
-              ? 'Choisir une date'
+              ? context.l10n.studentCoachPickDate
               : '${_examDate!.day}/${_examDate!.month}/${_examDate!.year}',
           variant: WinButtonVariant.outline,
           icon: Icons.calendar_today_outlined,
@@ -282,7 +283,7 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
           },
         ),
         const SizedBox(height: 28),
-        Text("Heures d'étude par jour", style: WinType.titleM(s.onStrong)),
+        Text(context.l10n.studentCoachHoursPerDay, style: WinType.titleM(s.onStrong)),
         const SizedBox(height: 4),
         Text('${_hoursPerDay.toStringAsFixed(1)}h',
             style: WinType.archivo(
@@ -298,7 +299,7 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
         ),
         const SizedBox(height: 28),
         WinButton(
-          _generating ? 'Génération…' : 'Générer mon plan avec WinAI',
+          _generating ? context.l10n.studentCoachGenerating : context.l10n.studentCoachGenerate,
           block: true,
           icon: Icons.auto_awesome_outlined,
           onTap: (_examDate == null || _generating) ? null : _generate,
@@ -344,7 +345,7 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
               Expanded(
                   child: Text(plan.examType,
                       style: WinType.headlineS(WinColors.cream50))),
-              WinBadge('$days j restants', color: BadgeColor.warn),
+              WinBadge(context.l10n.studentCoachDaysLeft(days), color: BadgeColor.warn),
             ]),
             const SizedBox(height: 4),
             Text('${plan.examDate.day}/${plan.examDate.month}/${plan.examDate.year}',
@@ -352,10 +353,10 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
             const SizedBox(height: 12),
             WinProgressBar(completionPct.toDouble(), color: WinColors.teal400),
             const SizedBox(height: 4),
-            Text('$completionPct% du plan complété',
+            Text(context.l10n.studentCoachCompletion(completionPct),
                 style: WinType.labelM(WinColors.ink300)),
             const SizedBox(height: 4),
-            Text('Fiabilité du plan : ${(plan.confidenceScore * 100).round()}%',
+            Text(context.l10n.studentCoachReliability((plan.confidenceScore * 100).round()),
                 style: WinType.labelM(WinColors.ink300)),
           ]),
         ),
@@ -363,24 +364,24 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
         WinCard(
           bg: isTodayDone ? WinColors.successBg : null,
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            WinBadge('Aujourd\'hui · J$todayNum'),
+            WinBadge(context.l10n.studentCoachTodayDay(todayNum)),
             const SizedBox(height: 8),
             if (!isTodayDone)
-              WinButton('Marquer la session du jour comme faite',
+              WinButton(context.l10n.studentCoachMarkToday,
                   icon: Icons.check, block: true, onTap: _completeToday)
             else
-              Row(children: const [
-                Icon(Icons.check_circle, color: WinColors.success, size: 18),
-                SizedBox(width: 8),
-                Text('Session du jour complétée'),
+              Row(children: [
+                const Icon(Icons.check_circle, color: WinColors.success, size: 18),
+                const SizedBox(width: 8),
+                Text(context.l10n.studentCoachTodayDone),
               ]),
           ]),
         ),
         const SizedBox(height: 20),
-        Text('Cette semaine', style: WinType.headlineS(s.onStrong)),
+        Text(context.l10n.studentCoachThisWeek, style: WinType.headlineS(s.onStrong)),
         const SizedBox(height: 12),
         if (weekDays.isEmpty)
-          Text('Planning indisponible pour cette semaine.',
+          Text(context.l10n.studentCoachNoWeek,
               style: WinType.bodyM(s.onMuted))
         else
           ...weekDays.map((d) {
@@ -416,7 +417,7 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                        Text(isRest ? 'Repos' : (d['focus_area'] as String? ?? ''),
+                        Text(isRest ? context.l10n.studentCoachRest : (d['focus_area'] as String? ?? ''),
                             style: WinType.titleM(s.onStrong)),
                         if (!isRest)
                           Text('${d['duration_minutes'] ?? 0} min',
@@ -427,7 +428,7 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
             );
           }),
         const SizedBox(height: 16),
-        WinButton('Supprimer le plan',
+        WinButton(context.l10n.studentCoachDeletePlan,
             variant: WinButtonVariant.outline,
             block: true,
             icon: Icons.delete_outline,

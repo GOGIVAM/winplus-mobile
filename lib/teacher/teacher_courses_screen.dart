@@ -6,6 +6,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import '../l10n/l10n.dart';
 
 // ---------------------------------------------------------------------------
 // Model
@@ -61,10 +62,10 @@ class _TeacherCourse {
 // ---------------------------------------------------------------------------
 
 String _statusLabel(String status) => switch (status) {
-      'draft' => 'Brouillon',
-      'pending_review' => 'En révision',
-      'published' => 'Publié',
-      'archived' => 'Archivé',
+      'draft' => L10n.current.commonDraft,
+      'pending_review' => L10n.current.teacherContentStatusReview,
+      'published' => L10n.current.commonPublished,
+      'archived' => L10n.current.teacherContentStatusArchived,
       _ => status,
     };
 
@@ -144,7 +145,7 @@ class _TeacherCoursesScreenState extends State<TeacherCoursesScreen> {
     } catch (e) {
       if (mounted) {
         setState(() {
-          _error = 'Impossible de charger les formations.';
+          _error = L10n.current.teacherCoursesLoadError;
           _courses = [];
         });
       }
@@ -158,7 +159,7 @@ class _TeacherCoursesScreenState extends State<TeacherCoursesScreen> {
   }
 
   String _filterLabel(String f) => switch (f) {
-        _filterAll => 'Tout',
+        _filterAll => context.l10n.commonAll,
         _ => _statusLabel(f),
       };
 
@@ -173,12 +174,8 @@ class _TeacherCoursesScreenState extends State<TeacherCoursesScreen> {
     showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Créer une formation'),
-        content: const Text(
-            "La création et l'édition des formations se font sur le site WinPlus, "
-            'depuis votre espace enseignant, avec le même compte :\n\n'
-            '$_webCourseEditorUrl\n\n'
-            'Vos formations apparaissent ensuite ici.'),
+        title: Text(ctx.l10n.teacherCoursesCreateTitle),
+        content: Text(ctx.l10n.teacherCoursesCreateOnWeb(_webCourseEditorUrl)),
         actions: [
           TextButton(
             onPressed: () async {
@@ -187,14 +184,14 @@ class _TeacherCoursesScreenState extends State<TeacherCoursesScreen> {
               await Clipboard.setData(
                   const ClipboardData(text: _webCourseEditorUrl));
               nav.pop();
-              messenger.showSnackBar(const SnackBar(
-                  content: Text('Lien copié : ouvrez-le dans votre navigateur.')));
+              messenger.showSnackBar(SnackBar(
+                  content: Text(L10n.current.teacherCoursesLinkCopied)));
             },
-            child: const Text('Copier le lien'),
+            child: Text(ctx.l10n.teacherCoursesCopyLink),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Fermer'),
+            child: Text(ctx.l10n.commonClose),
           ),
         ],
       ),
@@ -227,7 +224,7 @@ class _TeacherCoursesScreenState extends State<TeacherCoursesScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          'Mes formations',
+          context.l10n.studentMyCoursesTitle,
           style: WinType.archivo(size: 20, color: s.onStrong),
         ),
         actions: [
@@ -289,7 +286,7 @@ class _TeacherCoursesScreenState extends State<TeacherCoursesScreen> {
               Text(_error!,
                   style: WinType.bodyM(s.onMuted), textAlign: TextAlign.center),
               const SizedBox(height: 16),
-              WinButton('Réessayer',
+              WinButton(context.l10n.commonRetry,
                   variant: WinButtonVariant.outline,
                   icon: Icons.refresh,
                   onTap: _load),
@@ -310,8 +307,8 @@ class _TeacherCoursesScreenState extends State<TeacherCoursesScreen> {
               const SizedBox(height: 12),
               Text(
                 _activeFilter == _filterAll
-                    ? 'Vous n\'avez pas encore de formation.'
-                    : 'Aucune formation avec ce statut.',
+                    ? context.l10n.teacherCoursesEmptyAll
+                    : context.l10n.teacherCoursesEmptyStatus,
                 style: WinType.bodyM(s.onMuted),
                 textAlign: TextAlign.center,
               ),
@@ -410,14 +407,14 @@ class _CourseCard extends StatelessWidget {
                       _StatPill(
                         icon: Icons.menu_book_outlined,
                         label:
-                            '${course.lessonsCount} leçon${course.lessonsCount != 1 ? 's' : ''}',
+                            context.l10n.teacherCoursesLessons(course.lessonsCount),
                         color: s.onMuted,
                       ),
                       const SizedBox(width: 10),
                       _StatPill(
                         icon: Icons.people_outline,
                         label:
-                            '${course.enrolledCount} inscrit${course.enrolledCount != 1 ? 's' : ''}',
+                            context.l10n.teacherCoursesEnrolled(course.enrolledCount),
                         color: s.onMuted,
                       ),
                     ],
@@ -485,7 +482,7 @@ class _CourseOptionsSheetState extends State<_CourseOptionsSheet> {
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Impossible de charger les détails.')),
+          SnackBar(content: Text(L10n.current.teacherCoursesDetailError)),
         );
       }
     } finally {
@@ -528,12 +525,12 @@ class _CourseOptionsSheetState extends State<_CourseOptionsSheet> {
                 Row(children: [
                   Icon(Icons.menu_book_outlined, size: 14, color: s.onMuted),
                   const SizedBox(width: 4),
-                  Text('$lessonsCount leçon${lessonsCount != 1 ? 's' : ''}',
+                  Text(ctx.l10n.teacherCoursesLessons(lessonsCount),
                       style: WinType.labelM(s.onMuted)),
                   const SizedBox(width: 14),
                   Icon(Icons.people_outline, size: 14, color: s.onMuted),
                   const SizedBox(width: 4),
-                  Text('$enrolledCount inscrits',
+                  Text(ctx.l10n.teacherCoursesEnrolledMany(enrolledCount),
                       style: WinType.labelM(s.onMuted)),
                   if (avgRating > 0) ...[
                     const SizedBox(width: 14),
@@ -550,7 +547,7 @@ class _CourseOptionsSheetState extends State<_CourseOptionsSheet> {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(ctx).pop(),
-              child: Text('Fermer',
+              child: Text(ctx.l10n.commonClose,
                   style: WinType.manrope(
                       size: 14, weight: FontWeight.w600, color: s.primary)),
             ),
@@ -577,13 +574,13 @@ class _CourseOptionsSheetState extends State<_CourseOptionsSheet> {
           .post<dynamic>('/teacher/courses/${widget.course.id}/submit', data: {});
       widget.onRefresh();
       if (mounted) Navigator.of(context).pop();
-      messenger.showSnackBar(const SnackBar(
-          content: Text('Formation soumise à validation.')));
+      messenger.showSnackBar(SnackBar(
+          content: Text(L10n.current.teacherCoursesSubmitted)));
     } on DioException catch (e) {
       final data = e.response?.data;
       final msg = data is Map ? data['error'] as String? : null;
       messenger.showSnackBar(SnackBar(
-          content: Text(msg ?? "La formation n'a pas pu être soumise.")));
+          content: Text(msg ?? L10n.current.teacherCoursesSubmitError)));
     } finally {
       if (mounted) setState(() => _submitting = false);
     }
@@ -600,16 +597,16 @@ class _CourseOptionsSheetState extends State<_CourseOptionsSheet> {
         backgroundColor: s.surface,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(WinRadii.lg)),
-        title: Text('Supprimer la formation ?',
+        title: Text(ctx.l10n.teacherCoursesDeleteTitle,
             style: WinType.archivo(size: 18, color: s.onStrong)),
         content: Text(
-          'Cette action est irréversible. La formation « ${widget.course.title} » sera définitivement supprimée.',
+          ctx.l10n.teacherCoursesDeleteBody(widget.course.title),
           style: WinType.bodyM(s.onSurface),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
-            child: Text('Annuler',
+            child: Text(ctx.l10n.commonCancel,
                 style: WinType.manrope(
                     size: 14, weight: FontWeight.w600, color: s.onMuted)),
           ),
@@ -618,7 +615,7 @@ class _CourseOptionsSheetState extends State<_CourseOptionsSheet> {
               Navigator.of(ctx).pop();
               _deleteCourse();
             },
-            child: Text('Supprimer',
+            child: Text(ctx.l10n.commonDelete,
                 style: WinType.manrope(
                     size: 14, weight: FontWeight.w600, color: WinColors.error)),
           ),
@@ -635,14 +632,14 @@ class _CourseOptionsSheetState extends State<_CourseOptionsSheet> {
       widget.onRefresh();
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Formation supprimée.')),
+          SnackBar(content: Text(L10n.current.teacherCoursesDeleted)),
         );
       }
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text('Impossible de supprimer la formation.')),
+          SnackBar(
+              content: Text(L10n.current.teacherCoursesDeleteError)),
         );
       }
     } finally {
@@ -701,7 +698,7 @@ class _CourseOptionsSheetState extends State<_CourseOptionsSheet> {
           // Options
           _OptionTile(
             icon: Icons.visibility_outlined,
-            label: 'Voir détails',
+            label: context.l10n.teacherCoursesViewDetails,
             loading: _loadingDetail,
             onTap: _loadingDetail ? null : _viewDetail,
             s: s,
@@ -709,14 +706,14 @@ class _CourseOptionsSheetState extends State<_CourseOptionsSheet> {
           if (widget.course.status == 'draft' || widget.course.status == 'archived')
             _OptionTile(
               icon: Icons.send_outlined,
-              label: 'Soumettre à validation',
+              label: context.l10n.teacherCoursesSubmit,
               loading: _submitting,
               onTap: _submitting ? null : _submit,
               s: s,
             ),
           _OptionTile(
             icon: Icons.delete_outline,
-            label: 'Supprimer',
+            label: context.l10n.commonDelete,
             color: WinColors.error,
             loading: _deletePending,
             onTap: _deletePending ? null : _confirmDelete,
@@ -794,10 +791,10 @@ class _LimitBanner extends StatelessWidget {
     final pending = (limit['pending'] as num?)?.toInt() ?? 0;
     final remaining = (limit['remaining'] as num?)?.toInt();
     final text = unlimited
-        ? 'Votre plan permet de publier un nombre illimité de formations.'
-        : 'Formations publiées : $published / ${max ?? 0}'
-            '${pending > 0 ? ' · $pending en attente de validation' : ''}'
-            '${remaining == 0 ? ' · limite de votre plan atteinte : passez à un plan supérieur pour en publier davantage.' : ''}';
+        ? context.l10n.teacherCoursesLimitUnlimited
+        : '${context.l10n.teacherCoursesLimitPublished(published, max ?? 0)}'
+            '${pending > 0 ? ' · ${context.l10n.teacherCoursesLimitPending(pending)}' : ''}'
+            '${remaining == 0 ? ' · ${context.l10n.teacherCoursesLimitReached}' : ''}';
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.fromLTRB(16, 0, 16, 8),

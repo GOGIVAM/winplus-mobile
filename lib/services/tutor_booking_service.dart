@@ -1,4 +1,5 @@
 import 'api_client.dart';
+import '../l10n/l10n.dart';
 
 /// Réservation d'une séance de répétition (Module 1  professeur_complete.md).
 /// Mirroir du flow web (bookings + paiement Mobile Money via NotchPay).
@@ -16,8 +17,8 @@ String addMinutesToHhmm(String hhmm, int minutes) {
 String formatDurationMinutes(int minutes) {
   final h = minutes ~/ 60;
   final m = minutes % 60;
-  if (h == 0) return '$m min';
-  return m == 0 ? '$h h' : '$h h ${m.toString().padLeft(2, '0')}';
+  if (h == 0) return L10n.current.svcDurationMin(m);
+  return m == 0 ? L10n.current.svcDurationHours(h) : L10n.current.svcDurationHoursMin(h, m.toString().padLeft(2, '0'));
 }
 
 /// Point de départ réservable (lot 9.1) : depuis [startTime], l'élève choisit
@@ -171,7 +172,7 @@ class TutorBookingParticipant {
   final String? groupName;
   const TutorBookingParticipant({required this.userId, this.name, this.avatarUrl, this.groupName});
 
-  String get label => (name != null && name!.isNotEmpty) ? name! : 'Élève #$userId';
+  String get label => (name != null && name!.isNotEmpty) ? name! : L10n.current.svcStudentFallback(userId);
 
   factory TutorBookingParticipant.fromJson(Map<String, dynamic> j) => TutorBookingParticipant(
         userId: (j['userId'] as num?)?.toInt() ?? 0,
@@ -182,12 +183,15 @@ class TutorBookingParticipant {
 }
 
 /// Libellés des types de payeur (17.4).
-const Map<String, String> kPayerTypeLabels = {
-  'student': 'Élève',
-  'parent': 'Parent',
-  'institution': 'Institution',
-  'study_group': "Groupe d'étude",
-};
+Map<String, String> get kPayerTypeLabels {
+  final l = L10n.current;
+  return {
+    'student': l.roleStudent,
+    'parent': l.roleParent,
+    'institution': l.svcPayerInstitution,
+    'study_group': l.svcPayerStudyGroup,
+  };
+}
 
 /// Attribution d'un tuteur par un parent ou une institution (lot 9.3).
 class TutorAssignment {
@@ -225,16 +229,16 @@ class TutorAssignment {
   bool get isPending => status == 'pending';
 
   String get statusLabel => switch (status) {
-        'pending' => 'En attente du tuteur',
-        'active' => 'Active',
-        'declined' => 'Refusée',
-        'ended' => 'Terminée',
+        'pending' => L10n.current.tutoringStatusPendingTutor,
+        'active' => L10n.current.svcAssignmentActive,
+        'declined' => L10n.current.tutoringStatusRejected,
+        'ended' => L10n.current.svcAssignmentEnded,
         _ => status,
       };
 
   String get assignerLabel => assignerType == 'institution'
-      ? (institutionName ?? 'Institution')
-      : (assignedByName ?? 'Parent');
+      ? (institutionName ?? L10n.current.svcPayerInstitution)
+      : (assignedByName ?? L10n.current.roleParent);
 
   factory TutorAssignment.fromJson(Map<String, dynamic> j) => TutorAssignment(
         id: (j['id'] as num?)?.toInt() ?? 0,
@@ -442,12 +446,14 @@ class TutorBookingRecord {
     final names = participants.map((p) => p.label).toList();
     final payer = payerName ?? kPayerTypeLabels[payerType] ?? payerType;
     if (viewerIsParticipant == true && viewerIsPayer != true) {
-      return 'Réservée pour toi par $payer'
-          '${studyGroupName != null ? ' (groupe $studyGroupName)' : ''}'
-          '${names.length > 1 ? ' · ${names.length} élèves' : ''}.';
+      final l = L10n.current;
+      return l.svcBookedForYou(
+          payer,
+          studyGroupName != null ? l.svcPartyGroup(studyGroupName!) : '',
+          names.length > 1 ? l.svcPartyCount(names.length) : '');
     }
-    final payerText = payerType == 'study_group' ? '$payer (groupe ${studyGroupName ?? ''})' : payer;
-    return 'Pour : ${names.join(', ')} · payée par $payerText.';
+    final payerText = payerType == 'study_group' ? '$payer${L10n.current.svcPartyGroup(studyGroupName ?? '')}' : payer;
+    return L10n.current.svcBookedForOthers(names.join(', '), payerText);
   }
 
   /// Statut "actif" : le paiement a été validé (en attente du répétiteur,
@@ -469,36 +475,29 @@ class TutorBookingRecord {
     final amount = refundAmountXaf ?? 0;
     final fee = refundFeeXaf ?? 0;
     String xaf(num n) => _fmtXaf(n);
+    final l = L10n.current;
     if (amount <= 0) {
       return refundPercent == 0
-          ? 'Aucun remboursement : annulation trop tardive selon la politique du tuteur.'
-          : 'Aucun remboursement : les frais Mobile Money (${xaf(fee)} XAF) dépassent la part remboursable.';
+          ? l.svcRefundTooLate
+          : l.svcRefundFeesExceed(xaf(fee));
     }
     final feeText = refundFeeBorneBy == 'payer' && fee > 0
-        ? 'frais Mobile Money de ${xaf(fee)} XAF déduits'
+        ? l.svcRefundFeeDeducted(xaf(fee))
         : null;
     final partial = refundCause == 'payer_cancelled' && (refundPercent ?? 100) < 100;
     final detail = partial
-        ? ' ($refundPercent % selon la politique du tuteur${feeText != null ? ', $feeText' : ''})'
+        ? l.svcRefundPartial(refundPercent ?? 0, feeText != null ? ', $feeText' : '')
         : feeText != null
             ? ' ($feeText)'
-            : ' (remboursement intégral)';
+            : l.svcRefundFull;
     if (viewerIsPayer == false) {
-      return '${xaf(amount)} XAF remboursés à ${payerName ?? 'celui qui a payé'}$detail.';
+      return l.svcRefundedTo(xaf(amount), payerName ?? l.svcRefundWhoPaid, detail);
     }
-    final where = payerType == 'institution' ? "le portefeuille de l'institution" : 'ton portefeuille WinPlus';
-    return '${xaf(amount)} XAF remboursés sur $where$detail.';
+    final where = payerType == 'institution' ? l.svcRefundInstitutionWallet : l.svcRefundMyWallet;
+    return l.svcRefundedOn(xaf(amount), where, detail);
   }
 
-  static String _fmtXaf(num n) {
-    final s = n.round().abs().toString();
-    final b = StringBuffer();
-    for (var i = 0; i < s.length; i++) {
-      if (i > 0 && (s.length - i) % 3 == 0) b.write(' ');
-      b.write(s[i]);
-    }
-    return b.toString();
-  }
+  static String _fmtXaf(num n) => WinFormat.number(n.abs());
 
   factory TutorBookingRecord.fromJson(Map<String, dynamic> j) =>
       TutorBookingRecord(

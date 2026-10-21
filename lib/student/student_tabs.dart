@@ -1,5 +1,6 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
 import '../theme/win_motion.dart';
 import '../data/models.dart';
 import '../services/chatbot_service.dart';
@@ -85,6 +86,16 @@ class _StudentCatalogTabState extends State<StudentCatalogTab> {
     }
   }
 
+  // Libellés affichés ; les valeurs des filtres restent celles d'origine.
+  String _typeLabel(String t) => switch (t) {
+        'Tout' => context.l10n.commonAll,
+        'Épreuves' => context.l10n.studentTabsTypePapers,
+        'Corrections' => context.l10n.studentTabsTypeCorrections,
+        'Livres' => context.l10n.studentTabsTypeBooks,
+        'Packs' => context.l10n.studentTabsTypePacks,
+        _ => t,
+      };
+
   List<Content> get _filtered {
     final all = _allItems ?? [];
     if (_type == 'Tout') return all;
@@ -101,7 +112,7 @@ class _StudentCatalogTabState extends State<StudentCatalogTab> {
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
         child: Row(children: [
-          Text('Catalogue',
+          Text(context.l10n.shellTabCatalog,
               style: WinType.archivo(size: 22, color: s.onStrong)),
           const Spacer(),
           if (_allItems != null)
@@ -140,9 +151,9 @@ class _StudentCatalogTabState extends State<StudentCatalogTab> {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                  Text('Formations structurées',
+                  Text(context.l10n.studentTabsStructuredCourses,
                       style: WinType.titleM(Colors.white)),
-                  Text('Apprenez à votre rythme · Certificats inclus',
+                  Text(context.l10n.studentTabsStructuredCoursesSub,
                       style: WinType.labelS(Colors.white70)),
                 ])),
             const Icon(Icons.arrow_forward_ios,
@@ -173,9 +184,9 @@ class _StudentCatalogTabState extends State<StudentCatalogTab> {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                  Text('Trouver un tuteur',
+                  Text(context.l10n.studentTabsFindTutor,
                       style: WinType.titleM(Colors.white)),
-                  Text('Cours particuliers en ligne ou à domicile',
+                  Text(context.l10n.studentTabsFindTutorSub,
                       style: WinType.labelS(Colors.white70)),
                 ])),
             const Icon(Icons.arrow_forward_ios,
@@ -189,7 +200,7 @@ class _StudentCatalogTabState extends State<StudentCatalogTab> {
           onTap: () => Navigator.push(
               context, WinPageRoute(builder: (_) => const SearchScreen())),
           child:
-              const WinTextField(icon: Icons.search, hint: 'BAC C Maths 2023…'),
+              WinTextField(icon: Icons.search, hint: context.l10n.studentTabsSearchHint),
         ),
       ),
       const SizedBox(height: 8),
@@ -200,7 +211,7 @@ class _StudentCatalogTabState extends State<StudentCatalogTab> {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           itemCount: _types.length,
           separatorBuilder: (_, __) => const SizedBox(width: 8),
-          itemBuilder: (_, i) => WinChip(_types[i],
+          itemBuilder: (_, i) => WinChip(_typeLabel(_types[i]),
               active: _type == _types[i],
               onTap: () => setState(() => _type = _types[i])),
         ),
@@ -214,14 +225,14 @@ class _StudentCatalogTabState extends State<StudentCatalogTab> {
                     child: Column(mainAxisSize: MainAxisSize.min, children: [
                     Icon(Icons.wifi_off_outlined, size: 48, color: s.onFaint),
                     const SizedBox(height: 12),
-                    Text('Impossible de charger le catalogue.',
+                    Text(context.l10n.studentTabsCatalogLoadError,
                         style: WinType.bodyM(s.onMuted)),
                     const SizedBox(height: 12),
-                    WinButton('Réessayer', onTap: _load),
+                    WinButton(context.l10n.commonRetry, onTap: _load),
                   ]))
                 : items.isEmpty
                     ? Center(
-                        child: Text('Aucun contenu disponible.',
+                        child: Text(context.l10n.studentTabsNoContent,
                             style: WinType.bodyM(s.onMuted)))
                     : GridView.builder(
                         padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
@@ -270,7 +281,7 @@ class _StudentSpaceTabState extends State<StudentSpaceTab> {
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
           child: Align(
               alignment: Alignment.centerLeft,
-              child: Text('Mon Espace',
+              child: Text(context.l10n.shellTabMySpace,
                   style: WinType.archivo(size: 22, color: s.onStrong)))),
       Expanded(
         child: ListView(
@@ -278,23 +289,23 @@ class _StudentSpaceTabState extends State<StudentSpaceTab> {
             children: [
               Row(children: [
                 Expanded(
-                    child: _MiniStat(avg, 'Score moyen', Icons.trending_up)),
+                    child: _MiniStat(avg, context.l10n.studentReportsAvgScore, Icons.trending_up)),
                 const SizedBox(width: 10),
                 Expanded(
-                    child: _MiniStat(week, 'Étude cette semaine',
+                    child: _MiniStat(week, context.l10n.studentTabsStudyThisWeek,
                         Icons.schedule)),
               ]),
               const SizedBox(height: 16),
               // Formations
               _QuickLink(
-                  'Mes formations',
+                  context.l10n.studentMyCoursesTitle,
                   Icons.play_lesson_outlined,
                   WinColors.teal600,
                   () => Navigator.push(context,
                       WinPageRoute(builder: (_) => const MyCoursesScreen()))),
               const SizedBox(height: 10),
               _QuickLink(
-                  'Catalogue formations',
+                  context.l10n.studentTabsCourseCatalog,
                   Icons.explore_outlined,
                   WinColors.teal400,
                   () => Navigator.push(
@@ -303,14 +314,14 @@ class _StudentSpaceTabState extends State<StudentSpaceTab> {
                           builder: (_) => const CourseCatalogScreen()))),
               const SizedBox(height: 10),
               _QuickLink(
-                  'Trouver un tuteur',
+                  context.l10n.studentTabsFindTutor,
                   Icons.person_search_outlined,
                   WinColors.blue500,
                   () => Navigator.push(context,
                       WinPageRoute(builder: (_) => const TutorSearchScreen()))),
               const SizedBox(height: 10),
               _QuickLink(
-                  'Mes réservations',
+                  context.l10n.studentTabsMyBookings,
                   Icons.event_available_outlined,
                   WinColors.teal500,
                   () => Navigator.push(
@@ -321,7 +332,7 @@ class _StudentSpaceTabState extends State<StudentSpaceTab> {
               Row(children: [
                 Expanded(
                     child: _QuickLink(
-                        'Favoris',
+                        context.l10n.studentTabsFavorites,
                         Icons.favorite_border,
                         WinColors.error,
                         () => Navigator.push(
@@ -331,7 +342,7 @@ class _StudentSpaceTabState extends State<StudentSpaceTab> {
                 const SizedBox(width: 10),
                 Expanded(
                     child: _QuickLink(
-                        'Badges',
+                        context.l10n.studentHomeBadges,
                         Icons.emoji_events_outlined,
                         WinColors.gold,
                         () => Navigator.push(
@@ -343,7 +354,7 @@ class _StudentSpaceTabState extends State<StudentSpaceTab> {
               Row(children: [
                 Expanded(
                     child: _QuickLink(
-                        'Certificats',
+                        context.l10n.studentTabsCertificates,
                         Icons.workspace_premium_outlined,
                         WinColors.teal400,
                         () => Navigator.push(
@@ -353,7 +364,7 @@ class _StudentSpaceTabState extends State<StudentSpaceTab> {
                 const SizedBox(width: 10),
                 Expanded(
                     child: _QuickLink(
-                        'Coach Exam',
+                        context.l10n.studentTabsExamCoach,
                         Icons.school_outlined,
                         WinColors.ink600,
                         () => Navigator.push(
@@ -366,7 +377,7 @@ class _StudentSpaceTabState extends State<StudentSpaceTab> {
               // session d'étude guidée (briefing → quiz → synthèse WinAI),
               // point d'entrée équivalent à StudySessionLauncher côté web.
               _QuickLink(
-                  'Session d\'étude guidée',
+                  context.l10n.studentTabsGuidedSession,
                   Icons.auto_awesome_outlined,
                   WinColors.teal500,
                   () => Navigator.push(
@@ -377,7 +388,7 @@ class _StudentSpaceTabState extends State<StudentSpaceTab> {
               Row(children: [
                 Expanded(
                     child: _QuickLink(
-                        'Mon panier',
+                        context.l10n.studentTabsMyCart,
                         Icons.shopping_cart_outlined,
                         WinColors.teal600,
                         () => Navigator.push(context,
@@ -385,7 +396,7 @@ class _StudentSpaceTabState extends State<StudentSpaceTab> {
                 const SizedBox(width: 10),
                 Expanded(
                     child: _QuickLink(
-                        'Mes commandes',
+                        context.l10n.studentTabsMyOrders,
                         Icons.receipt_long_outlined,
                         WinColors.blue500,
                         () => Navigator.push(
@@ -395,7 +406,7 @@ class _StudentSpaceTabState extends State<StudentSpaceTab> {
               ]),
               const SizedBox(height: 10),
               _QuickLink(
-                  'Historique des téléchargements',
+                  context.l10n.studentHubHistory,
                   Icons.download_outlined,
                   WinColors.ink400,
                   () => Navigator.push(
@@ -406,7 +417,7 @@ class _StudentSpaceTabState extends State<StudentSpaceTab> {
               Row(children: [
                 Expanded(
                     child: _QuickLink(
-                        'Groupes d\'étude',
+                        context.l10n.studentLinksStudyGroups,
                         Icons.groups_outlined,
                         WinColors.teal600,
                         () => Navigator.push(
@@ -416,7 +427,7 @@ class _StudentSpaceTabState extends State<StudentSpaceTab> {
                 const SizedBox(width: 10),
                 Expanded(
                     child: _QuickLink(
-                        'Mes rapports',
+                        context.l10n.studentReportsTitle,
                         Icons.bar_chart_outlined,
                         WinColors.blue500,
                         () => Navigator.push(
@@ -427,7 +438,7 @@ class _StudentSpaceTabState extends State<StudentSpaceTab> {
               ]),
               const SizedBox(height: 10),
               _QuickLink(
-                  'Quiz de révision',
+                  context.l10n.studentHubRevisionQuiz,
                   Icons.quiz_outlined,
                   WinColors.warn,
                   () => Navigator.push(
@@ -519,7 +530,7 @@ class _StudentWinAITabState extends State<StudentWinAITab> {
       _thinking = false;
       _msgs.add((
         me: false,
-        text: reply ?? 'Désolé, je n\'ai pas pu répondre. Réessaie.',
+        text: reply ?? L10n.current.studentTabsAiNoReply,
         attachment: null
       ));
     });
@@ -538,7 +549,7 @@ class _StudentWinAITabState extends State<StudentWinAITab> {
     setState(() {
       _msgs.add((
         me: true,
-        text: 'Fichier joint : $name',
+        text: L10n.current.studentTabsAiFileAttached(name),
         attachment: isImage ? 'image' : 'file'
       ));
       _thinking = true;
@@ -551,7 +562,7 @@ class _StudentWinAITabState extends State<StudentWinAITab> {
       _thinking = false;
       _msgs.add((
         me: false,
-        text: reply ?? 'Fichier reçu ! Je l\'analyse...',
+        text: reply ?? L10n.current.studentTabsAiFileReceived,
         attachment: null
       ));
     });
@@ -576,27 +587,27 @@ class _StudentWinAITabState extends State<StudentWinAITab> {
               decoration: BoxDecoration(
                   color: s.outline2,
                   borderRadius: BorderRadius.circular(WinRadii.full))),
-          Text('Joindre un fichier', style: WinType.headlineS(s.onStrong)),
+          Text(context.l10n.studentTabsAttachFile, style: WinType.headlineS(s.onStrong)),
           const SizedBox(height: 20),
           _AttachOption(
-              Icons.image_outlined, 'Image / Photo', WinColors.blue500, () {
+              Icons.image_outlined, context.l10n.studentTabsAttachImage, WinColors.blue500, () {
             Navigator.pop(context);
             _pickFile();
           }),
           const SizedBox(height: 12),
-          _AttachOption(Icons.description_outlined, 'Document (PDF, Word…)',
+          _AttachOption(Icons.description_outlined, context.l10n.studentTabsAttachDocument,
               WinColors.teal500, () {
             Navigator.pop(context);
             _pickFile();
           }),
           const SizedBox(height: 12),
-          _AttachOption(Icons.mic_outlined, 'Message vocal', WinColors.warn,
+          _AttachOption(Icons.mic_outlined, context.l10n.studentTabsAttachVoice, WinColors.warn,
               () {
             Navigator.pop(context);
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
+              SnackBar(
                   content:
-                      Text('Enregistrement vocal disponible prochainement')),
+                      Text(context.l10n.studentTabsVoiceSoon)),
             );
           }),
         ]),
@@ -608,10 +619,10 @@ class _StudentWinAITabState extends State<StudentWinAITab> {
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
     final suggestions = [
-      'Explique-moi les dérivées',
-      'Plan de révision BAC C',
-      'Mes matières faibles ?',
-      'Génère un quiz Chimie'
+      context.l10n.studentTabsAiSuggest1,
+      context.l10n.studentTabsAiSuggest2,
+      context.l10n.studentTabsAiSuggest3,
+      context.l10n.studentTabsAiSuggest4
     ];
     return Scaffold(
       backgroundColor: s.bg,
@@ -636,7 +647,7 @@ class _StudentWinAITabState extends State<StudentWinAITab> {
                     Text('WinAI',
                         style: WinType.archivo(size: 28, color: s.onStrong)),
                     const SizedBox(height: 6),
-                    Text('Ton assistant pédagogique personnel',
+                    Text(context.l10n.studentTabsAiTagline,
                         style: WinType.bodyM(s.onMuted)),
                     const SizedBox(height: 24),
                     GridView.count(
@@ -683,7 +694,7 @@ class _StudentWinAITabState extends State<StudentWinAITab> {
                           const Icon(Icons.psychology_rounded,
                               size: 15, color: Color(0xFF8B5CF6)),
                           const SizedBox(width: 8),
-                          Text('Mémoire WinAI',
+                          Text(context.l10n.commonWinaiMemory,
                               style: WinType.manrope(
                                   size: 13,
                                   weight: FontWeight.w600,
@@ -719,7 +730,7 @@ class _StudentWinAITabState extends State<StudentWinAITab> {
                                 child: CircularProgressIndicator(
                                     strokeWidth: 2, color: s.primary)),
                             const SizedBox(width: 8),
-                            Text('WinAI réfléchit…',
+                            Text(context.l10n.commonWinaiThinking,
                                 style: WinType.bodyS(s.onMuted)),
                           ]),
                         ),
@@ -758,7 +769,7 @@ class _StudentWinAITabState extends State<StudentWinAITab> {
                                                 ? WinColors.teal300
                                                 : s.primary),
                                         const SizedBox(width: 4),
-                                        Text('Pièce jointe',
+                                        Text(context.l10n.studentTabsAttachment,
                                             style: WinType.labelS(m.me
                                                 ? WinColors.teal300
                                                 : s.primary)),
@@ -792,7 +803,7 @@ class _StudentWinAITabState extends State<StudentWinAITab> {
             const SizedBox(width: 8),
             Expanded(
                 child: WinTextField(
-                    hint: 'Pose ta question à WinAI…', controller: _ctrl)),
+                    hint: context.l10n.studentTabsAiHint, controller: _ctrl)),
             const SizedBox(width: 8),
             GestureDetector(
               onTap: _send,

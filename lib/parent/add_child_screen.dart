@@ -7,6 +7,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import '../l10n/l10n.dart';
 
 class AddChildScreen extends StatefulWidget {
   const AddChildScreen({super.key});
@@ -24,7 +25,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
     if (email.isEmpty || !email.contains('@')) {
       setState(() {
         _error = true;
-        _errorMsg = 'Veuillez saisir un email valide.';
+        _errorMsg = L10n.current.parentAddChildInvalidEmail;
       });
       return;
     }
@@ -54,7 +55,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
     } else {
       setState(() {
         _error = true;
-        _errorMsg = ParentService.instance.lastAddChildError ?? 'Aucun élève trouvé avec cet email, ou déjà lié.';
+        _errorMsg = ParentService.instance.lastAddChildError ?? L10n.current.parentAddChildNotFound;
       });
     }
   }
@@ -82,7 +83,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Ajouter un enfant', style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.parentAddChildTitle, style: WinType.headlineS(s.onStrong)),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -92,22 +93,22 @@ class _AddChildScreenState extends State<AddChildScreen> {
               padding: const EdgeInsets.only(bottom: 16),
               child: WinAlert(
                 maxChildren == ApiEntitlements.unlimited
-                    ? 'Votre plan n\'ouvre pas le catalogue à vos enfants.'
-                    : 'Votre plan suit $maxChildren enfant${maxChildren > 1 ? 's' : ''}, sans catalogue pour eux. Un plan parent ouvre le catalogue et les alertes WinAI.',
+                    ? context.l10n.parentAddChildNoCatalog
+                    : context.l10n.parentAddChildPlanLimit(maxChildren),
                 type: BadgeColor.warn,
               ),
             ),
           if (_success)
-            const WinAlert('Enfant ajouté à votre compte avec succès.',
+            WinAlert(context.l10n.parentAddChildSuccess,
                 type: BadgeColor.success)
           else ...[
             Text(
-              'Entrez l\'adresse email du compte WinPlus de votre enfant pour le lier à votre espace parent.',
+              context.l10n.parentAddChildIntro,
               style: WinType.bodyM(s.onSurface),
             ),
             const SizedBox(height: 24),
             WinTextField(
-              label: 'Email de l\'enfant *',
+              label: context.l10n.parentAddChildEmailLabel,
               hint: 'ahmed@example.com',
               icon: Icons.email_outlined,
               controller: _emailCtrl,
@@ -120,7 +121,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
               ),
             const SizedBox(height: 32),
             WinButton(
-              'Lier l\'enfant',
+              context.l10n.parentAddChildLink,
               block: true,
               loading: _loading,
               onTap: _loading ? null : _submit,

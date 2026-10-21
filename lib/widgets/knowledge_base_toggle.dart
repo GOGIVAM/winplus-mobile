@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
 
 import '../services/chatbot_service.dart';
 import '../theme/win_colors.dart';
@@ -16,6 +17,7 @@ class KnowledgeBaseToggle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
+    final l10n = context.l10n;
     return ValueListenableBuilder<bool>(
       valueListenable: ChatbotService.instance.knowledgeBase,
       builder: (context, on, _) => Padding(
@@ -36,16 +38,14 @@ class KnowledgeBaseToggle extends StatelessWidget {
             Expanded(
               child: Semantics(
                 toggled: on,
-                label: 'Base de connaissance',
+                label: l10n.widgetKbTitle,
                 child: Text.rich(
                   TextSpan(children: [
                     TextSpan(
-                        text: 'Base de connaissance',
+                        text: l10n.widgetKbTitle,
                         style: WinType.labelM(s.onSurface)),
                     TextSpan(
-                      text: on
-                          ? ' · activée : chaque message consomme nettement plus de tokens.'
-                          : ' · désactivée. L\'activer cherche dans les cours et vos fichiers, mais consomme plus de tokens.',
+                      text: on ? l10n.widgetKbOn : l10n.widgetKbOff,
                       style: WinType.bodyS(on ? WinColors.warn : s.onMuted),
                     ),
                   ]),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
 import '../theme/win_motion.dart';
 import '../services/course_service.dart';
 import '../theme/win_colors.dart';
@@ -50,7 +51,7 @@ class _MyCoursesScreenState extends State<MyCoursesScreen> {
     return Scaffold(
       backgroundColor: s.bg,
       appBar: AppBar(
-        title: Text('Mes formations',
+        title: Text(context.l10n.studentMyCoursesTitle,
             style: WinType.archivo(size: 20, color: s.onStrong)),
         backgroundColor: s.surface,
         foregroundColor: s.onStrong,
@@ -58,7 +59,7 @@ class _MyCoursesScreenState extends State<MyCoursesScreen> {
         actions: [
           TextButton.icon(
             icon: Icon(Icons.explore_outlined, size: 18, color: s.primary),
-            label: Text('Catalogue', style: WinType.labelM(s.primary)),
+            label: Text(context.l10n.shellTabCatalog, style: WinType.labelM(s.primary)),
             onPressed: _goToCatalog,
           ),
         ],
@@ -70,10 +71,10 @@ class _MyCoursesScreenState extends State<MyCoursesScreen> {
                   child: Column(mainAxisSize: MainAxisSize.min, children: [
                   Icon(Icons.wifi_off_outlined, size: 48, color: s.onFaint),
                   const SizedBox(height: 12),
-                  Text('Impossible de charger vos formations.',
+                  Text(context.l10n.studentMyCoursesLoadError,
                       style: WinType.bodyM(s.onMuted)),
                   const SizedBox(height: 12),
-                  WinButton('Réessayer', onTap: _load),
+                  WinButton(context.l10n.commonRetry, onTap: _load),
                 ]))
               : _enrollments!.isEmpty
                   ? _EmptyState(onExplore: _goToCatalog)
@@ -182,7 +183,7 @@ class _CourseCard extends StatelessWidget {
               Row(children: [
                 Icon(Icons.play_circle_outline, size: 14, color: s.onMuted),
                 const SizedBox(width: 4),
-                Text('${e.lessonsCount} leçons',
+                Text(context.l10n.studentCourseLessons(e.lessonsCount),
                     style: WinType.labelM(s.onMuted)),
                 const SizedBox(width: 12),
                 Icon(Icons.schedule_outlined, size: 14, color: s.onMuted),
@@ -193,10 +194,10 @@ class _CourseCard extends StatelessWidget {
 
               WinButton(
                 e.isCompleted
-                    ? 'Revoir'
+                    ? context.l10n.studentMyCoursesReplay
                     : pct > 0
-                        ? 'Continuer'
-                        : 'Commencer',
+                        ? context.l10n.commonContinue
+                        : context.l10n.studentMyCoursesStart,
                 block: true,
                 variant: e.isCompleted
                     ? WinButtonVariant.outline
@@ -236,16 +237,16 @@ class _EmptyState extends StatelessWidget {
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           Icon(Icons.school_outlined, size: 72, color: s.onFaint),
           const SizedBox(height: 20),
-          Text('Aucune formation en cours',
+          Text(context.l10n.studentMyCoursesEmpty,
               style: WinType.headlineS(s.onStrong)),
           const SizedBox(height: 8),
           Text(
-            'Explorez notre catalogue et commencez à apprendre dès aujourd\'hui.',
+            context.l10n.studentMyCoursesEmptyHint,
             style: WinType.bodyM(s.onMuted),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
-          WinButton('Explorer les formations', onTap: onExplore),
+          WinButton(context.l10n.studentMyCoursesExplore, onTap: onExplore),
         ]),
       ),
     );

@@ -5,6 +5,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import '../l10n/l10n.dart';
 
 /// Album de fin d'année  récit narratif généré une fois par an
 /// (YearlyAlbumService), consulté uniquement dans l'app : aucun bouton
@@ -52,7 +53,7 @@ class _AlbumTabState extends State<AlbumTab> {
             Icon(Icons.auto_stories_outlined, size: 48, color: s.onFaint),
             const SizedBox(height: 12),
             Text(
-                "L'album de ${widget.child.firstName} n'a pas encore été généré cette année.",
+                context.l10n.parentAlbumNotGenerated(widget.child.firstName),
                 style: WinType.bodyM(s.onMuted),
                 textAlign: TextAlign.center),
           ]),
@@ -63,51 +64,51 @@ class _AlbumTabState extends State<AlbumTab> {
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
       children: [
-        Text("Album de l'année de ${widget.child.firstName}",
+        Text(context.l10n.parentAlbumTitle(widget.child.firstName),
             style: WinType.headlineS(s.onStrong)),
         const SizedBox(height: 4),
         Text(
-            'Année scolaire ${a.schoolYear ?? ''} · mis à jour le ${_fmtDate(a.updatedAt)}',
+            context.l10n.parentAlbumMeta(a.schoolYear ?? '', _fmtDate(a.updatedAt)),
             style: WinType.labelS(s.onFaint)),
         const SizedBox(height: 16),
         if (a.subjectsWorked != null)
           _AlbumSection(
               icon: Icons.menu_book_outlined,
-              title: 'Matières travaillées',
+              title: context.l10n.parentAlbumSubjects,
               text: a.subjectsWorked!),
         if (a.progression != null) ...[
           const SizedBox(height: 10),
           _AlbumSection(
               icon: Icons.trending_up,
-              title: 'Progression observée',
+              title: context.l10n.parentAlbumProgress,
               text: a.progression!),
         ],
         if (a.topContents.isNotEmpty) ...[
           const SizedBox(height: 10),
           _AlbumListSection(
               icon: Icons.star_outline,
-              title: 'Contenus les plus consultés',
+              title: context.l10n.parentAlbumTopContents,
               items: a.topContents),
         ],
         if (a.goalsSummary != null) ...[
           const SizedBox(height: 10),
           _AlbumSection(
               icon: Icons.flag_outlined,
-              title: "Objectifs de l'année",
+              title: context.l10n.parentAlbumGoals,
               text: a.goalsSummary!),
         ],
         if (a.intensityWeeks.isNotEmpty) ...[
           const SizedBox(height: 10),
           _AlbumListSection(
               icon: Icons.bolt_outlined,
-              title: "Moments d'intensité",
+              title: context.l10n.parentAlbumIntensity,
               items: a.intensityWeeks),
         ],
         if (a.bulletin != null) ...[
           const SizedBox(height: 10),
           _AlbumSection(
               icon: Icons.school_outlined,
-              title: 'Bulletin',
+              title: context.l10n.parentAlbumReportCard,
               text: a.bulletin!),
         ],
       ],

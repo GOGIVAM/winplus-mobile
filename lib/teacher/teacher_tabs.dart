@@ -20,6 +20,7 @@ import 'tutor_profile_screen.dart';
 import 'tutor_bookings_screen.dart';
 import 'teacher_wallet_view.dart';
 import '../widgets/knowledge_base_toggle.dart';
+import '../l10n/l10n.dart';
 
 BadgeColor _statusColor(String s) => switch (s) {
       'Publié' => BadgeColor.success,
@@ -30,9 +31,12 @@ BadgeColor _statusColor(String s) => switch (s) {
     };
 
 String _statusLabel(String s) => switch (s) {
-      'published' => 'Publié',
-      'pending' => 'En révision',
-      'draft' => 'Brouillon',
+      'published' => L10n.current.commonPublished,
+      'pending' => L10n.current.teacherContentStatusReview,
+      'draft' => L10n.current.commonDraft,
+      'Publié' => L10n.current.commonPublished,
+      'En révision' => L10n.current.teacherContentStatusReview,
+      'Brouillon' => L10n.current.commonDraft,
       _ => s,
     };
 
@@ -162,29 +166,29 @@ class _TeacherDashTabState extends State<TeacherDashTab> {
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('PLAN ${subScope.planName.toUpperCase()}',
+                              Text(context.l10n.teacherDashPlan(subScope.planName.toUpperCase()),
                                   style: WinType.labelS(WinColors.ink300)
                                       .copyWith(letterSpacing: 0.8)),
                               const SizedBox(height: 8),
                               Text.rich(TextSpan(
                                   style: WinType.bodyL(WinColors.cream50),
                                   children: [
-                                    const TextSpan(text: 'Part sur vos séances : '),
-                                    _accent(sharePct > 0 ? '$sharePct % de vos revenus' : '—'),
+                                    TextSpan(text: context.l10n.teacherDashShareLabel),
+                                    _accent(sharePct > 0 ? context.l10n.teacherDashShareValue(sharePct) : '—'),
                                   ])),
                               const SizedBox(height: 18),
                               Row(children: [
                                 Expanded(
                                     child: _heroStat('${published.length}',
-                                        'publiés', 'En ligne')),
+                                        context.l10n.teacherDashPublished, context.l10n.commonOnline)),
                                 const SizedBox(width: 10),
                                 Expanded(
                                     child: _heroStat(
                                         avgRating > 0
                                             ? avgRating.toStringAsFixed(1)
                                             : '',
-                                        'note moy.',
-                                        'Sur 5')),
+                                        context.l10n.teacherDashAvgShort,
+                                        context.l10n.teacherDashOutOf5)),
                               ]),
                               const SizedBox(height: 14),
                               Row(children: [
@@ -215,7 +219,7 @@ class _TeacherDashTabState extends State<TeacherDashTab> {
                                                 size: 16,
                                                 color: WinColors.ink900),
                                             const SizedBox(width: 6),
-                                            Text('Publier',
+                                            Text(context.l10n.forumPublish,
                                                 style: WinType.manrope(
                                                     size: 13,
                                                     weight: FontWeight.w700,
@@ -243,7 +247,7 @@ class _TeacherDashTabState extends State<TeacherDashTab> {
                                       ),
                                       alignment: Alignment.center,
                                       child: Text(
-                                        'Corrections${pendingCorrections > 0 ? ' ($pendingCorrections)' : ''}',
+                                        '${context.l10n.studentTabsTypeCorrections}${pendingCorrections > 0 ? ' ($pendingCorrections)' : ''}',
                                         style: WinType.manrope(
                                             size: 13,
                                             weight: FontWeight.w600,
@@ -264,11 +268,11 @@ class _TeacherDashTabState extends State<TeacherDashTab> {
                                 context,
                                 Icons.description_outlined,
                                 '${published.length}',
-                                'Contenus publiés')),
+                                context.l10n.teacherDashPublishedContent)),
                         const SizedBox(width: 10),
                         Expanded(
                             child: _statCard(context, Icons.download_outlined,
-                                '$totalDl', 'Téléchargements')),
+                                '$totalDl', context.l10n.teacherDashDownloads)),
                       ]),
                       const SizedBox(height: 10),
                       Row(children: [
@@ -279,30 +283,30 @@ class _TeacherDashTabState extends State<TeacherDashTab> {
                                 avgRating > 0
                                     ? avgRating.toStringAsFixed(1)
                                     : '',
-                                'Note moyenne')),
+                                context.l10n.teacherDashAvgRating)),
                         const SizedBox(width: 10),
                         Expanded(
                             child: _statCard(
                                 context,
                                 Icons.people_outline,
                                 '${_stats?.activeStudents ?? ''}',
-                                'Étudiants actifs')),
+                                context.l10n.teacherDashActiveStudents)),
                       ]),
                       const SizedBox(height: 24),
 
                       // 3. Revenus du mois
-                      Text('Revenus du mois',
+                      Text(context.l10n.teacherDashMonthRevenue,
                           style: WinType.archivo(size: 18, color: s.onStrong)),
                       const SizedBox(height: 4),
                       Text(
-                          '${fmtXaf(_stats?.thisMonthRevenue ?? 0)} XAF ce mois',
+                          context.l10n.teacherDashThisMonth(fmtXaf(_stats?.thisMonthRevenue ?? 0)),
                           style: WinType.archivo(size: 22, color: s.primary)),
                       const SizedBox(height: 12),
                       WinCard(
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('4 dernières semaines',
+                              Text(context.l10n.teacherDashLast4Weeks,
                                   style: WinType.labelS(s.onMuted)),
                               const SizedBox(height: 10),
                               SizedBox(
@@ -336,7 +340,7 @@ class _TeacherDashTabState extends State<TeacherDashTab> {
                                               ),
                                             ),
                                             const SizedBox(height: 4),
-                                            Text('S${i + 1}',
+                                            Text(context.l10n.studentReportsWeekShort(i + 1),
                                                 style:
                                                     WinType.labelS(s.onFaint)),
                                           ]),
@@ -353,14 +357,14 @@ class _TeacherDashTabState extends State<TeacherDashTab> {
                       // les produit ; les chiffres réels sont au-dessus.
 
                       // 5. Contenus récents (3 derniers)
-                      Text('Contenus récents',
+                      Text(context.l10n.teacherDashRecentContent,
                           style: WinType.archivo(size: 18, color: s.onStrong)),
                       const SizedBox(height: 12),
                       if (content.isEmpty)
                         Center(
                             child: Padding(
                           padding: const EdgeInsets.all(24),
-                          child: Text('Aucun contenu publié.',
+                          child: Text(context.l10n.teacherDashNoContent,
                               style: WinType.bodyM(s.onMuted)),
                         ))
                       else
@@ -406,7 +410,7 @@ class _ContentRow extends StatelessWidget {
                     style: WinType.titleM(s.onStrong)),
                 const SizedBox(height: 4),
                 Text(
-                    '${c.downloads} téléch.${c.rating > 0 ? '  ·  ${c.rating.toStringAsFixed(1)}' : ''}',
+                    '${context.l10n.teacherDashDownloadsCount(c.downloads)}${c.rating > 0 ? '  ·  ${c.rating.toStringAsFixed(1)}' : ''}',
                     style: WinType.labelM(s.onMuted)),
               ])),
           Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
@@ -454,6 +458,13 @@ class _TeacherContentTabState extends State<TeacherContentTab> {
     }
   }
 
+  String _filterLabel(BuildContext context, String f) => switch (f) {
+        'Publié' => context.l10n.commonPublished,
+        'En révision' => context.l10n.teacherContentStatusReview,
+        'Brouillon' => context.l10n.commonDraft,
+        _ => context.l10n.commonAll,
+      };
+
   List<ApiPublishedContent> get _items {
     final all = _all ?? [];
     if (_f == 'Tout') return all;
@@ -492,8 +503,8 @@ class _TeacherContentTabState extends State<TeacherContentTab> {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                  Text('Mes formations', style: WinType.titleM(Colors.white)),
-                  Text('Créez et gérez vos cours structurés',
+                  Text(context.l10n.studentMyCoursesTitle, style: WinType.titleM(Colors.white)),
+                  Text(context.l10n.teacherContentCoursesBanner,
                       style: WinType.labelS(Colors.white54)),
                 ])),
             Container(
@@ -502,7 +513,7 @@ class _TeacherContentTabState extends State<TeacherContentTab> {
                 color: WinColors.teal600,
                 borderRadius: BorderRadius.circular(WinRadii.full),
               ),
-              child: Text('Gérer',
+              child: Text(context.l10n.teacherContentManage,
                   style: WinType.labelS(Colors.white)
                       .copyWith(fontWeight: FontWeight.w700)),
             ),
@@ -516,7 +527,7 @@ class _TeacherContentTabState extends State<TeacherContentTab> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               itemCount: _filters.length,
               separatorBuilder: (_, __) => const SizedBox(width: 8),
-              itemBuilder: (_, i) => WinChip(_filters[i],
+              itemBuilder: (_, i) => WinChip(_filterLabel(context, _filters[i]),
                   active: _f == _filters[i],
                   onTap: () => setState(() => _f = _filters[i])))),
       const SizedBox(height: 12),
@@ -526,7 +537,7 @@ class _TeacherContentTabState extends State<TeacherContentTab> {
               : _items.isEmpty
                   ? Center(child: Builder(builder: (ctx) {
                       final s = WinTheme.of(ctx);
-                      return Text('Aucun contenu.',
+                      return Text(ctx.l10n.teacherContentEmpty,
                           style: WinType.bodyM(s.onMuted));
                     }))
                   : ListView.separated(
@@ -568,7 +579,7 @@ class _TeacherStudentsTabState extends State<TeacherStudentsTab> {
       final classes = await TeacherService.instance.getClasses(includeInactive: _showArchived);
       if (mounted) setState(() => _classes = classes);
     } catch (_) {
-      if (mounted) setState(() { _classes = []; _error = "Vos classes n'ont pas pu être chargées."; });
+      if (mounted) setState(() { _classes = []; _error = L10n.current.teacherClassesLoadError; });
     }
   }
 
@@ -586,7 +597,7 @@ class _TeacherStudentsTabState extends State<TeacherStudentsTab> {
         return StatefulBuilder(builder: (ctx, setSheetState) {
           Future<void> submit() async {
             if (nameCtrl.text.trim().length < 2 || levelCtrl.text.trim().isEmpty || yearCtrl.text.trim().isEmpty) {
-              ScaffoldMessenger.of(ctx).showSnackBar(const SnackBar(content: Text('Nom, niveau et année sont requis.')));
+              ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(content: Text(ctx.l10n.teacherClassesRequired)));
               return;
             }
             setSheetState(() => busy = true);
@@ -599,12 +610,12 @@ class _TeacherStudentsTabState extends State<TeacherStudentsTab> {
               if (ctx.mounted) Navigator.pop(ctx);
               await _load();
               if (mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Classe « ${nameCtrl.text.trim()} » créée.')));
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(L10n.current.teacherClassesCreated(nameCtrl.text.trim()))));
               }
             } catch (_) {
               setSheetState(() => busy = false);
               if (ctx.mounted) {
-                ScaffoldMessenger.of(ctx).showSnackBar(const SnackBar(content: Text("Cette classe n'a pas pu être créée (nom déjà utilisé ?).")));
+                ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(content: Text(L10n.current.teacherClassesCreateError)));
               }
             }
           }
@@ -627,15 +638,15 @@ class _TeacherStudentsTabState extends State<TeacherStudentsTab> {
                             height: 4,
                             margin: const EdgeInsets.only(bottom: 16),
                             decoration: BoxDecoration(color: s.outline, borderRadius: BorderRadius.circular(WinRadii.full)))),
-                    Text('Créer une classe', style: WinType.archivo(size: 18, color: s.onStrong)),
+                    Text(ctx.l10n.teacherClassesCreate, style: WinType.archivo(size: 18, color: s.onStrong)),
                     const SizedBox(height: 16),
-                    WinTextField(label: 'Nom de la classe', hint: 'Ex: Terminale C Maths', icon: Icons.class_outlined, controller: nameCtrl),
+                    WinTextField(label: ctx.l10n.teacherClassesName, hint: ctx.l10n.teacherClassesNameHint, icon: Icons.class_outlined, controller: nameCtrl),
                     const SizedBox(height: 12),
-                    WinTextField(label: 'Niveau', hint: 'Ex: Terminale', icon: Icons.school_outlined, controller: levelCtrl),
+                    WinTextField(label: ctx.l10n.commonLevel, hint: ctx.l10n.teacherClassesLevelHint, icon: Icons.school_outlined, controller: levelCtrl),
                     const SizedBox(height: 12),
-                    WinTextField(label: 'Année académique', hint: 'Ex: 2026-2027', icon: Icons.calendar_today_outlined, controller: yearCtrl),
+                    WinTextField(label: ctx.l10n.teacherClassesYear, hint: ctx.l10n.teacherClassesYearHint, icon: Icons.calendar_today_outlined, controller: yearCtrl),
                     const SizedBox(height: 20),
-                    WinButton(busy ? 'Création…' : 'Créer', block: true, icon: Icons.add, loading: busy, onTap: submit),
+                    WinButton(busy ? ctx.l10n.studentGroupsCreating : ctx.l10n.studentGroupsCreateBtn, block: true, icon: Icons.add, loading: busy, onTap: submit),
                   ]),
             ),
           );
@@ -650,7 +661,7 @@ class _TeacherStudentsTabState extends State<TeacherStudentsTab> {
         await TeacherService.instance.reactivateClass(klass.id);
         await _load();
       } catch (_) {
-        if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Cette classe n'a pas pu être réactivée.")));
+        if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(L10n.current.teacherClassesReactivateError)));
       }
       return;
     }
@@ -663,13 +674,13 @@ class _TeacherStudentsTabState extends State<TeacherStudentsTab> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text(klass.studentCount > 0 ? 'Désactiver la classe ?' : 'Supprimer la classe ?'),
+        title: Text(klass.studentCount > 0 ? ctx.l10n.teacherClassesDeactivateTitle : ctx.l10n.teacherClassesDeleteTitle),
         content: Text(klass.studentCount > 0
-            ? '« ${klass.name} » contient ${klass.studentCount} élève(s) : elle sera désactivée (pas supprimée) et retirée de la liste.'
-            : 'Supprimer définitivement « ${klass.name} » ?'),
+            ? ctx.l10n.teacherClassesDeactivateBody(klass.name, klass.studentCount)
+            : ctx.l10n.teacherClassesDeleteBody(klass.name)),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Annuler')),
-          TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Confirmer')),
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(ctx.l10n.commonCancel)),
+          TextButton(onPressed: () => Navigator.pop(ctx, true), child: Text(ctx.l10n.commonConfirm)),
         ],
       ),
     );
@@ -682,7 +693,7 @@ class _TeacherStudentsTabState extends State<TeacherStudentsTab> {
       }
       await _load();
     } catch (_) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Cette action a échoué.")));
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(L10n.current.teacherClassesActionFailed)));
     }
   }
 
@@ -694,8 +705,8 @@ class _TeacherStudentsTabState extends State<TeacherStudentsTab> {
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
       children: [
         Row(children: [
-          Expanded(child: Text('Mes classes', style: WinType.archivo(size: 18, color: s.onStrong))),
-          WinChip(_showArchived ? 'Masquer désactivées' : 'Voir désactivées',
+          Expanded(child: Text(context.l10n.teacherClassesTitle, style: WinType.archivo(size: 18, color: s.onStrong))),
+          WinChip(_showArchived ? context.l10n.teacherClassesHideInactive : context.l10n.teacherClassesShowInactive,
               active: _showArchived,
               onTap: () { setState(() => _showArchived = !_showArchived); _load(); }),
         ]),
@@ -708,7 +719,7 @@ class _TeacherStudentsTabState extends State<TeacherStudentsTab> {
             child: Column(children: [
               Text(_error!, style: WinType.bodyM(s.onMuted), textAlign: TextAlign.center),
               const SizedBox(height: 8),
-              WinButton('Réessayer', icon: Icons.refresh, onTap: _load),
+              WinButton(context.l10n.commonRetry, icon: Icons.refresh, onTap: _load),
             ]),
           )
         else if (_classes!.isEmpty)
@@ -717,7 +728,7 @@ class _TeacherStudentsTabState extends State<TeacherStudentsTab> {
             child: Column(children: [
               Icon(Icons.class_outlined, size: 48, color: s.onFaint),
               const SizedBox(height: 8),
-              Text(_showArchived ? 'Aucune classe' : 'Aucune classe pour le moment', style: WinType.bodyM(s.onMuted)),
+              Text(_showArchived ? context.l10n.teacherClassesNone : context.l10n.teacherClassesNoneYet, style: WinType.bodyM(s.onMuted)),
             ]),
           )
         else
@@ -743,20 +754,20 @@ class _TeacherStudentsTabState extends State<TeacherStudentsTab> {
                                 children: [
                               Text(cl.name, style: WinType.titleM(s.onStrong), maxLines: 1, overflow: TextOverflow.ellipsis),
                               Row(children: [
-                                Text('${cl.studentCount} élève${cl.studentCount != 1 ? 's' : ''}', style: WinType.labelM(s.onMuted)),
+                                Text(context.l10n.teacherClassesStudents(cl.studentCount), style: WinType.labelM(s.onMuted)),
                                 if (cl.classAverage != null) ...[
                                   const SizedBox(width: 8),
                                   Icon(Icons.bar_chart_outlined, size: 12, color: cl.classAverage! >= 70 ? WinColors.success : WinColors.warn),
                                   const SizedBox(width: 2),
-                                  Text('${cl.classAverage}% moy.', style: WinType.labelM(cl.classAverage! >= 70 ? WinColors.success : WinColors.warn)),
+                                  Text(context.l10n.teacherClassesAverage(cl.classAverage!), style: WinType.labelM(cl.classAverage! >= 70 ? WinColors.success : WinColors.warn)),
                                 ],
                                 if (cl.pendingCount > 0) ...[
                                   const SizedBox(width: 8),
-                                  WinBadge('${cl.pendingCount} à corriger', color: BadgeColor.warn),
+                                  WinBadge(context.l10n.teacherClassToMark(cl.pendingCount), color: BadgeColor.warn),
                                 ],
                                 if (!cl.isActive) ...[
                                   const SizedBox(width: 8),
-                                  Text('Désactivée', style: WinType.labelM(s.onFaint)),
+                                  Text(context.l10n.teacherClassesInactive, style: WinType.labelM(s.onFaint)),
                                 ],
                               ]),
                             ])),
@@ -772,22 +783,22 @@ class _TeacherStudentsTabState extends State<TeacherStudentsTab> {
                   ),
                 ),
               )),
-        WinButton('Créer une classe',
+        WinButton(context.l10n.teacherClassesCreate,
             variant: WinButtonVariant.outline, block: true, icon: Icons.add, onTap: _showCreateClassSheet),
         const SizedBox(height: 10),
-        WinButton('Mes liaisons directes',
+        WinButton(context.l10n.teacherClassesMyLinks,
             variant: WinButtonVariant.outline,
             block: true,
             icon: Icons.link_outlined,
             onTap: () => Navigator.push(context, WinPageRoute(builder: (_) => const TeacherLinksScreen()))),
         const SizedBox(height: 10),
-        WinButton('Mode Tuteur',
+        WinButton(context.l10n.teacherProfileTitle,
             variant: WinButtonVariant.outline,
             block: true,
             icon: Icons.school_outlined,
             onTap: () => Navigator.push(context, WinPageRoute(builder: (_) => const TutorProfileScreen()))),
         const SizedBox(height: 10),
-        WinButton('Mes réservations élèves',
+        WinButton(context.l10n.teacherClassesMyBookings,
             variant: WinButtonVariant.outline,
             block: true,
             icon: Icons.event_available_outlined,
@@ -804,35 +815,12 @@ class TeacherSessionsTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
     final sessions = [
-      (WinColors.teal500, 'Révision Dérivées  Tle C', '14:00 – 15:30', true),
-      (WinColors.blue500, 'Correction épreuve Physique', '16:30 – 17:30', false)
+      (WinColors.teal500, context.l10n.teacherSessionsDemo1, '14:00 – 15:30', true),
+      (WinColors.blue500, context.l10n.teacherSessionsDemo2, '16:30 – 17:30', false)
     ];
     final now = DateTime.now();
-    const _jours = [
-      'lundi',
-      'mardi',
-      'mercredi',
-      'jeudi',
-      'vendredi',
-      'samedi',
-      'dimanche'
-    ];
-    const _mois = [
-      'janvier',
-      'février',
-      'mars',
-      'avril',
-      'mai',
-      'juin',
-      'juillet',
-      'août',
-      'septembre',
-      'octobre',
-      'novembre',
-      'décembre'
-    ];
-    final dateLabel =
-        "Aujourd'hui, ${_jours[now.weekday - 1]} ${now.day} ${_mois[now.month - 1]}";
+    final dateLabel = context.l10n
+        .teacherSessionsToday(WinFormat.weekday(now.weekday), WinFormat.dayMonth(now));
     return Column(children: [
       Expanded(
           child: ListView(
@@ -858,12 +846,12 @@ class TeacherSessionsTab extends StatelessWidget {
                                 Text(se.$3, style: WinType.labelM(s.onMuted))
                               ])),
                           if (se.$4)
-                            const WinBadge('● Bientôt',
+                            WinBadge(context.l10n.teacherSessionsSoon,
                                 color: BadgeColor.error),
                         ]),
                         const SizedBox(height: 12),
                         WinButton(
-                            se.$4 ? 'Démarrer la session' : 'Voir les détails',
+                            se.$4 ? context.l10n.studentSessionStart : context.l10n.teacherSessionsViewDetails,
                             variant: se.$4
                                 ? WinButtonVariant.accent
                                 : WinButtonVariant.outline,
@@ -875,7 +863,7 @@ class TeacherSessionsTab extends StatelessWidget {
                       ])));
             }),
             const SizedBox(height: 8),
-            WinButton('Planifier une session',
+            WinButton(context.l10n.teacherSessionsPlan,
                 variant: WinButtonVariant.outline,
                 block: true,
                 icon: Icons.add,
@@ -911,12 +899,12 @@ class _TeacherWinAITabState extends State<TeacherWinAITab> {
   final List<({bool me, String text})> _msgs = [];
   bool _thinking = false;
 
-  static const _suggestions = [
-    'Quiz Terminale C (10 QCM)',
-    'Fiche de cours',
-    'Correction type',
-    'Optimiser un titre',
-  ];
+  List<String> get _suggestions => [
+        L10n.current.teacherAiSuggestQuiz,
+        L10n.current.teacherAiSuggestSheet,
+        L10n.current.teacherAiSuggestCorrection,
+        L10n.current.teacherAiSuggestTitle,
+      ];
 
   @override
   void initState() {
@@ -941,7 +929,7 @@ class _TeacherWinAITabState extends State<TeacherWinAITab> {
       _thinking = false;
       _msgs.add((
         me: false,
-        text: reply ?? 'Désolé, je n\'ai pas pu répondre. Réessaie.'
+        text: reply ?? L10n.current.studentTabsAiNoReply
       ));
     });
   }
@@ -972,7 +960,7 @@ class _TeacherWinAITabState extends State<TeacherWinAITab> {
                     Text('WinAI',
                         style: WinType.archivo(size: 28, color: s.onStrong)),
                     const SizedBox(height: 6),
-                    Text('Ton assistant éditorial & pédagogique',
+                    Text(context.l10n.teacherAiTagline,
                         style: WinType.bodyM(s.onMuted),
                         textAlign: TextAlign.center),
                     const SizedBox(height: 24),
@@ -1024,7 +1012,7 @@ class _TeacherWinAITabState extends State<TeacherWinAITab> {
                           const Icon(Icons.psychology_rounded,
                               size: 15, color: Color(0xFF8B5CF6)),
                           const SizedBox(width: 8),
-                          Text('Mémoire WinAI',
+                          Text(context.l10n.commonWinaiMemory,
                               style: WinType.manrope(
                                   size: 13,
                                   weight: FontWeight.w600,
@@ -1060,7 +1048,7 @@ class _TeacherWinAITabState extends State<TeacherWinAITab> {
                                 child: CircularProgressIndicator(
                                     strokeWidth: 2, color: s.primary)),
                             const SizedBox(width: 8),
-                            Text('WinAI réfléchit…',
+                            Text(context.l10n.commonWinaiThinking,
                                 style: WinType.bodyS(s.onMuted)),
                           ]),
                         ),
@@ -1094,7 +1082,7 @@ class _TeacherWinAITabState extends State<TeacherWinAITab> {
           child: Row(children: [
             Expanded(
                 child: WinTextField(
-                    hint: 'Génère un quiz, une fiche, une correction…',
+                    hint: context.l10n.teacherAiInputHint,
                     controller: _ctrl)),
             const SizedBox(width: 8),
             GestureDetector(

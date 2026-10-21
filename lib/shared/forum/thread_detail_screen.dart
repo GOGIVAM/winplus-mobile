@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import '../../l10n/l10n.dart';
 import '../../services/forum_service.dart';
 import '../../theme/win_colors.dart';
 import '../../theme/win_theme.dart';
 import '../../theme/win_typography.dart';
+import 'new_thread_screen.dart';
 
 class ThreadDetailScreen extends StatefulWidget {
   final Map<String, dynamic> thread;
@@ -67,6 +69,7 @@ class _ThreadDetailScreenState extends State<ThreadDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
+    final l10n = context.l10n;
     return Scaffold(
       backgroundColor: s.bg,
       appBar: AppBar(
@@ -76,7 +79,10 @@ class _ThreadDetailScreenState extends State<ThreadDetailScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(widget.thread['category'] ?? 'Thread',
+        title: Text(
+            widget.thread['category'] == null
+                ? l10n.forumThread
+                : forumCategoryLabel(l10n, widget.thread['category'] as String),
             style: WinType.labelM(s.onMuted)),
       ),
       body: Column(children: [
@@ -120,7 +126,7 @@ class _ThreadDetailScreenState extends State<ThreadDetailScreen> {
                   style: WinType.bodyM(s.onStrong),
                   decoration: InputDecoration(
                     isDense: true,
-                    hintText: 'Votre réponse…',
+                    hintText: l10n.forumReplyHint,
                     hintStyle: WinType.bodyM(s.onFaint),
                     border: InputBorder.none,
                   ),
@@ -197,7 +203,7 @@ class _PostCard extends StatelessWidget {
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          Text(post['authorName'] ?? 'Anonyme',
+          Text(post['authorName'] ?? context.l10n.forumAnonymous,
               style: WinType.labelM(s.onStrong)
                   .copyWith(fontWeight: FontWeight.w600)),
           const SizedBox(width: 8),
@@ -236,11 +242,12 @@ class _RolePill extends StatelessWidget {
   const _RolePill({required this.role, required this.isVerified});
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final label = switch (role) {
-      'teacher' => 'Prof',
-      'institution' => 'Établissement',
-      'parent' => 'Parent',
-      _ => 'Élève',
+      'teacher' => l10n.forumRoleTeacher,
+      'institution' => l10n.roleInstitution,
+      'parent' => l10n.roleParent,
+      _ => l10n.roleStudent,
     };
     final color = switch (role) {
       'teacher' => WinColors.teal400,

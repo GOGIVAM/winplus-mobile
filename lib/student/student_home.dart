@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
 import '../theme/win_motion.dart';
 import '../data/mock_data.dart';
 import '../data/models.dart';
@@ -15,33 +16,8 @@ import '../widgets/win_widgets.dart';
 import 'content_detail_screen.dart';
 import 'pending_goals_panel.dart';
 
-String _fmtDate(DateTime d) {
-  const days = [
-    'lundi',
-    'mardi',
-    'mercredi',
-    'jeudi',
-    'vendredi',
-    'samedi',
-    'dimanche'
-  ];
-  const months = [
-    'janvier',
-    'février',
-    'mars',
-    'avril',
-    'mai',
-    'juin',
-    'juillet',
-    'août',
-    'septembre',
-    'octobre',
-    'novembre',
-    'décembre'
-  ];
-  final day = days[d.weekday - 1];
-  return '${day[0].toUpperCase()}${day.substring(1)} ${d.day} ${months[d.month - 1]} ${d.year}';
-}
+String _fmtDate(DateTime d) => L10n.current
+    .studentHomeDate(WinFormat.weekdayCap(d.weekday), WinFormat.date(d));
 
 /// ===================== ACCUEIL ÉTUDIANT =====================
 class StudentHomeTab extends StatefulWidget {
@@ -117,7 +93,7 @@ class _StudentHomeTabState extends State<StudentHomeTab> {
     final now = DateTime.now();
     final hour = now.hour;
     final greeting =
-        hour < 12 ? 'Bonjour' : (hour < 18 ? 'Bon après-midi' : 'Bonsoir');
+        hour < 12 ? context.l10n.studentHomeGoodMorning : (hour < 18 ? context.l10n.studentHomeGoodAfternoon : context.l10n.studentHomeGoodEvening);
 
     final streakDays = _streak ?? 0;
     final avgScore =
@@ -188,11 +164,11 @@ class _StudentHomeTabState extends State<StudentHomeTab> {
                                   ? '$greeting  '
                                   : '$greeting $firstName  '),
                           TextSpan(
-                              text: '$streakDays jours',
+                              text: context.l10n.studentHomeStreakDays(streakDays),
                               style: WinType.archivo(
                                       size: 16, color: WinColors.teal400)
                                   .copyWith(fontStyle: FontStyle.italic)),
-                          const TextSpan(text: " d'affilée !"),
+                          TextSpan(text: context.l10n.studentHomeInARow),
                         ])),
                     const SizedBox(height: 16),
                     Row(children: [
@@ -200,24 +176,24 @@ class _StudentHomeTabState extends State<StudentHomeTab> {
                           child: _HeroStat(
                               value: WinStreakFlame(streakDays,
                                   light: true, size: 22),
-                              title: "jours d'affilée",
-                              sub: 'Streak')),
+                              title: context.l10n.studentHomeDaysInARow,
+                              sub: context.l10n.studentHomeStreak)),
                       const SizedBox(width: 10),
                       Expanded(
                           child: _HeroStat(
                               value: Text(avgScore,
                                   style: WinType.archivo(
                                       size: 22, color: WinColors.teal400)),
-                              title: 'score moyen',
-                              sub: 'Cette semaine')),
+                              title: context.l10n.studentHomeAvgScore,
+                              sub: context.l10n.studentCoachThisWeek)),
                     ]),
                     const SizedBox(height: 10),
                     _HeroStat(
                       value: Text(weekHours,
                           style: WinType.archivo(
                               size: 22, color: WinColors.teal400)),
-                      title: "d'étude cette semaine",
-                      sub: 'Temps enregistré',
+                      title: context.l10n.studentHomeStudyThisWeek,
+                      sub: context.l10n.studentHomeTimeLogged,
                     ),
                   ]),
             ),
@@ -231,17 +207,20 @@ class _StudentHomeTabState extends State<StudentHomeTab> {
             SizedBox(
                 height: 36,
                 child:
-                    ListView(scrollDirection: Axis.horizontal, children: const [
-                  WinChip('Reprendre', icon: Icons.play_arrow_rounded),
-                  SizedBox(width: 8),
-                  WinChip('Mes Quiz', icon: Icons.check_circle_outline),
-                  SizedBox(width: 8),
-                  WinChip('Téléchargements', icon: Icons.download_outlined),
+                    ListView(scrollDirection: Axis.horizontal, children: [
+                  WinChip(context.l10n.studentHomeResume,
+                      icon: Icons.play_arrow_rounded),
+                  const SizedBox(width: 8),
+                  WinChip(context.l10n.studentQuizMyQuizzes,
+                      icon: Icons.check_circle_outline),
+                  const SizedBox(width: 8),
+                  WinChip(context.l10n.studentHomeDownloads,
+                      icon: Icons.download_outlined),
                 ])),
             // 2.1  Continue Learning (contenus réellement commencés)
             if (continueItems.isNotEmpty) ...[
               const SizedBox(height: 24),
-              const _SectionHeader("Continue où tu t'es arrêté"),
+              _SectionHeader(context.l10n.studentHomeContinue),
               SizedBox(
                 height: 100,
                 child: ListView.separated(
@@ -256,7 +235,7 @@ class _StudentHomeTabState extends State<StudentHomeTab> {
             // 2.3  Examens à venir (échéances réelles)
             if (upcoming.isNotEmpty) ...[
               const SizedBox(height: 24),
-              const _SectionHeader('Examens à venir'),
+              _SectionHeader(context.l10n.studentHomeUpcomingExams),
               ...upcoming.take(2).map((exam) => Padding(
                     padding: const EdgeInsets.only(bottom: 10),
                     child: _ExamCountdownCard(exam: exam),
@@ -267,14 +246,14 @@ class _StudentHomeTabState extends State<StudentHomeTab> {
             Row(children: [
               Expanded(
                   child: _StatCard(Icons.check_circle_outline,
-                      quizWeek, 'Quiz / sem.')),
+                      quizWeek, context.l10n.studentHomeQuizPerWeek)),
               const SizedBox(width: 10),
               Expanded(
-                  child: _StatCard(Icons.schedule, weekHours, 'Étude / sem.')),
+                  child: _StatCard(Icons.schedule, weekHours, context.l10n.studentHomeStudyPerWeek)),
               const SizedBox(width: 10),
               Expanded(
                   child: _StatCard(Icons.emoji_events_outlined,
-                      _badges != null ? '$_badges' : '—', 'Badges')),
+                      _badges != null ? '$_badges' : '—', context.l10n.studentHomeBadges)),
             ]),
           ],
         ),
@@ -299,8 +278,8 @@ class _InProgressCard extends StatelessWidget {
       navigator.push(WinPageRoute(
           builder: (_) => ContentDetailScreen(content: subject.toContent())));
     } catch (_) {
-      messenger.showSnackBar(const SnackBar(
-          content: Text("Ce contenu n'a pas pu être ouvert. Réessaie plus tard.")));
+      messenger.showSnackBar(SnackBar(
+          content: Text(L10n.current.studentHomeOpenFailed)));
     }
   }
 
@@ -335,7 +314,7 @@ class _InProgressCard extends StatelessWidget {
                     .copyWith(fontWeight: FontWeight.w600)),
             const Spacer(),
             Row(mainAxisSize: MainAxisSize.min, children: [
-              Text('Reprendre',
+              Text(context.l10n.studentHomeResume,
                   style: WinType.manrope(
                       size: 11, weight: FontWeight.w700, color: s.primary)),
               const SizedBox(width: 2),
@@ -384,7 +363,7 @@ class _ExamCountdownCard extends StatelessWidget {
         Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
           Text('${exam.daysLeft}',
               style: WinType.archivo(size: 28, color: urgentColor)),
-          Text('jours', style: WinType.labelS(urgentColor)),
+          Text(context.l10n.studentHomeDaysLabel, style: WinType.labelS(urgentColor)),
         ]),
       ]),
     );
@@ -459,7 +438,7 @@ class _UpgradeBanner extends StatelessWidget {
         const SizedBox(width: 10),
         Expanded(
           child: Text(
-            'Avec un abonnement, tout le catalogue s\'ouvre et WinAI vous accompagne davantage.',
+            context.l10n.studentHomeUpgrade,
             style: WinType.bodyS(WinColors.teal700)
                 .copyWith(fontWeight: FontWeight.w500),
           ),
@@ -468,7 +447,7 @@ class _UpgradeBanner extends StatelessWidget {
         GestureDetector(
           onTap: () {},
           child: Row(mainAxisSize: MainAxisSize.min, children: [
-            Text('Voir',
+            Text(context.l10n.studentHomeSee,
                 style: WinType.manrope(
                     size: 12,
                     weight: FontWeight.w700,
@@ -570,7 +549,7 @@ class _ContentCardState extends State<ContentCard> {
                   borderRadius: BorderRadius.circular(WinRadii.full),
                 ),
                 child: Text(
-                    content.free ? 'Gratuit' : '${fmtXaf(content.price)} XAF',
+                    content.free ? context.l10n.commonFree : '${fmtXaf(content.price)} XAF',
                     style: WinType.labelS(
                             content.free ? Colors.white : WinColors.ink800)
                         .copyWith(fontWeight: FontWeight.w700)),

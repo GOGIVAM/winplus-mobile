@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
 import '../theme/win_motion.dart';
 import '../services/auth_service.dart';
 import '../services/subscription_service.dart';
@@ -75,7 +76,7 @@ class _ProfileScreenState extends State<ProfileScreen>
     setState(() => _savingProfile = false);
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content:
-          Text(ok ? 'Profil mis à jour.' : 'Erreur lors de la mise à jour.'),
+          Text(ok ? L10n.current.studentProfileUpdated : L10n.current.studentProfileUpdateError),
     ));
   }
 
@@ -84,11 +85,11 @@ class _ProfileScreenState extends State<ProfileScreen>
     final next = _newPwdCtrl.text;
     final conf = _confPwdCtrl.text;
     if (cur.isEmpty || next.isEmpty || conf.isEmpty) {
-      setState(() => _pwdError = 'Veuillez remplir tous les champs.');
+      setState(() => _pwdError = L10n.current.fillAllFields);
       return;
     }
     if (next != conf) {
-      setState(() => _pwdError = 'Les mots de passe ne correspondent pas.');
+      setState(() => _pwdError = L10n.current.studentProfilePwdMismatch);
       return;
     }
     setState(() {
@@ -103,9 +104,9 @@ class _ProfileScreenState extends State<ProfileScreen>
       _newPwdCtrl.clear();
       _confPwdCtrl.clear();
       ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Mot de passe modifié.')));
+          .showSnackBar(SnackBar(content: Text(L10n.current.studentProfilePwdChanged)));
     } else {
-      setState(() => _pwdError = 'Mot de passe actuel incorrect.');
+      setState(() => _pwdError = L10n.current.studentProfilePwdWrong);
     }
   }
 
@@ -128,7 +129,7 @@ class _ProfileScreenState extends State<ProfileScreen>
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Profil', style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.studentProfileTitle, style: WinType.headlineS(s.onStrong)),
         bottom: TabBar(
           controller: _tab,
           isScrollable: true,
@@ -137,12 +138,12 @@ class _ProfileScreenState extends State<ProfileScreen>
           indicatorColor: s.primary,
           indicatorSize: TabBarIndicatorSize.label,
           labelStyle: WinType.manrope(size: 13, weight: FontWeight.w600),
-          tabs: const [
-            Tab(text: 'Profil'),
-            Tab(text: 'Sécurité'),
-            Tab(text: 'Notifications'),
-            Tab(text: 'Confidentialité'),
-            Tab(text: 'Compte'),
+          tabs: [
+            Tab(text: context.l10n.studentProfileTitle),
+            Tab(text: context.l10n.studentProfileTabSecurity),
+            Tab(text: context.l10n.studentNotifTitle),
+            Tab(text: context.l10n.studentProfileTabPrivacy),
+            Tab(text: context.l10n.studentHubAccount),
           ],
         ),
       ),
@@ -158,41 +159,41 @@ class _ProfileScreenState extends State<ProfileScreen>
               const SizedBox(height: 8),
               GestureDetector(
                 onTap: () {},
-                child: Text('Modifier la photo',
+                child: Text(context.l10n.studentProfileChangePhoto,
                     style: WinType.labelM(s.primary)
                         .copyWith(fontWeight: FontWeight.w600)),
               ),
             ])),
             const SizedBox(height: 24),
             WinTextField(
-                label: 'Nom complet',
+                label: context.l10n.studentProfileFullName,
                 controller: _nameCtrl,
                 icon: Icons.person_outline),
             const SizedBox(height: 14),
             WinTextField(
-                label: 'Email',
+                label: context.l10n.email,
                 controller: _emailCtrl,
                 icon: Icons.email_outlined,
                 keyboardType: TextInputType.emailAddress),
             const SizedBox(height: 14),
             WinTextField(
-                label: 'Téléphone',
+                label: context.l10n.studentProfilePhone,
                 controller: _phoneCtrl,
                 icon: Icons.phone_outlined,
                 keyboardType: TextInputType.phone),
             const SizedBox(height: 14),
             WinTextField(
-                label: 'Niveau',
+                label: context.l10n.commonLevel,
                 controller: _levelCtrl,
                 icon: Icons.school_outlined),
             const SizedBox(height: 28),
-            WinButton('Enregistrer les modifications',
+            WinButton(context.l10n.studentProfileSaveChanges,
                 block: true, loading: _savingProfile, onTap: _saveProfile),
             const SizedBox(height: 16),
             // Module 15 (lot 6) : parité mobile du questionnaire VARK, jusqu'ici
             // web uniquement (LearningStyleQuiz.tsx).
             WinButton(
-              'Mon style d’apprentissage',
+              context.l10n.studentProfileLearningStyle,
               block: true,
               variant: WinButtonVariant.outline,
               onTap: () => Navigator.push(
@@ -232,24 +233,24 @@ class _ProfileScreenState extends State<ProfileScreen>
           const SizedBox(height: 28),
           const WinDivider(),
           const SizedBox(height: 20),
-          Text('Changer le mot de passe', style: WinType.headlineS(s.onStrong)),
+          Text(context.l10n.studentProfileChangePwd, style: WinType.headlineS(s.onStrong)),
           const SizedBox(height: 14),
           WinTextField(
-              label: 'Mot de passe actuel',
+              label: context.l10n.studentProfileCurrentPwd,
               hint: '••••••••',
               icon: Icons.lock_outline,
               obscure: true,
               controller: _curPwdCtrl),
           const SizedBox(height: 12),
           WinTextField(
-              label: 'Nouveau mot de passe',
+              label: context.l10n.authNewPassword,
               hint: '••••••••',
               icon: Icons.lock_outline,
               obscure: true,
               controller: _newPwdCtrl),
           const SizedBox(height: 12),
           WinTextField(
-              label: 'Confirmer',
+              label: context.l10n.commonConfirm,
               hint: '••••••••',
               icon: Icons.lock_outline,
               obscure: true,
@@ -259,7 +260,7 @@ class _ProfileScreenState extends State<ProfileScreen>
             WinAlert(_pwdError!, type: BadgeColor.error),
           ],
           const SizedBox(height: 20),
-          WinButton('Changer le mot de passe',
+          WinButton(context.l10n.studentProfileChangePwd,
               block: true,
               variant: WinButtonVariant.outline,
               loading: _savingPwd,
@@ -272,9 +273,9 @@ class _ProfileScreenState extends State<ProfileScreen>
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                  Text('Authentification à 2 facteurs',
+                  Text(context.l10n.studentProfile2fa,
                       style: WinType.titleM(s.onStrong)),
-                  Text('Un code email à chaque connexion.',
+                  Text(context.l10n.studentProfile2faHint,
                       style: WinType.bodyS(s.onMuted)),
                 ])),
             Switch(
@@ -290,7 +291,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                   setState(() => _twoFactor = v);
                 } else {
                   messenger.showSnackBar(
-                      SnackBar(content: Text(res.message ?? 'Erreur')));
+                      SnackBar(content: Text(res.message ?? L10n.current.studentCourseError)));
                 }
               },
             ),
@@ -298,7 +299,7 @@ class _ProfileScreenState extends State<ProfileScreen>
           const SizedBox(height: 28),
           const WinDivider(),
           const SizedBox(height: 20),
-          Text('Sessions actives', style: WinType.headlineS(s.onStrong)),
+          Text(context.l10n.studentProfileActiveSessions, style: WinType.headlineS(s.onStrong)),
           const SizedBox(height: 12),
           WinCard(
               child: Row(children: [
@@ -309,10 +310,10 @@ class _ProfileScreenState extends State<ProfileScreen>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                   Text('Android · Yaoundé', style: WinType.titleM(s.onStrong)),
-                  Text('Maintenant · Session actuelle',
+                  Text(context.l10n.studentProfileCurrentSession,
                       style: WinType.labelM(s.onFaint)),
                 ])),
-            const WinBadge('Actif', color: BadgeColor.success),
+            WinBadge(context.l10n.commonActive, color: BadgeColor.success),
           ])),
         ]),
 
@@ -322,32 +323,32 @@ class _ProfileScreenState extends State<ProfileScreen>
             (
               'quiz',
               _notifQuiz,
-              'Résultats de quiz',
-              'Recevoir vos scores après chaque quiz'
+              ctx.l10n.studentProfileNotifQuiz,
+              ctx.l10n.studentProfileNotifQuizSub
             ),
             (
               'ai',
               _notifAI,
-              'Recommandations WinAI',
-              'Alertes et conseils personnalisés'
+              ctx.l10n.studentProfileNotifAi,
+              ctx.l10n.studentProfileNotifAiSub
             ),
             (
               'promo',
               _notifPromo,
-              'Offres et promotions',
-              'Nouveaux contenus, promotions'
+              ctx.l10n.studentProfileNotifPromo,
+              ctx.l10n.studentProfileNotifPromoSub
             ),
             (
               'exam',
               _notifExam,
-              'Rappels d\'examens',
-              'Compte à rebours avant vos examens'
+              ctx.l10n.studentProfileNotifExam,
+              ctx.l10n.studentProfileNotifExamSub
             ),
             (
               'community',
               _notifCommunity,
-              'Communauté',
-              'Réponses à vos questions'
+              ctx.l10n.studentHubCommunity,
+              ctx.l10n.studentProfileNotifCommunitySub
             ),
           ];
           return ListView(padding: const EdgeInsets.all(20), children: [
@@ -390,8 +391,8 @@ class _ProfileScreenState extends State<ProfileScreen>
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                  Text('Profil visible', style: WinType.titleM(s.onStrong)),
-                  Text('Visible par la communauté WinPlus.',
+                  Text(context.l10n.studentProfileVisible, style: WinType.titleM(s.onStrong)),
+                  Text(context.l10n.studentProfileVisibleHint,
                       style: WinType.bodyS(s.onMuted)),
                 ])),
             Switch(
@@ -407,9 +408,9 @@ class _ProfileScreenState extends State<ProfileScreen>
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                  Text('Statistiques anonymisées',
+                  Text(context.l10n.studentProfileAnonStats,
                       style: WinType.titleM(s.onStrong)),
-                  Text('Aide à améliorer WinPlus.',
+                  Text(context.l10n.studentProfileAnonStatsHint,
                       style: WinType.bodyS(s.onMuted)),
                 ])),
             Switch(
@@ -420,10 +421,10 @@ class _ProfileScreenState extends State<ProfileScreen>
           const SizedBox(height: 24),
           const WinDivider(),
           const SizedBox(height: 20),
-          WinButton('Politique de confidentialité',
+          WinButton(context.l10n.studentHubPrivacy,
               variant: WinButtonVariant.ghost, block: true, onTap: () {}),
           const SizedBox(height: 8),
-          WinButton('Conditions d\'utilisation',
+          WinButton(context.l10n.studentHubTerms,
               variant: WinButtonVariant.ghost, block: true, onTap: () {}),
         ]),
 
@@ -472,11 +473,11 @@ class _EmailChangeCardState extends State<_EmailChangeCard> {
   Future<void> _requestCode() async {
     final newEmail = _newEmailCtrl.text.trim();
     if (newEmail.isEmpty || !newEmail.contains('@')) {
-      setState(() => _error = 'Adresse email invalide.');
+      setState(() => _error = L10n.current.studentProfileEmailInvalid);
       return;
     }
     if (newEmail.toLowerCase() == widget.currentEmail.toLowerCase()) {
-      setState(() => _error = 'C\'est déjà votre adresse actuelle.');
+      setState(() => _error = L10n.current.studentProfileEmailSame);
       return;
     }
     setState(() {
@@ -503,7 +504,7 @@ class _EmailChangeCardState extends State<_EmailChangeCard> {
   Future<void> _confirmCode() async {
     final code = _codeCtrl.text.trim();
     if (code.length < 4) {
-      setState(() => _error = 'Saisis le code reçu par email.');
+      setState(() => _error = L10n.current.studentProfileEnterCode);
       return;
     }
     setState(() {
@@ -515,7 +516,7 @@ class _EmailChangeCardState extends State<_EmailChangeCard> {
       if (!mounted) return;
       widget.onChanged(confirmed.isNotEmpty ? confirmed : (_pendingEmail ?? widget.currentEmail));
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Adresse email modifiée.')));
+          SnackBar(content: Text(L10n.current.studentProfileEmailChanged)));
       _reset();
     } on EmailChangeException catch (e) {
       if (!mounted) return;
@@ -544,14 +545,14 @@ class _EmailChangeCardState extends State<_EmailChangeCard> {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                Text('Adresse e-mail', style: WinType.titleM(s.onStrong)),
+                Text(context.l10n.studentProfileEmailAddress, style: WinType.titleM(s.onStrong)),
                 const SizedBox(height: 2),
-                Text('Actuelle : ${widget.currentEmail}',
+                Text(context.l10n.studentProfileEmailCurrent(widget.currentEmail),
                     style: WinType.bodyS(s.onMuted)),
               ])),
           TextButton(
             onPressed: () => setState(() => _step = _EmailChangeStep.form),
-            child: Text('Changer',
+            child: Text(context.l10n.studentProfileChange,
                 style: WinType.labelM(s.primary)
                     .copyWith(fontWeight: FontWeight.w600)),
           ),
@@ -563,10 +564,10 @@ class _EmailChangeCardState extends State<_EmailChangeCard> {
       return WinCard(
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text('Nouvelle adresse e-mail', style: WinType.titleM(s.onStrong)),
+        Text(context.l10n.studentProfileNewEmailAddress, style: WinType.titleM(s.onStrong)),
         const SizedBox(height: 12),
         WinTextField(
-          label: 'Nouvel email',
+          label: context.l10n.studentProfileNewEmail,
           icon: Icons.email_outlined,
           controller: _newEmailCtrl,
           keyboardType: TextInputType.emailAddress,
@@ -578,11 +579,11 @@ class _EmailChangeCardState extends State<_EmailChangeCard> {
         const SizedBox(height: 14),
         Row(children: [
           Expanded(
-              child: WinButton('Annuler',
+              child: WinButton(context.l10n.commonCancel,
                   variant: WinButtonVariant.ghost, onTap: _reset)),
           const SizedBox(width: 10),
           Expanded(
-              child: WinButton('Recevoir un code',
+              child: WinButton(context.l10n.studentProfileGetCode,
                   loading: _loading, onTap: _requestCode)),
         ]),
       ]));
@@ -591,14 +592,14 @@ class _EmailChangeCardState extends State<_EmailChangeCard> {
     // _EmailChangeStep.code
     return WinCard(
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text('Code de confirmation', style: WinType.titleM(s.onStrong)),
+      Text(context.l10n.studentProfileConfirmCode, style: WinType.titleM(s.onStrong)),
       const SizedBox(height: 6),
       Text(
-          'Code envoyé à ${_pendingEmail ?? ''}. Il expire après 15 minutes.',
+          context.l10n.studentProfileCodeSent(_pendingEmail ?? ''),
           style: WinType.bodyS(s.onMuted)),
       const SizedBox(height: 12),
       WinTextField(
-        label: 'Code reçu par email',
+        label: context.l10n.studentProfileCodeReceived,
         icon: Icons.pin_outlined,
         controller: _codeCtrl,
         keyboardType: TextInputType.number,
@@ -608,15 +609,15 @@ class _EmailChangeCardState extends State<_EmailChangeCard> {
         WinAlert(_error!, type: BadgeColor.error),
       ],
       const SizedBox(height: 14),
-      WinButton('Confirmer', block: true, loading: _loading, onTap: _confirmCode),
+      WinButton(context.l10n.commonConfirm, block: true, loading: _loading, onTap: _confirmCode),
       const SizedBox(height: 10),
       Row(children: [
         Expanded(
-            child: WinButton('Annuler',
+            child: WinButton(context.l10n.commonCancel,
                 variant: WinButtonVariant.ghost, onTap: _reset)),
         const SizedBox(width: 10),
         Expanded(
-            child: WinButton('Renvoyer le code',
+            child: WinButton(context.l10n.authResendCode,
                 variant: WinButtonVariant.outline,
                 loading: _loading,
                 onTap: _requestCode)),
@@ -661,32 +662,32 @@ class _TabCompteState extends State<_TabCompte> {
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          Text(sub != null ? 'Plan ${sub.planName}' : 'Chargement…',
+          Text(sub != null ? context.l10n.studentHubPlan(sub.planName) : context.l10n.commonLoading,
               style: WinType.headlineS(s.onStrong)),
           const Spacer(),
-          WinBadge(sub == null ? '…' : sub.hasPlan ? 'Actif' : 'Gratuit',
+          WinBadge(sub == null ? '…' : sub.hasPlan ? context.l10n.commonActive : context.l10n.commonFree,
               color: BadgeColor.success),
         ]),
         if (sub != null && sub.expiresAt != null) ...[
           const SizedBox(height: 4),
           Text(
-              'Fin de période le ${sub.expiresAt!.day.toString().padLeft(2, '0')}/${sub.expiresAt!.month.toString().padLeft(2, '0')}/${sub.expiresAt!.year}',
+              context.l10n.studentProfilePeriodEnd(WinFormat.dateNumeric(sub.expiresAt!)),
               style: WinType.bodyS(s.onMuted)),
         ],
         const SizedBox(height: 14),
-        WinButton('Gérer mon abonnement',
+        WinButton(context.l10n.studentProfileManageSub,
             block: true,
             variant: WinButtonVariant.outline,
             icon: Icons.credit_card_outlined,
             onTap: () {}),
       ])),
       const SizedBox(height: 24),
-      const WinDivider(label: 'Zone dangereuse'),
+      WinDivider(label: context.l10n.studentProfileDangerZone),
       const SizedBox(height: 16),
-      const WinAlert('La suppression de votre compte est irréversible.',
+      WinAlert(context.l10n.studentProfileDeleteWarning,
           type: BadgeColor.error),
       const SizedBox(height: 14),
-      WinButton('Supprimer mon compte',
+      WinButton(context.l10n.studentProfileDeleteAccount,
           block: true,
           variant: WinButtonVariant.danger,
           icon: Icons.delete_outline,
@@ -695,24 +696,24 @@ class _TabCompteState extends State<_TabCompte> {
                 builder: (_) => AlertDialog(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(WinRadii.xl)),
-                  title: const Text('Supprimer le compte ?'),
-                  content: const Text(
-                      'Cette action est irréversible. Toutes vos données seront perdues.'),
+                  title: Text(context.l10n.studentProfileDeleteTitle),
+                  content: Text(
+                      context.l10n.studentProfileDeleteBody),
                   actions: [
                     TextButton(
                         onPressed: () => Navigator.pop(context),
-                        child: const Text('Annuler')),
+                        child: Text(context.l10n.commonCancel)),
                     TextButton(
                         onPressed: () => Navigator.pop(context),
-                        child: const Text('Supprimer',
-                            style: TextStyle(color: Colors.red))),
+                        child: Text(context.l10n.commonDelete,
+                            style: const TextStyle(color: Colors.red))),
                   ],
                 ),
               )),
       const SizedBox(height: 20),
       TextButton(
         onPressed: _signOut,
-        child: Text('Se déconnecter',
+        child: Text(context.l10n.commonLogout,
             style: WinType.manrope(
                 size: 14, weight: FontWeight.w600, color: Colors.red)),
       ),

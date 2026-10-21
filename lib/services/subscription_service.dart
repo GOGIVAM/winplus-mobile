@@ -1,4 +1,5 @@
 import 'api_client.dart';
+import '../l10n/l10n.dart';
 
 /// Droit affiché sur une carte de plan (lot 9.7b) : uniquement des droits
 /// réellement appliqués par le serveur.
@@ -305,7 +306,7 @@ class SubscriptionService {
       'packs': packs,
       'requestId': '${DateTime.now().microsecondsSinceEpoch}',
     });
-    return (res.data as Map<String, dynamic>?)?['message'] as String? ?? 'Recharge effectuée.';
+    return (res.data as Map<String, dynamic>?)?['message'] as String? ?? L10n.current.svcTopUpDone;
   }
 
   Future<ApiEntitlements?> getEntitlements() async {

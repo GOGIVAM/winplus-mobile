@@ -1,5 +1,6 @@
 import 'api_client.dart';
 import '../data/models.dart';
+import '../l10n/l10n.dart';
 
 /// Module 24 (lot 8) : remplace les données fictives du dashboard étudiant
 /// (lib/student/student_home.dart, lib/student/student_tabs.dart) par de
@@ -53,7 +54,7 @@ class StudentService {
         j['title'] as String? ?? '',
         start == null
             ? ''
-            : '${start.day.toString().padLeft(2, '0')}/${start.month.toString().padLeft(2, '0')}/${start.year}',
+            : WinFormat.dateNumeric(start),
         daysLeft,
         'math',
       );

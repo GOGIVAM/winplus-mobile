@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
@@ -27,11 +28,11 @@ class _StudyTimerScreenState extends State<StudyTimerScreen> {
     _TimerMode.longBreak: 15 * 60,
   };
 
-  static const _modeLabels = {
-    _TimerMode.pomodoro: 'Pomodoro',
-    _TimerMode.shortBreak: 'Pause courte',
-    _TimerMode.longBreak: 'Pause longue',
-  };
+  Map<_TimerMode, String> get _modeLabels => {
+        _TimerMode.pomodoro: context.l10n.timerModePomodoro,
+        _TimerMode.shortBreak: context.l10n.timerModeShortBreak,
+        _TimerMode.longBreak: context.l10n.timerModeLongBreak,
+      };
 
   static const _modeColors = {
     _TimerMode.pomodoro: WinColors.teal500,
@@ -94,13 +95,13 @@ class _StudyTimerScreenState extends State<StudyTimerScreen> {
               borderRadius: BorderRadius.circular(WinRadii.xl)),
           title: Text(
               _mode == _TimerMode.pomodoro
-                  ? 'Pomodoro terminé !'
-                  : 'Pause terminée !',
+                  ? ctx.l10n.timerPomodoroDone
+                  : ctx.l10n.timerBreakDone,
               style: WinType.archivo(size: 18, color: s.onStrong)),
           content: Text(
             _mode == _TimerMode.pomodoro
-                ? 'Bravo ! Tu as complété $_completedPomodoros pomodoro${_completedPomodoros > 1 ? 's' : ''} aujourd\'hui.'
-                : 'Retour au travail !',
+                ? ctx.l10n.timerDoneBody(_completedPomodoros)
+                : ctx.l10n.timerBackToWork,
             style: WinType.bodyM(s.onMuted),
           ),
           actions: [
@@ -109,14 +110,14 @@ class _StudyTimerScreenState extends State<StudyTimerScreen> {
                 Navigator.pop(ctx);
                 _setMode(_TimerMode.shortBreak);
               },
-              child: const Text('Pause courte'),
+              child: Text(ctx.l10n.timerModeShortBreak),
             ),
             TextButton(
               onPressed: () {
                 Navigator.pop(ctx);
                 _setMode(_TimerMode.pomodoro);
               },
-              child: const Text('Nouveau pomodoro'),
+              child: Text(ctx.l10n.timerNewPomodoro),
             ),
           ],
         );
@@ -149,7 +150,8 @@ class _StudyTimerScreenState extends State<StudyTimerScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Timer Pomodoro', style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.timerTitle,
+            style: WinType.headlineS(s.onStrong)),
       ),
       body: Column(children: [
         // Mode selector
@@ -215,7 +217,7 @@ class _StudyTimerScreenState extends State<StudyTimerScreen> {
           IconButton(
             onPressed: _reset,
             icon: Icon(Icons.refresh_rounded, size: 28, color: s.onMuted),
-            tooltip: 'Réinitialiser',
+            tooltip: context.l10n.timerReset,
           ),
           const SizedBox(width: 20),
           GestureDetector(
@@ -246,7 +248,7 @@ class _StudyTimerScreenState extends State<StudyTimerScreen> {
                 size: 20, color: WinColors.gold),
             const SizedBox(width: 8),
             Text(
-              '$_completedPomodoros pomodoro${_completedPomodoros != 1 ? 's' : ''} aujourd\'hui',
+              context.l10n.timerTodayCount(_completedPomodoros),
               style: WinType.titleM(s.onStrong),
             ),
           ]),
@@ -262,7 +264,7 @@ class _StudyTimerScreenState extends State<StudyTimerScreen> {
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
-                  '25 min de focus + 5 min de pause = 1 pomodoro. Après 4 pomodoros, prends une pause longue de 15 min.',
+                  context.l10n.timerTip,
                   style: WinType.bodyS(s.onMuted),
                 ),
               ),

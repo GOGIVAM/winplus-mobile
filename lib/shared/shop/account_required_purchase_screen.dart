@@ -3,6 +3,7 @@ import '../../theme/win_motion.dart';
 import '../../auth/login_screen.dart';
 import '../../auth/role_screen.dart';
 import '../../data/models.dart';
+import '../../l10n/l10n.dart';
 import '../../services/session_manager.dart';
 import '../../theme/win_colors.dart';
 import '../../theme/win_theme.dart';
@@ -56,7 +57,7 @@ class _AccountRequiredPurchaseScreenState
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Acheter', style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.shopBuy, style: WinType.headlineS(s.onStrong)),
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
@@ -109,38 +110,32 @@ class _AccountRequiredPurchaseScreenState
           if (_loggedIn == null)
             const Center(child: CircularProgressIndicator())
           else if (_loggedIn == false) ...[
-            Text('Un compte est nécessaire pour acheter',
+            Text(context.l10n.shopAccountRequiredTitle,
                 style: WinType.headlineS(s.onStrong)),
             const SizedBox(height: 8),
-            Text(
-                'Connectez-vous ou créez un compte avant le paiement : '
-                'le contenu acheté est rattaché à votre compte et reste '
-                'accessible sur tous vos appareils.',
+            Text(context.l10n.shopAccountRequiredBody,
                 style: WinType.bodyM(s.onMuted)),
             const SizedBox(height: 20),
-            WinButton('Se connecter',
+            WinButton(context.l10n.login,
                 block: true,
                 icon: Icons.login,
                 onTap: () => Navigator.push(context,
                     WinPageRoute(builder: (_) => const LoginScreen()))),
             const SizedBox(height: 10),
-            WinButton('Créer un compte',
+            WinButton(context.l10n.createAccount,
                 block: true,
                 variant: WinButtonVariant.outline,
                 icon: Icons.person_add_alt_1_outlined,
                 onTap: () => Navigator.push(
                     context, WinPageRoute(builder: (_) => const RoleScreen()))),
           ] else ...[
-            Text('Achat depuis votre compte',
+            Text(context.l10n.shopBuyFromAccountTitle,
                 style: WinType.headlineS(s.onStrong)),
             const SizedBox(height: 8),
-            Text(
-                'Le paiement dans l\'application arrive bientôt. En attendant, '
-                'achetez ce contenu depuis votre compte sur winplus.cm avec '
-                'les mêmes identifiants : il sera ensuite disponible ici.',
+            Text(context.l10n.shopBuyFromAccountBody,
                 style: WinType.bodyM(s.onMuted)),
             const SizedBox(height: 20),
-            WinButton('Retour',
+            WinButton(context.l10n.commonBack,
                 block: true,
                 variant: WinButtonVariant.outline,
                 onTap: () => Navigator.pop(context)),

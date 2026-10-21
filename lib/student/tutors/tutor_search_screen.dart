@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../l10n/l10n.dart';
 import '../../theme/win_motion.dart';
 import '../../services/tutor_booking_service.dart';
 import '../../services/tutor_profile_service.dart';
@@ -21,6 +22,23 @@ const _tutorSubjects = [
   'Informatique',
   'Économie',
 ];
+
+/// Libellé affiché d'une matière du filtre (la valeur envoyée à l'API reste en français).
+String _subjectLabel(String v) {
+  final l = L10n.current;
+  return switch (v) {
+    'Mathématiques' => l.dataSubjectMath,
+    'Physique' => l.dataSubjectPhysics,
+    'Chimie' => l.dataSubjectChemistry,
+    'Français' => l.dataSubjectFrench,
+    'Philosophie' => l.dataSubjectPhilosophy,
+    'Anglais' => l.dataSubjectEnglish,
+    'Histoire-Géo' => l.dataSubjectHistGeo,
+    'Informatique' => l.dataSubjectComputing,
+    'Économie' => l.tutoringSubjectEconomics,
+    _ => v,
+  };
+}
 const _tutorLevels = [
   '6ème',
   '5ème',
@@ -34,13 +52,13 @@ const _tutorLevels = [
   'BAC',
   'Prépa',
 ];
-const _tutorModes = [
-  ('online', 'En ligne'),
+List<(String, String)> get _tutorModes => [
+  ('online', L10n.current.commonOnline),
   // Lot 9.5 (17.11) : tout mode présentiel ne renvoie que des tuteurs vérifiés.
-  ('in_person', 'Présentiel (vérifiés)'),
-  ('student_home', 'À mon domicile'),
-  ('tutor_home', 'Chez le tuteur'),
-  ('neutral_place', 'Espace neutre'),
+  ('in_person', L10n.current.tutoringFilterInPerson),
+  ('student_home', L10n.current.tutoringFilterStudentHome),
+  ('tutor_home', L10n.current.tutoringModeTutorHome),
+  ('neutral_place', L10n.current.tutoringFilterNeutralPlace),
 ];
 const _tutorCities = ['Douala', 'Yaoundé'];
 
@@ -136,14 +154,14 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Trouver un tuteur', style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.studentTabsFindTutor, style: WinType.headlineS(s.onStrong)),
       ),
       body: Column(children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
           child: TopicsField(
             topics: _topics,
-            hint: 'Sujets à travailler (ex. dérivées, dissertation)',
+            hint: context.l10n.tutoringSearchTopicsHint,
             onChanged: (t) {
               setState(() => _topics = t);
               _search();
@@ -159,14 +177,14 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
             separatorBuilder: (_, __) => const SizedBox(width: 8),
             itemBuilder: (_, i) {
               if (i == 0) {
-                return WinChip('Toutes matières', active: _subject == null,
+                return WinChip(context.l10n.tutoringAllSubjects, active: _subject == null,
                     onTap: () {
                   setState(() => _subject = null);
                   _search();
                 });
               }
               final subj = _tutorSubjects[i - 1];
-              return WinChip(subj, active: _subject == subj, onTap: () {
+              return WinChip(_subjectLabel(subj), active: _subject == subj, onTap: () {
                 setState(() => _subject = _subject == subj ? null : subj);
                 _search();
               });
@@ -183,14 +201,14 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
             separatorBuilder: (_, __) => const SizedBox(width: 8),
             itemBuilder: (_, i) {
               if (i == 0) {
-                return WinChip('Tous niveaux', active: _level == null,
+                return WinChip(context.l10n.tutoringAllLevels, active: _level == null,
                     onTap: () {
                   setState(() => _level = null);
                   _search();
                 });
               }
               if (i == 1) {
-                return WinChip('Diplôme vérifié',
+                return WinChip(context.l10n.tutoringDiplomaVerified,
                     active: _verifiedOnly,
                     icon: Icons.verified_outlined, onTap: () {
                   setState(() => _verifiedOnly = !_verifiedOnly);
@@ -215,7 +233,7 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
             separatorBuilder: (_, __) => const SizedBox(width: 8),
             itemBuilder: (_, i) {
               if (i == 0) {
-                return WinChip('Disponible sous 48h',
+                return WinChip(context.l10n.tutoringAvailableSoon,
                     active: _availableSoon,
                     icon: Icons.bolt_outlined, onTap: () {
                   setState(() => _availableSoon = !_availableSoon);
@@ -248,10 +266,10 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
               separatorBuilder: (_, __) => const SizedBox(width: 8),
               itemBuilder: (_, i) {
                 if (i == 0) {
-                  return Center(child: Text('Attribués :', style: WinType.labelS(s.onMuted)));
+                  return Center(child: Text(context.l10n.tutoringAssignedLabel, style: WinType.labelS(s.onMuted)));
                 }
                 final a = _assigned[i - 1];
-                return WinChip(a.tutorName ?? 'Répétiteur',
+                return WinChip(a.tutorName ?? context.l10n.roleTutor,
                     active: false,
                     icon: Icons.star_outline,
                     onTap: () => Navigator.push(
@@ -270,10 +288,10 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
                       child: Column(mainAxisSize: MainAxisSize.min, children: [
                       Icon(Icons.wifi_off_outlined, size: 48, color: s.onFaint),
                       const SizedBox(height: 12),
-                      Text('Impossible de charger les tuteurs.',
+                      Text(context.l10n.tutoringSearchLoadError,
                           style: WinType.bodyM(s.onMuted)),
                       const SizedBox(height: 12),
-                      WinButton('Réessayer', onTap: _search),
+                      WinButton(context.l10n.commonRetry, onTap: _search),
                     ]))
                   : _results.isEmpty
                       ? Center(
@@ -284,7 +302,7 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
                             Icon(Icons.person_search_outlined,
                                 size: 64, color: s.onFaint),
                             const SizedBox(height: 12),
-                            Text('Aucun tuteur trouvé pour ces critères.',
+                            Text(context.l10n.tutoringSearchEmpty,
                                 style: WinType.bodyM(s.onMuted),
                                 textAlign: TextAlign.center),
                           ]),
@@ -368,8 +386,8 @@ class _TutorResultCard extends StatelessWidget {
                 ),
                 child: Text(
                   rate != null
-                      ? '${from ? 'dès ' : ''}${fmtXaf(rate)} XAF/h'
-                      : 'Tarif ND',
+                      ? (from ? context.l10n.tutoringRateFrom(fmtXaf(rate)) : '${fmtXaf(rate)} XAF/h')
+                      : context.l10n.tutoringRateNa,
                   style: WinType.labelS(s.primary)
                       .copyWith(fontWeight: FontWeight.w700),
                 ),
@@ -378,7 +396,7 @@ class _TutorResultCard extends StatelessWidget {
             if (assignment != null)
               Padding(
                 padding: const EdgeInsets.only(top: 2),
-                child: Text('Répétiteur attribué', style: WinType.labelS(s.primary).copyWith(fontWeight: FontWeight.w700)),
+                child: Text(context.l10n.tutoringAssignedTutor, style: WinType.labelS(s.primary).copyWith(fontWeight: FontWeight.w700)),
               ),
             if ((tutor.title ?? '').isNotEmpty)
               Padding(
@@ -413,9 +431,9 @@ class _TutorResultCard extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(top: 6),
                 child: Text(
-                    '${tutor.offersInPerson! ? 'Présentiel possible' : 'En ligne uniquement'}'
-                    '${tutor.isDiplomaVerified ? ' · Diplôme vérifié' : ''}'
-                    '${tutor.endorsedByInstitutions.isNotEmpty ? ' · Caution : ${tutor.endorsedByInstitutions.first}' : ''}',
+                    '${tutor.offersInPerson! ? context.l10n.tutoringInPersonPossible : context.l10n.tutoringOnlineOnly}'
+                    '${tutor.isDiplomaVerified ? ' · ${context.l10n.tutoringDiplomaVerified}' : ''}'
+                    '${tutor.endorsedByInstitutions.isNotEmpty ? ' · ${context.l10n.tutoringEndorsedBy(tutor.endorsedByInstitutions.first)}' : ''}',
                     style: WinType.labelS(s.onFaint)),
               ),
           ]),

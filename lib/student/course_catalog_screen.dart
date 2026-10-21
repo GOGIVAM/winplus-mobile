@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
 import '../theme/win_motion.dart';
 import '../services/course_service.dart';
 import '../theme/win_colors.dart';
@@ -103,6 +104,24 @@ class _CourseCatalogScreenState extends State<CourseCatalogScreen> {
     });
   }
 
+  // Libellés affichés ; les valeurs envoyées à l'API restent en français.
+  String _levelLabel(String l) => switch (l) {
+        'débutant' => context.l10n.studentCatalogLevelBeginner,
+        'intermédiaire' => context.l10n.studentCatalogLevelIntermediate,
+        'avancé' => context.l10n.studentCatalogLevelAdvanced,
+        _ => l,
+      };
+
+  String _categoryLabel(String c) => switch (c) {
+        'Mathématiques' => context.l10n.dataSubjectMath,
+        'Physique' => context.l10n.dataSubjectPhysics,
+        'Informatique' => context.l10n.dataSubjectComputing,
+        'Français' => context.l10n.dataSubjectFrench,
+        'Anglais' => context.l10n.dataSubjectEnglish,
+        'Sciences' => context.l10n.studentCatalogCatSciences,
+        _ => c,
+      };
+
   void _toggleCategory(String c) {
     setState(() => _category = _category == c ? null : c);
     _load();
@@ -138,29 +157,29 @@ class _CourseCatalogScreenState extends State<CourseCatalogScreen> {
                             borderRadius:
                                 BorderRadius.circular(WinRadii.full)))),
                 const SizedBox(height: 16),
-                Text('Filtres', style: WinType.headlineS(s.onStrong)),
+                Text(context.l10n.studentCatalogFilters, style: WinType.headlineS(s.onStrong)),
                 const SizedBox(height: 16),
-                Text('Niveau', style: WinType.labelM(s.onMuted)),
+                Text(context.l10n.commonLevel, style: WinType.labelM(s.onMuted)),
                 const SizedBox(height: 8),
                 Wrap(
                     spacing: 8,
                     runSpacing: 8,
                     children: _levels
                         .map((l) => WinChip(
-                              l,
+                              _levelLabel(l),
                               active: tmpLevel == l,
                               onTap: () => setInner(
                                   () => tmpLevel = tmpLevel == l ? null : l),
                             ))
                         .toList()),
                 const SizedBox(height: 16),
-                Text('Accès', style: WinType.labelM(s.onMuted)),
+                Text(context.l10n.studentCatalogAccess, style: WinType.labelM(s.onMuted)),
                 const SizedBox(height: 8),
                 Wrap(spacing: 8, children: [
                   for (final opt in [
-                    (null, 'Tous'),
-                    (true, 'Gratuit'),
-                    (false, 'Payant'),
+                    (null, context.l10n.studentCatalogAllAccess),
+                    (true, context.l10n.commonFree),
+                    (false, context.l10n.studentCatalogPaid),
                   ])
                     WinChip(
                       opt.$2,
@@ -171,7 +190,7 @@ class _CourseCatalogScreenState extends State<CourseCatalogScreen> {
                 const SizedBox(height: 24),
                 Row(children: [
                   Expanded(
-                      child: WinButton('Réinitialiser',
+                      child: WinButton(context.l10n.studentCatalogReset,
                           variant: WinButtonVariant.outline,
                           onTap: () => setInner(() {
                                 tmpLevel = null;
@@ -179,7 +198,7 @@ class _CourseCatalogScreenState extends State<CourseCatalogScreen> {
                               }))),
                   const SizedBox(width: 12),
                   Expanded(
-                      child: WinButton('Appliquer', onTap: () {
+                      child: WinButton(context.l10n.studentCatalogApply, onTap: () {
                     Navigator.pop(context);
                     setState(() {
                       _level = tmpLevel;
@@ -202,7 +221,7 @@ class _CourseCatalogScreenState extends State<CourseCatalogScreen> {
     return Scaffold(
       backgroundColor: s.bg,
       appBar: AppBar(
-        title: Text('Formations',
+        title: Text(context.l10n.studentCertCourses,
             style: WinType.archivo(size: 20, color: s.onStrong)),
         backgroundColor: s.surface,
         foregroundColor: s.onStrong,
@@ -225,7 +244,7 @@ class _CourseCatalogScreenState extends State<CourseCatalogScreen> {
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
           child: WinTextField(
             controller: _searchCtrl,
-            hint: 'Rechercher une formation…',
+            hint: context.l10n.studentCatalogSearchHint,
             icon: Icons.search,
             suffixIcon: _searchCtrl.text.isNotEmpty ? Icons.close : null,
             onSuffixTap: () {
@@ -244,7 +263,7 @@ class _CourseCatalogScreenState extends State<CourseCatalogScreen> {
             itemCount: _categories.length,
             separatorBuilder: (_, __) => const SizedBox(width: 8),
             itemBuilder: (_, i) => WinChip(
-              _categories[i],
+              _categoryLabel(_categories[i]),
               active: _category == _categories[i],
               onTap: () => _toggleCategory(_categories[i]),
             ),
@@ -258,7 +277,7 @@ class _CourseCatalogScreenState extends State<CourseCatalogScreen> {
               ? const Center(child: CircularProgressIndicator())
               : (_items == null || _items!.isEmpty)
                   ? Center(
-                      child: Text('Aucune formation trouvée.',
+                      child: Text(context.l10n.studentCatalogEmpty,
                           style: WinType.bodyM(s.onMuted)))
                   : RefreshIndicator(
                       onRefresh: () => _load(page: _page),
@@ -278,7 +297,7 @@ class _CourseCatalogScreenState extends State<CourseCatalogScreen> {
                             if (i == _items!.length) {
                               return Align(
                                 alignment: Alignment.topCenter,
-                                child: WinButton('Charger plus',
+                                child: WinButton(context.l10n.studentCatalogLoadMore,
                                     small: true,
                                     variant: WinButtonVariant.outline,
                                     onTap: () => _load(page: _page + 1)),
@@ -389,9 +408,9 @@ class _CourseCard extends StatelessWidget {
   Widget _priceTag(CourseListItem c) {
     // Lot 9.7b : plus de badge Premium (18.16, vendue seule) ; prix TTC (18.21).
     if (c.isFree || c.price <= 0)
-      return _PriceBadge('Gratuit', WinColors.teal700, Colors.white);
+      return _PriceBadge(L10n.current.commonFree, WinColors.teal700, Colors.white);
     return _PriceBadge(
-        '${c.price.toInt()} XAF TTC', WinColors.ink800, Colors.white);
+        L10n.current.studentCatalogPriceTtc(c.price.toInt()), WinColors.ink800, Colors.white);
   }
 }
 

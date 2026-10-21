@@ -4,6 +4,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import '../l10n/l10n.dart';
 
 class TeacherLinksScreen extends StatefulWidget {
   const TeacherLinksScreen({super.key});
@@ -80,12 +81,12 @@ class _TeacherLinksScreenState extends State<TeacherLinksScreen>
       });
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Invitation envoyée !')));
+            SnackBar(content: Text(L10n.current.teacherLinksInviteSent)));
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('Erreur: $e'), backgroundColor: WinColors.error));
+            content: Text(L10n.current.forumError(e)), backgroundColor: WinColors.error));
       }
     } finally {
       if (mounted) setState(() => _inviting = false);
@@ -122,7 +123,7 @@ class _TeacherLinksScreenState extends State<TeacherLinksScreen>
             icon: Icon(Icons.arrow_back, color: s.onStrong),
             onPressed: () => Navigator.pop(context)),
         title:
-            Text('Mes liaisons élèves', style: WinType.headlineS(s.onStrong)),
+            Text(context.l10n.teacherLinksTitle, style: WinType.headlineS(s.onStrong)),
         bottom: TabBar(
           controller: _tabs,
           labelColor: s.primary,
@@ -131,8 +132,8 @@ class _TeacherLinksScreenState extends State<TeacherLinksScreen>
           tabs: [
             Tab(
                 text:
-                    'En attente${_pending.isNotEmpty ? " (${_pending.length})" : ""}'),
-            const Tab(text: 'Liés'),
+                    '${context.l10n.commonPending}${_pending.isNotEmpty ? " (${_pending.length})" : ""}'),
+            Tab(text: context.l10n.teacherLinksLinkedTab),
           ],
         ),
       ),
@@ -142,8 +143,8 @@ class _TeacherLinksScreenState extends State<TeacherLinksScreen>
           padding: const EdgeInsets.all(16),
           child: Column(children: [
             WinTextField(
-              label: 'Inviter un élève',
-              hint: 'Nom, email ou téléphone…',
+              label: context.l10n.teacherLinksInvite,
+              hint: context.l10n.teacherLinksSearchHint,
               icon: Icons.person_search_outlined,
               controller: _searchCtrl,
               onChanged: _search,
@@ -194,7 +195,7 @@ class _TeacherLinksScreenState extends State<TeacherLinksScreen>
                   // Onglet "En attente"
                   _pending.isEmpty
                       ? Center(
-                          child: Text('Aucune invitation en attente',
+                          child: Text(context.l10n.teacherLinksNoPending,
                               style: WinType.bodyM(s.onMuted)))
                       : ListView.separated(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -216,7 +217,7 @@ class _TeacherLinksScreenState extends State<TeacherLinksScreen>
                               const SizedBox(width: 12),
                               Expanded(
                                   child: Text(
-                                      name.isEmpty ? 'Utilisateur' : name,
+                                      name.isEmpty ? context.l10n.msgRoleUser : name,
                                       style: WinType.bodyM(s.onStrong))),
                               IconButton(
                                 icon: const Icon(Icons.check,
@@ -236,7 +237,7 @@ class _TeacherLinksScreenState extends State<TeacherLinksScreen>
                   // Onglet "Liés"
                   _linked.isEmpty
                       ? Center(
-                          child: Text('Aucun élève lié',
+                          child: Text(context.l10n.teacherLinksNoLinked,
                               style: WinType.bodyM(s.onMuted)))
                       : ListView.separated(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -258,7 +259,7 @@ class _TeacherLinksScreenState extends State<TeacherLinksScreen>
                               const SizedBox(width: 12),
                               Expanded(
                                   child: Text(
-                                      name.isEmpty ? 'Utilisateur' : name,
+                                      name.isEmpty ? context.l10n.msgRoleUser : name,
                                       style: WinType.bodyM(s.onStrong))),
                               IconButton(
                                 icon: Icon(Icons.link_off, color: s.onFaint),

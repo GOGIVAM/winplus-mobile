@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 
 import 'api_client.dart';
+import '../l10n/l10n.dart';
 
 // ─── Modèles ──────────────────────────────────────────────────────────────────
 
@@ -533,7 +534,7 @@ class CourseReview {
         createdAt: j['createdAt'] as String? ?? '',
         authorName:
             (j['author'] as Map<String, dynamic>?)?['name'] as String? ??
-                'Utilisateur',
+                L10n.current.msgRoleUser,
         authorAvatarUrl:
             (j['author'] as Map<String, dynamic>?)?['avatarUrl'] as String?,
       );
@@ -608,7 +609,7 @@ class CourseService {
     } on DioException catch (e) {
       final data = e.response?.data;
       final msg = data is Map ? data['error'] as String? : null;
-      return msg ?? 'Le paiement par solde a échoué. Réessaie.';
+      return msg ?? L10n.current.svcBalancePaymentFailed;
     }
   }
 
@@ -624,7 +625,7 @@ class CourseService {
     } on DioException catch (e) {
       final data = e.response?.data;
       final msg = data is Map ? data['error'] as String? : null;
-      return msg ?? 'L\'achat n\'a pas pu être finalisé.';
+      return msg ?? L10n.current.svcPurchaseNotCompleted;
     }
   }
 

@@ -3,6 +3,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import '../l10n/l10n.dart';
 
 class ReportsScreen extends StatefulWidget {
   const ReportsScreen({super.key});
@@ -14,43 +15,52 @@ class _ReportsScreenState extends State<ReportsScreen> {
   static const _periods = ['7 jours', '30 jours', 'Trimestre', 'Année'];
   String _period = '30 jours';
 
-  static const _reportTypes = [
+  String _periodLabel(String p) => switch (p) {
+        '7 jours' => context.l10n.studentReportsPeriod7,
+        '30 jours' => context.l10n.studentReportsPeriod30,
+        'Trimestre' => context.l10n.instLicenseTermQuarter,
+        'Année' => context.l10n.teacherPublishYear,
+        _ => p,
+      };
+
+  List<_ReportType> get _reportTypes => [
     _ReportType(
       Icons.bar_chart_outlined,
-      'Rapport de performance global',
-      'Vue d\'ensemble de tous les élèves',
+      context.l10n.instReportGlobalTitle,
+      context.l10n.instReportGlobalSub,
       WinColors.blue500,
     ),
     _ReportType(
       Icons.school_outlined,
-      'Rapport par classe',
-      'Comparaison des classes, taux de réussite',
+      context.l10n.instReportGroupTitle,
+      context.l10n.instReportGroupSub,
       WinColors.teal500,
     ),
     _ReportType(
       Icons.person_search_outlined,
-      'Rapport individuel élève',
-      'Progression détaillée d\'un élève',
+      context.l10n.instReportIndividualTitle,
+      context.l10n.instReportIndividualSub,
       WinColors.gold,
     ),
     _ReportType(
       Icons.trending_down_outlined,
-      'Rapport élèves à risque',
-      'Élèves nécessitant une intervention',
+      context.l10n.instReportAtRiskTitle,
+      context.l10n.instReportAtRiskSub,
       WinColors.error,
     ),
   ];
 
   Future<void> _generateReport(BuildContext context, String title) async {
+    final l = L10n.current;
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (_) => AlertDialog(
-        title: const Text('Génération en cours...'),
-        content: const Row(children: [
-          CircularProgressIndicator(),
-          SizedBox(width: 16),
-          Text('Patientez...'),
+        title: Text(l.instReportGenerating),
+        content: Row(children: [
+          const CircularProgressIndicator(),
+          const SizedBox(width: 16),
+          Text(l.instReportWait),
         ]),
       ),
     );
@@ -60,19 +70,19 @@ class _ReportsScreenState extends State<ReportsScreen> {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Row(children: [
-          Icon(Icons.check_circle_outline, color: Color(0xFF4CAF50), size: 22),
-          SizedBox(width: 8),
-          Text('Rapport généré !'),
+        title: Row(children: [
+          const Icon(Icons.check_circle_outline, color: Color(0xFF4CAF50), size: 22),
+          const SizedBox(width: 8),
+          Text(l.instReportGenerated),
         ]),
-        content: Text('Votre rapport "$title" est prêt.'),
+        content: Text(l.instReportReady(title)),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Partager')),
+              child: Text(l.studentCertShare)),
           TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Fermer')),
+              child: Text(l.commonClose)),
         ],
       ),
     );
@@ -91,7 +101,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Rapports', style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.instReportsTitle, style: WinType.headlineS(s.onStrong)),
       ),
       body: Column(children: [
         // Sélecteur de période
@@ -103,7 +113,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
             children: _periods
                 .map((p) => Padding(
                       padding: const EdgeInsets.only(right: 8),
-                      child: WinChip(p,
+                      child: WinChip(_periodLabel(p),
                           active: _period == p,
                           onTap: () => setState(() => _period = p)),
                     ))
@@ -171,7 +181,7 @@ class _ReportTypeCard extends StatelessWidget {
         ]),
         const SizedBox(height: 14),
         WinButton(
-          'Générer PDF',
+          context.l10n.instReportGeneratePdf,
           block: true,
           variant: WinButtonVariant.outline,
           icon: Icons.picture_as_pdf_outlined,

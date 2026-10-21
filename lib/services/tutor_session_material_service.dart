@@ -1,4 +1,5 @@
 import 'api_client.dart';
+import '../l10n/l10n.dart';
 
 /// Lot 9.6 (suivi 17.5) : support de séance généré par WinAI (cours, quiz,
 /// exercices), parité web. Le tuteur génère (débité sur SON usage WinAI),
@@ -283,11 +284,14 @@ class SessionMaterialView {
 }
 
 /// Libellés du statut du support dans les listes de séances.
-const Map<String, String> kSessionMaterialStatusLabels = {
-  'draft': 'Support en brouillon',
-  'shared': 'Support partagé',
-  'shared_with_changes': 'Support modifié, non repartagé',
-};
+Map<String, String> get kSessionMaterialStatusLabels {
+  final l = L10n.current;
+  return {
+    'draft': l.svcMaterialDraft,
+    'shared': l.svcMaterialShared,
+    'shared_with_changes': l.svcMaterialSharedWithChanges,
+  };
+}
 
 class TutorSessionMaterialService {
   TutorSessionMaterialService._();

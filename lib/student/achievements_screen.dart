@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../data/models.dart';
+import '../l10n/l10n.dart';
 import '../services/achievement_service.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
@@ -63,7 +64,7 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Achievements', style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.studentAchTitle, style: WinType.headlineS(s.onStrong)),
       ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
@@ -72,7 +73,7 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
               children: [
                 if (_error) ...[
                   WinAlert(
-                      "Impossible de charger ta série réelle. La série ci-dessous peut ne pas être à jour.",
+                      context.l10n.studentAchStreakLoadError,
                       type: BadgeColor.warn),
                   const SizedBox(height: 12),
                 ],
@@ -88,14 +89,14 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
                           Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Série actuelle',
+                                Text(context.l10n.studentAchCurrentStreak,
                                     style: WinType.labelM(WinColors.ink300)),
-                                Text('$_streak jours consécutifs',
+                                Text(context.l10n.studentAchStreakDays(_streak),
                                     style: WinType.titleM(WinColors.cream50)),
                               ]),
                         ]),
                         const SizedBox(height: 16),
-                        Text('$unlocked / $total badges débloqués',
+                        Text(context.l10n.studentAchBadgesUnlocked(unlocked, total),
                             style: WinType.bodyS(WinColors.ink300)),
                         const SizedBox(height: 6),
                         WinProgressBar(
@@ -105,7 +106,7 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
                       ]),
                 ),
                 const SizedBox(height: 20),
-                Text('Mes badges', style: WinType.headlineS(s.onStrong)),
+                Text(context.l10n.studentAchMyBadges, style: WinType.headlineS(s.onStrong)),
                 const SizedBox(height: 12),
                 GridView.builder(
                   shrinkWrap: true,
@@ -169,9 +170,9 @@ class _BadgeCard extends StatelessWidget {
               overflow: TextOverflow.ellipsis),
           const SizedBox(height: 8),
           if (badge.unlocked)
-            const WinBadge('Débloqué', color: BadgeColor.teal)
+            WinBadge(context.l10n.studentAchUnlocked, color: BadgeColor.teal)
           else
-            const WinBadge('Verrouillé'),
+            WinBadge(context.l10n.studentAchLocked),
           if (badge.unlocked && badge.unlockedAt != null)
             Padding(
               padding: const EdgeInsets.only(top: 4),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
 import '../theme/win_motion.dart';
 import '../data/models.dart';
 import '../theme/win_colors.dart';
@@ -8,11 +9,11 @@ import '../widgets/win_widgets.dart';
 import '../shell/role_shell.dart';
 
 class OnboardingSuccessScreen extends StatefulWidget {
-  final String firstName;
+  final String? firstName;
   final WinRole role;
   const OnboardingSuccessScreen({
     super.key,
-    this.firstName = 'toi',
+    this.firstName,
     this.role = WinRole.student,
   });
   @override
@@ -25,38 +26,37 @@ class _OnboardingSuccessScreenState extends State<OnboardingSuccessScreen>
   late final AnimationController _ctrl;
   late final Animation<double> _scale;
 
-  static const _features = <WinRole, List<String>>{
-    WinRole.student: [
-      // Lot 9.7b (restes) : « 10 000+ ressources » et « certifications
-      // reconnues » n'étaient pas vrais ; seuls des avantages réels restent.
-      'Annales et corrigés à lire dans l’application',
-      'Quiz IA personnalisés',
-      'Certificats de vos formations terminées',
-    ],
-    WinRole.parent: [
-      'Suivez la progression de vos enfants',
-      'Alertes WinAI',
-      'Achetez des contenus pour eux',
-    ],
-    WinRole.teacher: [
-      'Publiez et monétisez vos contenus',
-      'Gérez vos classes',
-      'Revenus sur vos ventes et vos séances',
-    ],
-    WinRole.institution: [
-      'Dashboard centralisé',
-      'Licences multi-élèves',
-      'Indicateurs de vos élèves',
-    ],
-  };
+  static Map<WinRole, List<String>> _features(AppLocalizations l10n) => {
+        WinRole.student: [
+          // Lot 9.7b (restes) : « 10 000+ ressources » et « certifications
+          // reconnues » n'étaient pas vrais ; seuls des avantages réels restent.
+          l10n.authFeatStudent1,
+          l10n.authFeatStudent2,
+          l10n.authFeatStudent3,
+        ],
+        WinRole.parent: [
+          l10n.authFeatParent1,
+          l10n.commonWinaiAlerts,
+          l10n.authFeatParent3,
+        ],
+        WinRole.teacher: [
+          l10n.authFeatTeacher1,
+          l10n.authFeatTeacher2,
+          l10n.authFeatTeacher3,
+        ],
+        WinRole.institution: [
+          l10n.authFeatInst1,
+          l10n.authFeatInst2,
+          l10n.authFeatInst3,
+        ],
+      };
 
-  static const _subtitles = <WinRole, String>{
-    WinRole.student: 'Votre profil est prêt. Commencez à réviser !',
-    WinRole.parent: 'Vous pouvez maintenant suivre vos enfants.',
-    WinRole.teacher: 'Publiez votre premier contenu !',
-    WinRole.institution:
-        'Gérez votre établissement depuis votre tableau de bord.',
-  };
+  static Map<WinRole, String> _subtitles(AppLocalizations l10n) => {
+        WinRole.student: l10n.authSuccessStudent,
+        WinRole.parent: l10n.authSuccessParent,
+        WinRole.teacher: l10n.authSuccessTeacher,
+        WinRole.institution: l10n.authSuccessInstitution,
+      };
 
   @override
   void initState() {
@@ -78,8 +78,11 @@ class _OnboardingSuccessScreenState extends State<OnboardingSuccessScreen>
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    final features = _features[widget.role] ?? _features[WinRole.student]!;
-    final subtitle = _subtitles[widget.role] ?? _subtitles[WinRole.student]!;
+    final l10n = context.l10n;
+    final allFeatures = _features(l10n);
+    final allSubtitles = _subtitles(l10n);
+    final features = allFeatures[widget.role] ?? allFeatures[WinRole.student]!;
+    final subtitle = allSubtitles[widget.role] ?? allSubtitles[WinRole.student]!;
 
     return Scaffold(
       backgroundColor: s.bg,
@@ -103,7 +106,7 @@ class _OnboardingSuccessScreenState extends State<OnboardingSuccessScreen>
             ),
             const SizedBox(height: 28),
             Text(
-              'Bienvenue sur WinPlus, ${widget.firstName} !',
+              l10n.authWelcomeName(widget.firstName ?? l10n.authYouDefault),
               style: WinType.displayS(s.onStrong),
               textAlign: TextAlign.center,
             ),
@@ -136,7 +139,7 @@ class _OnboardingSuccessScreenState extends State<OnboardingSuccessScreen>
                     .toList()),
             const Spacer(),
             WinButton(
-              'Commencer',
+              l10n.authStart,
               block: true,
               onTap: () => Navigator.pushAndRemoveUntil(
                 context,

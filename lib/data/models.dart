@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
 
 /// WINPLUS  Modèles de données.
 
@@ -7,18 +8,44 @@ enum WinRole { student, parent, teacher, institution }
 enum ContentType { epreuve, correction, quiz, livre, pack }
 
 String contentTypeLabel(ContentType t) => switch (t) {
-      ContentType.epreuve => 'Épreuve',
-      ContentType.correction => 'Correction',
+      ContentType.epreuve => L10n.current.dataTypePaper,
+      ContentType.correction => L10n.current.dataTypeCorrection,
       ContentType.quiz => 'Quiz',
-      ContentType.livre => 'Livre',
+      ContentType.livre => L10n.current.dataTypeBook,
       ContentType.pack => 'Pack',
     };
 
 class Subject {
-  final String id, name, short;
+  final String id;
+
+  /// Noms français, tels qu'enregistrés côté API (ex. matières enseignées).
+  final String nameFr, shortFr;
   final Color color;
   final IconData icon;
-  const Subject(this.id, this.name, this.short, this.color, this.icon);
+  const Subject(this.id, this.nameFr, this.shortFr, this.color, this.icon);
+
+  /// Nom affiché, dans la langue de l'application (lot 10.11).
+  String get name => _localized(nameFr);
+  String get short => _localized(shortFr);
+
+  static String _localized(String fr) {
+    final l = L10n.current;
+    return switch (fr) {
+      'Mathématiques' => l.dataSubjectMath,
+      'Maths' => l.dataSubjectMathShort,
+      'Physique' => l.dataSubjectPhysics,
+      'Chimie' => l.dataSubjectChemistry,
+      'Français' => l.dataSubjectFrench,
+      'Anglais' => l.dataSubjectEnglish,
+      'Informatique' => l.dataSubjectComputing,
+      'Info' => l.dataSubjectComputingShort,
+      'Philosophie' => l.dataSubjectPhilosophy,
+      'Philo' => l.dataSubjectPhilosophyShort,
+      'Histoire-Géo' => l.dataSubjectHistGeo,
+      'Hist-Géo' => l.dataSubjectHistGeoShort,
+      _ => fr,
+    };
+  }
 }
 
 class Content {
@@ -547,13 +574,6 @@ class MockStudent {
   });
 }
 
-/// Formate un entier en XAF avec séparateur insécable (ex: 8 000).
-String fmtXaf(int n) {
-  final s = n.toString();
-  final buf = StringBuffer();
-  for (int i = 0; i < s.length; i++) {
-    if (i > 0 && (s.length - i) % 3 == 0) buf.write(' ');
-    buf.write(s[i]);
-  }
-  return buf.toString();
-}
+/// Formate un entier en XAF avec séparateur de milliers selon la langue
+/// (« 8 000 » en français, « 8,000 » en anglais ; lot 10.11).
+String fmtXaf(int n) => WinFormat.number(n);

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../l10n/l10n.dart';
 import '../services/api_client.dart';
 import '../services/tutor_booking_service.dart';
 import '../services/tutor_profile_service.dart';
@@ -98,10 +99,10 @@ class _TutoringForStudentsScreenState extends State<TutoringForStudentsScreen> w
       await _loadWallet();
       if (!mounted) return;
       final msg = status == 'completed'
-          ? 'Recharge confirmée : le solde de l\'institution est à jour.'
+          ? L10n.current.tutoringRechargeConfirmed
           : status == null || expired
-              ? 'Recharge toujours en attente : tire vers le bas pour actualiser le solde plus tard.'
-              : 'La recharge n\'a pas abouti : aucun montant n\'a été débité.';
+              ? L10n.current.tutoringRechargeStillPending
+              : L10n.current.tutoringRechargeFailed;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
     } else {
       await _loadWallet();
@@ -158,22 +159,22 @@ class _TutoringForStudentsScreenState extends State<TutoringForStudentsScreen> w
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setD) => AlertDialog(
-          title: const Text('Recharger le portefeuille'),
+          title: Text(ctx.l10n.tutoringRechargeTitle),
           content: Column(mainAxisSize: MainAxisSize.min, children: [
             Row(children: [
               ChoiceChip(label: const Text('MTN MoMo'), selected: op == 'mtn', onSelected: (_) => setD(() => op = 'mtn')),
               const SizedBox(width: 8),
               ChoiceChip(label: const Text('Orange Money'), selected: op == 'orange', onSelected: (_) => setD(() => op = 'orange')),
             ]),
-            TextField(controller: phoneCtrl, keyboardType: TextInputType.phone, decoration: const InputDecoration(labelText: 'Numéro (6XXXXXXXX)')),
+            TextField(controller: phoneCtrl, keyboardType: TextInputType.phone, decoration: InputDecoration(labelText: ctx.l10n.tutoringRechargePhone)),
             TextField(
                 controller: amountCtrl,
                 keyboardType: TextInputType.number,
-                decoration: InputDecoration(labelText: 'Montant (minimum ${fmtXaf(_minRecharge)} FCFA)')),
+                decoration: InputDecoration(labelText: ctx.l10n.tutoringRechargeAmount(fmtXaf(_minRecharge)))),
           ]),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Annuler')),
-            FilledButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Recharger')),
+            TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(ctx.l10n.commonCancel)),
+            FilledButton(onPressed: () => Navigator.pop(ctx, true), child: Text(ctx.l10n.tutoringTopUp)),
           ],
         ),
       ),
@@ -190,14 +191,14 @@ class _TutoringForStudentsScreenState extends State<TutoringForStudentsScreen> w
       final paymentId = (started?['paymentId'] as num?)?.toInt();
       if (paymentId != null && paymentId > 0) _startRechargePolling(paymentId);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Confirme le paiement sur ton téléphone ; le solde s\'actualise dès la confirmation.')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(L10n.current.tutoringRechargeConfirmOnPhone)));
       }
     } catch (e) {
       final data = (e as dynamic).response?.data;
       final msg = data is Map ? (data['error'] ?? data['message'])?.toString() : null;
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg ?? 'La recharge n\'a pas pu être lancée.')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg ?? L10n.current.tutoringRechargeStartError)));
       }
     }
   }
@@ -207,7 +208,7 @@ class _TutoringForStudentsScreenState extends State<TutoringForStudentsScreen> w
       final updated = await TutorBookingService.instance.respondAssignment(a.id, action: 'end');
       if (mounted) setState(() => _assignments = _assignments.map((x) => x.id == a.id ? updated : x).toList());
     } catch (_) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Action impossible.')));
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(L10n.current.tutoringActionFailed)));
     }
   }
 
@@ -229,20 +230,20 @@ class _TutoringForStudentsScreenState extends State<TutoringForStudentsScreen> w
       appBar: AppBar(
         backgroundColor: s.bg,
         elevation: 0,
-        title: Text(isInstitution ? 'Tutorat de mes élèves' : 'Cours particuliers', style: WinType.headlineS(s.onStrong)),
+        title: Text(isInstitution ? context.l10n.tutoringForStudentsTitle : context.l10n.tutoringPrivateLessons, style: WinType.headlineS(s.onStrong)),
         actions: [IconButton(icon: Icon(Icons.refresh_outlined, color: s.onMuted), onPressed: _load)],
       ),
       floatingActionButton: ctx != null && (ctx.isParent || ctx.isInstitution)
-          ? FloatingActionButton.extended(onPressed: _create, icon: const Icon(Icons.add), label: const Text('Attribuer un tuteur'))
+          ? FloatingActionButton.extended(onPressed: _create, icon: const Icon(Icons.add), label: Text(context.l10n.tutoringAssignTutor))
           : null,
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : _error
-              ? Center(child: WinButton('Réessayer', onTap: _load))
+              ? Center(child: WinButton(context.l10n.commonRetry, onTap: _load))
               : RefreshIndicator(
                   onRefresh: _load,
                   child: ListView(padding: const EdgeInsets.fromLTRB(16, 8, 16, 96), children: [
-                    WinButton('Séances réservées',
+                    WinButton(context.l10n.tutoringBookedSessions,
                         block: true,
                         variant: WinButtonVariant.outline,
                         icon: Icons.event_available_outlined,
@@ -251,23 +252,23 @@ class _TutoringForStudentsScreenState extends State<TutoringForStudentsScreen> w
                       const SizedBox(height: 16),
                       WinCard(
                         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          Text('Portefeuille de l\'institution', style: WinType.labelM(s.onStrong)),
+                          Text(context.l10n.tutoringWalletInstitution, style: WinType.labelM(s.onStrong)),
                           const SizedBox(height: 6),
-                          Text(_walletAvailable != null ? '${fmtXaf(_walletAvailable!)} XAF' : 'Solde indisponible',
+                          Text(_walletAvailable != null ? '${fmtXaf(_walletAvailable!)} XAF' : context.l10n.tutoringWalletUnavailable,
                               style: WinType.archivo(size: 22, color: s.onStrong)),
                           const SizedBox(height: 4),
-                          Text('Partagé par tous les comptes de l\'institution : il se recharge par Mobile Money, paie les séances et reçoit les remboursements. Il ne se retire pas vers Mobile Money.',
+                          Text(context.l10n.tutoringInstitutionWalletHelp,
                               style: WinType.labelS(s.onFaint)),
                           const SizedBox(height: 10),
                           if (_pendingRechargePaymentId != null) ...[
                             Row(children: [
                               const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2)),
                               const SizedBox(width: 8),
-                              Expanded(child: Text('Recharge en attente de confirmation sur le téléphone…', style: WinType.labelS(s.onMuted))),
+                              Expanded(child: Text(context.l10n.tutoringRechargePending, style: WinType.labelS(s.onMuted))),
                             ]),
                             const SizedBox(height: 8),
                           ],
-                          WinButton('Recharger', small: true, onTap: _pendingRechargePaymentId != null ? null : _recharge),
+                          WinButton(context.l10n.tutoringTopUp, small: true, onTap: _pendingRechargePaymentId != null ? null : _recharge),
                           if (_entries.isNotEmpty) ...[
                             const SizedBox(height: 12),
                             const WinDivider(),
@@ -286,10 +287,10 @@ class _TutoringForStudentsScreenState extends State<TutoringForStudentsScreen> w
                       ),
                     ],
                     const SizedBox(height: 16),
-                    Text('Répétiteurs attribués', style: WinType.labelM(s.onStrong)),
+                    Text(context.l10n.tutoringAssignedTutors, style: WinType.labelM(s.onStrong)),
                     const SizedBox(height: 8),
                     if (_assignments.isEmpty)
-                      WinCard(child: Text('Aucune attribution pour l\'instant.', style: WinType.bodyS(s.onMuted)))
+                      WinCard(child: Text(context.l10n.tutoringNoAssignment, style: WinType.bodyS(s.onMuted)))
                     else
                       ..._assignments.map((a) => Padding(
                             padding: const EdgeInsets.only(bottom: 10),
@@ -298,22 +299,22 @@ class _TutoringForStudentsScreenState extends State<TutoringForStudentsScreen> w
                                 Row(children: [
                                   WinAvatar(a.tutorName ?? '?', size: 36),
                                   const SizedBox(width: 10),
-                                  Expanded(child: Text(a.tutorName ?? 'Répétiteur', style: WinType.titleM(s.onStrong))),
+                                  Expanded(child: Text(a.tutorName ?? context.l10n.roleTutor, style: WinType.titleM(s.onStrong))),
                                   WinBadge(a.statusLabel, color: a.isActive ? BadgeColor.success : a.isPending ? BadgeColor.warn : BadgeColor.neutral),
                                 ]),
                                 const SizedBox(height: 6),
                                 Text(
-                                    '${a.groupName != null ? 'Classe ${a.groupName} · ' : ''}${a.beneficiaries.length} élève(s) : '
+                                    '${a.groupName != null ? '${context.l10n.tutoringClassName('${a.groupName}')} · ' : ''}${context.l10n.tutoringStudentsCountPrefix(a.beneficiaries.length)}'
                                     '${a.beneficiaries.take(8).map((b) => b.label).join(', ')}${a.beneficiaries.length > 8 ? '…' : ''}'
                                     '${a.subject != null ? ' · ${a.subject}' : ''}',
                                     style: WinType.labelM(s.onMuted)),
-                                if (a.responseNote != null) Text('Réponse : « ${a.responseNote} »', style: WinType.labelS(s.onFaint)),
+                                if (a.responseNote != null) Text(context.l10n.tutoringAssignResponse('${a.responseNote}'), style: WinType.labelS(s.onFaint)),
                                 if (a.isActive || a.isPending) ...[
                                   const SizedBox(height: 10),
                                   Row(children: [
                                     if (a.isActive) ...[
                                       Expanded(
-                                        child: WinButton('Réserver',
+                                        child: WinButton(context.l10n.tutoringBook,
                                             small: true,
                                             onTap: () => Navigator.push(
                                                 context,
@@ -323,7 +324,7 @@ class _TutoringForStudentsScreenState extends State<TutoringForStudentsScreen> w
                                       const SizedBox(width: 10),
                                       // Lot 9.4 : l'attribution sert de point de départ à un engagement mensuel.
                                       Expanded(
-                                        child: WinButton('Au mois',
+                                        child: WinButton(context.l10n.tutoringMonthly,
                                             small: true,
                                             variant: WinButtonVariant.outline,
                                             onTap: () => Navigator.push(
@@ -335,7 +336,7 @@ class _TutoringForStudentsScreenState extends State<TutoringForStudentsScreen> w
                                       const SizedBox(width: 10),
                                     ],
                                     Expanded(
-                                        child: WinButton('Mettre fin',
+                                        child: WinButton(context.l10n.tutoringEndAssignment,
                                             small: true, variant: WinButtonVariant.outline, onTap: () => _end(a))),
                                   ]),
                                 ],
@@ -397,9 +398,9 @@ class _AssignTutorScreenState extends State<_AssignTutorScreen> {
 
   Future<void> _submit() async {
     final ctx = widget.context;
-    if (_tutor == null) return setState(() => _error = 'Choisis un répétiteur.');
+    if (_tutor == null) return setState(() => _error = context.l10n.tutoringAssignChooseTutor);
     if (_students.isEmpty && _className.isEmpty) {
-      return setState(() => _error = ctx.isInstitution ? 'Choisis des élèves ou une classe.' : 'Choisis au moins un enfant.');
+      return setState(() => _error = ctx.isInstitution ? context.l10n.tutoringAssignChooseStudents : context.l10n.tutoringAssignChooseChild);
     }
     setState(() {
       _saving = true;
@@ -419,7 +420,7 @@ class _AssignTutorScreenState extends State<_AssignTutorScreen> {
       if (mounted) {
         setState(() {
           _saving = false;
-          _error = data is Map && data['message'] is String ? data['message'] as String : 'Attribution impossible.';
+          _error = data is Map && data['message'] is String ? data['message'] as String : L10n.current.tutoringAssignError;
         });
       }
     }
@@ -433,20 +434,20 @@ class _AssignTutorScreenState extends State<_AssignTutorScreen> {
     final classes = ctx.institutionStudents.map((e) => e.groupName).whereType<String>().toSet().toList()..sort();
     return Scaffold(
       backgroundColor: s.bg,
-      appBar: AppBar(backgroundColor: s.bg, elevation: 0, title: Text('Attribuer un tuteur', style: WinType.headlineS(s.onStrong))),
+      appBar: AppBar(backgroundColor: s.bg, elevation: 0, title: Text(context.l10n.tutoringAssignTutor, style: WinType.headlineS(s.onStrong))),
       body: ListView(padding: const EdgeInsets.all(16), children: [
-        Text('Le répétiteur reçoit la demande et l\'accepte ou la refuse. L\'attribution ne réserve rien : elle le met en avant et présélectionne les élèves pour réserver en un clic.',
+        Text(context.l10n.tutoringAssignIntro,
             style: WinType.labelS(s.onFaint)),
         const SizedBox(height: 12),
         Row(children: [
-          Expanded(child: WinTextField(hint: 'Matière (ex. Mathématiques)', controller: _subjectCtrl)),
+          Expanded(child: WinTextField(hint: context.l10n.tutoringAssignSubjectHint, controller: _subjectCtrl)),
           IconButton(icon: const Icon(Icons.search), onPressed: _searching ? null : _search),
         ]),
         const SizedBox(height: 8),
         if (_searching)
           const Center(child: Padding(padding: EdgeInsets.all(8), child: CircularProgressIndicator()))
         else if (_results.isEmpty)
-          Text('Aucun répétiteur trouvé.', style: WinType.bodyS(s.onMuted))
+          Text(context.l10n.tutoringAssignNoTutor, style: WinType.bodyS(s.onMuted))
         else
           ..._results.map((t) => ListTile(
                 onTap: () => setState(() => _tutor = t),
@@ -457,24 +458,23 @@ class _AssignTutorScreenState extends State<_AssignTutorScreen> {
                 contentPadding: EdgeInsets.zero,
               )),
         const SizedBox(height: 12),
-        Text(ctx.isInstitution ? 'Élèves bénéficiaires' : 'Enfants bénéficiaires', style: WinType.labelM(s.onStrong)),
+        Text(ctx.isInstitution ? context.l10n.tutoringAssignStudentsLabel : context.l10n.tutoringAssignChildrenLabel, style: WinType.labelM(s.onStrong)),
         const SizedBox(height: 8),
         if (ctx.isInstitution && classes.isNotEmpty) ...[
           Wrap(spacing: 8, runSpacing: 8, children: [
-            WinChip('Pas de classe entière', active: _className.isEmpty, onTap: () => setState(() => _className = '')),
-            ...classes.map((c) => WinChip('Toute la classe $c', active: _className == c, onTap: () => setState(() => _className = c))),
+            WinChip(context.l10n.tutoringAssignNoWholeClass, active: _className.isEmpty, onTap: () => setState(() => _className = '')),
+            ...classes.map((c) => WinChip(context.l10n.tutoringAssignAllClass(c), active: _className == c, onTap: () => setState(() => _className = c))),
           ]),
           const SizedBox(height: 8),
         ],
         if (ctx.isInstitution && ctx.institutionPendingConfirmationCount > 0) ...[
           Text(
-              '${ctx.institutionPendingConfirmationCount} élève(s) rattaché(s) n\'ont pas encore confirmé leur rattachement : '
-              'ils n\'apparaissent pas ici tant qu\'ils ne l\'ont pas accepté depuis leur compte.',
+              context.l10n.tutoringAssignPending(ctx.institutionPendingConfirmationCount),
               style: WinType.labelS(s.onFaint)),
           const SizedBox(height: 8),
         ],
         if (pool.isEmpty)
-          Text(ctx.isInstitution ? 'Aucun élève actif au rattachement confirmé dans ton institution.' : 'Aucun enfant lié (le lien doit être accepté par l\'enfant).',
+          Text(ctx.isInstitution ? context.l10n.tutoringAssignNoStudent : context.l10n.tutoringAssignNoChild,
               style: WinType.bodyS(s.onMuted))
         else
           Wrap(
@@ -489,10 +489,10 @@ class _AssignTutorScreenState extends State<_AssignTutorScreen> {
                 .toList(),
           ),
         const SizedBox(height: 12),
-        WinTextField(hint: 'Un mot pour le répétiteur (objectifs, fréquence…)', controller: _noteCtrl),
+        WinTextField(hint: context.l10n.tutoringAssignNoteHint, controller: _noteCtrl),
         if (_error != null) ...[const SizedBox(height: 10), WinAlert(_error!, type: BadgeColor.error)],
         const SizedBox(height: 16),
-        WinButton('Envoyer l\'attribution', block: true, loading: _saving, onTap: _saving ? null : _submit),
+        WinButton(context.l10n.tutoringAssignSubmit, block: true, loading: _saving, onTap: _saving ? null : _submit),
       ]),
     );
   }

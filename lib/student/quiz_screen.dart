@@ -1,3 +1,4 @@
+import '../l10n/l10n.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import '../theme/win_motion.dart';
@@ -76,7 +77,7 @@ class _QuizActiveScreenState extends State<QuizActiveScreen> {
       total: widget.quiz.questions.length,
       durationSeconds: elapsed,
       answers: List<int?>.from(_answers),
-      date: 'Maintenant',
+      date: context.l10n.studentQuizNow,
     );
 
     // Le score affiché est calculé localement ci-dessus (jamais bloqué par
@@ -136,7 +137,7 @@ class _QuizActiveScreenState extends State<QuizActiveScreen> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Row(children: [
-            Text('Question ${_current + 1} sur $total',
+            Text(context.l10n.studentQuizCounter(_current + 1, total),
                 style: WinType.labelM(s.onMuted)),
           ]),
         ),
@@ -199,7 +200,7 @@ class _QuizActiveScreenState extends State<QuizActiveScreen> {
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 28),
           child: WinButton(
-            _current < total - 1 ? 'Suivant' : 'Terminer le quiz',
+            _current < total - 1 ? context.l10n.authNext : context.l10n.studentQuizFinish,
             block: true,
             onTap: _answers[_current] != null ? _next : null,
           ),
@@ -226,10 +227,10 @@ class QuizResultScreen extends StatelessWidget {
             ? WinColors.warn
             : WinColors.error;
     final String scoreLabel = pct >= 70
-        ? 'Excellent !'
+        ? context.l10n.studentQuizExcellent
         : pct >= 50
-            ? 'Bon travail'
-            : 'À améliorer';
+            ? context.l10n.studentQuizGoodWork
+            : context.l10n.studentQuizToImprove;
     final durMin = result.durationSeconds ~/ 60;
     final durSec = result.durationSeconds % 60;
 
@@ -239,7 +240,7 @@ class QuizResultScreen extends StatelessWidget {
         backgroundColor: s.bg,
         elevation: 0,
         automaticallyImplyLeading: false,
-        title: Text('Résultats', style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.studentQuizResults, style: WinType.headlineS(s.onStrong)),
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 24, 16, 32),
@@ -264,15 +265,15 @@ class QuizResultScreen extends StatelessWidget {
           ),
           const SizedBox(height: 28),
           Row(children: [
-            _ResultStat('${result.correct}', 'Correctes', WinColors.success),
+            _ResultStat('${result.correct}', context.l10n.studentQuizCorrect, WinColors.success),
             const SizedBox(width: 10),
-            _ResultStat('${result.total - result.correct}', 'Incorrectes',
+            _ResultStat('${result.total - result.correct}', context.l10n.studentQuizIncorrect,
                 WinColors.error),
             const SizedBox(width: 10),
-            _ResultStat('${durMin}m ${durSec}s', 'Durée', s.primary),
+            _ResultStat('${durMin}m ${durSec}s', context.l10n.commonDuration, s.primary),
           ]),
           const SizedBox(height: 28),
-          WinButton('Revoir les réponses',
+          WinButton(context.l10n.studentQuizReviewAnswers,
               block: true,
               icon: Icons.rate_review_outlined,
               onTap: () => Navigator.push(
@@ -282,7 +283,7 @@ class QuizResultScreen extends StatelessWidget {
                             QuizReviewScreen(quiz: quiz, result: result)),
                   )),
           const SizedBox(height: 10),
-          WinButton('Refaire le quiz',
+          WinButton(context.l10n.studentQuizRetake,
               variant: WinButtonVariant.outline,
               block: true,
               icon: Icons.refresh,
@@ -291,7 +292,7 @@ class QuizResultScreen extends StatelessWidget {
                     WinPageRoute(builder: (_) => QuizActiveScreen(quiz: quiz)),
                   )),
           const SizedBox(height: 10),
-          WinButton('Retour au catalogue',
+          WinButton(context.l10n.studentQuizBackToCatalog,
               variant: WinButtonVariant.ghost,
               block: true,
               onTap: () => Navigator.popUntil(context, (r) => r.isFirst)),
@@ -343,7 +344,7 @@ class QuizReviewScreen extends StatelessWidget {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Révision', style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.studentQuizReview, style: WinType.headlineS(s.onStrong)),
       ),
       body: ListView.builder(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
@@ -450,7 +451,7 @@ class _QuizHubScreenState extends State<QuizHubScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Mes Quiz', style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.studentQuizMyQuizzes, style: WinType.headlineS(s.onStrong)),
         actions: [
           IconButton(
             icon: Icon(Icons.refresh_outlined, color: s.onStrong),
@@ -470,13 +471,13 @@ class _QuizHubScreenState extends State<QuizHubScreen> {
               children: [
                 // Lot 9.7b : plus de compteur « quiz par jour » (aucune limite
                 // de quiz n'existe côté serveur ; étude 9.7b section 3).
-                const WinSectionHeader('Quiz disponibles'),
+                WinSectionHeader(context.l10n.studentQuizAvailable),
                 const SizedBox(height: 12),
                 if (quizzes.isEmpty)
                   Center(
                       child: Padding(
                     padding: const EdgeInsets.all(24),
-                    child: Text('Aucun quiz disponible.',
+                    child: Text(context.l10n.studentQuizNone,
                         style: WinType.bodyM(s.onMuted)),
                   ))
                 else
@@ -569,7 +570,7 @@ class _QuizCard extends StatelessWidget {
                   style: WinType.titleM(s.onStrong)),
               const Spacer(),
               Text(
-                  '${quiz.questions.length} questions · ${quiz.durationMinutes} min',
+                  context.l10n.studentQuizMeta(quiz.questions.length, quiz.durationMinutes),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: WinType.labelS(s.onMuted)),

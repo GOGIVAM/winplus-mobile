@@ -6,6 +6,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import '../l10n/l10n.dart';
 
 /// Lot 9.7b, étape 4 (étude 9.7b section 2.3, décision 18.21) : licence de
 /// l'établissement sur mobile (parité web). Licence en cours et sièges
@@ -59,7 +60,7 @@ class _LicenseScreenState extends State<LicenseScreen> {
       setState(() => _data = (res.data as Map).cast<String, dynamic>());
       if (_data?['license'] == null) _loadQuote();
     } catch (e) {
-      if (mounted) setState(() => _error = _msg(e, 'Licence indisponible.'));
+      if (mounted) setState(() => _error = _msg(e, L10n.current.instLicenseUnavailable));
     }
   }
 
@@ -73,7 +74,7 @@ class _LicenseScreenState extends State<LicenseScreen> {
       });
       if (mounted) setState(() => _quote = (res.data as Map).cast<String, dynamic>());
     } catch (e) {
-      if (mounted) setState(() => _quote = {'error': _msg(e, 'Devis indisponible.')});
+      if (mounted) setState(() => _quote = {'error': _msg(e, L10n.current.tutoringEngQuoteUnavailable)});
     }
   }
 
@@ -106,7 +107,7 @@ class _LicenseScreenState extends State<LicenseScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(icon: Icon(Icons.arrow_back, color: s.onStrong), onPressed: () => Navigator.pop(context)),
-        title: Text('Licence WinPlus', style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.instLicenseTitle, style: WinType.headlineS(s.onStrong)),
       ),
       body: _error != null
           ? Center(child: Padding(padding: const EdgeInsets.all(24), child: Text(_error!, style: WinType.bodyM(s.onMuted))))
@@ -117,31 +118,32 @@ class _LicenseScreenState extends State<LicenseScreen> {
   }
 
   List<Widget> _current(WinScheme s, Map license) {
-    const status = {'trialing': 'Essai', 'active': 'Active', 'past_due': 'Paiement en attente', 'expired': 'Expirée', 'cancelled': 'Terminée'};
+    final l = context.l10n;
+    final status = {'trialing': l.parentSubTrial, 'active': l.teacherVerifActive, 'past_due': l.parentSubPaymentPending, 'expired': l.tutoringStatusExpired, 'cancelled': l.instLicenseStatusEnded};
     final seats = (_data?['seats'] as List? ?? []).cast<Map>();
     return [
       WinCard(
         padding: const EdgeInsets.all(16),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(children: [
-            Expanded(child: Text('Licence ${status[license['status']] ?? license['status']}', style: WinType.titleL(s.onStrong))),
-            if (license['isNegotiated'] == true) const WinBadge('Négociée', color: BadgeColor.blue),
+            Expanded(child: Text(l.instLicenseHeading('${status[license['status']] ?? license['status']}'), style: WinType.titleL(s.onStrong))),
+            if (license['isNegotiated'] == true) WinBadge(l.instLicenseNegotiated, color: BadgeColor.blue),
           ]),
           const SizedBox(height: 6),
-          Text('Du ${_date(license['startDate'])} au ${_date(license['endDate'])}', style: WinType.bodyS(s.onMuted)),
+          Text(l.instLicensePeriod(_date(license['startDate']), _date(license['endDate'])), style: WinType.bodyS(s.onMuted)),
           if (license['status'] == 'past_due')
             Padding(
               padding: const EdgeInsets.only(top: 8),
-              child: WinAlert('Solde insuffisant au renouvellement : rechargez le portefeuille avant le ${_date(license['graceUntil'])}.', type: BadgeColor.warn),
+              child: WinAlert(l.instLicensePastDue(_date(license['graceUntil'])), type: BadgeColor.warn),
             ),
           const SizedBox(height: 12),
-          Text('Sièges élèves : ${license['studentSeatsUsed']} / ${license['studentSeats']}', style: WinType.bodyM(s.onSurface)),
+          Text(l.instLicenseStudentSeatsUsed('${license['studentSeatsUsed']}', '${license['studentSeats']}'), style: WinType.bodyM(s.onSurface)),
           const SizedBox(height: 4),
           WinProgressBar(((license['studentSeatsUsed'] as num) / ((license['studentSeats'] as num).clamp(1, 1 << 30))) * 100),
           const SizedBox(height: 8),
-          Text('Sièges enseignants : ${license['teacherSeatsUsed']} / ${license['teacherSeats']}', style: WinType.bodyM(s.onSurface)),
+          Text(l.instLicenseTeacherSeatsUsed('${license['teacherSeatsUsed']}', '${license['teacherSeats']}'), style: WinType.bodyM(s.onSurface)),
           const SizedBox(height: 8),
-          Text('Budget WinAI de l\'établissement utilisé : ${license['aiBudgetUsedPercent']} %', style: WinType.bodyS(s.onMuted)),
+          Text(l.instLicenseAiBudget('${license['aiBudgetUsedPercent']}'), style: WinType.bodyS(s.onMuted)),
           if (license['status'] != 'trialing') ...[
             const SizedBox(height: 8),
             SwitchListTile(
@@ -149,16 +151,16 @@ class _LicenseScreenState extends State<LicenseScreen> {
               value: license['autoRenew'] == true,
               onChanged: _busy
                   ? null
-                  : (v) => _act(() => _api.dio.put('/institution/license/auto-renew', data: {'enabled': v}), 'Modification impossible.'),
-              title: Text('Renouveler avec le portefeuille', style: WinType.bodyS(s.onSurface)),
+                  : (v) => _act(() => _api.dio.put('/institution/license/auto-renew', data: {'enabled': v}), l.instLicenseUpdateError),
+              title: Text(l.instLicenseRenewWallet, style: WinType.bodyS(s.onSurface)),
             ),
           ],
         ]),
       ),
       const SizedBox(height: 16),
-      Text('Sièges attribués', style: WinType.headlineS(s.onStrong)),
+      Text(l.instLicenseSeatsTitle, style: WinType.headlineS(s.onStrong)),
       const SizedBox(height: 4),
-      Text('Un siège élève est attribué quand l\'élève accepte son rattachement ; un siège enseignant quand le professeur accepte l\'affiliation.',
+      Text(l.instLicenseSeatsInfo,
           style: WinType.labelM(s.onMuted)),
       const SizedBox(height: 8),
       ...seats.map((seat) => Padding(
@@ -168,10 +170,10 @@ class _LicenseScreenState extends State<LicenseScreen> {
               child: Row(children: [
                 Icon(seat['kind'] == 'teacher' ? Icons.school_outlined : Icons.person_outline, size: 18, color: s.primary),
                 const SizedBox(width: 10),
-                Expanded(child: Text('${seat['name'] ?? 'Compte ${seat['userId']}'}', style: WinType.titleM(s.onStrong))),
+                Expanded(child: Text('${seat['name'] ?? l.instLicenseAccount('${seat['userId']}')}', style: WinType.titleM(s.onStrong))),
                 TextButton(
-                  onPressed: _busy ? null : () => _act(() => _api.dio.delete('/institution/license/seats/${seat['id']}'), 'Libération impossible.'),
-                  child: const Text('Libérer'),
+                  onPressed: _busy ? null : () => _act(() => _api.dio.delete('/institution/license/seats/${seat['id']}'), l.instLicenseReleaseError),
+                  child: Text(l.instLicenseRelease),
                 ),
               ]),
             ),
@@ -183,33 +185,34 @@ class _LicenseScreenState extends State<LicenseScreen> {
     final grid = (_data?['grid'] as Map?) ?? {};
     final tiers = (grid['tiers'] as List? ?? []).cast<Map>();
     final q = _quote;
+    final l = context.l10n;
     return [
-      Text('Souscrire une licence', style: WinType.headlineS(s.onStrong)),
+      Text(l.instLicenseSubscribeTitle, style: WinType.headlineS(s.onStrong)),
       const SizedBox(height: 6),
       Text(
-          'Prix TTC par élève et par an : ${tiers.map((t) => '${fmtXaf((t['yearlyPerSeatTtc'] as num).round())} XAF dès ${t['fromSeats']} sièges').join(' · ')}. '
-          'Minimum ${grid['minSeats']} sièges, un siège enseignant pour ${grid['studentsPerTeacherSeat']} élèves.',
+          '${l.instLicenseGridPrices(tiers.map((t) => l.instLicenseGridTier(fmtXaf((t['yearlyPerSeatTtc'] as num).round()), '${t['fromSeats']}')).join(' · '))} '
+          '${l.instLicenseGridMin('${grid['minSeats']}', '${grid['studentsPerTeacherSeat']}')}',
           style: WinType.bodyS(s.onMuted)),
       const SizedBox(height: 14),
-      WinTextField(controller: _seatsCtrl, label: 'Sièges élèves', keyboardType: TextInputType.number, onChanged: (_) => _loadQuote()),
+      WinTextField(controller: _seatsCtrl, label: l.instLicenseStudentSeats, keyboardType: TextInputType.number, onChanged: (_) => _loadQuote()),
       const SizedBox(height: 10),
       Wrap(spacing: 8, children: [
-        WinChip('Année scolaire', active: _term == 'year', onTap: () {
+        WinChip(l.instLicenseTermYear, active: _term == 'year', onTap: () {
           setState(() => _term = 'year');
           _loadQuote();
         }),
-        WinChip('Trimestre', active: _term == 'quarter', onTap: () {
+        WinChip(l.instLicenseTermQuarter, active: _term == 'quarter', onTap: () {
           setState(() => _term = 'quarter');
           _loadQuote();
         }),
       ]),
       const SizedBox(height: 10),
-      WinTextField(controller: _promoCtrl, label: 'Code promo', onChanged: (_) => _loadQuote()),
+      WinTextField(controller: _promoCtrl, label: l.instLicensePromo, onChanged: (_) => _loadQuote()),
       SwitchListTile(
         contentPadding: EdgeInsets.zero,
         value: _autoRenew,
         onChanged: (v) => setState(() => _autoRenew = v),
-        title: Text('Renouvellement automatique par le portefeuille', style: WinType.bodyS(s.onSurface)),
+        title: Text(l.instLicenseAutoRenew, style: WinType.bodyS(s.onSurface)),
       ),
       if (q != null)
         (q['error'] ?? q['promoError']) != null
@@ -217,11 +220,11 @@ class _LicenseScreenState extends State<LicenseScreen> {
             : WinCard(
                 padding: const EdgeInsets.all(12),
                 child: Text(
-                    '${fmtXaf((q['pricePerSeatTtc'] as num).round())} XAF par élève · ${q['teacherSeats']} sièges enseignants · jusqu\'au ${_date(q['endsAt'])}\n'
-                    'Total : ${fmtXaf((q['amountDueTtc'] as num).round())} XAF TTC',
+                    '${l.instLicenseQuoteLine(fmtXaf((q['pricePerSeatTtc'] as num).round()), '${q['teacherSeats']}', _date(q['endsAt']))}\n'
+                    '${l.instLicenseQuoteTotal(fmtXaf((q['amountDueTtc'] as num).round()))}',
                     style: WinType.bodyM(s.onSurface))),
       const SizedBox(height: 14),
-      WinButton(_busy ? 'Patientez…' : 'Souscrire avec le portefeuille',
+      WinButton(_busy ? l.instLicenseWait : l.instLicensePurchase,
           block: true,
           onTap: _busy || q == null || (q['error'] ?? q['promoError']) != null
               ? null
@@ -232,20 +235,19 @@ class _LicenseScreenState extends State<LicenseScreen> {
                         if (_promoCtrl.text.trim().isNotEmpty) 'promoCode': _promoCtrl.text.trim().toUpperCase(),
                         'autoRenew': _autoRenew,
                       }),
-                  'Souscription impossible.')),
+                  l.instLicensePurchaseError)),
       if (_data?['trialAvailable'] == true) ...[
         const SizedBox(height: 10),
-        WinButton('Essai gratuit (${grid['trialDays']} jours, ${grid['trialSeats']} sièges)',
+        WinButton(l.instLicenseTrial('${grid['trialDays']}', '${grid['trialSeats']}'),
             block: true,
             variant: WinButtonVariant.outline,
-            onTap: _busy ? null : () => _act(() => _api.dio.post('/institution/license/trial', data: {}), 'Essai indisponible.')),
+            onTap: _busy ? null : () => _act(() => _api.dio.post('/institution/license/trial', data: {}), l.instLicenseTrialError)),
       ],
       const SizedBox(height: 12),
-      Text('Chaque siège ouvre à l\'élève le catalogue, le plan d\'étude, la session guidée, Exam Coach et un bonus WinAI ; '
-          'un siège enseignant ouvre les outils du plan Pro et une part de 75 % sur le tutorat.',
+      Text(l.instLicenseSeatBenefits,
           style: WinType.labelM(s.onFaint)),
       const SizedBox(height: 4),
-      Text('Paiement depuis le portefeuille de l\'établissement.', style: WinType.labelM(WinColors.ink400)),
+      Text(l.instLicensePaymentFrom, style: WinType.labelM(WinColors.ink400)),
     ];
   }
 }

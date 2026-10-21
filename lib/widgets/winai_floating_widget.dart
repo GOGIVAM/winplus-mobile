@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../theme/win_motion.dart';
 import '../data/models.dart';
+import '../l10n/l10n.dart';
 import '../institution/institution_tabs.dart' show InstitutionWinAITab;
 import '../parent/parent_tabs.dart' show ParentWinAITab;
 import '../student/student_tabs.dart' show StudentWinAITab;
@@ -45,48 +46,51 @@ class _WinAIFloatingWidgetState extends State<WinAIFloatingWidget> {
   bool _dragged = false;
   final _ctrl = TextEditingController();
 
-  _WinAIRoleConfig _configFor(WinRole role) => switch (role) {
-        WinRole.student => _WinAIRoleConfig(
-            subtitle: 'Ton assistant pédagogique personnel',
-            accent: WinColors.teal500,
-            suggestions: const [
-              'Explique-moi les dérivées',
-              'Plan de révision BAC C',
-              'Mes matières faibles ?',
-              'Génère un quiz Chimie',
-            ],
-          ),
-        WinRole.parent => _WinAIRoleConfig(
-            subtitle: 'Ton conseiller familial chaleureux',
-            accent: WinColors.blue500,
-            suggestions: const [
-              'Mon enfant est en difficulté',
-              'Plan de révision maison',
-              'Analyse ses résultats',
-              'Comment le motiver ?',
-            ],
-          ),
-        WinRole.teacher => _WinAIRoleConfig(
-            subtitle: 'Ton assistant éditorial & pédagogique',
-            accent: WinColors.gold,
-            suggestions: const [
-              'Quiz Terminale C (10 QCM)',
-              'Fiche de cours',
-              'Correction type',
-              'Optimiser un titre',
-            ],
-          ),
-        WinRole.institution => _WinAIRoleConfig(
-            subtitle: 'Ton auditeur analytique & stratège institutionnel',
-            accent: WinColors.teal500,
-            suggestions: const [
-              'Analyse de cohorte',
-              'Élèves à risque',
-              "Plan d'action prioritaire",
-              'Benchmark national',
-            ],
-          ),
-      };
+  _WinAIRoleConfig _configFor(WinRole role) {
+    final l = context.l10n;
+    return switch (role) {
+      WinRole.student => _WinAIRoleConfig(
+          subtitle: l.studentTabsAiTagline,
+          accent: WinColors.teal500,
+          suggestions: [
+            l.studentTabsAiSuggest1,
+            l.studentTabsAiSuggest2,
+            l.studentTabsAiSuggest3,
+            l.studentTabsAiSuggest4,
+          ],
+        ),
+      WinRole.parent => _WinAIRoleConfig(
+          subtitle: l.parentAiTagline,
+          accent: WinColors.blue500,
+          suggestions: [
+            l.parentAiSuggestion1,
+            l.parentAiSuggestion2,
+            l.parentAiSuggestion3,
+            l.parentAiSuggestion4,
+          ],
+        ),
+      WinRole.teacher => _WinAIRoleConfig(
+          subtitle: l.teacherAiTagline,
+          accent: WinColors.gold,
+          suggestions: [
+            l.teacherAiSuggestQuiz,
+            l.teacherAiSuggestSheet,
+            l.teacherAiSuggestCorrection,
+            l.teacherAiSuggestTitle,
+          ],
+        ),
+      WinRole.institution => _WinAIRoleConfig(
+          subtitle: l.instAiTagline,
+          accent: WinColors.teal500,
+          suggestions: [
+            l.instAiSuggestion1,
+            l.instRiskTitle,
+            l.instAiSuggestion3,
+            l.instAiSuggestion4,
+          ],
+        ),
+    };
+  }
 
   static Widget _screenFor(WinRole role, String? initialMessage) {
     switch (role) {
@@ -311,7 +315,7 @@ class _MiniCard extends StatelessWidget {
                       const Icon(Icons.psychology_rounded,
                           size: 14, color: Color(0xFF8B5CF6)),
                       const SizedBox(width: 6),
-                      Text('Mémoire WinAI',
+                      Text(context.l10n.commonWinaiMemory,
                           style: WinType.manrope(
                               size: 12,
                               weight: FontWeight.w600,
@@ -337,7 +341,7 @@ class _MiniCard extends StatelessWidget {
                         decoration: InputDecoration(
                           isDense: true,
                           border: InputBorder.none,
-                          hintText: 'Écris ta question…',
+                          hintText: context.l10n.aiAskHint,
                           hintStyle: WinType.bodyS(s.onFaint),
                         ),
                       ),

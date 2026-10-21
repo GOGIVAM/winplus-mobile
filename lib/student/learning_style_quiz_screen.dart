@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
 import '../services/api_client.dart';
 import '../services/user_service.dart';
 import '../theme/win_colors.dart';
@@ -27,51 +28,51 @@ class _VarkQuestion {
   const _VarkQuestion(this.id, this.text, this.options);
 }
 
-const _questions = <_VarkQuestion>[
-  _VarkQuestion('q1', 'Quand tu apprends quelque chose de nouveau, tu préfères…', [
-    ('Dessiner un schéma ou voir un diagramme', 'V'),
-    ('Écouter une explication orale', 'A'),
-    ('Lire un cours écrit détaillé', 'R'),
-    ("Essayer directement par la pratique", 'K'),
+List<_VarkQuestion> get _questions => <_VarkQuestion>[
+  _VarkQuestion('q1', L10n.current.studentVarkQ1, [
+    (L10n.current.studentVarkQ1V, 'V'),
+    (L10n.current.studentVarkQ1A, 'A'),
+    (L10n.current.studentVarkQ1R, 'R'),
+    (L10n.current.studentVarkQ1K, 'K'),
   ]),
-  _VarkQuestion('q2', 'Pour mémoriser une formule de mathématiques…', [
-    ("La visualiser telle qu'elle est écrite", 'V'),
-    ('La répéter à voix haute plusieurs fois', 'A'),
-    ("L'écrire et la réécrire dans tes notes", 'R'),
-    ("Résoudre des exercices jusqu'à l'automatisme", 'K'),
+  _VarkQuestion('q2', L10n.current.studentVarkQ2, [
+    (L10n.current.studentVarkQ2V, 'V'),
+    (L10n.current.studentVarkQ2A, 'A'),
+    (L10n.current.studentVarkQ2R, 'R'),
+    (L10n.current.studentVarkQ2K, 'K'),
   ]),
-  _VarkQuestion('q3', 'Quand tu bloques sur un exercice difficile…', [
-    ('Chercher un exemple illustré', 'V'),
-    ("En parler à quelqu'un pour l'expliquer oralement", 'A'),
-    ('Relire tes notes depuis le début', 'R'),
-    ("Recommencer l'exercice en variant les étapes", 'K'),
+  _VarkQuestion('q3', L10n.current.studentVarkQ3, [
+    (L10n.current.studentVarkQ3V, 'V'),
+    (L10n.current.studentVarkQ3A, 'A'),
+    (L10n.current.studentVarkQ3R, 'R'),
+    (L10n.current.studentVarkQ3K, 'K'),
   ]),
-  _VarkQuestion('q4', 'En classe, tu retiens mieux quand…', [
-    ('Le prof dessine au tableau ou montre des slides', 'V'),
-    ('Le prof explique avec des exemples parlés', 'A'),
-    ('Tu as un cours bien structuré à lire', 'R'),
-    ('Il y a des exercices pratiques pendant le cours', 'K'),
+  _VarkQuestion('q4', L10n.current.studentVarkQ4, [
+    (L10n.current.studentVarkQ4V, 'V'),
+    (L10n.current.studentVarkQ4A, 'A'),
+    (L10n.current.studentVarkQ4R, 'R'),
+    (L10n.current.studentVarkQ4K, 'K'),
   ]),
-  _VarkQuestion('q5', 'Ta méthode de révision favorite…', [
-    ('Créer des fiches avec schémas et couleurs', 'V'),
-    ("M'enregistrer en train de réciter à voix haute", 'A'),
-    ('Rédiger des résumés écrits condensés', 'R'),
-    ("Enchaîner des exercices et annales corrigées", 'K'),
+  _VarkQuestion('q5', L10n.current.studentVarkQ5, [
+    (L10n.current.studentVarkQ5V, 'V'),
+    (L10n.current.studentVarkQ5A, 'A'),
+    (L10n.current.studentVarkQ5R, 'R'),
+    (L10n.current.studentVarkQ5K, 'K'),
   ]),
-  _VarkQuestion('q6', "Comment tu sais que tu as vraiment compris quelque chose ?", [
-    ('Le représenter graphiquement sans regarder tes notes', 'V'),
-    ("L'expliquer clairement à voix haute à quelqu'un", 'A'),
-    ('Rédiger un résumé complet de mémoire', 'R'),
-    ('Résoudre des exercices variés sans aide', 'K'),
+  _VarkQuestion('q6', L10n.current.studentVarkQ6, [
+    (L10n.current.studentVarkQ6V, 'V'),
+    (L10n.current.studentVarkQ6A, 'A'),
+    (L10n.current.studentVarkQ6R, 'R'),
+    (L10n.current.studentVarkQ6K, 'K'),
   ]),
 ];
 
-const _styleLabels = {
-  'visual': 'Apprenant Visuel',
-  'auditory': 'Apprenant Auditif',
-  'reading_writing': 'Lecteur / Scripteur',
-  'kinesthetic': 'Apprenant Kinesthésique',
-  'mixed': 'Profil Mixte',
+Map<String, String> get _styleLabels => {
+  'visual': L10n.current.studentVarkVisual,
+  'auditory': L10n.current.studentVarkAuditory,
+  'reading_writing': L10n.current.studentVarkReadWrite,
+  'kinesthetic': L10n.current.studentVarkKinesthetic,
+  'mixed': L10n.current.studentVarkMixed,
 };
 
 const _letterToStyle = {
@@ -143,7 +144,7 @@ class _LearningStyleQuizScreenState extends State<LearningStyleQuizScreen> {
         appBar: AppBar(
           backgroundColor: s.bg,
           elevation: 0,
-          title: Text("Mon style d'apprentissage", style: WinType.headlineS(s.onStrong)),
+          title: Text(context.l10n.studentVarkTitle, style: WinType.headlineS(s.onStrong)),
         ),
         body: Padding(
           padding: const EdgeInsets.all(24),
@@ -153,12 +154,12 @@ class _LearningStyleQuizScreenState extends State<LearningStyleQuizScreen> {
               Text(_resultLabel ?? '', style: WinType.displayS(s.onStrong)),
               const SizedBox(height: 12),
               Text(
-                'Ce résultat est enregistré sur ton profil : WinAI et les contenus générés s’y adaptent, sur le web comme sur mobile.',
+                context.l10n.studentVarkSaved,
                 style: WinType.bodyM(s.onMuted),
               ),
               const Spacer(),
               WinButton(
-                _applied ? 'Style appliqué !' : (_applying ? 'Application…' : 'Appliquer mon style'),
+                _applied ? context.l10n.studentVarkApplied : (_applying ? context.l10n.studentVarkApplying : context.l10n.studentVarkApply),
                 block: true,
                 loading: _applying,
                 onTap: _applied ? null : _apply,
@@ -176,7 +177,7 @@ class _LearningStyleQuizScreenState extends State<LearningStyleQuizScreen> {
       appBar: AppBar(
         backgroundColor: s.bg,
         elevation: 0,
-        title: Text("Mon style d'apprentissage", style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.studentVarkTitle, style: WinType.headlineS(s.onStrong)),
       ),
       body: Padding(
         padding: const EdgeInsets.all(24),
@@ -185,7 +186,7 @@ class _LearningStyleQuizScreenState extends State<LearningStyleQuizScreen> {
           children: [
             WinProgressBar(((_currentIdx) / _questions.length) * 100, height: 3, color: s.primary),
             const SizedBox(height: 8),
-            Text('Question ${_currentIdx + 1} / ${_questions.length}', style: WinType.labelS(s.onMuted)),
+            Text(context.l10n.studentVarkQuestionCount(_currentIdx + 1, _questions.length), style: WinType.labelS(s.onMuted)),
             const SizedBox(height: 20),
             Text(q.text, style: WinType.titleL(s.onStrong)),
             const SizedBox(height: 24),

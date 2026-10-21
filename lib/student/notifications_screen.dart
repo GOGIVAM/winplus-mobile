@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
 import '../services/user_service.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
@@ -82,9 +83,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
             content: Text(
-                "Impossible de marquer les notifications comme lues. Réessaie.")),
+                L10n.current.studentNotifMarkFailed)),
       );
     }
   }
@@ -129,11 +130,11 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
   String _relativeTime(DateTime dt) {
     final diff = DateTime.now().difference(dt);
-    if (diff.inMinutes < 1) return 'À l\'instant';
-    if (diff.inMinutes < 60) return 'Il y a ${diff.inMinutes} min';
-    if (diff.inHours < 24) return 'Il y a ${diff.inHours}h';
-    if (diff.inDays == 1) return 'Hier';
-    return 'Il y a ${diff.inDays} jours';
+    if (diff.inMinutes < 1) return context.l10n.studentNotifJustNow;
+    if (diff.inMinutes < 60) return context.l10n.studentNotifMinutesAgo(diff.inMinutes);
+    if (diff.inHours < 24) return context.l10n.studentNotifHoursAgo(diff.inHours);
+    if (diff.inDays == 1) return context.l10n.commonYesterday;
+    return context.l10n.studentHistDaysAgo(diff.inDays);
   }
 
   @override
@@ -149,11 +150,11 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Notifications', style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.studentNotifTitle, style: WinType.headlineS(s.onStrong)),
         actions: [
           TextButton(
             onPressed: _markAllRead,
-            child: Text('Tout lire',
+            child: Text(context.l10n.studentNotifReadAll,
                 style: WinType.labelM(s.primary)
                     .copyWith(fontWeight: FontWeight.w600)),
           ),
@@ -174,7 +175,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           child: Column(mainAxisSize: MainAxisSize.min, children: [
         Icon(Icons.check_circle_outline, size: 64, color: s.onFaint),
         const SizedBox(height: 12),
-        Text('Tout est à jour !', style: WinType.bodyM(s.onMuted)),
+        Text(context.l10n.studentNotifAllCaughtUp, style: WinType.bodyM(s.onMuted)),
       ]));
     }
 
@@ -182,10 +183,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     for (final n in _notifs!) {
       final diff = DateTime.now().difference(n.createdAt);
       final key = diff.inDays == 0
-          ? "Aujourd'hui"
+          ? context.l10n.commonToday
           : diff.inDays == 1
-              ? 'Hier'
-              : 'Il y a ${diff.inDays} jours';
+              ? context.l10n.commonYesterday
+              : context.l10n.studentHistDaysAgo(diff.inDays);
       groups.putIfAbsent(key, () => []).add(n);
     }
 
@@ -269,7 +270,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     child: CircularProgressIndicator())
                 : TextButton(
                     onPressed: _loadMore,
-                    child: Text('Voir plus',
+                    child: Text(context.l10n.studentNotifSeeMore,
                         style: WinType.labelM(s.primary)
                             .copyWith(fontWeight: FontWeight.w600)),
                   ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
 import '../theme/win_motion.dart';
 import '../app_state.dart';
 import '../data/models.dart';
@@ -89,7 +90,7 @@ class _SplashScreenState extends State<SplashScreen>
               style: WinType.archivo(
                   size: 30, weight: FontWeight.w700, color: WinColors.cream50)),
           const SizedBox(height: 4),
-          Text('Ta réussite, notre mission',
+          Text(context.l10n.welcomeTagline,
               style: WinType.bodyS(WinColors.ink300)),
         ]),
       ),

@@ -9,6 +9,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import '../l10n/l10n.dart';
 
 class SubscriptionStatusScreen extends StatefulWidget {
   const SubscriptionStatusScreen({super.key});
@@ -69,7 +70,7 @@ class _SubscriptionStatusScreenState extends State<SubscriptionStatusScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Mon Abonnement', style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.parentSubTitle, style: WinType.headlineS(s.onStrong)),
         actions: [
           IconButton(
             icon: Icon(Icons.refresh_outlined, color: s.onStrong),
@@ -88,10 +89,10 @@ class _SubscriptionStatusScreenState extends State<SubscriptionStatusScreen> {
               child: Column(mainAxisSize: MainAxisSize.min, children: [
               Icon(Icons.wifi_off_outlined, size: 48, color: s.onFaint),
               const SizedBox(height: 12),
-              Text('Impossible de charger l\'abonnement.',
+              Text(context.l10n.parentSubLoadError,
                   style: WinType.bodyM(s.onMuted)),
               const SizedBox(height: 12),
-              WinButton('Réessayer', onTap: () {
+              WinButton(context.l10n.commonRetry, onTap: () {
                 setState(() {
                   _sub = null;
                   _children = null;
@@ -126,12 +127,12 @@ class _SubscriptionStatusScreenState extends State<SubscriptionStatusScreen> {
                               const Spacer(),
                               WinBadge(
                                   !sub.hasPlan
-                                      ? 'Gratuit'
+                                      ? context.l10n.commonFree
                                       : sub.isInGrace
-                                          ? 'Paiement en attente'
+                                          ? context.l10n.parentSubPaymentPending
                                           : sub.isTrial
-                                              ? 'Essai'
-                                              : 'Actif',
+                                              ? context.l10n.parentSubTrial
+                                              : context.l10n.commonActive,
                                   color: sub.isInGrace
                                       ? BadgeColor.warn
                                       : BadgeColor.success),
@@ -140,8 +141,8 @@ class _SubscriptionStatusScreenState extends State<SubscriptionStatusScreen> {
                             if (sub.expiresAt != null)
                               Text(
                                   sub.cancelAtPeriodEnd
-                                      ? 'Résilié : accès jusqu\'au ${_fmtDate(sub.expiresAt!)}'
-                                      : 'Période en cours jusqu\'au ${_fmtDate(sub.expiresAt!)}',
+                                      ? context.l10n.parentSubCancelledUntil(_fmtDate(sub.expiresAt!))
+                                      : context.l10n.parentSubPeriodUntil(_fmtDate(sub.expiresAt!)),
                                   style: WinType.bodyS(s.onMuted)),
                             const SizedBox(height: 4),
                             Row(children: [
@@ -149,8 +150,8 @@ class _SubscriptionStatusScreenState extends State<SubscriptionStatusScreen> {
                               const SizedBox(width: 4),
                               Text(
                                   sub.autoRenew
-                                      ? 'Renouvellement automatique activé'
-                                      : 'Renouvellement manuel',
+                                      ? context.l10n.parentSubAutoRenewOn
+                                      : context.l10n.parentSubManualRenew,
                                   style: WinType.labelM(s.onFaint)),
                             ]),
                           ]),
@@ -158,12 +159,12 @@ class _SubscriptionStatusScreenState extends State<SubscriptionStatusScreen> {
                     const SizedBox(height: 20),
                     // Lot 9.7b : droits réellement appliqués (plus de
                     // téléchargements ni de quiz par jour fictifs).
-                    Text('Ce que comprend votre plan',
+                    Text(context.l10n.parentSubIncludes,
                         style: WinType.headlineS(s.onStrong)),
                     const SizedBox(height: 12),
                     _UsageRow(
                         icon: Icons.family_restroom_outlined,
-                        label: 'Enfants suivis',
+                        label: context.l10n.parentSubChildrenFollowed,
                         used: children.length,
                         limit: sub.entitlements.limit('children.max'),
                         unlimited: sub.entitlements.isUnlimited('children.max')),
@@ -177,7 +178,7 @@ class _SubscriptionStatusScreenState extends State<SubscriptionStatusScreen> {
                         limitMessage: sub.aiLimitMessage),
                     if (children.isNotEmpty) ...[
                       const SizedBox(height: 20),
-                      Text('Mes enfants', style: WinType.headlineS(s.onStrong)),
+                      Text(context.l10n.parentSubMyChildren, style: WinType.headlineS(s.onStrong)),
                       const SizedBox(height: 12),
                       ...children.map((child) => Padding(
                             padding: const EdgeInsets.only(bottom: 8),
@@ -196,20 +197,20 @@ class _SubscriptionStatusScreenState extends State<SubscriptionStatusScreen> {
                                       Text(
                                           child.level ??
                                               child.schoolName ??
-                                              'Élève',
+                                              context.l10n.roleStudent,
                                           style: WinType.labelM(s.onMuted)),
                                     ])),
-                                const WinBadge('Actif', color: BadgeColor.teal),
+                                WinBadge(context.l10n.commonActive, color: BadgeColor.teal),
                               ]),
                             ),
                           )),
                     ],
                     const SizedBox(height: 20),
-                    Text('Historique des paiements',
+                    Text(context.l10n.parentSubPaymentHistory,
                         style: WinType.headlineS(s.onStrong)),
                     const SizedBox(height: 12),
                     if (_paymentHistory.isEmpty)
-                      Text('Aucun paiement enregistré pour l\'instant.',
+                      Text(context.l10n.parentSubNoPayment,
                           style: WinType.bodyM(s.onMuted))
                     else
                       ..._paymentHistory.map((p) {
@@ -217,14 +218,14 @@ class _SubscriptionStatusScreenState extends State<SubscriptionStatusScreen> {
                             (p['status'] as String? ?? '').toLowerCase();
                         final (label, color) = switch (status) {
                           'complete' || 'completed' || 'succeeded' => (
-                              'Payé',
+                              context.l10n.parentSubPaid,
                               BadgeColor.success
                             ),
                           'failed' || 'expired' || 'cancelled' => (
-                              'Échoué',
+                              context.l10n.parentSubFailed,
                               BadgeColor.error
                             ),
-                          _ => ('En attente', BadgeColor.warn),
+                          _ => (context.l10n.commonPending, BadgeColor.warn),
                         };
                         final amount = ((p['amount'] ?? 0) as num).round();
                         final initiatedAt = DateTime.tryParse(
@@ -267,16 +268,16 @@ class _SubscriptionStatusScreenState extends State<SubscriptionStatusScreen> {
                     // prorata, descente à l'échéance), résiliation en fin de
                     // période, reprise, renouvellement automatique par le solde.
                     if (sub.pendingPlanName != null) ...[
-                      WinAlert('Passage à ${sub.pendingPlanName} programmé à l\'échéance.', type: BadgeColor.neutral),
+                      WinAlert(context.l10n.parentSubPendingSwitch(sub.pendingPlanName!), type: BadgeColor.neutral),
                       const SizedBox(height: 8),
-                      WinButton('Annuler ce changement', variant: WinButtonVariant.ghost, block: true, onTap: () async {
+                      WinButton(context.l10n.parentSubCancelChange, variant: WinButtonVariant.ghost, block: true, onTap: () async {
                         await SubscriptionService.instance.cancelPending();
                         _load();
                       }),
                       const SizedBox(height: 10),
                     ],
                     if (sub.hasPlan)
-                      WinButton('Renouveler maintenant',
+                      WinButton(context.l10n.parentSubRenewNow,
                           block: true,
                           icon: Icons.refresh,
                           onTap: () async {
@@ -285,7 +286,7 @@ class _SubscriptionStatusScreenState extends State<SubscriptionStatusScreen> {
                             _load();
                           }),
                     const SizedBox(height: 10),
-                    WinButton(sub.hasPlan ? 'Changer de plan' : 'Voir les plans',
+                    WinButton(sub.hasPlan ? context.l10n.parentSubChangePlan : context.l10n.studentCoachSeePlans,
                         variant: WinButtonVariant.outline,
                         block: true,
                         onTap: () async {
@@ -295,14 +296,14 @@ class _SubscriptionStatusScreenState extends State<SubscriptionStatusScreen> {
                     if (sub.hasPlan) ...[
                       const SizedBox(height: 10),
                       if (!sub.cancelAtPeriodEnd)
-                        WinButton(sub.autoRenew ? 'Désactiver le renouvellement automatique' : 'Renouveler automatiquement avec mon solde',
+                        WinButton(sub.autoRenew ? context.l10n.parentSubDisableAutoRenew : context.l10n.parentSubEnableAutoRenew,
                             variant: WinButtonVariant.ghost,
                             block: true,
                             onTap: () async {
                               await SubscriptionService.instance.setAutoRenew(!sub.autoRenew);
                               _load();
                             }),
-                      WinButton(sub.cancelAtPeriodEnd ? 'Reprendre l\'abonnement' : 'Résilier',
+                      WinButton(sub.cancelAtPeriodEnd ? context.l10n.parentSubResume : context.l10n.parentSubCancel,
                           variant: WinButtonVariant.ghost,
                           block: true,
                           onTap: () async {
@@ -312,13 +313,13 @@ class _SubscriptionStatusScreenState extends State<SubscriptionStatusScreen> {
                               final ok = await showDialog<bool>(
                                 context: context,
                                 builder: (ctx) => AlertDialog(
-                                  title: const Text('Résilier ?'),
+                                  title: Text(ctx.l10n.parentSubCancelConfirmTitle),
                                   content: Text(sub.expiresAt == null
-                                      ? 'Vous repasserez sur l\'offre gratuite.'
-                                      : 'Vous gardez l\'accès jusqu\'au ${_fmtDate(sub.expiresAt!)}, sans remboursement de la période en cours.'),
+                                      ? ctx.l10n.parentSubBackToFree
+                                      : ctx.l10n.parentSubKeepAccessUntil(_fmtDate(sub.expiresAt!))),
                                   actions: [
-                                    TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Annuler')),
-                                    TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Résilier')),
+                                    TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(ctx.l10n.commonCancel)),
+                                    TextButton(onPressed: () => Navigator.pop(ctx, true), child: Text(ctx.l10n.parentSubCancel)),
                                   ],
                                 ),
                               );
@@ -353,8 +354,8 @@ class _AiUsageRow extends StatelessWidget {
     final text = label.isNotEmpty
         ? label
         : (multiplier <= 1
-            ? 'Usage WinAI du plan gratuit'
-            : "${multiplier}x plus d'usage WinAI que le plan gratuit");
+            ? context.l10n.parentSubAiFree
+            : context.l10n.parentSubAiMultiplier(multiplier));
     return WinCard(
       padding: const EdgeInsets.all(12),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -364,7 +365,7 @@ class _AiUsageRow extends StatelessWidget {
           Expanded(child: Text(text, style: WinType.titleM(s.onStrong))),
           // 8.10 : plus de plafond mensuel ; limite de session ou de semaine.
           if (exhausted)
-            Text('Limite atteinte',
+            Text(context.l10n.parentSubLimitReached,
                 style: WinType.labelM(WinColors.error)
                     .copyWith(fontWeight: FontWeight.w700)),
         ]),
@@ -400,7 +401,7 @@ class _UsageRow extends StatelessWidget {
           const SizedBox(width: 8),
           Text(label, style: WinType.titleM(s.onStrong)),
           const Spacer(),
-          Text(unlimited ? 'Illimité' : '$used/$limit',
+          Text(unlimited ? context.l10n.teacherProfileUnlimited : '$used/$limit',
               style: WinType.labelM(unlimited ? WinColors.success : s.onMuted)
                   .copyWith(fontWeight: FontWeight.w700)),
         ]),

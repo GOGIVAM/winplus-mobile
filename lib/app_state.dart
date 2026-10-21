@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'l10n/l10n.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'data/models.dart';
 import 'services/session_manager.dart';
 import 'services/user_service.dart';
 
-const _kLocaleKey = 'winplus_locale';
+/// Clé de la langue choisie sur l'appareil (conservée à la déconnexion).
+const kLocalePrefKey = 'winplus_locale';
 
 /// WINPLUS  État global léger (thème + rôle actif + langue).
 /// Pour une app de production, remplacer par Riverpod / Provider / Bloc.
@@ -33,29 +35,52 @@ class WinAppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Restaure la langue choisie précédemment (appelé une fois au démarrage).
+  /// Lot 10.11 : langue au démarrage. Choix enregistré sur l'appareil,
+  /// sinon langue du téléphone (anglais si le téléphone est en anglais,
+  /// français sinon). Une fois connecté, [applyAccountLocale] aligne
+  /// l'application sur User.Locale.
   Future<void> loadLocale() async {
     final prefs = await SharedPreferences.getInstance();
-    final code = prefs.getString(_kLocaleKey);
-    if (code != null && (code == 'fr' || code == 'en')) {
-      _locale = Locale(code);
-      notifyListeners();
+    final code = prefs.getString(kLocalePrefKey);
+    final device =
+        WidgetsBinding.instance.platformDispatcher.locale.languageCode;
+    _apply(
+        code == 'fr' || code == 'en' ? code! : (device == 'en' ? 'en' : 'fr'));
+  }
+
+  /// Applique la langue du compte (User.Locale) après connexion ou au
+  /// démarrage d'une session existante. Si le compte n'a pas encore de
+  /// langue, on lui enregistre celle de l'application.
+  Future<void> applyAccountLocale(String? accountLocale) async {
+    if (accountLocale == 'fr' || accountLocale == 'en') {
+      _apply(accountLocale!);
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(kLocalePrefKey, accountLocale);
+    } else {
+      unawaited(
+          UserService.instance.updateProfile(locale: _locale.languageCode));
     }
   }
 
   /// Change la langue de l'app, la persiste localement (SharedPreferences)
   /// et, si l'utilisateur est connecté, la synchronise sur son profil
-  /// (User.Locale) afin qu'elle pilote aussi les emails transactionnels et
-  /// suive l'utilisateur d'un appareil à l'autre.
+  /// (User.Locale) afin qu'elle pilote aussi les emails transactionnels,
+  /// les notifications et WinAI, et suive l'utilisateur d'un appareil à
+  /// l'autre.
   Future<void> setLocale(String code) async {
     if (code != 'fr' && code != 'en') return;
-    _locale = Locale(code);
-    notifyListeners();
+    _apply(code);
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_kLocaleKey, code);
+    await prefs.setString(kLocalePrefKey, code);
     if (await SessionManager.isLoggedIn()) {
       unawaited(UserService.instance.updateProfile(locale: code));
     }
+  }
+
+  void _apply(String code) {
+    _locale = Locale(code);
+    L10n.locale = _locale;
+    notifyListeners();
   }
 }
 

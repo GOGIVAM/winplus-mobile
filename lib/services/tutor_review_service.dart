@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 
 import 'api_client.dart';
+import '../l10n/l10n.dart';
 
 /// Avis élève sur une séance de répétition terminée (Module 6  avis
 /// répétiteurs, professeur_complete.md).
@@ -64,7 +65,7 @@ class TutorReviewService {
       final data = e.response?.data as Map<String, dynamic>?;
       throw Exception(data?['error'] as String? ??
           data?['message'] as String? ??
-          'Impossible d\'envoyer l\'avis.');
+          L10n.current.svcReviewSendFailed);
     }
   }
 
@@ -78,7 +79,7 @@ class TutorReviewService {
       final data = e.response?.data as Map<String, dynamic>?;
       throw Exception(data?['error'] as String? ??
           data?['message'] as String? ??
-          'Impossible d\'envoyer la réponse.');
+          L10n.current.svcReplySendFailed);
     }
   }
 

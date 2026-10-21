@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
 import '../theme/win_motion.dart';
 import '../services/quiz_mistakes_service.dart';
 import '../theme/win_colors.dart';
@@ -56,10 +57,10 @@ class _QuizRevisionScreenState extends State<QuizRevisionScreen> {
 
   String _relTime(DateTime dt) {
     final d = DateTime.now().difference(dt);
-    if (d.inMinutes < 60) return 'il y a ${d.inMinutes}min';
-    if (d.inHours < 24) return 'il y a ${d.inHours}h';
-    if (d.inDays == 1) return 'hier';
-    return 'il y a ${d.inDays}j';
+    if (d.inMinutes < 60) return context.l10n.studentRevisionMinutesAgo(d.inMinutes);
+    if (d.inHours < 24) return context.l10n.studentRevisionHoursAgo(d.inHours);
+    if (d.inDays == 1) return context.l10n.studentRevisionYesterday;
+    return context.l10n.studentRevisionDaysAgo(d.inDays);
   }
 
   Future<void> _resolve(ApiQuizMistake m) async {
@@ -85,14 +86,14 @@ class _QuizRevisionScreenState extends State<QuizRevisionScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Quiz de révision', style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.studentHubRevisionQuiz, style: WinType.headlineS(s.onStrong)),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
-            child: Text('Questions que tu as ratées récemment',
+            child: Text(context.l10n.studentRevisionSubtitle,
                 style: WinType.bodyM(s.onMuted)),
           ),
           if (filters.length > 1)
@@ -104,7 +105,8 @@ class _QuizRevisionScreenState extends State<QuizRevisionScreen> {
                 children: filters
                     .map((f) => Padding(
                           padding: const EdgeInsets.only(right: 8),
-                          child: WinChip(f,
+                          child: WinChip(
+                              f == 'Toutes' ? context.l10n.studentRevisionAll : f,
                               active: _filter == f,
                               onTap: () {
                                 setState(() => _filter = f);
@@ -120,12 +122,12 @@ class _QuizRevisionScreenState extends State<QuizRevisionScreen> {
                 ? const Center(child: CircularProgressIndicator())
                 : _error
                     ? Center(
-                        child: Text('Impossible de charger tes erreurs.',
+                        child: Text(context.l10n.studentRevisionLoadError,
                             style: WinType.bodyM(s.onMuted)))
                     : items.isEmpty
                         ? Center(
                             child: Text(
-                              'Aucune question à réviser !\nTu maîtrises tout.',
+                              context.l10n.studentRevisionEmpty,
                               style: WinType.bodyM(s.onMuted),
                               textAlign: TextAlign.center,
                             ),
@@ -144,7 +146,7 @@ class _QuizRevisionScreenState extends State<QuizRevisionScreen> {
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
             child: WinButton(
-              'Revoir le catalogue',
+              context.l10n.studentRevisionBackToCatalog,
               icon: Icons.play_arrow_rounded,
               block: true,
               onTap: () => Navigator.push(
@@ -215,7 +217,7 @@ class _MistakeCard extends StatelessWidget {
         const SizedBox(height: 10),
         Align(
           alignment: Alignment.centerRight,
-          child: WinButton('Maîtrisé', small: true, variant: WinButtonVariant.outline, onTap: onResolve),
+          child: WinButton(context.l10n.studentDetailTagMastered, small: true, variant: WinButtonVariant.outline, onTap: onResolve),
         ),
       ]),
     );

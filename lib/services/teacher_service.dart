@@ -1,4 +1,5 @@
 import 'api_client.dart';
+import '../l10n/l10n.dart';
 
 class ApiPublishedContent {
   final int id;
@@ -123,7 +124,7 @@ class ApiClassStudent {
 
   String get displayName {
     final n = [firstName, lastName].where((s) => s != null && s.isNotEmpty).join(' ');
-    return n.isNotEmpty ? n : (email ?? 'Élève');
+    return n.isNotEmpty ? n : (email ?? L10n.current.roleStudent);
   }
 
   factory ApiClassStudent.fromJson(Map<String, dynamic> j) => ApiClassStudent(

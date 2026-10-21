@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
@@ -25,6 +26,23 @@ class _StudentReportsScreenState extends State<StudentReportsScreen> {
   static const _weeklyScores = [65, 70, 72, 69, 74, 76, 78];
   static const _quizTotal = 47;
   static const _quizSuccessRate = 74;
+
+  // Libellés affichés ; les valeurs internes restent celles d'origine.
+  String _periodLabel(String p) => switch (p) {
+        '7 jours' => context.l10n.studentReportsPeriod7,
+        '30 jours' => context.l10n.studentReportsPeriod30,
+        '90 jours' => context.l10n.studentReportsPeriod90,
+        '1 an' => context.l10n.studentHistPeriod1y,
+        _ => p,
+      };
+
+  String _subjectLabel(String k) => switch (k) {
+        'Maths' => context.l10n.dataSubjectMathShort,
+        'Physique' => context.l10n.dataSubjectPhysics,
+        'Chimie' => context.l10n.dataSubjectChemistry,
+        'Français' => context.l10n.dataSubjectFrench,
+        _ => k,
+      };
 
   Color _barColor(int score) {
     if (score >= 70) return WinColors.success;
@@ -57,7 +75,7 @@ class _StudentReportsScreenState extends State<StudentReportsScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Mes rapports', style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.studentReportsTitle, style: WinType.headlineS(s.onStrong)),
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
@@ -71,7 +89,7 @@ class _StudentReportsScreenState extends State<StudentReportsScreen> {
                   .map((p) => Padding(
                         padding: const EdgeInsets.only(right: 8),
                         child: WinChip(
-                          p,
+                          _periodLabel(p),
                           active: _period == p,
                           onTap: () => setState(() => _period = p),
                         ),
@@ -84,7 +102,7 @@ class _StudentReportsScreenState extends State<StudentReportsScreen> {
             Row(children: [
               Icon(Icons.lock_outline, size: 14, color: WinColors.warn),
               const SizedBox(width: 6),
-              Text('Plan Standard requis pour cette période',
+              Text(context.l10n.studentReportsPlanRequired,
                   style: WinType.labelM(WinColors.warn)),
             ]),
           ],
@@ -99,19 +117,19 @@ class _StudentReportsScreenState extends State<StudentReportsScreen> {
                 style: WinType.archivo(size: 48, color: _barColor(_avgScore)),
               ),
               const SizedBox(height: 4),
-              Text('Score moyen', style: WinType.labelM(s.onMuted)),
+              Text(context.l10n.studentReportsAvgScore, style: WinType.labelM(s.onMuted)),
             ]),
           ),
           const SizedBox(height: 24),
 
           // 3. Score par matière
-          WinSectionHeader('Score par matière'),
+          WinSectionHeader(context.l10n.studentReportsBySubject),
           ..._sortedScores.map((e) => Padding(
                 padding: const EdgeInsets.only(bottom: 12),
                 child: Row(children: [
                   SizedBox(
                     width: 72,
-                    child: Text(e.key,
+                    child: Text(_subjectLabel(e.key),
                         style: WinType.bodyM(s.onStrong)
                             .copyWith(fontWeight: FontWeight.w600)),
                   ),
@@ -133,7 +151,7 @@ class _StudentReportsScreenState extends State<StudentReportsScreen> {
           const SizedBox(height: 24),
 
           // 4. Progression hebdomadaire
-          WinSectionHeader('Progression hebdomadaire'),
+          WinSectionHeader(context.l10n.studentReportsWeekly),
           SizedBox(
             height: 110,
             child: Row(
@@ -157,7 +175,7 @@ class _StudentReportsScreenState extends State<StudentReportsScreen> {
                           ),
                         ),
                         const SizedBox(height: 4),
-                        Text('S${i + 1}', style: WinType.labelS(s.onMuted)),
+                        Text(context.l10n.studentReportsWeekShort(i + 1), style: WinType.labelS(s.onMuted)),
                       ],
                     ),
                   ),
@@ -168,7 +186,7 @@ class _StudentReportsScreenState extends State<StudentReportsScreen> {
           const SizedBox(height: 24),
 
           // 5. Quiz
-          WinSectionHeader('Quiz'),
+          WinSectionHeader(context.l10n.studentReportsQuiz),
           Row(children: [
             Expanded(
               child: WinCard(
@@ -179,7 +197,7 @@ class _StudentReportsScreenState extends State<StudentReportsScreen> {
                       Text('$_quizTotal',
                           style: WinType.archivo(size: 28, color: s.onStrong)),
                       const SizedBox(height: 4),
-                      Text('Quiz réalisés', style: WinType.labelM(s.onMuted)),
+                      Text(context.l10n.studentReportsQuizDone, style: WinType.labelM(s.onMuted)),
                     ]),
               ),
             ),
@@ -194,7 +212,7 @@ class _StudentReportsScreenState extends State<StudentReportsScreen> {
                           style: WinType.archivo(
                               size: 28, color: WinColors.success)),
                       const SizedBox(height: 4),
-                      Text('Taux de réussite',
+                      Text(context.l10n.studentReportsSuccessRate,
                           style: WinType.labelM(s.onMuted)),
                     ]),
               ),
@@ -208,7 +226,7 @@ class _StudentReportsScreenState extends State<StudentReportsScreen> {
               Row(children: [
                 const Icon(Icons.emoji_events, size: 16, color: WinColors.gold),
                 const SizedBox(width: 6),
-                Text('Meilleure matière : Maths',
+                Text(context.l10n.studentReportsBestSubject,
                     style: WinType.bodyM(s.onStrong)
                         .copyWith(fontWeight: FontWeight.w600)),
               ]),
@@ -217,7 +235,7 @@ class _StudentReportsScreenState extends State<StudentReportsScreen> {
                 const Icon(Icons.warning_amber_rounded,
                     size: 16, color: WinColors.warn),
                 const SizedBox(width: 6),
-                Text('À améliorer : Chimie', style: WinType.bodyM(s.onMuted)),
+                Text(context.l10n.studentReportsToImprove, style: WinType.bodyM(s.onMuted)),
               ]),
             ]),
           ),
@@ -225,13 +243,13 @@ class _StudentReportsScreenState extends State<StudentReportsScreen> {
 
           // 6. Export
           WinButton(
-            'Exporter PDF',
+            context.l10n.studentReportsExportPdf,
             icon: Icons.download_outlined,
             block: true,
             variant: WinButtonVariant.outline,
             onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Disponible avec le Plan Standard'),
+              SnackBar(
+                content: Text(context.l10n.studentReportsStandardOnly),
               ),
             ),
           ),

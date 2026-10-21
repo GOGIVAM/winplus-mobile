@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'api_client.dart';
+import '../l10n/l10n.dart';
 
 class ApiUserProfile {
   final int id;
@@ -308,7 +309,7 @@ class UserService {
   String _serverError(DioException e) {
     final data = e.response?.data;
     if (data is Map && data['error'] is String) return data['error'] as String;
-    return 'Une erreur est survenue. Réessaie.';
+    return L10n.current.svcGenericError;
   }
 }
 

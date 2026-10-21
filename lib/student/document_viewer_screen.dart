@@ -1,3 +1,4 @@
+import '../l10n/l10n.dart';
 import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -107,14 +108,14 @@ class _DocumentViewerScreenState extends State<DocumentViewerScreen> {
         _canRetry = status == null || status >= 500;
         _error = switch (status) {
           401 =>
-            'Votre session a expiré. Reconnectez-vous pour consulter ce document.',
+            L10n.current.studentViewerSessionExpired,
           403 =>
-            'Ce contenu n\'est pas inclus dans votre accès. Achetez-le ou abonnez-vous pour le consulter.',
+            L10n.current.studentViewerNoAccess,
           404 => widget.kind == ViewerDocumentKind.correction
-              ? 'Le corrigé de cette épreuve n\'est pas encore disponible.'
-              : 'Ce document n\'est pas disponible pour le moment.',
-          null => 'Connexion impossible. Vérifiez votre réseau puis réessayez.',
-          _ => 'Impossible de charger le document pour le moment.',
+              ? L10n.current.studentViewerNoCorrection
+              : L10n.current.studentViewerNoDocument,
+          null => L10n.current.studentViewerNoConnection,
+          _ => L10n.current.studentViewerLoadFailed,
         };
       });
     } catch (_) {
@@ -122,7 +123,7 @@ class _DocumentViewerScreenState extends State<DocumentViewerScreen> {
       setState(() {
         _loading = false;
         _canRetry = true;
-        _error = 'Impossible de charger le document pour le moment.';
+        _error = L10n.current.studentViewerLoadFailed;
       });
     }
   }
@@ -131,7 +132,7 @@ class _DocumentViewerScreenState extends State<DocumentViewerScreen> {
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
     final title = widget.kind == ViewerDocumentKind.correction
-        ? 'Corrigé · ${widget.title}'
+        ? context.l10n.studentViewerCorrectionTitle(widget.title)
         : widget.title;
 
     return Scaffold(
@@ -154,7 +155,7 @@ class _DocumentViewerScreenState extends State<DocumentViewerScreen> {
             ),
           Tooltip(
             message:
-                'Lecture seule : ni téléchargement, ni partage, ni impression',
+                context.l10n.studentViewerReadOnly,
             child: Padding(
               padding: const EdgeInsets.only(right: 14),
               child: Icon(Icons.lock_outline, size: 20, color: s.onMuted),
@@ -178,11 +179,11 @@ class _DocumentViewerScreenState extends State<DocumentViewerScreen> {
           child: Column(mainAxisSize: MainAxisSize.min, children: [
             Icon(Icons.picture_as_pdf_outlined, size: 56, color: s.onFaint),
             const SizedBox(height: 16),
-            Text(_error ?? 'Impossible de charger le document pour le moment.',
+            Text(_error ?? context.l10n.studentViewerLoadFailed,
                 style: WinType.bodyM(s.onMuted), textAlign: TextAlign.center),
             if (_canRetry) ...[
               const SizedBox(height: 16),
-              WinButton('Réessayer', icon: Icons.refresh, onTap: _load),
+              WinButton(context.l10n.commonRetry, icon: Icons.refresh, onTap: _load),
             ],
           ]),
         ),
@@ -238,10 +239,9 @@ class _PreviewBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    final p = pages > 1 ? 's' : '';
     final label = total != null
-        ? 'Aperçu : $pages page$p sur $total'
-        : 'Aperçu : $pages première$p page$p';
+        ? context.l10n.studentViewerPreviewOf(pages, total!)
+        : context.l10n.studentViewerPreviewFirst(pages);
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
@@ -254,18 +254,18 @@ class _PreviewBanner extends StatelessWidget {
           Expanded(child: Text(label, style: WinType.titleS(s.onStrong))),
         ]),
         const SizedBox(height: 4),
-        Text("La suite se débloque avec l'achat de ce contenu ou un abonnement qui inclut le catalogue.",
+        Text(context.l10n.studentViewerUnlockRest,
             style: WinType.bodyS(s.onMuted)),
         const SizedBox(height: 10),
         Row(children: [
           if (onPurchase != null) ...[
             Expanded(
-                child: WinButton('Ajouter au panier',
+                child: WinButton(context.l10n.studentViewerAddToCart,
                     icon: Icons.shopping_cart_outlined, onTap: onPurchase)),
             const SizedBox(width: 8),
           ],
           Expanded(
-              child: WinButton('Abonnements',
+              child: WinButton(context.l10n.studentViewerSubscriptions,
                   variant: WinButtonVariant.outline, onTap: onPlans)),
         ]),
       ]),

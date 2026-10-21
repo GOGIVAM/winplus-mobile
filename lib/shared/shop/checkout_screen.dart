@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../theme/win_motion.dart';
 import '../../data/models.dart' show fmtXaf;
+import '../../l10n/l10n.dart';
 import '../../services/cart_service.dart';
 import '../../services/order_service.dart';
 import '../../services/payment_service.dart';
@@ -75,7 +76,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     if (cart == null || cart.items.isEmpty) return;
     final phone = _normalizePhone(_phoneCtrl.text);
     if (phone.length < 9) {
-      setState(() => _submitError = 'Numéro de téléphone invalide.');
+      setState(() => _submitError = L10n.current.shopInvalidPhone);
       return;
     }
     setState(() {
@@ -116,7 +117,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       if (mounted)
         setState(() {
           _submitting = false;
-          _submitError = 'Erreur inattendue. Réessayez.';
+          _submitError = L10n.current.shopUnexpectedError;
         });
     }
   }
@@ -147,7 +148,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    final titles = ['Récapitulatif & paiement', 'Confirmation'];
+    final titles = [
+      context.l10n.shopCheckoutStepSummary,
+      context.l10n.shopCheckoutStepConfirm
+    ];
     return Scaffold(
       backgroundColor: s.bg,
       appBar: AppBar(
@@ -180,7 +184,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     if (cart == null || cart.items.isEmpty) {
       return Center(
           child:
-              Text('Votre panier est vide.', style: WinType.bodyM(s.onMuted)));
+              Text(context.l10n.shopCartEmpty, style: WinType.bodyM(s.onMuted)));
     }
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -188,7 +192,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         WinCard(
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('${cart.itemsCount} article${cart.itemsCount > 1 ? 's' : ''}',
+            Text(context.l10n.shopItemsCount(cart.itemsCount),
                 style: WinType.titleM(s.onStrong)),
             const SizedBox(height: 10),
             ...cart.items.map((i) => Padding(
@@ -206,7 +210,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             const WinDivider(),
             const SizedBox(height: 8),
             Row(children: [
-              Text('Total TTC', style: WinType.titleM(s.onStrong)),
+              Text(context.l10n.shopTotalTtc, style: WinType.titleM(s.onStrong)),
               const Spacer(),
               Text('${fmtXaf(cart.total.round())} XAF',
                   style: WinType.archivo(
@@ -215,7 +219,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           ]),
         ),
         const SizedBox(height: 20),
-        Text('Mode de paiement', style: WinType.labelM(s.onStrong)),
+        Text(context.l10n.shopPaymentMethod, style: WinType.labelM(s.onStrong)),
         const SizedBox(height: 10),
         Row(children: [
           Expanded(
@@ -236,7 +240,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         ]),
         const SizedBox(height: 16),
         WinTextField(
-            label: 'Numéro de téléphone',
+            label: context.l10n.shopPhoneNumber,
             hint: '6XX XXX XXX',
             icon: Icons.phone_outlined,
             controller: _phoneCtrl,
@@ -246,12 +250,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           WinErrorShake(child: WinAlert(_submitError!, type: BadgeColor.error)),
         ],
         const SizedBox(height: 24),
-        WinButton('Payer ${fmtXaf(cart.total.round())} XAF',
+        WinButton(context.l10n.shopPayAmount(fmtXaf(cart.total.round())),
             block: true,
             loading: _submitting,
             onTap: _submitting ? null : _submit),
         const SizedBox(height: 8),
-        Text('Vous recevrez une notification USSD pour valider.',
+        Text(context.l10n.shopUssdNotice,
             style: WinType.bodyS(s.onFaint), textAlign: TextAlign.center),
       ],
     );
@@ -273,16 +277,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           const WinPendingPulse(
               child: CircularProgressIndicator(strokeWidth: 3)),
           const SizedBox(height: 20),
-          Text('En attente de confirmation…',
+          Text(context.l10n.shopAwaitingConfirmation,
               style: WinType.titleM(s.onStrong), textAlign: TextAlign.center),
           const SizedBox(height: 8),
-          Text(
-              'Valide le paiement via le message USSD envoyé sur ton téléphone.',
+          Text(context.l10n.shopValidateUssd,
               style: WinType.bodyS(s.onMuted),
               textAlign: TextAlign.center),
           if (_intent?.notchpayReference != null) ...[
             const SizedBox(height: 12),
-            Text('Réf. : ${_intent!.notchpayReference}',
+            Text(context.l10n.shopReference(_intent!.notchpayReference ?? ''),
                 style: WinType.labelS(s.onFaint)),
           ],
         ]),
@@ -297,19 +300,18 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           Icon(Icons.hourglass_bottom_outlined, size: 48, color: s.onFaint),
           const SizedBox(height: 16),
-          Text('Toujours en attente',
+          Text(context.l10n.shopStillPending,
               style: WinType.titleM(s.onStrong), textAlign: TextAlign.center),
           const SizedBox(height: 8),
-          Text(
-              'Le paiement met plus de temps que prévu. Vous pouvez vérifier plus tard dans "Mes commandes".',
+          Text(context.l10n.shopSlowPayment,
               style: WinType.bodyS(s.onMuted),
               textAlign: TextAlign.center),
           const SizedBox(height: 20),
-          WinButton('Vérifier maintenant',
+          WinButton(context.l10n.shopCheckNow,
               variant: WinButtonVariant.outline,
               onTap: () => _startPolling(_intent!.paymentId)),
           const SizedBox(height: 10),
-          WinButton('Voir mes commandes',
+          WinButton(context.l10n.shopSeeMyOrders,
               variant: WinButtonVariant.ghost,
               onTap: () => Navigator.pushReplacement(
                   context, WinPageRoute(builder: (_) => const OrdersScreen()))),
@@ -327,13 +329,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               child: Icon(Icons.cancel_outlined,
                   size: 48, color: WinColors.error)),
           const SizedBox(height: 16),
-          Text('Paiement échoué',
+          Text(context.l10n.shopPaymentFailed,
               style: WinType.titleM(s.onStrong), textAlign: TextAlign.center),
           const SizedBox(height: 8),
-          Text(_status?.message ?? 'Le paiement n\'a pas pu être confirmé.',
+          Text(_status?.message ?? context.l10n.shopPaymentNotConfirmed,
               style: WinType.bodyS(s.onMuted), textAlign: TextAlign.center),
           const SizedBox(height: 20),
-          WinButton('Réessayer',
+          WinButton(context.l10n.commonRetry,
               onTap: () => setState(() {
                     _step = 0;
                     _order = null;
@@ -355,7 +357,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         WinStaggerFade(
           index: 0,
           child: Center(
-            child: Text('Paiement confirmé !',
+            child: Text(context.l10n.shopPaymentConfirmed,
                 style: WinType.archivo(size: 20, color: s.onStrong),
                 textAlign: TextAlign.center),
           ),
@@ -364,7 +366,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         WinStaggerFade(
           index: 1,
           child: Center(
-            child: Text('Vos contenus sont maintenant disponibles.',
+            child: Text(context.l10n.shopContentAvailable,
                 style: WinType.bodyS(s.onMuted), textAlign: TextAlign.center),
           ),
         ),
@@ -378,13 +380,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     children: [
                   _RecapRow(
                       icon: Icons.receipt_long_outlined,
-                      label: 'Commande',
+                      label: context.l10n.shopOrder,
                       value: _order!.orderNumber),
                   const SizedBox(height: 10),
                   Row(children: [
                     Icon(Icons.payments_outlined, size: 18, color: s.onFaint),
                     const SizedBox(width: 10),
-                    Text('Montant', style: WinType.bodyS(s.onMuted)),
+                    Text(context.l10n.shopAmount, style: WinType.bodyS(s.onMuted)),
                     const Spacer(),
                     WinAnimatedCounter(
                       value: _order!.totalAmount.round(),
@@ -398,7 +400,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         const SizedBox(height: 24),
         WinStaggerFade(
           index: 3,
-          child: WinButton('Voir mes commandes',
+          child: WinButton(context.l10n.shopSeeMyOrders,
               block: true,
               onTap: () => Navigator.pushReplacement(
                   context, WinPageRoute(builder: (_) => const OrdersScreen()))),
@@ -406,7 +408,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         const SizedBox(height: 10),
         WinStaggerFade(
           index: 4,
-          child: WinButton('Retour au catalogue',
+          child: WinButton(context.l10n.shopBackToCatalog,
               variant: WinButtonVariant.outline,
               block: true,
               onTap: () => Navigator.of(context).popUntil((r) => r.isFirst)),

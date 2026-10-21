@@ -5,6 +5,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import '../l10n/l10n.dart';
 
 /// Plan d'action hebdomadaire WinAI de l'établissement.
 ///
@@ -52,14 +53,14 @@ class _ActionPlanScreenState extends State<ActionPlanScreen> {
       setState(() {
         _loading = false;
         _error = code == 403
-            ? 'Votre compte n\'a pas accès au plan d\'action de l\'établissement.'
-            : 'Le plan d\'action WinAI est indisponible pour le moment.';
+            ? L10n.current.instPlanForbidden
+            : L10n.current.instPlanUnavailable;
       });
     } catch (_) {
       if (!mounted) return;
       setState(() {
         _loading = false;
-        _error = 'Le plan d\'action WinAI est indisponible pour le moment.';
+        _error = L10n.current.instPlanUnavailable;
       });
     }
   }
@@ -89,7 +90,7 @@ class _ActionPlanScreenState extends State<ActionPlanScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title:
-            Text('Plan d\'action WinAI', style: WinType.headlineS(s.onStrong)),
+            Text(context.l10n.instPlanTitle, style: WinType.headlineS(s.onStrong)),
       ),
       body: RefreshIndicator(
         onRefresh: _load,
@@ -118,7 +119,7 @@ class _ActionPlanScreenState extends State<ActionPlanScreen> {
       return [
         WinAlert(_error!, type: BadgeColor.error, icon: Icons.error_outline),
         const SizedBox(height: 16),
-        WinButton('Réessayer',
+        WinButton(context.l10n.commonRetry,
             icon: Icons.refresh,
             variant: WinButtonVariant.outline,
             onTap: _load),
@@ -131,7 +132,7 @@ class _ActionPlanScreenState extends State<ActionPlanScreen> {
       return [
         WinAlert(
           plan.message ??
-              'WinAI n\'a proposé aucune action pour cette semaine.',
+              context.l10n.instPlanEmpty,
           type: BadgeColor.neutral,
           icon: Icons.info_outline,
         ),
@@ -141,12 +142,12 @@ class _ActionPlanScreenState extends State<ActionPlanScreen> {
     final total = actions.length;
     final doneCount = _done.length;
     final summary = StringBuffer(
-        'WinAI a analysé ${plan.studentCount} élève${plan.studentCount > 1 ? 's' : ''}');
+        context.l10n.instPlanSummaryStudents(plan.studentCount));
     if (plan.atRiskCount > 0) {
-      summary.write(', dont ${plan.atRiskCount} en zone critique');
+      summary.write(context.l10n.instPlanSummaryAtRisk(plan.atRiskCount));
     }
     summary.write(
-        ', et recommande $total action${total > 1 ? 's' : ''} prioritaire${total > 1 ? 's' : ''}.');
+        context.l10n.instPlanSummaryActions(total));
 
     return [
       if (plan.weekLabel != null) ...[
@@ -165,7 +166,7 @@ class _ActionPlanScreenState extends State<ActionPlanScreen> {
         Text('$doneCount/$total', style: WinType.titleM(s.onStrong)),
       ]),
       const SizedBox(height: 4),
-      Text('actions réalisées', style: WinType.labelM(s.onMuted)),
+      Text(context.l10n.instPlanActionsDone, style: WinType.labelM(s.onMuted)),
       const SizedBox(height: 20),
       ...actions.asMap().entries.map((e) {
         final i = e.key;
@@ -200,7 +201,7 @@ class _ActionPlanScreenState extends State<ActionPlanScreen> {
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                    Text('Priorité ${a.priority > 0 ? a.priority : i + 1}',
+                    Text(context.l10n.instPlanPriority(a.priority > 0 ? a.priority : i + 1),
                         style: WinType.titleM(s.onStrong)),
                     if (a.effort.isNotEmpty)
                       Text(a.effort,
@@ -210,12 +211,12 @@ class _ActionPlanScreenState extends State<ActionPlanScreen> {
                     Text(a.action, style: WinType.bodyS(s.onMuted)),
                     if (a.estimatedImpact.isNotEmpty) ...[
                       const SizedBox(height: 4),
-                      Text('Impact attendu : ${a.estimatedImpact}',
+                      Text(context.l10n.instPlanImpact(a.estimatedImpact),
                           style: WinType.bodyS(s.onMuted)),
                     ],
                     const SizedBox(height: 10),
                     if (!isDone)
-                      WinButton('Marquer comme fait',
+                      WinButton(context.l10n.instPlanMarkDone,
                           small: true,
                           variant: WinButtonVariant.outline,
                           icon: Icons.check,
@@ -225,7 +226,7 @@ class _ActionPlanScreenState extends State<ActionPlanScreen> {
                         const Icon(Icons.check_circle,
                             size: 16, color: WinColors.success),
                         const SizedBox(width: 6),
-                        Text('Réalisé',
+                        Text(context.l10n.instPlanDone,
                             style: WinType.labelM(WinColors.success)
                                 .copyWith(fontWeight: FontWeight.w600)),
                       ]),

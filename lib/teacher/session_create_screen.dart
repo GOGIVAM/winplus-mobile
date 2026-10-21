@@ -4,6 +4,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import '../l10n/l10n.dart';
 
 class SessionCreateScreen extends StatefulWidget {
   const SessionCreateScreen({super.key});
@@ -38,7 +39,7 @@ class _SessionCreateScreenState extends State<SessionCreateScreen> {
     } else {
       setState(() => _loading = false);
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Erreur lors de la création.')));
+          SnackBar(content: Text(L10n.current.teacherSessionCreateError)));
     }
   }
 
@@ -55,7 +56,7 @@ class _SessionCreateScreenState extends State<SessionCreateScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Créer une session', style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.teacherSessionCreateTitle, style: WinType.headlineS(s.onStrong)),
       ),
       body: _done
           ? Center(
@@ -65,13 +66,13 @@ class _SessionCreateScreenState extends State<SessionCreateScreen> {
                 const Icon(Icons.video_call_outlined,
                     size: 64, color: WinColors.success),
                 const SizedBox(height: 16),
-                Text('Session créée !', style: WinType.displayS(s.onStrong)),
+                Text(context.l10n.teacherSessionCreated, style: WinType.displayS(s.onStrong)),
                 const SizedBox(height: 8),
-                Text('Les étudiants inscrits recevront une notification.',
+                Text(context.l10n.teacherSessionCreatedHint,
                     style: WinType.bodyM(s.onMuted),
                     textAlign: TextAlign.center),
                 const SizedBox(height: 28),
-                WinButton('Retour',
+                WinButton(context.l10n.commonBack,
                     block: true,
                     variant: WinButtonVariant.outline,
                     onTap: () => Navigator.pop(context)),
@@ -83,24 +84,24 @@ class _SessionCreateScreenState extends State<SessionCreateScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     WinTextField(
-                        label: 'Titre de la session *',
-                        hint: 'Révision Dérivées  BAC C',
+                        label: context.l10n.teacherSessionTitleLabel,
+                        hint: context.l10n.teacherSessionTitleHint,
                         icon: Icons.title,
                         controller: _titleCtrl),
                     const SizedBox(height: 16),
                     WinTextField(
-                        label: 'Date et heure',
-                        hint: '25 août 2026 à 14h00',
+                        label: context.l10n.teacherSessionDateLabel,
+                        hint: context.l10n.teacherSessionDateHint,
                         icon: Icons.calendar_today_outlined,
                         controller: _dateCtrl),
                     const SizedBox(height: 16),
                     WinTextField(
-                        label: 'Lien de la session (Zoom, Meet…)',
+                        label: context.l10n.teacherSessionLinkLabel,
                         hint: 'https://meet.google.com/…',
                         icon: Icons.link,
                         controller: _linkCtrl),
                     const SizedBox(height: 24),
-                    Text('Durée : $_duration minutes',
+                    Text(context.l10n.teacherSessionDuration(_duration),
                         style: WinType.titleM(s.onStrong)),
                     Slider(
                       value: _duration.toDouble(),
@@ -114,11 +115,11 @@ class _SessionCreateScreenState extends State<SessionCreateScreen> {
                     Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('30 min', style: WinType.labelM(s.onFaint)),
-                          Text('3h', style: WinType.labelM(s.onFaint)),
+                          Text(context.l10n.teacherSession30Min, style: WinType.labelM(s.onFaint)),
+                          Text(context.l10n.teacherSession3h, style: WinType.labelM(s.onFaint)),
                         ]),
                     const SizedBox(height: 16),
-                    Text('Max étudiants : $_maxStudents',
+                    Text(context.l10n.teacherSessionMaxStudents(_maxStudents),
                         style: WinType.titleM(s.onStrong)),
                     Slider(
                       value: _maxStudents.toDouble(),
@@ -131,7 +132,7 @@ class _SessionCreateScreenState extends State<SessionCreateScreen> {
                           setState(() => _maxStudents = v.round()),
                     ),
                     const SizedBox(height: 32),
-                    WinButton('Créer la session',
+                    WinButton(context.l10n.teacherSessionCreateButton,
                         block: true,
                         loading: _loading,
                         icon: Icons.video_call_outlined,

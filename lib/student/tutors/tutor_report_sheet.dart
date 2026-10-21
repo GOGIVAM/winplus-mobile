@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../l10n/l10n.dart';
 import '../../services/tutor_verification_service.dart';
 import '../../theme/win_colors.dart';
 import '../../theme/win_theme.dart';
@@ -51,11 +52,11 @@ class _TutorReportSheetState extends State<_TutorReportSheet> {
 
   Future<void> _send() async {
     if (_reason == null) {
-      setState(() => _error = 'Choisis un motif.');
+      setState(() => _error = context.l10n.tutoringReportChooseReason);
       return;
     }
     if (_reason == 'other' && _descCtrl.text.trim().length < 10) {
-      setState(() => _error = 'Décris ce qui s\'est passé (10 caractères au moins).');
+      setState(() => _error = context.l10n.tutoringReportDescribe);
       return;
     }
     setState(() {
@@ -88,17 +89,16 @@ class _TutorReportSheetState extends State<_TutorReportSheet> {
         ),
         child: SingleChildScrollView(
           child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('Signaler ${widget.tutorName ?? 'le tuteur'}', style: WinType.archivo(size: 18, color: s.onStrong)),
+            Text(context.l10n.tutoringReportName(widget.tutorName ?? context.l10n.tutoringTheTutor), style: WinType.archivo(size: 18, color: s.onStrong)),
             const SizedBox(height: 6),
             Text(
-                "Ton signalement est transmis à l'équipe WinPlus, qui l'examine. Le tuteur ne voit pas qui l'a signalé. "
-                'Pour un remboursement, utilise plutôt « Contester la séance ».',
+                context.l10n.tutoringReportIntro,
                 style: WinType.bodyS(s.onMuted)),
             const SizedBox(height: 14),
             DropdownButtonFormField<String>(
               initialValue: _reason,
               isExpanded: true,
-              decoration: const InputDecoration(labelText: 'Motif', border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: context.l10n.tutoringReportReason, border: const OutlineInputBorder()),
               items: _reasons.map((r) => DropdownMenuItem(value: r.code, child: Text(r.label))).toList(),
               onChanged: _sending ? null : (v) => setState(() => _reason = v),
             ),
@@ -108,8 +108,8 @@ class _TutorReportSheetState extends State<_TutorReportSheet> {
               maxLines: 4,
               maxLength: 1000,
               decoration: InputDecoration(
-                labelText: _reason == 'other' ? 'Description' : 'Description (facultative)',
-                hintText: "Ce qui s'est passé, quand, comment.",
+                labelText: _reason == 'other' ? context.l10n.commonDescription : context.l10n.tutoringReportDescriptionOptional,
+                hintText: context.l10n.tutoringReportPlaceholder,
                 border: const OutlineInputBorder(),
               ),
             ),
@@ -118,7 +118,7 @@ class _TutorReportSheetState extends State<_TutorReportSheet> {
               WinAlert(_error!, type: BadgeColor.error),
             ],
             const SizedBox(height: 12),
-            WinButton('Envoyer le signalement',
+            WinButton(context.l10n.tutoringReportSubmit,
                 block: true, variant: WinButtonVariant.danger, loading: _sending, onTap: _sending ? null : _send),
           ]),
         ),

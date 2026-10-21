@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
 import '../theme/win_motion.dart';
 import '../services/cart_service.dart';
 import '../services/course_service.dart';
@@ -72,7 +73,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
       if (mounted) {
         setState(() {
           _loading = false;
-          _error = 'Formation introuvable.';
+          _error = L10n.current.studentCourseNotFound;
         });
       }
     }
@@ -99,7 +100,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
         });
     } catch (e) {
       if (mounted) {
-        setState(() => _reviewError = 'Erreur lors de la soumission.');
+        setState(() => _reviewError = L10n.current.studentCourseReviewSubmitError);
       }
     } finally {
       if (mounted) {
@@ -126,7 +127,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
         setState(() {
           _error = e is CourseActionRefused
               ? e.message
-              : 'Erreur lors de l\'inscription.';
+              : L10n.current.studentCourseEnrolError;
           _enrolling = false;
         });
     }
@@ -161,8 +162,8 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
         _buying = false;
       });
       if (payError == null) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Formation achetée : elle est dans « Mes formations ».')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(L10n.current.studentCoursePurchased)));
       }
       _load();
       return;
@@ -183,7 +184,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
     }
     if (!mounted) return;
     if (children.isEmpty) {
-      setState(() => _error = 'Aucun enfant n\'est rattaché à votre compte.');
+      setState(() => _error = L10n.current.studentCourseNoChild);
       return;
     }
     final s = WinTheme.of(context);
@@ -195,7 +196,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
           Padding(
             padding: const EdgeInsets.all(16),
             child: Text(
-                'Offrir « ${c.title} » (${c.price.toInt()} XAF TTC, débité du portefeuille)',
+                L10n.current.studentCourseOfferTitle(c.title, c.price.toInt()),
                 style: WinType.titleM(s.onStrong)),
           ),
           ...children.map((ch) => ListTile(
@@ -219,7 +220,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
     });
     if (err == null) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Formation offerte à ${child.firstName} : accès ouvert.')));
+          content: Text(L10n.current.studentCourseOffered(child.firstName))));
     }
   }
 
@@ -237,15 +238,14 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Acheter la formation', style: WinType.headlineS(s.onStrong)),
+                Text(context.l10n.studentCourseBuy, style: WinType.headlineS(s.onStrong)),
                 const SizedBox(height: 6),
                 Text(
-                    '${c.price.toInt()} XAF TTC (TVA 19,25 % incluse). '
-                    'Formation vendue seule, accès à vie dès la confirmation du paiement.',
+                    context.l10n.studentCourseBuyNote(c.price.toInt()),
                     style: WinType.bodyS(s.onMuted)),
                 const SizedBox(height: 16),
                 WinButton(
-                  'Payer par Mobile Money',
+                  context.l10n.studentCoursePayMomo,
                   block: true,
                   icon: Icons.phone_android,
                   onTap: () {
@@ -256,7 +256,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                 if (_isTeacher) ...[
                   const SizedBox(height: 10),
                   WinButton(
-                    'Payer avec mon solde WinPlus',
+                    context.l10n.studentCoursePayBalance,
                     block: true,
                     variant: WinButtonVariant.secondary,
                     icon: Icons.account_balance_wallet_outlined,
@@ -287,7 +287,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
             foregroundColor: s.onStrong,
             elevation: 0),
         body: Center(
-            child: Text(_error ?? 'Erreur', style: WinType.bodyM(s.onMuted))),
+            child: Text(_error ?? context.l10n.studentCourseError, style: WinType.bodyM(s.onMuted))),
       );
 
     final c = _course!;
@@ -347,7 +347,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
             Row(children: [
               Icon(Icons.people_outline, size: 15, color: s.onMuted),
               const SizedBox(width: 4),
-              Text('${c.enrolledCount} inscrits',
+              Text(context.l10n.studentCourseEnrolled(c.enrolledCount),
                   style: WinType.labelM(s.onMuted)),
               const SizedBox(width: 12),
               Icon(Icons.schedule_outlined, size: 15, color: s.onMuted),
@@ -356,7 +356,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
               const SizedBox(width: 12),
               Icon(Icons.play_circle_outline, size: 15, color: s.onMuted),
               const SizedBox(width: 4),
-              Text('$totalLessons leçons', style: WinType.labelM(s.onMuted)),
+              Text(context.l10n.studentCourseLessons(totalLessons), style: WinType.labelM(s.onMuted)),
             ]),
 
             if (c.avgRating > 0) ...[
@@ -373,7 +373,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                         )),
                 const SizedBox(width: 6),
                 Text(
-                    '${c.avgRating.toStringAsFixed(1)} (${c.reviewsCount} avis)',
+                    context.l10n.studentDetailRatingCount(c.avgRating.toStringAsFixed(1), c.reviewsCount),
                     style: WinType.labelM(s.onMuted)),
               ]),
             ],
@@ -389,19 +389,19 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                   // jamais incluse dans un abonnement (18.16).
                   Row(children: [
                     Text(
-                      c.isPaid ? '${c.price.toInt()} XAF' : 'Gratuit',
+                      c.isPaid ? '${c.price.toInt()} XAF' : context.l10n.commonFree,
                       style: WinType.archivo(
                           size: 22,
                           color: c.isPaid ? s.onStrong : WinColors.teal600),
                     ),
                     if (c.isPaid && (c.isPurchased || c.isEnrolled)) ...[
                       const SizedBox(width: 8),
-                      const WinBadge('Achetée'),
+                      WinBadge(context.l10n.studentCoursePurchasedBadge),
                     ],
                   ]),
                   if (c.isPaid) ...[
                     const SizedBox(height: 2),
-                    Text('TTC, TVA 19,25 % incluse · hors abonnement',
+                    Text(context.l10n.studentCourseVatNote,
                         style: WinType.labelS(s.onMuted)),
                   ],
                   if (_error != null) ...[
@@ -411,7 +411,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                   const SizedBox(height: 12),
                   if (c.isEnrolled)
                     WinButton(
-                      'Continuer la formation',
+                      context.l10n.studentCourseContinue,
                       block: true,
                       icon: Icons.play_arrow,
                       onTap: () => Navigator.push(
@@ -422,13 +422,13 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                           )),
                     )
                   else if (c.isOwner)
-                    const WinButton('Votre formation',
+                    WinButton(context.l10n.studentCourseYours,
                         block: true, variant: WinButtonVariant.outline)
                   else if (c.isPurchased)
                     // Achetée, accès pas encore ouvert (paiement tout juste
                     // confirmé) : le serveur rattache l'inscription à l'achat.
                     WinButton(
-                      'Achetée : commencer',
+                      context.l10n.studentCoursePurchasedStart,
                       block: true,
                       loading: _enrolling,
                       icon: Icons.check_circle_outline,
@@ -436,7 +436,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                     )
                   else if (c.isPaid && _isParent)
                     WinButton(
-                      'Offrir à mon enfant',
+                      context.l10n.studentCourseOfferChild,
                       block: true,
                       loading: _buying,
                       icon: Icons.card_giftcard_outlined,
@@ -444,7 +444,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                     )
                   else if (c.isPaid)
                     WinButton(
-                      'Acheter la formation',
+                      context.l10n.studentCourseBuy,
                       block: true,
                       loading: _buying,
                       icon: Icons.shopping_bag_outlined,
@@ -452,7 +452,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                     )
                   else
                     WinButton(
-                      'Commencer gratuitement',
+                      context.l10n.studentCourseStartFree,
                       block: true,
                       loading: _enrolling,
                       icon: Icons.school_outlined,
@@ -464,7 +464,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                       Icon(Icons.workspace_premium_outlined,
                           size: 14, color: s.onMuted),
                       const SizedBox(width: 6),
-                      Text('Certificat de réussite inclus',
+                      Text(context.l10n.studentCourseCertIncluded,
                           style: WinType.labelM(s.onMuted)),
                     ]),
                   ],
@@ -473,7 +473,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
             // Objectives
             if (c.objectives.isNotEmpty) ...[
               const SizedBox(height: 20),
-              Text('Ce que vous apprendrez',
+              Text(context.l10n.studentCourseObjectives,
                   style: WinType.headlineS(s.onStrong)),
               const SizedBox(height: 10),
               WinCard(
@@ -500,7 +500,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
             // Requirements
             if (c.requirements.isNotEmpty) ...[
               const SizedBox(height: 20),
-              Text('Prérequis', style: WinType.headlineS(s.onStrong)),
+              Text(context.l10n.studentCourseRequirements, style: WinType.headlineS(s.onStrong)),
               const SizedBox(height: 10),
               WinCard(
                   child: Column(
@@ -526,7 +526,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
             // Description
             if (c.description != null && c.description!.isNotEmpty) ...[
               const SizedBox(height: 20),
-              Text('Description', style: WinType.headlineS(s.onStrong)),
+              Text(context.l10n.commonDescription, style: WinType.headlineS(s.onStrong)),
               const SizedBox(height: 10),
               WinCard(
                   child:
@@ -535,10 +535,10 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
 
             // Curriculum
             const SizedBox(height: 20),
-            Text('Contenu', style: WinType.headlineS(s.onStrong)),
+            Text(context.l10n.studentCourseContent, style: WinType.headlineS(s.onStrong)),
             const SizedBox(height: 4),
             Text(
-                '${c.sections.length} sections · $totalLessons leçons · ${c.durationStr}',
+                context.l10n.studentCourseCurriculumSummary(c.sections.length, totalLessons, c.durationStr),
                 style: WinType.labelM(s.onMuted)),
             const SizedBox(height: 10),
             ...c.sections.asMap().entries.map((entry) {
@@ -592,7 +592,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
             Row(children: [
               const Icon(Icons.star_rounded, size: 18, color: WinColors.gold),
               const SizedBox(width: 6),
-              Text('Avis${c.reviewsCount > 0 ? " (${c.reviewsCount})" : ""}',
+              Text(c.reviewsCount > 0 ? context.l10n.studentDetailReviewsHeader(c.reviewsCount) : context.l10n.studentCourseReviews,
                   style: WinType.headlineS(s.onStrong)),
             ]),
             const SizedBox(height: 10),
@@ -603,7 +603,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                    Text('Donnez votre avis',
+                    Text(context.l10n.studentCourseLeaveReview,
                         style: WinType.titleM(s.onStrong)),
                     const SizedBox(height: 10),
                     Row(
@@ -625,7 +625,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                       controller: _reviewCtrl,
                       maxLines: 3,
                       decoration: InputDecoration(
-                        hintText: 'Partagez votre expérience (optionnel)…',
+                        hintText: context.l10n.studentCourseReviewHint,
                         hintStyle: WinType.bodyM(s.onFaint),
                         filled: true,
                         fillColor: s.bg,
@@ -647,7 +647,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                     ],
                     const SizedBox(height: 12),
                     WinButton(
-                      'Publier mon avis',
+                      context.l10n.studentCoursePostReview,
                       block: true,
                       loading: _submittingReview,
                       onTap: _submittingReview ? null : _submitReview,
@@ -662,7 +662,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                 child: Row(children: [
                   Icon(Icons.check_circle, size: 16, color: WinColors.success),
                   const SizedBox(width: 6),
-                  Text('Merci pour votre avis !',
+                  Text(context.l10n.studentCourseReviewThanks,
                       style: WinType.bodyM(WinColors.success)),
                 ]),
               ),
@@ -671,7 +671,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
             if (_reviews.isEmpty)
               Padding(
                 padding: const EdgeInsets.only(bottom: 12),
-                child: Text('Aucun avis pour le moment.',
+                child: Text(context.l10n.studentCourseNoReviews,
                     style: WinType.bodyM(s.onMuted)),
               )
             else
@@ -764,7 +764,7 @@ class _LessonRow extends StatelessWidget {
               color: WinColors.teal50,
               borderRadius: BorderRadius.circular(WinRadii.full),
             ),
-            child: Text('Aperçu', style: WinType.labelS(WinColors.teal600)),
+            child: Text(context.l10n.studentCoursePreview, style: WinType.labelS(WinColors.teal600)),
           ),
         if (lesson.videoDurationSec > 0) ...[
           const SizedBox(width: 8),

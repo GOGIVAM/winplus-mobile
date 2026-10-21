@@ -1,20 +1,6 @@
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
 import 'win_widgets.dart';
-
-const _offlineBannerMonths = [
-  'janvier',
-  'février',
-  'mars',
-  'avril',
-  'mai',
-  'juin',
-  'juillet',
-  'août',
-  'septembre',
-  'octobre',
-  'novembre',
-  'décembre',
-];
 
 /// Bannière discrète affichée quand un écran sert des données en cache
 /// (Hive) plutôt qu'en temps réel  remplace le pattern "écran vide + bouton
@@ -29,19 +15,18 @@ class OfflineBanner extends StatelessWidget {
   final DateTime? updatedAt;
   const OfflineBanner({super.key, required this.updatedAt});
 
-  static String _format(DateTime d) {
-    final hh = d.hour.toString().padLeft(2, '0');
-    final mm = d.minute.toString().padLeft(2, '0');
-    return '${d.day} ${_offlineBannerMonths[d.month - 1]} à $hh:$mm';
-  }
+  // Lot 10.11 : « 5 janvier à 14:05 » / « January 5 at 14:05 ».
+  static String _format(DateTime d) => WinFormat.dayMonthTime(d);
 
   @override
   Widget build(BuildContext context) {
-    final when = updatedAt == null ? 'inconnue' : _format(updatedAt!);
+    final when = updatedAt == null
+        ? context.l10n.widgetOfflineUnknown
+        : _format(updatedAt!);
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: WinAlert(
-        'Hors ligne  dernière mise à jour : $when',
+        context.l10n.widgetOfflineBanner(when),
         type: BadgeColor.neutral,
         icon: Icons.wifi_off_outlined,
       ),

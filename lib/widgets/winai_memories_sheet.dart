@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
 import '../services/chatbot_service.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
@@ -10,30 +11,37 @@ const _violet = Color(0xFF8B5CF6);
 const _violetBg = Color(0xFFF5F3FF);
 
 class _TypeMeta {
-  final String label;
   final IconData icon;
   final Color color;
   final Color bg;
-  const _TypeMeta(this.label, this.icon, this.color, this.bg);
+  const _TypeMeta(this.icon, this.color, this.bg);
 }
 
 const _meta = <String, _TypeMeta>{
-  'struggling_topics': _TypeMeta('Difficulté', Icons.warning_amber_rounded,
-      WinColors.error, WinColors.errorBg),
-  'understood_topics': _TypeMeta('Maîtrisé', Icons.check_circle_rounded,
-      WinColors.success, WinColors.successBg),
-  'exam_context':
-      _TypeMeta('Examen', Icons.track_changes_rounded, _violet, _violetBg),
-  'learning_preference': _TypeMeta('Préférence', Icons.psychology_rounded,
-      WinColors.blue500, WinColors.blue50),
-  'motivation_style': _TypeMeta('Motivation',
+  'struggling_topics': _TypeMeta(
+      Icons.warning_amber_rounded, WinColors.error, WinColors.errorBg),
+  'understood_topics': _TypeMeta(
+      Icons.check_circle_rounded, WinColors.success, WinColors.successBg),
+  'exam_context': _TypeMeta(Icons.track_changes_rounded, _violet, _violetBg),
+  'learning_preference': _TypeMeta(
+      Icons.psychology_rounded, WinColors.blue500, WinColors.blue50),
+  'motivation_style': _TypeMeta(
       Icons.local_fire_department_rounded, WinColors.warn, WinColors.warnBg),
 };
 
 _TypeMeta _metaFor(String type) =>
     _meta[type] ??
-    const _TypeMeta(
-        'Mémoire', Icons.note_alt_outlined, WinColors.ink400, WinColors.ink50);
+    const _TypeMeta(Icons.note_alt_outlined, WinColors.ink400, WinColors.ink50);
+
+/// Libellé affiché d'un type de mémoire (lot 10.11).
+String _labelFor(AppLocalizations l10n, String type) => switch (type) {
+      'struggling_topics' => l10n.widgetMemDifficulty,
+      'understood_topics' => l10n.widgetMemMastered,
+      'exam_context' => l10n.widgetMemExam,
+      'learning_preference' => l10n.widgetMemPreference,
+      'motivation_style' => l10n.widgetMemMotivation,
+      _ => l10n.widgetMemMemory,
+    };
 
 // ── Fonction d'ouverture ──────────────────────────────────────────────────────
 
@@ -81,7 +89,7 @@ class _WinAIMemoriesSheetState extends State<_WinAIMemoriesSheet> {
     } catch (_) {
       if (mounted)
         setState(() {
-          _error = 'Impossible de charger les mémoires.';
+          _error = context.l10n.widgetMemLoadError;
           _loading = false;
         });
     }
@@ -99,7 +107,7 @@ class _WinAIMemoriesSheetState extends State<_WinAIMemoriesSheet> {
     } else {
       setState(() => _deletingId = null);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Suppression échouée.')),
+        SnackBar(content: Text(context.l10n.widgetMemDeleteFailed)),
       );
     }
   }
@@ -116,6 +124,7 @@ class _WinAIMemoriesSheetState extends State<_WinAIMemoriesSheet> {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
+    final l10n = context.l10n;
     final maxH = MediaQuery.of(context).size.height * 0.75;
 
     return Container(
@@ -154,16 +163,16 @@ class _WinAIMemoriesSheetState extends State<_WinAIMemoriesSheet> {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Mémoire WinAI',
+                    Text(l10n.commonWinaiMemory,
                         style: WinType.archivo(size: 16, color: s.onStrong)),
-                    Text('Ce que WinAI a retenu de toi',
+                    Text(l10n.widgetMemSubtitle,
                         style: WinType.bodyS(s.onMuted)),
                   ]),
             ),
             IconButton(
               icon: Icon(Icons.refresh_rounded, size: 20, color: s.onMuted),
               onPressed: _load,
-              tooltip: 'Actualiser',
+              tooltip: l10n.widgetMemRefresh,
             ),
           ]),
         ),
@@ -193,7 +202,7 @@ class _WinAIMemoriesSheetState extends State<_WinAIMemoriesSheet> {
                                 size: 40, color: WinColors.success),
                             const SizedBox(height: 12),
                             Text(
-                              'WinAI n\'a pas encore mémorisé d\'informations. Continue à interagir !',
+                              l10n.widgetMemEmpty,
                               style: WinType.bodyM(s.onMuted),
                               textAlign: TextAlign.center,
                             ),
@@ -214,7 +223,7 @@ class _WinAIMemoriesSheetState extends State<_WinAIMemoriesSheet> {
                                     Icon(m.icon, size: 13, color: m.color),
                                     const SizedBox(width: 6),
                                     Text(
-                                      m.label.toUpperCase(),
+                                      _labelFor(l10n, entry.key).toUpperCase(),
                                       style: WinType.manrope(
                                               size: 11,
                                               weight: FontWeight.w700,

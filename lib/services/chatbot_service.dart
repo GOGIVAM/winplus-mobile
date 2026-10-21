@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 
 import 'api_client.dart';
 import 'connectivity_service.dart';
+import '../l10n/l10n.dart';
 
 class ApiWinAIMemory {
   final int id;
@@ -122,7 +123,7 @@ class ChatbotService {
     String? context,
   }) async {
     if (!ConnectivityService.instance.isOnline) {
-      return const OfflineActionException().message;
+      return OfflineActionException().message;
     }
     try {
       final res = await _api.dio.post('/chatbot/message', data: {
@@ -153,12 +154,10 @@ class ChatbotService {
         ? serverMessage
         : null;
     if (status == 402) {
-      return msg ??
-          'Vous avez atteint votre limite WinAI. Passez à un plan supérieur pour continuer.';
+      return msg ?? L10n.current.svcWinaiLimit;
     }
     if (status == 503 && map?['error'] == 'quota_unavailable') {
-      return msg ??
-          'WinAI est momentanément indisponible. Réessayez dans quelques minutes.';
+      return msg ?? L10n.current.svcWinaiUnavailable;
     }
     return null;
   }

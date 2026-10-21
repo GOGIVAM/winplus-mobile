@@ -4,6 +4,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import '../l10n/l10n.dart';
 
 class GroupCreateScreen extends StatefulWidget {
   const GroupCreateScreen({super.key});
@@ -40,6 +41,12 @@ class _GroupCreateScreenState extends State<GroupCreateScreen> {
     'Blanche Owona',
   ];
 
+  String _levelLabel(String lv) => switch (lv) {
+        'Licence' => context.l10n.instGroupLevelLicence,
+        'Concours' => context.l10n.authOptConcours,
+        _ => lv,
+      };
+
   final _selected = <String>{};
 
   Future<void> _submit() async {
@@ -57,8 +64,8 @@ class _GroupCreateScreenState extends State<GroupCreateScreen> {
       });
     } else {
       setState(() => _loading = false);
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Erreur lors de la création du groupe.')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(L10n.current.instGroupCreateError)));
     }
   }
 
@@ -75,7 +82,7 @@ class _GroupCreateScreenState extends State<GroupCreateScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Créer un groupe', style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.studentGroupsCreate, style: WinType.headlineS(s.onStrong)),
       ),
       body: _done
           ? Center(
@@ -84,15 +91,15 @@ class _GroupCreateScreenState extends State<GroupCreateScreen> {
               child: Column(mainAxisSize: MainAxisSize.min, children: [
                 const Icon(Icons.group_add, size: 64, color: WinColors.success),
                 const SizedBox(height: 16),
-                Text('Groupe créé !', style: WinType.displayS(s.onStrong)),
+                Text(context.l10n.instGroupCreated, style: WinType.displayS(s.onStrong)),
                 const SizedBox(height: 8),
                 Text(
-                  '${_nameCtrl.text.trim()}  ${_selected.length} élève(s) ajouté(s).',
+                  context.l10n.instGroupCreatedSummary(_nameCtrl.text.trim(), _selected.length),
                   style: WinType.bodyM(s.onMuted),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 28),
-                WinButton('Retour',
+                WinButton(context.l10n.commonBack,
                     block: true,
                     variant: WinButtonVariant.outline,
                     onTap: () => Navigator.pop(context)),
@@ -104,13 +111,13 @@ class _GroupCreateScreenState extends State<GroupCreateScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     WinTextField(
-                      label: 'Nom du groupe *',
+                      label: context.l10n.instGroupNameLabel,
                       hint: 'TLE C 2027, BTS Info 2…',
                       icon: Icons.group_outlined,
                       controller: _nameCtrl,
                     ),
                     const SizedBox(height: 20),
-                    Text('Niveau *', style: WinType.titleM(s.onStrong)),
+                    Text(context.l10n.instGroupLevelLabel, style: WinType.titleM(s.onStrong)),
                     const SizedBox(height: 8),
                     Wrap(
                         spacing: 8,
@@ -131,7 +138,7 @@ class _GroupCreateScreenState extends State<GroupCreateScreen> {
                                         active ? WinColors.ink800 : s.outline,
                                     width: 1.5),
                               ),
-                              child: Text(lv,
+                              child: Text(_levelLabel(lv),
                                   style: WinType.manrope(
                                       size: 13,
                                       weight: FontWeight.w600,
@@ -143,15 +150,15 @@ class _GroupCreateScreenState extends State<GroupCreateScreen> {
                         }).toList()),
                     const SizedBox(height: 24),
                     Row(children: [
-                      Text('Ajouter des élèves',
+                      Text(context.l10n.instGroupAddStudents,
                           style: WinType.headlineS(s.onStrong)),
                       const Spacer(),
-                      Text('${_selected.length} sélectionné(s)',
+                      Text(context.l10n.instGroupSelected(_selected.length),
                           style: WinType.labelM(s.primary)),
                     ]),
                     const SizedBox(height: 8),
-                    const WinTextField(
-                      hint: 'Rechercher un élève…',
+                    WinTextField(
+                      hint: context.l10n.instGroupSearchStudent,
                       icon: Icons.search,
                     ),
                     const SizedBox(height: 12),
@@ -194,7 +201,7 @@ class _GroupCreateScreenState extends State<GroupCreateScreen> {
                       );
                     })),
                     const SizedBox(height: 28),
-                    WinButton('Créer le groupe',
+                    WinButton(context.l10n.instGroupCreateSubmit,
                         block: true,
                         loading: _loading,
                         icon: Icons.group_add,

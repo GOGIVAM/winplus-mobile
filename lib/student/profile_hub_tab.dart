@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
+import '../widgets/language_selector.dart';
 import '../theme/win_motion.dart';
 import '../app_state.dart';
 import '../auth/welcome_screen.dart';
@@ -56,16 +58,16 @@ class _ProfileHubTabState extends State<ProfileHubTab> {
     final ok = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Se déconnecter ?'),
-        content: const Text('Vous serez redirigé vers l\'écran d\'accueil.'),
+        title: Text(context.l10n.studentHubLogoutTitle),
+        content: Text(context.l10n.studentHubLogoutBody),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text('Annuler')),
+              child: Text(context.l10n.commonCancel)),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child:
-                const Text('Déconnecter', style: TextStyle(color: Colors.red)),
+            child: Text(context.l10n.studentHubLogoutConfirm,
+                style: const TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -80,7 +82,7 @@ class _ProfileHubTabState extends State<ProfileHubTab> {
   }
 
   void _soon() => ScaffoldMessenger.of(context)
-      .showSnackBar(const SnackBar(content: Text('Bientôt disponible !')));
+      .showSnackBar(SnackBar(content: Text(context.l10n.studentHubSoon)));
 
   void _go(Widget screen) =>
       Navigator.push(context, WinPageRoute(builder: (_) => screen));
@@ -90,7 +92,7 @@ class _ProfileHubTabState extends State<ProfileHubTab> {
     final s = WinTheme.of(context);
     final appState = WinAppScope.of(context);
     final sub = SubscriptionScope.of(context);
-    final name = _profile?.fullName ?? 'Étudiant';
+    final name = _profile?.fullName ?? context.l10n.studentHubDefaultName;
     final planName = sub.planName;
 
     return Column(children: [
@@ -124,7 +126,7 @@ class _ProfileHubTabState extends State<ProfileHubTab> {
                     const Icon(Icons.workspace_premium_outlined,
                         size: 13, color: WinColors.gold),
                     const SizedBox(width: 4),
-                    Text('Plan $planName',
+                    Text(context.l10n.studentHubPlan(planName),
                         style: WinType.manrope(
                             size: 12,
                             weight: FontWeight.w700,
@@ -146,97 +148,97 @@ class _ProfileHubTabState extends State<ProfileHubTab> {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
           children: [
-            const _SectionLabel('Apprentissage'),
+            _SectionLabel(context.l10n.studentHubLearning),
             const SizedBox(height: 8),
             _HubTile(
               icon: Icons.emoji_events_outlined,
               color: WinColors.gold,
-              label: 'Mes badges',
-              subtitle: '14 débloqués',
+              label: context.l10n.studentAchMyBadges,
+              subtitle: context.l10n.studentHubBadgesSub,
               onTap: () => _go(const AchievementsScreen()),
             ),
             _HubTile(
               icon: Icons.workspace_premium_outlined,
               color: WinColors.teal400,
-              label: 'Mes certificats',
-              subtitle: '2 signés',
+              label: context.l10n.studentHubCertificates,
+              subtitle: context.l10n.studentHubCertificatesSub,
               onTap: () => _go(const CertificatesScreen()),
             ),
             _HubTile(
               icon: Icons.favorite_border,
               color: WinColors.error,
-              label: 'Mes favoris',
-              subtitle: 'Vos contenus enregistrés',
+              label: context.l10n.studentHubFavorites,
+              subtitle: context.l10n.studentHubFavoritesSub,
               onTap: () => _go(const FavoritesScreen()),
             ),
             _HubTile(
               icon: Icons.download_outlined,
               color: WinColors.ink600,
-              label: 'Historique des téléchargements',
+              label: context.l10n.studentHubHistory,
               onTap: () => _go(const DownloadHistoryScreen()),
             ),
             _HubTile(
               icon: Icons.groups_outlined,
               color: s.primary,
-              label: 'Mes groupes d\'étude',
-              subtitle: '3 groupes',
+              label: context.l10n.studentHubGroups,
+              subtitle: context.l10n.studentHubGroupsSub,
               onTap: () => _go(const StudyGroupsScreen()),
             ),
             _HubTile(
               icon: Icons.bar_chart_outlined,
               color: s.secondary,
-              label: 'Mes rapports de progression',
+              label: context.l10n.studentHubReports,
               onTap: () => _go(const StudentReportsScreen()),
             ),
             _HubTile(
               icon: Icons.quiz_outlined,
               color: WinColors.warn,
-              label: 'Quiz de révision',
-              subtitle: 'Reprendre les questions ratées',
+              label: context.l10n.studentHubRevisionQuiz,
+              subtitle: context.l10n.studentHubRevisionQuizSub,
               onTap: () => _go(const QuizRevisionScreen()),
             ),
             _HubTile(
               icon: Icons.timer_outlined,
               color: WinColors.teal500,
-              label: 'Timer Pomodoro',
-              subtitle: '25 min focus · 5 min pause',
+              label: context.l10n.timerTitle,
+              subtitle: context.l10n.studentHubPomodoroSub,
               onTap: () => _go(const StudyTimerScreen()),
             ),
             const SizedBox(height: 16),
 
-            const _SectionLabel('Communauté'),
+            _SectionLabel(context.l10n.studentHubCommunity),
             const SizedBox(height: 8),
             _HubTile(
               icon: Icons.forum_outlined,
               color: WinColors.teal600,
-              label: 'Forum communauté',
-              subtitle: 'Questions & réponses',
+              label: context.l10n.studentHubForum,
+              subtitle: context.l10n.studentHubForumSub,
               onTap: () => _go(const ForumScreen()),
             ),
             _HubTile(
               icon: Icons.link_outlined,
               color: WinColors.blue700,
-              label: 'Mon réseau',
-              subtitle: 'Parents, profs, établissement',
+              label: context.l10n.studentLinksTitle,
+              subtitle: context.l10n.studentHubNetworkSub,
               onTap: () => _go(const MyLinksScreen()),
             ),
             _HubTile(
               icon: Icons.smart_toy_outlined,
               color: s.primary,
               label: 'WinAI',
-              subtitle: 'Ton assistant pédagogique',
+              subtitle: context.l10n.studentHubWinaiSub,
               onTap: _soon,
             ),
             const SizedBox(height: 16),
 
-            const _SectionLabel('Compte'),
+            _SectionLabel(context.l10n.studentHubAccount),
             const SizedBox(height: 8),
             ValueListenableBuilder<int>(
               valueListenable: UserService.instance.unreadNotifications,
               builder: (_, count, __) => _HubTile(
                 icon: Icons.notifications_outlined,
                 color: WinColors.warn,
-                label: 'Notifications',
+                label: context.l10n.studentNotifTitle,
                 badge: count > 0 ? (count > 99 ? '99+' : '$count') : null,
                 onTap: () => _go(const NotificationsScreen()),
               ),
@@ -244,32 +246,32 @@ class _ProfileHubTabState extends State<ProfileHubTab> {
             _HubTile(
               icon: Icons.credit_card_outlined,
               color: s.primary,
-              label: 'Mon abonnement',
-              subtitle: 'Plan $planName · Gérer',
+              label: context.l10n.studentHubSubscription,
+              subtitle: context.l10n.studentHubSubscriptionSub(planName),
               onTap: () => _go(const PricingScreen()),
             ),
             _HubTile(
               icon: Icons.tune_outlined,
               color: s.onMuted,
-              label: 'Paramètres du profil',
+              label: context.l10n.studentHubProfileSettings,
               onTap: () => _go(const ProfileScreen()),
             ),
             _HubTile(
               icon: Icons.description_outlined,
               color: s.onFaint,
-              label: 'Conditions d\'utilisation',
+              label: context.l10n.studentHubTerms,
               onTap: () => LegalScreen.showCgu(context),
             ),
             _HubTile(
               icon: Icons.privacy_tip_outlined,
               color: s.onFaint,
-              label: 'Politique de confidentialité',
+              label: context.l10n.studentHubPrivacy,
               onTap: () => LegalScreen.showPrivacy(context),
             ),
             _HubTile(
               icon: Icons.policy_outlined,
               color: s.onFaint,
-              label: 'Politique de tutorat',
+              label: context.l10n.studentHubTutorPolicy,
               onTap: () => openTutorPolicy(context),
             ),
             const SizedBox(height: 4),
@@ -291,12 +293,33 @@ class _ProfileHubTabState extends State<ProfileHubTab> {
                 const SizedBox(width: 12),
                 Expanded(
                     child:
-                        Text('Mode sombre', style: WinType.titleM(s.onStrong))),
+                        Text(context.l10n.commonDarkMode, style: WinType.titleM(s.onStrong))),
                 Switch(
                   value: appState.dark,
                   onChanged: (_) => appState.toggleTheme(),
                   activeTrackColor: s.primary,
                 ),
+              ]),
+            ),
+            const SizedBox(height: 8),
+            // Lot 10.11 : langue de l'application (synchronisée sur User.Locale).
+            WinCard(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              child: Row(children: [
+                Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    color: s.onMuted.withValues(alpha: 0.10),
+                    borderRadius: BorderRadius.circular(WinRadii.sm),
+                  ),
+                  child: Icon(Icons.language, size: 20, color: s.onMuted),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                    child: Text(context.l10n.language,
+                        style: WinType.titleM(s.onStrong))),
+                const LanguageToggle(),
               ]),
             ),
             const SizedBox(height: 8),
@@ -317,7 +340,7 @@ class _ProfileHubTabState extends State<ProfileHubTab> {
                 ),
                 const SizedBox(width: 12),
                 Expanded(
-                    child: Text('Se déconnecter',
+                    child: Text(context.l10n.commonLogout,
                         style: WinType.titleM(WinColors.error))),
               ]),
             ),

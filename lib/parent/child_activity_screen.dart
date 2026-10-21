@@ -4,6 +4,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import '../l10n/l10n.dart';
 import 'album_tab.dart';
 import 'encouragement_sheet.dart';
 import 'exam_watch_mode_tab.dart';
@@ -112,14 +113,14 @@ class _ChildActivityScreenState extends State<ChildActivityScreen>
           unselectedLabelColor: s.onFaint,
           indicatorColor: s.primary,
           labelStyle: WinType.manrope(size: 13, weight: FontWeight.w600),
-          tabs: const [
-            Tab(text: 'Activité'),
-            Tab(text: 'Résultats'),
-            Tab(text: 'Objectifs'),
-            Tab(text: 'Veille examen'),
-            Tab(text: 'Portrait'),
-            Tab(text: 'Album'),
-            Tab(text: 'Alertes WinAI'),
+          tabs: [
+            Tab(text: context.l10n.parentChildTabActivity),
+            Tab(text: context.l10n.studentQuizResults),
+            Tab(text: context.l10n.parentChildTabGoals),
+            Tab(text: context.l10n.parentChildTabExamWatch),
+            Tab(text: context.l10n.parentChildTabPortrait),
+            Tab(text: context.l10n.parentChildTabAlbum),
+            Tab(text: context.l10n.commonWinaiAlerts),
           ],
         ),
       ),
@@ -149,33 +150,33 @@ class _ChildActivityScreenState extends State<ChildActivityScreen>
           child: Row(children: [
             Expanded(
               child: WinButton(
-                'Voir ressources',
+                context.l10n.parentChildSeeResources,
                 variant: WinButtonVariant.ghost,
                 small: true,
                 icon: Icons.library_books_outlined,
                 onTap: () => ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                       content: Text(
-                          'Catalogue filtré pour ${widget.child.firstName}')),
+                          context.l10n.parentChildCatalogFiltered(widget.child.firstName))),
                 ),
               ),
             ),
             const SizedBox(width: 8),
             Expanded(
               child: WinButton(
-                'Générer un quiz',
+                context.l10n.parentChildGenerateQuiz,
                 variant: WinButtonVariant.outline,
                 small: true,
                 icon: Icons.quiz_outlined,
                 onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content: Text('Quiz en cours de génération...')),
+                  SnackBar(
+                      content: Text(context.l10n.parentChildQuizGenerating)),
                 ),
               ),
             ),
             const SizedBox(width: 8),
             WinButton(
-              'Encourager',
+              context.l10n.parentChildEncourage,
               variant: WinButtonVariant.secondary,
               small: true,
               onTap: () => EncouragementSheet.show(
@@ -197,8 +198,6 @@ class _ActivityTab extends StatelessWidget {
   final ApiChildStats stats;
   final List<ApiChildActivity> activities;
   const _ActivityTab({required this.stats, required this.activities});
-
-  static const _dayLabels = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
 
   /// Nombre d'activités (téléchargements/quiz/sessions IA) par jour de la
   /// semaine, sur les 7 derniers jours  dérivé de la vraie activité
@@ -254,7 +253,7 @@ class _ActivityTab extends StatelessWidget {
               ]),
             ]),
             const SizedBox(height: 10),
-            Text('Score moyen sur 30 jours', style: WinType.labelM(s.onMuted)),
+            Text(context.l10n.parentChildAvgScore30, style: WinType.labelM(s.onMuted)),
           ]),
         ),
         const SizedBox(height: 24),
@@ -264,32 +263,32 @@ class _ActivityTab extends StatelessWidget {
               child: _StatBox(
                   icon: Icons.download_outlined,
                   value: '${stats.downloadsThisWeek}',
-                  label: 'Téléch./sem.',
+                  label: context.l10n.parentChildDownloadsWeek,
                   color: WinColors.blue500)),
           const SizedBox(width: 8),
           Expanded(
               child: _StatBox(
                   icon: Icons.trending_up,
                   value: '${stats.averageScore.round()}%',
-                  label: 'Score moy.',
+                  label: context.l10n.parentChildAvgScoreShort,
                   color: s.primary)),
           const SizedBox(width: 8),
           Expanded(
               child: _StatBox(
                   icon: Icons.quiz_outlined,
                   value: '${stats.quizzesThisWeek}',
-                  label: 'Quiz/sem.',
+                  label: context.l10n.parentChildQuizWeek,
                   color: WinColors.success)),
           const SizedBox(width: 8),
           Expanded(
               child: _StatBox(
                   icon: Icons.auto_awesome_outlined,
                   value: '${stats.aiSessionsThisWeek}',
-                  label: 'IA/sem.',
+                  label: context.l10n.parentChildAiWeek,
                   color: s.secondary)),
         ]),
         const SizedBox(height: 24),
-        Text('Activité cette semaine', style: WinType.headlineS(s.onStrong)),
+        Text(context.l10n.parentChildActivityWeek, style: WinType.headlineS(s.onStrong)),
         const SizedBox(height: 12),
         WinCard(
           child: Row(
@@ -312,17 +311,17 @@ class _ActivityTab extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  Text(_dayLabels[i], style: WinType.labelS(s.onMuted)),
+                  Text(WinFormat.weekdayShortCap(i + 1), style: WinType.labelS(s.onMuted)),
                 ]),
               );
             }),
           ),
         ),
         const SizedBox(height: 24),
-        Text('Activité récente', style: WinType.headlineS(s.onStrong)),
+        Text(context.l10n.parentChildRecentActivity, style: WinType.headlineS(s.onStrong)),
         const SizedBox(height: 12),
         if (activities.isEmpty)
-          Text('Aucune activité récente.', style: WinType.bodyM(s.onMuted))
+          Text(context.l10n.parentChildNoRecentActivity, style: WinType.bodyM(s.onMuted))
         else
           ...activities.take(10).toList().asMap().entries.map((e) {
             final ev = e.value;
@@ -381,10 +380,10 @@ class _ActivityTab extends StatelessWidget {
 
   String _fmtDate(DateTime dt) {
     final diff = DateTime.now().difference(dt);
-    if (diff.inMinutes < 1) return "À l'instant";
-    if (diff.inMinutes < 60) return 'Il y a ${diff.inMinutes} min';
-    if (diff.inHours < 24) return 'Il y a ${diff.inHours}h';
-    return 'Il y a ${diff.inDays} jour${diff.inDays > 1 ? 's' : ''}';
+    if (diff.inMinutes < 1) return L10n.current.studentNotifJustNow;
+    if (diff.inMinutes < 60) return L10n.current.studentNotifMinutesAgo(diff.inMinutes);
+    if (diff.inHours < 24) return L10n.current.studentNotifHoursAgo(diff.inHours);
+    return L10n.current.parentDaysAgo(diff.inDays);
   }
 }
 
@@ -414,7 +413,7 @@ class _ResultsTab extends StatelessWidget {
           child: Column(mainAxisSize: MainAxisSize.min, children: [
             Icon(Icons.bar_chart_outlined, size: 48, color: s.onFaint),
             const SizedBox(height: 12),
-            Text('Pas encore de résultats ce mois-ci.',
+            Text(context.l10n.parentChildNoResults,
                 style: WinType.bodyM(s.onMuted), textAlign: TextAlign.center),
           ]),
         ),
@@ -434,7 +433,7 @@ class _ResultsTab extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
       children: [
         if (subjects.isNotEmpty) ...[
-          Text('Score moyen par matière (30 jours)',
+          Text(context.l10n.parentChildScoreBySubject,
               style: WinType.headlineS(s.onStrong)),
           const SizedBox(height: 16),
           WinCard(
@@ -485,7 +484,7 @@ class _ResultsTab extends StatelessWidget {
                         const Icon(Icons.emoji_events,
                             size: 14, color: WinColors.gold),
                         const SizedBox(width: 4),
-                        Text('Meilleure matière',
+                        Text(context.l10n.parentChildBestSubject,
                             style: WinType.labelS(s.onMuted)),
                       ]),
                       const SizedBox(height: 4),
@@ -508,7 +507,7 @@ class _ResultsTab extends StatelessWidget {
                         const Icon(Icons.warning_amber_rounded,
                             size: 14, color: WinColors.warn),
                         const SizedBox(width: 4),
-                        Text('À travailler', style: WinType.labelS(s.onMuted)),
+                        Text(context.l10n.parentChildToWorkOn, style: WinType.labelS(s.onMuted)),
                       ]),
                       const SizedBox(height: 4),
                       Text(worst.subjectTitle,
@@ -539,7 +538,7 @@ class _ResultsTab extends StatelessWidget {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Dernier quiz', style: WinType.labelM(s.onMuted)),
+                      Text(context.l10n.parentChildLastQuiz, style: WinType.labelM(s.onMuted)),
                       const SizedBox(height: 2),
                       Text(
                           '${quiz.title} · ${quiz.correctAnswers}/${quiz.totalQuestions}',
@@ -564,10 +563,10 @@ class _AlertsTab extends StatelessWidget {
 
   String _relTime(DateTime dt) {
     final diff = DateTime.now().difference(dt);
-    if (diff.inMinutes < 1) return "À l'instant";
-    if (diff.inMinutes < 60) return 'Il y a ${diff.inMinutes} min';
-    if (diff.inHours < 24) return 'Il y a ${diff.inHours}h';
-    return 'Il y a ${diff.inDays} jour${diff.inDays > 1 ? 's' : ''}';
+    if (diff.inMinutes < 1) return L10n.current.studentNotifJustNow;
+    if (diff.inMinutes < 60) return L10n.current.studentNotifMinutesAgo(diff.inMinutes);
+    if (diff.inHours < 24) return L10n.current.studentNotifHoursAgo(diff.inHours);
+    return L10n.current.parentDaysAgo(diff.inDays);
   }
 
   @override
@@ -581,12 +580,12 @@ class _AlertsTab extends StatelessWidget {
               size: 48, color: WinColors.success),
           const SizedBox(height: 12),
           Text(
-            'Tout va bien !',
+            context.l10n.parentChildAllGood,
             style: WinType.titleM(s.onStrong),
           ),
           const SizedBox(height: 4),
           Text(
-            '$childName est régulier(e) dans ses révisions.',
+            context.l10n.parentChildRegular(childName),
             style: WinType.bodyM(s.onMuted),
             textAlign: TextAlign.center,
           ),
@@ -597,7 +596,7 @@ class _AlertsTab extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
       children: [
-        Text('Alertes WinAI', style: WinType.headlineS(s.onStrong)),
+        Text(context.l10n.commonWinaiAlerts, style: WinType.headlineS(s.onStrong)),
         const SizedBox(height: 12),
         ...alerts.map((a) {
           // Sévérité (Low/Medium/High), pas le type de signal, porte le niveau de gravité.
@@ -617,9 +616,9 @@ class _AlertsTab extends StatelessWidget {
             _ => Icons.info_outline,
           };
           final String badgeLabel = switch (a.severity) {
-            'High' => 'Alerte',
-            'Medium' => 'Attention',
-            _ => 'Info',
+            'High' => context.l10n.parentAlertBadgeHigh,
+            'Medium' => context.l10n.parentAlertBadgeMedium,
+            _ => context.l10n.parentAlertBadgeInfo,
           };
           return Padding(
             padding: const EdgeInsets.only(bottom: 12),

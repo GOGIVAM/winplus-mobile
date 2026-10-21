@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
+import '../widgets/language_selector.dart';
 import '../theme/win_motion.dart';
 import '../app_state.dart';
 import '../auth/welcome_screen.dart';
@@ -82,14 +84,14 @@ class _GroupRow extends StatelessWidget {
                 Text(g.level, style: WinType.labelM(s.onMuted)),
               ])),
           const SizedBox(width: 10),
-          Text('${g.memberCount} élèves', style: WinType.labelM(s.onFaint)),
+          Text(context.l10n.instDashStudentsCount(g.memberCount), style: WinType.labelM(s.onFaint)),
         ]),
         if (showActions) ...[
           const SizedBox(height: 12),
           Row(children: [
             Expanded(
                 child: WinButton(
-              'Voir élèves',
+              context.l10n.instGroupSeeStudents,
               small: true,
               icon: Icons.people_outline,
               onTap: () => Navigator.push(
@@ -101,7 +103,7 @@ class _GroupRow extends StatelessWidget {
             const SizedBox(width: 8),
             Expanded(
                 child: WinButton(
-              'Attribuer ressources',
+              context.l10n.instGroupAssignResources,
               small: true,
               variant: WinButtonVariant.outline,
               icon: Icons.library_add_outlined,
@@ -135,19 +137,19 @@ class _GroupRow extends StatelessWidget {
                           color: s.outline,
                           borderRadius: BorderRadius.circular(WinRadii.full)))),
               const SizedBox(height: 16),
-              Text('Attribuer à ${group.name}',
+              Text(context.l10n.instGroupAssignTo(group.name),
                   style: WinType.titleL(s.onStrong)),
               const SizedBox(height: 4),
               Text(
-                  'Sélectionnez des contenus depuis le catalogue pour les affecter à ce groupe.',
+                  context.l10n.instGroupAssignInfo,
                   style: WinType.bodyS(s.onMuted)),
               const SizedBox(height: 20),
-              WinButton('Parcourir le catalogue',
+              WinButton(context.l10n.instGroupBrowseCatalog,
                   block: true,
                   icon: Icons.layers_outlined,
                   onTap: () => Navigator.pop(context)),
               const SizedBox(height: 10),
-              WinButton('Annuler',
+              WinButton(context.l10n.commonCancel,
                   block: true,
                   variant: WinButtonVariant.ghost,
                   onTap: () => Navigator.pop(context)),
@@ -225,13 +227,13 @@ class _InstitutionDashTabState extends State<InstitutionDashTab> {
                           child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                            Text(_name ?? 'Mon établissement',
+                            Text(_name ?? context.l10n.instMySchool,
                                 style: WinType.archivo(
                                     size: 15, color: WinColors.cream50)),
                             const SizedBox(height: 2),
                             Text(
-                                '${_license != null ? 'Licence ${_license!.tier}' : 'Sans licence active'}'
-                                '${_analytics != null ? ' · ${_analytics!.totalStudents} élèves' : ''}',
+                                '${_license != null ? context.l10n.instLicenseHeading(_license!.tier) : context.l10n.instDashNoLicense}'
+                                '${_analytics != null ? ' · ${context.l10n.instDashStudentsCount(_analytics!.totalStudents)}' : ''}',
                                 style: WinType.labelS(WinColors.ink300)),
                           ])),
                       Stack(clipBehavior: Clip.none, children: [
@@ -256,14 +258,14 @@ class _InstitutionDashTabState extends State<InstitutionDashTab> {
                               _analytics != null
                                   ? '${_analytics!.activeStudents}'
                                   : '—',
-                              'élèves actifs')),
+                              context.l10n.instDashActiveStudentsLower)),
                       const SizedBox(width: 10),
                       Expanded(
                           child: _instHeroStat(
                               _analytics != null
                                   ? '${_analytics!.averageScore.round()}%'
                                   : '—',
-                              'score moyen')),
+                              context.l10n.studentHomeAvgScore)),
                     ]),
                   ]),
             ),
@@ -292,21 +294,21 @@ class _InstitutionDashTabState extends State<InstitutionDashTab> {
                             a != null
                                 ? '${a.activeStudents} / ${a.totalStudents}'
                                 : '—',
-                            'Élèves actifs$pctActive')),
+                            context.l10n.instDashActiveStudents(pctActive))),
                     const SizedBox(width: 10),
                     Expanded(
                         child: _statCard(
                             ctx,
                             Icons.trending_up_outlined,
                             a != null ? '${a.averageScore.round()}%' : '—',
-                            'Score moyen')),
+                            context.l10n.studentReportsAvgScore)),
                   ]),
                   const SizedBox(height: 10),
                   Row(children: [
                     Expanded(
                         child: _statCard(ctx, Icons.psychology_outlined,
                             a != null ? '${a.quizzesThisMonth}' : '—',
-                            'Quiz ce mois')),
+                            context.l10n.instDashQuizMonth)),
                     const SizedBox(width: 10),
                     Expanded(
                         child: _statCard(
@@ -314,8 +316,8 @@ class _InstitutionDashTabState extends State<InstitutionDashTab> {
                             Icons.vpn_key_outlined,
                             lic != null
                                 ? '${lic.studentSeatsUsed} / ${lic.studentSeats}'
-                                : 'Aucune',
-                            'Sièges élèves$pctLic')),
+                                : context.l10n.teacherProfileNoneF,
+                            '${context.l10n.instLicenseStudentSeats}$pctLic')),
                   ]),
                 ]);
               }),
@@ -332,7 +334,7 @@ class _InstitutionDashTabState extends State<InstitutionDashTab> {
                     const SizedBox(width: 10),
                     Expanded(
                         child: Text(
-                            '$_atRiskCount élèves nécessitent une attention urgente',
+                            context.l10n.instDashUrgent(_atRiskCount),
                             style: WinType.bodyS(WinColors.error)
                                 .copyWith(fontWeight: FontWeight.w600))),
                     const Spacer(),
@@ -343,7 +345,7 @@ class _InstitutionDashTabState extends State<InstitutionDashTab> {
                 const SizedBox(height: 12),
               ],
               // Bouton Plan d'action IA
-              WinButton("Plan d'action IA",
+              WinButton(context.l10n.instDashAiPlan,
                   block: true,
                   icon: Icons.auto_awesome_outlined,
                   onTap: () => Navigator.push(context,
@@ -351,12 +353,12 @@ class _InstitutionDashTabState extends State<InstitutionDashTab> {
               // « Matières les plus étudiées » de démonstration retirée :
               // aucun endpoint ne fournit ce classement.
               const SizedBox(height: 16),
-              Text('Actions rapides',
+              Text(context.l10n.instDashQuickActions,
                   style: WinType.archivo(size: 18, color: s.onStrong)),
               const SizedBox(height: 10),
               Row(children: [
                 Expanded(
-                    child: WinButton('Annuaire',
+                    child: WinButton(context.l10n.instDashDirectory,
                         variant: WinButtonVariant.outline,
                         block: true,
                         icon: Icons.people_outline,
@@ -367,7 +369,7 @@ class _InstitutionDashTabState extends State<InstitutionDashTab> {
                                     const StudentDirectoryScreen())))),
                 const SizedBox(width: 10),
                 Expanded(
-                    child: WinButton('Rapports',
+                    child: WinButton(context.l10n.instReportsTitle,
                         variant: WinButtonVariant.outline,
                         block: true,
                         icon: Icons.bar_chart_outlined,
@@ -377,7 +379,7 @@ class _InstitutionDashTabState extends State<InstitutionDashTab> {
                                 builder: (_) => const ReportsScreen())))),
               ]),
               const SizedBox(height: 24),
-              Text('Alertes WinAI',
+              Text(context.l10n.commonWinaiAlerts,
                   style: WinType.archivo(size: 18, color: s.onStrong)),
               const SizedBox(height: 12),
               WinCard(
@@ -386,11 +388,11 @@ class _InstitutionDashTabState extends State<InstitutionDashTab> {
                 const SizedBox(width: 12),
                 Expanded(
                     child: Text(
-                        'Analysez les performances de vos groupes et identifiez les élèves à risque.',
+                        context.l10n.instDashAlertsInfo,
                         style: WinType.bodyS(s.onSurface))),
               ])),
               const SizedBox(height: 16),
-              Text('Groupes',
+              Text(context.l10n.shellTabGroups,
                   style: WinType.archivo(size: 18, color: s.onStrong)),
               const SizedBox(height: 12),
               ...groups.take(3).map((g) => Padding(
@@ -426,10 +428,10 @@ class _InstitutionGroupsTabState extends State<InstitutionGroupsTab> {
   @override
   Widget build(BuildContext context) {
     return Column(children: [
-      const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
+      Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           child:
-              WinTextField(icon: Icons.search, hint: 'Rechercher un groupe…')),
+              WinTextField(icon: Icons.search, hint: context.l10n.instGroupSearch)),
       const SizedBox(height: 12),
       Expanded(
           child: _groups == null
@@ -446,7 +448,7 @@ class _InstitutionGroupsTabState extends State<InstitutionGroupsTab> {
                             _GroupRow(g: _groups![i], showActions: true),
                       ),
                       const SizedBox(height: 14),
-                      WinButton('Créer un groupe',
+                      WinButton(context.l10n.studentGroupsCreate,
                           variant: WinButtonVariant.outline,
                           block: true,
                           icon: Icons.add, onTap: () async {
@@ -501,7 +503,7 @@ class _InstitutionCatalogTabState extends State<InstitutionCatalogTab> {
                 const SizedBox(width: 10),
                 Expanded(
                     child: Text(
-                        'Licence établissement : contenus assignables à tous vos groupes.',
+                        context.l10n.instCatalogLicenseInfo,
                         style: WinType.bodyS(WinColors.teal700)
                             .copyWith(fontWeight: FontWeight.w600))),
               ]))),
@@ -511,7 +513,7 @@ class _InstitutionCatalogTabState extends State<InstitutionCatalogTab> {
               ? const Center(child: CircularProgressIndicator())
               : items.isEmpty
                   ? Center(
-                      child: Text('Aucun contenu disponible.',
+                      child: Text(context.l10n.studentTabsNoContent,
                           style: WinType.bodyM(s.onMuted)))
                   : ListView.separated(
                       padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
@@ -546,7 +548,7 @@ class _InstitutionCatalogTabState extends State<InstitutionCatalogTab> {
                                     Text('${subj.short} · ${item.level ?? ''}',
                                         style: WinType.labelM(s.onMuted)),
                                   ])),
-                              const WinButton('Assigner',
+                              WinButton(context.l10n.instCatalogAssign,
                                   variant: WinButtonVariant.outline,
                                   small: true,
                                   icon: Icons.add),
@@ -603,7 +605,7 @@ class _InstitutionAnalyticsTabState extends State<InstitutionAnalyticsTab> {
                       _analytics != null
                           ? '${_analytics!.downloadsThisMonth}'
                           : '',
-                      'Téléch./mois')),
+                      context.l10n.instAnalyticsDownloadsMonth)),
               const SizedBox(width: 10),
               Expanded(
                   child: _statCard(
@@ -612,17 +614,17 @@ class _InstitutionAnalyticsTabState extends State<InstitutionAnalyticsTab> {
                       _analytics != null
                           ? '${_analytics!.quizzesThisMonth}'
                           : '',
-                      'Quiz/mois')),
+                      context.l10n.instAnalyticsQuizMonth)),
             ]),
             const SizedBox(height: 10),
-            WinButton('Élèves à risque',
+            WinButton(context.l10n.instRiskTitle,
                 variant: WinButtonVariant.outline,
                 block: true,
                 icon: Icons.warning_amber_outlined,
                 onTap: () => Navigator.push(context,
                     WinPageRoute(builder: (_) => const AtRiskScreen()))),
             const SizedBox(height: 10),
-            WinButton('Plan d\'action WinAI',
+            WinButton(context.l10n.instPlanTitle,
                 variant: WinButtonVariant.ghost,
                 block: true,
                 icon: Icons.auto_awesome_outlined,
@@ -632,7 +634,7 @@ class _InstitutionAnalyticsTabState extends State<InstitutionAnalyticsTab> {
             if (_groups == null)
               const Center(child: CircularProgressIndicator())
             else ...[
-              Text('Performance par groupe',
+              Text(context.l10n.instAnalyticsByGroup,
                   style: WinType.archivo(size: 18, color: s.onStrong)),
               const SizedBox(height: 12),
               ...groups.map((g) => Padding(
@@ -674,7 +676,7 @@ class InstitutionAccountTab extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
           child: Align(
               alignment: Alignment.centerLeft,
-              child: Text('Compte',
+              child: Text(context.l10n.shellTabAccount,
                   style: WinType.archivo(size: 22, color: s.onStrong)))),
       Expanded(
           child: ListView(
@@ -696,11 +698,11 @@ class InstitutionAccountTab extends StatelessWidget {
                 builder: (_, snap) => Text(
                     snap.data ??
                         (snap.connectionState == ConnectionState.done
-                            ? 'Mon établissement'
+                            ? context.l10n.instMySchool
                             : '…'),
                     style: WinType.archivo(size: 22, color: s.onStrong)),
               ),
-              Text('Compte établissement', style: WinType.bodyM(s.onMuted)),
+              Text(context.l10n.instAccountSchool, style: WinType.bodyM(s.onMuted)),
             ])),
             const SizedBox(height: 20),
             // Lot 9.7b, étape 4 : licence réelle (sièges, renouvellement),
@@ -713,32 +715,33 @@ class InstitutionAccountTab extends StatelessWidget {
                 child: Row(children: [
                   const Icon(Icons.shield_outlined, size: 20, color: WinColors.teal400),
                   const SizedBox(width: 8),
-                  Expanded(child: Text('Licence WinPlus : sièges et renouvellement', style: WinType.titleL(WinColors.cream50))),
+                  Expanded(child: Text(context.l10n.instAccountLicense, style: WinType.titleL(WinColors.cream50))),
                   const Icon(Icons.chevron_right, color: WinColors.cream50),
                 ]),
               ),
             ),
             const SizedBox(height: 20),
-            const _Row(Icons.people_outline, 'Administrateurs'),
-            const _Row(Icons.grid_view_outlined, 'Groupes & classes'),
-            const _Row(Icons.receipt_long_outlined, 'Facturation & reçus'),
+            _Row(Icons.people_outline, context.l10n.instAccountAdmins),
+            _Row(Icons.grid_view_outlined, context.l10n.instAccountGroups),
+            _Row(Icons.receipt_long_outlined, context.l10n.instAccountBilling),
             // Lot 9.3 : attribution de tuteurs, réservations et portefeuille institution.
-            _Row(Icons.school_outlined, 'Tutorat & portefeuille',
+            _Row(Icons.school_outlined, context.l10n.instAccountTutoring,
                 onTap: () => Navigator.push(context,
                     WinPageRoute(builder: (_) => const TutoringForStudentsScreen()))),
             // Lot 9.5 (17.11) : caution des répétiteurs rattachés pour le présentiel.
-            _Row(Icons.verified_user_outlined, 'Cautions des répétiteurs',
+            _Row(Icons.verified_user_outlined, context.l10n.instEndorseScreenTitle,
                 onTap: () => Navigator.push(context,
                     WinPageRoute(builder: (_) => const TutorEndorsementsScreen()))),
-            _Row(Icons.bar_chart_outlined, 'Rapports exportables',
+            _Row(Icons.bar_chart_outlined, context.l10n.instAccountReports,
                 onTap: () => Navigator.push(context,
                     WinPageRoute(builder: (_) => const ReportsScreen()))),
-            _Row(Icons.dark_mode_outlined, 'Mode sombre',
+            _Row(Icons.dark_mode_outlined, context.l10n.commonDarkMode,
                 trailing: Switch(
                     value: state.dark,
                     activeThumbColor: s.primary,
                     onChanged: (_) => state.toggleTheme())),
-            const _Row(Icons.language, 'Langue', trailing: WinBadge('FR')),
+            _Row(Icons.language, context.l10n.language,
+            trailing: const LanguageToggle()),
             const SizedBox(height: 8),
             TextButton(
                 onPressed: () async {
@@ -749,7 +752,7 @@ class InstitutionAccountTab extends StatelessWidget {
                     (r) => false,
                   );
                 },
-                child: Text('Se déconnecter',
+                child: Text(context.l10n.commonLogout,
                     style: WinType.manrope(
                         size: 14,
                         weight: FontWeight.w600,
@@ -803,11 +806,11 @@ class _InstitutionWinAITabState extends State<InstitutionWinAITab> {
   final List<({bool me, String text})> _msgs = [];
   bool _thinking = false;
 
-  static const _suggestions = [
-    'Analyse de cohorte',
-    'Élèves à risque',
-    'Plan d\'action prioritaire',
-    'Benchmark national',
+  List<String> get _suggestions => [
+    context.l10n.instAiSuggestion1,
+    context.l10n.instRiskTitle,
+    context.l10n.instAiSuggestion3,
+    context.l10n.instAiSuggestion4,
   ];
 
   @override
@@ -833,7 +836,7 @@ class _InstitutionWinAITabState extends State<InstitutionWinAITab> {
       _thinking = false;
       _msgs.add((
         me: false,
-        text: reply ?? 'Désolé, je n\'ai pas pu répondre. Réessaie.'
+        text: reply ?? L10n.current.studentTabsAiNoReply
       ));
     });
   }
@@ -864,7 +867,7 @@ class _InstitutionWinAITabState extends State<InstitutionWinAITab> {
                     Text('WinAI',
                         style: WinType.archivo(size: 28, color: s.onStrong)),
                     const SizedBox(height: 6),
-                    Text('Ton auditeur analytique & stratège institutionnel',
+                    Text(context.l10n.instAiTagline,
                         style: WinType.bodyM(s.onMuted),
                         textAlign: TextAlign.center),
                     const SizedBox(height: 24),
@@ -916,7 +919,7 @@ class _InstitutionWinAITabState extends State<InstitutionWinAITab> {
                           const Icon(Icons.psychology_rounded,
                               size: 15, color: Color(0xFF8B5CF6)),
                           const SizedBox(width: 8),
-                          Text('Mémoire WinAI',
+                          Text(context.l10n.commonWinaiMemory,
                               style: WinType.manrope(
                                   size: 13,
                                   weight: FontWeight.w600,
@@ -952,7 +955,7 @@ class _InstitutionWinAITabState extends State<InstitutionWinAITab> {
                                 child: CircularProgressIndicator(
                                     strokeWidth: 2, color: s.primary)),
                             const SizedBox(width: 8),
-                            Text('WinAI réfléchit…',
+                            Text(context.l10n.commonWinaiThinking,
                                 style: WinType.bodyS(s.onMuted)),
                           ]),
                         ),
@@ -986,7 +989,7 @@ class _InstitutionWinAITabState extends State<InstitutionWinAITab> {
           child: Row(children: [
             Expanded(
                 child: WinTextField(
-                    hint: 'Analyse, benchmark, plan d\'action…',
+                    hint: context.l10n.instAiHint,
                     controller: _ctrl)),
             const SizedBox(width: 8),
             GestureDetector(

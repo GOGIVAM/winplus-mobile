@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
 import '../theme/win_motion.dart';
 import '../data/mock_data.dart';
 import '../data/models.dart';
@@ -156,7 +157,7 @@ class _StudentProfileWizardState extends State<_StudentProfileWizard> {
       initialDate: _dateOfBirth ?? DateTime(now.year - 15, now.month, now.day),
       firstDate: DateTime(now.year - 100),
       lastDate: now,
-      helpText: 'Date de naissance (optionnel)',
+      helpText: context.l10n.authDobOptional,
     );
     if (picked != null) setState(() => _dateOfBirth = picked);
   }
@@ -164,7 +165,8 @@ class _StudentProfileWizardState extends State<_StudentProfileWizard> {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    final steps = ['Niveau', 'Filière', 'Objectif'];
+    final l10n = context.l10n;
+    final steps = [l10n.commonLevel, l10n.authStepStream, l10n.authStepGoal];
     return Scaffold(
       backgroundColor: s.bg,
       body: SafeArea(
@@ -212,7 +214,7 @@ class _StudentProfileWizardState extends State<_StudentProfileWizard> {
               ),
             ),
             WinButton(
-              _step < 2 ? 'Continuer' : 'Terminer',
+              _step < 2 ? l10n.commonContinue : l10n.authFinish,
               block: true,
               loading: _saving,
               onTap: _canContinue && !_saving ? _next : null,
@@ -226,10 +228,8 @@ class _StudentProfileWizardState extends State<_StudentProfileWizard> {
 
   Widget _buildDateOfBirthField(WinScheme s) {
     final label = _dateOfBirth == null
-        ? 'Date de naissance (optionnel)'
-        : 'Né(e) le ${_dateOfBirth!.day.toString().padLeft(2, '0')}/'
-            '${_dateOfBirth!.month.toString().padLeft(2, '0')}/'
-            '${_dateOfBirth!.year}';
+        ? context.l10n.authDobOptional
+        : context.l10n.authBornOn(WinFormat.dateNumeric(_dateOfBirth!));
     return Padding(
       padding: const EdgeInsets.only(top: 16),
       child: GestureDetector(
@@ -252,16 +252,32 @@ class _StudentProfileWizardState extends State<_StudentProfileWizard> {
   }
 
   String get _stepTitle => switch (_step) {
-        0 => 'Quel est ton niveau ?',
-        1 => 'Quelle est ta filière ?',
-        _ => 'Quel est ton objectif ?',
+        0 => context.l10n.authStudentLevelTitle,
+        1 => context.l10n.authStudentStreamTitle,
+        _ => context.l10n.authStudentGoalTitle,
       };
 
   String get _stepSubtitle => switch (_step) {
-        0 => 'WinAI adapte le contenu à ton niveau scolaire.',
-        1 => 'Pour mieux cibler les ressources disponibles.',
-        _ => 'L\'exam pour lequel tu veux te préparer.',
+        0 => context.l10n.authStudentLevelHint,
+        1 => context.l10n.authStudentStreamHint,
+        _ => context.l10n.authStudentGoalHint,
       };
+
+  /// Libellé affiché d'une option ; la valeur envoyée à l'API reste le
+  /// texte français de la liste.
+  String _optionLabel(String v) {
+    final l10n = context.l10n;
+    return switch (v) {
+      'Concours' => l10n.authOptConcours,
+      'Scientifique' => l10n.authOptScience,
+      'Littéraire' => l10n.authOptLiterary,
+      'Technique' => l10n.authOptTechnical,
+      'Économique' => l10n.authOptEconomics,
+      'Polytechnique' => l10n.authOptPolytechnique,
+      'Autre' => l10n.authOptOther,
+      _ => v,
+    };
+  }
 
   Widget _buildChips(WinScheme s) {
     final (items, selected, onSelect) = switch (_step) {
@@ -284,7 +300,7 @@ class _StudentProfileWizardState extends State<_StudentProfileWizard> {
               border: Border.all(
                   color: active ? WinColors.ink800 : s.outline, width: 1.5),
             ),
-            child: Text(item,
+            child: Text(_optionLabel(item),
                 style: WinType.manrope(
                     size: 14,
                     weight: FontWeight.w600,
@@ -359,7 +375,8 @@ class _TeacherProfileWizardState extends State<_TeacherProfileWizard> {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    final steps = ['Matières', 'Niveaux'];
+    final l10n = context.l10n;
+    final steps = [l10n.authStepSubjects, l10n.authStepLevels];
     return Scaffold(
       backgroundColor: s.bg,
       body: SafeArea(
@@ -395,20 +412,20 @@ class _TeacherProfileWizardState extends State<_TeacherProfileWizard> {
             const SizedBox(height: 40),
             Text(
                 _step == 0
-                    ? 'Quelles matières enseignes-tu ?'
-                    : 'Quels niveaux couvres-tu ?',
+                    ? l10n.authTeacherSubjectsTitle
+                    : l10n.authTeacherLevelsTitle,
                 style: WinType.displayS(s.onStrong)),
             const SizedBox(height: 8),
             Text(
               _step == 0
-                  ? 'On adapte ton espace professeur et les suggestions WinAI à tes matières.'
-                  : 'Utile pour situer tes contenus et, plus tard, ton profil Mode Tuteur.',
+                  ? l10n.authTeacherSubjectsHint
+                  : l10n.authTeacherLevelsHint,
               style: WinType.bodyM(s.onMuted),
             ),
             const SizedBox(height: 28),
             Expanded(child: _buildChips(s)),
             WinButton(
-              _step == 0 ? 'Continuer' : 'Terminer',
+              _step == 0 ? l10n.commonContinue : l10n.authFinish,
               block: true,
               loading: _saving,
               onTap: _canContinue && !_saving ? _next : null,
@@ -422,7 +439,7 @@ class _TeacherProfileWizardState extends State<_TeacherProfileWizard> {
 
   Widget _buildChips(WinScheme s) {
     final items = _step == 0
-        ? WinData.subjects.map((sub) => sub.name).toList()
+        ? WinData.subjects.map((sub) => sub.nameFr).toList()
         : _teacherLevels;
     final selectedSet = _step == 0 ? _subjects : _levels;
     return Wrap(
@@ -441,7 +458,7 @@ class _TeacherProfileWizardState extends State<_TeacherProfileWizard> {
               border: Border.all(
                   color: active ? WinColors.ink800 : s.outline, width: 1.5),
             ),
-            child: Text(item,
+            child: Text(_itemLabel(item),
                 style: WinType.manrope(
                     size: 14,
                     weight: FontWeight.w600,
@@ -450,6 +467,22 @@ class _TeacherProfileWizardState extends State<_TeacherProfileWizard> {
         );
       }).toList(),
     );
+  }
+
+  /// Libellé affiché ; la valeur enregistrée reste le texte français
+  /// (nom de matière ou niveau) envoyé à l'API.
+  String _itemLabel(String v) {
+    final l10n = context.l10n;
+    for (final sub in WinData.subjects) {
+      if (sub.nameFr == v) return sub.name;
+    }
+    return switch (v) {
+      'Prépa' => l10n.authLvlPrepa,
+      'FMSB Médecine' => l10n.authLvlFmsb,
+      'ESSEC Commerce' => l10n.authLvlEssec,
+      'ENS École Normale' => l10n.authLvlEns,
+      _ => v,
+    };
   }
 }
 
@@ -474,11 +507,13 @@ class _ParentProfileWizardState extends State<_ParentProfileWizard> {
   String? _followUp;
   bool _saving = false;
 
-  static const _followUpOptions = [
-    ('close', 'Suivi rapproché', 'Alertes dès qu’un événement important survient.'),
-    ('weekly', 'Rapport hebdomadaire', 'Un résumé de la semaine, sans alerte au fil de l’eau.'),
-    ('minimal', 'Le minimum', 'Je consulterai moi-même l’espace parent.'),
-  ];
+  static List<(String, String, String)> _followUpOptions(
+          AppLocalizations l10n) =>
+      [
+        ('close', l10n.authFollowCloseLabel, l10n.authFollowCloseHint),
+        ('weekly', l10n.authFollowWeeklyLabel, l10n.authFollowWeeklyHint),
+        ('minimal', l10n.authFollowMinimalLabel, l10n.authFollowMinimalHint),
+      ];
 
   bool get _canContinue =>
       _step == 0 ? _objectiveCtrl.text.trim().isNotEmpty : _followUp != null;
@@ -513,7 +548,8 @@ class _ParentProfileWizardState extends State<_ParentProfileWizard> {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    final steps = ['Objectif', 'Suivi'];
+    final l10n = context.l10n;
+    final steps = [l10n.authStepGoal, l10n.authStepFollowUp];
     return Scaffold(
       backgroundColor: s.bg,
       body: SafeArea(
@@ -549,14 +585,14 @@ class _ParentProfileWizardState extends State<_ParentProfileWizard> {
             const SizedBox(height: 40),
             Text(
                 _step == 0
-                    ? 'Quel est votre objectif pour votre enfant ?'
-                    : 'Comment souhaitez-vous suivre sa scolarité ?',
+                    ? l10n.authParentGoalTitle
+                    : l10n.authParentFollowTitle,
                 style: WinType.displayS(s.onStrong)),
             const SizedBox(height: 8),
             Text(
               _step == 0
-                  ? 'En quelques mots : réussir un examen, combler une lacune, reprendre confiance…'
-                  : 'Vous pourrez changer cette préférence à tout moment.',
+                  ? l10n.authParentGoalHint
+                  : l10n.authParentFollowHint,
               style: WinType.bodyM(s.onMuted),
             ),
             const SizedBox(height: 28),
@@ -565,13 +601,13 @@ class _ParentProfileWizardState extends State<_ParentProfileWizard> {
               Expanded(
                 child: TextButton(
                   onPressed: _saving ? null : _skip,
-                  child: const Text('Passer cette étape'),
+                  child: Text(l10n.authSkipStep),
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: WinButton(
-                  _step == 0 ? 'Continuer' : 'Terminer',
+                  _step == 0 ? l10n.commonContinue : l10n.authFinish,
                   block: true,
                   loading: _saving,
                   onTap: _canContinue && !_saving ? _next : null,
@@ -591,7 +627,7 @@ class _ParentProfileWizardState extends State<_ParentProfileWizard> {
       maxLength: 300,
       maxLines: 3,
       decoration: InputDecoration(
-        hintText: 'Ex. Aider mon fils à progresser en maths avant le brevet',
+        hintText: context.l10n.authParentGoalPlaceholder,
         filled: true,
         fillColor: s.surface,
         border: OutlineInputBorder(
@@ -605,7 +641,7 @@ class _ParentProfileWizardState extends State<_ParentProfileWizard> {
 
   Widget _buildFollowUpChoices(WinScheme s) {
     return Column(
-      children: _followUpOptions.map((opt) {
+      children: _followUpOptions(context.l10n).map((opt) {
         final (value, label, hint) = opt;
         final active = _followUp == value;
         return GestureDetector(

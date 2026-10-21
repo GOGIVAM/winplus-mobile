@@ -10,13 +10,15 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import '../l10n/l10n.dart';
 
-const _modeLabels = {
-  'online': 'En ligne',
-  'student_home': 'À domicile (élève)',
-  'tutor_home': 'Chez le tuteur',
-  'neutral_place': 'Lieu neutre',
-};
+String? _modeLabel(BuildContext context, String mode) => switch (mode) {
+      'online' => context.l10n.commonOnline,
+      'student_home' => context.l10n.teacherBookingModeStudentHome,
+      'tutor_home' => context.l10n.tutoringModeTutorHome,
+      'neutral_place' => context.l10n.tutoringModeNeutralPlace,
+      _ => null,
+    };
 
 String _fmtDate(DateTime d) =>
     '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year}';
@@ -45,23 +47,24 @@ class _BookingDetailsState extends State<_BookingDetails> {
     // Lot 9.3 : participants, payeur et type de payeur.
     final names = b.participants.isNotEmpty
         ? b.participants.map((p) => p.label).join(', ')
-        : (b.studentName ?? 'Élève');
-    final payer = '${b.payerName ?? 'l\'élève'} (${kPayerTypeLabels[b.payerType] ?? b.payerType}'
+        : (b.studentName ?? context.l10n.roleStudent);
+    final payer = '${b.payerName ?? context.l10n.teacherBookingTheStudent} (${kPayerTypeLabels[b.payerType] ?? b.payerType}'
         '${b.studyGroupName != null ? ' · ${b.studyGroupName}' : ''})'
-        '${b.tutorAssignmentId != null ? ' · via une attribution' : ''}';
+        '${b.tutorAssignmentId != null ? ' · ${context.l10n.teacherBookingViaAssignment}' : ''}';
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       const SizedBox(height: 8),
       Text(
-          '${b.participantCount > 1 ? 'Séance de groupe · ${b.participantCount} élèves' : 'Élève'} : $names',
+          context.l10n.teacherBookingParticipants(
+              b.participantCount > 1 ? context.l10n.teacherBookingGroupSession(b.participantCount) : context.l10n.roleStudent, names),
           style: WinType.labelM(s.onSurface)),
-      Text('Payée par : $payer', style: WinType.labelM(s.onMuted)),
+      Text(context.l10n.teacherBookingPaidBy(payer), style: WinType.labelM(s.onMuted)),
       if (info.isNotEmpty) ...[
         const SizedBox(height: 8),
         Text(info, style: WinType.labelM(s.onMuted)),
       ],
       if (b.topics.isNotEmpty) ...[
         const SizedBox(height: 8),
-        Text('Sujets à travailler', style: WinType.labelS(s.onFaint)),
+        Text(context.l10n.teacherBookingTopics, style: WinType.labelS(s.onFaint)),
         const SizedBox(height: 4),
         TopicChipsRow(b.topics),
       ],
@@ -69,7 +72,7 @@ class _BookingDetailsState extends State<_BookingDetails> {
       if (const ['pending_tutor_approval', 'confirmed', 'completed', 'disputed'].contains(b.status)) ...[
         const SizedBox(height: 8),
         Wrap(crossAxisAlignment: WrapCrossAlignment.center, spacing: 8, children: [
-          WinButton(b.sessionMaterialStatus != null ? 'Support de séance' : 'Préparer le support avec WinAI',
+          WinButton(b.sessionMaterialStatus != null ? context.l10n.tutoringMaterial : context.l10n.teacherBookingPrepareMaterial,
               small: true,
               variant: WinButtonVariant.outline,
               icon: Icons.auto_awesome,
@@ -84,7 +87,7 @@ class _BookingDetailsState extends State<_BookingDetails> {
           style: TextButton.styleFrom(padding: EdgeInsets.zero),
           onPressed: () => setState(() => _open = !_open),
           child: Text(
-              _open ? 'Masquer le détail du prix' : 'Voir le détail du prix'),
+              _open ? context.l10n.teacherBookingHidePrice : context.l10n.teacherBookingShowPrice),
         ),
         if (_open) TutorPriceBreakdownView(quote: b.priceBreakdown!),
       ],
@@ -121,7 +124,7 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
       setState(() => _assignments = _assignments.map((x) => x.id == a.id ? updated : x).toList());
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Action impossible.')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(L10n.current.tutoringActionFailed)));
       }
     } finally {
       if (mounted) setState(() => _busy.remove(-a.id));
@@ -143,7 +146,7 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(TutorSessionMaterialService.errorMessage(e) ?? 'Réglage impossible.')));
+            SnackBar(content: Text(TutorSessionMaterialService.errorMessage(e) ?? L10n.current.teacherBookingSettingError)));
       }
     }
   }
@@ -182,8 +185,8 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
       await _load();
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Impossible d\'accepter cette demande.')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(L10n.current.teacherBookingAcceptError)));
       }
     } finally {
       if (mounted) setState(() => _busy.remove(id));
@@ -192,11 +195,11 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
 
   Future<void> _decline(int id) async {
     final reason = await _promptText(context,
-        title: 'Refuser la demande',
-        hint: 'Motif (optionnel)',
+        title: context.l10n.teacherBookingDeclineTitle,
+        hint: context.l10n.teacherBookingReasonHint,
         // Lot 9.2 (17.9) : refuser rembourse l'élève, frais retenus au tuteur.
         message:
-            'Celui qui a payé (élève, parent, institution ou membre du groupe) sera remboursé intégralement sur son portefeuille WinPlus ; si la séance a été payée par Mobile Money, les frais de l\'opérateur seront retenus sur ton solde.');
+            context.l10n.teacherBookingDeclineMessage);
     if (reason == null) return; // annulé
     setState(() => _busy.add(id));
     try {
@@ -206,14 +209,14 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(fee > 0
-                ? 'Demande refusée : le payeur est remboursé, ${fmtXaf(fee)} XAF de frais Mobile Money retenus sur ton solde.'
-                : 'Demande refusée : le payeur est remboursé sur son portefeuille.')));
+                ? L10n.current.teacherBookingDeclinedFee(fmtXaf(fee))
+                : L10n.current.teacherBookingDeclined)));
       }
       await _load();
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Impossible de refuser cette demande.')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(L10n.current.teacherBookingDeclineError)));
       }
     } finally {
       if (mounted) setState(() => _busy.remove(id));
@@ -224,10 +227,10 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
     String? reason;
     if (!accept) {
       reason = await _promptText(context,
-          title: 'Refuser l\'engagement entier',
-          hint: 'Motif (optionnel)',
+          title: context.l10n.teacherBookingDeclineEngagementTitle,
+          hint: context.l10n.teacherBookingReasonHint,
           message:
-              'Le payeur est remboursé intégralement, séance par séance ; si le mois a été payé par Mobile Money, les frais sont retenus sur ton solde.');
+              context.l10n.teacherBookingDeclineEngagementMessage);
       if (reason == null) return;
     }
     setState(() => _busy.add(-100000 - e.id));
@@ -239,12 +242,12 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
       }
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(accept ? 'Engagement accepté : toutes les séances du mois sont confirmées.' : 'Engagement refusé : le payeur est remboursé.')));
+            content: Text(accept ? L10n.current.teacherBookingEngagementAccepted : L10n.current.tutoringEngDeclined)));
       }
       await _load();
     } catch (err) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(TutorEngagementService.errorMessage(err) ?? 'Action impossible.')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(TutorEngagementService.errorMessage(err) ?? L10n.current.tutoringActionFailed)));
       }
     } finally {
       if (mounted) setState(() => _busy.remove(-100000 - e.id));
@@ -258,8 +261,8 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
       await _load();
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Impossible de clôturer cette séance.')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(L10n.current.teacherBookingCompleteError)));
       }
     } finally {
       if (mounted) setState(() => _busy.remove(id));
@@ -300,14 +303,14 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
                   const SizedBox(height: 20),
                   Row(children: [
                     Expanded(
-                      child: WinButton('Annuler',
+                      child: WinButton(ctx.l10n.commonCancel,
                           variant: WinButtonVariant.outline,
                           block: true,
                           onTap: () => Navigator.pop(ctx)),
                     ),
                     const SizedBox(width: 10),
                     Expanded(
-                      child: WinButton('Confirmer',
+                      child: WinButton(ctx.l10n.commonConfirm,
                           variant: WinButtonVariant.danger,
                           block: true,
                           onTap: () => Navigator.pop(ctx, ctrl.text.trim())),
@@ -339,7 +342,7 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Cours particuliers', style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.tutoringPrivateLessons, style: WinType.headlineS(s.onStrong)),
         actions: [
           IconButton(
               icon: Icon(Icons.refresh_outlined, color: s.onMuted),
@@ -353,23 +356,23 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
                   child: Column(mainAxisSize: MainAxisSize.min, children: [
                   Icon(Icons.wifi_off_outlined, size: 48, color: s.onFaint),
                   const SizedBox(height: 12),
-                  Text('Impossible de charger vos réservations.',
+                  Text(context.l10n.tutoringBookingsLoadError,
                       style: WinType.bodyM(s.onMuted)),
                   const SizedBox(height: 12),
-                  WinButton('Réessayer', onTap: _load),
+                  WinButton(context.l10n.commonRetry, onTap: _load),
                 ]))
               : RefreshIndicator(
                   onRefresh: _load,
                   child: ListView(
                     padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                     children: [
-                      Text('Demandes en attente',
+                      Text(context.l10n.teacherBookingPendingTitle,
                           style: WinType.archivo(size: 18, color: s.onStrong)),
                       const SizedBox(height: 10),
                       if ((pending ?? []).isEmpty)
                         WinCard(
                           child: Text(
-                              'Aucune demande en attente pour le moment.',
+                              context.l10n.teacherBookingPendingEmpty,
                               style: WinType.bodyS(s.onMuted)),
                         )
                       else
@@ -384,7 +387,7 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
                             )),
                       if (_pendingEngagements.isNotEmpty) ...[
                         const SizedBox(height: 24),
-                        Text('Demandes d\'engagement mensuel',
+                        Text(context.l10n.teacherBookingEngagementRequests,
                             style: WinType.archivo(size: 18, color: s.onStrong)),
                         const SizedBox(height: 10),
                         for (final pe in _pendingEngagements)
@@ -392,26 +395,26 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
                             padding: const EdgeInsets.only(bottom: 10),
                             child: WinCard(
                               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                Text(pe.engagement.participantNames.isNotEmpty ? pe.engagement.participantNames : (pe.engagement.payerName ?? 'Élève'),
+                                Text(pe.engagement.participantNames.isNotEmpty ? pe.engagement.participantNames : (pe.engagement.payerName ?? context.l10n.roleStudent),
                                     style: WinType.titleM(s.onStrong)),
                                 const SizedBox(height: 4),
-                                Text('${pe.engagement.sessionsCount} séances · ${pe.engagement.slotsSummary}',
+                                Text('${context.l10n.teacherBookingSessionsCount(pe.engagement.sessionsCount)} · ${pe.engagement.slotsSummary}',
                                     style: WinType.bodyS(s.onMuted)),
-                                Text('${fmtXaf(pe.engagement.totalXaf)} XAF payés d\'avance${pe.engagement.discountPercent > 0 ? ' (remise ${pe.engagement.discountPercent} %)' : ''} · versés séance par séance',
+                                Text('${context.l10n.teacherBookingPaidInAdvance(fmtXaf(pe.engagement.totalXaf))}${pe.engagement.discountPercent > 0 ? ' ${context.l10n.teacherBookingDiscount(pe.engagement.discountPercent)}' : ''} · ${context.l10n.teacherBookingPaidPerSession}',
                                     style: WinType.labelS(s.onFaint)),
-                                Text(pe.minutesRemaining > 0 ? '${pe.minutesRemaining} min pour répondre' : 'Expire bientôt',
+                                Text(pe.minutesRemaining > 0 ? context.l10n.teacherBookingMinutesToAnswer(pe.minutesRemaining) : context.l10n.teacherBookingExpiresSoon,
                                     style: WinType.labelS(WinColors.error)),
                                 const SizedBox(height: 8),
                                 Wrap(spacing: 8, runSpacing: 6, children: [
-                                  WinButton('Accepter le mois',
+                                  WinButton(context.l10n.teacherBookingAcceptMonth,
                                       small: true,
                                       loading: _busy.contains(-100000 - pe.engagement.id),
                                       onTap: _busy.contains(-100000 - pe.engagement.id) ? null : () => _respondEngagement(pe.engagement, true)),
-                                  WinButton('Refuser',
+                                  WinButton(context.l10n.commonDecline,
                                       small: true,
                                       variant: WinButtonVariant.outline,
                                       onTap: _busy.contains(-100000 - pe.engagement.id) ? null : () => _respondEngagement(pe.engagement, false)),
-                                  WinButton('Détail',
+                                  WinButton(context.l10n.teacherBookingDetail,
                                       small: true,
                                       variant: WinButtonVariant.ghost,
                                       onTap: () async {
@@ -426,7 +429,7 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
                       ],
                       if (_engagements.any((e) => e.status == 'active' || e.status == 'completed')) ...[
                         const SizedBox(height: 24),
-                        Text('Engagements mensuels',
+                        Text(context.l10n.tutoringEngagementsTitle,
                             style: WinType.archivo(size: 18, color: s.onStrong)),
                         const SizedBox(height: 10),
                         for (final e in _engagements.where((e) => e.status == 'active' || e.status == 'completed'))
@@ -434,7 +437,7 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
                       ],
                       if (_assignments.isNotEmpty) ...[
                         const SizedBox(height: 24),
-                        Text('Attributions',
+                        Text(context.l10n.teacherBookingAssignments,
                             style: WinType.archivo(size: 18, color: s.onStrong)),
                         const SizedBox(height: 10),
                         ..._assignments.map((a) => Padding(
@@ -452,30 +455,30 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
                                   ]),
                                   const SizedBox(height: 4),
                                   Text(
-                                      '${a.assignerType == 'institution' ? 'Institution' : 'Parent'} · ${a.beneficiaries.length} élève(s) : '
+                                      '${a.assignerType == 'institution' ? context.l10n.authRoleInstitutionLabel : context.l10n.roleParent} · ${context.l10n.teacherBookingBeneficiaries(a.beneficiaries.length)} '
                                       '${a.beneficiaries.take(6).map((b) => b.label).join(', ')}${a.beneficiaries.length > 6 ? '…' : ''}'
                                       '${a.subject != null ? ' · ${a.subject}' : ''}',
                                       style: WinType.labelM(s.onMuted)),
-                                  if (a.note != null) Text('« ${a.note} »', style: WinType.labelS(s.onFaint)),
+                                  if (a.note != null) Text(context.l10n.teacherBookingQuote(a.note!), style: WinType.labelS(s.onFaint)),
                                   if (a.isPending || a.isActive) ...[
                                     const SizedBox(height: 10),
                                     Row(children: [
                                       if (a.isPending) ...[
                                         Expanded(
-                                            child: WinButton('Refuser',
+                                            child: WinButton(context.l10n.commonDecline,
                                                 small: true,
                                                 variant: WinButtonVariant.outline,
                                                 loading: _busy.contains(-a.id),
                                                 onTap: () => _respond(a, 'decline'))),
                                         const SizedBox(width: 10),
                                         Expanded(
-                                            child: WinButton('Accepter',
+                                            child: WinButton(context.l10n.commonAccept,
                                                 small: true,
                                                 loading: _busy.contains(-a.id),
                                                 onTap: () => _respond(a, 'accept'))),
                                       ] else
                                         Expanded(
-                                            child: WinButton('Mettre fin',
+                                            child: WinButton(context.l10n.tutoringEndAssignment,
                                                 small: true,
                                                 variant: WinButtonVariant.outline,
                                                 loading: _busy.contains(-a.id),
@@ -487,7 +490,7 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
                             )),
                       ],
                       const SizedBox(height: 24),
-                      Text('Séances à venir / à clôturer',
+                      Text(context.l10n.teacherBookingUpcomingTitle,
                           style: WinType.archivo(size: 18, color: s.onStrong)),
                       // Lot 9.6 : génération automatique du support à l'acceptation (désactivée par défaut).
                       if (_autoMaterial != null)
@@ -495,14 +498,14 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
                           contentPadding: EdgeInsets.zero,
                           value: _autoMaterial!,
                           onChanged: _setAutoMaterial,
-                          title: Text('Support WinAI généré à l\'acceptation', style: WinType.labelM(s.onStrong)),
-                          subtitle: Text('Décompté de ton usage WinAI ; tu le relis avant de le partager.',
+                          title: Text(context.l10n.teacherBookingAutoMaterial, style: WinType.labelM(s.onStrong)),
+                          subtitle: Text(context.l10n.teacherBookingAutoMaterialHint,
                               style: WinType.labelS(s.onFaint)),
                         ),
                       const SizedBox(height: 10),
                       if (upcoming.isEmpty)
                         WinCard(
-                          child: Text('Aucune séance confirmée pour le moment.',
+                          child: Text(context.l10n.teacherBookingConfirmedEmpty,
                               style: WinType.bodyS(s.onMuted)),
                         )
                       else
@@ -546,20 +549,20 @@ class _PendingCard extends StatelessWidget {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                Text(b.studentName ?? 'Élève',
+                Text(b.studentName ?? context.l10n.roleStudent,
                     style: WinType.titleM(s.onStrong)),
                 Text(
                     '${_fmtDate(b.sessionDate)} · ${b.startTime} – ${b.endTime}',
                     style: WinType.labelM(s.onMuted)),
               ])),
-          WinBadge('${pending.minutesRemaining} min',
+          WinBadge(context.l10n.teacherBookingMinutes(pending.minutesRemaining),
               color: urgent ? BadgeColor.error : BadgeColor.warn),
         ]),
         const SizedBox(height: 10),
         Row(children: [
           Icon(Icons.place_outlined, size: 14, color: s.onFaint),
           const SizedBox(width: 4),
-          Text(_modeLabels[b.mode] ?? b.mode, style: WinType.labelM(s.onMuted)),
+          Text(_modeLabel(context, b.mode) ?? b.mode, style: WinType.labelM(s.onMuted)),
           const SizedBox(width: 12),
           Icon(Icons.payments_outlined, size: 14, color: s.onFaint),
           const SizedBox(width: 4),
@@ -569,7 +572,7 @@ class _PendingCard extends StatelessWidget {
         const SizedBox(height: 14),
         Row(children: [
           Expanded(
-            child: WinButton('Refuser',
+            child: WinButton(context.l10n.commonDecline,
                 variant: WinButtonVariant.outline,
                 small: true,
                 loading: busy,
@@ -577,7 +580,7 @@ class _PendingCard extends StatelessWidget {
           ),
           const SizedBox(width: 10),
           Expanded(
-            child: WinButton('Accepter',
+            child: WinButton(context.l10n.commonAccept,
                 small: true, loading: busy, onTap: busy ? null : onAccept),
           ),
         ]),
@@ -601,9 +604,9 @@ class _UpcomingCard extends StatelessWidget {
       };
 
   String get _statusLabel => switch (booking.status) {
-        'confirmed' => 'Confirmée',
-        'completed' => 'Effectuée',
-        'disputed' => 'Contestée',
+        'confirmed' => L10n.current.tutoringStatusConfirmed,
+        'completed' => L10n.current.tutoringStatusCompleted,
+        'disputed' => L10n.current.tutoringStatusDisputed,
         _ => booking.status,
       };
 
@@ -620,7 +623,7 @@ class _UpcomingCard extends StatelessWidget {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                Text(b.studentName ?? 'Élève',
+                Text(b.studentName ?? context.l10n.roleStudent,
                     style: WinType.titleM(s.onStrong)),
                 Text(
                     '${_fmtDate(b.sessionDate)} · ${b.startTime} – ${b.endTime}',
@@ -631,12 +634,12 @@ class _UpcomingCard extends StatelessWidget {
         _BookingDetails(b),
         if (b.isDisputed && (b.disputeReason ?? '').isNotEmpty) ...[
           const SizedBox(height: 8),
-          WinAlert('Motif de contestation : ${b.disputeReason}',
+          WinAlert(context.l10n.teacherBookingDisputeReason(b.disputeReason!),
               type: BadgeColor.error),
         ],
         if (b.canMarkCompleted) ...[
           const SizedBox(height: 14),
-          WinButton('Marquer effectuée',
+          WinButton(context.l10n.teacherBookingMarkCompleted,
               block: true,
               small: true,
               loading: busy,

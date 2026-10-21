@@ -4,6 +4,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import '../l10n/l10n.dart';
 
 class StudentDirectoryScreen extends StatefulWidget {
   const StudentDirectoryScreen({super.key});
@@ -78,7 +79,7 @@ class _StudentDirectoryScreenState extends State<StudentDirectoryScreen> {
 
   Future<void> _addStudent() async {
     if (_addEmail.trim().isEmpty) {
-      setState(() => _addError = 'Email requis');
+      setState(() => _addError = context.l10n.instDirEmailRequired);
       return;
     }
     setState(() {
@@ -102,13 +103,13 @@ class _StudentDirectoryScreenState extends State<StudentDirectoryScreen> {
         _addLevel = '';
         _addGroup = '';
         _addLoading = false;
-        _addSuccess = 'Élève ajouté avec succès';
+        _addSuccess = L10n.current.instDirAddSuccess;
       });
       await _load();
     } else {
       setState(() {
         _addLoading = false;
-        _addError = 'Impossible d\'ajouter cet élève';
+        _addError = L10n.current.instDirAddError;
       });
     }
   }
@@ -126,13 +127,13 @@ class _StudentDirectoryScreenState extends State<StudentDirectoryScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title:
-            Text('Annuaire des élèves', style: WinType.headlineS(s.onStrong)),
+            Text(context.l10n.instDirTitle, style: WinType.headlineS(s.onStrong)),
       ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : _institutionId == null
               ? Center(
-                  child: Text('Aucune institution associée.',
+                  child: Text(context.l10n.instDirNoInstitution,
                       style: WinType.bodyM(s.onMuted)))
               : Column(children: [
                   // KPIs
@@ -141,22 +142,22 @@ class _StudentDirectoryScreenState extends State<StudentDirectoryScreen> {
                       padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
                       child: Row(children: [
                         _KpiCard(
-                            label: 'Élèves',
+                            label: context.l10n.instDirStudents,
                             value: '${_kpis!.totalStudents}',
                             s: s),
                         const SizedBox(width: 8),
                         _KpiCard(
-                            label: 'Actifs',
+                            label: context.l10n.instDirActive,
                             value: '${_kpis!.activeStudents}',
                             s: s),
                         const SizedBox(width: 8),
                         _KpiCard(
-                            label: 'Moy.',
+                            label: context.l10n.instDirAvg,
                             value: '${_kpis!.averageScore.toStringAsFixed(0)}%',
                             s: s),
                         const SizedBox(width: 8),
                         _KpiCard(
-                            label: 'Groupes',
+                            label: context.l10n.shellTabGroups,
                             value: '${_kpis!.groupCount}',
                             s: s),
                       ]),
@@ -167,22 +168,22 @@ class _StudentDirectoryScreenState extends State<StudentDirectoryScreen> {
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Ajouter un élève',
+                          Text(context.l10n.teacherClassAddStudent,
                               style: WinType.titleM(s.onStrong)),
                           const SizedBox(height: 8),
                           Row(children: [
                             Expanded(
-                                child: _buildTextField(s, _emailCtrl, 'Email',
+                                child: _buildTextField(s, _emailCtrl, context.l10n.email,
                                     (v) => _addEmail = v)),
                             const SizedBox(width: 8),
                             SizedBox(
                                 width: 90,
-                                child: _buildTextField(s, _levelCtrl, 'Niveau',
+                                child: _buildTextField(s, _levelCtrl, context.l10n.commonLevel,
                                     (v) => _addLevel = v)),
                             const SizedBox(width: 8),
                             SizedBox(
                                 width: 90,
-                                child: _buildTextField(s, _groupCtrl, 'Groupe',
+                                child: _buildTextField(s, _groupCtrl, context.l10n.instDirGroup,
                                     (v) => _addGroup = v)),
                             const SizedBox(width: 8),
                             GestureDetector(
@@ -224,7 +225,7 @@ class _StudentDirectoryScreenState extends State<StudentDirectoryScreen> {
                     child: TextField(
                       onChanged: _search,
                       decoration: InputDecoration(
-                        hintText: 'Rechercher par nom ou email…',
+                        hintText: context.l10n.instDirSearchHint,
                         hintStyle: WinType.bodyS(s.onFaint),
                         prefixIcon:
                             Icon(Icons.search, size: 20, color: s.onFaint),
@@ -249,14 +250,14 @@ class _StudentDirectoryScreenState extends State<StudentDirectoryScreen> {
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                          '${_students.length} élève${_students.length != 1 ? 's' : ''}',
+                          context.l10n.instDirCount(_students.length),
                           style: WinType.labelM(s.onMuted)),
                     ),
                   ),
                   Expanded(
                     child: _students.isEmpty
                         ? Center(
-                            child: Text('Aucun élève trouvé.',
+                            child: Text(context.l10n.instDirNoStudent,
                                 style: WinType.bodyM(s.onMuted)))
                         : ListView.separated(
                             padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),

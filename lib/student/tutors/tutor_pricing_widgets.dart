@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../l10n/l10n.dart';
 import '../../services/tutor_booking_service.dart';
 import '../../services/tutor_profile_service.dart';
 import '../../theme/win_colors.dart';
@@ -13,19 +14,13 @@ import '../../widgets/win_widgets.dart';
 /// affichés.
 
 const int kMaxTopics = 5;
-const _dowShort = ['dim.', 'lun.', 'mar.', 'mer.', 'jeu.', 'ven.', 'sam.'];
+// Jour abrégé à partir d'un index 0 = dimanche … 6 = samedi.
+String _dowShort(int x) => WinFormat.weekdayShort(x == 0 ? DateTime.sunday : x);
 
-String fmtXaf(num n) {
-  final s = n.round().toString();
-  final buf = StringBuffer();
-  for (var i = 0; i < s.length; i++) {
-    if (i > 0 && (s.length - i) % 3 == 0 && s[i - 1] != '-') buf.write(' ');
-    buf.write(s[i]);
-  }
-  return buf.toString();
-}
+/// Montant groupé par milliers : « 8 000 » / « 8,000 ».
+String fmtXaf(num n) => WinFormat.number(n);
 
-String _signed(int p) => p > 0 ? '+$p %' : '$p %';
+String _signed(int p) => L10n.current.tutoringPercent(p > 0 ? '+$p' : '$p');
 
 /// Détail d'un devis serveur : tranches au même tarif, dégressivité, total.
 class TutorPriceBreakdownView extends StatelessWidget {
@@ -54,9 +49,9 @@ class TutorPriceBreakdownView extends StatelessWidget {
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text(
-          'Tarif de base : ${fmtXaf(quote.baseHourlyRateXaf)} XAF / h'
+          '${context.l10n.tutoringBaseRate(fmtXaf(quote.baseHourlyRateXaf))}'
           '${quote.subject != null ? ' · ${quote.subject}' : ''}'
-          ' · ${quote.modeCategory == 'online' ? 'en ligne' : 'présentiel'}',
+          ' · ${quote.modeCategory == 'online' ? context.l10n.tutoringModeOnlineLower : context.l10n.tutoringModeInPerson}',
           style: WinType.labelS(s.onMuted)),
       const SizedBox(height: 6),
       ...quote.segments.map((seg) => line(
@@ -67,28 +62,28 @@ class TutorPriceBreakdownView extends StatelessWidget {
                 : null,
           )),
       if (quote.durationDiscountPercent > 0) ...[
-        line('Sous-total', '${fmtXaf(quote.subtotalXaf)} XAF',
+        line(context.l10n.tutoringSubtotal, '${fmtXaf(quote.subtotalXaf)} XAF',
             color: s.onMuted),
-        line('Séance longue (−${quote.durationDiscountPercent} %)',
+        line(context.l10n.tutoringLongSession(quote.durationDiscountPercent),
             '−${fmtXaf(quote.durationDiscountXaf)} XAF',
             color: WinColors.success),
       ],
       // Lot 9.3 : prix de groupe, appliqué au prix individuel.
       if (quote.isGroup) ...[
-        line('Prix pour un élève', '${fmtXaf(quote.soloTotalXaf)} XAF', color: s.onMuted),
+        line(context.l10n.tutoringSoloPrice, '${fmtXaf(quote.soloTotalXaf)} XAF', color: s.onMuted),
         if (quote.groupPricingMethod == 'flat')
-          line('Prix fixe du groupe (${quote.participantCount} élèves)', '${fmtXaf(quote.totalXaf)} XAF',
-              hint: '${quote.groupFlatPercent ?? 100} % du prix individuel · ≈ ${fmtXaf(quote.perStudentXaf)} XAF par élève')
+          line(context.l10n.tutoringGroupFlat(quote.participantCount), '${fmtXaf(quote.totalXaf)} XAF',
+              hint: context.l10n.tutoringGroupFlatHint(quote.groupFlatPercent ?? 100, fmtXaf(quote.perStudentXaf)))
         else
-          line('${quote.participantCount} élèves × ${fmtXaf(quote.perStudentXaf)} XAF', '${fmtXaf(quote.totalXaf)} XAF',
+          line(context.l10n.tutoringPerStudentLine(quote.participantCount, fmtXaf(quote.perStudentXaf)), '${fmtXaf(quote.totalXaf)} XAF',
               color: quote.groupDiscountPercent > 0 ? WinColors.success : null,
-              hint: quote.groupDiscountPercent > 0 ? 'Prix de groupe : −${quote.groupDiscountPercent} % par élève' : null),
+              hint: quote.groupDiscountPercent > 0 ? context.l10n.tutoringGroupDiscount(quote.groupDiscountPercent) : null),
       ],
       const SizedBox(height: 4),
       const WinDivider(),
       const SizedBox(height: 6),
       Row(children: [
-        Expanded(child: Text(quote.isGroup ? 'Total (groupe)' : 'Total', style: WinType.titleM(s.onStrong))),
+        Expanded(child: Text(quote.isGroup ? context.l10n.tutoringTotalGroup : context.l10n.tutoringTotal, style: WinType.titleM(s.onStrong))),
         Text('${fmtXaf(quote.totalXaf)} XAF',
             style: WinType.titleM(s.onStrong)),
       ]),
@@ -100,12 +95,12 @@ class TutorPriceBreakdownView extends StatelessWidget {
 class TopicsField extends StatefulWidget {
   final List<String> topics;
   final ValueChanged<List<String>> onChanged;
-  final String hint;
+  final String? hint;
   const TopicsField({
     super.key,
     required this.topics,
     required this.onChanged,
-    this.hint = 'Ex. équations du second degré',
+    this.hint,
   });
 
   @override
@@ -162,7 +157,7 @@ class _TopicsFieldState extends State<TopicsField> {
               textInputAction: TextInputAction.done,
               onSubmitted: (_) => _commit(),
               decoration: InputDecoration(
-                hintText: widget.topics.isEmpty ? widget.hint : 'Autre sujet…',
+                hintText: widget.topics.isEmpty ? (widget.hint ?? context.l10n.tutoringTopicsPlaceholder) : context.l10n.tutoringAnotherTopic,
                 counterText: '',
                 isDense: true,
                 border: OutlineInputBorder(
@@ -171,7 +166,7 @@ class _TopicsFieldState extends State<TopicsField> {
             ),
           ),
           IconButton(
-            tooltip: 'Ajouter ce sujet',
+            tooltip: context.l10n.tutoringAddTopic,
             icon: Icon(Icons.add_circle_outline, color: s.primary),
             onPressed: _commit,
           ),
@@ -211,13 +206,13 @@ class TutorGroupPricingSummary extends StatelessWidget {
     final s = WinTheme.of(context);
     if (profile.effectiveMaxGroupSize < 2) return const SizedBox.shrink();
     final lines = <String>[
-      'Séances de groupe jusqu\'à ${profile.maxGroupSize} élèves.',
+      context.l10n.tutoringGroupUpTo('${profile.maxGroupSize}'),
       if (profile.groupPricingMethod == 'flat')
-        'Prix fixe pour le groupe : ${profile.groupFlatPricePercent ?? 100} % du prix d\'une séance individuelle.'
+        context.l10n.tutoringGroupFlatSummary(profile.groupFlatPricePercent ?? 100)
       else if (profile.groupDiscounts.isEmpty)
-        'Chaque élève paie le prix d\'une séance individuelle.'
+        context.l10n.tutoringGroupEachPays
       else
-        ...profile.groupDiscounts.map((d) => 'À partir de ${d.minGroupSize} élèves : −${d.percentDiscount} % par élève'),
+        ...profile.groupDiscounts.map((d) => context.l10n.tutoringGroupFromSize(d.minGroupSize, d.percentDiscount)),
     ];
     return Padding(
       padding: const EdgeInsets.only(top: 6),
@@ -252,27 +247,27 @@ class TutorRateGridSummary extends StatelessWidget {
       return const SizedBox.shrink();
     }
     String modeLabel(String? m) => m == 'online'
-        ? 'en ligne'
+        ? context.l10n.tutoringModeOnlineLower
         : m == 'in_person'
-            ? 'présentiel'
-            : 'tous modes';
+            ? context.l10n.tutoringModeInPerson
+            : context.l10n.tutoringModeAll;
     String days(List<int> d) => d.isEmpty || d.length == 7
-        ? 'tous les jours'
-        : d.map((x) => _dowShort[x]).join(' ');
+        ? context.l10n.tutoringEveryDay
+        : d.map(_dowShort).join(' ');
     final lines = <String>[
       ...rates.map((r) =>
-          '${r.subject ?? 'Toutes matières'} · ${modeLabel(r.mode)} : ${fmtXaf(r.hourlyRateXaf)} XAF / h'),
+          context.l10n.tutoringRateLine(r.subject ?? context.l10n.tutoringAllSubjects, modeLabel(r.mode), fmtXaf(r.hourlyRateXaf))),
       ...modifiers.map((m) =>
-          '${m.label} (${days(m.daysOfWeek)}${m.startTime != null ? ', ${m.startTime}–${m.endTime}' : ''}) : ${_signed(m.percentAdjustment)}'),
+          context.l10n.tutoringModifierLine(m.label, '${days(m.daysOfWeek)}${m.startTime != null ? ', ${m.startTime}–${m.endTime}' : ''}', _signed(m.percentAdjustment))),
       ...discounts.map((d) =>
-          'À partir de ${formatDurationMinutes(d.minDurationMinutes)} : −${d.percentDiscount} %'),
+          context.l10n.tutoringFromDuration(formatDurationMinutes(d.minDurationMinutes), d.percentDiscount)),
     ];
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       ...lines.map((l) => Padding(
             padding: const EdgeInsets.only(bottom: 4),
             child: Text('• $l', style: WinType.bodyS(s.onSurface)),
           )),
-      Text('Facturation au prorata des tranches de 30 min.',
+      Text(context.l10n.tutoringProrata,
           style: WinType.labelS(s.onFaint)),
     ]);
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
 import '../services/auth_service.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
@@ -40,7 +41,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     } else {
       setState(() {
         _loading = false;
-        _error = result.message ?? 'Erreur réseau.';
+        _error = result.message ?? context.l10n.authErrNetwork;
       });
     }
   }
@@ -48,6 +49,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
+    final l10n = context.l10n;
     return Scaffold(
       backgroundColor: s.bg,
       appBar: AppBar(
@@ -64,22 +66,22 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             const SizedBox(height: 16),
-            Text('Nouveau mot de passe', style: WinType.displayS(s.onStrong)),
+            Text(l10n.authNewPassword, style: WinType.displayS(s.onStrong)),
             const SizedBox(height: 8),
-            Text('Choisissez un mot de passe sécurisé.',
+            Text(l10n.authChooseSecure,
                 style: WinType.bodyM(s.onMuted)),
             const SizedBox(height: 32),
             if (_done) ...[
-              const WinAlert(
-                'Mot de passe mis à jour ! Vous pouvez maintenant vous connecter.',
+              WinAlert(
+                l10n.authPwdUpdated,
                 type: BadgeColor.success,
               ),
               const SizedBox(height: 24),
-              WinButton('Aller à la connexion',
+              WinButton(l10n.authGoToLogin,
                   block: true, onTap: () => Navigator.pop(context)),
             ] else ...[
               WinTextField(
-                label: 'Nouveau mot de passe',
+                label: l10n.authNewPassword,
                 hint: '••••••••',
                 icon: Icons.lock_outline,
                 obscure: !_showPw,
@@ -92,7 +94,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               ),
               const SizedBox(height: 12),
               WinTextField(
-                label: 'Confirmer le mot de passe',
+                label: l10n.authConfirmPassword,
                 hint: '••••••••',
                 icon: Icons.lock_outline,
                 obscure: !_showConfirm,
@@ -104,19 +106,19 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 onChanged: (_) => setState(() {}),
               ),
               const SizedBox(height: 20),
-              _Constraint('Au moins 8 caractères', _has8),
+              _Constraint(l10n.authRule8, _has8),
               const SizedBox(height: 6),
-              _Constraint('Au moins une majuscule', _hasMaj),
+              _Constraint(l10n.authRuleUpper, _hasMaj),
               const SizedBox(height: 6),
-              _Constraint('Au moins un chiffre', _hasNum),
+              _Constraint(l10n.authRuleDigit, _hasNum),
               const SizedBox(height: 6),
-              _Constraint('Les mots de passe correspondent', _matches),
+              _Constraint(l10n.authRuleMatch, _matches),
               const SizedBox(height: 28),
               if (_error != null) ...[
                 WinAlert(_error!, type: BadgeColor.error),
                 const SizedBox(height: 14),
               ],
-              WinButton('Réinitialiser',
+              WinButton(l10n.authReset,
                   block: true, loading: _loading, onTap: _submit),
             ],
           ]),

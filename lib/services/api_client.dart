@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import '../app_config.dart';
+import '../l10n/l10n.dart';
 import 'session_manager.dart';
 
 /// Client Dio centralisé avec intercepteur JWT automatique et refresh token.
@@ -25,6 +26,8 @@ class ApiClient {
         if (token != null && token.isNotEmpty) {
           options.headers['Authorization'] = 'Bearer $token';
         }
+        // Lot 10.11 : langue de l'application pour les réponses du serveur.
+        options.headers['Accept-Language'] = L10n.code;
         handler.next(options);
       },
       onError: (DioException e, handler) async {

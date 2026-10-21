@@ -7,6 +7,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import 'content_publish_screen.dart';
+import '../l10n/l10n.dart';
 
 class ContentActionsSheet extends StatelessWidget {
   final ApiPublishedContent content;
@@ -36,14 +37,18 @@ class ContentActionsSheet extends StatelessWidget {
       };
 
   String get _statusLabel => switch (content.status) {
-        'published' => 'Publié',
-        'draft' => 'Brouillon',
-        'review' || 'pending' => 'En révision',
+        'published' => L10n.current.commonPublished,
+        'draft' => L10n.current.commonDraft,
+        'review' || 'pending' => L10n.current.teacherContentStatusReview,
         _ => content.status,
       };
 
   void _showStatusDialog(BuildContext context) {
-    const statuses = ['Publié', 'Brouillon', 'Archivé'];
+    final statuses = [
+      L10n.current.commonPublished,
+      L10n.current.commonDraft,
+      L10n.current.teacherContentStatusArchived,
+    ];
     String selected = _statusLabel;
     showDialog(
       context: context,
@@ -54,7 +59,7 @@ class ContentActionsSheet extends StatelessWidget {
             backgroundColor: s.surface,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(WinRadii.xl)),
-            title: Text('Changer le statut',
+            title: Text(ctx.l10n.teacherContentChangeStatus,
                 style: WinType.archivo(size: 17, color: s.onStrong)),
             content: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -86,17 +91,17 @@ class ContentActionsSheet extends StatelessWidget {
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(ctx),
-                child: Text('Annuler', style: WinType.labelM(s.onMuted)),
+                child: Text(ctx.l10n.commonCancel, style: WinType.labelM(s.onMuted)),
               ),
               TextButton(
                 onPressed: () {
                   Navigator.pop(ctx);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Statut changé : $selected')),
+                    SnackBar(content: Text(context.l10n.teacherContentStatusChanged(selected))),
                   );
                   onChanged?.call();
                 },
-                child: Text('Confirmer', style: WinType.labelM(s.primary)),
+                child: Text(ctx.l10n.commonConfirm, style: WinType.labelM(s.primary)),
               ),
             ],
           );
@@ -114,16 +119,16 @@ class ContentActionsSheet extends StatelessWidget {
           backgroundColor: s.surface,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(WinRadii.xl)),
-          title: Text('Supprimer ?',
+          title: Text(ctx.l10n.teacherContentDeleteTitle,
               style: WinType.archivo(size: 17, color: s.onStrong)),
           content: Text(
-            '« ${content.title} » sera définitivement supprimé.',
+            ctx.l10n.teacherContentDeleteBody(content.title),
             style: WinType.bodyM(s.onMuted),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
-              child: Text('Annuler', style: WinType.labelM(s.onMuted)),
+              child: Text(ctx.l10n.commonCancel, style: WinType.labelM(s.onMuted)),
             ),
             TextButton(
               onPressed: () async {
@@ -132,7 +137,7 @@ class ContentActionsSheet extends StatelessWidget {
                 onChanged?.call();
                 if (context.mounted) Navigator.pop(context);
               },
-              child: Text('Supprimer', style: WinType.labelM(WinColors.error)),
+              child: Text(ctx.l10n.commonDelete, style: WinType.labelM(WinColors.error)),
             ),
           ],
         );
@@ -189,20 +194,20 @@ class ContentActionsSheet extends StatelessWidget {
               _MiniStat(
                   icon: Icons.download_outlined,
                   value: '${c.downloads}',
-                  label: 'Téléch.',
+                  label: context.l10n.teacherContentDownloadsShort,
                   color: WinColors.blue500),
               const SizedBox(width: 12),
               _MiniStat(
                 icon: Icons.star_outline,
                 value: c.rating > 0 ? c.rating.toStringAsFixed(1) : '',
-                label: 'Note',
+                label: context.l10n.teacherContentRating,
                 color: WinColors.gold,
               ),
               const SizedBox(width: 12),
               _MiniStat(
                 icon: Icons.account_balance_wallet_outlined,
                 value: c.revenue > 0 ? '${fmtXaf(c.revenue)} XAF' : '',
-                label: 'Revenus',
+                label: context.l10n.shellTabEarnings,
                 color: WinColors.success,
               ),
             ]),
@@ -214,13 +219,13 @@ class ContentActionsSheet extends StatelessWidget {
             // 4 actions liste
             _ActionRow(
               icon: Icons.bar_chart_outlined,
-              label: 'Statistiques',
+              label: context.l10n.teacherContentStats,
               onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Bientôt disponible'))),
+                  SnackBar(content: Text(context.l10n.teacherContentComingSoon))),
             ),
             _ActionRow(
               icon: Icons.edit_outlined,
-              label: 'Modifier les infos',
+              label: context.l10n.teacherContentEditInfo,
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(context,
@@ -229,12 +234,12 @@ class ContentActionsSheet extends StatelessWidget {
             ),
             _ActionRow(
               icon: Icons.swap_horiz_outlined,
-              label: 'Changer le statut',
+              label: context.l10n.teacherContentChangeStatus,
               onTap: () => _showStatusDialog(context),
             ),
             _ActionRow(
               icon: Icons.delete_outline,
-              label: 'Supprimer',
+              label: context.l10n.commonDelete,
               color: WinColors.error,
               onTap: () => _showDeleteDialog(context),
             ),

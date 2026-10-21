@@ -6,6 +6,7 @@ import '../theme/win_motion.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import '../l10n/l10n.dart';
 
 /// Lot 9.7b (étude 1.4) : choix des enfants couverts par le plan du parent
 /// (catalogue, bonus WinAI, alertes) quand il a plus d'enfants liés que son
@@ -22,11 +23,6 @@ class _CoveredChildrenScreenState extends State<CoveredChildrenScreen> {
   bool _loading = true;
   bool _saving = false;
   Set<int> _selected = {};
-
-  static const _months = [
-    'janvier', 'février', 'mars', 'avril', 'mai', 'juin',
-    'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre',
-  ];
 
   @override
   void initState() {
@@ -70,8 +66,8 @@ class _CoveredChildrenScreenState extends State<CoveredChildrenScreen> {
       final st = await ParentService.instance.setCoveredChildren(_selected.toList());
       if (!mounted) return;
       setState(() => _apply(st));
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Votre choix est enregistré : il s’applique tout de suite.')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(L10n.current.parentCoveredSaved)));
     } on CoveredChildrenException catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.message)));
@@ -90,7 +86,7 @@ class _CoveredChildrenScreenState extends State<CoveredChildrenScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         iconTheme: IconThemeData(color: s.onStrong),
-        title: Text('Enfants couverts', style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.parentCoveredTitle, style: WinType.headlineS(s.onStrong)),
       ),
       body: SafeArea(child: _body(s)),
     );
@@ -104,10 +100,10 @@ class _CoveredChildrenScreenState extends State<CoveredChildrenScreen> {
           child: Padding(
               padding: const EdgeInsets.all(24),
               child: Column(mainAxisSize: MainAxisSize.min, children: [
-                Text('Les informations n’ont pas pu être chargées.',
+                Text(context.l10n.parentCoveredLoadError,
                     style: WinType.bodyM(s.onMuted), textAlign: TextAlign.center),
                 const SizedBox(height: 12),
-                WinButton('Réessayer', icon: Icons.refresh, onTap: _load),
+                WinButton(context.l10n.commonRetry, icon: Icons.refresh, onTap: _load),
               ])));
     }
     if (!st.selectionNeeded) {
@@ -115,8 +111,8 @@ class _CoveredChildrenScreenState extends State<CoveredChildrenScreen> {
         WinCard(
             child: Text(
                 st.max == null
-                    ? 'Votre plan couvre tous vos enfants liés : il n’y a rien à choisir.'
-                    : 'Votre plan couvre jusqu’à ${st.max} enfant${(st.max ?? 0) > 1 ? 's' : ''} et tous vos enfants liés sont couverts.',
+                    ? context.l10n.parentCoveredAll
+                    : context.l10n.parentCoveredUpTo(st.max ?? 0),
                 style: WinType.bodyM(s.onStrong))),
       ]);
     }
@@ -126,7 +122,9 @@ class _CoveredChildrenScreenState extends State<CoveredChildrenScreen> {
     final next = st.nextChangeAt;
     return ListView(padding: const EdgeInsets.fromLTRB(16, 8, 16, 24), children: [
       Text(
-          'Votre plan couvre $max enfant${max > 1 ? 's' : ''} sur ${st.children.length} liés : catalogue, bonus WinAI et alertes.',
+          max > 1
+              ? context.l10n.parentCoveredSubMany(max, st.children.length)
+              : context.l10n.parentCoveredSubOne(max, st.children.length),
           style: WinType.bodyM(s.onStrong)),
       const SizedBox(height: 12),
       for (final c in st.children)
@@ -151,23 +149,23 @@ class _CoveredChildrenScreenState extends State<CoveredChildrenScreen> {
                 Expanded(
                     child: Text(c.name,
                         style: WinType.bodyM(s.onStrong).copyWith(fontWeight: FontWeight.w600))),
-                if (c.covered) const WinBadge('Couvert'),
+                if (c.covered) WinBadge(context.l10n.parentCoveredBadge),
               ]),
             ),
           ),
         ),
       const SizedBox(height: 4),
       Text(
-          '${st.customSelection ? 'Choix enregistré' : 'Par défaut, les enfants liés en premier sont couverts'} · un changement par période d’abonnement'
-          '${!st.canChange && next != null ? ' · prochain changement possible le ${next.day} ${_months[next.month - 1]} ${next.year}' : ''}',
+          '${st.customSelection ? context.l10n.parentCoveredCustom : context.l10n.parentCoveredDefault} · ${context.l10n.parentCoveredOnePerPeriod}'
+          '${!st.canChange && next != null ? ' · ${context.l10n.parentCoveredNextChange(WinFormat.date(next))}' : ''}',
           style: WinType.labelM(s.onMuted)),
       const SizedBox(height: 16),
-      WinButton(_saving ? 'Enregistrement…' : 'Enregistrer le choix',
+      WinButton(_saving ? context.l10n.teacherProfileSaving : context.l10n.parentCoveredSave,
           block: true,
           loading: _saving,
           onTap: st.canChange && dirty && _selected.isNotEmpty && !_saving ? _save : null),
       const SizedBox(height: 8),
-      WinButton('Couvrir plus d’enfants',
+      WinButton(context.l10n.parentCoveredMore,
           block: true,
           variant: WinButtonVariant.outline,
           onTap: () => Navigator.push(

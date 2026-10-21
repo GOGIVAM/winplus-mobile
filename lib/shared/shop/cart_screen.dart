@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../theme/win_motion.dart';
 import '../../data/models.dart' show fmtXaf;
+import '../../l10n/l10n.dart';
 import '../../services/cart_service.dart';
 import '../../theme/win_colors.dart';
 import '../../theme/win_theme.dart';
@@ -69,7 +70,7 @@ class _CartScreenState extends State<CartScreen> {
     } else {
       setState(() => _removing.remove(item.id));
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Impossible de retirer cet article.')));
+          SnackBar(content: Text(context.l10n.shopCartRemoveFailed)));
     }
   }
 
@@ -105,7 +106,7 @@ class _CartScreenState extends State<CartScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Mon panier', style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.shopCartTitle, style: WinType.headlineS(s.onStrong)),
       ),
       body: cart == null
           ? _error
@@ -113,10 +114,10 @@ class _CartScreenState extends State<CartScreen> {
                   child: Column(mainAxisSize: MainAxisSize.min, children: [
                   Icon(Icons.wifi_off_outlined, size: 48, color: s.onFaint),
                   const SizedBox(height: 12),
-                  Text('Impossible de charger le panier.',
+                  Text(context.l10n.shopCartLoadFailed,
                       style: WinType.bodyM(s.onMuted)),
                   const SizedBox(height: 12),
-                  WinButton('Réessayer', onTap: _load),
+                  WinButton(context.l10n.commonRetry, onTap: _load),
                 ]))
               : const Center(child: CircularProgressIndicator())
           : cart.items.isEmpty
@@ -125,10 +126,10 @@ class _CartScreenState extends State<CartScreen> {
                   Icon(Icons.shopping_cart_outlined,
                       size: 64, color: s.onFaint),
                   const SizedBox(height: 12),
-                  Text('Votre panier est vide.',
+                  Text(context.l10n.shopCartEmpty,
                       style: WinType.bodyM(s.onMuted)),
                   const SizedBox(height: 20),
-                  WinButton('Explorer le catalogue',
+                  WinButton(context.l10n.shopExploreCatalog,
                       icon: Icons.explore_outlined,
                       onTap: () => Navigator.pop(context)),
                 ]))
@@ -305,13 +306,13 @@ class _CartSummary extends StatelessWidget {
           Row(children: [
             Expanded(
               child: WinTextField(
-                hint: 'Code promo',
+                hint: context.l10n.shopPromoCode,
                 icon: Icons.local_offer_outlined,
                 controller: promoCtrl,
               ),
             ),
             const SizedBox(width: 8),
-            WinButton('Appliquer',
+            WinButton(context.l10n.shopApply,
                 small: true, loading: applyingPromo, onTap: onApplyPromo),
           ]),
           if (promoError != null) ...[
@@ -325,20 +326,20 @@ class _CartSummary extends StatelessWidget {
             WinStaggerFade(
               index: 0,
               child: Text(
-                  'Réduction appliquée : -${fmtXaf(promoDiscount!.round())} XAF',
+                  context.l10n.shopPromoApplied(fmtXaf(promoDiscount!.round())),
                   style: WinType.labelS(WinColors.success)),
             ),
           ],
           const SizedBox(height: 14),
-          _row(s, 'Sous-total', cart.subtotal),
+          _row(s, context.l10n.shopSubtotal, cart.subtotal),
           const SizedBox(height: 4),
           // Lot 9.7b (18.21) : prix TTC, TVA incluse (jamais ajoutée).
-          _row(s, 'dont TVA 19,25 % incluse', cart.tax),
+          _row(s, context.l10n.shopVatIncluded, cart.tax),
           const SizedBox(height: 8),
           const WinDivider(),
           const SizedBox(height: 8),
           Row(children: [
-            Text('Total', style: WinType.headlineS(s.onStrong)),
+            Text(context.l10n.shopTotal, style: WinType.headlineS(s.onStrong)),
             const Spacer(),
             WinAnimatedCounter(
               value: cart.total.round(),
@@ -348,7 +349,7 @@ class _CartSummary extends StatelessWidget {
             ),
           ]),
           const SizedBox(height: 16),
-          WinButton('Passer la commande',
+          WinButton(context.l10n.shopPlaceOrder,
               block: true, icon: Icons.arrow_forward, onTap: onCheckout),
         ]),
       ),

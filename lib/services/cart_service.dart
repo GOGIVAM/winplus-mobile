@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'api_client.dart';
+import '../l10n/l10n.dart';
 
 /// Article du panier serveur (GET /api/cart). Le prix vient du serveur, pas
 /// du client (Module 17 : tout prix envoyé par le client est ignoré côté
@@ -126,9 +127,9 @@ class CartService {
     } on DioException catch (e) {
       final data = e.response?.data;
       final msg = data is Map ? data['error'] as String? : null;
-      return msg ?? "Impossible d'ajouter la formation au panier.";
+      return msg ?? L10n.current.svcCartAddCourseFailed;
     } catch (_) {
-      return "Impossible d'ajouter la formation au panier.";
+      return L10n.current.svcCartAddCourseFailed;
     }
   }
 
@@ -163,7 +164,7 @@ class CartService {
       final data = e.response?.data;
       final msg = data is Map ? data['error'] as String? : null;
       return ApiPromoResult(
-          success: false, error: msg ?? 'Code promo invalide.');
+          success: false, error: msg ?? L10n.current.svcInvalidPromo);
     }
   }
 

@@ -10,6 +10,8 @@ class SessionManager {
   static const _keyUserRole = 'user_role';
   static const _keyUserName = 'user_name';
   static const _keyLastPeriodicCheck = 'last_periodic_check_ms';
+  // Même clé que kLocalePrefKey (app_state.dart).
+  static const _keyLocale = 'winplus_locale';
 
   static Future<void> save({
     required String accessToken,
@@ -93,6 +95,10 @@ class SessionManager {
 
   static Future<void> clear() async {
     final p = await SharedPreferences.getInstance();
+    // Lot 10.11 : la langue choisie survit à la déconnexion (écran
+    // d'accueil et connexion suivante dans la même langue).
+    final locale = p.getString(_keyLocale);
     await p.clear();
+    if (locale != null) await p.setString(_keyLocale, locale);
   }
 }

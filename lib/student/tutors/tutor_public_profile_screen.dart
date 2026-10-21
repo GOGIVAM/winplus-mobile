@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../l10n/l10n.dart';
 import '../../theme/win_motion.dart';
 import '../../services/tutor_booking_service.dart';
 import '../../services/tutor_profile_service.dart';
@@ -10,8 +11,6 @@ import 'tutor_policy_widgets.dart';
 import 'tutor_booking_flow_screen.dart';
 import 'tutor_engagement_flow_screen.dart';
 import 'tutor_pricing_widgets.dart';
-
-const _weekdayShort = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
 
 /// Fiche répétiteur publique (vue élève)  professeur_complete.md, section
 /// "Fiche répétiteur (vue publique)".
@@ -136,10 +135,10 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
                         Icon(Icons.wifi_off_outlined,
                             size: 48, color: s.onFaint),
                         const SizedBox(height: 12),
-                        Text('Impossible de charger ce profil.',
+                        Text(context.l10n.tutoringProfileLoadError,
                             style: WinType.bodyM(s.onMuted)),
                         const SizedBox(height: 12),
-                        WinButton('Réessayer', onTap: _load),
+                        WinButton(context.l10n.commonRetry, onTap: _load),
                       ]),
                     ),
                   ),
@@ -156,7 +155,7 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
                     ),
                     child: SafeArea(
                       top: false,
-                      child: WinButton('Réserver une séance',
+                      child: WinButton(context.l10n.tutoringBookSession,
                           block: true,
                           icon: Icons.calendar_month_outlined,
                           onTap: () => _openBooking()),
@@ -176,7 +175,7 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
         ],
         if ((p.videoUrl ?? '').isNotEmpty) ...[
           const SizedBox(height: 16),
-          const _SectionTitle('Vidéo de présentation'),
+          _SectionTitle(context.l10n.tutoringIntroVideo),
           const SizedBox(height: 8),
           WinCard(
             child: Row(children: [
@@ -192,7 +191,7 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
           ),
         ],
         const SizedBox(height: 16),
-        const _SectionTitle('Tarifs & forfaits'),
+        _SectionTitle(context.l10n.tutoringRatesPackages),
         const SizedBox(height: 8),
         WinCard(
           child:
@@ -202,16 +201,16 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
                 Padding(
                     padding: const EdgeInsets.only(right: 4, top: 6),
                     child:
-                        Text('à partir de', style: WinType.labelM(s.onMuted))),
+                        Text(context.l10n.tutoringFrom, style: WinType.labelM(s.onMuted))),
               Text(
                   (p.fromHourlyRateXaf ?? p.hourlyRateXaf) != null
                       ? '${fmtXaf((p.fromHourlyRateXaf ?? p.hourlyRateXaf)!)} XAF'
-                      : 'Tarif non communiqué',
+                      : context.l10n.tutoringRateNotGiven,
                   style: WinType.archivo(size: 20, color: s.onStrong)),
               if ((p.fromHourlyRateXaf ?? p.hourlyRateXaf) != null)
                 Padding(
                     padding: const EdgeInsets.only(left: 4, top: 6),
-                    child: Text('/ heure', style: WinType.labelM(s.onMuted))),
+                    child: Text(context.l10n.tutoringPerHour, style: WinType.labelM(s.onMuted))),
             ]),
             if (p.rates.isNotEmpty ||
                 p.rateModifiers.isNotEmpty ||
@@ -227,8 +226,8 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
               const SizedBox(height: 6),
               Text(
                 (p.trialSessionPriceXaf ?? 0) == 0
-                    ? 'Séance d\'essai gratuite'
-                    : 'Séance d\'essai : ${p.trialSessionPriceXaf} XAF',
+                    ? context.l10n.tutoringTrialFree
+                    : context.l10n.tutoringTrialPrice('${p.trialSessionPriceXaf}'),
                 style: WinType.labelM(WinColors.success),
               ),
             ],
@@ -237,14 +236,14 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
               const SizedBox(height: 12),
               const WinDivider(),
               const SizedBox(height: 12),
-              Text('Engagement mensuel'
-                  '${p.monthlyDiscountPercent > 0 ? ' · -${p.monthlyDiscountPercent} %' : ''}',
+              Text(context.l10n.tutoringEngStagePlan +
+                  (p.monthlyDiscountPercent > 0 ? ' · ${context.l10n.tutoringPercent('-${p.monthlyDiscountPercent}')}' : ''),
                   style: WinType.titleM(s.onStrong)),
               const SizedBox(height: 4),
-              Text('Mêmes créneaux chaque semaine pendant 4 semaines, payés d\'avance et versés au tuteur séance par séance.',
+              Text(context.l10n.tutoringMonthlyText,
                   style: WinType.bodyS(s.onMuted)),
               const SizedBox(height: 8),
-              WinButton('Réserver au mois',
+              WinButton(context.l10n.tutoringBookMonthly,
                   small: true,
                   variant: WinButtonVariant.outline,
                   icon: Icons.event_repeat_outlined,
@@ -255,7 +254,7 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
         const SizedBox(height: 16),
         // Lot 9.2 (17.10) : réglages d'annulation effectifs, lien vers la
         // politique publique.
-        const _SectionTitle('Politique d\'annulation'),
+        _SectionTitle(context.l10n.tutoringCancellationPolicy),
         const SizedBox(height: 8),
         TutorCancellationPolicyCard(
           fullRefundHours: p.fullRefundHours,
@@ -263,35 +262,35 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
           noRefundHours: p.noRefundHours,
         ),
         const SizedBox(height: 16),
-        const _SectionTitle('Disponibilités (14 prochains jours)'),
+        _SectionTitle(context.l10n.tutoringAvailability14),
         const SizedBox(height: 8),
         _AvailabilityCalendar(
             occurrences: _occurrences,
             onTapSlot: (occ) => _openBooking(preselected: occ)),
         const SizedBox(height: 16),
-        const _SectionTitle('Matières & niveaux'),
+        _SectionTitle(context.l10n.tutoringSubjectsLevels),
         const SizedBox(height: 8),
         WinCard(
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('Matières', style: WinType.labelM(s.onMuted)),
+            Text(context.l10n.tutoringSubjects, style: WinType.labelM(s.onMuted)),
             const SizedBox(height: 6),
             Wrap(
                 spacing: 6,
                 runSpacing: 6,
                 children: p.subjects.isEmpty
-                    ? [Text('Non renseigné', style: WinType.bodyS(s.onFaint))]
+                    ? [Text(context.l10n.tutoringNotSpecified, style: WinType.bodyS(s.onFaint))]
                     : p.subjects
                         .map((sub) => WinBadge(sub, color: BadgeColor.teal))
                         .toList()),
             const SizedBox(height: 12),
-            Text('Niveaux', style: WinType.labelM(s.onMuted)),
+            Text(context.l10n.tutoringLevels, style: WinType.labelM(s.onMuted)),
             const SizedBox(height: 6),
             Wrap(
                 spacing: 6,
                 runSpacing: 6,
                 children: p.levels.isEmpty
-                    ? [Text('Non renseigné', style: WinType.bodyS(s.onFaint))]
+                    ? [Text(context.l10n.tutoringNotSpecified, style: WinType.bodyS(s.onFaint))]
                     : p.levels
                         .map((lvl) => WinBadge(lvl, color: BadgeColor.blue))
                         .toList()),
@@ -355,7 +354,7 @@ class _HeroHeader extends StatelessWidget {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(p.fullName ?? 'Tuteur WinPlus',
+                    Text(p.fullName ?? context.l10n.tutoringDefaultName,
                         style: WinType.archivo(
                             size: 19, color: WinColors.cream50)),
                     if ((p.title ?? '').isNotEmpty)
@@ -368,20 +367,20 @@ class _HeroHeader extends StatelessWidget {
                     Wrap(spacing: 6, runSpacing: 6, children: [
                       // Lot 9.5 (17.11) : présentiel, diplôme et caution en badges distincts.
                       if (p.isInPersonVerified && !p.inPersonSuspended)
-                        const WinBadge('Vérifié pour le présentiel',
+                        WinBadge(context.l10n.tutoringInPersonVerified,
                             color: BadgeColor.success),
                       if (p.isDiplomaVerified)
-                        const WinBadge('Diplôme vérifié',
+                        WinBadge(context.l10n.tutoringDiplomaVerified,
                             color: BadgeColor.teal),
                       for (final n in p.endorsedByInstitutions)
-                        WinBadge('Caution : $n', color: BadgeColor.blue),
+                        WinBadge(context.l10n.tutoringEndorsedBy(n), color: BadgeColor.blue),
                       if (!p.inPersonAllowed)
-                        const WinBadge('En ligne uniquement',
+                        WinBadge(context.l10n.tutoringOnlineOnly,
                             color: BadgeColor.neutral),
                       WinBadge(
                           p.averageRating != null && p.reviewCount > 0
-                              ? '${p.averageRating!.toStringAsFixed(1)}/5 (${p.reviewCount} avis)'
-                              : "Pas encore d'avis",
+                              ? context.l10n.tutoringRatingReviews(p.averageRating!.toStringAsFixed(1), p.reviewCount)
+                              : context.l10n.tutoringNoReviewsYet,
                           color: BadgeColor.neutral),
                     ]),
                   ]),
@@ -441,7 +440,7 @@ class _AvailabilityCalendarState extends State<_AvailabilityCalendar> {
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
     if (widget.occurrences.isEmpty) {
-      return const WinAlert('Aucun créneau disponible pour le moment.',
+      return WinAlert(context.l10n.tutoringNoSlotAvailable,
           type: BadgeColor.neutral);
     }
     final daySlots = widget.occurrences
@@ -479,7 +478,7 @@ class _AvailabilityCalendarState extends State<_AvailabilityCalendar> {
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(_weekdayShort[day.weekday - 1],
+                      Text(WinFormat.weekdayShortCap(day.weekday),
                           style: WinType.labelS(
                               active ? Colors.white : s.onMuted)),
                       const SizedBox(height: 2),
@@ -495,7 +494,7 @@ class _AvailabilityCalendarState extends State<_AvailabilityCalendar> {
       ),
       const SizedBox(height: 10),
       if (daySlots.isEmpty)
-        Text('Aucun créneau ce jour-là.', style: WinType.bodyS(s.onFaint))
+        Text(context.l10n.tutoringNoSlotThatDay, style: WinType.bodyS(s.onFaint))
       else
         Wrap(
             spacing: 8,

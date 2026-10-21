@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
 import '../theme/win_motion.dart';
 import 'package:flutter/services.dart';
 import '../services/session_manager.dart';
@@ -96,7 +97,7 @@ class _PeriodicConfirmScreenState extends State<PeriodicConfirmScreen> {
       if (!mounted) return;
       Navigator.pop(context);
     } else {
-      setState(() => _error = 'Code incorrect. Vérifiez votre email.');
+      setState(() => _error = context.l10n.authCodeIncorrect);
     }
   }
 
@@ -112,6 +113,7 @@ class _PeriodicConfirmScreenState extends State<PeriodicConfirmScreen> {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
+    final l10n = context.l10n;
     return Scaffold(
       backgroundColor: s.bg,
       appBar: AppBar(
@@ -137,13 +139,13 @@ class _PeriodicConfirmScreenState extends State<PeriodicConfirmScreen> {
               ),
               const SizedBox(height: 24),
               Text(
-                'Vérifiez que c\'est bien vous',
+                l10n.authVerifyItsYou,
                 style: WinType.displayS(s.onStrong),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 12),
               Text(
-                'Pour votre sécurité, confirmez votre identité (toutes les 20 jours)',
+                l10n.authPeriodicIntro,
                 style: WinType.bodyM(s.onMuted),
                 textAlign: TextAlign.center,
               ),
@@ -158,7 +160,7 @@ class _PeriodicConfirmScreenState extends State<PeriodicConfirmScreen> {
               if (!_codeSent) ...[
                 // Step 1: envoyer le code
                 WinButton(
-                  'Envoyer le code',
+                  l10n.authSendCode,
                   block: true,
                   loading: _sending,
                   icon: Icons.send_outlined,
@@ -166,8 +168,8 @@ class _PeriodicConfirmScreenState extends State<PeriodicConfirmScreen> {
                 ),
               ] else ...[
                 // Step 2: saisir le code
-                const WinAlert(
-                  'Code envoyé à votre email',
+                WinAlert(
+                  l10n.authCodeSentEmail,
                   type: BadgeColor.success,
                   icon: Icons.mark_email_read_outlined,
                 ),
@@ -225,7 +227,7 @@ class _PeriodicConfirmScreenState extends State<PeriodicConfirmScreen> {
                 ],
                 const SizedBox(height: 24),
                 WinButton(
-                  'Confirmer',
+                  l10n.commonConfirm,
                   block: true,
                   loading: _loading,
                   onTap: _loading ? null : _confirm,
@@ -233,11 +235,11 @@ class _PeriodicConfirmScreenState extends State<PeriodicConfirmScreen> {
                 const SizedBox(height: 12),
                 Center(
                   child: _countdown > 0
-                      ? Text('Renvoyer le code dans ${_countdown}s',
+                      ? Text(l10n.authResendIn(_countdown),
                           style: WinType.labelM(s.onMuted))
                       : TextButton(
                           onPressed: _sendCode,
-                          child: Text('Renvoyer le code',
+                          child: Text(l10n.authResendCode,
                               style: WinType.manrope(
                                   size: 14,
                                   weight: FontWeight.w600,
@@ -248,7 +250,7 @@ class _PeriodicConfirmScreenState extends State<PeriodicConfirmScreen> {
               const SizedBox(height: 24),
               TextButton(
                 onPressed: _logout,
-                child: Text('Me déconnecter',
+                child: Text(l10n.authLogMeOut,
                     style: WinType.labelM(s.onMuted)
                         .copyWith(decoration: TextDecoration.underline)),
               ),

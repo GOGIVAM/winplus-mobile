@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
 import '../services/user_service.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
@@ -30,25 +31,33 @@ class _DownloadHistoryScreenState extends State<DownloadHistoryScreen> {
       if (mounted) setState(() => _entries = entries);
     } catch (_) {
       if (mounted)
-        setState(() => _error = 'Impossible de charger l\'historique.');
+        setState(() => _error = L10n.current.studentHistLoadError);
     }
   }
 
   String _formatDate(DateTime dt) {
     final now = DateTime.now();
     final diff = now.difference(dt);
-    if (diff.inDays == 0) return 'Aujourd\'hui';
-    if (diff.inDays == 1) return 'Hier';
-    if (diff.inDays < 7) return 'Il y a ${diff.inDays} jours';
-    return '${dt.day.toString().padLeft(2, '0')}/${dt.month.toString().padLeft(2, '0')}/${dt.year}';
+    if (diff.inDays == 0) return context.l10n.commonToday;
+    if (diff.inDays == 1) return context.l10n.commonYesterday;
+    if (diff.inDays < 7) return context.l10n.studentHistDaysAgo(diff.inDays);
+    return WinFormat.dateNumeric(dt);
   }
 
+  String _periodLabel(String p) => switch (p) {
+        '7j' => context.l10n.studentHistPeriod7d,
+        '30j' => context.l10n.studentHistPeriod30d,
+        '90j' => context.l10n.studentHistPeriod90d,
+        '1 an' => context.l10n.studentHistPeriod1y,
+        _ => p,
+      };
+
   String _categoryLabel(String? category) => switch (category) {
-        'epreuve' => 'Épreuve',
-        'cours' => 'Cours',
-        'resume' => 'Résumé',
-        'exercice' => 'Exercice',
-        _ => 'Document',
+        'epreuve' => context.l10n.studentHistCatPaper,
+        'cours' => context.l10n.studentHistCatCourse,
+        'resume' => context.l10n.studentHistCatSummary,
+        'exercice' => context.l10n.studentHistCatExercise,
+        _ => context.l10n.studentHistCatDocument,
       };
 
   @override
@@ -65,7 +74,7 @@ class _DownloadHistoryScreenState extends State<DownloadHistoryScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title:
-            Text('Documents consultés', style: WinType.headlineS(s.onStrong)),
+            Text(context.l10n.studentHistTitle, style: WinType.headlineS(s.onStrong)),
         actions: [
           IconButton(
             icon: Icon(Icons.refresh_outlined, color: s.onStrong),
@@ -88,7 +97,7 @@ class _DownloadHistoryScreenState extends State<DownloadHistoryScreen> {
             children: _periods
                 .map((p) => Padding(
                       padding: const EdgeInsets.only(right: 8),
-                      child: WinChip(p,
+                      child: WinChip(_periodLabel(p),
                           active: _period == p,
                           onTap: () => setState(() => _period = p)),
                     ))
@@ -121,7 +130,7 @@ class _DownloadHistoryScreenState extends State<DownloadHistoryScreen> {
         const SizedBox(height: 12),
         Text(_error!, style: WinType.bodyM(s.onMuted)),
         const SizedBox(height: 16),
-        WinButton('Réessayer', onTap: () {
+        WinButton(context.l10n.commonRetry, onTap: () {
           setState(() {
             _entries = null;
             _error = null;
@@ -144,12 +153,12 @@ class _DownloadHistoryScreenState extends State<DownloadHistoryScreen> {
         const SizedBox(height: 12),
         Text(
             _entries!.isEmpty
-                ? 'Aucun document consulté pour l\'instant.'
-                : 'Aucun document consulté sur $_period.',
+                ? context.l10n.studentHistEmpty
+                : context.l10n.studentHistEmptyPeriod(_periodLabel(_period)),
             style: WinType.bodyM(s.onMuted)),
         const SizedBox(height: 4),
         if (_entries!.isEmpty)
-          Text('Ouvre des épreuves depuis le catalogue.',
+          Text(context.l10n.studentHistEmptyHint,
               style: WinType.bodyS(s.onFaint)),
       ]));
     }
@@ -166,7 +175,7 @@ class _DownloadHistoryScreenState extends State<DownloadHistoryScreen> {
         Padding(
           padding: const EdgeInsets.only(bottom: 12),
           child: Text(
-              '${visible.length} fichier${visible.length > 1 ? 's' : ''} · $_period',
+              context.l10n.studentHistFileCount(visible.length, _periodLabel(_period)),
               style: WinType.bodyS(s.onMuted)),
         ),
         ...groups.entries.map((entry) => Column(
@@ -212,7 +221,7 @@ class _DownloadHistoryScreenState extends State<DownloadHistoryScreen> {
                                 WinBadge(_categoryLabel(item.category)),
                                 const SizedBox(width: 8),
                                 Text(
-                                  '${item.downloadedAt.hour.toString().padLeft(2, '0')}:${item.downloadedAt.minute.toString().padLeft(2, '0')}',
+                                  WinFormat.time(item.downloadedAt),
                                   style: WinType.labelS(s.onFaint),
                                 ),
                               ]),

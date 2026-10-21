@@ -61,9 +61,8 @@ class _LoginScreenState extends State<LoginScreen> {
       final role = _roleFromString(roleStr);
       final appState = WinAppScope.of(context);
       appState.setRole(role);
-      if (result.locale != null) {
-        unawaited(appState.setLocale(result.locale!));
-      }
+      // Lot 10.11 : l'application suit la langue du compte (User.Locale).
+      unawaited(appState.applyAccountLocale(result.locale));
       SubscriptionScope.of(context).loadFromApi();
       Navigator.pushAndRemoveUntil(context,
           WinPageRoute(builder: (_) => const RoleShell()), (r) => false);
@@ -187,18 +186,18 @@ class _LoginScreenState extends State<LoginScreen> {
                       label: l10n.continueWithGoogle,
                       onTap: () {
                         ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
+                            SnackBar(
                                 content:
-                                    Text('Google OAuth bientôt disponible !')));
+                                    Text(l10n.authGoogleSoon)));
                       }),
                   const SizedBox(height: 10),
                   _SocialButton(
                       icon: Icons.phone_outlined,
                       label: l10n.continueWithPhone,
                       onTap: () {
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text(
-                                'Connexion par téléphone bientôt disponible !')));
+                                l10n.authPhoneSoon)));
                       }),
                   const SizedBox(height: 24),
                   GestureDetector(

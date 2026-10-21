@@ -4,6 +4,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import '../l10n/l10n.dart';
 
 class CorrectionQueueScreen extends StatefulWidget {
   const CorrectionQueueScreen({super.key});
@@ -31,6 +32,12 @@ class _CorrectionQueueScreenState extends State<CorrectionQueueScreen> {
     }
   }
 
+  String _filterLabel(BuildContext context, String f) => switch (f) {
+        'En attente' => context.l10n.commonPending,
+        'Corrigé' => context.l10n.teacherCorrectionFilterMarked,
+        _ => context.l10n.commonAll,
+      };
+
   List<ApiSubmission> get _items {
     final all = _subs ?? [];
     return switch (_filter) {
@@ -55,14 +62,14 @@ class _CorrectionQueueScreenState extends State<CorrectionQueueScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title:
-            Text('File de corrections', style: WinType.headlineS(s.onStrong)),
+            Text(context.l10n.teacherCorrectionQueueTitle, style: WinType.headlineS(s.onStrong)),
         actions: [
           if (pending > 0)
             Padding(
               padding: const EdgeInsets.only(right: 16),
               child: Center(
                   child:
-                      WinBadge('$pending en attente', color: BadgeColor.warn)),
+                      WinBadge(context.l10n.teacherCorrectionPendingCount(pending), color: BadgeColor.warn)),
             ),
           IconButton(
             icon: Icon(Icons.refresh_outlined, color: s.onStrong),
@@ -80,7 +87,7 @@ class _CorrectionQueueScreenState extends State<CorrectionQueueScreen> {
               children: _filters
                   .map((f) => Padding(
                         padding: const EdgeInsets.only(right: 8),
-                        child: WinChip(f,
+                        child: WinChip(_filterLabel(context, f),
                             active: _filter == f,
                             onTap: () => setState(() => _filter = f)),
                       ))
@@ -99,7 +106,7 @@ class _CorrectionQueueScreenState extends State<CorrectionQueueScreen> {
           child: Column(mainAxisSize: MainAxisSize.min, children: [
         Icon(Icons.check_circle_outline, size: 64, color: s.onFaint),
         const SizedBox(height: 12),
-        Text('Aucune soumission', style: WinType.bodyM(s.onMuted)),
+        Text(context.l10n.teacherCorrectionEmpty, style: WinType.bodyM(s.onMuted)),
       ]));
     }
     return ListView.separated(
@@ -153,20 +160,20 @@ class _SubmissionCard extends StatelessWidget {
           if (sub.corrected)
             WinBadge('${sub.score}/20', color: BadgeColor.success)
           else
-            const WinBadge('En attente', color: BadgeColor.warn),
+            WinBadge(context.l10n.commonPending, color: BadgeColor.warn),
         ]),
         const SizedBox(height: 8),
         Text(sub.contentTitle, style: WinType.bodyM(s.onMuted)),
         const SizedBox(height: 12),
         if (!sub.corrected)
-          WinButton('Corriger',
+          WinButton(context.l10n.teacherCorrectionCorrect,
               small: true, icon: Icons.rate_review_outlined, onTap: onCorrect)
         else
           Row(children: [
-            WinButton('Voir la correction',
+            WinButton(context.l10n.teacherCorrectionView,
                 small: true, variant: WinButtonVariant.outline, onTap: () {}),
             const SizedBox(width: 8),
-            WinButton('Modifier',
+            WinButton(context.l10n.commonEdit,
                 small: true, variant: WinButtonVariant.ghost, onTap: onCorrect),
           ]),
       ]),
@@ -199,7 +206,7 @@ class _CorrectionSheetState extends State<_CorrectionSheet> {
     } else {
       setState(() => _loading = false);
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Erreur lors de l\'envoi.')));
+          SnackBar(content: Text(L10n.current.teacherCorrectionSendError)));
     }
   }
 
@@ -221,17 +228,17 @@ class _CorrectionSheetState extends State<_CorrectionSheet> {
                 color: s.outline2,
                 borderRadius: BorderRadius.circular(WinRadii.full)),
             margin: const EdgeInsets.only(bottom: 16)),
-        Text('Corriger : ${widget.sub.studentName}',
+        Text(context.l10n.teacherCorrectionSheetTitle(widget.sub.studentName),
             style: WinType.headlineS(s.onStrong)),
         const SizedBox(height: 4),
         Text(widget.sub.contentTitle, style: WinType.bodyS(s.onMuted)),
         const SizedBox(height: 20),
         if (_sent)
-          WinAlert('Correction envoyée à ${widget.sub.studentName}.',
+          WinAlert(context.l10n.teacherCorrectionSent(widget.sub.studentName),
               type: BadgeColor.success)
         else ...[
           Row(children: [
-            Text('Note : ', style: WinType.titleM(s.onStrong)),
+            Text(context.l10n.teacherCorrectionGrade, style: WinType.titleM(s.onStrong)),
             Text('${_score.round()}/20',
                 style: WinType.archivo(
                     size: 24, weight: FontWeight.w700, color: s.primary)),
@@ -251,7 +258,7 @@ class _CorrectionSheetState extends State<_CorrectionSheet> {
             maxLines: 4,
             style: WinType.manrope(size: 14, color: s.onStrong),
             decoration: InputDecoration(
-              hintText: 'Commentaires et retours à l\'étudiant…',
+              hintText: context.l10n.teacherCorrectionFeedbackHint,
               hintStyle: WinType.manrope(size: 14, color: s.onFaint),
               filled: true,
               fillColor: s.surface2,
@@ -267,7 +274,7 @@ class _CorrectionSheetState extends State<_CorrectionSheet> {
             ),
           ),
           const SizedBox(height: 16),
-          WinButton('Envoyer la correction',
+          WinButton(context.l10n.teacherCorrectionSend,
               block: true,
               loading: _loading,
               icon: Icons.send_outlined,

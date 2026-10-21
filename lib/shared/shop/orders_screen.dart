@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../theme/win_motion.dart';
 import 'package:pdfrx/pdfrx.dart';
 import '../../data/models.dart' show fmtXaf;
+import '../../l10n/l10n.dart';
 import '../../services/order_service.dart';
 import '../../theme/win_colors.dart';
 import '../../theme/win_theme.dart';
@@ -33,12 +34,12 @@ class _OrdersScreenState extends State<OrdersScreen> {
 
   (BadgeColor, String) _statusInfo(String status) =>
       switch (status.toLowerCase()) {
-        'completed' => (BadgeColor.success, 'Payée'),
-        'pending' => (BadgeColor.warn, 'En attente'),
-        'failed' => (BadgeColor.error, 'Échouée'),
-        'cancelled' => (BadgeColor.neutral, 'Annulée'),
-        'refunded' => (BadgeColor.blue, 'Remboursée'),
-        'refund_requested' => (BadgeColor.warn, 'Remboursement demandé'),
+        'completed' => (BadgeColor.success, context.l10n.shopOrderPaid),
+        'pending' => (BadgeColor.warn, context.l10n.commonPending),
+        'failed' => (BadgeColor.error, context.l10n.shopOrderFailed),
+        'cancelled' => (BadgeColor.neutral, context.l10n.shopOrderCancelled),
+        'refunded' => (BadgeColor.blue, context.l10n.shopOrderRefunded),
+        'refund_requested' => (BadgeColor.warn, context.l10n.shopOrderRefundRequested),
         _ => (BadgeColor.neutral, status),
       };
 
@@ -55,7 +56,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Mes commandes', style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.shopMyOrders, style: WinType.headlineS(s.onStrong)),
         actions: [
           IconButton(
             icon: Icon(Icons.refresh_outlined, color: s.onStrong),
@@ -73,7 +74,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                   child: Column(mainAxisSize: MainAxisSize.min, children: [
                   Icon(Icons.receipt_long_outlined, size: 64, color: s.onFaint),
                   const SizedBox(height: 12),
-                  Text('Aucune commande pour le moment.',
+                  Text(context.l10n.shopNoOrders,
                       style: WinType.bodyM(s.onMuted)),
                 ]))
               : RefreshIndicator(
@@ -106,8 +107,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                   Text(o.orderNumber,
                                       style: WinType.titleM(s.onStrong)),
                                   const SizedBox(height: 2),
-                                  Text(
-                                      '${o.createdAt.day.toString().padLeft(2, '0')}/${o.createdAt.month.toString().padLeft(2, '0')}/${o.createdAt.year}',
+                                  Text(WinFormat.dateNumeric(o.createdAt),
                                       style: WinType.labelM(s.onMuted)),
                                 ]),
                           ),
@@ -157,8 +157,8 @@ class _OrderDetailSheetState extends State<_OrderDetailSheet> {
     widget.onChanged();
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(ok
-            ? 'Demande de remboursement envoyée.'
-            : 'Impossible d\'envoyer la demande.')));
+            ? L10n.current.shopRefundSent
+            : L10n.current.shopRefundFailed)));
   }
 
   void _viewInvoice() {
@@ -200,13 +200,13 @@ class _OrderDetailSheetState extends State<_OrderDetailSheet> {
                     size: 24, weight: FontWeight.w700, color: s.primary)),
             const SizedBox(height: 16),
             if (o.items.isNotEmpty) ...[
-              Text('Articles', style: WinType.labelM(s.onStrong)),
+              Text(context.l10n.shopItems, style: WinType.labelM(s.onStrong)),
               const SizedBox(height: 8),
               ...o.items.map((i) => Padding(
                     padding: const EdgeInsets.only(bottom: 6),
                     child: Row(children: [
                       Expanded(
-                          child: Text(i.title ?? 'Sujet #${i.subjectId}',
+                          child: Text(i.title ?? context.l10n.shopSubjectFallback(i.subjectId),
                               style: WinType.bodyM(s.onSurface))),
                       Text('${fmtXaf(i.price.round())} XAF',
                           style: WinType.bodyM(s.onMuted)),
@@ -214,13 +214,13 @@ class _OrderDetailSheetState extends State<_OrderDetailSheet> {
                   )),
               const SizedBox(height: 12),
             ],
-            WinButton('Voir la facture',
+            WinButton(context.l10n.shopViewInvoice,
                 block: true,
                 icon: Icons.picture_as_pdf_outlined,
                 onTap: _viewInvoice),
             if (o.isCompleted) ...[
               const SizedBox(height: 10),
-              WinButton('Demander un remboursement',
+              WinButton(context.l10n.shopRequestRefund,
                   block: true,
                   variant: WinButtonVariant.outline,
                   loading: _refunding,
@@ -275,7 +275,7 @@ class _InvoiceViewerScreenState extends State<_InvoiceViewerScreen> {
       appBar: AppBar(
         backgroundColor: s.surface,
         iconTheme: IconThemeData(color: s.onStrong),
-        title: Text('Facture ${widget.order.orderNumber}',
+        title: Text(context.l10n.shopInvoiceTitle(widget.order.orderNumber),
             style: WinType.titleM(s.onStrong)),
       ),
       body: SafeArea(child: _buildBody(s)),
@@ -291,10 +291,10 @@ class _InvoiceViewerScreenState extends State<_InvoiceViewerScreen> {
           child: Column(mainAxisSize: MainAxisSize.min, children: [
             Icon(Icons.picture_as_pdf_outlined, size: 56, color: s.onFaint),
             const SizedBox(height: 16),
-            Text('Impossible de charger la facture.',
+            Text(context.l10n.shopInvoiceLoadFailed,
                 style: WinType.bodyM(s.onMuted)),
             const SizedBox(height: 16),
-            WinButton('Réessayer', icon: Icons.refresh, onTap: _load),
+            WinButton(context.l10n.commonRetry, icon: Icons.refresh, onTap: _load),
           ]),
         ),
       );

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import '../../l10n/l10n.dart';
 import '../../services/session_manager.dart';
 import '../../services/tutor_booking_service.dart';
 import '../../services/tutor_profile_service.dart';
@@ -12,14 +13,13 @@ import 'tutor_booking_for_whom.dart';
 import 'tutor_policy_widgets.dart';
 import 'tutor_pricing_widgets.dart';
 
-const _weekdayShort = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
-
-const _modeLabels = {
-  'online': 'En ligne',
-  'student_home': 'À domicile (chez moi)',
-  'tutor_home': 'Chez le tuteur',
-  'neutral_place': 'Lieu neutre',
-};
+String? _modeLabel(String mode) => switch (mode) {
+      'online' => L10n.current.commonOnline,
+      'student_home' => L10n.current.tutoringModeStudentHomeMine,
+      'tutor_home' => L10n.current.tutoringModeTutorHome,
+      'neutral_place' => L10n.current.tutoringModeNeutralPlace,
+      _ => null,
+    };
 const _modeIcons = {
   'online': Icons.videocam_outlined,
   'student_home': Icons.home_outlined,
@@ -102,7 +102,7 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
   }
 
   String get _participantNames {
-    if (_forWhom.payerType == 'student') return 'Moi';
+    if (_forWhom.payerType == 'student') return L10n.current.tutoringMe;
     final pool = [
       ...?_ctx?.children,
       ...?_ctx?.institutionStudents,
@@ -110,7 +110,7 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
     ];
     return _forWhom.participantIds
         .map((id) => id == _currentUserId
-            ? 'Moi'
+            ? L10n.current.tutoringMe
             : (pool.where((p) => p.userId == id).firstOrNull?.label ?? '#$id'))
         .join(', ');
   }
@@ -206,7 +206,7 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
       setState(() {
         _quote = null;
         _quoteLoading = false;
-        _quoteError = _apiMessage(e) ?? 'Impossible de calculer le prix.';
+        _quoteError = _apiMessage(e) ?? L10n.current.tutoringQuoteError;
       });
     }
   }
@@ -232,23 +232,23 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
   // Suivi 17.14 : libellés du solde adaptés au payeur (élève, parent,
   // institution, membre qui paie pour son groupe d'étude).
   String get _walletTitle => switch (_forWhom.payerType) {
-        'parent' => 'Mon portefeuille parent',
-        'institution' => 'Portefeuille de l\'institution',
-        'study_group' => 'Mon solde WinPlus (je paie pour le groupe)',
-        _ => 'Mon solde WinPlus',
+        'parent' => L10n.current.tutoringWalletParent,
+        'institution' => L10n.current.tutoringWalletInstitution,
+        'study_group' => L10n.current.tutoringWalletMineGroup,
+        _ => L10n.current.tutoringWalletMine,
       };
 
   String get _walletPayLabel => switch (_forWhom.payerType) {
-        'parent' => 'Payer avec mon portefeuille parent',
-        'institution' => 'Payer avec le portefeuille de l\'institution',
-        _ => 'Payer avec mon solde',
+        'parent' => L10n.current.tutoringPayWithParentWallet,
+        'institution' => L10n.current.tutoringPayWithInstitutionWallet,
+        _ => L10n.current.tutoringPayWithBalance,
       };
 
   String get _walletShortfallHint => switch (_forWhom.payerType) {
-        'parent' => 'Choisis Mobile Money ou recharge ton portefeuille parent.',
+        'parent' => L10n.current.tutoringShortfallParent,
         'institution' =>
-          'Choisis Mobile Money ou recharge le portefeuille de l\'institution (écran Tutorat).',
-        _ => 'Choisis Mobile Money.',
+          L10n.current.tutoringShortfallInstitution,
+        _ => L10n.current.tutoringShortfallMine,
       };
 
   Future<void> _loadWallet() async {
@@ -286,8 +286,8 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
     } catch (_) {
       if (mounted) {
         setState(() => _loadingCalendar = false);
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Impossible de charger les disponibilités.')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(L10n.current.tutoringCalendarError)));
       }
     }
   }
@@ -325,12 +325,12 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
     final byWallet = _payMethod == 'wallet';
     final phone = _normalizePhone(_phoneCtrl.text);
     if (!byWallet && phone.length < 9) {
-      setState(() => _submitError = 'Numéro de téléphone invalide.');
+      setState(() => _submitError = L10n.current.tutoringPhoneInvalid);
       return;
     }
     if (byWallet && !_walletCovers) {
       setState(() => _submitError =
-          'Le solde ne couvre pas le prix de cette séance. $_walletShortfallHint');
+          L10n.current.tutoringBalanceNotCover(_walletShortfallHint));
       return;
     }
     setState(() {
@@ -366,7 +366,7 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
         setState(() {
           _submitting = false;
           _submitError = _apiMessage(e) ??
-              'Erreur lors de la création de la réservation.';
+              L10n.current.tutoringBookingCreateError;
         });
       }
     }
@@ -410,9 +410,9 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
     final titles = [
-      'Choisir un créneau',
-      'Récapitulatif',
-      'Paiement'
+      context.l10n.tutoringStepChooseSlot,
+      context.l10n.tutoringStepRecap,
+      context.l10n.tutoringStepPayment
     ];
     return Scaffold(
       backgroundColor: s.bg,
@@ -466,12 +466,12 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        Text('Tuteur', style: WinType.labelM(s.onMuted)),
+        Text(context.l10n.tutoringTutor, style: WinType.labelM(s.onMuted)),
         const SizedBox(height: 4),
-        Text(widget.profile.fullName ?? widget.profile.title ?? 'Tuteur',
+        Text(widget.profile.fullName ?? widget.profile.title ?? context.l10n.tutoringTutor,
             style: WinType.titleM(s.onStrong)),
         const SizedBox(height: 20),
-        Text('Choisissez un jour', style: WinType.labelM(s.onStrong)),
+        Text(context.l10n.tutoringChooseDay, style: WinType.labelM(s.onStrong)),
         const SizedBox(height: 8),
         SizedBox(
           height: 64,
@@ -503,7 +503,7 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(_weekdayShort[day.weekday - 1],
+                        Text(WinFormat.weekdayShortCap(day.weekday),
                             style: WinType.labelS(
                                 active ? Colors.white : s.onMuted)),
                         const SizedBox(height: 2),
@@ -518,10 +518,10 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
           ),
         ),
         const SizedBox(height: 20),
-        Text('Créneaux disponibles', style: WinType.labelM(s.onStrong)),
+        Text(context.l10n.tutoringAvailableSlots, style: WinType.labelM(s.onStrong)),
         const SizedBox(height: 8),
         if (daySlots.isEmpty)
-          Text('Aucun créneau ce jour-là.', style: WinType.bodyS(s.onFaint))
+          Text(context.l10n.tutoringNoSlotThatDay, style: WinType.bodyS(s.onFaint))
         else
           Wrap(
               spacing: 8,
@@ -559,11 +559,11 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
         if (_selectedOccurrence != null) ...[
           const SizedBox(height: 20),
           Row(children: [
-            Text('Durée', style: WinType.labelM(s.onStrong)),
+            Text(context.l10n.commonDuration, style: WinType.labelM(s.onStrong)),
             if (_durationMinutes != null) ...[
               const SizedBox(width: 8),
               Text(
-                  '· fin à ${addMinutesToHhmm(_selectedOccurrence!.startTime, _durationMinutes!)}',
+                  context.l10n.tutoringEndsAt(addMinutesToHhmm(_selectedOccurrence!.startTime, _durationMinutes!)),
                   style: WinType.labelS(s.onMuted)),
             ],
           ]),
@@ -578,12 +578,12 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
                 .toList(),
           ),
           const SizedBox(height: 4),
-          Text('Par tranches de 30 min, jusqu\'à la fin de la plage libre.',
+          Text(context.l10n.tutoringDurationHint,
               style: WinType.labelS(s.onFaint)),
         ],
         if (widget.profile.subjects.length > 1) ...[
           const SizedBox(height: 20),
-          Text('Matière', style: WinType.labelM(s.onStrong)),
+          Text(context.l10n.commonSubject, style: WinType.labelM(s.onStrong)),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
@@ -596,10 +596,10 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
           ),
         ],
         const SizedBox(height: 20),
-        Text('Sujets à travailler (facultatif)',
+        Text(context.l10n.tutoringTopicsOptional,
             style: WinType.labelM(s.onStrong)),
         const SizedBox(height: 4),
-        Text('Le tuteur les verra dans ta demande pour préparer la séance.',
+        Text(context.l10n.tutoringTopicsHelp,
             style: WinType.labelS(s.onFaint)),
         const SizedBox(height: 6),
         TopicsField(
@@ -615,7 +615,7 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
           ),
         ],
         const SizedBox(height: 28),
-        WinButton('Continuer',
+        WinButton(context.l10n.commonContinue,
             block: true,
             onTap: _selectedOccurrence != null && _durationMinutes != null && _forWhom.isValid(_maxGroupSize)
                 ? _goToStep1
@@ -637,44 +637,43 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             _RecapRow(
                 icon: Icons.person_outline,
-                label: 'Tuteur',
+                label: context.l10n.tutoringTutor,
                 value: widget.profile.fullName ?? widget.profile.title ?? ''),
             const SizedBox(height: 10),
             _RecapRow(
                 icon: Icons.event_outlined,
-                label: 'Date',
-                value:
-                    '${occ.date.day.toString().padLeft(2, '0')}/${occ.date.month.toString().padLeft(2, '0')}/${occ.date.year}'),
+                label: context.l10n.tutoringDate,
+                value: WinFormat.dateNumeric(occ.date)),
             const SizedBox(height: 10),
             _RecapRow(
                 icon: Icons.schedule_outlined,
-                label: 'Heure',
+                label: context.l10n.tutoringTime,
                 value:
                     '${occ.startTime} – ${addMinutesToHhmm(occ.startTime, duration)} (${formatDurationMinutes(duration)})'),
             if (_forWhom.payerType != 'student') ...[
               const SizedBox(height: 10),
               _RecapRow(
                   icon: Icons.groups_outlined,
-                  label: _participantCount > 1 ? 'Élèves ($_participantCount)' : 'Élève',
+                  label: _participantCount > 1 ? context.l10n.tutoringStudentsN(_participantCount) : context.l10n.roleStudent,
                   value: _participantNames),
             ],
             if (_subject != null) ...[
               const SizedBox(height: 10),
               _RecapRow(
                   icon: Icons.menu_book_outlined,
-                  label: 'Matière',
+                  label: context.l10n.commonSubject,
                   value: _subject!),
             ],
             if (_topics.isNotEmpty) ...[
               const SizedBox(height: 10),
-              Text('Sujets', style: WinType.bodyS(s.onMuted)),
+              Text(context.l10n.tutoringTopics, style: WinType.bodyS(s.onMuted)),
               const SizedBox(height: 6),
               TopicChipsRow(_topics),
             ],
           ]),
         ),
         const SizedBox(height: 16),
-        Text('Prix', style: WinType.labelM(s.onStrong)),
+        Text(context.l10n.tutoringPrice, style: WinType.labelM(s.onStrong)),
         const SizedBox(height: 8),
         WinCard(
           child: _quoteLoading
@@ -684,21 +683,21 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
                       child: CircularProgressIndicator()))
               : _quote != null
                   ? TutorPriceBreakdownView(quote: _quote!)
-                  : Text(_quoteError ?? 'Prix indisponible.',
+                  : Text(_quoteError ?? context.l10n.tutoringPriceUnavailable,
                       style: WinType.bodyS(s.onMuted)),
         ),
         if (_quote != null && _quote!.isAvailable == false) ...[
           const SizedBox(height: 10),
           WinAlert(
-              _quote!.unavailableReason ?? 'Ce créneau n\'est plus disponible.',
+              _quote!.unavailableReason ?? context.l10n.tutoringSlotGone,
               type: BadgeColor.error),
         ],
         const SizedBox(height: 20),
-        Text('Mode de séance', style: WinType.labelM(s.onStrong)),
+        Text(context.l10n.tutoringSessionMode, style: WinType.labelM(s.onStrong)),
         const SizedBox(height: 8),
         if (_availableModes.isEmpty)
-          const WinAlert(
-              'Ce tuteur n\'a pas encore configuré de mode de séance.',
+          WinAlert(
+              context.l10n.tutoringNoModeConfigured,
               type: BadgeColor.warn)
         else
           Wrap(
@@ -725,7 +724,7 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
                                 size: 16,
                                 color: _mode == m ? Colors.white : s.onMuted),
                             const SizedBox(width: 6),
-                            Text(_modeLabels[m] ?? m,
+                            Text(_modeLabel(m) ?? m,
                                 style: WinType.labelM(
                                     _mode == m ? Colors.white : s.onSurface)),
                           ]),
@@ -742,8 +741,8 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
         const SizedBox(height: 28),
         WinButton(
             _quote != null && _quoteReady
-                ? 'Payer ${fmtXaf(_quote!.totalXaf)} XAF'
-                : 'Payer maintenant',
+                ? context.l10n.tutoringPayAmount(fmtXaf(_quote!.totalXaf))
+                : context.l10n.tutoringPayNow,
             block: true,
             onTap: (_mode != null && _quoteReady) ? _goToPayment : null),
       ],
@@ -759,19 +758,19 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
       // Choix du moyen de paiement, puis saisie du numéro (Mobile Money).
       final byWallet = _payMethod == 'wallet';
       final walletHint = _walletLoading
-          ? 'Lecture du solde…'
+          ? context.l10n.tutoringWalletLoading
           : _walletAvailable == null
-              ? 'Solde indisponible'
-              : 'Disponible : ${fmtXaf(_walletAvailable!)} XAF';
+              ? context.l10n.tutoringWalletUnavailable
+              : context.l10n.tutoringWalletAvailable(fmtXaf(_walletAvailable!));
       return ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Text('Moyen de paiement', style: WinType.labelM(s.onStrong)),
+          Text(context.l10n.tutoringPayMethod, style: WinType.labelM(s.onStrong)),
           const SizedBox(height: 8),
           _PayOption(
             icon: Icons.phone_android_outlined,
             title: 'Mobile Money',
-            hint: 'MTN MoMo ou Orange Money',
+            hint: context.l10n.tutoringMomoHint,
             selected: !byWallet,
             onTap: () => setState(() {
               _payMethod = 'mobile_money';
@@ -795,14 +794,14 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
             const SizedBox(height: 8),
             Text(
                 _walletCovers
-                    ? 'Paiement immédiat et sans frais. Ta demande part tout de suite au tuteur.'
-                    : 'Solde insuffisant : il manque ${fmtXaf(_quote!.totalXaf - _walletAvailable!)} XAF. $_walletShortfallHint',
+                    ? context.l10n.tutoringWalletOk
+                    : context.l10n.tutoringWalletMissing(fmtXaf(_quote!.totalXaf - _walletAvailable!), _walletShortfallHint),
                 style: WinType.labelS(
                     _walletCovers ? s.onMuted : WinColors.error)),
           ],
           if (!byWallet) ...[
             const SizedBox(height: 20),
-            Text('Numéro Mobile Money', style: WinType.labelM(s.onStrong)),
+            Text(context.l10n.tutoringMomoNumber, style: WinType.labelM(s.onStrong)),
             const SizedBox(height: 8),
             WinTextField(
               hint: '6XX XXX XXX',
@@ -811,7 +810,7 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
               keyboardType: TextInputType.phone,
             ),
             const SizedBox(height: 8),
-            Text('Numéro Cameroun sans indicatif pays (ex: 670000000).',
+            Text(context.l10n.tutoringPhoneHint,
                 style: WinType.labelS(s.onFaint)),
           ],
           if (_submitError != null) ...[
@@ -821,10 +820,10 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
           const SizedBox(height: 24),
           WinButton(
               _submitting
-                  ? 'Envoi en cours…'
+                  ? context.l10n.tutoringSending
                   : (_quote != null
-                      ? '${byWallet ? _walletPayLabel : 'Payer'} ${fmtXaf(_quote!.totalXaf)} XAF'
-                      : 'Payer'),
+                      ? '${byWallet ? _walletPayLabel : context.l10n.tutoringPay} ${fmtXaf(_quote!.totalXaf)} XAF'
+                      : context.l10n.tutoringPay),
               block: true,
               loading: _submitting,
               onTap: _submitting || (byWallet && !_walletCovers)
@@ -853,16 +852,16 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           const CircularProgressIndicator(),
           const SizedBox(height: 20),
-          Text('En attente de confirmation…',
+          Text(context.l10n.tutoringWaitingConfirmation,
               style: WinType.titleM(s.onStrong), textAlign: TextAlign.center),
           const SizedBox(height: 8),
           Text(
-              'Valide le paiement via le message USSD envoyé sur ton téléphone.',
+              context.l10n.tutoringWaitingUssd,
               style: WinType.bodyS(s.onMuted),
               textAlign: TextAlign.center),
           if (booking.notchpayReference != null) ...[
             const SizedBox(height: 12),
-            Text('Réf. : ${booking.notchpayReference}',
+            Text(context.l10n.tutoringReference('${booking.notchpayReference}'),
                 style: WinType.labelS(s.onFaint)),
           ],
         ]),
@@ -877,19 +876,19 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           Icon(Icons.hourglass_bottom_outlined, size: 48, color: s.onFaint),
           const SizedBox(height: 16),
-          Text('Toujours en attente',
+          Text(context.l10n.tutoringStillWaiting,
               style: WinType.titleM(s.onStrong), textAlign: TextAlign.center),
           const SizedBox(height: 8),
           Text(
-              'Le paiement met plus de temps que prévu. Tu peux vérifier plus tard dans "Mes séances".',
+              context.l10n.tutoringPaymentSlow,
               style: WinType.bodyS(s.onMuted),
               textAlign: TextAlign.center),
           const SizedBox(height: 20),
-          WinButton('Vérifier maintenant',
+          WinButton(context.l10n.tutoringCheckNow,
               variant: WinButtonVariant.outline,
               onTap: () => _startPolling(booking.id)),
           const SizedBox(height: 10),
-          WinButton('Fermer',
+          WinButton(context.l10n.commonClose,
               variant: WinButtonVariant.ghost,
               onTap: () => Navigator.of(context).pop()),
         ]),
@@ -904,16 +903,16 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           const Icon(Icons.cancel_outlined, size: 48, color: WinColors.error),
           const SizedBox(height: 16),
-          Text('Réservation annulée',
+          Text(context.l10n.tutoringBookingCancelled,
               style: WinType.titleM(s.onStrong), textAlign: TextAlign.center),
           const SizedBox(height: 8),
           Text(
               booking.cancellationReason ??
-                  'Le paiement n\'a pas pu être confirmé.',
+                  context.l10n.tutoringPaymentNotConfirmed,
               style: WinType.bodyS(s.onMuted),
               textAlign: TextAlign.center),
           const SizedBox(height: 20),
-          WinButton('Réessayer',
+          WinButton(context.l10n.commonRetry,
               onTap: () => setState(() {
                     _booking = null;
                     _phoneCtrl.clear();
@@ -935,8 +934,8 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
         Center(
           child: Text(
             alreadyConfirmed
-                ? 'Séance confirmée !'
-                : 'Paiement reçu  en attente du tuteur',
+                ? context.l10n.tutoringSessionConfirmed
+                : context.l10n.tutoringPaymentReceivedAwaiting,
             style: WinType.archivo(size: 20, color: s.onStrong),
             textAlign: TextAlign.center,
           ),
@@ -945,7 +944,7 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
           const SizedBox(height: 8),
           Center(
             child: Text(
-              'Le tuteur doit accepter ta demande. Tu seras notifié·e dès sa réponse, et remboursé·e intégralement sur ton portefeuille WinPlus s\'il refuse ou ne répond pas à temps.',
+              context.l10n.tutoringMustAccept,
               style: WinType.bodyS(s.onMuted),
               textAlign: TextAlign.center,
             ),
@@ -957,33 +956,32 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             _RecapRow(
                 icon: Icons.person_outline,
-                label: 'Tuteur',
+                label: context.l10n.tutoringTutor,
                 value: booking.tutorName ?? ''),
             const SizedBox(height: 10),
             _RecapRow(
                 icon: Icons.event_outlined,
-                label: 'Date',
-                value:
-                    '${booking.sessionDate.day.toString().padLeft(2, '0')}/${booking.sessionDate.month.toString().padLeft(2, '0')}/${booking.sessionDate.year}'),
+                label: context.l10n.tutoringDate,
+                value: WinFormat.dateNumeric(booking.sessionDate)),
             const SizedBox(height: 10),
             _RecapRow(
                 icon: Icons.schedule_outlined,
-                label: 'Heure',
+                label: context.l10n.tutoringTime,
                 value: '${booking.startTime} – ${booking.endTime}'),
             const SizedBox(height: 10),
             _RecapRow(
                 icon: Icons.payments_outlined,
-                label: 'Prix',
+                label: context.l10n.tutoringPrice,
                 value: '${fmtXaf(booking.priceXaf)} XAF'),
             const SizedBox(height: 10),
             _RecapRow(
                 icon: _modeIcons[booking.mode] ?? Icons.info_outline,
-                label: 'Mode',
-                value: _modeLabels[booking.mode] ?? booking.mode),
+                label: context.l10n.tutoringMode,
+                value: _modeLabel(booking.mode) ?? booking.mode),
           ]),
         ),
         const SizedBox(height: 24),
-        WinButton('Voir ma séance',
+        WinButton(context.l10n.tutoringViewMySession,
             block: true,
             onTap: () => Navigator.of(context).popUntil((r) => r.isFirst)),
       ],
@@ -1001,7 +999,7 @@ class _BookingStepper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    const labels = ['Créneau', 'Récapitulatif', 'Paiement'];
+    final labels = [context.l10n.tutoringStepSlot, context.l10n.tutoringStepRecap, context.l10n.tutoringStepPayment];
     return Row(
         children: List.generate(labels.length * 2 - 1, (i) {
       if (i.isOdd) {

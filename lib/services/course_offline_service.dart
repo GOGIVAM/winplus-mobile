@@ -6,6 +6,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'session_manager.dart';
+import '../l10n/l10n.dart';
 
 /// Module 27 (lot 8) : téléchargement hors-ligne chiffré des LEÇONS DE
 /// FORMATION (Course) uniquement.
@@ -76,7 +77,7 @@ class CourseOfflineService {
   }) async {
     final userId = await SessionManager.getUserId();
     if (userId == null) {
-      throw StateError('Téléchargement hors-ligne impossible : aucun compte connecté.');
+      throw StateError(L10n.current.svcOfflineSaveNoAccount);
     }
 
     final response = await Dio().get<List<int>>(
@@ -124,17 +125,17 @@ class CourseOfflineService {
   Future<String> decryptForPlayback(int courseId, int lessonId) async {
     final userId = await SessionManager.getUserId();
     if (userId == null) {
-      throw StateError('Lecture hors-ligne impossible : aucun compte connecté.');
+      throw StateError(L10n.current.svcOfflinePlayNoAccount);
     }
     final box = await _box();
     final entry = box.get(_entryId(courseId, lessonId)) as Map?;
     if (entry == null) {
-      throw StateError('Cette leçon n\'a pas été téléchargée.');
+      throw StateError(L10n.current.svcOfflineNotSaved);
     }
     final file = File(entry['path'] as String);
     if (!await file.exists()) {
       await box.delete(_entryId(courseId, lessonId));
-      throw StateError('Fichier hors-ligne introuvable (a-t-il été effacé par le système ?).');
+      throw StateError(L10n.current.svcOfflineFileMissing);
     }
 
     final raw = await file.readAsBytes();

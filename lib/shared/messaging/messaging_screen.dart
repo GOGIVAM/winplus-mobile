@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../l10n/l10n.dart';
 import '../../theme/win_motion.dart';
 import '../../services/messaging_service.dart';
 import '../../theme/win_colors.dart';
@@ -31,19 +32,20 @@ class _MessagingScreenState extends State<MessagingScreen> {
   }
 
   String _roleLabel(String role) => switch (role) {
-        'teacher' => 'Professeur',
-        'parent' => 'Parent',
-        'institution' => 'Établissement',
-        _ => 'Utilisateur',
+        'teacher' => context.l10n.roleTeacher,
+        'parent' => context.l10n.roleParent,
+        'institution' => context.l10n.roleInstitution,
+        _ => context.l10n.msgRoleUser,
       };
 
   String _relativeTime(DateTime? dt) {
     if (dt == null) return '';
     final diff = DateTime.now().difference(dt);
-    if (diff.inMinutes < 1) return 'maintenant';
-    if (diff.inMinutes < 60) return 'il y a ${diff.inMinutes} min';
-    if (diff.inHours < 24) return 'il y a ${diff.inHours}h';
-    return 'il y a ${diff.inDays}j';
+    final l10n = context.l10n;
+    if (diff.inMinutes < 1) return l10n.msgNow;
+    if (diff.inMinutes < 60) return l10n.msgMinutesAgo(diff.inMinutes);
+    if (diff.inHours < 24) return l10n.msgHoursAgo(diff.inHours);
+    return l10n.msgDaysAgo(diff.inDays);
   }
 
   @override
@@ -58,7 +60,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Messages', style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.msgTitle, style: WinType.headlineS(s.onStrong)),
         actions: [
           IconButton(
             icon: Icon(Icons.refresh_outlined, color: s.onStrong),
@@ -76,9 +78,9 @@ class _MessagingScreenState extends State<MessagingScreen> {
                   child: Column(mainAxisSize: MainAxisSize.min, children: [
                   Icon(Icons.chat_bubble_outline, size: 64, color: s.onFaint),
                   const SizedBox(height: 12),
-                  Text('Aucune conversation.', style: WinType.bodyM(s.onMuted)),
+                  Text(context.l10n.msgEmpty, style: WinType.bodyM(s.onMuted)),
                   const SizedBox(height: 8),
-                  Text('Contactez un professeur depuis la fiche d\'un élève.',
+                  Text(context.l10n.msgEmptyHint,
                       style: WinType.bodyS(s.onFaint),
                       textAlign: TextAlign.center),
                 ]))
@@ -233,8 +235,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
                 style: WinType.titleM(s.onStrong)),
             Text(
                 widget.conversation.participantRole == 'teacher'
-                    ? 'Professeur'
-                    : 'Parent',
+                    ? context.l10n.roleTeacher
+                    : context.l10n.roleParent,
                 style: WinType.labelS(s.onMuted)),
           ]),
         ]),
@@ -245,7 +247,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
               ? const Center(child: CircularProgressIndicator())
               : _messages!.isEmpty
                   ? Center(
-                      child: Text('Commencez la conversation.',
+                      child: Text(context.l10n.msgStartConversation,
                           style: WinType.bodyM(s.onMuted)))
                   : ListView.builder(
                       controller: _scrollCtrl,
@@ -313,7 +315,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
           child: Row(children: [
             Expanded(
                 child: WinTextField(
-              hint: 'Votre message…',
+              hint: context.l10n.msgHint,
               controller: _ctrl,
             )),
             const SizedBox(width: 8),

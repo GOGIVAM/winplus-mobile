@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import '../l10n/l10n.dart';
 import 'api_client.dart';
 import 'course_offline_service.dart';
 import 'session_manager.dart';
@@ -41,7 +42,7 @@ class AuthService {
       final data = e.response?.data as Map<String, dynamic>?;
       return AuthResult(
         success: false,
-        message: data?['error'] as String? ?? 'Connexion impossible',
+        message: data?['error'] as String? ?? L10n.current.svcLoginFailed,
         errorCode: data?['errorCode'] as String?,
       );
     }
@@ -63,13 +64,15 @@ class AuthService {
         'lastName': lastName,
         if (phone != null) 'phone': phone,
         'role': role.name,
+        // Lot 10.11 : le compte naît dans la langue de l'application.
+        'locale': L10n.code,
       });
       return const AuthResult(success: true);
     } on DioException catch (e) {
       final data = e.response?.data as Map<String, dynamic>?;
       return AuthResult(
         success: false,
-        message: data?['error'] as String? ?? 'Inscription impossible',
+        message: data?['error'] as String? ?? L10n.current.svcSignupFailed,
       );
     }
   }
@@ -85,7 +88,7 @@ class AuthService {
       final data = e.response?.data as Map<String, dynamic>?;
       return AuthResult(
         success: false,
-        message: data?['error'] as String? ?? 'Code invalide',
+        message: data?['error'] as String? ?? L10n.current.svcInvalidCode,
       );
     }
   }
@@ -98,7 +101,7 @@ class AuthService {
       final data = e.response?.data as Map<String, dynamic>?;
       return AuthResult(
           success: false,
-          message: data?['error'] as String? ?? 'Erreur réseau');
+          message: data?['error'] as String? ?? L10n.current.commonNetworkError);
     }
   }
 
@@ -110,7 +113,7 @@ class AuthService {
       final data = e.response?.data as Map<String, dynamic>?;
       return AuthResult(
           success: false,
-          message: data?['error'] as String? ?? 'Erreur réseau');
+          message: data?['error'] as String? ?? L10n.current.commonNetworkError);
     }
   }
 
@@ -123,7 +126,7 @@ class AuthService {
       final data = e.response?.data as Map<String, dynamic>?;
       return AuthResult(
           success: false,
-          message: data?['error'] as String? ?? 'Erreur réseau');
+          message: data?['error'] as String? ?? L10n.current.commonNetworkError);
     }
   }
 
@@ -149,7 +152,7 @@ class AuthService {
       final data = e.response?.data as Map<String, dynamic>?;
       return AuthResult(
           success: false,
-          message: data?['error'] as String? ?? 'Erreur réseau');
+          message: data?['error'] as String? ?? L10n.current.commonNetworkError);
     }
   }
 
@@ -161,7 +164,7 @@ class AuthService {
       final data = e.response?.data as Map<String, dynamic>?;
       return AuthResult(
           success: false,
-          message: data?['error'] as String? ?? 'Erreur réseau');
+          message: data?['error'] as String? ?? L10n.current.commonNetworkError);
     }
   }
 }

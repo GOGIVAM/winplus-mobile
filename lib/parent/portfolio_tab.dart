@@ -5,6 +5,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import '../l10n/l10n.dart';
 
 /// Portefeuille de compétences  portrait stable de l'apprenant, recalculé
 /// une fois par mois. Trois textes descriptifs uniquement (Régularité /
@@ -53,7 +54,7 @@ class _PortfolioTabState extends State<PortfolioTab> {
             Icon(Icons.person_outline, size: 48, color: s.onFaint),
             const SizedBox(height: 12),
             Text(
-                'Le portrait de ${widget.child.firstName} sera disponible après le premier calcul mensuel.',
+                context.l10n.parentPortfolioNotYet(widget.child.firstName),
                 style: WinType.bodyM(s.onMuted),
                 textAlign: TextAlign.center),
           ]),
@@ -64,29 +65,29 @@ class _PortfolioTabState extends State<PortfolioTab> {
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
       children: [
-        Text('Portrait de ${widget.child.firstName}',
+        Text(context.l10n.parentPortfolioTitle(widget.child.firstName),
             style: WinType.headlineS(s.onStrong)),
         const SizedBox(height: 4),
-        Text('Dernière mise à jour le ${_fmtDate(p.updatedAt)}',
+        Text(context.l10n.parentPortfolioUpdatedOn(_fmtDate(p.updatedAt)),
             style: WinType.labelS(s.onFaint)),
         const SizedBox(height: 16),
         _PortfolioCard(
             icon: Icons.calendar_today_outlined,
-            title: 'Régularité',
+            title: context.l10n.parentPortfolioRegularity,
             text: p.regularite ??
-                "Pas encore de données de régularité pour ${widget.child.firstName}."),
+                context.l10n.parentPortfolioNoRegularity(widget.child.firstName)),
         const SizedBox(height: 10),
         _PortfolioCard(
             icon: Icons.rocket_launch_outlined,
-            title: 'Autonomie',
+            title: context.l10n.parentPortfolioAutonomy,
             text: p.autonomie ??
-                "Pas encore de données d'autonomie pour ${widget.child.firstName}."),
+                context.l10n.parentPortfolioNoAutonomy(widget.child.firstName)),
         const SizedBox(height: 10),
         _PortfolioCard(
             icon: Icons.explore_outlined,
-            title: 'Curiosité',
+            title: context.l10n.parentPortfolioCuriosity,
             text: p.curiosite ??
-                "Pas encore de données de curiosité pour ${widget.child.firstName}."),
+                context.l10n.parentPortfolioNoCuriosity(widget.child.firstName)),
       ],
     );
   }

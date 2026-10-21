@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../l10n/l10n.dart';
 import '../../theme/win_motion.dart';
 import '../../services/forum_service.dart';
 import '../../theme/win_colors.dart';
@@ -83,12 +84,13 @@ class _ForumScreenState extends State<ForumScreen> {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
+    final l10n = context.l10n;
     return Scaffold(
       backgroundColor: s.bg,
       appBar: AppBar(
         backgroundColor: s.bg,
         elevation: 0,
-        title: Text('Forum', style: WinType.headlineS(s.onStrong)),
+        title: Text(l10n.forumTitle, style: WinType.headlineS(s.onStrong)),
         actions: [
           IconButton(
             icon: Icon(Icons.add, color: s.primary),
@@ -110,7 +112,7 @@ class _ForumScreenState extends State<ForumScreen> {
             itemBuilder: (context, i) {
               final cat = _categories[i];
               return WinChip(
-                cat == 'all' ? 'Tous' : cat,
+                cat == 'all' ? l10n.forumAll : forumCategoryLabel(l10n, cat),
                 active: cat == _category,
                 onTap: () {
                   setState(() => _category = cat);
@@ -130,7 +132,7 @@ class _ForumScreenState extends State<ForumScreen> {
                           Text(_error!, style: WinType.bodyM(WinColors.error)))
                   : _threads.isEmpty
                       ? Center(
-                          child: Text('Aucun thread dans cette catégorie.',
+                          child: Text(l10n.forumEmptyCategory,
                               style: WinType.bodyM(s.onMuted)))
                       : NotificationListener<ScrollNotification>(
                           onNotification: (n) {
@@ -187,7 +189,8 @@ class _ThreadCard extends StatelessWidget {
                 child: Text(thread['title'] ?? '',
                     style: WinType.titleM(s.onStrong))),
             if (isSolved) const SizedBox(width: 8),
-            if (isSolved) WinBadge('Résolu', color: BadgeColor.success),
+            if (isSolved)
+              WinBadge(context.l10n.forumSolved, color: BadgeColor.success),
           ]),
           const SizedBox(height: 6),
           Row(children: [
@@ -217,11 +220,12 @@ class _RoleBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final label = switch (role) {
-      'teacher' => 'Prof',
-      'institution' => 'Établissement',
-      'parent' => 'Parent',
-      _ => 'Élève',
+      'teacher' => l10n.forumRoleTeacher,
+      'institution' => l10n.roleInstitution,
+      'parent' => l10n.roleParent,
+      _ => l10n.roleStudent,
     };
     final color = switch (role) {
       'teacher' => BadgeColor.teal,

@@ -1,3 +1,4 @@
+import '../l10n/l10n.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
@@ -177,17 +178,17 @@ class _CoursePlayerScreenState extends State<CoursePlayerScreen> {
         title: Column(children: [
           const Icon(Icons.workspace_premium, size: 56, color: WinColors.gold),
           const SizedBox(height: 12),
-          Text('Formation terminée !',
+          Text(context.l10n.studentPlayerCourseDone,
               style: WinType.headlineS(s.onStrong),
               textAlign: TextAlign.center),
         ]),
         content: Text(
-            'Félicitations ! Votre certificat est en cours de génération.',
+            context.l10n.studentPlayerCertGenerating,
             style: WinType.bodyM(s.onMuted),
             textAlign: TextAlign.center),
         actions: [
           Center(
-              child: WinButton('Fermer', onTap: () => Navigator.pop(context))),
+              child: WinButton(context.l10n.commonClose, onTap: () => Navigator.pop(context))),
         ],
       ),
     );
@@ -251,7 +252,7 @@ class _CoursePlayerScreenState extends State<CoursePlayerScreen> {
           // Curriculum toggle
           IconButton(
             icon: const Icon(Icons.menu_book_outlined),
-            tooltip: 'Curriculum',
+            tooltip: context.l10n.studentPlayerCurriculum,
             onPressed: () => setState(() => _sidebarOpen = !_sidebarOpen),
           ),
         ],
@@ -394,7 +395,7 @@ class _LessonView extends StatelessWidget {
     }
     if (lesson == null) {
       return Center(
-          child: Text('Sélectionnez une leçon.',
+          child: Text(context.l10n.studentPlayerSelectLesson,
               style: WinType.bodyM(Colors.white38)));
     }
 
@@ -460,7 +461,7 @@ class _LessonView extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                       Text(l.title, style: WinType.titleM(Colors.white)),
-                      Text('Ouvrir dans la visionneuse (consultation en ligne)',
+                      Text(context.l10n.studentPlayerOpenViewer,
                           style: WinType.labelS(Colors.white54)),
                     ])),
                 const Icon(Icons.visibility_outlined, color: WinColors.teal400),
@@ -486,9 +487,9 @@ class _LessonView extends StatelessWidget {
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                    Text(l.fileName ?? 'Fichier joint',
+                    Text(l.fileName ?? context.l10n.studentPlayerAttachedFile,
                         style: WinType.titleM(Colors.white)),
-                    Text('Appuyez pour télécharger',
+                    Text(context.l10n.studentPlayerTapToDownload,
                         style: WinType.labelS(Colors.white54)),
                   ])),
               const Icon(Icons.download_outlined, color: WinColors.teal400),
@@ -507,7 +508,7 @@ class _LessonView extends StatelessWidget {
                 Row(mainAxisSize: MainAxisSize.min, children: [
                   Icon(Icons.check_circle, size: 16, color: WinColors.teal400),
                   const SizedBox(width: 4),
-                  Text('Terminé', style: WinType.labelM(WinColors.teal400)),
+                  Text(context.l10n.studentPlayerDone, style: WinType.labelM(WinColors.teal400)),
                 ]),
             ]),
             if (l.description != null && l.description!.isNotEmpty) ...[
@@ -532,10 +533,10 @@ class _LessonView extends StatelessWidget {
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                        Text('Formation terminée !',
+                        Text(context.l10n.studentPlayerCourseDone,
                             style: WinType.titleM(Colors.white)
                                 .copyWith(fontWeight: FontWeight.w700)),
-                        Text('Votre certificat est disponible.',
+                        Text(context.l10n.studentPlayerCertAvailable,
                             style: WinType.labelM(Colors.white70)),
                       ])),
                 ]),
@@ -659,14 +660,14 @@ class _LessonVideoPlayerState extends State<_LessonVideoPlayer> {
         _downloaded = true;
       });
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Leçon téléchargée pour un visionnage hors-ligne.')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(L10n.current.studentPlayerDownloaded)));
       }
     } catch (_) {
       if (!mounted) return;
       setState(() => _downloading = false);
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Téléchargement impossible. Réessaie plus tard.')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(L10n.current.studentPlayerDownloadFailed)));
     }
   }
 
@@ -700,7 +701,7 @@ class _LessonVideoPlayerState extends State<_LessonVideoPlayer> {
             const Icon(Icons.offline_pin, size: 16, color: WinColors.teal400),
           if (_isOffline) const SizedBox(width: 4),
           if (_isOffline)
-            Text('Lecture hors-ligne',
+            Text(context.l10n.studentPlayerOfflinePlayback,
                 style: WinType.labelS(WinColors.teal400)),
           const Spacer(),
           if (_downloading)
@@ -717,7 +718,7 @@ class _LessonVideoPlayerState extends State<_LessonVideoPlayer> {
               onPressed: _deleteOffline,
               icon: const Icon(Icons.delete_outline,
                   size: 16, color: Colors.white70),
-              label: Text('Retirer le hors-ligne',
+              label: Text(context.l10n.studentPlayerRemoveOffline,
                   style: WinType.labelS(Colors.white70)),
             )
           else
@@ -725,7 +726,7 @@ class _LessonVideoPlayerState extends State<_LessonVideoPlayer> {
               onPressed: _download,
               icon: const Icon(Icons.download_outlined,
                   size: 16, color: WinColors.teal400),
-              label: Text('Télécharger hors-ligne',
+              label: Text(context.l10n.studentPlayerDownloadOffline,
                   style: WinType.labelS(WinColors.teal400)),
             ),
         ]),
@@ -740,7 +741,7 @@ class _LessonVideoPlayerState extends State<_LessonVideoPlayer> {
     }
     if (_initError || _controller == null) {
       return Center(
-          child: Text('Vidéo indisponible pour le moment.',
+          child: Text(context.l10n.studentPlayerVideoUnavailable,
               style: WinType.bodyM(Colors.white38)));
     }
     final c = _controller!;
@@ -814,7 +815,7 @@ class _BottomNav extends StatelessWidget {
                     const Icon(Icons.check_circle,
                         size: 16, color: WinColors.teal400),
                     const SizedBox(width: 6),
-                    Text('Leçon terminée',
+                    Text(context.l10n.studentPlayerLessonDone,
                         style: WinType.labelM(WinColors.teal400)),
                   ])
                 : FilledButton.icon(
@@ -825,7 +826,7 @@ class _BottomNav extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
                     icon: const Icon(Icons.check, size: 18),
-                    label: Text('Marquer terminé',
+                    label: Text(context.l10n.studentPlayerMarkDone,
                         style: WinType.labelM(Colors.white)),
                     onPressed: onComplete,
                   ),

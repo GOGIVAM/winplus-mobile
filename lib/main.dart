@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'app_state.dart';
 import 'l10n/gen/app_localizations.dart';
 import 'theme/win_theme.dart';
@@ -15,6 +16,9 @@ import 'services/quiz_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Lot 10.11 : données de dates fr/en pour WinFormat (intl.DateFormat).
+  await initializeDateFormatting('fr');
+  await initializeDateFormatting('en');
 
   // Fondation hors ligne (brique 1/2/3) : stockage structuré, détection
   // réseau, file d'attente  dans cet ordre, chacun dépendant du précédent.

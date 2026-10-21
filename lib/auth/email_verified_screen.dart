@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
 import '../theme/win_motion.dart';
 import '../services/session_manager.dart';
 import '../shell/role_shell.dart';
@@ -107,12 +108,12 @@ class _EmailVerifiedScreenState extends State<EmailVerifiedScreen>
                     ),
                   ),
                   const SizedBox(height: 32),
-                  Text('Email vérifié !',
+                  Text(context.l10n.authEmailVerified,
                       style: WinType.displayS(s.onStrong),
                       textAlign: TextAlign.center),
                   const SizedBox(height: 14),
                   Text(
-                    'Votre compte WinPlus est maintenant actif.',
+                    context.l10n.authAccountActive,
                     style: WinType.bodyM(s.onMuted),
                     textAlign: TextAlign.center,
                   ),
@@ -121,14 +122,15 @@ class _EmailVerifiedScreenState extends State<EmailVerifiedScreen>
                     const Icon(Icons.workspace_premium_outlined,
                         size: 16, color: WinColors.gold),
                     const SizedBox(width: 6),
-                    Text('+50 XP débloqués',
+                    Text(context.l10n.authXpUnlocked,
                         style: WinType.manrope(
                             size: 13,
                             weight: FontWeight.w700,
                             color: WinColors.gold)),
                   ]),
                   const Spacer(),
-                  WinButton('Continuer', block: true, onTap: () async {
+                  WinButton(context.l10n.commonContinue, block: true,
+                      onTap: () async {
                     final role = await SessionManager.getUserRole();
                     if (!context.mounted) return;
                     Navigator.pushAndRemoveUntil(

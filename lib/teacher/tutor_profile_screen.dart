@@ -5,6 +5,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import '../l10n/l10n.dart';
 import 'tutor_group_pricing_editor.dart';
 import 'tutor_pricing_grid_editor.dart';
 import 'tutor_verification_screen.dart';
@@ -64,7 +65,51 @@ const _stepLabels = [
   'Disponibilités',
   'Bio & vérification'
 ];
-const _days = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+/// Jour abrégé (0 = dimanche … 6 = samedi) : « Dim », « Lun »… / « Sun », « Mon »…
+String _dayShort(int d) =>
+    WinFormat.weekdayShortCap(d == 0 ? DateTime.sunday : d);
+
+// Libellés affichés ; les valeurs enregistrées (matières, niveaux,
+// spécialités, styles, ville « Autre ville ») restent celles ci-dessus.
+String _subjectLabel(BuildContext context, String m) => switch (m) {
+      'Mathématiques' => context.l10n.dataSubjectMath,
+      'Physique' => context.l10n.dataSubjectPhysics,
+      'Chimie' => context.l10n.dataSubjectChemistry,
+      'Français' => context.l10n.dataSubjectFrench,
+      'Philosophie' => context.l10n.dataSubjectPhilosophy,
+      'Anglais' => context.l10n.dataSubjectEnglish,
+      'Histoire-Géo' => context.l10n.dataSubjectHistGeo,
+      'Informatique' => context.l10n.dataSubjectComputing,
+      'Économie' => context.l10n.tutoringSubjectEconomics,
+      _ => m,
+    };
+
+String _levelLabel(BuildContext context, String l) => switch (l) {
+      'Prépa' => context.l10n.authLvlPrepa,
+      'FMSB Médecine' => context.l10n.authLvlFmsb,
+      'ESSEC Commerce' => context.l10n.authLvlEssec,
+      'ENAM Administration' => context.l10n.teacherProfileLevelEnam,
+      'ENS École Normale' => context.l10n.authLvlEns,
+      _ => l,
+    };
+
+String _specialtyLabel(BuildContext context, String sp) => switch (sp) {
+      'Préparation concours' => context.l10n.teacherProfileSpecContestPrep,
+      'Soutien scolaire' => context.l10n.teacherProfileSpecSchoolSupport,
+      'Rattrapage express' => context.l10n.teacherProfileSpecCatchUp,
+      'Cours de vacances' => context.l10n.teacherProfileSpecHoliday,
+      _ => sp,
+    };
+
+String _styleLabel(BuildContext context, String st) => switch (st) {
+      'Structuré' => context.l10n.teacherProfileStyleStructured,
+      'Interactif' => context.l10n.teacherProfileStyleInteractive,
+      'Mixte' => context.l10n.teacherProfileStyleMixed,
+      _ => st,
+    };
+
+String _cityLabel(BuildContext context, String c) =>
+    c == 'Autre ville' ? context.l10n.teacherProfileOtherCity : c;
 
 // Zones d'intervention (US-PRO-07) : quartiers usuels pour les deux plus
 // grandes villes, saisie libre pour les autres.
@@ -172,8 +217,8 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
       }).catchError((_) {});
     } catch (_) {
       if (mounted)
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Impossible de charger ton profil tuteur.')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(L10n.current.teacherProfileLoadError)));
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -231,8 +276,8 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
   Widget _inPersonTile(WinScheme s, String label, bool value, ValueChanged<bool> onChanged) {
     final pending = value && !_inPersonAllowed;
     final note = _profile?.inPersonSuspended == true
-        ? 'Actif après examen de la suspension'
-        : 'Actif après vérification';
+        ? context.l10n.teacherProfileActiveAfterSuspension
+        : context.l10n.teacherProfileActiveAfterVerification;
     return CheckboxListTile(
         value: value,
         onChanged: (v) => onChanged(v ?? false),
@@ -329,11 +374,11 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
       if (next != null) setState(() => _step = next);
       if (mounted)
         ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('Étape enregistrée.')));
+            .showSnackBar(SnackBar(content: Text(L10n.current.teacherProfileStepSaved)));
     } catch (_) {
       if (mounted)
         ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Erreur lors de l\'enregistrement.')));
+            SnackBar(content: Text(L10n.current.teacherProfileSaveError)));
     } finally {
       if (mounted) setState(() => _saving = false);
     }
@@ -345,14 +390,14 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
       final p = await _service.activate();
       _hydrate(p);
       if (mounted)
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content:
-                Text('Ton profil tuteur est visible dans la recherche !')));
+                Text(L10n.current.teacherProfileActivated)));
     } catch (e) {
       if (mounted)
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(
-                'Complète les champs essentiels avant d\'activer ton profil.')));
+                L10n.current.teacherProfileActivateError)));
     } finally {
       if (mounted) setState(() => _saving = false);
     }
@@ -367,8 +412,8 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
       setState(() => _rateSuggestion = s);
     } catch (_) {
       if (mounted)
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('WinAI indisponible pour l\'instant.')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(L10n.current.teacherProfileAiUnavailable)));
     } finally {
       if (mounted) setState(() => _rateLoading = false);
     }
@@ -382,7 +427,7 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
       appBar: AppBar(
         backgroundColor: s.bg,
         elevation: 0,
-        title: Text('Mode Tuteur',
+        title: Text(context.l10n.teacherProfileTitle,
             style: WinType.archivo(size: 18, color: s.onStrong)),
         actions: [
           if (!_loading && _profile != null)
@@ -393,8 +438,8 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
                       : Icons.visibility_outlined,
                   color: s.onMuted),
               tooltip: _showPreview
-                  ? 'Retour à l\'édition'
-                  : 'Voir mon profil comme un élève',
+                  ? context.l10n.teacherProfileBackToEdit
+                  : context.l10n.teacherProfilePreview,
               onPressed: () => setState(() => _showPreview = !_showPreview),
             ),
           if (_profile?.isActive == true)
@@ -404,7 +449,7 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
                       ? Icons.flight_takeoff
                       : Icons.flight_takeoff_outlined,
                   color: _profile!.isOnVacation ? WinColors.warn : s.onMuted),
-              tooltip: 'En vacances',
+              tooltip: context.l10n.teacherProfileOnHoliday,
               onPressed: () async {
                 final p = await _service.setVacation(!_profile!.isOnVacation);
                 _hydrate(p);
@@ -447,17 +492,17 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
         Expanded(
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(p.title ?? 'Tuteur WinPlus',
+            Text(p.title ?? context.l10n.tutoringDefaultName,
                 style: WinType.archivo(size: 17, color: s.onStrong)),
             const SizedBox(height: 6),
             Wrap(spacing: 6, runSpacing: 6, children: [
               if (p.isInPersonVerified && !p.inPersonSuspended)
-                const WinBadge('Vérifié pour le présentiel', color: BadgeColor.success),
+                WinBadge(context.l10n.tutoringInPersonVerified, color: BadgeColor.success),
               if (p.isDiplomaVerified)
-                const WinBadge('Diplôme vérifié', color: BadgeColor.teal),
+                WinBadge(context.l10n.tutoringDiplomaVerified, color: BadgeColor.teal),
               for (final n in p.endorsedByInstitutions)
-                WinBadge('Caution : $n', color: BadgeColor.blue),
-              const WinBadge('Avis bientôt disponibles',
+                WinBadge(context.l10n.tutoringEndorsedBy(n), color: BadgeColor.blue),
+              WinBadge(context.l10n.teacherProfileReviewsSoon,
                   color: BadgeColor.neutral),
             ]),
           ]),
@@ -475,26 +520,26 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
       WinCard(
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text('Tarif', style: WinType.labelM(s.onStrong)),
+        Text(context.l10n.teacherProfileRate, style: WinType.labelM(s.onStrong)),
         const SizedBox(height: 4),
         Text(
             p.hourlyRateXaf != null
                 ? '${p.hourlyRateXaf} XAF/h'
-                : 'Non renseigné',
+                : context.l10n.tutoringNotSpecified,
             style: WinType.bodyM(s.onMuted)),
-        if (p.trialSessionEnabled) const Text('Séance d\'essai proposée'),
+        if (p.trialSessionEnabled) Text(context.l10n.teacherProfileTrialOffered),
       ])),
       const SizedBox(height: 12),
       WinCard(
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text('Matières & niveaux', style: WinType.labelM(s.onStrong)),
+        Text(context.l10n.tutoringSubjectsLevels, style: WinType.labelM(s.onStrong)),
         const SizedBox(height: 4),
-        Text(p.subjects.join(', ').isEmpty ? 'Aucune' : p.subjects.join(', ')),
-        Text(p.levels.join(', ').isEmpty ? 'Aucun' : p.levels.join(', ')),
+        Text(p.subjects.join(', ').isEmpty ? context.l10n.teacherProfileNoneF : p.subjects.map((m) => _subjectLabel(context, m)).join(', ')),
+        Text(p.levels.join(', ').isEmpty ? context.l10n.teacherProfileNoneM : p.levels.map((l) => _levelLabel(context, l)).join(', ')),
       ])),
       const SizedBox(height: 20),
-      WinButton('Réserver (aperçu  désactivé)', block: true, onTap: null),
+      WinButton(context.l10n.teacherProfileBookPreview, block: true, onTap: null),
     ]);
   }
 
@@ -502,7 +547,7 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
     final c = _completion!;
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Text('Complétude du profil', style: WinType.bodyM(s.onMuted)),
+        Text(context.l10n.teacherProfileCompletion, style: WinType.bodyM(s.onMuted)),
         Text('${c.score}/100',
             style: WinType.labelM(s.onStrong)
                 .copyWith(fontWeight: FontWeight.w700)),
@@ -571,14 +616,14 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
     switch (_step) {
       case 0:
         return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text('Matières enseignées', style: WinType.labelM(s.onStrong)),
+          Text(context.l10n.teacherProfileSubjectsTaught, style: WinType.labelM(s.onStrong)),
           const SizedBox(height: 8),
           Wrap(
               spacing: 8,
               runSpacing: 8,
               children: _subjects
                   .map((m) => WinChip(
-                        m,
+                        _subjectLabel(context, m),
                         active: _subjectsSel.contains(m),
                         onTap: () => setState(() => _subjectsSel.contains(m)
                             ? _subjectsSel.remove(m)
@@ -586,14 +631,14 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
                       ))
                   .toList()),
           const SizedBox(height: 20),
-          Text('Niveaux couverts', style: WinType.labelM(s.onStrong)),
+          Text(context.l10n.teacherProfileLevelsCovered, style: WinType.labelM(s.onStrong)),
           const SizedBox(height: 8),
           Wrap(
               spacing: 8,
               runSpacing: 8,
               children: _levels
                   .map((l) => WinChip(
-                        l,
+                        _levelLabel(context, l),
                         active: _levelsSel.contains(l),
                         onTap: () => setState(() => _levelsSel.contains(l)
                             ? _levelsSel.remove(l)
@@ -601,14 +646,14 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
                       ))
                   .toList()),
           const SizedBox(height: 20),
-          Text('Spécialités', style: WinType.labelM(s.onStrong)),
+          Text(context.l10n.teacherProfileSpecialties, style: WinType.labelM(s.onStrong)),
           const SizedBox(height: 8),
           Wrap(
               spacing: 8,
               runSpacing: 8,
               children: _specialties
                   .map((sp) => WinChip(
-                        sp,
+                        _specialtyLabel(context, sp),
                         active: _specialtiesSel.contains(sp),
                         onTap: () => setState(() => _specialtiesSel.contains(sp)
                             ? _specialtiesSel.remove(sp)
@@ -619,22 +664,22 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
 
       case 1:
         return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text('Modes d\'intervention', style: WinType.labelM(s.onStrong)),
+          Text(context.l10n.teacherProfileModes, style: WinType.labelM(s.onStrong)),
           const SizedBox(height: 8),
           CheckboxListTile(
               value: _online,
               onChanged: (v) => setState(() => _online = v ?? false),
-              title: const Text('En ligne via WinPlus'),
+              title: Text(context.l10n.teacherProfileOnlineViaWinplus),
               contentPadding: EdgeInsets.zero,
               controlAffinity: ListTileControlAffinity.leading),
           // Lot 9.5 (17.11) : présentiel réservé aux tuteurs vérifiés (refusé aussi par le serveur).
           if (!_inPersonAllowed) ...[
             WinAlert(
-                '${_profile?.inPersonBlockedReason ?? 'Le présentiel est réservé aux tuteurs vérifiés.'} '
-                '${_profile?.inPersonSuspended == true ? 'Tes choix présentiels restent enregistrés et redeviendront actifs à la levée de la suspension.' : 'Tes choix présentiels sont enregistrés et deviendront actifs dès ta vérification.'}',
+                '${_profile?.inPersonBlockedReason ?? context.l10n.teacherProfileBlockedDefault} '
+                '${_profile?.inPersonSuspended == true ? context.l10n.teacherProfileKeptSuspended : context.l10n.teacherProfileKeptUnverified}',
                 type: BadgeColor.warn),
             const SizedBox(height: 6),
-            WinButton('Me faire vérifier',
+            WinButton(context.l10n.teacherProfileGetVerified,
                 small: true,
                 variant: WinButtonVariant.outline,
                 icon: Icons.verified_user_outlined,
@@ -643,19 +688,19 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
           ],
           // Lot 9.5 (17.17) : choix présentiels conservés, cochés mais grisés
           // « actif après vérification » tant que le présentiel n'est pas possible.
-          _inPersonTile(s, 'À domicile chez l\'élève', _atStudent, (v) => setState(() => _atStudent = v)),
-          _inPersonTile(s, 'À domicile chez moi', _atTutor, (v) => setState(() => _atTutor = v)),
-          _inPersonTile(s, 'Présentiel en espace neutre', _neutral, (v) => setState(() => _neutral = v)),
+          _inPersonTile(s, context.l10n.teacherProfileAtStudentHome, _atStudent, (v) => setState(() => _atStudent = v)),
+          _inPersonTile(s, context.l10n.teacherProfileAtMyHome, _atTutor, (v) => setState(() => _atTutor = v)),
+          _inPersonTile(s, context.l10n.teacherProfileNeutralPlace, _neutral, (v) => setState(() => _neutral = v)),
           if (_atStudent || _atTutor) ...[
             const SizedBox(height: 12),
-            Text('Zones géographiques couvertes',
+            Text(context.l10n.teacherProfileZones,
                 style: WinType.labelM(s.onStrong)),
             const SizedBox(height: 8),
             DropdownButtonFormField<String>(
               value: _selectedCity,
-              hint: const Text('Choisir une ville…'),
+              hint: Text(context.l10n.teacherProfileChooseCity),
               items: _tutorCities
-                  .map((c) => DropdownMenuItem(value: c, child: Text(c)))
+                  .map((c) => DropdownMenuItem(value: c, child: Text(_cityLabel(context, c))))
                   .toList(),
               onChanged: (v) => setState(() {
                 _selectedCity = v;
@@ -666,7 +711,7 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
             if (_selectedCity != null && _selectedCity != 'Autre ville')
               DropdownButtonFormField<String>(
                 value: _selectedQuartier,
-                hint: const Text('Quartier (optionnel)…'),
+                hint: Text(context.l10n.teacherProfileDistrictHint),
                 items: (_tutorQuartiers[_selectedCity] ?? [])
                     .map((q) => DropdownMenuItem(value: q, child: Text(q)))
                     .toList(),
@@ -675,9 +720,9 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
             else if (_selectedCity == 'Autre ville')
               WinTextField(
                   controller: _customCityCtrl,
-                  hint: 'Nom de la ville / quartier'),
+                  hint: context.l10n.teacherProfileCityOrDistrictHint),
             const SizedBox(height: 8),
-            WinButton('Ajouter cette zone',
+            WinButton(context.l10n.teacherProfileAddZone,
                 small: true, variant: WinButtonVariant.outline, onTap: () {
               final city = _selectedCity == 'Autre ville'
                   ? _customCityCtrl.text.trim()
@@ -709,14 +754,14 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
 
       case 2:
         return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text('Tarif horaire (XAF)', style: WinType.labelM(s.onStrong)),
+          Text(context.l10n.teacherProfileHourlyRate, style: WinType.labelM(s.onStrong)),
           const SizedBox(height: 8),
           WinTextField(
               controller: _rateCtrl,
-              hint: 'ex: 3000',
+              hint: context.l10n.teacherProfileHourlyRateHint,
               keyboardType: TextInputType.number),
           const SizedBox(height: 8),
-          WinButton(_rateLoading ? 'WinAI réfléchit…' : 'Suggestion WinAI',
+          WinButton(_rateLoading ? context.l10n.commonWinaiThinking : context.l10n.teacherProfileAiSuggestion,
               variant: WinButtonVariant.outline,
               small: true,
               icon: Icons.auto_awesome,
@@ -724,13 +769,13 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
           if (_rateSuggestion != null) ...[
             const SizedBox(height: 10),
             WinAlert(
-              '${_rateSuggestion!.suggestedRateXaf} XAF/h suggéré (${_rateSuggestion!.rangeLowXaf}-${_rateSuggestion!.rangeHighXaf}). ${_rateSuggestion!.explanation}',
+              context.l10n.teacherProfileRateSuggested(_rateSuggestion!.suggestedRateXaf, _rateSuggestion!.rangeLowXaf, _rateSuggestion!.rangeHighXaf, _rateSuggestion!.explanation),
               type: BadgeColor.blue,
             ),
             TextButton(
                 onPressed: () => setState(() => _rateCtrl.text =
                     _rateSuggestion!.suggestedRateXaf.toString()),
-                child: const Text('Utiliser ce tarif')),
+                child: Text(context.l10n.teacherProfileUseRate)),
           ],
           const SizedBox(height: 16),
           TutorPricingGridEditor(
@@ -751,13 +796,13 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
           CheckboxListTile(
               value: _trialEnabled,
               onChanged: (v) => setState(() => _trialEnabled = v ?? false),
-              title: const Text('Proposer une séance d\'essai'),
+              title: Text(context.l10n.teacherProfileTrialToggle),
               contentPadding: EdgeInsets.zero,
               controlAffinity: ListTileControlAffinity.leading),
           if (_trialEnabled)
             WinTextField(
                 controller: _trialPriceCtrl,
-                hint: 'Prix (0 = gratuite)',
+                hint: context.l10n.teacherProfileTrialPriceHint,
                 keyboardType: TextInputType.number),
           const SizedBox(height: 16),
           // Lot 9.4 (17.7) : engagement mensuel, remise facultative bornée par le serveur.
@@ -765,22 +810,22 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
               value: _monthlyEnabled,
               onChanged: (v) => setState(() => _monthlyEnabled = v),
               contentPadding: EdgeInsets.zero,
-              title: const Text('Proposer l\'engagement mensuel'),
-              subtitle: const Text('Mêmes créneaux chaque semaine pendant 4 semaines, payés d\'avance ; tu es payé séance par séance.')),
+              title: Text(context.l10n.teacherProfileMonthlyToggle),
+              subtitle: Text(context.l10n.teacherProfileMonthlyDesc)),
           if (_monthlyEnabled) ...[
             WinTextField(
                 controller: _monthlyDiscountCtrl,
-                hint: 'Remise mensuelle en % (0 à $_monthlyMaxDiscount)',
+                hint: context.l10n.teacherProfileMonthlyDiscountHint(_monthlyMaxDiscount),
                 keyboardType: TextInputType.number),
             const SizedBox(height: 4),
-            Text('Appliquée au prix de chaque séance du mois, calculé par ta grille.',
+            Text(context.l10n.teacherProfileMonthlyHint,
                 style: WinType.labelS(s.onFaint)),
           ],
         ]);
 
       case 3:
         return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text('Créneaux hebdomadaires (tap pour activer)',
+          Text(context.l10n.teacherProfileWeeklySlots,
               style: WinType.labelM(s.onStrong)),
           const SizedBox(height: 10),
           Table(
@@ -802,7 +847,7 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
                         borderRadius: BorderRadius.circular(WinRadii.sm),
                         color: active ? WinColors.teal400 : s.chipBg,
                         border: Border.all(color: s.outline)),
-                    child: Text(pi == 0 ? _days[day] : '',
+                    child: Text(pi == 0 ? _dayShort(day) : '',
                         style: TextStyle(
                             fontSize: 10,
                             color: active ? Colors.white : s.onMuted)),
@@ -812,31 +857,31 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
             }));
           })),
           const SizedBox(height: 16),
-          Text('Délai de préavis minimum', style: WinType.labelM(s.onStrong)),
+          Text(context.l10n.teacherProfileNotice, style: WinType.labelM(s.onStrong)),
           Wrap(
               spacing: 8,
               children: [12, 24, 48]
-                  .map((h) => WinChip('$h h',
+                  .map((h) => WinChip(context.l10n.teacherProfileHours(h),
                       active: _notice == h,
                       onTap: () => setState(() => _notice = h)))
                   .toList()),
           const SizedBox(height: 16),
-          Text('Séances max par semaine', style: WinType.labelM(s.onStrong)),
+          Text(context.l10n.teacherProfileMaxPerWeek, style: WinType.labelM(s.onStrong)),
           const SizedBox(height: 8),
           WinTextField(
               controller: _maxPerWeekCtrl,
-              hint: 'Illimité',
+              hint: context.l10n.teacherProfileUnlimited,
               keyboardType: TextInputType.number),
           const SizedBox(height: 20),
-          Text("Politique d'annulation", style: WinType.labelM(s.onStrong)),
+          Text(context.l10n.tutoringCancellationPolicy, style: WinType.labelM(s.onStrong)),
           const SizedBox(height: 4),
           Text(
-              "Ce que l'élève récupère s'il annule lui-même (les frais Mobile Money restent à sa charge).",
+              context.l10n.teacherProfilePolicyIntro,
               style: WinType.labelS(s.onMuted)),
           const SizedBox(height: 10),
           _policyStepper(s,
-              label: 'Remboursement total si annulé au moins',
-              suffix: 'h avant',
+              label: context.l10n.teacherProfileFullRefund,
+              suffix: context.l10n.teacherProfileHoursBefore,
               value: _fullRefundHours,
               min: _bound('fullRefundHoursMin', 12),
               max: _bound('fullRefundHoursMax', 48),
@@ -846,7 +891,7 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
                     if (_noRefundHours > v) _noRefundHours = v;
                   })),
           _policyStepper(s,
-              label: 'Ensuite, part remboursée',
+              label: context.l10n.teacherProfilePartialRefund,
               suffix: '%',
               value: _partialRefundPercent,
               min: _bound('partialRefundPercentMin', 0),
@@ -854,8 +899,8 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
               step: 10,
               onChanged: (v) => setState(() => _partialRefundPercent = v)),
           _policyStepper(s,
-              label: 'Aucun remboursement à moins de',
-              suffix: 'h avant',
+              label: context.l10n.teacherProfileNoRefund,
+              suffix: context.l10n.teacherProfileHoursBefore,
               value: _noRefundHours,
               min: _bound('noRefundHoursMin', 0),
               max: [_bound('noRefundHoursMax', 12), _fullRefundHours]
@@ -864,37 +909,40 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
               onChanged: (v) => setState(() => _noRefundHours = v)),
           const SizedBox(height: 6),
           Text(
-              'Limites fixées par WinPlus : remboursement total entre '
-              '${_bound('fullRefundHoursMin', 12)} h et ${_bound('fullRefundHoursMax', 48)} h avant, '
-              'part remboursée de ${_bound('partialRefundPercentMin', 0)} à ${_bound('partialRefundPercentMax', 100)} %, '
-              'aucun remboursement en dessous de ${_bound('noRefundHoursMin', 0)} à ${_bound('noRefundHoursMax', 12)} h.',
+              context.l10n.teacherProfilePolicyBounds(
+                  _bound('fullRefundHoursMin', 12),
+                  _bound('fullRefundHoursMax', 48),
+                  _bound('partialRefundPercentMin', 0),
+                  _bound('partialRefundPercentMax', 100),
+                  _bound('noRefundHoursMin', 0),
+                  _bound('noRefundHoursMax', 12)),
               style: WinType.labelS(s.onFaint)),
         ]);
 
       case 4:
       default:
         return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text('Titre professionnel', style: WinType.labelM(s.onStrong)),
+          Text(context.l10n.teacherProfileProTitle, style: WinType.labelM(s.onStrong)),
           const SizedBox(height: 8),
           WinTextField(
-              controller: _titleCtrl, hint: 'ex: Prof de Maths  Terminale C/D'),
+              controller: _titleCtrl, hint: context.l10n.teacherProfileProTitleHint),
           const SizedBox(height: 16),
-          Text('Bio courte (300 caractères max)',
+          Text(context.l10n.teacherProfileBio,
               style: WinType.labelM(s.onStrong)),
           const SizedBox(height: 8),
           TextField(controller: _bioCtrl, maxLength: 300, maxLines: 4),
           const SizedBox(height: 8),
-          Text('Style pédagogique', style: WinType.labelM(s.onStrong)),
+          Text(context.l10n.teacherProfileStyle, style: WinType.labelM(s.onStrong)),
           const SizedBox(height: 8),
           Wrap(
               spacing: 8,
               children: _styles
-                  .map((st) => WinChip(st,
+                  .map((st) => WinChip(_styleLabel(context, st),
                       active: _teachingStyle == st,
                       onTap: () => setState(() => _teachingStyle = st)))
                   .toList()),
           const SizedBox(height: 16),
-          Text('Vidéo de présentation (optionnel)',
+          Text(context.l10n.teacherProfileVideo,
               style: WinType.labelM(s.onStrong)),
           const SizedBox(height: 8),
           WinTextField(controller: _videoCtrl, hint: 'https://youtube.com/...'),
@@ -907,13 +955,13 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
               const SizedBox(width: 10),
               Expanded(
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text('Vérification pour le présentiel', style: WinType.titleM(s.onStrong)),
+                  Text(context.l10n.teacherProfileVerification, style: WinType.titleM(s.onStrong)),
                   Text(
                       _profile?.inPersonSuspended == true
-                          ? 'Présentiel suspendu en attendant un examen'
+                          ? context.l10n.teacherProfileVerifSuspended
                           : _profile?.isInPersonVerified == true
-                              ? 'Vérifié : présentiel ouvert'
-                              : "Pièce d'identité, entretien ou caution d'institution",
+                              ? context.l10n.teacherProfileVerifOpen
+                              : context.l10n.teacherProfileVerifRoutes,
                       style: WinType.labelS(s.onMuted)),
                 ]),
               ),
@@ -921,20 +969,20 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
             ]),
           ),
           const SizedBox(height: 16),
-          Text('Diplôme (facultatif, badge « Diplôme vérifié », sans effet sur le présentiel)',
+          Text(context.l10n.teacherProfileDiploma,
               style: WinType.labelM(s.onStrong)),
           const SizedBox(height: 8),
           if (_profile?.pendingOrLatestDocument != null)
-            WinAlert('Statut : ${_profile!.pendingOrLatestDocument!.status}',
+            WinAlert(context.l10n.teacherProfileDocStatus(_profile!.pendingOrLatestDocument!.status),
                 type: BadgeColor.neutral)
           else
             Row(children: [
               Expanded(
                   child: WinTextField(
                       controller: _diplomaCtrl,
-                      hint: 'URL du document uploadé')),
+                      hint: context.l10n.teacherProfileDocUrlHint)),
               const SizedBox(width: 8),
-              WinButton('Envoyer',
+              WinButton(context.l10n.commonSend,
                   small: true,
                   variant: WinButtonVariant.outline, onTap: () async {
                 if (_diplomaCtrl.text.trim().isEmpty) return;
@@ -983,23 +1031,23 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
 
   Widget _buildActions(WinScheme s) {
     return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      WinButton('Précédent',
+      WinButton(context.l10n.teacherProfilePrevious,
           variant: WinButtonVariant.ghost,
           onTap:
               _step == 0 || _saving ? null : () => setState(() => _step -= 1)),
       if (_step < 4)
-        WinButton(_saving ? 'Enregistrement…' : 'Continuer',
+        WinButton(_saving ? context.l10n.teacherProfileSaving : context.l10n.commonContinue,
             loading: _saving,
             onTap: _saving ? null : () => _saveStep(next: _step + 1))
       else
         Row(children: [
-          WinButton('Enregistrer',
+          WinButton(context.l10n.commonSave,
               variant: WinButtonVariant.outline,
               loading: _saving,
               onTap: _saving ? null : () => _saveStep()),
           const SizedBox(width: 8),
           if (_profile?.isActive != true)
-            WinButton('Activer',
+            WinButton(context.l10n.teacherProfileActivate,
                 variant: WinButtonVariant.accent,
                 loading: _saving,
                 onTap: _saving

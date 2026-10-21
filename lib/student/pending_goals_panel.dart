@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
 import '../services/goals_service.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
@@ -73,7 +74,7 @@ class _PendingGoalsPanelState extends State<PendingGoalsPanel> {
     } catch (_) {
       if (mounted)
         setState(() =>
-            _error = "Impossible d'accepter cet objectif pour le moment.");
+            _error = L10n.current.studentGoalsAcceptError);
     } finally {
       if (mounted) setState(() => _busyId = null);
     }
@@ -93,7 +94,7 @@ class _PendingGoalsPanelState extends State<PendingGoalsPanel> {
     } catch (_) {
       if (mounted)
         setState(() =>
-            _error = 'Impossible de refuser cet objectif pour le moment.');
+            _error = L10n.current.studentGoalsRefuseError);
     } finally {
       if (mounted)
         setState(() {
@@ -105,7 +106,7 @@ class _PendingGoalsPanelState extends State<PendingGoalsPanel> {
 
   Future<void> _saveEdit(int id) async {
     if (_titleCtrl.text.trim().isEmpty || _editDeadline == null) {
-      setState(() => _error = "Le titre et l'échéance sont requis.");
+      setState(() => _error = L10n.current.studentGoalsRequired);
       return;
     }
     setState(() {
@@ -128,7 +129,7 @@ class _PendingGoalsPanelState extends State<PendingGoalsPanel> {
     } catch (_) {
       if (mounted)
         setState(() => _error =
-            "Impossible d'enregistrer les modifications pour le moment.");
+            L10n.current.studentGoalsSaveError);
     } finally {
       if (mounted) setState(() => _busyId = null);
     }
@@ -146,7 +147,7 @@ class _PendingGoalsPanelState extends State<PendingGoalsPanel> {
   }
 
   String _fmtDate(DateTime d) =>
-      '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year}';
+      WinFormat.dateNumeric(d);
 
   @override
   Widget build(BuildContext context) {
@@ -167,7 +168,7 @@ class _PendingGoalsPanelState extends State<PendingGoalsPanel> {
           Icon(Icons.flag_outlined, size: 16, color: WinColors.teal600),
           const SizedBox(width: 8),
           Expanded(
-              child: Text('Objectifs proposés par vos parents',
+              child: Text(context.l10n.studentGoalsTitle,
                   style: WinType.titleM(s.onStrong))),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
@@ -200,11 +201,11 @@ class _PendingGoalsPanelState extends State<PendingGoalsPanel> {
         Row(children: [
           Expanded(
               child: Text(g.title ?? '', style: WinType.titleM(s.onStrong))),
-          Text('Échéance : ${_fmtDate(g.targetDate)}',
+          Text(context.l10n.studentGoalsDeadlineOn(_fmtDate(g.targetDate)),
               style: WinType.labelS(s.onFaint)),
         ]),
         const SizedBox(height: 2),
-        Text('Proposé par un de vos parents',
+        Text(context.l10n.studentGoalsProposedBy,
             style: WinType.labelS(WinColors.teal600)
                 .copyWith(fontStyle: FontStyle.italic)),
         if (g.description != null && g.description!.isNotEmpty) ...[
@@ -218,14 +219,14 @@ class _PendingGoalsPanelState extends State<PendingGoalsPanel> {
               runSpacing: 8,
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
-                Text('Refuser définitivement ?',
+                Text(context.l10n.studentGoalsRefuseConfirm,
                     style: WinType.labelS(s.onMuted)),
-                WinButton('Confirmer',
+                WinButton(context.l10n.commonConfirm,
                     small: true,
                     variant: WinButtonVariant.outline,
                     loading: busy,
                     onTap: () => _refuse(g.id)),
-                WinButton('Annuler',
+                WinButton(context.l10n.commonCancel,
                     small: true,
                     variant: WinButtonVariant.ghost,
                     onTap: busy
@@ -234,17 +235,17 @@ class _PendingGoalsPanelState extends State<PendingGoalsPanel> {
               ])
         else
           Wrap(spacing: 8, runSpacing: 8, children: [
-            WinButton('Accepter',
+            WinButton(context.l10n.commonAccept,
                 small: true,
                 icon: Icons.check,
                 loading: busy,
                 onTap: () => _accept(g.id)),
-            WinButton('Modifier',
+            WinButton(context.l10n.commonEdit,
                 small: true,
                 variant: WinButtonVariant.outline,
                 icon: Icons.edit_outlined,
                 onTap: busy ? null : () => _startEdit(g)),
-            WinButton('Refuser',
+            WinButton(context.l10n.commonDecline,
                 small: true,
                 variant: WinButtonVariant.ghost,
                 icon: Icons.close,
@@ -264,9 +265,9 @@ class _PendingGoalsPanelState extends State<PendingGoalsPanel> {
     return WinCard(
       padding: const EdgeInsets.all(12),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        WinTextField(label: 'Titre', controller: _titleCtrl),
+        WinTextField(label: context.l10n.studentGoalsFieldTitle, controller: _titleCtrl),
         const SizedBox(height: 10),
-        Text('Description', style: WinType.labelM(s.onMuted)),
+        Text(context.l10n.commonDescription, style: WinType.labelM(s.onMuted)),
         const SizedBox(height: 4),
         TextField(
           controller: _descCtrl,
@@ -290,7 +291,7 @@ class _PendingGoalsPanelState extends State<PendingGoalsPanel> {
           ),
         ),
         const SizedBox(height: 10),
-        Text('Échéance', style: WinType.labelM(s.onMuted)),
+        Text(context.l10n.studentGoalsFieldDeadline, style: WinType.labelM(s.onMuted)),
         const SizedBox(height: 4),
         GestureDetector(
           onTap: _pickDeadline,
@@ -305,7 +306,7 @@ class _PendingGoalsPanelState extends State<PendingGoalsPanel> {
               Text(
                   _editDeadline != null
                       ? _fmtDate(_editDeadline!)
-                      : 'Choisir une date',
+                      : context.l10n.studentCoachPickDate,
                   style: WinType.bodyM(s.onStrong)),
             ]),
           ),
@@ -313,10 +314,10 @@ class _PendingGoalsPanelState extends State<PendingGoalsPanel> {
         const SizedBox(height: 12),
         Row(children: [
           Expanded(
-              child: WinButton('Enregistrer et activer',
+              child: WinButton(context.l10n.studentGoalsSaveActivate,
                   small: true, loading: busy, onTap: () => _saveEdit(g.id))),
           const SizedBox(width: 8),
-          WinButton('Annuler',
+          WinButton(context.l10n.commonCancel,
               small: true,
               variant: WinButtonVariant.ghost,
               onTap: busy ? null : () => setState(() => _editingId = null)),

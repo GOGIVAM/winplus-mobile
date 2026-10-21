@@ -1,3 +1,4 @@
+import '../l10n/l10n.dart';
 import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -48,7 +49,7 @@ class _CertificatesScreenState extends State<CertificatesScreen> {
       if (mounted)
         setState(() {
           _certs = [];
-          _error = 'Impossible de charger les certificats.';
+          _error = L10n.current.studentCertLoadError;
         });
     }
   }
@@ -67,7 +68,7 @@ class _CertificatesScreenState extends State<CertificatesScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Mes Certificats', style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.studentCertTitle, style: WinType.headlineS(s.onStrong)),
         actions: [
           IconButton(
             icon: Icon(Icons.refresh_outlined, color: s.onStrong),
@@ -84,7 +85,7 @@ class _CertificatesScreenState extends State<CertificatesScreen> {
               ? ListView(
                   padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
                   children: [
-                    Text('Formations', style: WinType.titleM(s.onStrong)),
+                    Text(context.l10n.studentCertCourses, style: WinType.titleM(s.onStrong)),
                     const SizedBox(height: 10),
                     ..._courseCerts.map((c) => Padding(
                           padding: const EdgeInsets.only(bottom: 12),
@@ -92,7 +93,7 @@ class _CertificatesScreenState extends State<CertificatesScreen> {
                         )),
                     if (certs.isNotEmpty) ...[
                       const SizedBox(height: 8),
-                      Text('Épreuves et parcours',
+                      Text(context.l10n.studentCertPapersAndPaths,
                           style: WinType.titleM(s.onStrong)),
                       const SizedBox(height: 10),
                       ...certs.map((c) => Padding(
@@ -120,14 +121,14 @@ class _CertificatesScreenState extends State<CertificatesScreen> {
                       size: 64, color: s.onFaint),
                   const SizedBox(height: 12),
                   Text(
-                    _error ?? 'Aucun certificat pour l\'instant',
+                    _error ?? context.l10n.studentCertEmpty,
                     style: WinType.bodyM(s.onMuted),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 8),
                   if (_error == null)
                     Text(
-                      'Complétez des quiz et des parcours pour\ndécrocher vos premiers certificats.',
+                      context.l10n.studentCertEmptyHint,
                       style: WinType.bodyS(s.onFaint),
                       textAlign: TextAlign.center,
                     ),
@@ -174,7 +175,7 @@ class _CertificatesScreenState extends State<CertificatesScreen> {
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis),
                                       const SizedBox(height: 4),
-                                      Text('Délivré le ${cert.issuedAt}',
+                                      Text(context.l10n.studentCertIssuedOn(cert.issuedAt),
                                           style:
                                               WinType.labelM(WinColors.ink500)),
                                     ])),
@@ -194,8 +195,8 @@ class _CertificatesScreenState extends State<CertificatesScreen> {
                                         const SizedBox(width: 8),
                                         Text(
                                             isHigh
-                                                ? 'Mention Très Bien'
-                                                : 'Mention Bien',
+                                                ? context.l10n.studentCertMentionVeryGood
+                                                : context.l10n.studentCertMentionGood,
                                             style: WinType.labelM(isHigh
                                                 ? WinColors.success
                                                 : WinColors.warn)),
@@ -204,7 +205,7 @@ class _CertificatesScreenState extends State<CertificatesScreen> {
                                     ],
                                     Row(children: [
                                       Expanded(
-                                        child: WinButton('Télécharger PDF',
+                                        child: WinButton(context.l10n.studentCertDownloadPdf,
                                             variant: WinButtonVariant.outline,
                                             small: true,
                                             icon: Icons.download_outlined,
@@ -214,7 +215,7 @@ class _CertificatesScreenState extends State<CertificatesScreen> {
                                       ),
                                       const SizedBox(width: 8),
                                       Expanded(
-                                        child: WinButton('Partager',
+                                        child: WinButton(context.l10n.studentCertShare,
                                             variant: WinButtonVariant.ghost,
                                             small: true,
                                             icon: Icons.share_outlined,
@@ -254,7 +255,7 @@ class _CourseCertificateCard extends StatelessWidget {
     final issued = cert.issuedAt;
     final date = issued == null
         ? ''
-        : '${issued.day.toString().padLeft(2, '0')}/${issued.month.toString().padLeft(2, '0')}/${issued.year}';
+        : WinFormat.dateNumeric(issued);
     return WinCard(
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
@@ -271,14 +272,14 @@ class _CourseCertificateCard extends StatelessWidget {
         Text(
             [
               if (cert.instructorName != null) cert.instructorName!,
-              if (date.isNotEmpty) 'Délivré le $date',
+              if (date.isNotEmpty) context.l10n.studentCertIssuedOn(date),
             ].join(' · '),
             style: WinType.labelM(s.onMuted)),
         const SizedBox(height: 4),
-        SelectableText('Code de vérification : ${cert.verificationCode}',
+        SelectableText(context.l10n.studentCertVerificationCode(cert.verificationCode),
             style: WinType.labelS(s.onMuted)),
         const SizedBox(height: 10),
-        WinButton('Voir le certificat (PDF)',
+        WinButton(context.l10n.studentCertSeePdf,
             variant: WinButtonVariant.outline,
             small: true,
             icon: Icons.picture_as_pdf_outlined,
@@ -322,7 +323,7 @@ class _CertificatePdfScreenState extends State<_CertificatePdfScreen> {
       setState(() => _bytes = Uint8List.fromList(res.data ?? const []));
     } catch (_) {
       if (mounted) {
-        setState(() => _error = 'Le certificat n\'a pas pu être chargé.');
+        setState(() => _error = L10n.current.studentCertPdfLoadError);
       }
     }
   }

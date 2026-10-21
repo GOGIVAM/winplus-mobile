@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/l10n.dart';
 import '../services/tutor_booking_service.dart';
 import '../services/tutor_session_material_service.dart';
 import '../theme/win_colors.dart';
@@ -15,11 +16,14 @@ import '../widgets/win_widgets.dart';
 /// - Payeur (parent, institution) : consulter sans corrigés, voir les notes.
 /// Le support s'affiche dans l'application uniquement (décision 18.21).
 
-const _difficultyLabels = {'facile': 'Facile', 'moyen': 'Moyen', 'difficile': 'Difficile'};
+Map<String, String> get _difficultyLabels => {
+      'facile': L10n.current.tutoringMatEasy,
+      'moyen': L10n.current.tutoringMatMedium,
+      'difficile': L10n.current.tutoringMatHard,
+    };
 
 String _date(DateTime d) {
-  const days = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche'];
-  return '${days[d.weekday - 1]} ${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}';
+  return '${WinFormat.weekday(d.weekday)} ${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}';
 }
 
 class TutorSessionMaterialScreen extends StatefulWidget {
@@ -69,7 +73,7 @@ class _TutorSessionMaterialScreenState extends State<TutorSessionMaterialScreen>
       if (!mounted) return;
       setState(() {
         _loading = false;
-        _error = TutorSessionMaterialService.errorMessage(e) ?? 'Support introuvable.';
+        _error = TutorSessionMaterialService.errorMessage(e) ?? L10n.current.tutoringMatNotFound;
       });
     }
   }
@@ -85,7 +89,7 @@ class _TutorSessionMaterialScreenState extends State<TutorSessionMaterialScreen>
     } catch (e) {
       if (!mounted) return false;
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(TutorSessionMaterialService.errorMessage(e) ?? 'Action impossible.')));
+          .showSnackBar(SnackBar(content: Text(TutorSessionMaterialService.errorMessage(e) ?? L10n.current.tutoringActionFailed)));
       return false;
     } finally {
       if (mounted) setState(() => _busy = false);
@@ -98,8 +102,8 @@ class _TutorSessionMaterialScreenState extends State<TutorSessionMaterialScreen>
         builder: (ctx) => AlertDialog(
           content: Text(message),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Retour')),
-            TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Continuer')),
+            TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(ctx.l10n.commonBack)),
+            TextButton(onPressed: () => Navigator.pop(ctx, true), child: Text(ctx.l10n.commonContinue)),
           ],
         ),
       ) ==
@@ -116,20 +120,20 @@ class _TutorSessionMaterialScreenState extends State<TutorSessionMaterialScreen>
         backgroundColor: s.bg,
         elevation: 0,
         iconTheme: IconThemeData(color: s.onStrong),
-        title: Text('Support de séance', style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.tutoringMaterial, style: WinType.headlineS(s.onStrong)),
       ),
       body: SafeArea(
         child: _loading
             ? const Center(child: CircularProgressIndicator())
             : _v == null
-                ? Center(child: Padding(padding: const EdgeInsets.all(24), child: Text(_error ?? 'Support introuvable.', style: WinType.bodyS(s.onMuted))))
+                ? Center(child: Padding(padding: const EdgeInsets.all(24), child: Text(_error ?? context.l10n.tutoringMatNotFound, style: WinType.bodyS(s.onMuted))))
                 : _editing && _v!.content != null
                     ? _MaterialEditor(
                         initial: _v!.content!,
                         busy: _busy,
                         onCancel: () => setState(() => _editing = false),
                         onSave: (c) async {
-                          if (await _run(() => _svc.update(widget.bookingId, c), 'Brouillon enregistré.')) {
+                          if (await _run(() => _svc.update(widget.bookingId, c), context.l10n.tutoringMatDraftSaved)) {
                             if (mounted) setState(() => _editing = false);
                           }
                         },
@@ -145,11 +149,11 @@ class _TutorSessionMaterialScreenState extends State<TutorSessionMaterialScreen>
       _header(s, v),
       if (v.isTutor) ..._tutorActions(s, v),
       if (!v.isTutor && !v.exists && v.blockedReason == null)
-        const WinAlert('Le tuteur n\'a pas encore partagé de support pour cette séance.', type: BadgeColor.neutral),
+        WinAlert(context.l10n.tutoringMatNotShared, type: BadgeColor.neutral),
       if (v.viewerRole == 'payer' && v.exists)
         Padding(
           padding: const EdgeInsets.only(bottom: 10),
-          child: Text('Consultation seule : les élèves répondent au quiz et aux exercices dans leur compte.', style: WinType.labelS(s.onFaint)),
+          child: Text(context.l10n.tutoringMatReadOnly, style: WinType.labelS(s.onFaint)),
         ),
       if (c != null) ...[
         _course(s, c),
@@ -158,7 +162,7 @@ class _TutorSessionMaterialScreenState extends State<TutorSessionMaterialScreen>
         if (v.canSubmit && v.isParticipant)
           Padding(
             padding: const EdgeInsets.only(top: 6, bottom: 12),
-            child: WinButton('Envoyer mes réponses', block: true, loading: _busy, onTap: _busy ? null : () => _submit(c)),
+            child: WinButton(context.l10n.tutoringMatSubmit, block: true, loading: _busy, onTap: _busy ? null : () => _submit(c)),
           ),
       ],
       if (v.sharedVersion != null && (v.isTutor || v.results.isNotEmpty)) _resultsCard(s, v),
@@ -168,24 +172,24 @@ class _TutorSessionMaterialScreenState extends State<TutorSessionMaterialScreen>
   Widget _header(WinScheme s, SessionMaterialView v) {
     final badge = v.isTutor && v.exists
         ? v.status == 'draft'
-            ? const WinBadge('Brouillon', color: BadgeColor.warn)
+            ? WinBadge(context.l10n.commonDraft, color: BadgeColor.warn)
             : v.hasUnsharedChanges
-                ? const WinBadge('Modifié depuis le partage', color: BadgeColor.warn)
-                : const WinBadge('Partagé', color: BadgeColor.success)
+                ? WinBadge(context.l10n.tutoringMatChanged, color: BadgeColor.warn)
+                : WinBadge(context.l10n.tutoringMatShared, color: BadgeColor.success)
         : null;
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: WinCard(
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(children: [
-            Expanded(child: Text(v.content?.title.isNotEmpty == true ? v.content!.title : 'Séance', style: WinType.titleM(s.onStrong))),
+            Expanded(child: Text(v.content?.title.isNotEmpty == true ? v.content!.title : context.l10n.tutoringSession, style: WinType.titleM(s.onStrong))),
             if (badge != null) badge,
           ]),
           const SizedBox(height: 4),
           Text('${_date(v.sessionDate)} · ${v.startTime}-${v.endTime} · ${formatDurationMinutes(v.durationMinutes)}'
-              '${v.subject != null ? ' · ${v.subject}' : ''}${!v.isTutor && v.tutorName != null ? ' · avec ${v.tutorName}' : ''}',
+              '${v.subject != null ? ' · ${v.subject}' : ''}${!v.isTutor && v.tutorName != null ? ' · ${context.l10n.tutoringWithName('${v.tutorName}')}' : ''}',
               style: WinType.labelS(s.onMuted)),
-          Text('${v.participantCount > 1 ? 'Groupe (${v.participantCount} élèves) : ' : 'Élève : '}'
+          Text('${v.participantCount > 1 ? context.l10n.tutoringMatGroupPrefix(v.participantCount) : context.l10n.tutoringMatStudentPrefix}'
               '${v.participants.map((p) => p.name ?? '#${p.userId}').join(', ')}',
               style: WinType.labelS(s.onFaint)),
           if (v.topics.isNotEmpty) ...[
@@ -208,17 +212,16 @@ class _TutorSessionMaterialScreenState extends State<TutorSessionMaterialScreen>
         controller: _instructions,
         maxLength: 500,
         maxLines: 2,
-        decoration: const InputDecoration(
-          hintText: 'Consigne pour WinAI (facultatif) : « plus d\'exercices », « niveau plus simple »…',
-          border: OutlineInputBorder(),
+        decoration: InputDecoration(
+          hintText: context.l10n.tutoringMatInstructionsHint,
+          border: const OutlineInputBorder(),
         ),
       ),
       Text(
-          'WinAI prépare un cours, un quiz et des exercices à partir des sujets de la séance. '
-          'La génération est décomptée de ton usage WinAI ; rien n\'est envoyé aux élèves avant que tu partages.',
+          context.l10n.tutoringMatGenerateHelp,
           style: WinType.labelS(s.onFaint)),
       const SizedBox(height: 8),
-      WinButton(v.exists ? 'Régénérer' : 'Générer avec WinAI',
+      WinButton(v.exists ? context.l10n.tutoringMatRegenerate : context.l10n.tutoringMatGenerate,
           block: true,
           loading: _busy,
           variant: v.exists ? WinButtonVariant.outline : WinButtonVariant.accent,
@@ -226,23 +229,23 @@ class _TutorSessionMaterialScreenState extends State<TutorSessionMaterialScreen>
           onTap: _busy
               ? null
               : () async {
-                  if (v.exists && !await _confirm('Régénérer remplace ton brouillon actuel (la version partagée reste visible jusqu\'au prochain partage). Continuer ?')) {
+                  if (v.exists && !await _confirm(context.l10n.tutoringMatRegenerateConfirm)) {
                     return;
                   }
-                  if (await _run(() => _svc.generate(widget.bookingId, instructions: _instructions.text), 'Support généré : relis-le avant de le partager.')) {
+                  if (await _run(() => _svc.generate(widget.bookingId, instructions: _instructions.text), L10n.current.tutoringMatGenerated)) {
                     _instructions.clear();
                   }
                 }),
       if (v.canEdit) ...[
         const SizedBox(height: 8),
-        WinButton('Modifier', block: true, variant: WinButtonVariant.outline, icon: Icons.edit, onTap: _busy ? null : () => setState(() => _editing = true)),
+        WinButton(context.l10n.commonEdit, block: true, variant: WinButtonVariant.outline, icon: Icons.edit, onTap: _busy ? null : () => setState(() => _editing = true)),
       ],
       if (v.canShare) ...[
         const SizedBox(height: 8),
-        WinButton(v.sharedVersion != null ? 'Partager la nouvelle version' : 'Partager avec les élèves',
+        WinButton(v.sharedVersion != null ? context.l10n.tutoringMatShareNew : context.l10n.tutoringMatShare,
             block: true,
             icon: Icons.send,
-            onTap: _busy ? null : () => _run(() => _svc.share(widget.bookingId), 'Support partagé avec les élèves et le payeur.')),
+            onTap: _busy ? null : () => _run(() => _svc.share(widget.bookingId), context.l10n.tutoringMatSharedToast)),
       ],
       const SizedBox(height: 14),
     ];
@@ -264,9 +267,9 @@ class _TutorSessionMaterialScreenState extends State<TutorSessionMaterialScreen>
         children: [for (final i in items) Padding(padding: const EdgeInsets.only(bottom: 4), child: Text('• $i', style: WinType.bodyS(s.onStrong)))],
       );
 
-  Widget _course(WinScheme s, SessionMaterialContent c) => _card(s, 'Cours', [
+  Widget _course(WinScheme s, SessionMaterialContent c) => _card(s, context.l10n.tutoringMatCourse, [
         if (c.objectives.isNotEmpty) ...[
-          Text('Objectifs', style: WinType.labelM(s.onMuted)),
+          Text(context.l10n.tutoringMatObjectives, style: WinType.labelM(s.onMuted)),
           _bullets(s, c.objectives),
           const SizedBox(height: 8),
         ],
@@ -286,13 +289,13 @@ class _TutorSessionMaterialScreenState extends State<TutorSessionMaterialScreen>
               width: double.infinity,
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(color: s.chipBg, borderRadius: BorderRadius.circular(10)),
-              child: Text('Exemple : ${sec.example}', style: WinType.labelS(s.onStrong)),
+              child: Text(context.l10n.tutoringMatExample('${sec.example}'), style: WinType.labelS(s.onStrong)),
             ),
           ],
         ],
         if (c.summary.isNotEmpty) ...[
           const SizedBox(height: 12),
-          Text('À retenir', style: WinType.labelM(s.onStrong)),
+          Text(context.l10n.tutoringMatSummary, style: WinType.labelM(s.onStrong)),
           Text(c.summary, style: WinType.bodyS(s.onStrong)),
         ],
         if (c.keyPoints.isNotEmpty) ...[const SizedBox(height: 6), _bullets(s, c.keyPoints)],
@@ -311,7 +314,7 @@ class _TutorSessionMaterialScreenState extends State<TutorSessionMaterialScreen>
   Widget _quizCard(WinScheme s, SessionMaterialView v, SessionMaterialContent c) {
     final answering = v.canSubmit && v.isParticipant;
     final mine = v.myResult != null && !v.myResult!.isOutdated ? v.myResult : null;
-    return _card(s, mine != null ? 'Quiz · ${mine.quizScore}/${mine.quizTotal}' : 'Quiz (${c.quiz.length} questions)', [
+    return _card(s, mine != null ? 'Quiz · ${mine.quizScore}/${mine.quizTotal}' : context.l10n.tutoringMatQuizCount(c.quiz.length), [
       for (var i = 0; i < c.quiz.length; i++) ...[
         Text('${i + 1}. ${c.quiz[i].text}', style: WinType.labelM(s.onStrong)),
         const SizedBox(height: 4),
@@ -358,7 +361,7 @@ class _TutorSessionMaterialScreenState extends State<TutorSessionMaterialScreen>
   Widget _exercisesCard(WinScheme s, SessionMaterialView v, SessionMaterialContent c) {
     final answering = v.canSubmit && v.isParticipant;
     final mine = v.myResult != null && !v.myResult!.isOutdated ? v.myResult : null;
-    return _card(s, 'Exercices', [
+    return _card(s, context.l10n.tutoringMatExercises, [
       for (final e in c.exercises) ...[
         Row(children: [
           Expanded(child: Text(e.title, style: WinType.labelM(s.onStrong))),
@@ -369,7 +372,7 @@ class _TutorSessionMaterialScreenState extends State<TutorSessionMaterialScreen>
         if (e.hints.isNotEmpty)
           ExpansionTile(
             tilePadding: EdgeInsets.zero,
-            title: Text('Indices', style: WinType.labelS(s.onMuted)),
+            title: Text(context.l10n.tutoringMatHints, style: WinType.labelS(s.onMuted)),
             children: [_bullets(s, e.hints)],
           ),
         if (answering) ...[
@@ -378,12 +381,12 @@ class _TutorSessionMaterialScreenState extends State<TutorSessionMaterialScreen>
             controller: _exerciseCtrl(e.id),
             maxLines: 4,
             minLines: 2,
-            decoration: const InputDecoration(hintText: 'Ta réponse…', border: OutlineInputBorder()),
+            decoration: InputDecoration(hintText: context.l10n.tutoringMatYourAnswerHint, border: const OutlineInputBorder()),
           ),
         ],
         if (mine?.exerciseAnswers[e.id] != null) ...[
           const SizedBox(height: 6),
-          Text('Ta réponse : ${mine!.exerciseAnswers[e.id]}', style: WinType.labelS(s.onMuted)),
+          Text(context.l10n.tutoringMatYourAnswer('${mine!.exerciseAnswers[e.id]}'), style: WinType.labelS(s.onMuted)),
         ],
         if (v.solutionsIncluded && (e.solution ?? '').isNotEmpty) ...[
           const SizedBox(height: 6),
@@ -391,7 +394,7 @@ class _TutorSessionMaterialScreenState extends State<TutorSessionMaterialScreen>
             width: double.infinity,
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(color: WinColors.successBg, borderRadius: BorderRadius.circular(10)),
-            child: Text('Corrigé : ${e.solution}', style: WinType.labelS(s.onStrong)),
+            child: Text(context.l10n.tutoringMatSolution('${e.solution}'), style: WinType.labelS(s.onStrong)),
           ),
         ],
         const SizedBox(height: 14),
@@ -401,40 +404,40 @@ class _TutorSessionMaterialScreenState extends State<TutorSessionMaterialScreen>
 
   Future<void> _submit(SessionMaterialContent c) async {
     final unanswered = c.quiz.where((q) => !_quiz.containsKey(q.id)).length;
-    if (unanswered > 0 && !await _confirm('$unanswered question(s) sans réponse. Envoyer quand même ? Tu ne pourras plus modifier tes réponses.')) {
+    if (unanswered > 0 && !await _confirm(context.l10n.tutoringMatUnanswered(unanswered))) {
       return;
     }
     final exercises = <String, String>{
       for (final e in c.exercises)
         if ((_exercises[e.id]?.text.trim() ?? '').isNotEmpty) e.id: _exercises[e.id]!.text.trim(),
     };
-    await _run(() => _svc.submit(widget.bookingId, Map.of(_quiz), exercises), 'Réponses envoyées à ton tuteur.');
+    await _run(() => _svc.submit(widget.bookingId, Map.of(_quiz), exercises), L10n.current.tutoringMatAnswersSent);
   }
 
   Widget _resultsCard(WinScheme s, SessionMaterialView v) {
     final answered = v.results.map((r) => r.studentUserId).toSet();
     final waiting = v.participants.where((p) => !answered.contains(p.userId)).toList();
-    return _card(s, v.isTutor ? 'Réponses des élèves' : 'Résultats', [
-      if (v.results.isEmpty) Text('Aucune réponse pour l\'instant.', style: WinType.labelS(s.onMuted)),
+    return _card(s, v.isTutor ? context.l10n.tutoringMatStudentAnswers : context.l10n.tutoringMatResults, [
+      if (v.results.isEmpty) Text(context.l10n.tutoringMatNoAnswer, style: WinType.labelS(s.onMuted)),
       for (final r in v.results) ...[
         Row(children: [
-          Expanded(child: Text(r.studentName ?? 'Élève #${r.studentUserId}', style: WinType.labelM(s.onStrong))),
-          Text(r.quizTotal > 0 ? '${r.quizScore}/${r.quizTotal}' : 'Exercices rendus', style: WinType.labelM(s.onStrong)),
+          Expanded(child: Text(r.studentName ?? context.l10n.tutoringStudentFallback(r.studentUserId), style: WinType.labelM(s.onStrong))),
+          Text(r.quizTotal > 0 ? '${r.quizScore}/${r.quizTotal}' : context.l10n.tutoringMatExercisesSubmitted, style: WinType.labelM(s.onStrong)),
         ]),
-        if (r.isOutdated) Text('Réponses à une version précédente', style: WinType.labelS(s.onFaint)),
+        if (r.isOutdated) Text(context.l10n.tutoringMatOutdated, style: WinType.labelS(s.onFaint)),
         if (v.isTutor && r.questions.isNotEmpty)
           Text(r.questions.asMap().entries.map((q) => '${q.key + 1}${q.value.isCorrect ? ' ✓' : ' ✗'}').join('  '), style: WinType.labelS(s.onMuted)),
         if (v.isTutor)
           for (final a in r.exerciseAnswers.entries)
             Padding(
               padding: const EdgeInsets.only(top: 4),
-              child: Text('${v.content?.exercises.where((x) => x.id == a.key).map((x) => x.title).firstOrNull ?? a.key} : ${a.value}',
+              child: Text(context.l10n.tutoringMatAnswerLine(v.content?.exercises.where((x) => x.id == a.key).map((x) => x.title).firstOrNull ?? a.key, a.value),
                   style: WinType.labelS(s.onStrong)),
             ),
         const SizedBox(height: 10),
       ],
       if (v.isTutor && waiting.isNotEmpty)
-        Text('Pas encore répondu : ${waiting.map((p) => p.name ?? '#${p.userId}').join(', ')}', style: WinType.labelS(s.onFaint)),
+        Text(context.l10n.tutoringMatNotYet(waiting.map((p) => p.name ?? '#${p.userId}').join(', ')), style: WinType.labelS(s.onFaint)),
     ]);
   }
 }
@@ -477,27 +480,27 @@ class _MaterialEditorState extends State<_MaterialEditor> {
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
     return ListView(padding: const EdgeInsets.all(16), children: [
-      Text('Modifier le support', style: WinType.titleM(s.onStrong)),
+      Text(context.l10n.tutoringMatEditTitle, style: WinType.titleM(s.onStrong)),
       const SizedBox(height: 10),
-      _field('Titre', _c.title, (v) => _c.title = v),
-      _field('Objectifs (un par ligne)', _c.objectives.join('\n'), (v) => _c.objectives = _lines(v), maxLines: 4),
+      _field(context.l10n.tutoringMatFieldTitle, _c.title, (v) => _c.title = v),
+      _field(context.l10n.tutoringMatFieldObjectives, _c.objectives.join('\n'), (v) => _c.objectives = _lines(v), maxLines: 4),
       _field('Introduction', _c.introduction, (v) => _c.introduction = v, maxLines: 5),
       for (var i = 0; i < _c.sections.length; i++) ...[
         Row(children: [
-          Expanded(child: Text('Partie ${i + 1}', style: WinType.labelM(s.onStrong))),
+          Expanded(child: Text(context.l10n.tutoringMatPart(i + 1), style: WinType.labelM(s.onStrong))),
           IconButton(icon: const Icon(Icons.delete_outline), onPressed: () => setState(() => _c.sections = [..._c.sections]..removeAt(i))),
         ]),
-        _field('Titre de la partie', _c.sections[i].title, (v) => _c.sections[i].title = v),
-        _field('Contenu', _c.sections[i].content, (v) => _c.sections[i].content = v, maxLines: 8),
-        _field('Exemple (facultatif)', _c.sections[i].example ?? '', (v) => _c.sections[i].example = v, maxLines: 4),
+        _field(context.l10n.tutoringMatFieldPartTitle, _c.sections[i].title, (v) => _c.sections[i].title = v),
+        _field(context.l10n.tutoringMatFieldContent, _c.sections[i].content, (v) => _c.sections[i].content = v, maxLines: 8),
+        _field(context.l10n.tutoringMatFieldExample, _c.sections[i].example ?? '', (v) => _c.sections[i].example = v, maxLines: 4),
       ],
       TextButton.icon(
         onPressed: () => setState(() => _c.sections = [..._c.sections, MaterialSection(title: '', content: '')]),
         icon: const Icon(Icons.add),
-        label: const Text('Ajouter une partie'),
+        label: Text(context.l10n.tutoringMatAddPart),
       ),
-      _field('À retenir', _c.summary, (v) => _c.summary = v, maxLines: 4),
-      _field('Points clés (un par ligne)', _c.keyPoints.join('\n'), (v) => _c.keyPoints = _lines(v), maxLines: 4),
+      _field(context.l10n.tutoringMatSummary, _c.summary, (v) => _c.summary = v, maxLines: 4),
+      _field(context.l10n.tutoringMatFieldKeyPoints, _c.keyPoints.join('\n'), (v) => _c.keyPoints = _lines(v), maxLines: 4),
       const SizedBox(height: 8),
       Text('Quiz', style: WinType.titleM(s.onStrong)),
       for (var i = 0; i < _c.quiz.length; i++) ...[
@@ -505,7 +508,7 @@ class _MaterialEditorState extends State<_MaterialEditor> {
           Expanded(child: Text('Question ${i + 1}', style: WinType.labelM(s.onStrong))),
           IconButton(icon: const Icon(Icons.delete_outline), onPressed: () => setState(() => _c.quiz = [..._c.quiz]..removeAt(i))),
         ]),
-        _field('Énoncé', _c.quiz[i].text, (v) => _c.quiz[i].text = v, maxLines: 3),
+        _field(context.l10n.tutoringMatFieldStatement, _c.quiz[i].text, (v) => _c.quiz[i].text = v, maxLines: 3),
         RadioGroup<String>(
           groupValue: _c.quiz[i].correctOptionId,
           onChanged: (val) => setState(() => _c.quiz[i].correctOptionId = val),
@@ -513,11 +516,11 @@ class _MaterialEditorState extends State<_MaterialEditor> {
             for (final o in _c.quiz[i].options)
               Row(children: [
                 Radio<String>(value: o.id),
-                Expanded(child: _field('Réponse ${o.id.toUpperCase()}', o.text, (v) => o.text = v)),
+                Expanded(child: _field(context.l10n.tutoringMatFieldAnswer(o.id.toUpperCase()), o.text, (v) => o.text = v)),
               ]),
           ]),
         ),
-        _field('Explication', _c.quiz[i].explanation ?? '', (v) => _c.quiz[i].explanation = v, maxLines: 3),
+        _field(context.l10n.tutoringMatFieldExplanation, _c.quiz[i].explanation ?? '', (v) => _c.quiz[i].explanation = v, maxLines: 3),
       ],
       TextButton.icon(
         onPressed: () => setState(() => _c.quiz = [
@@ -531,13 +534,13 @@ class _MaterialEditorState extends State<_MaterialEditor> {
               ),
             ]),
         icon: const Icon(Icons.add),
-        label: const Text('Ajouter une question'),
+        label: Text(context.l10n.tutoringMatAddQuestion),
       ),
       const SizedBox(height: 8),
-      Text('Exercices', style: WinType.titleM(s.onStrong)),
+      Text(context.l10n.tutoringMatExercises, style: WinType.titleM(s.onStrong)),
       for (var i = 0; i < _c.exercises.length; i++) ...[
         Row(children: [
-          Expanded(child: Text('Exercice ${i + 1}', style: WinType.labelM(s.onStrong))),
+          Expanded(child: Text(context.l10n.tutoringMatExerciseN(i + 1), style: WinType.labelM(s.onStrong))),
           DropdownButton<String>(
             value: _difficultyLabels.containsKey(_c.exercises[i].difficulty) ? _c.exercises[i].difficulty : 'moyen',
             items: [for (final e in _difficultyLabels.entries) DropdownMenuItem(value: e.key, child: Text(e.value))],
@@ -545,23 +548,23 @@ class _MaterialEditorState extends State<_MaterialEditor> {
           ),
           IconButton(icon: const Icon(Icons.delete_outline), onPressed: () => setState(() => _c.exercises = [..._c.exercises]..removeAt(i))),
         ]),
-        _field('Titre', _c.exercises[i].title, (v) => _c.exercises[i].title = v),
-        _field('Énoncé', _c.exercises[i].statement, (v) => _c.exercises[i].statement = v, maxLines: 5),
-        _field('Indices (un par ligne)', _c.exercises[i].hints.join('\n'), (v) => _c.exercises[i].hints = _lines(v), maxLines: 3),
-        _field('Corrigé (visible après la réponse de l\'élève)', _c.exercises[i].solution ?? '', (v) => _c.exercises[i].solution = v, maxLines: 5),
+        _field(context.l10n.tutoringMatFieldTitle, _c.exercises[i].title, (v) => _c.exercises[i].title = v),
+        _field(context.l10n.tutoringMatFieldStatement, _c.exercises[i].statement, (v) => _c.exercises[i].statement = v, maxLines: 5),
+        _field(context.l10n.tutoringMatFieldHints, _c.exercises[i].hints.join('\n'), (v) => _c.exercises[i].hints = _lines(v), maxLines: 3),
+        _field(context.l10n.tutoringMatFieldSolution, _c.exercises[i].solution ?? '', (v) => _c.exercises[i].solution = v, maxLines: 5),
       ],
       TextButton.icon(
         onPressed: () => setState(() => _c.exercises = [
               ..._c.exercises,
-              MaterialExercise(id: 'e${_c.exercises.length + 1}', title: 'Exercice ${_c.exercises.length + 1}', statement: ''),
+              MaterialExercise(id: 'e${_c.exercises.length + 1}', title: context.l10n.tutoringMatExerciseN(_c.exercises.length + 1), statement: ''),
             ]),
         icon: const Icon(Icons.add),
-        label: const Text('Ajouter un exercice'),
+        label: Text(context.l10n.tutoringMatAddExercise),
       ),
       const SizedBox(height: 12),
-      WinButton('Enregistrer le brouillon', block: true, loading: widget.busy, onTap: widget.busy ? null : () => widget.onSave(_c)),
+      WinButton(context.l10n.tutoringMatSaveDraft, block: true, loading: widget.busy, onTap: widget.busy ? null : () => widget.onSave(_c)),
       const SizedBox(height: 8),
-      WinButton('Annuler', block: true, variant: WinButtonVariant.outline, onTap: widget.busy ? null : widget.onCancel),
+      WinButton(context.l10n.commonCancel, block: true, variant: WinButtonVariant.outline, onTap: widget.busy ? null : widget.onCancel),
     ]);
   }
 }

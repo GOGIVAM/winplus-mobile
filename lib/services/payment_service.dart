@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'api_client.dart';
 import 'connectivity_service.dart';
+import '../l10n/l10n.dart';
 
 enum PaymentMethod { mtnMomo, orangeMoney }
 
@@ -149,7 +150,7 @@ class PaymentService {
       final data = e.response?.data;
       final msg =
           data is Map ? (data['message'] ?? data['error']) as String? : null;
-      throw OrderPaymentException(msg ?? 'Impossible d\'initier le paiement.');
+      throw OrderPaymentException(msg ?? L10n.current.svcPaymentInitFailed);
     }
   }
 

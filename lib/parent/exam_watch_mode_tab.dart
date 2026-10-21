@@ -5,6 +5,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import '../l10n/l10n.dart';
 
 /// Mode veille d'examen : le parent active un suivi rapproché sur le plan
 /// ExamCoachPlan actif de l'enfant (ou en crée un). N'ajoute pas de nouvelle
@@ -69,7 +70,7 @@ class _ExamWatchModeTabState extends State<ExamWatchModeTab> {
     } catch (_) {
       if (mounted)
         setState(
-            () => _error = "Impossible d'activer la veille pour le moment.");
+            () => _error = L10n.current.parentWatchActivateError);
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -77,7 +78,7 @@ class _ExamWatchModeTabState extends State<ExamWatchModeTab> {
 
   Future<void> _submitForm() async {
     if (_examTypeCtrl.text.trim().isEmpty || _examDate == null) {
-      setState(() => _error = "Choisissez un type d'examen et une date.");
+      setState(() => _error = context.l10n.parentWatchFormRequired);
       return;
     }
     setState(() {
@@ -94,7 +95,7 @@ class _ExamWatchModeTabState extends State<ExamWatchModeTab> {
     } catch (_) {
       if (mounted)
         setState(
-            () => _error = "La veille n'a pas pu être activée. Réessayez.");
+            () => _error = L10n.current.parentWatchSubmitError);
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -111,7 +112,7 @@ class _ExamWatchModeTabState extends State<ExamWatchModeTab> {
     } catch (_) {
       if (mounted)
         setState(() =>
-            _error = 'Impossible de désactiver la veille pour le moment.');
+            _error = L10n.current.parentWatchDeactivateError);
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -133,11 +134,11 @@ class _ExamWatchModeTabState extends State<ExamWatchModeTab> {
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
       children: [
-        Text("Veille d'examen  ${widget.child.firstName}",
+        Text('${context.l10n.parentWatchTitle}  ${widget.child.firstName}',
             style: WinType.headlineS(s.onStrong)),
         const SizedBox(height: 6),
         Text(
-          "Un suivi rapproché pendant la période d'examen : WinAI adapte ses conseils et vous propose des questions pertinentes dans l'assistant familial.",
+          context.l10n.parentWatchIntro,
           style: WinType.bodyS(s.onMuted),
         ),
         const SizedBox(height: 16),
@@ -157,23 +158,23 @@ class _ExamWatchModeTabState extends State<ExamWatchModeTab> {
                         Text(state.examType ?? '',
                             style: WinType.titleM(s.onStrong)),
                         if (state.examDate != null)
-                          Text('Examen le ${_fmtDate(state.examDate!)}',
+                          Text(context.l10n.parentWatchExamOn(_fmtDate(state.examDate!)),
                               style: WinType.labelS(s.onMuted)),
                       ]),
                 ),
                 if (daysLeft != null && daysLeft >= 0)
                   Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                    Text('J-$daysLeft',
+                    Text(context.l10n.parentWatchCountdown(daysLeft),
                         style: WinType.archivo(
                             size: 22,
                             weight: FontWeight.w800,
                             color: WinColors.teal700)),
-                    Text("avant l'examen",
+                    Text(context.l10n.parentWatchBeforeExam,
                         style: WinType.labelS(WinColors.teal600)),
                   ]),
               ]),
               const SizedBox(height: 12),
-              WinButton('Désactiver la veille',
+              WinButton(context.l10n.parentWatchDeactivate,
                   variant: WinButtonVariant.outline,
                   loading: _busy,
                   onTap: _deactivate),
@@ -184,10 +185,10 @@ class _ExamWatchModeTabState extends State<ExamWatchModeTab> {
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(state.examType!, style: WinType.titleM(s.onStrong)),
-              Text('Examen le ${_fmtDate(state.examDate!)}',
+              Text(context.l10n.parentWatchExamOn(_fmtDate(state.examDate!)),
                   style: WinType.labelS(s.onMuted)),
               const SizedBox(height: 12),
-              WinButton('Activer la veille',
+              WinButton(context.l10n.parentWatchActivate,
                   block: true, loading: _busy, onTap: _activateExisting),
             ]),
           )
@@ -196,13 +197,13 @@ class _ExamWatchModeTabState extends State<ExamWatchModeTab> {
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               WinTextField(
-                label: "Type d'examen",
-                hint: 'Ex : BEPC, Baccalauréat série C…',
+                label: context.l10n.parentWatchExamType,
+                hint: context.l10n.parentWatchExamTypeHint,
                 icon: Icons.school_outlined,
                 controller: _examTypeCtrl,
               ),
               const SizedBox(height: 14),
-              Text("Date de l'examen",
+              Text(context.l10n.parentWatchExamDate,
                   style: WinType.labelM(s.onStrong)
                       .copyWith(fontWeight: FontWeight.w500)),
               const SizedBox(height: 8),
@@ -223,13 +224,13 @@ class _ExamWatchModeTabState extends State<ExamWatchModeTab> {
                     Text(
                         _examDate != null
                             ? _fmtDate(_examDate!)
-                            : 'Choisir une date',
+                            : context.l10n.studentCoachPickDate,
                         style: WinType.bodyM(s.onStrong)),
                   ]),
                 ),
               ),
               const SizedBox(height: 12),
-              WinButton('Activer la veille',
+              WinButton(context.l10n.parentWatchActivate,
                   block: true, loading: _busy, onTap: _submitForm),
             ]),
           ),

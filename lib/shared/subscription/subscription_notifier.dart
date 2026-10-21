@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../l10n/l10n.dart';
 import '../../services/subscription_service.dart';
 
 /// Lot 9.7b : état d'abonnement de l'application, fondé sur les DROITS
@@ -23,7 +24,7 @@ class SubscriptionNotifier extends ChangeNotifier {
 
   /// Vrai si un plan payant (ou un essai) est en vigueur.
   bool get hasPlan => _sub?.hasPlan ?? false;
-  String get planName => _sub?.planName ?? 'Gratuit';
+  String get planName => _sub?.planName ?? L10n.current.commonFree;
   int get aiMultiplier => _ent.aiMultiplier;
 
   bool has(String key) => _ent.has(key);

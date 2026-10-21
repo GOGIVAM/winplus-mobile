@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 
 import 'api_client.dart';
+import '../l10n/l10n.dart';
 
 /// Lot 9.5 (suivi 17.11, 17.12, 17.16) : vérification des tuteurs pour le
 /// présentiel (pièce d'identité + selfie, entretien, caution d'institution),
@@ -18,48 +19,60 @@ String _err(DioException e, String fallback) {
 
 DateTime? _date(dynamic v) => v is String ? DateTime.tryParse(v) : null;
 
-const Map<String, String> kVerificationRouteLabels = {
-  'identity': "Pièce d'identité et selfie",
-  'interview': 'Entretien',
-  'institution': "Caution d'une institution",
-};
+Map<String, String> get kVerificationRouteLabels {
+  final l = L10n.current;
+  return {
+    'identity': l.teacherVerifIdentityTitle,
+    'interview': l.svcVerifRouteInterview,
+    'institution': l.svcVerifRouteInstitution,
+  };
+}
 
-const Map<String, String> kIdentityDocumentTypes = {
-  'cni': "Carte nationale d'identité",
-  'passport': 'Passeport',
-  'residence_permit': 'Titre de séjour',
-  'driving_license': 'Permis de conduire',
-  'other': 'Autre pièce officielle',
-};
+Map<String, String> get kIdentityDocumentTypes {
+  final l = L10n.current;
+  return {
+    'cni': l.svcIdDocCni,
+    'passport': l.svcIdDocPassport,
+    'residence_permit': l.svcIdDocResidencePermit,
+    'driving_license': l.svcIdDocDrivingLicense,
+    'other': l.svcIdDocOther,
+  };
+}
 
-const Map<String, String> kInterviewStatusLabels = {
-  'requested': 'Demandé',
-  'scheduled': 'Planifié',
-  'passed': 'Réussi',
-  'failed': 'Non concluant',
-  'no_show': 'Absent',
-  'cancelled': 'Annulé',
-};
+Map<String, String> get kInterviewStatusLabels {
+  final l = L10n.current;
+  return {
+    'requested': l.svcInterviewRequested,
+    'scheduled': l.svcInterviewScheduled,
+    'passed': l.svcInterviewPassed,
+    'failed': l.svcInterviewFailed,
+    'no_show': l.svcInterviewNoShow,
+    'cancelled': l.svcInterviewCancelled,
+  };
+}
 
-const Map<String, String> kVerificationEventLabels = {
-  'identity:submitted': "Pièce d'identité déposée",
-  'identity:approved': "Pièce d'identité validée",
-  'identity:rejected': "Pièce d'identité refusée",
-  'identity:superseded': 'Dépôt remplacé',
-  'identity:files_purged': 'Fichiers supprimés (conservation limitée)',
-  'interview:requested': 'Entretien demandé',
-  'interview:scheduled': 'Entretien planifié',
-  'interview:passed': 'Entretien réussi',
-  'interview:failed': 'Entretien non concluant',
-  'interview:no_show': "Absent à l'entretien",
-  'interview:cancelled': 'Entretien annulé',
-  'institution:endorsed': "Caution d'une institution",
-  'institution:revoked': 'Caution retirée',
-  'status:verified': 'Vérifié pour le présentiel',
-  'status:unverified': 'Vérification retirée',
-  'suspension:suspended': 'Présentiel suspendu',
-  'suspension:lifted': 'Suspension levée',
-};
+Map<String, String> get kVerificationEventLabels {
+  final l = L10n.current;
+  return {
+    'identity:submitted': l.svcVerifEventIdentitySubmitted,
+    'identity:approved': l.svcVerifEventIdentityApproved,
+    'identity:rejected': l.svcVerifEventIdentityRejected,
+    'identity:superseded': l.svcVerifEventIdentitySuperseded,
+    'identity:files_purged': l.svcVerifEventIdentityFilesPurged,
+    'interview:requested': l.svcVerifEventInterviewRequested,
+    'interview:scheduled': l.svcVerifEventInterviewScheduled,
+    'interview:passed': l.svcVerifEventInterviewPassed,
+    'interview:failed': l.svcVerifEventInterviewFailed,
+    'interview:no_show': l.svcVerifEventInterviewNoShow,
+    'interview:cancelled': l.svcVerifEventInterviewCancelled,
+    'institution:endorsed': l.svcVerifEventInstitutionEndorsed,
+    'institution:revoked': l.svcVerifEventInstitutionRevoked,
+    'status:verified': l.tutoringInPersonVerified,
+    'status:unverified': l.svcVerifEventStatusUnverified,
+    'suspension:suspended': l.teacherVerifSuspended,
+    'suspension:lifted': l.svcVerifEventSuspensionLifted,
+  };
+}
 
 class TutorIdentityCheckSummary {
   final int id;
@@ -268,15 +281,15 @@ class TutorReportReason {
   const TutorReportReason(this.code, this.label);
 }
 
-const List<TutorReportReason> kFallbackReportReasons = [
-  TutorReportReason('inappropriate_behavior', 'Comportement inapproprié'),
-  TutorReportReason('safety_concern', 'Problème de sécurité'),
-  TutorReportReason('harassment', 'Harcèlement ou propos déplacés'),
-  TutorReportReason('no_show', 'Absent à la séance'),
-  TutorReportReason('off_platform_payment', 'Demande de paiement hors WinPlus'),
-  TutorReportReason('identity_mismatch', "Ce n'est pas la personne du profil"),
-  TutorReportReason('poor_quality', 'Séance de mauvaise qualité'),
-  TutorReportReason('other', 'Autre'),
+List<TutorReportReason> get kFallbackReportReasons => [
+  TutorReportReason('inappropriate_behavior', L10n.current.svcReportInappropriate),
+  TutorReportReason('safety_concern', L10n.current.svcReportSafety),
+  TutorReportReason('harassment', L10n.current.svcReportHarassment),
+  TutorReportReason('no_show', L10n.current.svcReportNoShow),
+  TutorReportReason('off_platform_payment', L10n.current.svcReportOffPlatform),
+  TutorReportReason('identity_mismatch', L10n.current.svcReportIdentity),
+  TutorReportReason('poor_quality', L10n.current.svcReportPoorQuality),
+  TutorReportReason('other', L10n.current.authOptOther),
 ];
 
 class TutorVerificationService {
@@ -289,7 +302,7 @@ class TutorVerificationService {
       final res = await _api.dio.get('/tutor-verification/me');
       return TutorVerificationStatus.fromJson(res.data as Map<String, dynamic>);
     } on DioException catch (e) {
-      throw Exception(_err(e, 'Impossible de charger ta vérification.'));
+      throw Exception(_err(e, L10n.current.svcVerifLoadFailed));
     }
   }
 
@@ -311,7 +324,7 @@ class TutorVerificationService {
       final res = await _api.dio.post('/tutor-verification/me/identity', data: form);
       return TutorVerificationStatus.fromJson(res.data as Map<String, dynamic>);
     } on DioException catch (e) {
-      throw Exception(_err(e, 'Envoi impossible.'));
+      throw Exception(_err(e, L10n.current.svcSendFailed));
     }
   }
 
@@ -326,7 +339,7 @@ class TutorVerificationService {
       });
       return TutorVerificationStatus.fromJson(res.data as Map<String, dynamic>);
     } on DioException catch (e) {
-      throw Exception(_err(e, 'Demande impossible.'));
+      throw Exception(_err(e, L10n.current.svcRequestFailed));
     }
   }
 
@@ -335,7 +348,7 @@ class TutorVerificationService {
       final res = await _api.dio.post('/tutor-verification/me/interview/$id/cancel');
       return TutorVerificationStatus.fromJson(res.data as Map<String, dynamic>);
     } on DioException catch (e) {
-      throw Exception(_err(e, 'Annulation impossible.'));
+      throw Exception(_err(e, L10n.current.svcCancelFailed));
     }
   }
 
@@ -348,7 +361,7 @@ class TutorVerificationService {
           .map((e) => InstitutionTutorForEndorsement.fromJson(e as Map<String, dynamic>))
           .toList();
     } on DioException catch (e) {
-      throw Exception(_err(e, 'Impossible de charger vos répétiteurs.'));
+      throw Exception(_err(e, L10n.current.svcTutorsLoadFailed));
     }
   }
 
@@ -363,7 +376,7 @@ class TutorVerificationService {
             '${verifiedOn.year.toString().padLeft(4, '0')}-${verifiedOn.month.toString().padLeft(2, '0')}-${verifiedOn.day.toString().padLeft(2, '0')}',
       });
     } on DioException catch (e) {
-      throw Exception(_err(e, 'Caution impossible.'));
+      throw Exception(_err(e, L10n.current.svcEndorseFailed));
     }
   }
 
@@ -371,7 +384,7 @@ class TutorVerificationService {
     try {
       await _api.dio.post('/tutor-verification/institution/endorsements/$id/revoke', data: {'reason': reason});
     } on DioException catch (e) {
-      throw Exception(_err(e, 'Retrait impossible.'));
+      throw Exception(_err(e, L10n.current.svcWithdrawFailed));
     }
   }
 
@@ -399,7 +412,7 @@ class TutorVerificationService {
       final data = res.data;
       return data is Map<String, dynamic> ? (data['message'] ?? 'Signalement transmis.').toString() : 'Signalement transmis.';
     } on DioException catch (e) {
-      throw Exception(_err(e, 'Signalement impossible.'));
+      throw Exception(_err(e, L10n.current.svcReportFailed));
     }
   }
 }

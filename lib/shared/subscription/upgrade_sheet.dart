@@ -7,6 +7,7 @@ import '../../widgets/win_widgets.dart';
 import 'pricing_screen.dart';
 import '../../app_state.dart';
 import '../../data/models.dart';
+import '../../l10n/l10n.dart';
 import '../../services/subscription_service.dart';
 
 Future<double?> _minMonthlyPrice(BuildContext context) async {
@@ -71,11 +72,11 @@ class UpgradeSheet extends StatelessWidget {
               const Icon(Icons.lock_outline, size: 36, color: WinColors.warn),
         ),
         const SizedBox(height: 20),
-        Text('Fonctionnalité $requiredPlan',
+        Text(context.l10n.subFeatureOfPlan(requiredPlan),
             style: WinType.displayS(s.onStrong), textAlign: TextAlign.center),
         const SizedBox(height: 10),
         Text(
-          '$featureName est disponible à partir du plan $requiredPlan.',
+          context.l10n.subFeatureAvailableFrom(featureName, requiredPlan),
           style: WinType.bodyM(s.onMuted),
           textAlign: TextAlign.center,
         ),
@@ -86,17 +87,17 @@ class UpgradeSheet extends StatelessWidget {
           future: _minMonthlyPrice(context),
           builder: (_, snap) => snap.data == null
               ? const SizedBox.shrink()
-              : Text('À partir de ${fmtXaf(snap.data!.round())} XAF TTC/mois',
+              : Text(context.l10n.subFromPerMonth(fmtXaf(snap.data!.round())),
                   style: WinType.labelM(s.primary).copyWith(fontWeight: FontWeight.w700)),
         ),
         const SizedBox(height: 28),
-        WinButton('Voir les plans', block: true, onTap: () {
+        WinButton(context.l10n.subSeePlans, block: true, onTap: () {
           Navigator.pop(context);
           Navigator.push(
               context, WinPageRoute(builder: (_) => const PricingScreen()));
         }),
         const SizedBox(height: 10),
-        WinButton('Plus tard',
+        WinButton(context.l10n.subLater,
             variant: WinButtonVariant.ghost,
             block: true,
             onTap: () => Navigator.pop(context)),

@@ -5,6 +5,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import '../l10n/l10n.dart';
 import 'child_activity_screen.dart';
 
 class WinAIAlertsScreen extends StatefulWidget {
@@ -66,7 +67,7 @@ class _WinAIAlertsScreenState extends State<WinAIAlertsScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Alertes WinAI', style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.commonWinaiAlerts, style: WinType.headlineS(s.onStrong)),
         actions: [
           IconButton(
             icon: Icon(Icons.refresh_outlined, color: s.onStrong),
@@ -93,8 +94,8 @@ class _WinAIAlertsScreenState extends State<WinAIAlertsScreen> {
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
       children: [
-        const WinAlert(
-          'WinAI surveille les progrès de vos enfants et vous alerte en temps réel.',
+        WinAlert(
+          context.l10n.parentAlertsIntro,
           type: BadgeColor.teal,
           icon: Icons.auto_awesome_outlined,
         ),
@@ -105,13 +106,13 @@ class _WinAIAlertsScreenState extends State<WinAIAlertsScreen> {
             const Icon(Icons.check_circle_outline,
                 size: 56, color: WinColors.success),
             const SizedBox(height: 12),
-            Text('Aucune alerte active.', style: WinType.bodyM(s.onMuted)),
-            Text('Tout va bien pour vos enfants !',
+            Text(context.l10n.parentAlertsNone, style: WinType.bodyM(s.onMuted)),
+            Text(context.l10n.parentAlertsAllGood,
                 style: WinType.bodyS(s.onFaint)),
           ])),
           const SizedBox(height: 24),
         ] else ...[
-          Text('Alertes récentes', style: WinType.headlineS(s.onStrong)),
+          Text(context.l10n.parentAlertsRecent, style: WinType.headlineS(s.onStrong)),
           const SizedBox(height: 12),
           ...alerts.map((alert) {
             final color = _alertColor(alert.severity);
@@ -159,7 +160,7 @@ class _WinAIAlertsScreenState extends State<WinAIAlertsScreen> {
                     ),
                     if (child != null) ...[
                       const SizedBox(height: 6),
-                      WinButton('Voir l\'activité',
+                      WinButton(context.l10n.parentAlertsSeeActivity,
                           small: true,
                           variant: WinButtonVariant.ghost,
                           icon: Icons.timeline_outlined,
@@ -176,23 +177,23 @@ class _WinAIAlertsScreenState extends State<WinAIAlertsScreen> {
           const WinDivider(),
           const SizedBox(height: 20),
         ],
-        Text('Conseils WinAI', style: WinType.headlineS(s.onStrong)),
+        Text(context.l10n.parentAlertsTipsTitle, style: WinType.headlineS(s.onStrong)),
         const SizedBox(height: 12),
         ...[
           (
             Icons.timer_outlined,
-            'Sessions courtes et régulières',
-            'Encouragez les sessions courtes régulières plutôt que les longues sessions irrégulières. La rétention est bien meilleure.'
+            context.l10n.parentAlertsTip1Title,
+            context.l10n.parentAlertsTip1Text
           ),
           (
             Icons.quiz_outlined,
-            'Quiz quotidiens',
-            'Les quiz quotidiens améliorent la rétention de 40% par rapport à la lecture passive.'
+            context.l10n.parentAlertsTip2Title,
+            context.l10n.parentAlertsTip2Text
           ),
           (
             Icons.flag_outlined,
-            'Objectif clair',
-            'Fixez un objectif d\'examen précis avec votre enfant  une date et un examen concrets  pour le motiver efficacement.'
+            context.l10n.parentAlertsTip3Title,
+            context.l10n.parentAlertsTip3Text
           ),
         ].map((tip) => Padding(
               padding: const EdgeInsets.only(bottom: 10),
@@ -219,8 +220,8 @@ class _WinAIAlertsScreenState extends State<WinAIAlertsScreen> {
 
   String _formatDate(DateTime dt) {
     final diff = DateTime.now().difference(dt);
-    if (diff.inMinutes < 60) return 'Il y a ${diff.inMinutes} min';
-    if (diff.inHours < 24) return 'Il y a ${diff.inHours}h';
-    return 'Il y a ${diff.inDays} jour${diff.inDays > 1 ? 's' : ''}';
+    if (diff.inMinutes < 60) return context.l10n.studentNotifMinutesAgo(diff.inMinutes);
+    if (diff.inHours < 24) return context.l10n.studentNotifHoursAgo(diff.inHours);
+    return context.l10n.parentDaysAgo(diff.inDays);
   }
 }
