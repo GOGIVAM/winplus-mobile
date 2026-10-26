@@ -100,7 +100,12 @@ class QuizQuestion {
   final List<String> options;
   final int answer;
   final String explain;
-  const QuizQuestion(this.question, this.options, this.answer, this.explain);
+
+  /// Identifiant de la question côté serveur (« q1 »…), indispensable pour
+  /// envoyer la tentative ; null pour les quiz de démonstration locaux.
+  final String? id;
+  const QuizQuestion(this.question, this.options, this.answer, this.explain,
+      {this.id});
 }
 
 class Quiz {

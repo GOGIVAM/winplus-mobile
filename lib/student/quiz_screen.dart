@@ -88,7 +88,7 @@ class _QuizActiveScreenState extends State<QuizActiveScreen> {
     if (quizId != null) {
       unawaited(QuizService.instance.submitAttemptQueueable(
         quizId: quizId,
-        answers: List<int?>.from(_answers),
+        items: QuizService.answerItems(widget.quiz, List<int?>.from(_answers)),
         durationSeconds: elapsed,
       ));
     }
