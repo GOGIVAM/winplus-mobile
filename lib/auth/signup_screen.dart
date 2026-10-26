@@ -33,6 +33,11 @@ class _SignupScreenState extends State<SignupScreen> {
   bool get _has8 => _pwdCtrl.text.length >= 8;
   bool get _hasMaj => _pwdCtrl.text.contains(RegExp(r'[A-Z]'));
   bool get _hasNum => _pwdCtrl.text.contains(RegExp(r'[0-9]'));
+  // Même règle que le serveur (minuscule et caractère spécial exigés) :
+  // sans elles, le serveur refusait un mot de passe validé ici.
+  bool get _hasMin => _pwdCtrl.text.contains(RegExp(r'\p{Ll}', unicode: true));
+  bool get _hasSpecial =>
+      _pwdCtrl.text.contains(RegExp(r'[^\p{L}\p{N}]', unicode: true));
   bool get _matches =>
       _pwdCtrl.text == _confirmCtrl.text && _pwdCtrl.text.isNotEmpty;
 
@@ -55,8 +60,23 @@ class _SignupScreenState extends State<SignupScreen> {
       setState(() => _error = context.l10n.authFillRequired);
       return;
     }
-    if (!_has8 || !_hasMaj || !_hasNum || !_matches) {
+    if (!_has8 || !_hasMaj || !_hasMin || !_hasNum || !_hasSpecial || !_matches) {
       setState(() => _error = context.l10n.authPwdCriteria);
+      return;
+    }
+    // Téléphone facultatif, mais complet : 9 chiffres au Cameroun, ou un
+    // numéro international commençant par « + ». Un numéro tronqué rendait
+    // le paiement Mobile Money impossible.
+    final rawPhone = _phoneCtrl.text.trim();
+    final phoneDigits = rawPhone.replaceAll(RegExp(r'\D'), '');
+    final phone = rawPhone.isEmpty
+        ? null
+        : rawPhone.startsWith('+') || rawPhone.startsWith('00')
+            ? '+${phoneDigits.startsWith('00') ? phoneDigits.substring(2) : phoneDigits}'
+            : phoneDigits;
+    if (phone != null &&
+        !(phone.startsWith('+') ? phoneDigits.length >= 10 : phoneDigits.length == 9)) {
+      setState(() => _error = context.l10n.authPhoneInvalid);
       return;
     }
     setState(() {
@@ -68,7 +88,7 @@ class _SignupScreenState extends State<SignupScreen> {
       password: _pwdCtrl.text,
       firstName: _firstNameCtrl.text.trim(),
       lastName: _lastNameCtrl.text.trim(),
-      phone: _phoneCtrl.text.trim().isEmpty ? null : _phoneCtrl.text.trim(),
+      phone: phone,
       role: widget.role,
     );
     if (!mounted) return;
@@ -202,7 +222,11 @@ class _SignupScreenState extends State<SignupScreen> {
                   const SizedBox(height: 6),
                   _Constraint(l10n.authRuleUpper, _hasMaj),
                   const SizedBox(height: 6),
+                  _Constraint(l10n.authRuleLower, _hasMin),
+                  const SizedBox(height: 6),
                   _Constraint(l10n.authRuleDigit, _hasNum),
+                  const SizedBox(height: 6),
+                  _Constraint(l10n.authRuleSpecial, _hasSpecial),
                   const SizedBox(height: 6),
                   _Constraint(l10n.authRuleMatch, _matches),
                   if (_error != null) ...[

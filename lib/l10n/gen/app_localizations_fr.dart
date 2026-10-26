@@ -295,6 +295,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get authRuleUpper => 'Au moins une majuscule';
 
   @override
+  String get authPhoneInvalid =>
+      'Numéro incomplet : 9 chiffres (ex. 6 90 12 34 56) ou numéro international commençant par +.';
+
+  @override
+  String get authRuleLower => 'Au moins une minuscule';
+
+  @override
+  String get authRuleSpecial => 'Au moins un caractère spécial (- _ @ ! …)';
+
+  @override
   String get authSendCode => 'Envoyer le code';
 
   @override

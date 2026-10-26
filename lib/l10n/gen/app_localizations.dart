@@ -620,6 +620,24 @@ abstract class AppLocalizations {
   /// **'Au moins une majuscule'**
   String get authRuleUpper;
 
+  /// No description provided for @authPhoneInvalid.
+  ///
+  /// In fr, this message translates to:
+  /// **'Numéro incomplet : 9 chiffres (ex. 6 90 12 34 56) ou numéro international commençant par +.'**
+  String get authPhoneInvalid;
+
+  /// No description provided for @authRuleLower.
+  ///
+  /// In fr, this message translates to:
+  /// **'Au moins une minuscule'**
+  String get authRuleLower;
+
+  /// No description provided for @authRuleSpecial.
+  ///
+  /// In fr, this message translates to:
+  /// **'Au moins un caractère spécial (- _ @ ! …)'**
+  String get authRuleSpecial;
+
   /// No description provided for @authSendCode.
   ///
   /// In fr, this message translates to:

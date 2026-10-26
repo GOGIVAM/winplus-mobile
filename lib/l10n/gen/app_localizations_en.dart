@@ -291,6 +291,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authRuleUpper => 'At least one capital letter';
 
   @override
+  String get authPhoneInvalid =>
+      'Incomplete number: 9 digits (e.g. 6 90 12 34 56) or an international number starting with +.';
+
+  @override
+  String get authRuleLower => 'At least one lowercase letter';
+
+  @override
+  String get authRuleSpecial => 'At least one special character (- _ @ ! …)';
+
+  @override
   String get authSendCode => 'Send the code';
 
   @override

@@ -21,11 +21,16 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   bool get _has8 => _pwCtrl.text.length >= 8;
   bool get _hasMaj => _pwCtrl.text.contains(RegExp(r'[A-Z]'));
   bool get _hasNum => _pwCtrl.text.contains(RegExp(r'[0-9]'));
+  // Même règle que le serveur (minuscule et caractère spécial exigés) :
+  // sans elles, le serveur refusait un mot de passe validé ici.
+  bool get _hasMin => _pwCtrl.text.contains(RegExp(r'\p{Ll}', unicode: true));
+  bool get _hasSpecial =>
+      _pwCtrl.text.contains(RegExp(r'[^\p{L}\p{N}]', unicode: true));
   bool get _matches =>
       _pwCtrl.text == _confirmCtrl.text && _pwCtrl.text.isNotEmpty;
 
   Future<void> _submit() async {
-    if (!_has8 || !_hasMaj || !_hasNum || !_matches) return;
+    if (!_has8 || !_hasMaj || !_hasMin || !_hasNum || !_hasSpecial || !_matches) return;
     setState(() {
       _loading = true;
       _error = null;
@@ -110,7 +115,11 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               const SizedBox(height: 6),
               _Constraint(l10n.authRuleUpper, _hasMaj),
               const SizedBox(height: 6),
+              _Constraint(l10n.authRuleLower, _hasMin),
+              const SizedBox(height: 6),
               _Constraint(l10n.authRuleDigit, _hasNum),
+              const SizedBox(height: 6),
+              _Constraint(l10n.authRuleSpecial, _hasSpecial),
               const SizedBox(height: 6),
               _Constraint(l10n.authRuleMatch, _matches),
               const SizedBox(height: 28),
