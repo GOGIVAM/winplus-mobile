@@ -431,6 +431,86 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonActive => 'Active';
 
   @override
+  String get studentExamModuleTitle => 'End-of-module quiz';
+
+  @override
+  String get studentExamFinalTitle => 'Final exam';
+
+  @override
+  String studentExamFinalIntro(int score) {
+    return 'The final exam covers the whole course: at least $score% to get the certificate.';
+  }
+
+  @override
+  String get studentExamFinalLocked =>
+      'Finish all the lessons to open the final exam.';
+
+  @override
+  String get studentExamStart => 'Start';
+
+  @override
+  String get studentExamRetry => 'Retake';
+
+  @override
+  String get studentExamLoading => 'Loading…';
+
+  @override
+  String get studentExamLoadFailed =>
+      'Could not load the exam. Please try again in a moment.';
+
+  @override
+  String get studentExamPausedTitle => 'Revision break';
+
+  @override
+  String studentExamPausedBody(int failures, String date) {
+    return '$failures failed attempts in a row: the exam reopens on $date. Use this time to fill the gaps with WinAI.';
+  }
+
+  @override
+  String studentExamRemaining(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count more attempts before a 24-hour revision break.',
+      one: '1 more attempt before a 24-hour revision break.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get studentExamWeakTitle => 'The questions you are struggling with';
+
+  @override
+  String get studentExamHelpTitle => 'WinAI helps you improve';
+
+  @override
+  String get studentExamAskWinAI => 'Revision plan';
+
+  @override
+  String get studentExamPractice => 'Practice quiz';
+
+  @override
+  String get studentExamStudySession => 'Study session';
+
+  @override
+  String get studentExamLessonsTitle => 'Lessons to review';
+
+  @override
+  String get studentExamNoWeakPoints =>
+      '(no specific question: review the whole module)';
+
+  @override
+  String studentExamPlanPrompt(
+      int failures, String exam, String course, String points) {
+    return 'I failed the exam \"$exam\" of the course \"$course\" $failures times. The points I struggle with:\n$points\nSuggest a short revision plan: the lessons to review, study tips and a few exercises to fill these gaps.';
+  }
+
+  @override
+  String studentExamPracticePrompt(String exam, String points) {
+    return 'Prepare a practice quiz of 6 multiple-choice questions, with explained answers, for the exam \"$exam\", focused on these points:\n$points';
+  }
+
+  @override
   String get commonAll => 'All';
 
   @override

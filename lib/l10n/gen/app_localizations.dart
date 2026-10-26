@@ -878,6 +878,127 @@ abstract class AppLocalizations {
   /// **'Actif'**
   String get commonActive;
 
+  /// No description provided for @studentExamModuleTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quiz de fin de module'**
+  String get studentExamModuleTitle;
+
+  /// No description provided for @studentExamFinalTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Examen final'**
+  String get studentExamFinalTitle;
+
+  /// No description provided for @studentExamFinalIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'L’examen final couvre toute la formation : au moins {score} % pour obtenir le certificat.'**
+  String studentExamFinalIntro(int score);
+
+  /// No description provided for @studentExamFinalLocked.
+  ///
+  /// In fr, this message translates to:
+  /// **'Termine toutes les leçons pour ouvrir l’examen final.'**
+  String get studentExamFinalLocked;
+
+  /// No description provided for @studentExamStart.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commencer'**
+  String get studentExamStart;
+
+  /// No description provided for @studentExamRetry.
+  ///
+  /// In fr, this message translates to:
+  /// **'Repasser'**
+  String get studentExamRetry;
+
+  /// No description provided for @studentExamLoading.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chargement…'**
+  String get studentExamLoading;
+
+  /// No description provided for @studentExamLoadFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible de charger l’examen. Réessaie dans un instant.'**
+  String get studentExamLoadFailed;
+
+  /// No description provided for @studentExamPausedTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pause de révision'**
+  String get studentExamPausedTitle;
+
+  /// No description provided for @studentExamPausedBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'{failures} échecs de suite : l’examen se rouvre le {date}. Profite de ce temps pour combler tes lacunes avec WinAI.'**
+  String studentExamPausedBody(int failures, String date);
+
+  /// No description provided for @studentExamRemaining.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{Encore 1 tentative avant une pause de révision de 24 h.} other{Encore {count} tentatives avant une pause de révision de 24 h.}}'**
+  String studentExamRemaining(int count);
+
+  /// No description provided for @studentExamWeakTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les questions qui te posent problème'**
+  String get studentExamWeakTitle;
+
+  /// No description provided for @studentExamHelpTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'WinAI t’aide à progresser'**
+  String get studentExamHelpTitle;
+
+  /// No description provided for @studentExamAskWinAI.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plan de révision'**
+  String get studentExamAskWinAI;
+
+  /// No description provided for @studentExamPractice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quiz d’entraînement'**
+  String get studentExamPractice;
+
+  /// No description provided for @studentExamStudySession.
+  ///
+  /// In fr, this message translates to:
+  /// **'Session de travail'**
+  String get studentExamStudySession;
+
+  /// No description provided for @studentExamLessonsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Leçons à revoir'**
+  String get studentExamLessonsTitle;
+
+  /// No description provided for @studentExamNoWeakPoints.
+  ///
+  /// In fr, this message translates to:
+  /// **'(pas de question précise : revoir l’ensemble du module)'**
+  String get studentExamNoWeakPoints;
+
+  /// No description provided for @studentExamPlanPrompt.
+  ///
+  /// In fr, this message translates to:
+  /// **'J’ai échoué {failures} fois à l’examen « {exam} » de la formation « {course} ». Les points qui me posent problème :\n{points}\nPropose-moi un plan de révision court : les leçons à revoir, des conseils de méthode et quelques exercices pour combler ces lacunes.'**
+  String studentExamPlanPrompt(
+      int failures, String exam, String course, String points);
+
+  /// No description provided for @studentExamPracticePrompt.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prépare-moi un quiz d’entraînement de 6 questions à choix multiples, avec la correction expliquée, pour l’examen « {exam} », centré sur ces points :\n{points}'**
+  String studentExamPracticePrompt(String exam, String points);
+
   /// No description provided for @commonAll.
   ///
   /// In fr, this message translates to:

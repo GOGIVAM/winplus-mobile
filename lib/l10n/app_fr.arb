@@ -165,6 +165,76 @@
   "authYouDefault": "toi",
   "commonAccept": "Accepter",
   "commonActive": "Actif",
+  "studentExamModuleTitle": "Quiz de fin de module",
+  "studentExamFinalTitle": "Examen final",
+  "studentExamFinalIntro": "L’examen final couvre toute la formation : au moins {score} % pour obtenir le certificat.",
+  "@studentExamFinalIntro": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+  "studentExamFinalLocked": "Termine toutes les leçons pour ouvrir l’examen final.",
+  "studentExamStart": "Commencer",
+  "studentExamRetry": "Repasser",
+  "studentExamLoading": "Chargement…",
+  "studentExamLoadFailed": "Impossible de charger l’examen. Réessaie dans un instant.",
+  "studentExamPausedTitle": "Pause de révision",
+  "studentExamPausedBody": "{failures} échecs de suite : l’examen se rouvre le {date}. Profite de ce temps pour combler tes lacunes avec WinAI.",
+  "@studentExamPausedBody": {
+    "placeholders": {
+      "failures": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "studentExamRemaining": "{count, plural, =1{Encore 1 tentative avant une pause de révision de 24 h.} other{Encore {count} tentatives avant une pause de révision de 24 h.}}",
+  "@studentExamRemaining": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "studentExamWeakTitle": "Les questions qui te posent problème",
+  "studentExamHelpTitle": "WinAI t’aide à progresser",
+  "studentExamAskWinAI": "Plan de révision",
+  "studentExamPractice": "Quiz d’entraînement",
+  "studentExamStudySession": "Session de travail",
+  "studentExamLessonsTitle": "Leçons à revoir",
+  "studentExamNoWeakPoints": "(pas de question précise : revoir l’ensemble du module)",
+  "studentExamPlanPrompt": "J’ai échoué {failures} fois à l’examen « {exam} » de la formation « {course} ». Les points qui me posent problème :\n{points}\nPropose-moi un plan de révision court : les leçons à revoir, des conseils de méthode et quelques exercices pour combler ces lacunes.",
+  "@studentExamPlanPrompt": {
+    "placeholders": {
+      "failures": {
+        "type": "int"
+      },
+      "exam": {
+        "type": "String"
+      },
+      "course": {
+        "type": "String"
+      },
+      "points": {
+        "type": "String"
+      }
+    }
+  },
+  "studentExamPracticePrompt": "Prépare-moi un quiz d’entraînement de 6 questions à choix multiples, avec la correction expliquée, pour l’examen « {exam} », centré sur ces points :\n{points}",
+  "@studentExamPracticePrompt": {
+    "placeholders": {
+      "exam": {
+        "type": "String"
+      },
+      "points": {
+        "type": "String"
+      }
+    }
+  },
   "commonAll": "Tout",
   "studentSearchLangFr": "Français",
   "studentSearchLangEn": "Anglais (GCE)",

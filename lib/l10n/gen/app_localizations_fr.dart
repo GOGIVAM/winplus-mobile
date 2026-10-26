@@ -436,6 +436,86 @@ class AppLocalizationsFr extends AppLocalizations {
   String get commonActive => 'Actif';
 
   @override
+  String get studentExamModuleTitle => 'Quiz de fin de module';
+
+  @override
+  String get studentExamFinalTitle => 'Examen final';
+
+  @override
+  String studentExamFinalIntro(int score) {
+    return 'L’examen final couvre toute la formation : au moins $score % pour obtenir le certificat.';
+  }
+
+  @override
+  String get studentExamFinalLocked =>
+      'Termine toutes les leçons pour ouvrir l’examen final.';
+
+  @override
+  String get studentExamStart => 'Commencer';
+
+  @override
+  String get studentExamRetry => 'Repasser';
+
+  @override
+  String get studentExamLoading => 'Chargement…';
+
+  @override
+  String get studentExamLoadFailed =>
+      'Impossible de charger l’examen. Réessaie dans un instant.';
+
+  @override
+  String get studentExamPausedTitle => 'Pause de révision';
+
+  @override
+  String studentExamPausedBody(int failures, String date) {
+    return '$failures échecs de suite : l’examen se rouvre le $date. Profite de ce temps pour combler tes lacunes avec WinAI.';
+  }
+
+  @override
+  String studentExamRemaining(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Encore $count tentatives avant une pause de révision de 24 h.',
+      one: 'Encore 1 tentative avant une pause de révision de 24 h.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get studentExamWeakTitle => 'Les questions qui te posent problème';
+
+  @override
+  String get studentExamHelpTitle => 'WinAI t’aide à progresser';
+
+  @override
+  String get studentExamAskWinAI => 'Plan de révision';
+
+  @override
+  String get studentExamPractice => 'Quiz d’entraînement';
+
+  @override
+  String get studentExamStudySession => 'Session de travail';
+
+  @override
+  String get studentExamLessonsTitle => 'Leçons à revoir';
+
+  @override
+  String get studentExamNoWeakPoints =>
+      '(pas de question précise : revoir l’ensemble du module)';
+
+  @override
+  String studentExamPlanPrompt(
+      int failures, String exam, String course, String points) {
+    return 'J’ai échoué $failures fois à l’examen « $exam » de la formation « $course ». Les points qui me posent problème :\n$points\nPropose-moi un plan de révision court : les leçons à revoir, des conseils de méthode et quelques exercices pour combler ces lacunes.';
+  }
+
+  @override
+  String studentExamPracticePrompt(String exam, String points) {
+    return 'Prépare-moi un quiz d’entraînement de 6 questions à choix multiples, avec la correction expliquée, pour l’examen « $exam », centré sur ces points :\n$points';
+  }
+
+  @override
   String get commonAll => 'Tout';
 
   @override

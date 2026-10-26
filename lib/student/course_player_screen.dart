@@ -7,6 +7,7 @@ import '../services/course_offline_service.dart';
 import '../services/course_service.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_motion.dart';
+import 'course_exam_panel.dart';
 import 'document_viewer_screen.dart';
 import '../widgets/remote_pdf_screen.dart';
 import '../theme/win_theme.dart';
@@ -39,6 +40,8 @@ class _CoursePlayerScreenState extends State<CoursePlayerScreen> {
   bool _courseCompleted = false;
   int? _currentLessonId;
   Timer? _saveTimer;
+  // Examen final ouvert à la place d'une leçon (parité web, 2026-10-26).
+  bool _finalMode = false;
 
   @override
   void initState() {
@@ -62,12 +65,16 @@ class _CoursePlayerScreenState extends State<CoursePlayerScreen> {
         _courseCompleted = data.completedAt != null;
         _loadingCurr = false;
       });
+      // Toutes les leçons terminées et examen final à passer : on l'ouvre.
+      final pending = data.allLessons.where((l) => !l.isCompleted);
+      final fe = data.finalExam;
+      if (widget.initialLessonId == null && pending.isEmpty && fe != null && fe.available && !fe.passed) {
+        setState(() => _finalMode = true);
+        return;
+      }
       // Navigate to first incomplete or specified lesson
       final lessonId = widget.initialLessonId ??
-          data.allLessons
-              .firstWhere((l) => !l.isCompleted,
-                  orElse: () => data.allLessons.first)
-              .id;
+          (pending.isNotEmpty ? pending.first.id : data.allLessons.first.id);
       _loadLesson(lessonId);
     } catch (_) {
       if (mounted) {
@@ -76,8 +83,47 @@ class _CoursePlayerScreenState extends State<CoursePlayerScreen> {
     }
   }
 
+  /// Après une tentative d'examen : progression, leçons cochées et examen final relus.
+  Future<void> _refreshCurriculum() async {
+    try {
+      final data = await CourseService.instance.getCurriculum(widget.courseId);
+      if (!mounted) return;
+      final wasCompleted = _courseCompleted;
+      setState(() {
+        _curriculum = data;
+        _progressPercent = data.progressPercent;
+        _courseCompleted = data.completedAt != null;
+      });
+      if (_finalMode && (data.finalExam?.passed ?? false)) {
+        try { await CourseService.instance.generateMyCertificate(widget.courseId); } catch (_) {}
+        if (mounted) _showCompletionDialog();
+      } else if (!wasCompleted && _courseCompleted) {
+        _showCompletionDialog();
+      }
+    } catch (_) {}
+  }
+
+  /// Quiz de module : la leçon est validée par le serveur si le quiz est réussi.
+  Future<void> _afterModuleQuiz() async {
+    final l = _lesson;
+    if (l == null) return;
+    try {
+      await CourseService.instance.saveProgress(widget.courseId, l.id,
+          watchTimeSec: 0, lastPositionSec: 0, isCompleted: true);
+    } catch (_) {
+      // Quiz non réussi : la leçon reste à faire (refus 409 attendu).
+    }
+    await _refreshCurriculum();
+  }
+
+  void _openFinalExam() => setState(() {
+        _finalMode = true;
+        _sidebarOpen = false;
+      });
+
   Future<void> _loadLesson(int lessonId) async {
     setState(() {
+      _finalMode = false;
       _loadingLesson = true;
       _currentLessonId = lessonId;
     });
@@ -135,6 +181,7 @@ class _CoursePlayerScreenState extends State<CoursePlayerScreen> {
                     ? DateTime.now().toIso8601String()
                     : _curriculum!.completedAt,
                 certificateUrl: _curriculum!.certificateUrl,
+                finalExam: _curriculum!.finalExam,
                 sections: _curriculum!.sections
                     .map((sec) => CurriculumSection(
                           id: sec.id,
@@ -266,19 +313,35 @@ class _CoursePlayerScreenState extends State<CoursePlayerScreen> {
                   child: _sidebarOpen
                       ? _CurriculumPanel(
                           curriculum: _curriculum!,
-                          currentLessonId: _currentLessonId,
+                          currentLessonId: _finalMode ? null : _currentLessonId,
+                          finalSelected: _finalMode,
                           onSelect: (id) {
                             setState(() => _sidebarOpen = false);
                             _loadLesson(id);
                           },
+                          onFinalExam: _openFinalExam,
                         )
-                      : _LessonView(
-                          courseId: widget.courseId,
-                          lesson: _lesson,
-                          loading: _loadingLesson,
-                          courseCompleted: _courseCompleted,
-                          onMarkComplete: _markComplete,
-                        )),
+                      : _finalMode && _curriculum?.finalExam != null
+                          ? SingleChildScrollView(
+                              child: CourseExamPanel(
+                                key: ValueKey('final_${_curriculum!.finalExam!.quizId}'),
+                                courseId: widget.courseId,
+                                quizId: _curriculum!.finalExam!.quizId,
+                                isFinal: true,
+                                passScore: _curriculum!.finalExam!.passScore,
+                                onAttempted: _refreshCurriculum,
+                                onOpenLesson: _loadLesson,
+                              ),
+                            )
+                          : _LessonView(
+                              courseId: widget.courseId,
+                              lesson: _lesson,
+                              loading: _loadingLesson,
+                              courseCompleted: _courseCompleted,
+                              onMarkComplete: _markComplete,
+                              onQuizAttempted: _afterModuleQuiz,
+                              onOpenLesson: _loadLesson,
+                            )),
 
               // Bottom nav bar
               _BottomNav(
@@ -303,21 +366,55 @@ class _CoursePlayerScreenState extends State<CoursePlayerScreen> {
 class _CurriculumPanel extends StatelessWidget {
   final CourseCurriculum curriculum;
   final int? currentLessonId;
+  final bool finalSelected;
   final void Function(int) onSelect;
+  final VoidCallback onFinalExam;
 
   const _CurriculumPanel({
     required this.curriculum,
     required this.currentLessonId,
+    required this.finalSelected,
     required this.onSelect,
+    required this.onFinalExam,
   });
 
   @override
   Widget build(BuildContext context) {
+    final fe = curriculum.finalExam;
     return Container(
       color: const Color(0xFF1E293B),
       child: ListView.builder(
-        itemCount: curriculum.sections.length,
+        itemCount: curriculum.sections.length + (fe != null ? 1 : 0),
         itemBuilder: (_, si) {
+          if (si == curriculum.sections.length && fe != null) {
+            // Examen final : après toutes les leçons.
+            return InkWell(
+              onTap: fe.available ? onFinalExam : null,
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(16, 18, 16, 18),
+                color: finalSelected
+                    ? WinColors.teal600.withValues(alpha: 0.15)
+                    : Colors.transparent,
+                child: Row(children: [
+                  Icon(
+                    fe.passed
+                        ? Icons.check_circle
+                        : (fe.available ? Icons.workspace_premium : Icons.lock_outline),
+                    size: 18,
+                    color: fe.passed ? WinColors.teal400 : (fe.available ? WinColors.gold : Colors.white38),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text(context.l10n.studentExamFinalTitle,
+                        style: WinType.bodyM(fe.available ? Colors.white : Colors.white38)),
+                    if (!fe.available)
+                      Text(context.l10n.studentExamFinalLocked, style: WinType.labelS(Colors.white38)),
+                  ])),
+                ]),
+              ),
+            );
+          }
           final sec = curriculum.sections[si];
           return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -379,6 +476,8 @@ class _LessonView extends StatelessWidget {
   final bool loading;
   final bool courseCompleted;
   final VoidCallback onMarkComplete;
+  final Future<void> Function() onQuizAttempted;
+  final void Function(int lessonId) onOpenLesson;
 
   const _LessonView({
     required this.courseId,
@@ -386,6 +485,8 @@ class _LessonView extends StatelessWidget {
     required this.loading,
     required this.courseCompleted,
     required this.onMarkComplete,
+    required this.onQuizAttempted,
+    required this.onOpenLesson,
   });
 
   @override
@@ -415,6 +516,18 @@ class _LessonView extends StatelessWidget {
             lessonTitle: l.title,
             videoUrl: l.videoUrl!,
             durationSec: l.videoDurationSec,
+          ),
+
+        // Quiz de fin de module : joué dans l'application, avec la pause de
+        // révision et les propositions de WinAI après un échec.
+        if (l.lessonType == 'quiz' && l.quizId != null)
+          CourseExamPanel(
+            key: ValueKey('quiz_${courseId}_${l.id}'),
+            courseId: courseId,
+            quizId: l.quizId!,
+            isFinal: false,
+            onAttempted: onQuizAttempted,
+            onOpenLesson: onOpenLesson,
           ),
 
         // Article content

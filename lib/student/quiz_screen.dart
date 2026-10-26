@@ -1,5 +1,6 @@
 import '../l10n/l10n.dart';
 import 'dart:async';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import '../theme/win_motion.dart';
 import '../data/mock_data.dart';
@@ -15,7 +16,13 @@ import '../widgets/win_widgets.dart';
 
 class QuizActiveScreen extends StatefulWidget {
   final Quiz quiz;
-  const QuizActiveScreen({super.key, required this.quiz});
+
+  /// Examen de formation (fin de module ou examen final) : la tentative est
+  /// envoyée avant d'afficher le résultat, pour que le lecteur relise aussitôt
+  /// la progression et la pause éventuelle ; un refus 423 (pause de révision
+  /// de 24 h) ferme l'écran avec le résultat « paused ».
+  final bool courseExam;
+  const QuizActiveScreen({super.key, required this.quiz, this.courseExam = false});
   @override
   State<QuizActiveScreen> createState() => _QuizActiveScreenState();
 }
@@ -63,7 +70,11 @@ class _QuizActiveScreenState extends State<QuizActiveScreen> {
     }
   }
 
-  void _finish() {
+  bool _finishing = false;
+
+  Future<void> _finish() async {
+    if (_finishing) return;
+    _finishing = true;
     _timer?.cancel();
     final elapsed = widget.quiz.durationMinutes * 60 - _seconds;
     final correct = _answers.asMap().entries.where((e) {
@@ -85,7 +96,27 @@ class _QuizActiveScreenState extends State<QuizActiveScreen> {
     // serveur, immédiatement si possible, en file sinon (voir
     // QuizService.submitAttemptQueueable).
     final quizId = int.tryParse(widget.quiz.id);
-    if (quizId != null) {
+    if (quizId != null && widget.courseExam) {
+      try {
+        await QuizService.instance.submitAttempt(
+          quizId: quizId,
+          items: QuizService.answerItems(widget.quiz, List<int?>.from(_answers)),
+          durationSeconds: elapsed,
+        );
+      } on DioException catch (e) {
+        if (e.response?.statusCode == 423) {
+          if (mounted) Navigator.pop(context, 'paused');
+          return;
+        }
+        // Coupure : la tentative part en file, le résultat local s'affiche.
+        await QuizService.instance.submitAttemptQueueable(
+          quizId: quizId,
+          items: QuizService.answerItems(widget.quiz, List<int?>.from(_answers)),
+          durationSeconds: elapsed,
+        );
+      }
+      if (!mounted) return;
+    } else if (quizId != null) {
       unawaited(QuizService.instance.submitAttemptQueueable(
         quizId: quizId,
         items: QuizService.answerItems(widget.quiz, List<int?>.from(_answers)),

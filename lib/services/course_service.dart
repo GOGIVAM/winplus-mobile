@@ -312,6 +312,9 @@ class CourseCurriculum {
   final String? certificateUrl;
   final List<CurriculumSection> sections;
 
+  /// Examen final (lot 4) : jouable une fois toutes les leçons terminées.
+  final CourseFinalExam? finalExam;
+
   const CourseCurriculum({
     required this.courseId,
     required this.title,
@@ -319,6 +322,7 @@ class CourseCurriculum {
     this.completedAt,
     this.certificateUrl,
     required this.sections,
+    this.finalExam,
   });
 
   factory CourseCurriculum.fromJson(Map<String, dynamic> j) => CourseCurriculum(
@@ -330,10 +334,99 @@ class CourseCurriculum {
         sections: (j['sections'] as List? ?? [])
             .map((e) => CurriculumSection.fromJson(e as Map<String, dynamic>))
             .toList(),
+        finalExam: j['finalExam'] is Map<String, dynamic>
+            ? CourseFinalExam.fromJson(j['finalExam'] as Map<String, dynamic>)
+            : null,
       );
 
   List<CurriculumLesson> get allLessons =>
       sections.expand((s) => s.lessons).toList();
+}
+
+class CourseFinalExam {
+  final int quizId;
+  final int passScore;
+  final bool available;
+  final bool passed;
+  final double? bestScore;
+  final String? lockedUntil;
+  const CourseFinalExam({
+    required this.quizId,
+    required this.passScore,
+    required this.available,
+    required this.passed,
+    this.bestScore,
+    this.lockedUntil,
+  });
+
+  factory CourseFinalExam.fromJson(Map<String, dynamic> j) => CourseFinalExam(
+        quizId: j['quizId'] as int? ?? 0,
+        passScore: ((j['passScore'] ?? 50) as num).round(),
+        available: j['available'] as bool? ?? false,
+        passed: j['passed'] as bool? ?? false,
+        bestScore: (j['bestScore'] as num?)?.toDouble(),
+        lockedUntil: j['lockedUntil'] as String?,
+      );
+}
+
+/// Pause de révision d'un examen de formation (décision du 2026-10-26) :
+/// 24 h après 3 échecs de suite, avec les lacunes à travailler avec WinAI.
+class ExamRetakeStatus {
+  final int quizId;
+  final String examTitle;
+  final String courseTitle;
+  final bool isFinal;
+  final String? subject;
+  final double passScore;
+  final int consecutiveFailures;
+  final int failuresBeforePause;
+  final bool locked;
+  final DateTime? lockedUntil;
+  final List<({String question, String? explanation, String? topic})> weakPoints;
+  final List<({int id, String title})> lessons;
+
+  const ExamRetakeStatus({
+    required this.quizId,
+    required this.examTitle,
+    required this.courseTitle,
+    required this.isFinal,
+    this.subject,
+    required this.passScore,
+    required this.consecutiveFailures,
+    required this.failuresBeforePause,
+    required this.locked,
+    this.lockedUntil,
+    this.weakPoints = const [],
+    this.lessons = const [],
+  });
+
+  int get remaining =>
+      (failuresBeforePause - consecutiveFailures).clamp(0, failuresBeforePause);
+
+  factory ExamRetakeStatus.fromJson(Map<String, dynamic> j) => ExamRetakeStatus(
+        quizId: j['quizId'] as int? ?? 0,
+        examTitle: j['examTitle'] as String? ?? '',
+        courseTitle: j['courseTitle'] as String? ?? '',
+        isFinal: j['isFinal'] as bool? ?? false,
+        subject: j['subject'] as String?,
+        passScore: ((j['passScore'] ?? 50) as num).toDouble(),
+        consecutiveFailures: j['consecutiveFailures'] as int? ?? 0,
+        failuresBeforePause: j['failuresBeforePause'] as int? ?? 3,
+        locked: j['locked'] as bool? ?? false,
+        lockedUntil: DateTime.tryParse(j['lockedUntil'] as String? ?? '')?.toLocal(),
+        weakPoints: (j['weakPoints'] as List? ?? [])
+            .map((e) => e as Map<String, dynamic>)
+            .map((w) => (
+                  question: w['question'] as String? ?? '',
+                  explanation: w['explanation'] as String?,
+                  topic: w['topic'] as String?,
+                ))
+            .toList(),
+        lessons: (j['lessons'] as List? ?? [])
+            .map((e) => e as Map<String, dynamic>)
+            .map((l) => (id: l['id'] as int? ?? 0, title: l['title'] as String? ?? ''))
+            .toList(),
+      );
 }
 
 class LessonContent {
@@ -670,6 +763,17 @@ class CourseService {
   Future<CourseCurriculum> getCurriculum(int courseId) async {
     final res = await _api.dio.get('/courses/$courseId/play');
     return CourseCurriculum.fromJson(res.data as Map<String, dynamic>);
+  }
+
+  /// Pause de révision d'un examen de formation et lacunes à travailler.
+  Future<ExamRetakeStatus> getExamRetake(int courseId, int quizId) async {
+    final res = await _api.dio.get('/courses/$courseId/play/exams/$quizId/retake');
+    return ExamRetakeStatus.fromJson(res.data as Map<String, dynamic>);
+  }
+
+  /// Certificat après la réussite de l'examen final (déjà créé : renvoyé tel quel).
+  Future<void> generateMyCertificate(int courseId) async {
+    await _api.dio.post('/courses/$courseId/certificate/generate', data: {});
   }
 
   Future<LessonContent> getLesson(int courseId, int lessonId) async {
