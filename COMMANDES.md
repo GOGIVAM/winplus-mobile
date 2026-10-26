@@ -104,8 +104,7 @@ flutter run *> "logs\flutter_run.log"
 
 ### Logs verbose dans un fichier (détail maximal  utile pour déboguer Gradle)
 ```powershell
-New-Item -ItemType Directory -Force logs | Out-Null
-flutter run --verbose 2>&1 | Tee-Object -FilePath "logs\flutter_verbose.log"
+&
 ```
 
 ### Logs du device (logcat Android) dans un fichier

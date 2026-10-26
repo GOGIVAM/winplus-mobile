@@ -1,4 +1,4 @@
-1. Écrans communs — Authentification & onboarding
+1. Écrans communs Authentification & onboarding
 #	Écran	Fonctionnalités
 A01	Splash	Splash animé
 A02	Welcome	Présentation + entrée dans l'application
@@ -26,7 +26,7 @@ Accueil · Explorer · WinAI · Communauté · Mon espace
 
 avec les fonctionnalités secondaires accessibles depuis ces sections.
 
-E01 — Accueil étudiant
+E01 Accueil étudiant
 
 Fonctionnalités :
 
@@ -45,7 +45,7 @@ Badges
 
 Le dashboard est explicitement défini autour du streak, score, temps d'étude et reprise de contenu.
 
-E02 — Catalogue
+E02 Catalogue
 
 Fonctionnalités :
 
@@ -58,7 +58,7 @@ Filtres matière / année / difficulté
 Tri
 Favoris
 Collections
-E03 — Recherche globale
+E03 Recherche globale
 
 Fonctionnalités :
 
@@ -67,7 +67,7 @@ Résultats contenus
 Formations
 Professeurs/répétiteurs
 Discussions
-E04 — Hub concours
+E04 Hub concours
 
 Fonctionnalités :
 
@@ -82,7 +82,7 @@ Autres concours
 
 Chaque concours devient ensuite une vue filtrée du catalogue.
 
-E05 — Détail contenu
+E05 Détail contenu
 
 Fonctionnalités :
 
@@ -94,7 +94,7 @@ Contenus similaires
 Acheter
 Ajouter aux favoris
 Ajouter à une collection
-E06 — Lecteur de contenu
+E06 Lecteur de contenu
 
 Fonctionnalités :
 
@@ -105,7 +105,7 @@ Notes personnelles
 Tags
 Progression
 Téléchargement autorisé
-E07 — Favoris & collections
+E07 Favoris & collections
 
 Fonctionnalités :
 
@@ -113,7 +113,7 @@ Favoris
 Collections
 Dossiers personnels
 Organisation des contenus
-E08 — Historique & téléchargements
+E08 Historique & téléchargements
 
 Fonctionnalités :
 
@@ -122,7 +122,7 @@ Historique d'achat
 Téléchargements locaux
 Gestion hors-ligne
 3. 📝 Quiz & révision
-E09 — Hub Quiz
+E09 Hub Quiz
 
 Fonctionnalités :
 
@@ -130,7 +130,7 @@ Quiz par sujet
 Quiz de révision
 Quiz adaptatif
 Quiz assignés par professeur
-E10 — Quiz actif
+E10 Quiz actif
 
 Fonctionnalités :
 
@@ -139,7 +139,7 @@ Timer
 Progression
 Navigation
 Réponses
-E11 — Résultat du quiz
+E11 Résultat du quiz
 
 Fonctionnalités :
 
@@ -148,7 +148,7 @@ Réponses correctes/incorrectes
 Analyse
 Performance par matière
 Recommandations IA
-E12 — Revue des réponses
+E12 Revue des réponses
 
 Fonctionnalités :
 
@@ -156,7 +156,7 @@ Correction détaillée
 Explications
 Questions ratées
 Ajout aux révisions
-E13 — Fiches de révision IA
+E13 Fiches de révision IA
 
 Fonctionnalités :
 
@@ -167,7 +167,7 @@ Suivi de complétion
 Ces fonctionnalités sont regroupées autour du bloc Quiz / révision / fiches IA prévu dans la spécification.
 
 4. 🎓 Formations
-E14 — Catalogue formations
+E14 Catalogue formations
 
 Fonctionnalités :
 
@@ -176,7 +176,7 @@ Recherche
 Filtres
 Catégories
 Recommandations
-E15 — Détail formation
+E15 Détail formation
 
 Fonctionnalités :
 
@@ -186,7 +186,7 @@ Avis
 Prix
 Inscription
 Certificat
-E16 — Mes formations
+E16 Mes formations
 
 Fonctionnalités :
 
@@ -195,7 +195,7 @@ Progression
 Dernière leçon
 Classement
 Points
-E17 — Lecteur de formation
+E17 Lecteur de formation
 
 Fonctionnalités :
 
@@ -206,14 +206,14 @@ Navigation
 Drip content
 Checkpoints
 Quiz intégré
-E18 — Discussion de formation
+E18 Discussion de formation
 
 Fonctionnalités :
 
 Questions
 Réponses
 Discussion liée à la leçon
-E19 — Certificats
+E19 Certificats
 
 Fonctionnalités :
 
@@ -224,7 +224,7 @@ Vérification
 Les formations comprennent explicitement catalogue, détail, lecteur, progression, certificats et canal de discussion.
 
 5. 🤖 WinAI
-E20 — WinAI Chat
+E20 WinAI Chat
 
 Fonctionnalités :
 
@@ -235,14 +235,14 @@ Document
 Vocal
 Éditeur mathématique
 Suggestions rapides
-E21 — Coach d'étude IA
+E21 Coach d'étude IA
 
 Fonctionnalités :
 
 Plan de révision
 Planning jour par jour
 Séances guidées
-E22 — Analyse IA étudiant
+E22 Analyse IA étudiant
 
 Fonctionnalités :
 
@@ -251,7 +251,7 @@ Prédiction de réussite
 Style VARK
 Parcours personnalisé
 Recommandations
-E23 — Quiz adaptatif IA
+E23 Quiz adaptatif IA
 
 Fonctionnalités :
 
@@ -262,7 +262,7 @@ Analyse des réponses
 Le document regroupe ces fonctions sous le module IA transverse.
 
 6. 👨‍🏫 Tutorat / répétiteurs
-E24 — Recherche répétiteur
+E24 Recherche répétiteur
 
 Fonctionnalités :
 
@@ -271,7 +271,7 @@ Localisation
 Filtres
 Disponibilité
 Tarif
-E25 — Profil répétiteur
+E25 Profil répétiteur
 
 Fonctionnalités :
 
@@ -282,7 +282,7 @@ Tarif
 Disponibilités
 Vérification
 Vidéo
-E26 — Réservation
+E26 Réservation
 
 Fonctionnalités :
 
@@ -290,7 +290,7 @@ Choix du créneau
 Récapitulatif
 Paiement
 Escrow
-E27 — Mes réservations
+E27 Mes réservations
 
 Fonctionnalités :
 
@@ -298,7 +298,7 @@ Fonctionnalités :
 Terminées
 Annulées
 Contestations
-E28 — Calendrier répétiteur
+E28 Calendrier répétiteur
 
 Fonctionnalités :
 
@@ -309,7 +309,7 @@ Séance d'essai
 Le parcours public de tutorat est défini autour de recherche → profil → réservation → suivi → avis.
 
 7. 👥 Communauté
-E29 — Forum
+E29 Forum
 
 Fonctionnalités :
 
@@ -317,7 +317,7 @@ Questions par matière
 Fils de discussion
 Recherche
 Suivi
-E30 — Discussion
+E30 Discussion
 
 Fonctionnalités :
 
@@ -326,7 +326,7 @@ Réponses
 Votes
 Réponse acceptée
 Signalement
-E31 — Groupes d'étude
+E31 Groupes d'étude
 
 Fonctionnalités :
 
@@ -336,7 +336,7 @@ Discussions
 Ressources
 Membres
 8. 💬 Messagerie
-E32 — Messagerie
+E32 Messagerie
 
 Fonctionnalités :
 
@@ -344,7 +344,7 @@ Conversations
 Groupes
 Recherche
 Messages non lus
-E33 — Conversation
+E33 Conversation
 
 Fonctionnalités :
 
@@ -354,7 +354,7 @@ Réactions
 Réponses citées
 Réponses IA
 Messages programmés
-E34 — Mon réseau
+E34 Mon réseau
 
 Fonctionnalités :
 
@@ -366,7 +366,7 @@ Relations
 Les fonctionnalités de messagerie enrichie et de réseau sont explicitement prévues.
 
 9. 🛒 Commerce
-E35 — Panier
+E35 Panier
 
 Fonctionnalités :
 
@@ -375,7 +375,7 @@ Quantités
 Suppression
 Bundles
 Code promo
-E36 — Checkout
+E36 Checkout
 
 Fonctionnalités :
 
@@ -383,7 +383,7 @@ Récapitulatif
 Coordonnées
 Mode de paiement
 Achat invité
-E37 — Paiement
+E37 Paiement
 
 Fonctionnalités :
 
@@ -392,14 +392,14 @@ Orange Money
 Carte
 Stripe
 Wallet
-E38 — Succès paiement
+E38 Succès paiement
 
 Fonctionnalités :
 
 Confirmation
 Reçu
 Accès au contenu
-E39 — Commandes
+E39 Commandes
 
 Fonctionnalités :
 
@@ -408,7 +408,7 @@ Factures
 Reçus
 Remboursements
 10. 💳 Abonnement & Wallet
-E40 — Plans
+E40 Plans
 
 Fonctionnalités :
 
@@ -417,14 +417,14 @@ Standard
 Premium
 Famille
 Comparaison des quotas
-E41 — Upgrade
+E41 Upgrade
 
 Fonctionnalités :
 
 Changement de plan
 Paiement
 Confirmation
-E42 — Wallet
+E42 Wallet
 
 Fonctionnalités :
 
@@ -434,7 +434,7 @@ Crédit
 Paiement de contenus
 Paiement tutorat
 11. 📊 Mon espace étudiant
-E43 — Mon espace
+E43 Mon espace
 
 Hub central vers :
 
@@ -449,7 +449,7 @@ Réservations
 Groupes
 Quiz de révision
 Profil
-E44 — Rapports
+E44 Rapports
 
 Fonctionnalités :
 
@@ -458,7 +458,7 @@ Matières
 Progression
 Historique
 Comparaison anonyme avec les pairs
-E45 — Badges & achievements
+E45 Badges & achievements
 
 Fonctionnalités :
 
@@ -466,7 +466,7 @@ Badges
 Streak
 Points
 Progression
-E46 — Coach examen
+E46 Coach examen
 
 Fonctionnalités :
 
@@ -475,7 +475,7 @@ Planning
 Objectifs
 Progression
 12. 🔔 Profil & système
-E47 — Notifications
+E47 Notifications
 
 Fonctionnalités :
 
@@ -485,7 +485,7 @@ Notifications forum
 Notifications formation
 Notifications tutorat
 Préférences
-E48 — Profil
+E48 Profil
 
 Fonctionnalités :
 
@@ -494,7 +494,7 @@ Couverture
 Biographie
 Informations académiques
 Dossier académique
-E49 — Paramètres
+E49 Paramètres
 
 Fonctionnalités :
 
@@ -506,7 +506,7 @@ Sécurité
 Sessions
 Suppression de compte
 Export des données
-E50 — Mode Focus
+E50 Mode Focus
 
 Fonctionnalités :
 
@@ -518,45 +518,45 @@ Objectif
 
 Le parent possède une navigation distincte.
 
-P01 — Dashboard parent
+P01 Dashboard parent
 Synthèse des enfants
 Alertes WinAI
 Baromètre
 Objectifs
 Abonnement
-P02 — Sélecteur d'enfant
+P02 Sélecteur d'enfant
 Plusieurs enfants
 Ajout/suppression
-P03 — Activité enfant
+P03 Activité enfant
 Timeline
 Activité
 Contenus consultés
 Quiz
 Temps d'étude
-P04 — Rapport enfant
+P04 Rapport enfant
 Performances
 Progression
 Analyse détaillée
 Comparaison entre enfants
-P05 — Mode veille examen
+P05 Mode veille examen
 Suivi renforcé
 Progression
 Alertes
-P06 — Objectifs
+P06 Objectifs
 Proposition
 Modification
 Validation par l'enfant
-P07 — Wallet parent
+P07 Wallet parent
 Solde
 Transactions
 Achat pour enfant
 Impact des achats
-P08 — Communication parent
+P08 Communication parent
 Professeurs
 Messages
 Encouragements
 Rapport généré depuis message
-P09 — Révision IA enfant
+P09 Révision IA enfant
 Génération de fiche
 Sélection enfant
 Matière
@@ -565,72 +565,72 @@ Objectif
 Les fonctionnalités parent couvrent notamment la timeline, les alertes, les rapports, le wallet, les objectifs et la communication.
 
 14. 👨‍🏫 Espace Professeur / Répétiteur
-T01 — Dashboard professeur
+T01 Dashboard professeur
 Revenus
 Téléchargements
 Notes
 Performance
-T02 — Gestion contenus
+T02 Gestion contenus
 Création
 Upload
 Brouillon
 Révision
 Publication
 Suppression
-T03 — Création contenu
+T03 Création contenu
 Type
 Matière
 Prix
 Fichiers
 IA rédactionnelle
-T04 — File de correction
+T04 File de correction
 Copies
 Correction IA
 Critères
 Points incertains
 Validation
-T05 — Analyse classe
+T05 Analyse classe
 Statistiques
 Performances
 Élèves à risque
-T06 — Classes
+T06 Classes
 Création
 Membres
 Ressources
 Devoirs
 Quiz
-T07 — Calendrier professeur
+T07 Calendrier professeur
 Disponibilités
 Sessions
 Cours particuliers
-T08 — Revenus
+T08 Revenus
 Gains
 Partage
 Retrait
-T09 — Formations professeur
+T09 Formations professeur
 Création
 Édition
 Syllabus IA
 Analytics
-T10 — Profil répétiteur
+T10 Profil répétiteur
 Tarif IA
 Disponibilités
 Diplôme
 Vidéo
 Vacances
-T11 — Réservations
+T11 Réservations
 Accepter
 Refuser
 Effectuée
 Contester
-T12 — Coaching IA
+T12 Coaching IA
 Conseils pédagogiques
 Analyse
 Recommandations
-T13 — Affiliation
+T13 Affiliation
 Filleuls
 Commissions
-T14 — Assistant publication IA
+T14 Assistant publication IA
 Titre
 Description
 Syllabus
@@ -640,47 +640,47 @@ Popularité prédite
 Les fonctions professeur sont regroupées autour de contenus, classes, corrections, formations, revenus et tutorat.
 
 15. 🏫 Espace Institution
-I01 — Dashboard institution
+I01 Dashboard institution
 Élèves actifs
 Score moyen
 Réussite
 Licences
-I02 — Annuaire
+I02 Annuaire
 Liste élèves
 Recherche
 Filtres
 Import CSV
-I03 — Profil élève institution
+I03 Profil élève institution
 Performances
 Historique
 Risque
-I04 — Classes / groupes
+I04 Classes / groupes
 Création
 Membres
 Ressources
 Attribution
-I05 — Élèves à risque
+I05 Élèves à risque
 Détection IA
 Niveau de risque
 Élèves concernés
-I06 — Plan d'action IA
+I06 Plan d'action IA
 Recommandations
 Interventions
 Suivi
-I07 — Rapports
+I07 Rapports
 Génération
 PDF
 Excel
-I08 — Benchmark
+I08 Benchmark
 Comparaison inter-établissements
-I09 — Catalogue institution
+I09 Catalogue institution
 Contenus
 Licences
 Attribution
-I10 — Réseau institutionnel
+I10 Réseau institutionnel
 Institutions
 Affiliations
-I11 — SSO
+I11 SSO
 Connexion fédérée
 
 Ces fonctions correspondent directement au bloc institutionnel du document.
@@ -689,55 +689,55 @@ Ces fonctions correspondent directement au bloc institutionnel du document.
 
 L'Admin est beaucoup plus dense et peut nécessiter une interface de type back-office, même si elle doit rester accessible depuis mobile.
 
-AD01 — Dashboard admin
+AD01 Dashboard admin
 Analytics
 Utilisateurs
 Connexions
 Parcours
-AD02 — Gestion comptes
+AD02 Gestion comptes
 Tous les rôles
 Vérification
 Suspension
 Réactivation
 Reset
 Sessions
-AD03 — Gestion contenus
+AD03 Gestion contenus
 Épreuves
 Quiz
 Formations
 Certificats
 Upload
-AD04 — Commerce
+AD04 Commerce
 Commandes
 Revenus
 Promotions
 Abonnements
 Affiliations
-AD05 — Modération
+AD05 Modération
 Forum
 Signalements
 Annonces
 Support
-AD06 — Monitoring IA
+AD06 Monitoring IA
 Activité IA
 Anomalies
 Qualité
-AD07 — Insights
+AD07 Insights
 Croissance
 Anomalies
 Revenus
-AD08 — Système
+AD08 Système
 Santé
 Logs
 Erreurs
 Audit
 Exports
 Paramètres
-AD09 — Remboursements
+AD09 Remboursements
 Litiges
 Demandes
 Traitement
-AD10 — Rôles institution
+AD10 Rôles institution
 Attribution
 Promotion de compte
 

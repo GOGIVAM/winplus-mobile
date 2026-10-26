@@ -4,7 +4,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_motion.dart';
 
 /// Retour tactile commun (léger effet d'enfoncement) pour tout élément
-/// tapable — utilisé par [WinButton]/[WinCard]/[WinChip] eux-mêmes, donc
+/// tapable utilisé par [WinButton]/[WinCard]/[WinChip] eux-mêmes, donc
 /// tout écran qui les utilise déjà en hérite sans rien changer.
 class WinTapScale extends StatefulWidget {
   final Widget child;
@@ -99,7 +99,7 @@ class _WinStaggerFadeState extends State<WinStaggerFade>
 }
 
 /// Coche de succès animée (cercle qui apparaît en rebond + trait dessiné en
-/// deux segments) — remplace une simple icône statique sur les écrans de
+/// deux segments) remplace une simple icône statique sur les écrans de
 /// confirmation (paiement, commande validée, action terminée).
 class WinSuccessCheck extends StatefulWidget {
   final double size;
@@ -195,7 +195,7 @@ class _CheckPainter extends CustomPainter {
       oldDelegate.progress != progress || oldDelegate.color != color;
 }
 
-/// Secousse horizontale jouée une fois au montage — pour signaler un échec
+/// Secousse horizontale jouée une fois au montage pour signaler un échec
 /// (paiement refusé, formulaire invalide) sans texte d'alerte supplémentaire.
 class WinErrorShake extends StatefulWidget {
   final Widget child;
@@ -232,7 +232,7 @@ class _WinErrorShakeState extends State<WinErrorShake>
 }
 
 /// Halo qui respire (pulsation d'opacité + échelle) derrière une icône ou un
-/// indicateur de chargement — pour les états "en attente" (paiement en
+/// indicateur de chargement pour les états "en attente" (paiement en
 /// traitement, sondage de statut) plutôt qu'un simple spinner isolé.
 class WinPendingPulse extends StatefulWidget {
   final double size;
@@ -292,7 +292,7 @@ class _WinPendingPulseState extends State<WinPendingPulse>
 }
 
 /// Nombre qui défile jusqu'à sa valeur (solde, montant, statistique) au lieu
-/// de s'afficher d'un coup — utilisable partout où un montant change.
+/// de s'afficher d'un coup utilisable partout où un montant change.
 class WinAnimatedCounter extends StatelessWidget {
   final int value;
   final TextStyle? style;
@@ -312,7 +312,7 @@ class WinAnimatedCounter extends StatelessWidget {
   }
 }
 
-/// Cœur favori avec rebond + petites particules à l'ajout — pour tout bouton
+/// Cœur favori avec rebond + petites particules à l'ajout pour tout bouton
 /// favori/like de l'app (contenus, formations, tuteurs).
 class WinFavoriteHeart extends StatefulWidget {
   final bool active;

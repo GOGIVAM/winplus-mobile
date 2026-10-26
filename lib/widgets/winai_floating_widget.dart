@@ -27,7 +27,7 @@ class _WinAIRoleConfig {
 /// d'un espace (monté une seule fois au niveau de la coquille RoleShell pour
 /// que sa position survive aux changements d'onglet). Un tap ouvre une
 /// mini-carte de lancement rapide (suggestions, mémoire, saisie) qui bascule
-/// vers l'écran de conversation complet propre au rôle — jamais de chat en
+/// vers l'écran de conversation complet propre au rôle jamais de chat en
 /// ligne dans la mini-carte elle-même, comme sur le web.
 class WinAIFloatingWidget extends StatefulWidget {
   final Widget child;
