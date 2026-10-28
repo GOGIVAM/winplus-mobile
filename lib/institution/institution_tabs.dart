@@ -25,6 +25,9 @@ import 'tutor_endorsements_screen.dart';
 import 'license_screen.dart';
 import '../shared/tutoring_for_students_screen.dart';
 import '../widgets/knowledge_base_toggle.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../shell/shell_nav.dart';
+import '../widgets/mobile_home.dart';
 
 Widget _statCard(BuildContext c, IconData icon, String value, String label) {
   final s = WinTheme.of(c);
@@ -37,21 +40,6 @@ Widget _statCard(BuildContext c, IconData icon, String value, String label) {
         Text(label, style: WinType.labelM(s.onMuted)),
       ]));
 }
-
-Widget _instHeroStat(String value, String title) => Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(WinRadii.md)),
-      child: Row(children: [
-        Text(value, style: WinType.archivo(size: 22, color: WinColors.teal400)),
-        const SizedBox(width: 10),
-        Expanded(
-            child: Text(title,
-                style: WinType.labelS(WinColors.cream100)
-                    .copyWith(fontWeight: FontWeight.w600))),
-      ]),
-    );
 
 class _GroupRow extends StatelessWidget {
   final ApiGroup g;
@@ -173,16 +161,12 @@ class _InstitutionDashTabState extends State<InstitutionDashTab> {
   ApiInstitutionAnalytics? _analytics;
   // Identité et licence réelles (GET /institution/me, /institution/license),
   // à la place de WinData.institutionStats (nom, plan, licences fictifs).
-  String? _name;
   ApiInstitutionLicenseSummary? _license;
 
   @override
   void initState() {
     super.initState();
     _load();
-    InstitutionService.instance.getMyInstitutionName().then((n) {
-      if (mounted) setState(() => _name = n);
-    });
     InstitutionService.instance.getLicenseSummary().then((l) {
       if (mounted) setState(() => _license = l);
     });
@@ -203,205 +187,154 @@ class _InstitutionDashTabState extends State<InstitutionDashTab> {
     }
   }
 
+  void _push(Widget screen) =>
+      Navigator.push(context, WinPageRoute(builder: (_) => screen));
+
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
+    final l = context.l10n;
     final groups = _groups ?? [];
-    return Column(children: [
-      Expanded(
-          child: ListView(
-              padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
-              children: [
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(WinRadii.xl),
-                  gradient: LinearGradient(
-                      colors: [s.heroFrom, s.heroTo],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight)),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(children: [
-                      Expanded(
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                            Text(_name ?? context.l10n.instMySchool,
-                                style: WinType.archivo(
-                                    size: 15, color: WinColors.cream50)),
-                            const SizedBox(height: 2),
-                            Text(
-                                '${_license != null ? context.l10n.instLicenseHeading(_license!.tier) : context.l10n.instDashNoLicense}'
-                                '${_analytics != null ? ' · ${context.l10n.instDashStudentsCount(_analytics!.totalStudents)}' : ''}',
-                                style: WinType.labelS(WinColors.ink300)),
-                          ])),
-                      Stack(clipBehavior: Clip.none, children: [
-                        const Icon(Icons.notifications_outlined,
-                            color: WinColors.cream100, size: 26),
-                        Positioned(
-                          top: -2,
-                          right: -2,
-                          child: Container(
-                            width: 9,
-                            height: 9,
-                            decoration: const BoxDecoration(
-                                color: WinColors.error, shape: BoxShape.circle),
-                          ),
-                        ),
-                      ]),
-                    ]),
-                    const SizedBox(height: 16),
-                    Row(children: [
-                      Expanded(
-                          child: _instHeroStat(
-                              _analytics != null
-                                  ? '${_analytics!.activeStudents}'
-                                  : '—',
-                              context.l10n.instDashActiveStudentsLower)),
-                      const SizedBox(width: 10),
-                      Expanded(
-                          child: _instHeroStat(
-                              _analytics != null
-                                  ? '${_analytics!.averageScore.round()}%'
-                                  : '—',
-                              context.l10n.studentHomeAvgScore)),
-                    ]),
-                  ]),
-            ),
-            const SizedBox(height: 16),
-            if (_groups == null)
-              const Center(child: CircularProgressIndicator())
-            else ...[
-              // KPIs grille 2x2
-              Builder(builder: (ctx) {
-                // Chiffres réels uniquement (GET /institution/analytics et
-                // /institution/license) ; « — » quand ils manquent.
-                final a = _analytics;
-                final lic = _license;
-                final pctActive = a != null && a.totalStudents > 0
-                    ? ' (${(a.activeStudents / a.totalStudents * 100).round()}%)'
-                    : '';
-                final pctLic = lic != null && lic.studentSeats > 0
-                    ? ' (${(lic.studentSeatsUsed / lic.studentSeats * 100).round()}%)'
-                    : '';
-                return Column(children: [
-                  Row(children: [
-                    Expanded(
-                        child: _statCard(
-                            ctx,
-                            Icons.people_outline,
-                            a != null
-                                ? '${a.activeStudents} / ${a.totalStudents}'
-                                : '—',
-                            context.l10n.instDashActiveStudents(pctActive))),
-                    const SizedBox(width: 10),
-                    Expanded(
-                        child: _statCard(
-                            ctx,
-                            Icons.trending_up_outlined,
-                            a != null ? '${a.averageScore.round()}%' : '—',
-                            context.l10n.studentReportsAvgScore)),
-                  ]),
-                  const SizedBox(height: 10),
-                  Row(children: [
-                    Expanded(
-                        child: _statCard(ctx, Icons.psychology_outlined,
-                            a != null ? '${a.quizzesThisMonth}' : '—',
-                            context.l10n.instDashQuizMonth)),
-                    const SizedBox(width: 10),
-                    Expanded(
-                        child: _statCard(
-                            ctx,
-                            Icons.vpn_key_outlined,
-                            lic != null
-                                ? '${lic.studentSeatsUsed} / ${lic.studentSeats}'
-                                : context.l10n.teacherProfileNoneF,
-                            '${context.l10n.instLicenseStudentSeats}$pctLic')),
-                  ]),
-                ]);
-              }),
-              const SizedBox(height: 16),
-              // Alert élèves à risque
-              if (_atRiskCount > 0) ...[
-                WinCard(
-                  bg: WinColors.errorBg,
-                  onTap: () => Navigator.push(context,
-                      WinPageRoute(builder: (_) => const AtRiskScreen())),
-                  child: Row(children: [
-                    const Icon(Icons.warning_amber_rounded,
-                        color: WinColors.error),
-                    const SizedBox(width: 10),
-                    Expanded(
-                        child: Text(
-                            context.l10n.instDashUrgent(_atRiskCount),
-                            style: WinType.bodyS(WinColors.error)
-                                .copyWith(fontWeight: FontWeight.w600))),
-                    const Spacer(),
-                    const Icon(Icons.arrow_forward,
-                        color: WinColors.error, size: 18),
-                  ]),
-                ),
-                const SizedBox(height: 12),
-              ],
-              // Bouton Plan d'action IA
-              WinButton(context.l10n.instDashAiPlan,
-                  block: true,
-                  icon: Icons.auto_awesome_outlined,
-                  onTap: () => Navigator.push(context,
-                      WinPageRoute(builder: (_) => const ActionPlanScreen()))),
-              // « Matières les plus étudiées » de démonstration retirée :
-              // aucun endpoint ne fournit ce classement.
-              const SizedBox(height: 16),
-              Text(context.l10n.instDashQuickActions,
-                  style: WinType.archivo(size: 18, color: s.onStrong)),
-              const SizedBox(height: 10),
-              Row(children: [
-                Expanded(
-                    child: WinButton(context.l10n.instDashDirectory,
-                        variant: WinButtonVariant.outline,
-                        block: true,
-                        icon: Icons.people_outline,
-                        onTap: () => Navigator.push(
-                            context,
-                            WinPageRoute(
-                                builder: (_) =>
-                                    const StudentDirectoryScreen())))),
-                const SizedBox(width: 10),
-                Expanded(
-                    child: WinButton(context.l10n.instReportsTitle,
-                        variant: WinButtonVariant.outline,
-                        block: true,
-                        icon: Icons.bar_chart_outlined,
-                        onTap: () => Navigator.push(
-                            context,
-                            WinPageRoute(
-                                builder: (_) => const ReportsScreen())))),
-              ]),
-              const SizedBox(height: 24),
-              Text(context.l10n.commonWinaiAlerts,
-                  style: WinType.archivo(size: 18, color: s.onStrong)),
-              const SizedBox(height: 12),
-              WinCard(
-                  child: Row(children: [
-                const WinAIOrb(size: 26),
-                const SizedBox(width: 12),
-                Expanded(
-                    child: Text(
-                        context.l10n.instDashAlertsInfo,
-                        style: WinType.bodyS(s.onSurface))),
-              ])),
-              const SizedBox(height: 16),
-              Text(context.l10n.shellTabGroups,
-                  style: WinType.archivo(size: 18, color: s.onStrong)),
-              const SizedBox(height: 12),
-              ...groups.take(3).map((g) => Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: _GroupRow(g: g))),
-            ],
+    // Chiffres réels uniquement (GET /institution/analytics et
+    // /institution/license) ; « — » quand ils manquent.
+    final a = _analytics;
+    final lic = _license;
+    final pctActive = a != null && a.totalStudents > 0
+        ? ' (${(a.activeStudents / a.totalStudents * 100).round()}%)'
+        : '';
+    final pctLic = lic != null && lic.studentSeats > 0
+        ? ' (${(lic.studentSeatsUsed / lic.studentSeats * 100).round()}%)'
+        : '';
+
+    return MobileHomeView(
+      onRefresh: _load,
+      search: MobileSearchBar(
+        hint: l.mobileHomeSearchStudent,
+        onSubmit: (_) => _push(const StudentDirectoryScreen()),
+        onFilters: () => _push(const StudentDirectoryScreen()),
+      ),
+      forYou: MobileForYou(slides: [
+        MobileSlide(
+            tag: l.mobileHomeEyebrow,
+            title: l.mobileHomeInstTitle,
+            meta: _atRiskCount > 0
+                ? l.mobileHomeAtRiskMeta(_atRiskCount)
+                : l.mobileHomeInstMeta,
+            cta: l.mobileHomeInstCta,
+            onCta: () => _push(const AtRiskScreen()),
+            image: 'assets/home/hero-bibliotheque.webp'),
+        MobileSlide(
+            tag: l.mobileHomeReportTag,
+            title: l.mobileHomeReportTitle,
+            meta: l.mobileHomeReportMeta,
+            cta: l.mobileHomeReportCta,
+            onCta: () => _push(const ReportsScreen()),
+            image: 'assets/home/eleves-classe.jpg'),
+        MobileSlide(
+            tag: l.mobileHomePlanTag,
+            title: l.mobileHomePlanTitle,
+            meta: l.mobileHomePlanMeta,
+            cta: l.mobileHomePlanCta,
+            onCta: () => _push(const ActionPlanScreen()),
+            image: 'assets/home/eleve-ecrit.jpg'),
+      ]),
+      quick: MobileQuickAccess(
+        title: l.mobileHomeQuick,
+        shortcuts: [
+          MobileShortcut(
+              label: l.mobileHomeClasses,
+              icon: PhosphorIconsDuotone.student,
+              onTap: () => ShellNav.go(context, 1)),
+          MobileShortcut(
+              label: l.mobileHomeDirectory,
+              icon: PhosphorIconsDuotone.addressBook,
+              onTap: () => _push(const StudentDirectoryScreen())),
+          MobileShortcut(
+              label: l.mobileHomeAnalytics,
+              icon: PhosphorIconsDuotone.chartBar,
+              onTap: () => ShellNav.go(context, 3)),
+          MobileShortcut(
+              label: l.mobileHomeLicense,
+              icon: PhosphorIconsDuotone.identificationCard,
+              onTap: () => _push(const LicenseScreen())),
+        ],
+        more: [
+          MobileShortcut(
+              label: l.studentGroupsCreate,
+              icon: PhosphorIconsDuotone.usersThree,
+              onTap: () => _push(const GroupCreateScreen())),
+          MobileShortcut(
+              label: l.instAccountTutoring,
+              icon: PhosphorIconsDuotone.chalkboardTeacher,
+              onTap: () => _push(const TutoringForStudentsScreen())),
+          MobileShortcut(
+              label: l.instEndorseScreenTitle,
+              icon: PhosphorIconsDuotone.sealCheck,
+              onTap: () => _push(const TutorEndorsementsScreen())),
+          MobileShortcut(
+              label: l.shellTabAccount,
+              icon: PhosphorIconsDuotone.buildings,
+              onTap: () => ShellNav.go(context, 4)),
+        ],
+      ),
+      stats: MobileStatsStrip(items: [
+        MobileStat(
+            label: l.mobileHomeStatActive,
+            value: a != null ? '${a.activeStudents} / ${a.totalStudents}' : '—',
+            caption: pctActive.isEmpty ? null : pctActive.trim(),
+            tone: MobileStatTone.teal,
+            onTap: () => ShellNav.go(context, 3)),
+        MobileStat(
+            label: l.studentReportsAvgScore,
+            value: a != null ? '${a.averageScore.round()}%' : '—',
+            tone: MobileStatTone.ink,
+            onTap: () => ShellNav.go(context, 3)),
+        MobileStat(
+            label: l.instDashQuizMonth,
+            value: a != null ? '${a.quizzesThisMonth}' : '—',
+            tone: MobileStatTone.gold),
+        MobileStat(
+            label: l.instLicenseStudentSeats,
+            value: lic != null
+                ? '${lic.studentSeatsUsed} / ${lic.studentSeats}'
+                : l.teacherProfileNoneF,
+            caption: pctLic.isEmpty ? null : pctLic.trim(),
+            onTap: () => _push(const LicenseScreen())),
+      ]),
+      below: [
+        MobileSection(
+          key: const ValueKey('winai'),
+          title: l.commonWinaiAlerts,
+          child: WinCard(
+              child: Row(children: [
+            const WinAIOrb(size: 26),
+            const SizedBox(width: 12),
+            Expanded(
+                child: Text(l.instDashAlertsInfo,
+                    style: WinType.bodyS(s.onSurface))),
           ])),
-    ]);
+        ),
+        MobileSection(
+          key: const ValueKey('groups'),
+          title: l.shellTabGroups,
+          actionLabel: groups.isNotEmpty ? l.commonSeeAll : null,
+          onAction: () => ShellNav.go(context, 1),
+          child: _groups == null
+              ? const Padding(
+                  padding: EdgeInsets.all(24),
+                  child: Center(child: CircularProgressIndicator()))
+              : Column(children: [
+                  for (final g in groups.take(3))
+                    Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: _GroupRow(
+                            g: g,
+                            onTap: () => _push(GroupMembersScreen(
+                                groupId: g.id, groupName: g.name)))),
+                ]),
+        ),
+      ],
+    );
   }
 }
 

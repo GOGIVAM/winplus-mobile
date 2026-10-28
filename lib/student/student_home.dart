@@ -7,8 +7,6 @@ import '../data/models.dart';
 import '../services/achievement_service.dart';
 import '../services/student_service.dart';
 import '../services/subject_service.dart';
-import '../services/user_service.dart';
-import '../shared/subscription/subscription_notifier.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
@@ -16,9 +14,23 @@ import '../widgets/win_motion_widgets.dart';
 import '../widgets/win_widgets.dart';
 import 'content_detail_screen.dart';
 import 'pending_goals_panel.dart';
-
-String _fmtDate(DateTime d) => L10n.current
-    .studentHomeDate(WinFormat.weekdayCap(d.weekday), WinFormat.date(d));
+import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../shell/shell_nav.dart';
+import '../widgets/mobile_home.dart';
+import 'achievements_screen.dart';
+import 'certificates_screen.dart';
+import 'download_history_screen.dart';
+import 'exam_coach_screen.dart';
+import 'favorites_screen.dart';
+import 'my_courses_screen.dart';
+import 'quiz_revision_screen.dart';
+import 'quiz_screen.dart';
+import 'search_screen.dart';
+import 'student_reports_screen.dart';
+import 'study_groups_screen.dart';
+import 'study_session_screen.dart';
+import 'tutors/my_tutor_bookings_screen.dart';
+import 'tutors/tutor_search_screen.dart';
 
 /// ===================== ACCUEIL ÉTUDIANT =====================
 class StudentHomeTab extends StatefulWidget {
@@ -28,8 +40,6 @@ class StudentHomeTab extends StatefulWidget {
 }
 
 class _StudentHomeTabState extends State<StudentHomeTab> {
-  ApiUserProfile? _profile;
-
   // Dashboard étudiant branché sur StudentController.cs réel (stats,
   // contenus en cours, prochaines échéances) et sur le streak et les badges
   // réels (AchievementService). `null` tant que non chargé : la valeur est
@@ -45,17 +55,7 @@ class _StudentHomeTabState extends State<StudentHomeTab> {
   @override
   void initState() {
     super.initState();
-    _loadProfile();
     _loadDashboard();
-  }
-
-  Future<void> _loadProfile() async {
-    try {
-      final p = await UserService.instance.getProfile();
-      if (mounted) {
-        setState(() => _profile = p);
-      }
-    } catch (_) {}
   }
 
   Future<void> _loadDashboard() async {
@@ -83,248 +83,183 @@ class _StudentHomeTabState extends State<StudentHomeTab> {
     } catch (_) {}
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final s = WinTheme.of(context);
-    // Lot 9.7b : plus de palier (PlanTier) ; nom affiché tel que renvoyé
-    // par le serveur, fonctions selon les droits.
-    final sub = SubscriptionScope.of(context);
-
-    final firstName = (_profile?.firstName ?? '').trim();
-    final now = DateTime.now();
-    final hour = now.hour;
-    final greeting =
-        hour < 12 ? context.l10n.studentHomeGoodMorning : (hour < 18 ? context.l10n.studentHomeGoodAfternoon : context.l10n.studentHomeGoodEvening);
-
-    final streakDays = _streak ?? 0;
-    final avgScore =
-        _stats != null ? '${_stats!.averageScore.round()}%' : '—';
-    final weekHours = _stats != null
-        ? '${_stats!.weeklyStudyHoursTotal.round()}h'
-        : '—';
-    final quizWeek =
-        _stats != null ? '${_stats!.weeklyQuizCompleted}' : '—';
-    final continueItems = _continueLearning ?? const <InProgressContent>[];
-    final upcoming = _upcomingEvents ?? const <ExamCountdown>[];
-
-    final String planLabel = sub.planName;
-    final Color planColor = !sub.hasPlan
-        ? WinColors.ink400
-        : sub.has(EntitlementKeys.examCoach)
-            ? WinColors.teal500
-            : WinColors.blue500;
-
-    return Column(children: [
-      Expanded(
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
-          children: [
-            // HERO
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(WinRadii.xl),
-                  gradient: LinearGradient(
-                      colors: [s.heroFrom, s.heroTo],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight)),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(children: [
-                      Text(_fmtDate(now),
-                          style: WinType.labelS(WinColors.ink300)
-                              .copyWith(letterSpacing: 0.8)),
-                      const Spacer(),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 3),
-                        decoration: BoxDecoration(
-                            color: planColor.withValues(alpha: 0.18),
-                            borderRadius: BorderRadius.circular(WinRadii.full),
-                            border: Border.all(
-                                color: planColor.withValues(alpha: 0.4))),
-                        child: Row(mainAxisSize: MainAxisSize.min, children: [
-                          Icon(Icons.workspace_premium_outlined,
-                              size: 12, color: planColor),
-                          const SizedBox(width: 4),
-                          Text(planLabel,
-                              style: WinType.manrope(
-                                  size: 11,
-                                  weight: FontWeight.w700,
-                                  color: planColor)),
-                        ]),
-                      ),
-                    ]),
-                    const SizedBox(height: 8),
-                    Text.rich(TextSpan(
-                        style: WinType.bodyL(WinColors.cream50),
-                        children: [
-                          TextSpan(
-                              text: firstName.isEmpty
-                                  ? '$greeting  '
-                                  : '$greeting $firstName  '),
-                          TextSpan(
-                              text: context.l10n.studentHomeStreakDays(streakDays),
-                              style: WinType.archivo(
-                                      size: 16, color: WinColors.teal400)
-                                  .copyWith(fontStyle: FontStyle.italic)),
-                          TextSpan(text: context.l10n.studentHomeInARow),
-                        ])),
-                    const SizedBox(height: 16),
-                    Row(children: [
-                      Expanded(
-                          child: _HeroStat(
-                              value: WinStreakFlame(streakDays,
-                                  light: true, size: 22),
-                              title: context.l10n.studentHomeDaysInARow,
-                              sub: context.l10n.studentHomeStreak)),
-                      const SizedBox(width: 10),
-                      Expanded(
-                          child: _HeroStat(
-                              value: Text(avgScore,
-                                  style: WinType.archivo(
-                                      size: 22, color: WinColors.teal400)),
-                              title: context.l10n.studentHomeAvgScore,
-                              sub: context.l10n.studentCoachThisWeek)),
-                    ]),
-                    const SizedBox(height: 10),
-                    _HeroStat(
-                      value: Text(weekHours,
-                          style: WinType.archivo(
-                              size: 22, color: WinColors.teal400)),
-                      title: context.l10n.studentHomeStudyThisWeek,
-                      sub: context.l10n.studentHomeTimeLogged,
-                    ),
-                  ]),
-            ),
-            const SizedBox(height: 12),
-            // Objectifs proposés par un parent, en attente de réponse
-            const PendingGoalsPanel(),
-            // UPGRADE BANNER  visible uniquement en plan Gratuit hors devMode
-            if (!sub.hasPlan) _UpgradeBanner(s: s),
-            const SizedBox(height: 4),
-            // CHIPS
-            SizedBox(
-                height: 36,
-                child:
-                    ListView(scrollDirection: Axis.horizontal, children: [
-                  WinChip(context.l10n.studentHomeResume,
-                      icon: Icons.play_arrow_rounded),
-                  const SizedBox(width: 8),
-                  WinChip(context.l10n.studentQuizMyQuizzes,
-                      icon: Icons.check_circle_outline),
-                  const SizedBox(width: 8),
-                  WinChip(context.l10n.studentHomeDownloads,
-                      icon: Icons.download_outlined),
-                ])),
-            // 2.1  Continue Learning (contenus réellement commencés)
-            if (continueItems.isNotEmpty) ...[
-              const SizedBox(height: 24),
-              _SectionHeader(context.l10n.studentHomeContinue),
-              SizedBox(
-                height: 100,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: continueItems.length,
-                  separatorBuilder: (_, __) => const SizedBox(width: 12),
-                  itemBuilder: (_, i) =>
-                      _InProgressCard(item: continueItems[i]),
-                ),
-              ),
-            ],
-            // 2.3  Examens à venir (échéances réelles)
-            if (upcoming.isNotEmpty) ...[
-              const SizedBox(height: 24),
-              _SectionHeader(context.l10n.studentHomeUpcomingExams),
-              ...upcoming.take(2).map((exam) => Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: _ExamCountdownCard(exam: exam),
-                  )),
-            ],
-            // STATS
-            const SizedBox(height: 24),
-            Row(children: [
-              Expanded(
-                  child: _StatCard(Icons.check_circle_outline,
-                      quizWeek, context.l10n.studentHomeQuizPerWeek)),
-              const SizedBox(width: 10),
-              Expanded(
-                  child: _StatCard(Icons.schedule, weekHours, context.l10n.studentHomeStudyPerWeek)),
-              const SizedBox(width: 10),
-              Expanded(
-                  child: _StatCard(Icons.emoji_events_outlined,
-                      _badges != null ? '$_badges' : '—', context.l10n.studentHomeBadges)),
-            ]),
-          ],
-        ),
-      ),
-    ]);
-  }
-}
-
-class _InProgressCard extends StatelessWidget {
-  final InProgressContent item;
-  const _InProgressCard({required this.item});
-
-  /// Ouvre la vraie fiche du contenu (GET /subjects/{id}) : prix, niveau et
-  /// droits viennent du serveur, jamais d'une fiche reconstituée localement.
-  Future<void> _open(BuildContext context) async {
-    final id = int.tryParse(item.contentId);
-    final messenger = ScaffoldMessenger.of(context);
-    final navigator = Navigator.of(context);
-    if (id == null || id <= 0) return;
-    try {
-      final subject = await SubjectService.instance.getById(id);
-      navigator.push(WinPageRoute(
-          builder: (_) => ContentDetailScreen(content: subject.toContent())));
-    } catch (_) {
-      messenger.showSnackBar(SnackBar(
-          content: Text(L10n.current.studentHomeOpenFailed)));
+  /// Reprend le contenu ouvert le plus récemment ; sans contenu commencé,
+  /// l'historique des épreuves et quiz.
+  void _resume() {
+    final items = _continueLearning ?? const <InProgressContent>[];
+    if (items.isNotEmpty) {
+      _openContent(context, items.first);
+    } else {
+      _push(const DownloadHistoryScreen());
     }
   }
 
+  void _push(Widget screen) =>
+      Navigator.push(context, WinPageRoute(builder: (_) => screen));
+
   @override
   Widget build(BuildContext context) {
-    final s = WinTheme.of(context);
-    final subj = WinData.subjectById(item.subjectId);
-    return SizedBox(
-      width: 220,
-      child: WinCard(
-        padding: const EdgeInsets.all(12),
-        onTap: () => _open(context),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Row(children: [
-            Icon(subj.icon, size: 18, color: subj.color),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(item.title,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: WinType.titleM(s.onStrong)),
-            ),
-          ]),
-          const SizedBox(height: 4),
-          Text(item.lastOpened, style: WinType.labelM(s.onMuted)),
-          const SizedBox(height: 8),
-          WinProgressBar(item.progressPct.toDouble(), height: 4),
-          const SizedBox(height: 6),
-          Row(children: [
-            Text('${item.progressPct}%',
-                style: WinType.labelM(s.primary)
-                    .copyWith(fontWeight: FontWeight.w600)),
-            const Spacer(),
-            Row(mainAxisSize: MainAxisSize.min, children: [
-              Text(context.l10n.studentHomeResume,
-                  style: WinType.manrope(
-                      size: 11, weight: FontWeight.w700, color: s.primary)),
-              const SizedBox(width: 2),
-              Icon(Icons.arrow_forward_rounded, size: 11, color: s.primary),
-            ]),
-          ]),
-        ]),
+    final l = context.l10n;
+    final upcoming = _upcomingEvents ?? const <ExamCountdown>[];
+    final st = _stats;
+    final started = _continueLearning ?? const <InProgressContent>[];
+
+    return MobileHomeView(
+      onRefresh: _loadDashboard,
+      search: MobileSearchBar(
+        hint: l.mobileHomeSearchPaper,
+        onSubmit: (q) => _push(SearchScreen(initialQuery: q)),
+        onFilters: () => ShellNav.go(context, 1),
       ),
+      forYou: MobileForYou(slides: [
+        MobileSlide(
+            tag: l.mobileHomeEyebrow,
+            title: l.mobileHomeStudentTitle,
+            meta: l.mobileHomeStudentMeta,
+            cta: l.mobileHomeStudentCta,
+            onCta: () => _push(const StudySessionScreen()),
+            image: 'assets/home/hero-eleve-confiance.webp'),
+        MobileSlide(
+            tag: l.mobileHomeResumeTag,
+            title: l.mobileHomeResumeTitle,
+            meta: started.isNotEmpty
+                ? started.first.title
+                : l.mobileHomeResumeMeta,
+            cta: l.mobileHomeResumeCta,
+            onCta: _resume,
+            image: 'assets/home/epreuves.webp'),
+        MobileSlide(
+            tag: l.mobileHomeCoachTag,
+            title: l.mobileHomeCoachTitle,
+            meta: l.mobileHomeCoachMeta,
+            cta: l.mobileHomeCoachCta,
+            onCta: () => _push(const ExamCoachScreen()),
+            image: 'assets/home/eleves-classe.jpg'),
+        MobileSlide(
+            tag: l.mobileHomePapersTag,
+            title: l.mobileHomePapersTitle,
+            meta: l.mobileHomePapersMeta,
+            cta: l.mobileHomePapersCta,
+            onCta: () => ShellNav.go(context, 1),
+            image: 'assets/home/hero-bibliotheque.webp'),
+      ]),
+      quick: MobileQuickAccess(
+        title: l.mobileHomeQuick,
+        shortcuts: [
+          MobileShortcut(
+              label: l.mobileHomeQuiz,
+              icon: PhosphorIconsDuotone.exam,
+              onTap: () => _push(const QuizHubScreen())),
+          MobileShortcut(
+              label: l.mobileHomePapers,
+              icon: PhosphorIconsDuotone.bookOpenText,
+              onTap: () => ShellNav.go(context, 1)),
+          MobileShortcut(
+              label: l.mobileHomeRevisions,
+              icon: PhosphorIconsDuotone.cards,
+              onTap: () => _push(const QuizRevisionScreen())),
+          MobileShortcut(
+              label: l.mobileHomeGroups,
+              icon: PhosphorIconsDuotone.usersThree,
+              onTap: () => _push(const StudyGroupsScreen())),
+        ],
+        more: [
+          MobileShortcut(
+              label: l.studentMyCoursesTitle,
+              icon: PhosphorIconsDuotone.graduationCap,
+              onTap: () => _push(const MyCoursesScreen())),
+          MobileShortcut(
+              label: l.studentTabsFindTutor,
+              icon: PhosphorIconsDuotone.chalkboardTeacher,
+              onTap: () => _push(const TutorSearchScreen())),
+          MobileShortcut(
+              label: l.studentTabsMyBookings,
+              icon: PhosphorIconsDuotone.calendarCheck,
+              onTap: () => _push(const MyTutorBookingsScreen())),
+          MobileShortcut(
+              label: l.studentTabsFavorites,
+              icon: PhosphorIconsDuotone.heart,
+              onTap: () => _push(const FavoritesScreen())),
+          MobileShortcut(
+              label: l.studentHomeBadges,
+              icon: PhosphorIconsDuotone.medal,
+              onTap: () => _push(const AchievementsScreen())),
+          MobileShortcut(
+              label: l.studentTabsCertificates,
+              icon: PhosphorIconsDuotone.certificate,
+              onTap: () => _push(const CertificatesScreen())),
+          MobileShortcut(
+              label: l.studentReportsTitle,
+              icon: PhosphorIconsDuotone.chartLineUp,
+              onTap: () => _push(const StudentReportsScreen())),
+          MobileShortcut(
+              label: l.studentHubHistory,
+              icon: PhosphorIconsDuotone.clockCounterClockwise,
+              onTap: () => _push(const DownloadHistoryScreen())),
+        ],
+      ),
+      stats: MobileStatsStrip(items: [
+        MobileStat(
+            label: l.studentReportsAvgScore,
+            value: st != null ? '${st.averageScore.round()}%' : '—',
+            caption: l.mobileHomeThisWeek,
+            tone: MobileStatTone.teal,
+            onTap: () => _push(const StudentReportsScreen())),
+        MobileStat(
+            label: l.mobileHomeStatStudy,
+            value: st != null ? '${st.weeklyStudyHoursTotal.round()} h' : '—',
+            caption: l.mobileHomeThisWeek,
+            onTap: () => _push(const StudentReportsScreen())),
+        MobileStat(
+            label: l.mobileHomeStatQuiz,
+            value: st != null ? '${st.weeklyQuizCompleted}' : '—',
+            tone: MobileStatTone.gold,
+            onTap: () => _push(const QuizHubScreen())),
+        MobileStat(
+            label: l.mobileHomeStatStreak,
+            value: _streak != null ? l.mobileHomeDays(_streak!) : '—',
+            tone: MobileStatTone.ink,
+            onTap: () => _push(const AchievementsScreen())),
+        MobileStat(
+            label: l.studentHomeBadges,
+            value: _badges != null ? '$_badges' : '—',
+            onTap: () => _push(const AchievementsScreen())),
+      ]),
+      below: [
+        // Objectifs proposés par un parent, en attente de réponse
+        const PendingGoalsPanel(key: ValueKey('goals')),
+        // Examens à venir (échéances réelles)
+        if (upcoming.isNotEmpty)
+          MobileSection(
+            key: const ValueKey('exams'),
+            title: l.studentHomeUpcomingExams,
+            child: Column(children: [
+              for (final exam in upcoming.take(2))
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: _ExamCountdownCard(exam: exam),
+                ),
+            ]),
+          ),
+      ],
     );
+  }
+}
+
+/// Ouvre la vraie fiche du contenu (GET /subjects/{id}) : prix, niveau et
+/// droits viennent du serveur, jamais d'une fiche reconstituée localement.
+Future<void> _openContent(BuildContext context, InProgressContent item) async {
+  final id = int.tryParse(item.contentId);
+  final messenger = ScaffoldMessenger.of(context);
+  final navigator = Navigator.of(context);
+  if (id == null || id <= 0) return;
+  try {
+    final subject = await SubjectService.instance.getById(id);
+    navigator.push(WinPageRoute(
+        builder: (_) => ContentDetailScreen(content: subject.toContent())));
+  } catch (_) {
+    messenger.showSnackBar(
+        SnackBar(content: Text(L10n.current.studentHomeOpenFailed)));
   }
 }
 
@@ -367,111 +302,6 @@ class _ExamCountdownCard extends StatelessWidget {
           Text(context.l10n.studentHomeDaysLabel, style: WinType.labelS(urgentColor)),
         ]),
       ]),
-    );
-  }
-}
-
-class _HeroStat extends StatelessWidget {
-  final Widget value;
-  final String title, sub;
-  const _HeroStat(
-      {required this.value, required this.title, required this.sub});
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(WinRadii.sm)),
-      child: Row(children: [
-        value,
-        const SizedBox(width: 10),
-        Expanded(
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-              Text(title,
-                  style: WinType.labelS(WinColors.cream100)
-                      .copyWith(fontWeight: FontWeight.w600)),
-              Text(sub, style: WinType.labelS(WinColors.ink300)),
-            ])),
-      ]),
-    );
-  }
-}
-
-class _StatCard extends StatelessWidget {
-  final IconData icon;
-  final String value, label;
-  const _StatCard(this.icon, this.value, this.label);
-  @override
-  Widget build(BuildContext context) {
-    final s = WinTheme.of(context);
-    return WinCard(
-      padding: const EdgeInsets.all(14),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Icon(icon, size: 20, color: s.primary),
-        const SizedBox(height: 8),
-        Text(value, style: WinType.archivo(size: 22, color: s.onStrong)),
-        const SizedBox(height: 4),
-        Text(label, style: WinType.labelM(s.onMuted)),
-      ]),
-    );
-  }
-}
-
-class _UpgradeBanner extends StatelessWidget {
-  final WinScheme s;
-  const _UpgradeBanner({required this.s});
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 4),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      decoration: BoxDecoration(
-        color: WinColors.teal50,
-        borderRadius: BorderRadius.circular(WinRadii.sm),
-        border: Border.all(color: WinColors.teal100),
-      ),
-      child: Row(children: [
-        const Icon(Icons.bolt_outlined, size: 20, color: WinColors.teal600),
-        const SizedBox(width: 10),
-        Expanded(
-          child: Text(
-            context.l10n.studentHomeUpgrade,
-            style: WinType.bodyS(WinColors.teal700)
-                .copyWith(fontWeight: FontWeight.w500),
-          ),
-        ),
-        const SizedBox(width: 10),
-        GestureDetector(
-          onTap: () {},
-          child: Row(mainAxisSize: MainAxisSize.min, children: [
-            Text(context.l10n.studentHomeSee,
-                style: WinType.manrope(
-                    size: 12,
-                    weight: FontWeight.w700,
-                    color: WinColors.teal600)),
-            const SizedBox(width: 2),
-            const Icon(Icons.arrow_forward_rounded,
-                size: 12, color: WinColors.teal600),
-          ]),
-        ),
-      ]),
-    );
-  }
-}
-
-class _SectionHeader extends StatelessWidget {
-  final String title;
-  const _SectionHeader(this.title);
-  @override
-  Widget build(BuildContext context) {
-    final s = WinTheme.of(context);
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Text(title, style: WinType.archivo(size: 18, color: s.onStrong)),
     );
   }
 }

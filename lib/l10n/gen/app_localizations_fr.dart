@@ -7769,4 +7769,312 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get studentCertLinkCopied => 'Lien de vérification copié.';
+
+  @override
+  String get mobileHomeForYou => 'Pour toi';
+
+  @override
+  String get mobileHomeFilters => 'Filtres';
+
+  @override
+  String get mobileHomeSeeAll => 'Tout voir';
+
+  @override
+  String get mobileHomeQuick => 'Accès rapide';
+
+  @override
+  String get mobileHomeAllShortcuts => 'Tous les raccourcis';
+
+  @override
+  String get mobileHomeStatsDetail => 'Voir le détail';
+
+  @override
+  String get mobileHomeStatsTitle => 'Mes statistiques';
+
+  @override
+  String get mobileHomeClose => 'Fermer';
+
+  @override
+  String get mobileHomeEyebrow => 'À faire maintenant';
+
+  @override
+  String mobileHomeSlide(int n, int total) {
+    return 'Carte $n sur $total';
+  }
+
+  @override
+  String get mobileHomeSearchPaper => 'Rechercher une épreuve…';
+
+  @override
+  String get mobileHomeSearchStudent => 'Rechercher un élève…';
+
+  @override
+  String get mobileHomeStudentTitle => 'Ta séance du jour';
+
+  @override
+  String get mobileHomeStudentMeta => '20 minutes sur tes points faibles.';
+
+  @override
+  String get mobileHomeStudentCta => 'Commencer';
+
+  @override
+  String get mobileHomeResumeTag => 'En cours';
+
+  @override
+  String get mobileHomeResumeTitle => 'Reprends là où tu en étais';
+
+  @override
+  String get mobileHomeResumeMeta => 'Tes épreuves et quiz commencés.';
+
+  @override
+  String get mobileHomeResumeCta => 'Reprendre';
+
+  @override
+  String get mobileHomeCoachTag => 'Coach d\'examen';
+
+  @override
+  String get mobileHomeCoachTitle => 'Ton plan jusqu\'au jour J';
+
+  @override
+  String get mobileHomeCoachMeta => 'Ton examen, ta date : on organise tout.';
+
+  @override
+  String get mobileHomeCoachCta => 'Créer';
+
+  @override
+  String get mobileHomePapersTag => 'Nouveau';
+
+  @override
+  String get mobileHomePapersTitle => 'Épreuves et corrigés';
+
+  @override
+  String get mobileHomePapersMeta => 'BEPC, Probatoire, Bac, concours.';
+
+  @override
+  String get mobileHomePapersCta => 'Voir';
+
+  @override
+  String get mobileHomeQuiz => 'Quiz';
+
+  @override
+  String get mobileHomePapers => 'Épreuves';
+
+  @override
+  String get mobileHomeRevisions => 'Révisions';
+
+  @override
+  String get mobileHomeGroups => 'Groupes';
+
+  @override
+  String get mobileHomeLinkTitle => 'Liez le compte de votre enfant';
+
+  @override
+  String get mobileHomeLinkMeta =>
+      'Vous suivez ensuite ses révisions et ses résultats.';
+
+  @override
+  String get mobileHomeAddChild => 'Ajouter';
+
+  @override
+  String mobileHomeFollowTitle(String name) {
+    return 'Où en est $name cette semaine';
+  }
+
+  @override
+  String get mobileHomeFollowMeta =>
+      'Régularité, résultats, points à travailler.';
+
+  @override
+  String get mobileHomeFollowCta => 'Voir';
+
+  @override
+  String get mobileHomeYourChild => 'votre enfant';
+
+  @override
+  String get mobileHomeTutorTag => 'Cours particuliers';
+
+  @override
+  String get mobileHomeTutorTitle => 'Un répétiteur près de chez vous';
+
+  @override
+  String get mobileHomeTutorMeta => 'Profils vérifiés, à domicile ou en ligne.';
+
+  @override
+  String get mobileHomeTutorCta => 'Trouver';
+
+  @override
+  String get mobileHomeSheetTag => 'WinAI';
+
+  @override
+  String get mobileHomeSheetTitle => 'Une fiche de révision sur mesure';
+
+  @override
+  String get mobileHomeSheetMeta => 'Sur la matière où votre enfant bloque.';
+
+  @override
+  String get mobileHomeSheetCta => 'Créer';
+
+  @override
+  String get mobileHomeSheetPrompt =>
+      'Prépare une fiche de révision sur la matière où mon enfant a le plus de difficultés.';
+
+  @override
+  String get mobileHomeSuivi => 'Suivi';
+
+  @override
+  String get mobileHomeMessages => 'Messages';
+
+  @override
+  String get mobileHomeAdvice => 'Conseils';
+
+  @override
+  String get mobileHomeSubscription => 'Abonnement';
+
+  @override
+  String get mobileHomeBuy => 'Acheter';
+
+  @override
+  String get mobileHomeAdviceCount => 'Conseils WinAI';
+
+  @override
+  String get mobileHomeChildrenAvg => 'Moyenne des enfants';
+
+  @override
+  String mobileHomeCorrectTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count copies à corriger',
+      one: '$count copie à corriger',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get mobileHomeCorrectMeta => 'Vos élèves attendent leur note.';
+
+  @override
+  String get mobileHomeCorrectCta => 'Corriger';
+
+  @override
+  String get mobileHomePublishTitle => 'Partagez un nouveau contenu';
+
+  @override
+  String get mobileHomePublishMeta => 'Vos élèves le retrouvent tout de suite.';
+
+  @override
+  String get mobileHomePublishCta => 'Publier';
+
+  @override
+  String get mobileHomeTeachTutorTag => 'Revenus en plus';
+
+  @override
+  String get mobileHomeTeachTutorTitle => 'Activez le mode répétiteur';
+
+  @override
+  String get mobileHomeTeachTutorMeta => 'Proposez des cours particuliers.';
+
+  @override
+  String get mobileHomeTeachTutorCta => 'Activer';
+
+  @override
+  String get mobileHomeCoursesTag => 'Formations';
+
+  @override
+  String get mobileHomeCoursesTitle => 'Créez une formation complète';
+
+  @override
+  String get mobileHomeCoursesMeta => 'Modules, quiz et examen final.';
+
+  @override
+  String get mobileHomeCoursesCta => 'Ouvrir';
+
+  @override
+  String get mobileHomeClasses => 'Classes';
+
+  @override
+  String get mobileHomeCorrections => 'Corrections';
+
+  @override
+  String get mobileHomeSessions => 'Séances';
+
+  @override
+  String get mobileHomeRevenue => 'Revenus';
+
+  @override
+  String get mobileHomeShare => 'Votre part';
+
+  @override
+  String get mobileHomeInstTitle => 'Élèves à accompagner';
+
+  @override
+  String get mobileHomeInstMeta =>
+      'Régularité ou résultats en baisse, classe par classe.';
+
+  @override
+  String get mobileHomeInstCta => 'Voir';
+
+  @override
+  String get mobileHomeReportTag => 'Rapport';
+
+  @override
+  String get mobileHomeReportTitle => 'Le bilan de l\'établissement';
+
+  @override
+  String get mobileHomeReportMeta => 'Un PDF prêt à partager.';
+
+  @override
+  String get mobileHomeReportCta => 'Exporter';
+
+  @override
+  String get mobileHomePlanTag => 'WinAI';
+
+  @override
+  String get mobileHomePlanTitle => 'Un plan d\'action pour vos classes';
+
+  @override
+  String get mobileHomePlanMeta => 'Des pistes concrètes, classe par classe.';
+
+  @override
+  String get mobileHomePlanCta => 'Créer';
+
+  @override
+  String get mobileHomeDirectory => 'Annuaire';
+
+  @override
+  String get mobileHomeAnalytics => 'Analyses';
+
+  @override
+  String get mobileHomeLicense => 'Licence';
+
+  @override
+  String get mobileHomeStatStudy => 'Temps d\'étude';
+
+  @override
+  String get mobileHomeStatQuiz => 'Quiz cette semaine';
+
+  @override
+  String get mobileHomeStatStreak => 'Série en cours';
+
+  @override
+  String get mobileHomeStatChildren => 'Enfants suivis';
+
+  @override
+  String get mobileHomeStatCredits => 'Crédits disponibles';
+
+  @override
+  String get mobileHomeStatActive => 'Élèves actifs';
+
+  @override
+  String get mobileHomeThisWeek => 'Cette semaine';
+
+  @override
+  String mobileHomeDays(int n) {
+    return '$n j';
+  }
+
+  @override
+  String mobileHomeAtRiskMeta(int n) {
+    return '$n élèves à suivre de près, classe par classe.';
+  }
 }

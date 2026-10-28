@@ -21,6 +21,10 @@ import 'tutor_bookings_screen.dart';
 import 'teacher_wallet_view.dart';
 import '../widgets/knowledge_base_toggle.dart';
 import '../l10n/l10n.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../shell/shell_nav.dart';
+import '../student/search_screen.dart';
+import '../widgets/mobile_home.dart';
 
 BadgeColor _statusColor(String s) => switch (s) {
       'Publié' => BadgeColor.success,
@@ -39,46 +43,6 @@ String _statusLabel(String s) => switch (s) {
       'Brouillon' => L10n.current.commonDraft,
       _ => s,
     };
-
-Widget _statCard(BuildContext c, IconData icon, String value, String label) {
-  final s = WinTheme.of(c);
-  return WinCard(
-      padding: const EdgeInsets.all(14),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Icon(icon, size: 20, color: s.primary),
-        const SizedBox(height: 8),
-        Text(value, style: WinType.archivo(size: 22, color: s.onStrong)),
-        Text(label, style: WinType.labelM(s.onMuted)),
-      ]));
-}
-
-Widget _heroStat(String value, String title, String sub) => Builder(
-    builder: (_) => Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-          decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.08),
-              borderRadius: BorderRadius.circular(WinRadii.md)),
-          child: Row(children: [
-            Text(value,
-                style: WinType.archivo(size: 22, color: WinColors.teal400)),
-            const SizedBox(width: 10),
-            Expanded(
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                  Text(title,
-                      style: WinType.labelS(WinColors.cream100)
-                          .copyWith(fontWeight: FontWeight.w600)),
-                  Text(sub, style: WinType.labelS(WinColors.ink300)),
-                ])),
-          ]),
-        ));
-
-TextSpan _accent(String t) => TextSpan(
-    text: t,
-    style: WinType.archivo(size: 16, color: WinColors.teal400)
-        .copyWith(fontStyle: FontStyle.italic));
 
 /// ===================== ACCUEIL =====================
 class TeacherDashTab extends StatefulWidget {
@@ -124,9 +88,26 @@ class _TeacherDashTabState extends State<TeacherDashTab> {
     }
   }
 
+  void _push(Widget screen) =>
+      Navigator.push(context, WinPageRoute(builder: (_) => screen));
+
+  Future<void> _publish() async {
+    await Navigator.push(
+        context, WinPageRoute(builder: (_) => const ContentPublishScreen()));
+    setState(() => _content = null);
+    _load();
+  }
+
+  Future<void> _corrections() async {
+    await Navigator.push(
+        context, WinPageRoute(builder: (_) => const CorrectionQueueScreen()));
+    _load();
+  }
+
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
+    final l = context.l10n;
     final content = _content ?? [];
     final published = content
         .where((c) => c.status == 'published' || c.status == 'Publié')
@@ -144,240 +125,211 @@ class _TeacherDashTabState extends State<TeacherDashTab> {
     final weeklyRev = _stats?.weeklyRevenue ?? [0, 0, 0, 0];
     final maxRev = weeklyRev.reduce((a, b) => a > b ? a : b);
     final pendingCorrections = _pendingCorrections;
+    final loaded = _content != null;
 
-    return Column(children: [
-      Expanded(
-          child: _content == null
-              ? const Center(child: CircularProgressIndicator())
-              : ListView(
-                  padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
-                  children: [
-                      // 1. Hero avec boutons
-                      Container(
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(WinRadii.xl),
-                          gradient: LinearGradient(
-                            colors: [s.heroFrom, s.heroTo],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                        ),
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(context.l10n.teacherDashPlan(subScope.planName.toUpperCase()),
-                                  style: WinType.labelS(WinColors.ink300)
-                                      .copyWith(letterSpacing: 0.8)),
-                              const SizedBox(height: 8),
-                              Text.rich(TextSpan(
-                                  style: WinType.bodyL(WinColors.cream50),
-                                  children: [
-                                    TextSpan(text: context.l10n.teacherDashShareLabel),
-                                    _accent(sharePct > 0 ? context.l10n.teacherDashShareValue(sharePct) : '—'),
-                                  ])),
-                              const SizedBox(height: 18),
-                              Row(children: [
-                                Expanded(
-                                    child: _heroStat('${published.length}',
-                                        context.l10n.teacherDashPublished, context.l10n.commonOnline)),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                    child: _heroStat(
-                                        avgRating > 0
-                                            ? avgRating.toStringAsFixed(1)
-                                            : '',
-                                        context.l10n.teacherDashAvgShort,
-                                        context.l10n.teacherDashOutOf5)),
-                              ]),
-                              const SizedBox(height: 14),
-                              Row(children: [
-                                Expanded(
-                                  child: GestureDetector(
-                                    onTap: () async {
-                                      await Navigator.push(
-                                          context,
-                                          WinPageRoute(
-                                              builder: (_) =>
-                                                  const ContentPublishScreen()));
-                                      setState(() => _content = null);
-                                      _load();
-                                    },
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 10),
-                                      decoration: BoxDecoration(
-                                        color: WinColors.teal400,
-                                        borderRadius: BorderRadius.circular(
-                                            WinRadii.full),
-                                      ),
-                                      alignment: Alignment.center,
-                                      child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Icon(Icons.add,
-                                                size: 16,
-                                                color: WinColors.ink900),
-                                            const SizedBox(width: 6),
-                                            Text(context.l10n.forumPublish,
-                                                style: WinType.manrope(
-                                                    size: 13,
-                                                    weight: FontWeight.w700,
-                                                    color: WinColors.ink900)),
-                                          ]),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: GestureDetector(
-                                    onTap: () => Navigator.push(
-                                        context,
-                                        WinPageRoute(
-                                            builder: (_) =>
-                                                const CorrectionQueueScreen())),
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 10),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white
-                                            .withValues(alpha: 0.08),
-                                        borderRadius: BorderRadius.circular(
-                                            WinRadii.full),
-                                      ),
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                        '${context.l10n.studentTabsTypeCorrections}${pendingCorrections > 0 ? ' ($pendingCorrections)' : ''}',
-                                        style: WinType.manrope(
-                                            size: 13,
-                                            weight: FontWeight.w600,
-                                            color: WinColors.cream100),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ]),
-                            ]),
-                      ),
-                      const SizedBox(height: 16),
-
-                      // 2. Statistiques calculées
-                      Row(children: [
-                        Expanded(
-                            child: _statCard(
-                                context,
-                                Icons.description_outlined,
-                                '${published.length}',
-                                context.l10n.teacherDashPublishedContent)),
-                        const SizedBox(width: 10),
-                        Expanded(
-                            child: _statCard(context, Icons.download_outlined,
-                                '$totalDl', context.l10n.teacherDashDownloads)),
-                      ]),
-                      const SizedBox(height: 10),
-                      Row(children: [
-                        Expanded(
-                            child: _statCard(
-                                context,
-                                Icons.star_outline,
-                                avgRating > 0
-                                    ? avgRating.toStringAsFixed(1)
-                                    : '',
-                                context.l10n.teacherDashAvgRating)),
-                        const SizedBox(width: 10),
-                        Expanded(
-                            child: _statCard(
-                                context,
-                                Icons.people_outline,
-                                '${_stats?.activeStudents ?? ''}',
-                                context.l10n.teacherDashActiveStudents)),
-                      ]),
-                      const SizedBox(height: 24),
-
-                      // 3. Revenus du mois
-                      Text(context.l10n.teacherDashMonthRevenue,
-                          style: WinType.archivo(size: 18, color: s.onStrong)),
-                      const SizedBox(height: 4),
-                      Text(
-                          context.l10n.teacherDashThisMonth(fmtXaf(_stats?.thisMonthRevenue ?? 0)),
-                          style: WinType.archivo(size: 22, color: s.primary)),
-                      const SizedBox(height: 12),
-                      WinCard(
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(context.l10n.teacherDashLast4Weeks,
-                                  style: WinType.labelS(s.onMuted)),
-                              const SizedBox(height: 10),
-                              SizedBox(
-                                height: 60,
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: List.generate(4, (i) {
-                                    final val = weeklyRev[i];
-                                    final h = maxRev == 0
-                                        ? 4.0
-                                        : (val / maxRev) * 60.0;
-                                    return Expanded(
-                                      child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.end,
-                                          children: [
-                                            Container(
-                                              height: h.clamp(4.0, 60.0),
-                                              margin:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 4),
-                                              decoration: BoxDecoration(
-                                                color: i == 3
-                                                    ? s.primary
-                                                    : s.primary.withValues(
-                                                        alpha: 0.35),
-                                                borderRadius:
-                                                    const BorderRadius.vertical(
-                                                        top: Radius.circular(
-                                                            WinRadii.full)),
-                                              ),
-                                            ),
-                                            const SizedBox(height: 4),
-                                            Text(context.l10n.studentReportsWeekShort(i + 1),
-                                                style:
-                                                    WinType.labelS(s.onFaint)),
-                                          ]),
-                                    );
-                                  }),
-                                ),
+    return MobileHomeView(
+      onRefresh: _load,
+      search: MobileSearchBar(
+        hint: l.mobileHomeSearchPaper,
+        onSubmit: (q) => _push(SearchScreen(initialQuery: q)),
+        onFilters: () => _push(const SearchScreen()),
+      ),
+      forYou: MobileForYou(slides: [
+        if (pendingCorrections > 0)
+          MobileSlide(
+              tag: l.mobileHomeEyebrow,
+              title: l.mobileHomeCorrectTitle(pendingCorrections),
+              meta: l.mobileHomeCorrectMeta,
+              cta: l.mobileHomeCorrectCta,
+              onCta: _corrections,
+              image: 'assets/home/hero-repetiteur-eleve.webp')
+        else
+          MobileSlide(
+              tag: l.mobileHomeEyebrow,
+              title: l.mobileHomePublishTitle,
+              meta: l.mobileHomePublishMeta,
+              cta: l.mobileHomePublishCta,
+              onCta: _publish,
+              image: 'assets/home/hero-repetiteur-eleve.webp'),
+        MobileSlide(
+            tag: l.mobileHomeTeachTutorTag,
+            title: l.mobileHomeTeachTutorTitle,
+            meta: l.mobileHomeTeachTutorMeta,
+            cta: l.mobileHomeTeachTutorCta,
+            onCta: () => _push(const TutorProfileScreen()),
+            image: 'assets/home/eleve-ecrit.jpg'),
+        MobileSlide(
+            tag: l.mobileHomeCoursesTag,
+            title: l.mobileHomeCoursesTitle,
+            meta: l.mobileHomeCoursesMeta,
+            cta: l.mobileHomeCoursesCta,
+            onCta: () => _push(const TeacherCoursesScreen()),
+            image: 'assets/home/hero-bibliotheque.webp'),
+      ]),
+      quick: MobileQuickAccess(
+        title: l.mobileHomeQuick,
+        shortcuts: [
+          MobileShortcut(
+              label: l.mobileHomeClasses,
+              icon: PhosphorIconsDuotone.chalkboardTeacher,
+              onTap: () => ShellNav.go(context, 2)),
+          MobileShortcut(
+              label: l.mobileHomeCorrections,
+              icon: PhosphorIconsDuotone.checkSquareOffset,
+              count: pendingCorrections,
+              onTap: _corrections),
+          MobileShortcut(
+              label: l.mobileHomeSessions,
+              icon: PhosphorIconsDuotone.calendarDots,
+              onTap: () => ShellNav.go(context, 3)),
+          MobileShortcut(
+              label: l.mobileHomeRevenue,
+              icon: PhosphorIconsDuotone.wallet,
+              onTap: () => ShellNav.go(context, 4)),
+        ],
+        more: [
+          MobileShortcut(
+              label: l.forumPublish,
+              icon: PhosphorIconsDuotone.uploadSimple,
+              onTap: _publish),
+          MobileShortcut(
+              label: l.shellTabContent,
+              icon: PhosphorIconsDuotone.files,
+              onTap: () => ShellNav.go(context, 1)),
+          MobileShortcut(
+              label: l.mobileHomeCoursesTag,
+              icon: PhosphorIconsDuotone.graduationCap,
+              onTap: () => _push(const TeacherCoursesScreen())),
+          MobileShortcut(
+              label: l.teacherProfileTitle,
+              icon: PhosphorIconsDuotone.identificationBadge,
+              onTap: () => _push(const TutorProfileScreen())),
+          MobileShortcut(
+              label: l.teacherClassesMyBookings,
+              icon: PhosphorIconsDuotone.calendarCheck,
+              onTap: () => _push(const TutorBookingsScreen())),
+          MobileShortcut(
+              label: l.teacherClassesMyLinks,
+              icon: PhosphorIconsDuotone.link,
+              onTap: () => _push(const TeacherLinksScreen())),
+        ],
+      ),
+      stats: MobileStatsStrip(items: [
+        MobileStat(
+            label: l.teacherDashPublishedContent,
+            value: loaded ? '${published.length}' : '—',
+            tone: MobileStatTone.teal,
+            onTap: () => ShellNav.go(context, 1)),
+        MobileStat(
+            label: l.teacherDashMonthRevenue,
+            value: _stats != null
+                ? '${fmtXaf(_stats!.thisMonthRevenue)} XAF'
+                : '—',
+            tone: MobileStatTone.ink,
+            onTap: () => ShellNav.go(context, 4)),
+        MobileStat(
+            label: l.teacherDashDownloads,
+            value: loaded ? '$totalDl' : '—',
+            onTap: () => ShellNav.go(context, 1)),
+        MobileStat(
+            label: l.teacherDashAvgRating,
+            value: avgRating > 0 ? avgRating.toStringAsFixed(1) : '—',
+            caption: avgRating > 0 ? l.teacherDashOutOf5 : null,
+            tone: MobileStatTone.gold),
+        MobileStat(
+            label: l.teacherDashActiveStudents,
+            value: _stats != null ? '${_stats!.activeStudents}' : '—',
+            onTap: () => ShellNav.go(context, 2)),
+        MobileStat(
+            label: l.mobileHomeShare,
+            value: sharePct > 0 ? '$sharePct %' : '—',
+            caption: subScope.planName,
+            tone: MobileStatTone.teal),
+      ]),
+      below: [
+        // Revenus des quatre dernières semaines (le total du mois est dans
+        // la bande de chiffres).
+        MobileSection(
+          key: const ValueKey('revenue'),
+          title: l.teacherDashLast4Weeks,
+          actionLabel: l.mobileHomeRevenue,
+          onAction: () => ShellNav.go(context, 4),
+          child: WinCard(
+            child: SizedBox(
+              height: 78,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: List.generate(4, (i) {
+                  final val = weeklyRev[i];
+                  final h = maxRev == 0 ? 4.0 : (val / maxRev) * 60.0;
+                  return Expanded(
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          // Les barres montent l'une après l'autre.
+                          TweenAnimationBuilder<double>(
+                            tween: Tween(begin: 0, end: h.clamp(4.0, 60.0)),
+                            duration: winReducedMotion(context)
+                                ? Duration.zero
+                                : Duration(milliseconds: 500 + 120 * i),
+                            curve: WinCurves.enter,
+                            builder: (_, v, __) => Container(
+                              height: v,
+                              margin: const EdgeInsets.symmetric(horizontal: 4),
+                              decoration: BoxDecoration(
+                                color: i == 3
+                                    ? s.primary
+                                    : s.primary.withValues(alpha: 0.35),
+                                borderRadius: const BorderRadius.vertical(
+                                    top: Radius.circular(WinRadii.full)),
                               ),
-                            ]),
-                      ),
-                      const SizedBox(height: 24),
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(l.studentReportsWeekShort(i + 1),
+                              style: WinType.labelS(s.onFaint)),
+                        ]),
+                  );
+                }),
+              ),
+            ),
+          ),
+        ),
+        // 4. « Vos insights » de démonstration (meilleur vendeur,
+        // audience, +12 %) retirés : aucun calcul serveur ne
+        // les produit ; les chiffres réels sont au-dessus.
 
-                      // 4. « Vos insights » de démonstration (meilleur vendeur,
-                      // audience, +12 %) retirés : aucun calcul serveur ne
-                      // les produit ; les chiffres réels sont au-dessus.
-
-                      // 5. Contenus récents (3 derniers)
-                      Text(context.l10n.teacherDashRecentContent,
-                          style: WinType.archivo(size: 18, color: s.onStrong)),
-                      const SizedBox(height: 12),
-                      if (content.isEmpty)
-                        Center(
-                            child: Padding(
-                          padding: const EdgeInsets.all(24),
-                          child: Text(context.l10n.teacherDashNoContent,
-                              style: WinType.bodyM(s.onMuted)),
-                        ))
-                      else
-                        ...content.take(3).map((c) => Padding(
+        // 5. Contenus récents (3 derniers)
+        MobileSection(
+          key: const ValueKey('recent'),
+          title: l.teacherDashRecentContent,
+          actionLabel: content.isNotEmpty ? l.commonSeeAll : null,
+          onAction: () => ShellNav.go(context, 1),
+          child: !loaded
+              ? const Padding(
+                  padding: EdgeInsets.all(24),
+                  child: Center(child: CircularProgressIndicator()))
+              : content.isEmpty
+                  ? Center(
+                      child: Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Text(l.teacherDashNoContent,
+                          style: WinType.bodyM(s.onMuted)),
+                    ))
+                  : Column(children: [
+                      for (final c in content.take(3))
+                        Padding(
                             padding: const EdgeInsets.only(bottom: 10),
                             child: _ContentRow(
                                 c: c,
                                 onChanged: () {
                                   setState(() => _content = null);
                                   _load();
-                                }))),
-                    ])),
-    ]);
+                                })),
+                    ]),
+        ),
+      ],
+    );
   }
 }
 

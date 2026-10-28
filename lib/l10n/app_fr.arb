@@ -4746,5 +4746,139 @@
   "studentPlayerTapToOpen": "Appuyez pour ouvrir le document",
   "studentPlayerOpenOnWeb": "Ce type de fichier s'ouvre depuis le site winplus.cm.",
   "studentCertCopyLink": "Copier le lien",
-  "studentCertLinkCopied": "Lien de vérification copié."
+  "studentCertLinkCopied": "Lien de vérification copié.",
+  "mobileHomeForYou": "Pour toi",
+  "mobileHomeFilters": "Filtres",
+  "mobileHomeSeeAll": "Tout voir",
+  "mobileHomeQuick": "Accès rapide",
+  "mobileHomeAllShortcuts": "Tous les raccourcis",
+  "mobileHomeStatsDetail": "Voir le détail",
+  "mobileHomeStatsTitle": "Mes statistiques",
+  "mobileHomeClose": "Fermer",
+  "mobileHomeEyebrow": "À faire maintenant",
+  "mobileHomeSlide": "Carte {n} sur {total}",
+  "@mobileHomeSlide": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "mobileHomeSearchPaper": "Rechercher une épreuve…",
+  "mobileHomeSearchStudent": "Rechercher un élève…",
+  "mobileHomeStudentTitle": "Ta séance du jour",
+  "mobileHomeStudentMeta": "20 minutes sur tes points faibles.",
+  "mobileHomeStudentCta": "Commencer",
+  "mobileHomeResumeTag": "En cours",
+  "mobileHomeResumeTitle": "Reprends là où tu en étais",
+  "mobileHomeResumeMeta": "Tes épreuves et quiz commencés.",
+  "mobileHomeResumeCta": "Reprendre",
+  "mobileHomeCoachTag": "Coach d'examen",
+  "mobileHomeCoachTitle": "Ton plan jusqu'au jour J",
+  "mobileHomeCoachMeta": "Ton examen, ta date : on organise tout.",
+  "mobileHomeCoachCta": "Créer",
+  "mobileHomePapersTag": "Nouveau",
+  "mobileHomePapersTitle": "Épreuves et corrigés",
+  "mobileHomePapersMeta": "BEPC, Probatoire, Bac, concours.",
+  "mobileHomePapersCta": "Voir",
+  "mobileHomeQuiz": "Quiz",
+  "mobileHomePapers": "Épreuves",
+  "mobileHomeRevisions": "Révisions",
+  "mobileHomeGroups": "Groupes",
+  "mobileHomeLinkTitle": "Liez le compte de votre enfant",
+  "mobileHomeLinkMeta": "Vous suivez ensuite ses révisions et ses résultats.",
+  "mobileHomeAddChild": "Ajouter",
+  "mobileHomeFollowTitle": "Où en est {name} cette semaine",
+  "@mobileHomeFollowTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mobileHomeFollowMeta": "Régularité, résultats, points à travailler.",
+  "mobileHomeFollowCta": "Voir",
+  "mobileHomeYourChild": "votre enfant",
+  "mobileHomeTutorTag": "Cours particuliers",
+  "mobileHomeTutorTitle": "Un répétiteur près de chez vous",
+  "mobileHomeTutorMeta": "Profils vérifiés, à domicile ou en ligne.",
+  "mobileHomeTutorCta": "Trouver",
+  "mobileHomeSheetTag": "WinAI",
+  "mobileHomeSheetTitle": "Une fiche de révision sur mesure",
+  "mobileHomeSheetMeta": "Sur la matière où votre enfant bloque.",
+  "mobileHomeSheetCta": "Créer",
+  "mobileHomeSheetPrompt": "Prépare une fiche de révision sur la matière où mon enfant a le plus de difficultés.",
+  "mobileHomeSuivi": "Suivi",
+  "mobileHomeMessages": "Messages",
+  "mobileHomeAdvice": "Conseils",
+  "mobileHomeSubscription": "Abonnement",
+  "mobileHomeBuy": "Acheter",
+  "mobileHomeAdviceCount": "Conseils WinAI",
+  "mobileHomeChildrenAvg": "Moyenne des enfants",
+  "mobileHomeCorrectTitle": "{count, plural, =1{{count} copie à corriger} other{{count} copies à corriger}}",
+  "@mobileHomeCorrectTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mobileHomeCorrectMeta": "Vos élèves attendent leur note.",
+  "mobileHomeCorrectCta": "Corriger",
+  "mobileHomePublishTitle": "Partagez un nouveau contenu",
+  "mobileHomePublishMeta": "Vos élèves le retrouvent tout de suite.",
+  "mobileHomePublishCta": "Publier",
+  "mobileHomeTeachTutorTag": "Revenus en plus",
+  "mobileHomeTeachTutorTitle": "Activez le mode répétiteur",
+  "mobileHomeTeachTutorMeta": "Proposez des cours particuliers.",
+  "mobileHomeTeachTutorCta": "Activer",
+  "mobileHomeCoursesTag": "Formations",
+  "mobileHomeCoursesTitle": "Créez une formation complète",
+  "mobileHomeCoursesMeta": "Modules, quiz et examen final.",
+  "mobileHomeCoursesCta": "Ouvrir",
+  "mobileHomeClasses": "Classes",
+  "mobileHomeCorrections": "Corrections",
+  "mobileHomeSessions": "Séances",
+  "mobileHomeRevenue": "Revenus",
+  "mobileHomeShare": "Votre part",
+  "mobileHomeInstTitle": "Élèves à accompagner",
+  "mobileHomeInstMeta": "Régularité ou résultats en baisse, classe par classe.",
+  "mobileHomeInstCta": "Voir",
+  "mobileHomeReportTag": "Rapport",
+  "mobileHomeReportTitle": "Le bilan de l'établissement",
+  "mobileHomeReportMeta": "Un PDF prêt à partager.",
+  "mobileHomeReportCta": "Exporter",
+  "mobileHomePlanTag": "WinAI",
+  "mobileHomePlanTitle": "Un plan d'action pour vos classes",
+  "mobileHomePlanMeta": "Des pistes concrètes, classe par classe.",
+  "mobileHomePlanCta": "Créer",
+  "mobileHomeDirectory": "Annuaire",
+  "mobileHomeAnalytics": "Analyses",
+  "mobileHomeLicense": "Licence",
+  "mobileHomeStatStudy": "Temps d'étude",
+  "mobileHomeStatQuiz": "Quiz cette semaine",
+  "mobileHomeStatStreak": "Série en cours",
+  "mobileHomeStatChildren": "Enfants suivis",
+  "mobileHomeStatCredits": "Crédits disponibles",
+  "mobileHomeStatActive": "Élèves actifs",
+  "mobileHomeThisWeek": "Cette semaine",
+  "mobileHomeDays": "{n} j",
+  "@mobileHomeDays": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "mobileHomeAtRiskMeta": "{n} élèves à suivre de près, classe par classe.",
+  "@mobileHomeAtRiskMeta": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  }
 }

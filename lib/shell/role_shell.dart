@@ -18,6 +18,7 @@ import '../teacher/teacher_tabs.dart';
 import '../institution/institution_tabs.dart';
 import '../widgets/language_selector.dart';
 import '../widgets/winai_floating_widget.dart';
+import 'shell_nav.dart';
 
 class NavItem {
   final String label;
@@ -88,6 +89,17 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
   /// Compteur serveur (toutes pages), partagé avec le profil et l'écran
   /// Notifications via UserService.unreadNotifications.
   Future<void> _loadUnread() => UserService.instance.refreshUnreadCount();
+
+  /// Sens du dernier changement d'onglet : 1 vers la droite, -1 vers la gauche.
+  double _direction = 1;
+
+  void _goTab(int i) {
+    if (i == _index) return;
+    setState(() {
+      _direction = i > _index ? 1 : -1;
+      _index = i;
+    });
+  }
 
   Future<void> _openNotifications() async {
     await Navigator.push(
@@ -163,12 +175,40 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
       body: SafeArea(
         top: false,
         bottom: false,
-        child: WinAIFloatingWidget(role: role, child: pages[safeIndex]),
+        child: ShellNav(
+          goTab: _goTab,
+          child: WinAIFloatingWidget(
+            role: role,
+            // L'onglet ouvert glisse depuis le côté de son bouton dans la
+            // barre du bas (gauche ou droite de l'onglet quitté).
+            child: AnimatedSwitcher(
+              duration: winReducedMotion(context)
+                  ? Duration.zero
+                  : const Duration(milliseconds: 320),
+              switchInCurve: WinCurves.enter,
+              switchOutCurve: WinCurves.exit,
+              transitionBuilder: (child, anim) {
+                final incoming = child.key == ValueKey(safeIndex);
+                final dx = (incoming ? 0.06 : -0.06) * _direction;
+                return FadeTransition(
+                  opacity: anim,
+                  child: SlideTransition(
+                    position: Tween(begin: Offset(dx, 0), end: Offset.zero)
+                        .animate(anim),
+                    child: child,
+                  ),
+                );
+              },
+              child: KeyedSubtree(
+                  key: ValueKey(safeIndex), child: pages[safeIndex]),
+            ),
+          ),
+        ),
       ),
       bottomNavigationBar: _BottomNav(
         tabs: tabs,
         index: safeIndex,
-        onTap: (i) => setState(() => _index = i),
+        onTap: _goTab,
       ),
     );
   }

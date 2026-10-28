@@ -13259,6 +13259,582 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Lien de vérification copié.'**
   String get studentCertLinkCopied;
+
+  /// No description provided for @mobileHomeForYou.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pour toi'**
+  String get mobileHomeForYou;
+
+  /// No description provided for @mobileHomeFilters.
+  ///
+  /// In fr, this message translates to:
+  /// **'Filtres'**
+  String get mobileHomeFilters;
+
+  /// No description provided for @mobileHomeSeeAll.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tout voir'**
+  String get mobileHomeSeeAll;
+
+  /// No description provided for @mobileHomeQuick.
+  ///
+  /// In fr, this message translates to:
+  /// **'Accès rapide'**
+  String get mobileHomeQuick;
+
+  /// No description provided for @mobileHomeAllShortcuts.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tous les raccourcis'**
+  String get mobileHomeAllShortcuts;
+
+  /// No description provided for @mobileHomeStatsDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir le détail'**
+  String get mobileHomeStatsDetail;
+
+  /// No description provided for @mobileHomeStatsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mes statistiques'**
+  String get mobileHomeStatsTitle;
+
+  /// No description provided for @mobileHomeClose.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fermer'**
+  String get mobileHomeClose;
+
+  /// No description provided for @mobileHomeEyebrow.
+  ///
+  /// In fr, this message translates to:
+  /// **'À faire maintenant'**
+  String get mobileHomeEyebrow;
+
+  /// No description provided for @mobileHomeSlide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Carte {n} sur {total}'**
+  String mobileHomeSlide(int n, int total);
+
+  /// No description provided for @mobileHomeSearchPaper.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher une épreuve…'**
+  String get mobileHomeSearchPaper;
+
+  /// No description provided for @mobileHomeSearchStudent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher un élève…'**
+  String get mobileHomeSearchStudent;
+
+  /// No description provided for @mobileHomeStudentTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ta séance du jour'**
+  String get mobileHomeStudentTitle;
+
+  /// No description provided for @mobileHomeStudentMeta.
+  ///
+  /// In fr, this message translates to:
+  /// **'20 minutes sur tes points faibles.'**
+  String get mobileHomeStudentMeta;
+
+  /// No description provided for @mobileHomeStudentCta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commencer'**
+  String get mobileHomeStudentCta;
+
+  /// No description provided for @mobileHomeResumeTag.
+  ///
+  /// In fr, this message translates to:
+  /// **'En cours'**
+  String get mobileHomeResumeTag;
+
+  /// No description provided for @mobileHomeResumeTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Reprends là où tu en étais'**
+  String get mobileHomeResumeTitle;
+
+  /// No description provided for @mobileHomeResumeMeta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tes épreuves et quiz commencés.'**
+  String get mobileHomeResumeMeta;
+
+  /// No description provided for @mobileHomeResumeCta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Reprendre'**
+  String get mobileHomeResumeCta;
+
+  /// No description provided for @mobileHomeCoachTag.
+  ///
+  /// In fr, this message translates to:
+  /// **'Coach d\'examen'**
+  String get mobileHomeCoachTag;
+
+  /// No description provided for @mobileHomeCoachTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ton plan jusqu\'au jour J'**
+  String get mobileHomeCoachTitle;
+
+  /// No description provided for @mobileHomeCoachMeta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ton examen, ta date : on organise tout.'**
+  String get mobileHomeCoachMeta;
+
+  /// No description provided for @mobileHomeCoachCta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créer'**
+  String get mobileHomeCoachCta;
+
+  /// No description provided for @mobileHomePapersTag.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau'**
+  String get mobileHomePapersTag;
+
+  /// No description provided for @mobileHomePapersTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Épreuves et corrigés'**
+  String get mobileHomePapersTitle;
+
+  /// No description provided for @mobileHomePapersMeta.
+  ///
+  /// In fr, this message translates to:
+  /// **'BEPC, Probatoire, Bac, concours.'**
+  String get mobileHomePapersMeta;
+
+  /// No description provided for @mobileHomePapersCta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir'**
+  String get mobileHomePapersCta;
+
+  /// No description provided for @mobileHomeQuiz.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quiz'**
+  String get mobileHomeQuiz;
+
+  /// No description provided for @mobileHomePapers.
+  ///
+  /// In fr, this message translates to:
+  /// **'Épreuves'**
+  String get mobileHomePapers;
+
+  /// No description provided for @mobileHomeRevisions.
+  ///
+  /// In fr, this message translates to:
+  /// **'Révisions'**
+  String get mobileHomeRevisions;
+
+  /// No description provided for @mobileHomeGroups.
+  ///
+  /// In fr, this message translates to:
+  /// **'Groupes'**
+  String get mobileHomeGroups;
+
+  /// No description provided for @mobileHomeLinkTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Liez le compte de votre enfant'**
+  String get mobileHomeLinkTitle;
+
+  /// No description provided for @mobileHomeLinkMeta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous suivez ensuite ses révisions et ses résultats.'**
+  String get mobileHomeLinkMeta;
+
+  /// No description provided for @mobileHomeAddChild.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter'**
+  String get mobileHomeAddChild;
+
+  /// No description provided for @mobileHomeFollowTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Où en est {name} cette semaine'**
+  String mobileHomeFollowTitle(String name);
+
+  /// No description provided for @mobileHomeFollowMeta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Régularité, résultats, points à travailler.'**
+  String get mobileHomeFollowMeta;
+
+  /// No description provided for @mobileHomeFollowCta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir'**
+  String get mobileHomeFollowCta;
+
+  /// No description provided for @mobileHomeYourChild.
+  ///
+  /// In fr, this message translates to:
+  /// **'votre enfant'**
+  String get mobileHomeYourChild;
+
+  /// No description provided for @mobileHomeTutorTag.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cours particuliers'**
+  String get mobileHomeTutorTag;
+
+  /// No description provided for @mobileHomeTutorTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Un répétiteur près de chez vous'**
+  String get mobileHomeTutorTitle;
+
+  /// No description provided for @mobileHomeTutorMeta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Profils vérifiés, à domicile ou en ligne.'**
+  String get mobileHomeTutorMeta;
+
+  /// No description provided for @mobileHomeTutorCta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Trouver'**
+  String get mobileHomeTutorCta;
+
+  /// No description provided for @mobileHomeSheetTag.
+  ///
+  /// In fr, this message translates to:
+  /// **'WinAI'**
+  String get mobileHomeSheetTag;
+
+  /// No description provided for @mobileHomeSheetTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une fiche de révision sur mesure'**
+  String get mobileHomeSheetTitle;
+
+  /// No description provided for @mobileHomeSheetMeta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sur la matière où votre enfant bloque.'**
+  String get mobileHomeSheetMeta;
+
+  /// No description provided for @mobileHomeSheetCta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créer'**
+  String get mobileHomeSheetCta;
+
+  /// No description provided for @mobileHomeSheetPrompt.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prépare une fiche de révision sur la matière où mon enfant a le plus de difficultés.'**
+  String get mobileHomeSheetPrompt;
+
+  /// No description provided for @mobileHomeSuivi.
+  ///
+  /// In fr, this message translates to:
+  /// **'Suivi'**
+  String get mobileHomeSuivi;
+
+  /// No description provided for @mobileHomeMessages.
+  ///
+  /// In fr, this message translates to:
+  /// **'Messages'**
+  String get mobileHomeMessages;
+
+  /// No description provided for @mobileHomeAdvice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Conseils'**
+  String get mobileHomeAdvice;
+
+  /// No description provided for @mobileHomeSubscription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Abonnement'**
+  String get mobileHomeSubscription;
+
+  /// No description provided for @mobileHomeBuy.
+  ///
+  /// In fr, this message translates to:
+  /// **'Acheter'**
+  String get mobileHomeBuy;
+
+  /// No description provided for @mobileHomeAdviceCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'Conseils WinAI'**
+  String get mobileHomeAdviceCount;
+
+  /// No description provided for @mobileHomeChildrenAvg.
+  ///
+  /// In fr, this message translates to:
+  /// **'Moyenne des enfants'**
+  String get mobileHomeChildrenAvg;
+
+  /// No description provided for @mobileHomeCorrectTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{{count} copie à corriger} other{{count} copies à corriger}}'**
+  String mobileHomeCorrectTitle(int count);
+
+  /// No description provided for @mobileHomeCorrectMeta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vos élèves attendent leur note.'**
+  String get mobileHomeCorrectMeta;
+
+  /// No description provided for @mobileHomeCorrectCta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Corriger'**
+  String get mobileHomeCorrectCta;
+
+  /// No description provided for @mobileHomePublishTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Partagez un nouveau contenu'**
+  String get mobileHomePublishTitle;
+
+  /// No description provided for @mobileHomePublishMeta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vos élèves le retrouvent tout de suite.'**
+  String get mobileHomePublishMeta;
+
+  /// No description provided for @mobileHomePublishCta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Publier'**
+  String get mobileHomePublishCta;
+
+  /// No description provided for @mobileHomeTeachTutorTag.
+  ///
+  /// In fr, this message translates to:
+  /// **'Revenus en plus'**
+  String get mobileHomeTeachTutorTag;
+
+  /// No description provided for @mobileHomeTeachTutorTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Activez le mode répétiteur'**
+  String get mobileHomeTeachTutorTitle;
+
+  /// No description provided for @mobileHomeTeachTutorMeta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Proposez des cours particuliers.'**
+  String get mobileHomeTeachTutorMeta;
+
+  /// No description provided for @mobileHomeTeachTutorCta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Activer'**
+  String get mobileHomeTeachTutorCta;
+
+  /// No description provided for @mobileHomeCoursesTag.
+  ///
+  /// In fr, this message translates to:
+  /// **'Formations'**
+  String get mobileHomeCoursesTag;
+
+  /// No description provided for @mobileHomeCoursesTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créez une formation complète'**
+  String get mobileHomeCoursesTitle;
+
+  /// No description provided for @mobileHomeCoursesMeta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modules, quiz et examen final.'**
+  String get mobileHomeCoursesMeta;
+
+  /// No description provided for @mobileHomeCoursesCta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouvrir'**
+  String get mobileHomeCoursesCta;
+
+  /// No description provided for @mobileHomeClasses.
+  ///
+  /// In fr, this message translates to:
+  /// **'Classes'**
+  String get mobileHomeClasses;
+
+  /// No description provided for @mobileHomeCorrections.
+  ///
+  /// In fr, this message translates to:
+  /// **'Corrections'**
+  String get mobileHomeCorrections;
+
+  /// No description provided for @mobileHomeSessions.
+  ///
+  /// In fr, this message translates to:
+  /// **'Séances'**
+  String get mobileHomeSessions;
+
+  /// No description provided for @mobileHomeRevenue.
+  ///
+  /// In fr, this message translates to:
+  /// **'Revenus'**
+  String get mobileHomeRevenue;
+
+  /// No description provided for @mobileHomeShare.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre part'**
+  String get mobileHomeShare;
+
+  /// No description provided for @mobileHomeInstTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Élèves à accompagner'**
+  String get mobileHomeInstTitle;
+
+  /// No description provided for @mobileHomeInstMeta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Régularité ou résultats en baisse, classe par classe.'**
+  String get mobileHomeInstMeta;
+
+  /// No description provided for @mobileHomeInstCta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir'**
+  String get mobileHomeInstCta;
+
+  /// No description provided for @mobileHomeReportTag.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rapport'**
+  String get mobileHomeReportTag;
+
+  /// No description provided for @mobileHomeReportTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le bilan de l\'établissement'**
+  String get mobileHomeReportTitle;
+
+  /// No description provided for @mobileHomeReportMeta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Un PDF prêt à partager.'**
+  String get mobileHomeReportMeta;
+
+  /// No description provided for @mobileHomeReportCta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Exporter'**
+  String get mobileHomeReportCta;
+
+  /// No description provided for @mobileHomePlanTag.
+  ///
+  /// In fr, this message translates to:
+  /// **'WinAI'**
+  String get mobileHomePlanTag;
+
+  /// No description provided for @mobileHomePlanTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Un plan d\'action pour vos classes'**
+  String get mobileHomePlanTitle;
+
+  /// No description provided for @mobileHomePlanMeta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Des pistes concrètes, classe par classe.'**
+  String get mobileHomePlanMeta;
+
+  /// No description provided for @mobileHomePlanCta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créer'**
+  String get mobileHomePlanCta;
+
+  /// No description provided for @mobileHomeDirectory.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annuaire'**
+  String get mobileHomeDirectory;
+
+  /// No description provided for @mobileHomeAnalytics.
+  ///
+  /// In fr, this message translates to:
+  /// **'Analyses'**
+  String get mobileHomeAnalytics;
+
+  /// No description provided for @mobileHomeLicense.
+  ///
+  /// In fr, this message translates to:
+  /// **'Licence'**
+  String get mobileHomeLicense;
+
+  /// No description provided for @mobileHomeStatStudy.
+  ///
+  /// In fr, this message translates to:
+  /// **'Temps d\'étude'**
+  String get mobileHomeStatStudy;
+
+  /// No description provided for @mobileHomeStatQuiz.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quiz cette semaine'**
+  String get mobileHomeStatQuiz;
+
+  /// No description provided for @mobileHomeStatStreak.
+  ///
+  /// In fr, this message translates to:
+  /// **'Série en cours'**
+  String get mobileHomeStatStreak;
+
+  /// No description provided for @mobileHomeStatChildren.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enfants suivis'**
+  String get mobileHomeStatChildren;
+
+  /// No description provided for @mobileHomeStatCredits.
+  ///
+  /// In fr, this message translates to:
+  /// **'Crédits disponibles'**
+  String get mobileHomeStatCredits;
+
+  /// No description provided for @mobileHomeStatActive.
+  ///
+  /// In fr, this message translates to:
+  /// **'Élèves actifs'**
+  String get mobileHomeStatActive;
+
+  /// No description provided for @mobileHomeThisWeek.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette semaine'**
+  String get mobileHomeThisWeek;
+
+  /// No description provided for @mobileHomeDays.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} j'**
+  String mobileHomeDays(int n);
+
+  /// No description provided for @mobileHomeAtRiskMeta.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} élèves à suivre de près, classe par classe.'**
+  String mobileHomeAtRiskMeta(int n);
 }
 
 class _AppLocalizationsDelegate

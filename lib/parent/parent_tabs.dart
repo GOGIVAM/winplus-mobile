@@ -32,6 +32,10 @@ import 'covered_children_screen.dart';
 import '../shared/tutoring_for_students_screen.dart';
 import '../shared/legal_screen.dart';
 import '../widgets/knowledge_base_toggle.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../shell/shell_nav.dart';
+import '../student/search_screen.dart';
+import '../widgets/mobile_home.dart';
 
 /// ===================== ACCUEIL PARENT =====================
 
@@ -45,7 +49,6 @@ class _ParentDashTabState extends State<ParentDashTab> {
   List<ApiChild>? _children;
   List<ApiPersistedAlert> _alerts = [];
   ApiActiveSubscription? _sub;
-  ApiParentProfile? _profile;
   // Solde réel du portefeuille (GET /parent/credits) ; null sans abonnement.
   ApiParentWalletSummary? _wallet;
   bool _walletLoaded = false;
@@ -83,7 +86,6 @@ class _ParentDashTabState extends State<ParentDashTab> {
       final alerts = await ParentService.instance
           .getAllPersistedAlerts(kids.map((c) => c.id).toList());
       final sub = await SubscriptionService.instance.getCurrent();
-      final profile = await ParentService.instance.getProfile();
       final wallet = await ParentService.instance.getWalletSummary();
       final events = await ParentService.instance.getUpcomingEvents();
       if (mounted)
@@ -91,7 +93,6 @@ class _ParentDashTabState extends State<ParentDashTab> {
           _children = kids;
           _alerts = alerts;
           _sub = sub;
-          _profile = profile;
           _wallet = wallet;
           _walletLoaded = true;
           _events = events;
@@ -114,9 +115,19 @@ class _ParentDashTabState extends State<ParentDashTab> {
     }
   }
 
+  void _push(Widget screen) =>
+      Navigator.push(context, WinPageRoute(builder: (_) => screen));
+
+  Future<void> _addChild() async {
+    await Navigator.push(
+        context, WinPageRoute(builder: (_) => const AddChildScreen()));
+    _load();
+  }
+
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
+    final l = context.l10n;
     final kids = _children ?? [];
     // Module 24 (lot 8) : les enfants suivis étaient déjà chargés depuis le
     // serveur (_children) mais l'affichage retombait sur
@@ -141,235 +152,195 @@ class _ParentDashTabState extends State<ParentDashTab> {
           _sub!.expiresAt!.isAfter(DateTime.now()))
         UpcomingEvent(
             type: 'renewal',
-            label: context.l10n.parentDashRenewalEvent(_sub!.planName),
+            label: l.parentDashRenewalEvent(_sub!.planName),
             date: _sub!.expiresAt!),
       ..._events.map((e) =>
           UpcomingEvent(type: e.type, label: e.title, date: e.startDate!)),
     ];
 
-    final now = DateTime.now();
-    final hour = now.hour;
-    final greeting =
-        hour < 12 ? context.l10n.studentHomeGoodMorning : (hour < 18 ? context.l10n.studentHomeGoodAfternoon : context.l10n.studentHomeGoodEvening);
-    final firstName = (_profile?.name ?? '').trim().split(' ').first;
-    final dateLabel =
-        '${WinFormat.weekdayCap(now.weekday)} ${WinFormat.date(now)}';
-    final hasPlan = _sub != null && _sub!.hasPlan;
-    final planLabel = hasPlan ? context.l10n.parentPlanName(_sub!.planName) : context.l10n.parentNoSubscription;
-
     // Crédits : solde réel du portefeuille (GET /parent/credits : dotation du
     // plan restante + recharges). Null sans abonnement payant actif.
     final wallet = _wallet;
     final creditsAvail = wallet?.creditsLeft.round() ?? 0;
+    final scores = _childScores.values.toList();
+    final avg = scores.isEmpty
+        ? null
+        : (scores.reduce((a, b) => a + b) / scores.length).round();
+    final firstChild = kids.isEmpty ? null : kids.first;
 
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
-      children: [
-        if (_offline && _children != null)
+    return MobileHomeView(
+      onRefresh: _load,
+      top: [
+        if (_offline && _children != null) ...[
           OfflineBanner(
               updatedAt: LocalCacheService.lastUpdatedAt(
                   LocalCacheService.parentDashboard, 'children')),
-
-        // ── Hero gradient ──────────────────────────────────────────
-        Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(WinRadii.xl),
-              gradient: LinearGradient(
-                  colors: [s.heroFrom, s.heroTo],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight)),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(dateLabel,
-                style: WinType.labelS(WinColors.ink300)
-                    .copyWith(letterSpacing: 0.5)),
-            const SizedBox(height: 6),
-            Text(firstName.isEmpty ? greeting : '$greeting $firstName',
-                style: WinType.archivo(size: 20, color: WinColors.cream50)),
-            const SizedBox(height: 6),
-            Row(children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
-                    color: WinColors.teal400.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(WinRadii.full)),
-                child: Text(planLabel,
-                    style: WinType.manrope(
-                        size: 11,
-                        weight: FontWeight.w600,
-                        color: WinColors.teal300)),
-              ),
-            ]),
-            const SizedBox(height: 18),
-            Row(children: [
-              Expanded(
-                  child: _PHeroStat(
-                      '${tracked.length}', context.l10n.parentDashChildrenFollowed, context.l10n.tutoringTotal)),
-              const SizedBox(width: 10),
-              Expanded(
-                  child: _PHeroStat(
-                      wallet == null ? '—' : '${fmtXaf(creditsAvail)} XAF',
-                      context.l10n.parentDashCreditsAvail,
-                      context.l10n.parentDashBalance)),
-            ]),
-          ]),
-        ),
-
-        // ── Carte crédits ─────────────────────────────────────────
-        const SizedBox(height: 16),
-        WinCard(
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Row(children: [
-              const Icon(Icons.account_balance_wallet_outlined,
-                  size: 20, color: WinColors.teal500),
-              const SizedBox(width: 8),
-              Text(context.l10n.parentDashCreditsTitle, style: WinType.titleM(s.onStrong)),
-            ]),
-            const SizedBox(height: 12),
-            if (!_walletLoaded)
-              Text(context.l10n.parentDashLoadingBalance, style: WinType.labelS(s.onMuted))
-            else if (wallet == null)
-              Text(
-                  context.l10n.parentDashNoCredits,
-                  style: WinType.bodyS(s.onMuted))
-            else ...[
-              Text('${fmtXaf(creditsAvail)} XAF',
-                  style: WinType.manrope(
-                      size: 13,
-                      weight: FontWeight.w700,
-                      color: WinColors.teal600)),
-              const SizedBox(height: 4),
-              Text(
-                  context.l10n.parentDashCreditsDetail(fmtXaf(wallet.allocationRemaining.round()), fmtXaf(wallet.permanent.round())),
-                  style: WinType.labelS(s.onMuted)),
-            ],
-            if (_sub != null && _sub!.hasPlan && _sub!.expiresAt != null) ...[
-              const SizedBox(height: 6),
-              Text(
-                context.l10n.parentDashPeriodEndIn(_sub!.planName, _sub!.expiresAt!.difference(DateTime.now()).inDays),
-                style: WinType.labelS(s.onMuted),
-              ),
-            ],
-            const SizedBox(height: 12),
-            WinButton(context.l10n.parentDashSeeSubscription,
-                variant: WinButtonVariant.ghost,
-                small: true,
-                onTap: () => Navigator.push(
-                    context,
-                    WinPageRoute(
-                        builder: (_) => const SubscriptionStatusScreen()))),
-          ]),
-        ),
-
-        // ── Alertes WinAI ─────────────────────────────────────────
-        const SizedBox(height: 20),
-        GestureDetector(
-          onTap: () => Navigator.push(
-              context, WinPageRoute(builder: (_) => const WinAIAlertsScreen())),
-          child: Row(children: [
-            const WinAIOrb(size: 20),
-            const SizedBox(width: 10),
-            Text(context.l10n.parentDashAlertsAdvice,
-                style: WinType.archivo(size: 16, color: s.onStrong)),
-            const Spacer(),
-            const Icon(Icons.chevron_right, size: 18, color: WinColors.ink300),
-          ]),
-        ),
-        if (_alerts.isNotEmpty) ...[
           const SizedBox(height: 12),
-          WinAlert(_alerts.first.content,
-              type: BadgeColor.warn, icon: Icons.warning_amber_rounded),
         ],
-
-        // ── Mes enfants (cards horizontales scrollables) ──────────
-        const SizedBox(height: 20),
-        Row(children: [
-          Text(context.l10n.parentSubMyChildren,
-              style: WinType.archivo(size: 18, color: s.onStrong)),
-          const Spacer(),
-          if (tracked.isNotEmpty)
-            GestureDetector(
-              onTap: () {},
-              child: Text(context.l10n.commonSeeAll, style: WinType.labelM(s.primary)),
-            ),
-        ]),
-        const SizedBox(height: 12),
-        if (_children == null)
-          const SizedBox(
-              height: 180, child: Center(child: CircularProgressIndicator()))
-        else if (tracked.isEmpty)
-          WinCard(
-            child: Text(
-                context.l10n.parentDashNoChild,
-                style: WinType.bodyS(s.onMuted)),
-          )
-        else
-          SizedBox(
-            height: 200,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              itemCount: tracked.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 10),
-              itemBuilder: (ctx, i) => _TrackedChildCard(child: tracked[i]),
-            ),
-          ),
-
-        // ── Évènements à venir (réels uniquement) ─────────────────
-        if (events.isNotEmpty) ...[
-          const SizedBox(height: 24),
-          Text(context.l10n.parentDashUpcomingEvents,
-              style: WinType.archivo(size: 18, color: s.onStrong)),
-          const SizedBox(height: 12),
-          ...events.map((e) => Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: _EventTile(event: e),
-              )),
-        ],
-
-        // ── Acheter pour un enfant ────────────────────────────────
-        const SizedBox(height: 8),
-        WinButton(
-          context.l10n.parentBuyContentForChild,
-          block: true,
-          icon: Icons.shopping_bag_outlined,
-          onTap: kids.isEmpty
-              ? null
-              : () => Navigator.push(
-                  context,
-                  WinPageRoute(
-                      builder: (_) => BuyForChildScreen(children: kids))),
-        ),
       ],
-    );
-  }
-}
-
-class _PHeroStat extends StatelessWidget {
-  final String value, title, sub;
-  const _PHeroStat(this.value, this.title, this.sub);
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(WinRadii.md)),
-      child: Row(children: [
-        Text(value, style: WinType.archivo(size: 24, color: WinColors.teal400)),
-        const SizedBox(width: 10),
-        Expanded(
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-              Text(title,
-                  style: WinType.labelS(WinColors.cream100)
-                      .copyWith(fontWeight: FontWeight.w600)),
-              Text(sub, style: WinType.labelS(WinColors.ink300)),
-            ])),
+      search: MobileSearchBar(
+        hint: l.mobileHomeSearchPaper,
+        onSubmit: (q) => _push(SearchScreen(initialQuery: q)),
+        onFilters: () => ShellNav.go(context, 2),
+      ),
+      forYou: MobileForYou(slides: [
+        if (firstChild == null)
+          MobileSlide(
+              tag: l.mobileHomeEyebrow,
+              title: l.mobileHomeLinkTitle,
+              meta: l.mobileHomeLinkMeta,
+              cta: l.mobileHomeAddChild,
+              onCta: _addChild,
+              image: 'assets/home/parent-enfant-etude.jpg')
+        else
+          MobileSlide(
+              tag: l.mobileHomeEyebrow,
+              title: l.mobileHomeFollowTitle(firstChild.firstName.isNotEmpty
+                  ? firstChild.firstName
+                  : l.mobileHomeYourChild),
+              meta: l.mobileHomeFollowMeta,
+              cta: l.mobileHomeFollowCta,
+              onCta: () => _push(ChildActivityScreen(child: firstChild)),
+              image: 'assets/home/parent-enfant-etude.jpg'),
+        MobileSlide(
+            tag: l.mobileHomeTutorTag,
+            title: l.mobileHomeTutorTitle,
+            meta: l.mobileHomeTutorMeta,
+            cta: l.mobileHomeTutorCta,
+            onCta: () => _push(const TutoringForStudentsScreen()),
+            image: 'assets/home/hero-repetiteur-eleve.webp'),
+        MobileSlide(
+            tag: l.mobileHomeSheetTag,
+            title: l.mobileHomeSheetTitle,
+            meta: l.mobileHomeSheetMeta,
+            cta: l.mobileHomeSheetCta,
+            onCta: () => _push(
+                ParentWinAITab(initialMessage: l.mobileHomeSheetPrompt)),
+            image: 'assets/home/cahier.webp'),
       ]),
+      quick: MobileQuickAccess(
+        title: l.mobileHomeQuick,
+        shortcuts: [
+          MobileShortcut(
+              label: l.mobileHomeSuivi,
+              icon: PhosphorIconsDuotone.chartLineUp,
+              onTap: () => ShellNav.go(context, 1)),
+          MobileShortcut(
+              label: l.mobileHomeMessages,
+              icon: PhosphorIconsDuotone.chatCircleDots,
+              onTap: () => ShellNav.go(context, 3)),
+          MobileShortcut(
+              label: l.mobileHomeAdvice,
+              icon: PhosphorIconsDuotone.lightbulb,
+              count: _alerts.length,
+              onTap: () => _push(const WinAIAlertsScreen())),
+          MobileShortcut(
+              label: l.mobileHomeSubscription,
+              icon: PhosphorIconsDuotone.wallet,
+              onTap: () => _push(const SubscriptionStatusScreen())),
+          MobileShortcut(
+              label: l.mobileHomeBuy,
+              icon: PhosphorIconsDuotone.shoppingBag,
+              onTap: kids.isEmpty
+                  ? _addChild
+                  : () => _push(BuyForChildScreen(children: kids))),
+        ],
+        more: [
+          MobileShortcut(
+              label: l.parentAddChildTitle,
+              icon: PhosphorIconsDuotone.userPlus,
+              onTap: _addChild),
+          MobileShortcut(
+              label: l.shellTabResources,
+              icon: PhosphorIconsDuotone.books,
+              onTap: () => ShellNav.go(context, 2)),
+          MobileShortcut(
+              label: l.parentProfileCovered,
+              icon: PhosphorIconsDuotone.shieldCheck,
+              onTap: () => _push(const CoveredChildrenScreen())),
+          MobileShortcut(
+              label: l.shellTabProfile,
+              icon: PhosphorIconsDuotone.userCircle,
+              onTap: () => ShellNav.go(context, 4)),
+        ],
+      ),
+      stats: MobileStatsStrip(items: [
+        MobileStat(
+            label: l.mobileHomeStatChildren,
+            value: _children == null ? '—' : '${tracked.length}',
+            tone: MobileStatTone.teal,
+            onTap: () => ShellNav.go(context, 1)),
+        MobileStat(
+            label: l.mobileHomeStatCredits,
+            value: wallet == null ? '—' : '${fmtXaf(creditsAvail)} XAF',
+            caption: wallet == null
+                ? (_walletLoaded ? l.parentDashNoCredits : null)
+                : l.parentDashCreditsDetail(
+                    fmtXaf(wallet.allocationRemaining.round()),
+                    fmtXaf(wallet.permanent.round())),
+            tone: MobileStatTone.ink,
+            onTap: () => _push(const SubscriptionStatusScreen())),
+        MobileStat(
+            label: l.mobileHomeAdviceCount,
+            value: '${_alerts.length}',
+            tone: MobileStatTone.gold,
+            onTap: () => _push(const WinAIAlertsScreen())),
+        MobileStat(
+            label: l.mobileHomeChildrenAvg,
+            value: avg == null ? '—' : '$avg%',
+            onTap: () => ShellNav.go(context, 1)),
+      ]),
+      below: [
+        // Dernier conseil WinAI, en clair (le compte est dans l'accès rapide).
+        if (_alerts.isNotEmpty)
+          WinPressable(
+            key: const ValueKey('alert'),
+            onTap: () => _push(const WinAIAlertsScreen()),
+            borderRadius: BorderRadius.circular(WinRadii.sm),
+            child: WinAlert(_alerts.first.content,
+                type: BadgeColor.warn, icon: Icons.warning_amber_rounded),
+          ),
+        // Mes enfants (cartes horizontales)
+        MobileSection(
+          key: const ValueKey('children'),
+          title: l.parentSubMyChildren,
+          actionLabel: tracked.isNotEmpty ? l.commonSeeAll : null,
+          onAction: () => ShellNav.go(context, 1),
+          child: _children == null
+              ? const SizedBox(
+                  height: 180, child: Center(child: CircularProgressIndicator()))
+              : tracked.isEmpty
+                  ? WinCard(
+                      child: Text(l.parentDashNoChild,
+                          style: WinType.bodyS(s.onMuted)))
+                  : SizedBox(
+                      height: 200,
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        clipBehavior: Clip.none,
+                        itemCount: tracked.length,
+                        separatorBuilder: (_, __) => const SizedBox(width: 10),
+                        itemBuilder: (ctx, i) => WinEnter(
+                            delay: Duration(milliseconds: 60 * i.clamp(0, 5)),
+                            from: const Offset(24, 0),
+                            child: _TrackedChildCard(child: tracked[i])),
+                      ),
+                    ),
+        ),
+        // Évènements à venir (réels uniquement)
+        if (events.isNotEmpty)
+          MobileSection(
+            key: const ValueKey('events'),
+            title: l.parentDashUpcomingEvents,
+            child: Column(children: [
+              for (final e in events)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: _EventTile(event: e),
+                ),
+            ]),
+          ),
+      ],
     );
   }
 }
