@@ -29,6 +29,9 @@ import 'course_catalog_screen.dart';
 import 'tutors/tutor_search_screen.dart';
 import 'tutors/my_tutor_bookings_screen.dart';
 import '../widgets/knowledge_base_toggle.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/mobile_home.dart';
+import '../widgets/win_motion_widgets.dart';
 
 export 'student_home.dart' show StudentHomeTab;
 
@@ -106,147 +109,279 @@ class _StudentCatalogTabState extends State<StudentCatalogTab> {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
+    final l = context.l10n;
     final items = _filtered;
+    final loaded = _allItems != null;
 
-    return Column(children: [
-      Padding(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-        child: Row(children: [
-          Text(context.l10n.shellTabCatalog,
-              style: WinType.archivo(size: 22, color: s.onStrong)),
-          const Spacer(),
-          if (_allItems != null)
-            IconButton(
-              icon: Icon(Icons.refresh_outlined, size: 20, color: s.onMuted),
-              onPressed: _load,
-            ),
-          IconButton(
-            icon:
-                Icon(Icons.shopping_cart_outlined, size: 20, color: s.onMuted),
-            onPressed: () => Navigator.push(
-                context, WinPageRoute(builder: (_) => const CartScreen())),
+    // Pas de titre « Catalogue » dans la page : la barre du haut le porte
+    // déjà. La page s'ouvre sur la recherche, comme l'accueil.
+    return RefreshIndicator(
+      color: WinColors.teal600,
+      onRefresh: _load,
+      child: CustomScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+            sliver: SliverList.list(children: [
+              MobileSearchBar(
+                hint: l.mobileHomeSearchPaper,
+                onSubmit: (q) => Navigator.push(context,
+                    WinPageRoute(builder: (_) => SearchScreen(initialQuery: q))),
+                onFilters: () => Navigator.push(context,
+                    WinPageRoute(builder: (_) => const SearchScreen())),
+              ),
+              const SizedBox(height: 18),
+              // Formations et répétiteurs : deux cartes photo côte à côte.
+              Row(children: [
+                Expanded(
+                  child: WinEnter(
+                    delay: const Duration(milliseconds: 80),
+                    from: const Offset(0, 18),
+                    child: _FeatureCard(
+                      image: 'assets/home/hero-bibliotheque.webp',
+                      icon: PhosphorIconsDuotone.graduationCap,
+                      title: l.studentTabsStructuredCourses,
+                      sub: l.studentTabsStructuredCoursesSub,
+                      onTap: () => Navigator.push(
+                          context,
+                          WinPageRoute(
+                              builder: (_) => const CourseCatalogScreen())),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: WinEnter(
+                    delay: const Duration(milliseconds: 160),
+                    from: const Offset(0, 18),
+                    child: _FeatureCard(
+                      image: 'assets/home/hero-repetiteur-eleve.webp',
+                      icon: PhosphorIconsDuotone.chalkboardTeacher,
+                      title: l.studentTabsFindTutor,
+                      sub: l.studentTabsFindTutorSub,
+                      onTap: () => Navigator.push(
+                          context,
+                          WinPageRoute(
+                              builder: (_) => const TutorSearchScreen())),
+                    ),
+                  ),
+                ),
+              ]),
+              const SizedBox(height: 18),
+            ]),
           ),
-        ]),
+          // Types de contenu : pastilles qui défilent de côté.
+          SliverToBoxAdapter(
+            child: SizedBox(
+              height: 40,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                itemCount: _types.length,
+                separatorBuilder: (_, __) => const SizedBox(width: 8),
+                itemBuilder: (_, i) => _TypePill(
+                  label: _typeLabel(_types[i]),
+                  active: _type == _types[i],
+                  onTap: () => setState(() => _type = _types[i]),
+                ),
+              ),
+            ),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(16, 18, 16, 12),
+            sliver: SliverToBoxAdapter(
+              child: Row(children: [
+                Expanded(
+                  child: Text(
+                      loaded && !_error ? l.mobileCatalogCount(items.length) : '',
+                      style: WinType.archivo(size: 19, color: s.onStrong)),
+                ),
+                WinPressable(
+                  onTap: () => Navigator.push(context,
+                      WinPageRoute(builder: (_) => const CartScreen())),
+                  borderRadius: BorderRadius.circular(99),
+                  child: Container(
+                    height: 36,
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      color: MobileHomeColors.tint,
+                      borderRadius: BorderRadius.circular(99),
+                    ),
+                    child: Row(mainAxisSize: MainAxisSize.min, children: [
+                      const WinDuoIcon(PhosphorIconsDuotone.shoppingCart,
+                          size: 19),
+                      const SizedBox(width: 6),
+                      Text(l.mobileCatalogCart,
+                          style: WinType.manrope(
+                              size: 13,
+                              weight: FontWeight.w700,
+                              color: MobileHomeColors.abyss)),
+                    ]),
+                  ),
+                ),
+              ]),
+            ),
+          ),
+          if (!loaded)
+            const SliverFillRemaining(
+                hasScrollBody: false,
+                child: Center(child: CircularProgressIndicator()))
+          else if (_error)
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: Center(
+                  child: Column(mainAxisSize: MainAxisSize.min, children: [
+                Icon(Icons.wifi_off_outlined, size: 48, color: s.onFaint),
+                const SizedBox(height: 12),
+                Text(l.studentTabsCatalogLoadError,
+                    style: WinType.bodyM(s.onMuted)),
+                const SizedBox(height: 12),
+                IntrinsicWidth(
+                    child: WinButton(l.commonRetry, onTap: _load)),
+              ])),
+            )
+          else if (items.isEmpty)
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: Center(
+                  child: Text(l.studentTabsNoContent,
+                      style: WinType.bodyM(s.onMuted))),
+            )
+          else
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
+              sliver: SliverGrid.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 14,
+                    crossAxisSpacing: 12,
+                    childAspectRatio: 0.70),
+                itemCount: items.length,
+                itemBuilder: (_, i) => WinStaggerFade(
+                    key: ValueKey('$_type-${items[i].id}'),
+                    index: i,
+                    child: ContentCard(content: items[i])),
+              ),
+            ),
+        ],
       ),
-      // Bannière formations
-      GestureDetector(
-        onTap: () => Navigator.push(
-            context, WinPageRoute(builder: (_) => const CourseCatalogScreen())),
-        child: Container(
-          margin: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [Color(0xFF0D9488), Color(0xFF0F766E)],
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
+    );
+  }
+}
+
+/// Carte photo d'accès (formations, répétiteurs) en tête du catalogue.
+class _FeatureCard extends StatelessWidget {
+  final String image;
+  final IconData icon;
+  final String title, sub;
+  final VoidCallback onTap;
+  const _FeatureCard(
+      {required this.image,
+      required this.icon,
+      required this.title,
+      required this.sub,
+      required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return WinPressable(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      splashColor: Colors.white24,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: SizedBox(
+          height: 148,
+          child: Stack(fit: StackFit.expand, children: [
+            Image.asset(image,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) =>
+                    const ColoredBox(color: MobileHomeColors.abyss)),
+            const DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Color(0x26021510), Color(0xF2021510)],
+                ),
+              ),
             ),
-            borderRadius: BorderRadius.circular(WinRadii.sm),
-          ),
-          child: Row(children: [
-            const Icon(Icons.play_lesson_outlined,
-                color: Colors.white, size: 22),
-            const SizedBox(width: 12),
-            Expanded(
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                  Text(context.l10n.studentTabsStructuredCourses,
-                      style: WinType.titleM(Colors.white)),
-                  Text(context.l10n.studentTabsStructuredCoursesSub,
-                      style: WinType.labelS(Colors.white70)),
-                ])),
-            const Icon(Icons.arrow_forward_ios,
-                color: Colors.white60, size: 14),
+            Positioned(
+              top: 10,
+              left: 10,
+              child: Container(
+                width: 34,
+                height: 34,
+                decoration: const BoxDecoration(
+                    color: MobileHomeColors.tint, shape: BoxShape.circle),
+                alignment: Alignment.center,
+                child: WinDuoIcon(icon, size: 20),
+              ),
+            ),
+            Positioned(
+              left: 12,
+              right: 12,
+              bottom: 12,
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(title,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: WinType.archivo(
+                            size: 15, color: Colors.white, height: 1.15)),
+                    const SizedBox(height: 3),
+                    Text(sub,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: WinType.manrope(
+                            size: 11,
+                            height: 1.3,
+                            color: Colors.white.withValues(alpha: .8))),
+                  ]),
+            ),
           ]),
         ),
       ),
-      // Bannière répétiteurs (Mode Répétiteur  professeur_complete.md)
-      GestureDetector(
-        onTap: () => Navigator.push(
-            context, WinPageRoute(builder: (_) => const TutorSearchScreen())),
-        child: Container(
-          margin: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [Color(0xFF2563EB), Color(0xFF1D4ED8)],
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-            ),
-            borderRadius: BorderRadius.circular(WinRadii.sm),
-          ),
-          child: Row(children: [
-            const Icon(Icons.person_search_outlined,
-                color: Colors.white, size: 22),
-            const SizedBox(width: 12),
-            Expanded(
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                  Text(context.l10n.studentTabsFindTutor,
-                      style: WinType.titleM(Colors.white)),
-                  Text(context.l10n.studentTabsFindTutorSub,
-                      style: WinType.labelS(Colors.white70)),
-                ])),
-            const Icon(Icons.arrow_forward_ios,
-                color: Colors.white60, size: 14),
-          ]),
-        ),
-      ),
-      Padding(
+    );
+  }
+}
+
+/// Pastille de type de contenu : vert presque noir quand elle est choisie.
+class _TypePill extends StatelessWidget {
+  final String label;
+  final bool active;
+  final VoidCallback onTap;
+  const _TypePill(
+      {required this.label, required this.active, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final s = WinTheme.of(context);
+    return WinPressable(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(99),
+      child: AnimatedContainer(
+        duration: winReducedMotion(context) ? Duration.zero : WinDurations.base,
+        curve: WinCurves.standard,
+        height: 40,
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: GestureDetector(
-          onTap: () => Navigator.push(
-              context, WinPageRoute(builder: (_) => const SearchScreen())),
-          child:
-              WinTextField(icon: Icons.search, hint: context.l10n.studentTabsSearchHint),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: active ? MobileHomeColors.abyss : s.surface,
+          borderRadius: BorderRadius.circular(99),
+          border: Border.all(
+              color: active ? MobileHomeColors.abyss : s.outline),
         ),
+        child: Text(label,
+            style: WinType.manrope(
+                size: 13.5,
+                weight: FontWeight.w600,
+                color: active ? Colors.white : s.onSurface)),
       ),
-      const SizedBox(height: 8),
-      SizedBox(
-        height: 36,
-        child: ListView.separated(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          itemCount: _types.length,
-          separatorBuilder: (_, __) => const SizedBox(width: 8),
-          itemBuilder: (_, i) => WinChip(_typeLabel(_types[i]),
-              active: _type == _types[i],
-              onTap: () => setState(() => _type = _types[i])),
-        ),
-      ),
-      const SizedBox(height: 8),
-      Expanded(
-        child: _allItems == null
-            ? const Center(child: CircularProgressIndicator())
-            : _error
-                ? Center(
-                    child: Column(mainAxisSize: MainAxisSize.min, children: [
-                    Icon(Icons.wifi_off_outlined, size: 48, color: s.onFaint),
-                    const SizedBox(height: 12),
-                    Text(context.l10n.studentTabsCatalogLoadError,
-                        style: WinType.bodyM(s.onMuted)),
-                    const SizedBox(height: 12),
-                    WinButton(context.l10n.commonRetry, onTap: _load),
-                  ]))
-                : items.isEmpty
-                    ? Center(
-                        child: Text(context.l10n.studentTabsNoContent,
-                            style: WinType.bodyM(s.onMuted)))
-                    : GridView.builder(
-                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                mainAxisSpacing: 12,
-                                crossAxisSpacing: 12,
-                                childAspectRatio: 0.72),
-                        itemCount: items.length,
-                        itemBuilder: (_, i) => ContentCard(content: items[i]),
-                      ),
-      ),
-    ]);
+    );
   }
 }
 
@@ -272,17 +407,10 @@ class _StudentSpaceTabState extends State<StudentSpaceTab> {
 
   @override
   Widget build(BuildContext context) {
-    final s = WinTheme.of(context);
     final avg = _stats != null ? '${_stats!.averageScore.round()}%' : '—';
     final week =
         _stats != null ? '${_stats!.weeklyStudyHoursTotal.round()}h' : '—';
     return Column(children: [
-      Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-          child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(context.l10n.shellTabMySpace,
-                  style: WinType.archivo(size: 22, color: s.onStrong)))),
       Expanded(
         child: ListView(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
@@ -378,7 +506,7 @@ class _StudentSpaceTabState extends State<StudentSpaceTab> {
               // point d'entrée équivalent à StudySessionLauncher côté web.
               _QuickLink(
                   context.l10n.studentTabsGuidedSession,
-                  Icons.auto_awesome_outlined,
+                  Icons.play_circle_outline,
                   WinColors.teal500,
                   () => Navigator.push(
                       context,
@@ -467,7 +595,7 @@ class _QuickLink extends StatelessWidget {
       onTap: onTap,
       padding: const EdgeInsets.all(14),
       child: Row(children: [
-        Icon(icon, size: 20, color: color),
+        winIcon(icon, size: 20, color: color),
         const SizedBox(width: 10),
         Expanded(child: Text(label, style: WinType.titleM(s.onStrong))),
         Icon(Icons.chevron_right, size: 18, color: s.onFaint),
@@ -486,7 +614,7 @@ class _MiniStat extends StatelessWidget {
     return WinCard(
         padding: const EdgeInsets.all(14),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Icon(icon, size: 20, color: s.primary),
+          winIcon(icon, size: 20, color: s.primary),
           const SizedBox(height: 8),
           Text(value, style: WinType.archivo(size: 22, color: s.onStrong)),
           Text(label, style: WinType.labelM(s.onMuted)),
@@ -691,8 +819,7 @@ class _StudentWinAITabState extends State<StudentWinAITab> {
                                   .withValues(alpha: 0.3)),
                         ),
                         child: Row(mainAxisSize: MainAxisSize.min, children: [
-                          const Icon(Icons.psychology_rounded,
-                              size: 15, color: Color(0xFF8B5CF6)),
+                          WinAIIcon(size: 18),
                           const SizedBox(width: 8),
                           Text(context.l10n.commonWinaiMemory,
                               style: WinType.manrope(
@@ -840,7 +967,7 @@ class _AttachOption extends StatelessWidget {
             borderRadius: BorderRadius.circular(WinRadii.lg),
             border: Border.all(color: color.withValues(alpha: 0.3))),
         child: Row(children: [
-          Icon(icon, size: 22, color: color),
+          winIcon(icon, size: 22, color: color),
           const SizedBox(width: 14),
           Text(label,
               style: WinType.bodyM(s.onStrong)

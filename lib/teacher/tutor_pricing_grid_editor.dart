@@ -141,7 +141,7 @@ class _TutorPricingGridEditorState extends State<TutorPricingGridEditor> {
       WinButton(_loading ? context.l10n.commonWinaiThinking : context.l10n.teacherPricingSuggest,
           variant: WinButtonVariant.outline,
           small: true,
-          icon: Icons.auto_awesome,
+          icon: winAIIconData,
           onTap: _loading ? null : _suggest),
       if (_suggestion != null) ...[
         const SizedBox(height: 10),

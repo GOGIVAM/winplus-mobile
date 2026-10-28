@@ -17,6 +17,8 @@ import 'pending_goals_panel.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../shell/shell_nav.dart';
 import '../widgets/mobile_home.dart';
+import '../shared/subscription/pricing_screen.dart';
+import '../shared/subscription/subscription_notifier.dart';
 import 'achievements_screen.dart';
 import 'certificates_screen.dart';
 import 'download_history_screen.dart';
@@ -224,10 +226,37 @@ class _StudentHomeTabState extends State<StudentHomeTab> {
             label: l.studentHomeBadges,
             value: _badges != null ? '$_badges' : '—',
             onTap: () => _push(const AchievementsScreen())),
+        // Offre en cours (l'ancien badge du bandeau) ; sans offre, ouvre les
+        // tarifs (l'ancienne bannière « passer à une offre »).
+        MobileStat(
+            label: l.studentHubSubscription,
+            value: SubscriptionScope.of(context).planName,
+            caption: SubscriptionScope.of(context).hasPlan
+                ? null
+                : l.studentHomeUpgrade,
+            tone: MobileStatTone.teal,
+            onTap: () => _push(const PricingScreen())),
       ]),
       below: [
         // Objectifs proposés par un parent, en attente de réponse
         const PendingGoalsPanel(key: ValueKey('goals')),
+        // Autres contenus commencés : le plus récent est déjà repris par la
+        // carte « Reprends là où tu en étais ».
+        if (started.length > 1)
+          MobileSection(
+            key: const ValueKey('continue'),
+            title: l.studentHomeContinue,
+            child: SizedBox(
+              height: 100,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                clipBehavior: Clip.none,
+                itemCount: started.length - 1,
+                separatorBuilder: (_, __) => const SizedBox(width: 12),
+                itemBuilder: (_, i) => _InProgressCard(item: started[i + 1]),
+              ),
+            ),
+          ),
         // Examens à venir (échéances réelles)
         if (upcoming.isNotEmpty)
           MobileSection(
@@ -260,6 +289,44 @@ Future<void> _openContent(BuildContext context, InProgressContent item) async {
   } catch (_) {
     messenger.showSnackBar(
         SnackBar(content: Text(L10n.current.studentHomeOpenFailed)));
+  }
+}
+
+class _InProgressCard extends StatelessWidget {
+  final InProgressContent item;
+  const _InProgressCard({required this.item});
+
+  @override
+  Widget build(BuildContext context) {
+    final s = WinTheme.of(context);
+    final subj = WinData.subjectById(item.subjectId);
+    return SizedBox(
+      width: 220,
+      child: WinCard(
+        padding: const EdgeInsets.all(12),
+        onTap: () => _openContent(context, item),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Row(children: [
+            Icon(subj.icon, size: 18, color: subj.color),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(item.title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: WinType.titleM(s.onStrong)),
+            ),
+          ]),
+          const SizedBox(height: 4),
+          Text(item.lastOpened, style: WinType.labelM(s.onMuted)),
+          const SizedBox(height: 8),
+          WinProgressBar(item.progressPct.toDouble(), height: 4),
+          const SizedBox(height: 6),
+          Text('${item.progressPct}%',
+              style: WinType.labelM(s.primary)
+                  .copyWith(fontWeight: FontWeight.w600)),
+        ]),
+      ),
+    );
   }
 }
 
@@ -322,91 +389,148 @@ class _ContentCardState extends State<ContentCard> {
     final s = WinTheme.of(context);
     final content = widget.content;
     final subj = WinData.subjectById(content.subjectId);
-    return WinCard(
+    return WinPressable(
       onTap: () => Navigator.push(context,
           WinPageRoute(builder: (_) => ContentDetailScreen(content: content))),
-      padding: EdgeInsets.zero,
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Expanded(
-          flex: 6,
-          child: Stack(fit: StackFit.expand, children: [
-            Container(
-              color: subj.color.withValues(alpha: 0.14),
-              child:
-                  Center(child: Icon(subj.icon, size: 40, color: subj.color)),
-            ),
-            Positioned(
-              top: 8,
-              left: 8,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Colors.black.withValues(alpha: 0.55),
-                  borderRadius: BorderRadius.circular(WinRadii.full),
-                ),
-                child: Text(contentTypeLabel(content.type),
-                    style: WinType.labelS(Colors.white)
-                        .copyWith(fontWeight: FontWeight.w600)),
-              ),
-            ),
-            Positioned(
-              top: 4,
-              right: 4,
-              child: Container(
-                width: 30,
-                height: 30,
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.9),
-                  shape: BoxShape.circle,
-                ),
-                alignment: Alignment.center,
-                child: WinFavoriteHeart(
-                  active: _fav,
-                  size: 16,
-                  onTap: () => setState(() {
-                    _fav = !_fav;
-                    content.fav = _fav;
-                  }),
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: 8,
-              right: 8,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: content.free ? WinColors.success : Colors.white,
-                  borderRadius: BorderRadius.circular(WinRadii.full),
-                ),
-                child: Text(
-                    content.free ? context.l10n.commonFree : '${fmtXaf(content.price)} XAF',
-                    style: WinType.labelS(
-                            content.free ? Colors.white : WinColors.ink800)
-                        .copyWith(fontWeight: FontWeight.w700)),
-              ),
-            ),
-          ]),
+      borderRadius: BorderRadius.circular(16),
+      pressedScale: 0.97,
+      child: Container(
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+          color: s.surface,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: s.outline),
+          boxShadow: s.dark
+              ? const []
+              : const [
+                  BoxShadow(
+                      color: Color(0x0F0F2A35),
+                      blurRadius: 14,
+                      offset: Offset(0, 6)),
+                ],
         ),
-        Expanded(
-          flex: 4,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(content.title,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: WinType.titleM(s.onStrong)),
-              const Spacer(),
-              Text('${subj.short} · ${ClassLevels.label(content.level)} · ${content.year}',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: WinType.labelS(s.onMuted)),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Expanded(
+            flex: 11,
+            child: Stack(fit: StackFit.expand, children: [
+              // Visuel : la couleur de la matière en dégradé doux et son
+              // pictogramme dans un rond blanc.
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      subj.color.withValues(alpha: 0.20),
+                      subj.color.withValues(alpha: 0.07),
+                    ],
+                  ),
+                ),
+                child: Center(
+                  child: Container(
+                    width: 58,
+                    height: 58,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                            color: subj.color.withValues(alpha: 0.25),
+                            blurRadius: 16,
+                            offset: const Offset(0, 6)),
+                      ],
+                    ),
+                    child: Icon(subj.icon, size: 28, color: subj.color),
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 8,
+                left: 8,
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(WinRadii.full),
+                  ),
+                  child: Text(contentTypeLabel(content.type),
+                      style: WinType.manrope(
+                          size: 11,
+                          weight: FontWeight.w700,
+                          color: MobileHomeColors.abyss)),
+                ),
+              ),
+              Positioned(
+                top: 4,
+                right: 4,
+                child: Container(
+                  width: 32,
+                  height: 32,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                  alignment: Alignment.center,
+                  child: WinFavoriteHeart(
+                    active: _fav,
+                    size: 16,
+                    onTap: () => setState(() {
+                      _fav = !_fav;
+                      content.fav = _fav;
+                    }),
+                  ),
+                ),
+              ),
             ]),
           ),
-        ),
-      ]),
+          Expanded(
+            flex: 9,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(content.title,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: WinType.manrope(
+                            size: 13.5,
+                            weight: FontWeight.w700,
+                            height: 1.25,
+                            color: s.onStrong)),
+                    const SizedBox(height: 4),
+                    Text(
+                        '${subj.short} · ${ClassLevels.label(content.level)} · ${content.year}',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: WinType.labelS(s.onMuted)),
+                    const Spacer(),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 9, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: content.free
+                            ? WinColors.successBg
+                            : MobileHomeColors.tint,
+                        borderRadius: BorderRadius.circular(WinRadii.full),
+                      ),
+                      child: Text(
+                          content.free
+                              ? context.l10n.commonFree
+                              : '${fmtXaf(content.price)} XAF',
+                          style: WinType.manrope(
+                              size: 12,
+                              weight: FontWeight.w800,
+                              color: content.free
+                                  ? WinColors.success
+                                  : MobileHomeColors.abyss)),
+                    ),
+                  ]),
+            ),
+          ),
+        ]),
+      ),
     );
   }
 }

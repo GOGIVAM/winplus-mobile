@@ -58,5 +58,6 @@ flutter:
     - assets/winplus-icon-source.png
     - assets/winplus-icon-source-white.png
     - assets/Login.gif
+    - assets/winai-bot.png
     - assets/home/
   # Police chargée dynamiquement via google_fonts (Fraunces + Manrope).

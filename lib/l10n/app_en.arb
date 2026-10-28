@@ -2288,5 +2288,7 @@
   "mobileHomeStatActive": "Active students",
   "mobileHomeThisWeek": "This week",
   "mobileHomeDays": "{n} d",
-  "mobileHomeAtRiskMeta": "{n} students to watch closely, class by class."
+  "mobileHomeAtRiskMeta": "{n} students to watch closely, class by class.",
+  "mobileCatalogCount": "{count, plural, =0{No content} =1{1 item} other{{count} items}}",
+  "mobileCatalogCart": "Cart"
 }

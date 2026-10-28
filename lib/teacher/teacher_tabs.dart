@@ -961,8 +961,7 @@ class _TeacherWinAITabState extends State<TeacherWinAITab> {
                                   .withValues(alpha: 0.3)),
                         ),
                         child: Row(mainAxisSize: MainAxisSize.min, children: [
-                          const Icon(Icons.psychology_rounded,
-                              size: 15, color: Color(0xFF8B5CF6)),
+                          WinAIIcon(size: 18),
                           const SizedBox(width: 8),
                           Text(context.l10n.commonWinaiMemory,
                               style: WinType.manrope(

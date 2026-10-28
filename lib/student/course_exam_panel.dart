@@ -177,7 +177,7 @@ class _CourseExamPanelState extends State<CourseExamPanel> {
           Text(l.studentExamHelpTitle, style: WinType.labelM(Colors.white)),
           const SizedBox(height: 8),
           Wrap(spacing: 8, runSpacing: 8, children: [
-            _Action(icon: Icons.smart_toy_outlined, label: l.studentExamAskWinAI, onTap: () => _askWinAI()),
+            _Action(icon: winAIIconData, label: l.studentExamAskWinAI, onTap: () => _askWinAI()),
             _Action(icon: Icons.checklist, label: l.studentExamPractice, onTap: () => _askWinAI(practice: true)),
             _Action(
               icon: Icons.timer_outlined,
@@ -218,7 +218,7 @@ class _Action extends StatelessWidget {
   Widget build(BuildContext context) {
     return OutlinedButton.icon(
       onPressed: onTap,
-      icon: Icon(icon, size: 16, color: WinColors.teal400),
+      icon: winIcon(icon, size: 16, color: WinColors.teal400),
       label: Text(label, style: WinType.labelM(Colors.white)),
       style: OutlinedButton.styleFrom(
         side: BorderSide(color: WinColors.teal600.withValues(alpha: 0.6)),

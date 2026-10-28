@@ -225,7 +225,7 @@ class _TutorSessionMaterialScreenState extends State<TutorSessionMaterialScreen>
           block: true,
           loading: _busy,
           variant: v.exists ? WinButtonVariant.outline : WinButtonVariant.accent,
-          icon: Icons.auto_awesome,
+          icon: winAIIconData,
           onTap: _busy
               ? null
               : () async {

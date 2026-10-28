@@ -231,7 +231,7 @@ class _ParentDashTabState extends State<ParentDashTab> {
               onTap: () => ShellNav.go(context, 3)),
           MobileShortcut(
               label: l.mobileHomeAdvice,
-              icon: PhosphorIconsDuotone.lightbulb,
+              icon: winAIIconData,
               count: _alerts.length,
               onTap: () => _push(const WinAIAlertsScreen())),
           MobileShortcut(
@@ -285,6 +285,18 @@ class _ParentDashTabState extends State<ParentDashTab> {
             value: '${_alerts.length}',
             tone: MobileStatTone.gold,
             onTap: () => _push(const WinAIAlertsScreen())),
+        // Offre en cours (l'ancien badge du bandeau).
+        MobileStat(
+            label: l.studentHubSubscription,
+            value: _sub != null && _sub!.hasPlan
+                ? l.parentPlanName(_sub!.planName)
+                : l.parentNoSubscription,
+            caption: _sub != null && _sub!.hasPlan && _sub!.expiresAt != null
+                ? l.parentDashPeriodEndIn(_sub!.planName,
+                    _sub!.expiresAt!.difference(DateTime.now()).inDays)
+                : null,
+            tone: MobileStatTone.teal,
+            onTap: () => _push(const SubscriptionStatusScreen())),
         MobileStat(
             label: l.mobileHomeChildrenAvg,
             value: avg == null ? '—' : '$avg%',
@@ -537,7 +549,6 @@ class _ParentChildrenTabState extends State<ParentChildrenTab> {
 
   @override
   Widget build(BuildContext context) {
-    final s = WinTheme.of(context);
     final kids = _children ?? [];
     // Lot 9.7b : limite children.max du plan (1 sans abonnement), appliquée
     // aussi par le serveur ; plus de test sur un nom de plan.
@@ -545,12 +556,6 @@ class _ParentChildrenTabState extends State<ParentChildrenTab> {
     final atChildLimit = !sub.allowsOneMore(EntitlementKeys.childrenMax, kids.length);
     final childLimit = sub.limit(EntitlementKeys.childrenMax);
     return Column(children: [
-      Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-          child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(context.l10n.parentSubMyChildren,
-                  style: WinType.archivo(size: 22, color: s.onStrong)))),
       Expanded(
           child: _children == null
               ? const Center(child: CircularProgressIndicator())
@@ -626,13 +631,8 @@ class _ParentResourcesTabState extends State<ParentResourcesTab> {
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
     final reco = _reco;
+    // Pas de titre dans la page : la barre du haut porte déjà « Ressources ».
     return Column(children: [
-      Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-          child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(context.l10n.shellTabResources,
-                  style: WinType.archivo(size: 22, color: s.onStrong)))),
       Expanded(
           child: ListView(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
@@ -1301,8 +1301,7 @@ class _ParentWinAITabState extends State<ParentWinAITab> {
                                   .withValues(alpha: 0.3)),
                         ),
                         child: Row(mainAxisSize: MainAxisSize.min, children: [
-                          const Icon(Icons.psychology_rounded,
-                              size: 15, color: Color(0xFF8B5CF6)),
+                          WinAIIcon(size: 18),
                           const SizedBox(width: 8),
                           Text(context.l10n.commonWinaiMemory,
                               style: WinType.manrope(

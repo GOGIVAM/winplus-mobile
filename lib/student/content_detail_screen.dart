@@ -236,7 +236,7 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                       if (c.aiReco != null) ...[
                         WinAlert(c.aiReco!,
                             type: BadgeColor.teal,
-                            icon: Icons.auto_awesome_outlined),
+                            icon: winAIIconData),
                         const SizedBox(height: 20),
                       ],
                       const WinDivider(),

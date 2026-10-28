@@ -13835,6 +13835,18 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'{n} élèves à suivre de près, classe par classe.'**
   String mobileHomeAtRiskMeta(int n);
+
+  /// No description provided for @mobileCatalogCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =0{Aucun contenu} =1{1 contenu} other{{count} contenus}}'**
+  String mobileCatalogCount(int count);
+
+  /// No description provided for @mobileCatalogCart.
+  ///
+  /// In fr, this message translates to:
+  /// **'Panier'**
+  String get mobileCatalogCart;
 }
 
 class _AppLocalizationsDelegate

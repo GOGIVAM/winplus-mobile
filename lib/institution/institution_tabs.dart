@@ -298,7 +298,10 @@ class _InstitutionDashTabState extends State<InstitutionDashTab> {
             value: lic != null
                 ? '${lic.studentSeatsUsed} / ${lic.studentSeats}'
                 : l.teacherProfileNoneF,
-            caption: pctLic.isEmpty ? null : pctLic.trim(),
+            // Formule de la licence (l'ancien en-tête de l'accueil).
+            caption: lic != null
+                ? '${l.instLicenseHeading(lic.tier)}$pctLic'
+                : l.instDashNoLicense,
             onTap: () => _push(const LicenseScreen())),
       ]),
       below: [
@@ -561,7 +564,7 @@ class _InstitutionAnalyticsTabState extends State<InstitutionAnalyticsTab> {
             WinButton(context.l10n.instPlanTitle,
                 variant: WinButtonVariant.ghost,
                 block: true,
-                icon: Icons.auto_awesome_outlined,
+                icon: winAIIconData,
                 onTap: () => Navigator.push(context,
                     WinPageRoute(builder: (_) => const ActionPlanScreen()))),
             const SizedBox(height: 20),
@@ -606,12 +609,6 @@ class InstitutionAccountTab extends StatelessWidget {
     final s = WinTheme.of(context);
     final state = WinAppScope.of(context);
     return Column(children: [
-      Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-          child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(context.l10n.shellTabAccount,
-                  style: WinType.archivo(size: 22, color: s.onStrong)))),
       Expanded(
           child: ListView(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
@@ -850,8 +847,7 @@ class _InstitutionWinAITabState extends State<InstitutionWinAITab> {
                                   .withValues(alpha: 0.3)),
                         ),
                         child: Row(mainAxisSize: MainAxisSize.min, children: [
-                          const Icon(Icons.psychology_rounded,
-                              size: 15, color: Color(0xFF8B5CF6)),
+                          WinAIIcon(size: 18),
                           const SizedBox(width: 8),
                           Text(context.l10n.commonWinaiMemory,
                               style: WinType.manrope(

@@ -157,7 +157,7 @@ class _ActionPlanScreenState extends State<ActionPlanScreen> {
       WinAlert(
         summary.toString(),
         type: BadgeColor.teal,
-        icon: Icons.auto_awesome_outlined,
+        icon: winAIIconData,
       ),
       const SizedBox(height: 16),
       Row(children: [

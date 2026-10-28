@@ -123,7 +123,9 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
         elevation: 0,
         automaticallyImplyLeading: false,
         titleSpacing: 16,
-        title: safeIndex == 0
+        // Accueil et catalogue : le logo seul, pas le nom de l'onglet
+        // (la page commence par sa recherche, comme sur le site).
+        title: safeIndex == 0 || _isCatalogTab(role, safeIndex)
             ? Image.asset('assets/winplus-logo.png', width: 36)
             : Text(tab.label,
                 style: WinType.archivo(size: 20, color: s.onStrong)),
@@ -213,6 +215,12 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
     );
   }
 
+  bool _isCatalogTab(WinRole role, int i) => switch (role) {
+        WinRole.student => i == 1,
+        WinRole.institution => i == 2,
+        _ => false,
+      };
+
   Widget _avatarFor(WinRole role) {
     // Lot 10.11 : l'avatar ouvre le réglage de la langue (le professeur n'a
     // pas d'écran de réglages ; les autres l'ont aussi dans leur profil).
@@ -252,7 +260,7 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
             width: 34,
             height: 34,
             decoration: const BoxDecoration(
-                color: WinColors.cream200, shape: BoxShape.circle),
+                color: WinColors.ink100, shape: BoxShape.circle),
             alignment: Alignment.center,
             child: Text(_avatarInitials ?? '…',
                 style: WinType.manrope(

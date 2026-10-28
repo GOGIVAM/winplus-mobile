@@ -4880,5 +4880,14 @@
         "type": "int"
       }
     }
-  }
+  },
+  "mobileCatalogCount": "{count, plural, =0{Aucun contenu} =1{1 contenu} other{{count} contenus}}",
+  "@mobileCatalogCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mobileCatalogCart": "Panier"
 }

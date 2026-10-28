@@ -8,6 +8,30 @@ import 'win_motion_widgets.dart';
 /// WINPLUS  Widgets réutilisables  direction visuelle "Funica" (arrondis
 /// généreux, boutons/chips en pilule), couleurs de marque WinPlus conservées.
 
+/// Icône de WinAI : le robot du site (multicolore, affiché tel quel). Partout
+/// où un widget attend une [IconData], passer [winAIIconData] l'affiche à la
+/// place d'une icône Material (voir [winIcon]).
+const winAIIconData = IconData(0xE000, fontFamily: 'WinAIRobot');
+
+class WinAIIcon extends StatelessWidget {
+  final double size;
+  const WinAIIcon({super.key, this.size = 24});
+  @override
+  Widget build(BuildContext context) => Image.asset('assets/winai-bot.png',
+      width: size,
+      height: size,
+      fit: BoxFit.contain,
+      filterQuality: FilterQuality.medium,
+      excludeFromSemantics: true);
+}
+
+/// [Icon] ordinaire, ou le robot WinAI quand [icon] vaut [winAIIconData]
+/// (le robot garde ses couleurs : [color] ne s'applique pas).
+Widget winIcon(IconData? icon, {double? size, Color? color}) =>
+    icon == winAIIconData
+        ? WinAIIcon(size: (size ?? 24) * 1.15)
+        : Icon(icon, size: size, color: color);
+
 enum WinButtonVariant { primary, accent, outline, ghost, danger, secondary }
 
 class WinButton extends StatefulWidget {
@@ -87,7 +111,7 @@ class _WinButtonState extends State<WinButton> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
                 if (icon != null) ...[
-                  Icon(icon, size: small ? 16 : 18, color: fg),
+                  winIcon(icon, size: small ? 16 : 18, color: fg),
                   const SizedBox(width: 8)
                 ],
                 Text(label,
@@ -202,7 +226,7 @@ class WinChip extends StatelessWidget {
         ),
         child: Row(mainAxisSize: MainAxisSize.min, children: [
           if (icon != null) ...[
-            Icon(icon, size: 15, color: active ? s.chipActiveFg : s.onMuted),
+            winIcon(icon, size: 15, color: active ? s.chipActiveFg : s.onMuted),
             const SizedBox(width: 6)
           ],
           Text(label,
@@ -226,7 +250,7 @@ class WinBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final pairs = {
-      BadgeColor.neutral: [WinColors.cream100, WinColors.ink700],
+      BadgeColor.neutral: [WinColors.ink50, WinColors.ink700],
       BadgeColor.teal: [WinColors.teal100, WinColors.teal700],
       BadgeColor.blue: [WinColors.blue100, WinColors.blue700],
       BadgeColor.success: [WinColors.successBg, WinColors.success],
@@ -400,7 +424,7 @@ class _WinTextFieldState extends State<WinTextField> {
   }
 }
 
-/// Orbe WinAI animé (anneaux pulsants).
+/// WinAI : le robot, entouré d'anneaux qui respirent aux grandes tailles.
 class WinAIOrb extends StatefulWidget {
   final double size;
   const WinAIOrb({super.key, this.size = 48});
@@ -422,33 +446,31 @@ class _WinAIOrbState extends State<WinAIOrb>
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
+    // Petite taille (en-tête, ligne de texte) : le robot seul, sans halo.
+    if (widget.size <= 32 || winReducedMotion(context)) {
+      return SizedBox(
+          width: widget.size,
+          height: widget.size,
+          child: Center(child: WinAIIcon(size: widget.size)));
+    }
     return SizedBox(
       width: widget.size,
       height: widget.size,
       child: AnimatedBuilder(
         animation: _c,
-        builder: (_, __) => Stack(alignment: Alignment.center, children: [
-          for (final d in [0.0, 0.4])
+        child: WinAIIcon(size: widget.size * 0.78),
+        builder: (_, robot) => Stack(alignment: Alignment.center, children: [
+          for (final d in [0.0, 0.5])
             Opacity(
-              opacity: (1 - ((_c.value + d) % 1)).clamp(0, 1) * 0.4,
+              opacity: (1 - ((_c.value + d) % 1)).clamp(0, 1) * 0.35,
               child: Container(
-                  width: widget.size * (1 + ((_c.value + d) % 1) * 0.3),
-                  height: widget.size * (1 + ((_c.value + d) % 1) * 0.3),
+                  width: widget.size * (0.8 + ((_c.value + d) % 1) * 0.4),
+                  height: widget.size * (0.8 + ((_c.value + d) % 1) * 0.4),
                   decoration: BoxDecoration(
-                      color: s.primary.withValues(alpha: 0.4),
+                      color: s.primary.withValues(alpha: 0.35),
                       shape: BoxShape.circle)),
             ),
-          Container(
-              width: widget.size * 0.6,
-              height: widget.size * 0.6,
-              decoration: BoxDecoration(
-                  color: s.primary,
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                        color: s.primary.withValues(alpha: 0.4),
-                        blurRadius: widget.size * 0.3)
-                  ])),
+          robot!,
         ]),
       ),
     );
@@ -512,7 +534,7 @@ class WinAlert extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (Color bg, Color fg) = switch (type) {
-      BadgeColor.neutral => (WinColors.cream100, WinColors.ink700),
+      BadgeColor.neutral => (WinColors.ink50, WinColors.ink700),
       BadgeColor.teal => (WinColors.teal50, WinColors.teal700),
       BadgeColor.blue => (WinColors.blue50, WinColors.blue700),
       BadgeColor.success => (WinColors.successBg, WinColors.success),
@@ -534,7 +556,7 @@ class WinAlert extends StatelessWidget {
           borderRadius: BorderRadius.circular(WinRadii.sm),
           border: Border.all(color: fg.withValues(alpha: 0.3))),
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Icon(ic, size: 16, color: fg),
+        winIcon(ic, size: 16, color: fg),
         const SizedBox(width: 8),
         Expanded(child: Text(message, style: WinType.bodyS(fg))),
       ]),
@@ -623,7 +645,7 @@ class WinCircleIconButton extends StatelessWidget {
             color: Colors.white.withValues(alpha: 0.85),
             shape: BoxShape.circle,
           ),
-          child: Icon(icon, size: 19, color: iconColor ?? s.onStrong),
+          child: winIcon(icon, size: 19, color: iconColor ?? s.onStrong),
         ),
       ),
     );
@@ -647,7 +669,7 @@ class WinStatCard extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               if (icon != null) ...[
-                Icon(icon, size: 20, color: c),
+                winIcon(icon, size: 20, color: c),
                 const SizedBox(height: 8),
               ],
               Text(value,

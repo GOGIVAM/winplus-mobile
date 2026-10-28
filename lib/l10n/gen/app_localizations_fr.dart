@@ -8077,4 +8077,19 @@ class AppLocalizationsFr extends AppLocalizations {
   String mobileHomeAtRiskMeta(int n) {
     return '$n élèves à suivre de près, classe par classe.';
   }
+
+  @override
+  String mobileCatalogCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count contenus',
+      one: '1 contenu',
+      zero: 'Aucun contenu',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get mobileCatalogCart => 'Panier';
 }

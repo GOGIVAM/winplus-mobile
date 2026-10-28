@@ -9,6 +9,7 @@ import '../teacher/teacher_tabs.dart' show TeacherWinAITab;
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
+import 'win_widgets.dart';
 import 'winai_memories_sheet.dart';
 
 class _WinAIRoleConfig {
@@ -123,7 +124,6 @@ class _WinAIFloatingWidgetState extends State<WinAIFloatingWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final s = WinTheme.of(context);
     final cfg = _configFor(widget.role);
 
     return LayoutBuilder(builder: (context, constraints) {
@@ -185,22 +185,22 @@ class _WinAIFloatingWidgetState extends State<WinAIFloatingWidget> {
             child: Container(
               width: _size,
               height: _size,
+              // Fond blanc cerclé de sarcelle, comme sur le site : le robot
+              // multicolore serait illisible sur un fond plein.
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                gradient: LinearGradient(
-                  colors: [cfg.accent, cfg.accent.withValues(alpha: 0.75)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
+                color: Colors.white,
+                border: Border.all(color: cfg.accent, width: 2.5),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.25),
-                    blurRadius: 10,
+                    color: Colors.black.withValues(alpha: 0.18),
+                    blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),
                 ],
               ),
-              child: Icon(Icons.auto_awesome, color: s.onPrimary, size: 26),
+              alignment: Alignment.center,
+              child: WinAIIcon(size: _size * 0.62),
             ),
           ),
         ),
@@ -256,7 +256,7 @@ class _MiniCard extends StatelessWidget {
                     decoration: BoxDecoration(
                         color: accent.withValues(alpha: 0.15),
                         shape: BoxShape.circle),
-                    child: Icon(Icons.auto_awesome, size: 18, color: accent),
+                    child: const Center(child: WinAIIcon(size: 24)),
                   ),
                   const SizedBox(width: 10),
                   Expanded(
@@ -312,8 +312,7 @@ class _MiniCard extends StatelessWidget {
                               const Color(0xFF8B5CF6).withValues(alpha: 0.3)),
                     ),
                     child: Row(mainAxisSize: MainAxisSize.min, children: [
-                      const Icon(Icons.psychology_rounded,
-                          size: 14, color: Color(0xFF8B5CF6)),
+                      const WinAIIcon(size: 17),
                       const SizedBox(width: 6),
                       Text(context.l10n.commonWinaiMemory,
                           style: WinType.manrope(

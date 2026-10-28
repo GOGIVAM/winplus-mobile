@@ -5,6 +5,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_motion.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
+import 'win_widgets.dart';
 
 /// Accueil des espaces (élève, parent, professeur, établissement), même
 /// construction que la version téléphone du site :
@@ -703,8 +704,9 @@ class _SlideCard extends StatelessWidget {
 class MobileShortcut {
   final String label;
 
-  /// Pictogramme Phosphor au poids « duotone » (PhosphorIconsDuotone.*).
-  final PhosphorIconData icon;
+  /// Pictogramme Phosphor au poids « duotone » (PhosphorIconsDuotone.*), ou
+  /// [winAIIconData] pour le robot WinAI.
+  final IconData icon;
   final VoidCallback onTap;
 
   /// Nombre d'éléments à traiter, affiché en pastille sur le rond.
@@ -719,11 +721,13 @@ class MobileShortcut {
 /// Pictogramme bicolore : trait vert presque noir, surface sarcelle franche
 /// (Phosphor dessine la surface à 20 % d'opacité ; on la rend pleine).
 class WinDuoIcon extends StatelessWidget {
-  final PhosphorIconData icon;
+  final IconData icon;
   final double size;
   const WinDuoIcon(this.icon, {super.key, this.size = 32});
   @override
-  Widget build(BuildContext context) => PhosphorIcon(icon,
+  Widget build(BuildContext context) => icon == winAIIconData
+      ? WinAIIcon(size: size * 1.2)
+      : PhosphorIcon(icon,
       size: size,
       color: MobileHomeColors.abyss,
       duotoneSecondaryColor: WinColors.teal500,

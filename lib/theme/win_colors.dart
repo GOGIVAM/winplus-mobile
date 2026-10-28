@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 /// WINPLUS  Palette de couleurs (transcription fidèle de la charte app_colors).
-/// Jamais de blanc pur : les surfaces claires utilisent le crème.
+/// Fonds clairs en blanc ; le crème sert au texte clair sur fond sombre.
 class WinColors {
   WinColors._();
 

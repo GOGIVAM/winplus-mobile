@@ -8006,4 +8006,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String mobileHomeAtRiskMeta(int n) {
     return '$n students to watch closely, class by class.';
   }
+
+  @override
+  String mobileCatalogCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items',
+      one: '1 item',
+      zero: 'No content',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get mobileCatalogCart => 'Cart';
 }

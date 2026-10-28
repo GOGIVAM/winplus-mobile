@@ -75,7 +75,7 @@ class _BookingDetailsState extends State<_BookingDetails> {
           WinButton(b.sessionMaterialStatus != null ? context.l10n.tutoringMaterial : context.l10n.teacherBookingPrepareMaterial,
               small: true,
               variant: WinButtonVariant.outline,
-              icon: Icons.auto_awesome,
+              icon: winAIIconData,
               onTap: () => Navigator.of(context)
                   .push(MaterialPageRoute(builder: (_) => TutorSessionMaterialScreen(bookingId: b.id)))),
           if (b.sessionMaterialStatus != null)

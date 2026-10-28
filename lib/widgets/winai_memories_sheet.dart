@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'win_widgets.dart';
 import '../l10n/l10n.dart';
 import '../services/chatbot_service.dart';
 import '../theme/win_colors.dart';
@@ -155,8 +156,7 @@ class _WinAIMemoriesSheetState extends State<_WinAIMemoriesSheet> {
                   color: _violetBg,
                   borderRadius: BorderRadius.circular(WinRadii.sm)),
               child: const Center(
-                  child:
-                      Icon(Icons.psychology_rounded, size: 20, color: _violet)),
+                  child: WinAIIcon(size: 24)),
             ),
             const SizedBox(width: 10),
             Expanded(

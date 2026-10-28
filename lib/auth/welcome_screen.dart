@@ -37,7 +37,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           l10n.authWelcomeSlide1Subtitle,
         ),
         _OnboardSlide(
-          Icons.auto_awesome_rounded,
+          winAIIconData,
           l10n.authWelcomeSlide2Title,
           l10n.authWelcomeSlide2Subtitle,
         ),
@@ -176,7 +176,7 @@ class _SlidePanel extends StatelessWidget {
                   color: Colors.white.withValues(alpha: 0.12),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(slide.icon, size: 56, color: WinColors.teal400),
+                child: winIcon(slide.icon, size: 56, color: WinColors.teal400),
               ),
             ),
           ),
