@@ -21,12 +21,12 @@ import 'win_widgets.dart';
 class MobileHomeColors {
   MobileHomeColors._();
 
-  /// Vert presque noir des cartes sombres et du trait des pictogrammes.
-  static const abyss = Color(0xFF021510);
+  /// Vert profond des cartes sombres et du trait des pictogrammes.
+  static const abyss = WinColors.teal900;
 
   /// Teinte des pastilles d'accès rapide, et sa version enfoncée.
-  static const tint = Color(0xFFDDF2EE);
-  static const tintPressed = Color(0xFFC7EAE4);
+  static const tint = WinColors.teal100;
+  static const tintPressed = WinColors.teal200;
 }
 
 const _ease = Cubic(.2, .8, .2, 1);
@@ -607,9 +607,9 @@ class _SlideCard extends StatelessWidget {
                 end: Alignment.bottomCenter,
                 stops: [0, .45, 1],
                 colors: [
-                  Color(0x33021510),
-                  Color(0x8C021510),
-                  Color(0xF2021510),
+                  Color(0x330B3530),
+                  Color(0x8C0B3530),
+                  Color(0xF20B3530),
                 ],
               ),
             ),

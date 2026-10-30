@@ -69,13 +69,13 @@ class _WinButtonState extends State<WinButton> {
     late Color bg, fg, bd;
     switch (variant) {
       case WinButtonVariant.primary:
-        bg = WinColors.ink800;
-        fg = WinColors.cream50;
+        bg = WinColors.teal700;
+        fg = Colors.white;
         bd = Colors.transparent;
         break;
       case WinButtonVariant.accent:
-        bg = s.primary;
-        fg = s.onPrimary;
+        bg = s.dark ? s.primary : WinColors.teal700;
+        fg = s.dark ? s.onPrimary : Colors.white;
         bd = Colors.transparent;
         break;
       case WinButtonVariant.secondary:

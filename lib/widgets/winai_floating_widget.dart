@@ -143,7 +143,7 @@ class _WinAIFloatingWidgetState extends State<WinAIFloatingWidget> {
           Positioned.fill(
             child: GestureDetector(
               onTap: () => setState(() => _open = false),
-              child: Container(color: Colors.black.withValues(alpha: 0.25)),
+              child: Container(color: WinColors.teal900.withValues(alpha: 0.25)),
             ),
           ),
           Positioned(
@@ -193,7 +193,7 @@ class _WinAIFloatingWidgetState extends State<WinAIFloatingWidget> {
                 border: Border.all(color: cfg.accent, width: 2.5),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.18),
+                    color: WinColors.teal900.withValues(alpha: 0.18),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),
@@ -305,11 +305,11 @@ class _MiniCard extends StatelessWidget {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF5F3FF),
+                      color: WinColors.teal50,
                       borderRadius: BorderRadius.circular(WinRadii.full),
                       border: Border.all(
                           color:
-                              const Color(0xFF8B5CF6).withValues(alpha: 0.3)),
+                              WinColors.teal700.withValues(alpha: 0.3)),
                     ),
                     child: Row(mainAxisSize: MainAxisSize.min, children: [
                       const WinAIIcon(size: 17),
@@ -318,7 +318,7 @@ class _MiniCard extends StatelessWidget {
                           style: WinType.manrope(
                               size: 12,
                               weight: FontWeight.w600,
-                              color: const Color(0xFF8B5CF6))),
+                              color: WinColors.teal700)),
                     ]),
                   ),
                 ),

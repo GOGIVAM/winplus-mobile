@@ -954,10 +954,10 @@ class _TeacherWinAITabState extends State<TeacherWinAITab> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 10),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFF5F3FF),
+                          color: WinColors.teal50,
                           borderRadius: BorderRadius.circular(WinRadii.full),
                           border: Border.all(
-                              color: const Color(0xFF8B5CF6)
+                              color: WinColors.teal700
                                   .withValues(alpha: 0.3)),
                         ),
                         child: Row(mainAxisSize: MainAxisSize.min, children: [
@@ -967,10 +967,10 @@ class _TeacherWinAITabState extends State<TeacherWinAITab> {
                               style: WinType.manrope(
                                   size: 13,
                                   weight: FontWeight.w600,
-                                  color: const Color(0xFF8B5CF6))),
+                                  color: WinColors.teal700)),
                           const SizedBox(width: 6),
                           const Icon(Icons.arrow_forward_ios_rounded,
-                              size: 11, color: Color(0xFF8B5CF6)),
+                              size: 11, color: WinColors.teal700),
                         ]),
                       ),
                     ),

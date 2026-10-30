@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
-/// WINPLUS  Palette de couleurs (transcription fidèle de la charte app_colors).
+/// WINPLUS  Palette de couleurs, alignée sur le site (global.css) : sarcelle
+/// #259A8E, boutons #1C756C, vert profond #0B3530 pour les surfaces sombres,
+/// menthes pour les fonds teintés, brique et pêche pour les alertes. Le texte
+/// garde son encre bleu nuit (ink).
 /// Fonds clairs en blanc ; le crème sert au texte clair sur fond sombre.
 class WinColors {
   WinColors._();
@@ -18,13 +21,19 @@ class WinColors {
   static const ink50 = Color(0xFFF1F4F5);
 
   // ---- TEAL (couleur signature de la marque) ----
-  static const teal700 = Color(0xFF1E8077);
+  /// Vert profond : en-têtes, cartes et surfaces sombres (jamais de noir).
+  static const teal900 = Color(0xFF0B3530);
+  static const teal850 = Color(0xFF10423C);
+  static const teal800 = Color(0xFF17635B);
+  /// Boutons à texte blanc.
+  static const teal700 = Color(0xFF1C756C);
   static const teal600 = Color(0xFF259A8E);
   static const teal500 = Color(0xFF33BBAF);
   static const teal400 = Color(0xFF6BCFC6);
-  static const teal300 = Color(0xFF9CDED7);
-  static const teal100 = Color(0xFFD6F1ED);
-  static const teal50 = Color(0xFFEBF8F6);
+  static const teal300 = Color(0xFF86D8CF);
+  static const teal200 = Color(0xFFADE3DC);
+  static const teal100 = Color(0xFFC2FFF9);
+  static const teal50 = Color(0xFFD6FFFB);
 
   // ---- BLUE (secondaire) ----
   static const blue700 = Color(0xFF2C5E84);
@@ -45,9 +54,9 @@ class WinColors {
   static const success = Color(0xFF1F9D6E);
   static const successBg = Color(0xFFE2F4EB);
   static const warn = Color(0xFFC58423);
-  static const warnBg = Color(0xFFFBEFD7);
-  static const error = Color(0xFFB7423E);
-  static const errorBg = Color(0xFFF8E1DF);
+  static const warnBg = Color(0xFFFFDDBD);
+  static const error = Color(0xFF993525);
+  static const errorBg = Color(0xFFFBE3DE);
   static const gold = Color(0xFFB07A1A);
   static const goldBg = Color(0xFFF7ECD2);
 }

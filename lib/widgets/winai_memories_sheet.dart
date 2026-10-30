@@ -8,8 +8,8 @@ import '../theme/win_typography.dart';
 
 // ── Méta par type ────────────────────────────────────────────────────────────
 
-const _violet = Color(0xFF8B5CF6);
-const _violetBg = Color(0xFFF5F3FF);
+const _violet = WinColors.teal700;
+const _violetBg = WinColors.teal50;
 
 class _TypeMeta {
   final IconData icon;
