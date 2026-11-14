@@ -361,7 +361,7 @@ class _AiUsageRow extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          Icon(Icons.auto_awesome_outlined, size: 16, color: s.primary),
+          const WinAIIcon(size: 18),
           const SizedBox(width: 8),
           Expanded(child: Text(text, style: WinType.titleM(s.onStrong))),
           // 8.10 : plus de plafond mensuel ; limite de session ou de semaine.

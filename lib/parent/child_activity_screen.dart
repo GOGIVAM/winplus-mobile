@@ -283,7 +283,7 @@ class _ActivityTab extends StatelessWidget {
           const SizedBox(width: 8),
           Expanded(
               child: _StatBox(
-                  icon: Icons.auto_awesome_outlined,
+                  icon: winAIIconData,
                   value: '${stats.aiSessionsThisWeek}',
                   label: context.l10n.parentChildAiWeek,
                   color: s.secondary)),
@@ -336,7 +336,7 @@ class _ActivityTab extends StatelessWidget {
             final IconData icon = switch (ev.type) {
               'quiz' => Icons.quiz_outlined,
               'download' => Icons.download_outlined,
-              'ai_chat' => Icons.auto_awesome_outlined,
+              'ai_chat' => winAIIconData,
               _ => Icons.circle_outlined,
             };
             return IntrinsicHeight(
@@ -368,7 +368,7 @@ class _ActivityTab extends StatelessWidget {
                       if (ev.score != null)
                         WinBadge('${ev.score}/20', color: BadgeColor.success),
                       const SizedBox(width: 4),
-                      Icon(icon, size: 16, color: dot),
+                      winIcon(icon, size: 16, color: dot),
                     ]),
                   ),
                 ),
@@ -633,7 +633,7 @@ class _AlertsTab extends StatelessWidget {
                     color: iconColor.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(icon, size: 18, color: iconColor),
+                  child: winIcon(icon, size: 18, color: iconColor),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -677,7 +677,7 @@ class _StatBox extends StatelessWidget {
     return WinCard(
       padding: const EdgeInsets.all(10),
       child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Icon(icon, size: 18, color: color),
+        winIcon(icon, size: 18, color: color),
         const SizedBox(height: 4),
         Text(value,
             style: WinType.archivo(

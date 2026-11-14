@@ -132,7 +132,7 @@ class _TutorGroupPricingEditorState extends State<TutorGroupPricingEditor> {
         Expanded(child: Text(context.l10n.teacherGroupTitle, style: WinType.labelM(s.onStrong))),
         TextButton.icon(
           onPressed: _loading ? null : _suggest,
-          icon: const Icon(Icons.auto_awesome_outlined, size: 18),
+          icon: const WinAIIcon(size: 20),
           label: Text(_loading ? context.l10n.commonWinaiThinking : context.l10n.teacherGroupSuggest),
         ),
       ]),

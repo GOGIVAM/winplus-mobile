@@ -765,7 +765,7 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
           WinButton(_rateLoading ? context.l10n.commonWinaiThinking : context.l10n.teacherProfileAiSuggestion,
               variant: WinButtonVariant.outline,
               small: true,
-              icon: Icons.auto_awesome,
+              icon: winAIIconData,
               onTap: _rateLoading ? null : _suggestRate),
           if (_rateSuggestion != null) ...[
             const SizedBox(height: 10),

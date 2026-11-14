@@ -232,7 +232,7 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
         WinAlert(
           context.l10n.studentCoachIntro,
           type: BadgeColor.teal,
-          icon: Icons.auto_awesome_outlined,
+          icon: winAIIconData,
         ),
         if (_error != null) ...[
           const SizedBox(height: 12),
@@ -301,7 +301,7 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
         WinButton(
           _generating ? context.l10n.studentCoachGenerating : context.l10n.studentCoachGenerate,
           block: true,
-          icon: Icons.auto_awesome_outlined,
+          icon: winAIIconData,
           onTap: (_examDate == null || _generating) ? null : _generate,
         ),
         const SizedBox(height: 24),

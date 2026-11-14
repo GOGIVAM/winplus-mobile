@@ -120,7 +120,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       };
 
   IconData _icon(String type) => switch (type) {
-        'ai' => Icons.auto_awesome_outlined,
+        'ai' => winAIIconData,
         'achievement' => Icons.emoji_events_outlined,
         'success' => Icons.check_circle_outline,
         'warning' || 'warn' => Icons.warning_amber_outlined,
@@ -222,7 +222,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                                   shape: BoxShape.circle,
                                 ),
                                 child:
-                                    Icon(_icon(n.type), size: 20, color: color),
+                                    winIcon(_icon(n.type), size: 20, color: color),
                               ),
                               const SizedBox(width: 12),
                               Expanded(

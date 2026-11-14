@@ -20,6 +20,11 @@ class WinCurves {
   static const tap = Curves.easeOut;
 }
 
+/// Vrai quand l'appareil demande moins d'animations (réglage d'accessibilité) :
+/// chaque animation de l'app s'efface alors et l'élément s'affiche aussitôt.
+bool winReducedMotion(BuildContext context) =>
+    MediaQuery.maybeDisableAnimationsOf(context) ?? false;
+
 /// Transition de page commune (fondu + léger glissement vertical) à utiliser
 /// partout à la place de [MaterialPageRoute], pour une navigation cohérente
 /// dans toute l'app plutôt que le slide-from-right par défaut de Material.
@@ -32,6 +37,7 @@ class WinPageRoute<T> extends PageRouteBuilder<T> {
           pageBuilder: (context, animation, secondaryAnimation) =>
               builder(context),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            if (winReducedMotion(context)) return child;
             final curved =
                 CurvedAnimation(parent: animation, curve: WinCurves.enter);
             return FadeTransition(

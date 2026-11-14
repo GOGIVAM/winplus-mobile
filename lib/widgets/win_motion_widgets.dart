@@ -37,7 +37,9 @@ class _WinTapScaleState extends State<WinTapScale> {
       onTapUp: (_) => _set(false),
       onTapCancel: () => _set(false),
       child: AnimatedScale(
-        scale: _pressed ? widget.pressedScale : 1.0,
+        scale: _pressed && !winReducedMotion(context)
+            ? widget.pressedScale
+            : 1.0,
         duration: WinDurations.fast,
         curve: WinCurves.tap,
         child: widget.child,
@@ -71,6 +73,12 @@ class _WinStaggerFadeState extends State<WinStaggerFade>
     begin: const Offset(0, 0.08),
     end: Offset.zero,
   ).animate(_fade);
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (winReducedMotion(context)) _c.value = 1;
+  }
 
   @override
   void initState() {

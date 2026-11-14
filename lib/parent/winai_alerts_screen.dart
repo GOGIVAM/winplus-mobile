@@ -97,7 +97,7 @@ class _WinAIAlertsScreenState extends State<WinAIAlertsScreen> {
         WinAlert(
           context.l10n.parentAlertsIntro,
           type: BadgeColor.teal,
-          icon: Icons.auto_awesome_outlined,
+          icon: winAIIconData,
         ),
         const SizedBox(height: 20),
         if (alerts.isEmpty) ...[

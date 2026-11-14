@@ -223,7 +223,7 @@ class _ProfileHubTabState extends State<ProfileHubTab> {
               onTap: () => _go(const MyLinksScreen()),
             ),
             _HubTile(
-              icon: Icons.smart_toy_outlined,
+              icon: winAIIconData,
               color: s.primary,
               label: 'WinAI',
               subtitle: context.l10n.studentHubWinaiSub,
@@ -397,7 +397,7 @@ class _HubTile extends StatelessWidget {
               color: color.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(WinRadii.sm),
             ),
-            child: Icon(icon, size: 20, color: color),
+            child: winIcon(icon, size: 20, color: color),
           ),
           const SizedBox(width: 12),
           Expanded(

@@ -10,7 +10,9 @@ import '../widgets/win_widgets.dart';
 import 'student_home.dart' show ContentCard;
 
 class SearchScreen extends StatefulWidget {
-  const SearchScreen({super.key});
+  /// Recherche déjà saisie (barre de recherche de l'accueil).
+  final String? initialQuery;
+  const SearchScreen({super.key, this.initialQuery});
   @override
   State<SearchScreen> createState() => _SearchScreenState();
 }
@@ -89,6 +91,17 @@ class _SearchScreenState extends State<SearchScreen> {
           _results = [];
           _loading = false;
         });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    final q = widget.initialQuery?.trim() ?? '';
+    if (q.isNotEmpty) {
+      _ctrl.text = q;
+      _query = q;
+      _search(q);
     }
   }
 

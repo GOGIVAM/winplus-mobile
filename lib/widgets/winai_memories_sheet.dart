@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'win_widgets.dart';
 import '../l10n/l10n.dart';
 import '../services/chatbot_service.dart';
 import '../theme/win_colors.dart';
@@ -7,8 +8,8 @@ import '../theme/win_typography.dart';
 
 // ── Méta par type ────────────────────────────────────────────────────────────
 
-const _violet = Color(0xFF8B5CF6);
-const _violetBg = Color(0xFFF5F3FF);
+const _violet = WinColors.teal700;
+const _violetBg = WinColors.teal50;
 
 class _TypeMeta {
   final IconData icon;
@@ -155,8 +156,7 @@ class _WinAIMemoriesSheetState extends State<_WinAIMemoriesSheet> {
                   color: _violetBg,
                   borderRadius: BorderRadius.circular(WinRadii.sm)),
               child: const Center(
-                  child:
-                      Icon(Icons.psychology_rounded, size: 20, color: _violet)),
+                  child: WinAIIcon(size: 24)),
             ),
             const SizedBox(width: 10),
             Expanded(
