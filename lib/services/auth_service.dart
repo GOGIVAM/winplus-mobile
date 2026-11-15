@@ -34,6 +34,22 @@ class ReconfirmationStatus {
       );
 }
 
+/// Réponse de POST /auth/google : session ouverte, ou choix du profil
+/// demandé (compte Google encore inconnu de WinPlus).
+class GoogleAuthResult {
+  final bool success;
+  final bool needsRole;
+  final String? idToken;
+  final String? message;
+  final String? locale;
+  const GoogleAuthResult(
+      {this.success = false,
+      this.needsRole = false,
+      this.idToken,
+      this.message,
+      this.locale});
+}
+
 class AuthService {
   AuthService._();
   static final AuthService instance = AuthService._();
@@ -64,6 +80,53 @@ class AuthService {
         message: data?['error'] as String? ?? L10n.current.svcLoginFailed,
         errorCode: data?['errorCode'] as String?,
       );
+    }
+  }
+
+  /// Identifiant client Google (public), lu sur le serveur qui garde le
+  /// secret. `null` : connexion Google non configurée côté serveur.
+  Future<String?> googleClientId() async {
+    try {
+      final res = await _api.dio.get('/auth/google/client');
+      final id = (res.data as Map<String, dynamic>?)?['clientId'] as String?;
+      return (id == null || id.isEmpty) ? null : id;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Connexion avec le jeton d'identité Google (même route que le site).
+  /// Compte existant (lié à Google, ou même adresse e-mail) : session
+  /// ouverte. Compte inconnu : [GoogleAuthResult.needsRole], à rappeler avec
+  /// le même [idToken] et le [role] choisi.
+  Future<GoogleAuthResult> googleSignIn(String idToken, {String? role}) async {
+    try {
+      final res = await _api.dio.post('/auth/google', data: {
+        'idToken': idToken,
+        if (role != null) 'role': role,
+        'locale': L10n.code,
+        // Application mobile : jetons dans la réponse (pas de cookie).
+        'rememberMe': true,
+      });
+      final d = res.data as Map<String, dynamic>;
+      if (d['needsRole'] == true) {
+        return GoogleAuthResult(
+            needsRole: true, idToken: d['idToken'] as String? ?? idToken);
+      }
+      final u = d['user'] as Map<String, dynamic>;
+      await SessionManager.save(
+        accessToken: d['accessToken'] as String,
+        refreshToken: d['refreshToken'] as String,
+        userId: u['id'] as int,
+        email: u['email'] as String,
+        role: (u['role'] as String?) ?? 'student',
+        name: '${u['firstName'] ?? ''} ${u['lastName'] ?? ''}'.trim(),
+      );
+      return GoogleAuthResult(success: true, locale: u['locale'] as String?);
+    } on DioException catch (e) {
+      final data = e.response?.data;
+      return GoogleAuthResult(
+          message: data is Map ? data['error'] as String? : null);
     }
   }
 

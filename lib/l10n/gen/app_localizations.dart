@@ -356,11 +356,23 @@ abstract class AppLocalizations {
   /// **'Aller à la connexion'**
   String get authGoToLogin;
 
-  /// No description provided for @authGoogleSoon.
+  /// No description provided for @authGoogleUnavailable.
   ///
   /// In fr, this message translates to:
-  /// **'Google OAuth bientôt disponible !'**
-  String get authGoogleSoon;
+  /// **'La connexion avec Google n\'est pas encore disponible. Utilisez votre adresse e-mail et votre mot de passe.'**
+  String get authGoogleUnavailable;
+
+  /// No description provided for @authGoogleFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'La connexion avec Google n\'a pas abouti. Réessayez ou utilisez votre mot de passe.'**
+  String get authGoogleFailed;
+
+  /// No description provided for @authGoogleChooseProfile.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisissez votre profil pour créer votre compte avec Google.'**
+  String get authGoogleChooseProfile;
 
   /// No description provided for @authIAm.
   ///
@@ -8956,6 +8968,18 @@ abstract class AppLocalizations {
   /// **'Copier le lien'**
   String get teacherCoursesCopyLink;
 
+  /// No description provided for @teacherCoursesOpenSite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouvrir le site'**
+  String get teacherCoursesOpenSite;
+
+  /// No description provided for @commonLinkOpenError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible d\'ouvrir le lien sur ce téléphone.'**
+  String get commonLinkOpenError;
+
   /// No description provided for @teacherCoursesCreateOnWeb.
   ///
   /// In fr, this message translates to:
@@ -13253,18 +13277,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Ce type de fichier s\'ouvre depuis le site winplus.cm.'**
   String get studentPlayerOpenOnWeb;
-
-  /// No description provided for @studentCertCopyLink.
-  ///
-  /// In fr, this message translates to:
-  /// **'Copier le lien'**
-  String get studentCertCopyLink;
-
-  /// No description provided for @studentCertLinkCopied.
-  ///
-  /// In fr, this message translates to:
-  /// **'Lien de vérification copié.'**
-  String get studentCertLinkCopied;
 
   /// No description provided for @mobileHomeForYou.
   ///

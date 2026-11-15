@@ -5,6 +5,7 @@ import '../app_state.dart';
 import '../data/models.dart';
 import '../services/auth_service.dart';
 import '../services/connectivity_service.dart';
+import '../services/deep_links.dart';
 import '../services/session_manager.dart';
 import '../shell/role_shell.dart';
 import '../theme/win_colors.dart';
@@ -42,6 +43,17 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   Future<void> _route() async {
+    try {
+      await _ouvrirPremierePage();
+    } finally {
+      // Un lien reçu au lancement (réinitialisation du mot de passe) s'ouvre
+      // par-dessus la première page, une fois celle-ci en place.
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => DeepLinks.instance.ready());
+    }
+  }
+
+  Future<void> _ouvrirPremierePage() async {
     if (!mounted) return;
 
     final loggedIn = await SessionManager.isLoggedIn();

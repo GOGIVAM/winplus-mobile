@@ -14,6 +14,7 @@ import 'theme/win_motion.dart';
 import 'shared/subscription/subscription_notifier.dart';
 import 'services/connectivity_service.dart';
 import 'services/local_cache_service.dart';
+import 'services/deep_links.dart';
 import 'services/local_downloads_service.dart';
 import 'services/messaging_service.dart';
 import 'services/outbox_service.dart';
@@ -64,6 +65,9 @@ class _WinPlusAppState extends State<WinPlusApp> {
     super.initState();
     _sub.loadFromApi();
     _state.loadLocale();
+    // Liens du site ouverts dans l'application (réinitialisation du mot de
+    // passe reçue par e-mail).
+    DeepLinks.instance.start(_navigator);
     // Session perdue (renouvellement refusé par le serveur) : retour à la
     // connexion avec un message, plutôt qu'un écran resté en erreur.
     ApiClient.instance.onSessionExpired = () {

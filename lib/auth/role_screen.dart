@@ -7,18 +7,47 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import '../services/auth_service.dart';
+import 'google_login.dart';
 import 'login_screen.dart';
 import 'signup_screen.dart';
 
 /// Sélection du rôle à l'inscription.
+///
+/// Avec [googleIdToken] (compte Google encore inconnu de WinPlus), le choix
+/// du profil crée directement le compte, sans formulaire d'inscription.
 class RoleScreen extends StatefulWidget {
-  const RoleScreen({super.key});
+  final String? googleIdToken;
+  const RoleScreen({super.key, this.googleIdToken});
   @override
   State<RoleScreen> createState() => _RoleScreenState();
 }
 
 class _RoleScreenState extends State<RoleScreen> {
   WinRole? _sel;
+  bool _loading = false;
+
+  Future<void> _continuer() async {
+    final role = _sel;
+    if (role == null) return;
+    final token = widget.googleIdToken;
+    if (token == null) {
+      Navigator.push(context,
+          WinPageRoute(builder: (_) => SignupScreen(role: role)));
+      return;
+    }
+    setState(() => _loading = true);
+    final messenger = ScaffoldMessenger.of(context);
+    final res = await AuthService.instance.googleSignIn(token, role: role.name);
+    if (!mounted) return;
+    if (!res.success) {
+      setState(() => _loading = false);
+      messenger.showSnackBar(SnackBar(
+          content: Text(res.message ?? context.l10n.authGoogleFailed)));
+      return;
+    }
+    await GoogleLogin.openAccountSpace(context, res.locale);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +71,9 @@ class _RoleScreenState extends State<RoleScreen> {
                 const SizedBox(height: 6),
                 Center(
                     child: Text(
-                        l10n.authChooseProfile,
+                        widget.googleIdToken != null
+                            ? l10n.authGoogleChooseProfile
+                            : l10n.authChooseProfile,
                         textAlign: TextAlign.center,
                         style: WinType.bodyM(s.onMuted))),
                 const SizedBox(height: 24),
@@ -62,10 +93,8 @@ class _RoleScreenState extends State<RoleScreen> {
               l10n.commonContinue,
               variant: WinButtonVariant.accent,
               block: true,
-              onTap: _sel == null
-                  ? null
-                  : () => Navigator.push(context,
-                      WinPageRoute(builder: (_) => SignupScreen(role: _sel!))),
+              loading: _loading,
+              onTap: _sel == null || _loading ? null : _continuer,
             ),
           ),
         ]),

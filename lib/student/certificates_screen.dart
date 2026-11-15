@@ -10,6 +10,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../app_config.dart';
+import '../widgets/external_links.dart';
 
 class CertificatesScreen extends StatefulWidget {
   const CertificatesScreen({super.key});
@@ -226,17 +227,16 @@ class _CertificatesScreenState extends State<CertificatesScreen> {
                                         const SizedBox(width: 8),
                                       if (cert.verificationCode != null)
                                         Expanded(
-                                          child: WinButton(context.l10n.studentCertCopyLink,
+                                          // Lien public de vérification, partagé par
+                                          // les applications du téléphone (la copie
+                                          // y figure aussi).
+                                          child: WinButton(context.l10n.studentCertShare,
                                               variant: WinButtonVariant.ghost,
                                               small: true,
-                                              icon: Icons.link,
-                                              onTap: () async {
-                                                final messenger = ScaffoldMessenger.of(context);
-                                                final done = L10n.current.studentCertLinkCopied;
-                                                await Clipboard.setData(ClipboardData(
-                                                    text: '${AppConfig.siteUrl}/verify/${cert.verificationCode}'));
-                                                messenger.showSnackBar(SnackBar(content: Text(done)));
-                                              }),
+                                              icon: Icons.share_outlined,
+                                              onTap: () => ExternalLinks.share(
+                                                  '${AppConfig.siteUrl}/verify/${cert.verificationCode}',
+                                                  subject: cert.title)),
                                         ),
                                     ]),
                                     // Matière seulement si elle apporte

@@ -150,7 +150,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get authGoToLogin => 'Aller à la connexion';
 
   @override
-  String get authGoogleSoon => 'Google OAuth bientôt disponible !';
+  String get authGoogleUnavailable =>
+      'La connexion avec Google n\'est pas encore disponible. Utilisez votre adresse e-mail et votre mot de passe.';
+
+  @override
+  String get authGoogleFailed =>
+      'La connexion avec Google n\'a pas abouti. Réessayez ou utilisez votre mot de passe.';
+
+  @override
+  String get authGoogleChooseProfile =>
+      'Choisissez votre profil pour créer votre compte avec Google.';
 
   @override
   String get authIAm => 'Je suis…';
@@ -5203,6 +5212,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get teacherCoursesCopyLink => 'Copier le lien';
 
   @override
+  String get teacherCoursesOpenSite => 'Ouvrir le site';
+
+  @override
+  String get commonLinkOpenError =>
+      'Impossible d\'ouvrir le lien sur ce téléphone.';
+
+  @override
   String teacherCoursesCreateOnWeb(Object url) {
     return 'La création et l\'édition des formations se font sur le site WinPlus, depuis votre espace enseignant, avec le même compte :\n\n$url\n\nVos formations apparaissent ensuite ici.';
   }
@@ -7767,12 +7783,6 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get studentPlayerOpenOnWeb =>
       'Ce type de fichier s\'ouvre depuis le site winplus.cm.';
-
-  @override
-  String get studentCertCopyLink => 'Copier le lien';
-
-  @override
-  String get studentCertLinkCopied => 'Lien de vérification copié.';
 
   @override
   String get mobileHomeForYou => 'Pour toi';

@@ -69,10 +69,12 @@ void main() {
       expect(find.byType(ForgotPasswordScreen), findsOneWidget);
     });
 
-    testWidgets('bouton Google : message « bientot disponible »', (tester) async {
+    testWidgets('bouton Google sans identifiant client sur le serveur : message « indisponible »', (tester) async {
+      faux.repond('GET', '/auth/google/client', {'clientId': null});
       await monterEcran(tester, const LoginScreen());
       await _toucher(tester, find.text(L10n.current.continueWithGoogle));
-      expect(find.text(L10n.current.authGoogleSoon), findsOneWidget);
+      expect(faux.recues('GET', '/auth/google/client'), hasLength(1));
+      expect(find.text(L10n.current.authGoogleUnavailable), findsOneWidget);
     });
 
     testWidgets('premier ecran sans session : pas de retour, ni connexion par telephone', (tester) async {
@@ -182,6 +184,22 @@ void main() {
       await _toucher(tester, _bouton(L10n.current.commonContinue));
       await pomper(tester, const Duration(milliseconds: 400));
       expect(find.text(L10n.current.authCreateMyAccount), findsOneWidget);
+    });
+
+    testWidgets('apres Google (compte inconnu) : le profil choisi est envoye avec le jeton, refus = message', (tester) async {
+      faux.repond('POST', '/auth/google', {'error': 'Compte desactive'}, statut: 400);
+      await monterEcran(tester, const RoleScreen(googleIdToken: 'jeton-google'));
+      final l = L10n.current;
+      expect(find.text(l.authGoogleChooseProfile), findsOneWidget);
+      await tester.tap(find.text(l.authRoleParentLabel));
+      await pomper(tester);
+      await _toucher(tester, _bouton(l.commonContinue));
+      final envoi = faux.recues('POST', '/auth/google').single.data as Map;
+      expect(envoi['idToken'], 'jeton-google');
+      expect(envoi['role'], 'parent');
+      expect(find.text('Compte desactive'), findsOneWidget);
+      // Pas de formulaire d'inscription : le compte se cree avec Google.
+      expect(find.text(l.authCreateMyAccount), findsNothing);
     });
   });
 }

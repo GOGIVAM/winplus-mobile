@@ -40,6 +40,25 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            <!-- Liens du site ouverts dans l'application (App Links, lot 2) :
+                 lien « mot de passe oublié » reçu par e-mail. Vérifiés par
+                 https://winplus.cm/.well-known/assetlinks.json (empreinte de
+                 la clé de signature). Traités par lib/services/deep_links.dart. -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="https"/>
+                <data android:host="winplus.cm"/>
+                <data android:host="www.winplus.cm"/>
+                <data android:host="integration.winplus.cm"/>
+                <data android:pathPrefix="/reset-password/"/>
+            </intent-filter>
+            <!-- Les liens passent par app_links, pas par le routage nommé de
+                 Flutter (l'application n'a pas de routes nommées). -->
+            <meta-data
+                android:name="flutter_deeplinking_enabled"
+                android:value="false"/>
         </activity>
         <!-- Écoute des notifications (flutter_foreground_task) : ne pas changer
              le nom du service. Relancée au démarrage du téléphone. -->
@@ -68,6 +87,12 @@
              n'est nécessaire, l'application photo du téléphone prend la vue). -->
         <intent>
             <action android:name="android.media.action.IMAGE_CAPTURE"/>
+        </intent>
+        <!-- url_launcher : ouvrir une page du site dans le navigateur
+             (Android 11+ exige de déclarer les intentions interrogées). -->
+        <intent>
+            <action android:name="android.intent.action.VIEW"/>
+            <data android:scheme="https"/>
         </intent>
     </queries>
     <!-- Appareil photo facultatif : l'application reste installable sans caméra

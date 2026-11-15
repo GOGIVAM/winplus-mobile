@@ -13,6 +13,7 @@ import '../widgets/win_widgets.dart';
 import '../shell/role_shell.dart';
 import '../shared/subscription/subscription_notifier.dart';
 import 'forgot_password_screen.dart';
+import 'google_login.dart';
 import 'role_screen.dart';
 
 /// Connexion : premier écran de l'application sans session, sur le modèle
@@ -181,8 +182,7 @@ class _LoginScreenState extends State<LoginScreen> {
       _SocialButton(
           icon: Icons.g_mobiledata,
           label: l10n.continueWithGoogle,
-          onTap: () => ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(l10n.authGoogleSoon)))),
+          onTap: () => GoogleLogin.start(context)),
       const Spacer(),
       const SizedBox(height: 28),
       // Bascule vers l'inscription : on y va par-dessus la connexion, le

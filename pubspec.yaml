@@ -32,6 +32,10 @@ dependencies:
   flutter_local_notifications: ^22.3.3
   workmanager: ^0.10.10
   flutter_foreground_task: ^10.0.0
+  app_links: ^7.0.0
+  url_launcher: ^6.3.3
+  share_plus: ^12.0.2
+  google_sign_in: ^7.2.0
 
 dev_dependencies:
   # Tests : le projet n'avait pas flutter_test, donc `flutter test` ne compilait rien.

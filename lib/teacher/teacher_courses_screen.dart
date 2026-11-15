@@ -8,6 +8,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
 import '../app_config.dart';
+import '../widgets/external_links.dart';
 
 // ---------------------------------------------------------------------------
 // Model
@@ -189,6 +190,19 @@ class _TeacherCoursesScreenState extends State<TeacherCoursesScreen> {
                   content: Text(L10n.current.teacherCoursesLinkCopied)));
             },
             child: Text(ctx.l10n.teacherCoursesCopyLink),
+          ),
+          TextButton(
+            onPressed: () async {
+              final messenger = ScaffoldMessenger.of(context);
+              final nav = Navigator.of(ctx);
+              final ok = await ExternalLinks.open(_webCourseEditorUrl);
+              nav.pop();
+              if (!ok) {
+                messenger.showSnackBar(SnackBar(
+                    content: Text(L10n.current.commonLinkOpenError)));
+              }
+            },
+            child: Text(ctx.l10n.teacherCoursesOpenSite),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx),
