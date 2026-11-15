@@ -12,6 +12,7 @@ import '../theme/win_motion.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import '../l10n/l10n.dart';
 
 /// Portefeuille professeur (lot 2, Module 5) : parité avec le web
 /// (RevenueOverview + WithdrawalFlow + WalletRecharge).
@@ -230,9 +231,9 @@ class _TeacherWalletViewState extends State<TeacherWalletView>
     if (error != null && _summary == null) {
       return _StateMessage(
         icon: error.sessionExpired ? Icons.lock_clock_outlined : Icons.wifi_off,
-        title: error.sessionExpired ? 'Session expirée' : 'Solde indisponible',
+        title: error.sessionExpired ? context.l10n.walletSessionExpired : context.l10n.walletUnavailable,
         message: error.message,
-        actionLabel: error.sessionExpired ? 'Se reconnecter' : 'Réessayer',
+        actionLabel: error.sessionExpired ? context.l10n.walletSignInAgain : context.l10n.walletRetry,
         onAction: error.sessionExpired ? _goToLogin : _loadAll,
       );
     }
@@ -255,31 +256,31 @@ class _TeacherWalletViewState extends State<TeacherWalletView>
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight)),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('SOLDE DISPONIBLE',
+              Text(context.l10n.walletAvailableCaps,
                   style: WinType.labelS(WinColors.ink300).copyWith(letterSpacing: 0.8)),
               const SizedBox(height: 6),
               Text(_xaf(summary.availableXaf),
                   style: WinType.archivo(size: 32, color: WinColors.cream50)),
               const SizedBox(height: 8),
-              Text('En attente : ${_xaf(summary.pendingXaf)}',
+              Text(context.l10n.walletPending(_xaf(summary.pendingXaf)),
                   style: WinType.labelM(WinColors.ink200)),
-              Text('Engagé (retrait en cours) : ${_xaf(summary.engagedXaf)}',
+              Text(context.l10n.walletEngaged(_xaf(summary.engagedXaf)),
                   style: WinType.labelM(WinColors.ink200)),
-              Text('Retrait minimum ${_xaf(summary.minWithdrawalXaf)}, sans frais',
+              Text(context.l10n.walletMinWithdrawal(_xaf(summary.minWithdrawalXaf)),
                   style: WinType.labelM(WinColors.ink300)),
               if (summary.isAnomaly) ...[
                 const SizedBox(height: 6),
-                Text('Anomalie de solde signalée au support WinPlus.',
+                Text(context.l10n.walletAnomaly,
                     style: WinType.labelM(WinColors.warnBg)),
               ],
               const SizedBox(height: 14),
               Wrap(spacing: 8, runSpacing: 8, children: [
-                WinButton('Retirer',
+                WinButton(context.l10n.walletWithdraw,
                     variant: WinButtonVariant.accent,
                     small: true,
                     icon: Icons.account_balance_wallet_outlined,
                     onTap: canWithdraw ? _openWithdraw : null),
-                WinButton('Recharger',
+                WinButton(context.l10n.walletRecharge,
                     variant: WinButtonVariant.outline,
                     small: true,
                     icon: Icons.add,
@@ -291,7 +292,7 @@ class _TeacherWalletViewState extends State<TeacherWalletView>
             const SizedBox(height: 12),
             WinCard(
                 child: Text(
-                    'Ton portefeuille est vide pour l\'instant. Tes ventes, tes séances de cours particulier, tes commissions et tes recharges l\'alimenteront.',
+                    context.l10n.walletEmpty,
                     style: WinType.bodyM(s.onMuted))),
           ],
           if (_tracked != null) ...[
@@ -313,17 +314,17 @@ class _TeacherWalletViewState extends State<TeacherWalletView>
                 const SizedBox(width: 12),
                 Expanded(
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text('Cours particuliers${_share!.planName != null ? ' · plan ${_share!.planName}' : ''}',
+                  Text(context.l10n.walletTutoringShare(_share!.planName != null ? context.l10n.walletPlanSuffix(_share!.planName!) : ''),
                       style: WinType.labelM(s.onMuted)),
                   Text(
-                      '${(_share!.teacherShare! * 100).round()} % pour toi · ${(100 - (_share!.teacherShare! * 100).round())} % WinPlus',
+                      context.l10n.walletShareSplit('${(_share!.teacherShare! * 100).round()}', '${100 - (_share!.teacherShare! * 100).round()}'),
                       style: WinType.titleM(s.onStrong)),
                 ])),
               ]),
             ),
           ],
           const SizedBox(height: 20),
-          Text('Historique', style: WinType.archivo(size: 18, color: s.onStrong)),
+          Text(context.l10n.walletHistory, style: WinType.archivo(size: 18, color: s.onStrong)),
           const SizedBox(height: 8),
           SizedBox(
             height: 36,
@@ -346,7 +347,7 @@ class _TeacherWalletViewState extends State<TeacherWalletView>
           _buildEntries(s),
           if (_contentRevenue.isNotEmpty) ...[
             const SizedBox(height: 20),
-            Text('Revenus par contenu', style: WinType.archivo(size: 18, color: s.onStrong)),
+            Text(context.l10n.walletRevenueByContent, style: WinType.archivo(size: 18, color: s.onStrong)),
             const SizedBox(height: 12),
             WinCard(
               padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -365,7 +366,7 @@ class _TeacherWalletViewState extends State<TeacherWalletView>
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: WinType.bodyM(s.onStrong).copyWith(fontWeight: FontWeight.w600)),
-                        Text('${_contentRevenue[i]['sales'] ?? 0} ventes',
+                        Text(context.l10n.walletSalesCount('${_contentRevenue[i]['sales'] ?? 0}'),
                             style: WinType.labelM(s.onMuted)),
                       ])),
                       Text('+${_xaf((_contentRevenue[i]['revenue'] as num?)?.round() ?? 0)}',
@@ -390,7 +391,7 @@ class _TeacherWalletViewState extends State<TeacherWalletView>
         child: Column(children: [
           Text(_entriesError!, style: WinType.bodyM(s.onMuted), textAlign: TextAlign.center),
           const SizedBox(height: 8),
-          WinButton('Réessayer',
+          WinButton(context.l10n.walletRetry,
               variant: WinButtonVariant.outline,
               small: true,
               icon: Icons.refresh,
@@ -402,8 +403,8 @@ class _TeacherWalletViewState extends State<TeacherWalletView>
       return WinCard(
           child: Text(
               _source == 'all'
-                  ? 'Aucune opération pour l\'instant.'
-                  : 'Aucune opération pour cette source.',
+                  ? context.l10n.walletNoEntries
+                  : context.l10n.walletNoEntriesSource,
               style: WinType.bodyM(s.onMuted)));
     }
     return WinCard(
@@ -414,7 +415,7 @@ class _TeacherWalletViewState extends State<TeacherWalletView>
           Padding(
             padding: const EdgeInsets.all(8),
             child: WinButton(
-                _entriesLoading ? 'Chargement…' : 'Voir plus (${_entriesTotal - _entries.length})',
+                _entriesLoading ? context.l10n.walletLoading : context.l10n.walletSeeMore('${_entriesTotal - _entries.length}'),
                 variant: WinButtonVariant.ghost,
                 small: true,
                 loading: _entriesLoading,
@@ -432,8 +433,8 @@ class _TeacherWalletViewState extends State<TeacherWalletView>
   Widget _entryRow(WinScheme s, WalletEntry e, bool divider) {
     final credit = e.amountXaf > 0;
     final statusLabel = switch (e.status) {
-      'pending' => ' · en attente',
-      'reversed' => ' · annulée',
+      'pending' => context.l10n.walletStatusPending,
+      'reversed' => context.l10n.walletStatusReversed,
       _ => '',
     };
     return Container(
@@ -457,7 +458,7 @@ class _TeacherWalletViewState extends State<TeacherWalletView>
               style: WinType.bodyM(s.onStrong).copyWith(fontWeight: FontWeight.w600)),
           Text('${_date(e.date)}$statusLabel', style: WinType.labelM(s.onMuted)),
         ])),
-        Text(e.amountXaf == 0 ? 'Versé' : '${credit ? '+' : ''}${_xaf(e.amountXaf)}',
+        Text(e.amountXaf == 0 ? context.l10n.walletPaidOut : '${credit ? '+' : ''}${_xaf(e.amountXaf)}',
             style: WinType.archivo(size: 15, color: credit ? WinColors.success : s.onStrong)),
       ]),
     );
@@ -505,15 +506,17 @@ class _WithdrawalStatusCard extends StatelessWidget {
     final s = WinTheme.of(context);
     final w = withdrawal;
     final (title, color, icon) = w.isCompleted
-        ? ('Retrait effectué', WinColors.success, Icons.check_circle)
+        ? (context.l10n.walletWithdrawalDone, WinColors.success, Icons.check_circle)
         : w.isFailed
-            ? ('Retrait non abouti', WinColors.error, Icons.error_outline)
-            : ('Transfert en cours…', WinColors.warn, Icons.hourglass_top);
+            ? (context.l10n.walletWithdrawalFailed, WinColors.error, Icons.error_outline)
+            : (context.l10n.walletWithdrawalInProgress, WinColors.warn, Icons.hourglass_top);
     final detail = w.isCompleted
-        ? '${_xaf(w.amountXaf)} envoyés vers ${w.operatorLabel} ${w.phoneMasked}${w.processedAt != null ? ' le ${_date(w.processedAt)}' : ''}.'
+        ? context.l10n.walletWithdrawalDoneDetail(_xaf(w.amountXaf), w.operatorLabel, w.phoneMasked,
+            w.processedAt != null ? context.l10n.walletOnDate(_date(w.processedAt)) : '')
         : w.isFailed
-            ? '${w.failureReason ?? 'Le transfert a échoué.'} Les ${_xaf(w.amountXaf)} ont été remis sur ton solde.'
-            : '${_xaf(w.amountXaf)} vers ${w.operatorLabel} ${w.phoneMasked}. L\'opération se poursuit même si tu quittes l\'application ; tu seras notifié de son issue.';
+            ? context.l10n.walletWithdrawalFailedDetail(
+                w.failureReason ?? context.l10n.walletTransferFailed, _xaf(w.amountXaf))
+            : context.l10n.walletWithdrawalProgressDetail(_xaf(w.amountXaf), w.operatorLabel, w.phoneMasked);
     return WinCard(
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Icon(icon, color: color),
@@ -526,7 +529,7 @@ class _WithdrawalStatusCard extends StatelessWidget {
         ])),
         if (onDismiss != null)
           IconButton(
-              tooltip: 'Fermer', icon: const Icon(Icons.close, size: 18), onPressed: onDismiss),
+              tooltip: context.l10n.walletClose, icon: const Icon(Icons.close, size: 18), onPressed: onDismiss),
       ]),
     );
   }
@@ -576,13 +579,13 @@ class _WithdrawSheetState extends State<_WithdrawSheet> {
     final amount = int.tryParse(_amount.text) ?? 0;
     String? err;
     if (!(phone.length == 9 || (phone.length == 12 && phone.startsWith('237')))) {
-      err = 'Numéro Mobile Money invalide : 9 chiffres (ex. 6XXXXXXXX).';
+      err = context.l10n.walletInvalidPhone;
     } else if (phone != _digits(_phoneConfirm.text)) {
-      err = 'Les deux numéros saisis ne correspondent pas.';
+      err = context.l10n.walletPhonesMismatch;
     } else if (amount < widget.summary.minWithdrawalXaf) {
-      err = 'Le montant minimum de retrait est de ${_xaf(widget.summary.minWithdrawalXaf)}.';
+      err = context.l10n.walletMinWithdrawalError(_xaf(widget.summary.minWithdrawalXaf));
     } else if (_available != null && amount > _available!) {
-      err = 'Solde insuffisant : ${_xaf(_available!)} disponibles.';
+      err = context.l10n.walletInsufficient(_xaf(_available!));
     }
     setState(() {
       _error = err;
@@ -633,12 +636,12 @@ class _WithdrawSheetState extends State<_WithdrawSheet> {
       padding: EdgeInsets.fromLTRB(20, 20, 20, 20 + MediaQuery.of(context).viewInsets.bottom),
       child: SingleChildScrollView(
         child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, mainAxisSize: MainAxisSize.min, children: [
-          Text(_recap ? 'Confirmer le retrait' : 'Retirer des fonds',
+          Text(_recap ? context.l10n.walletConfirmWithdrawal : context.l10n.walletWithdrawFunds,
               style: WinType.archivo(size: 20, color: s.onStrong)),
           const SizedBox(height: 6),
           if (!_recap) ...[
             Text(
-                'Minimum ${_xaf(widget.summary.minWithdrawalXaf)}, aucun frais, pas de plafond. Disponible : ${_xaf(_available ?? 0)}.',
+                context.l10n.walletWithdrawIntro(_xaf(widget.summary.minWithdrawalXaf), _xaf(_available ?? 0)),
                 style: WinType.bodyS(s.onMuted)),
             const SizedBox(height: 14),
             SegmentedButton<String>(
@@ -650,15 +653,15 @@ class _WithdrawSheetState extends State<_WithdrawSheet> {
               onSelectionChanged: (v) => setState(() => _operator = v.first),
             ),
             const SizedBox(height: 12),
-            WinTextField(label: 'Numéro Mobile Money', hint: '6XXXXXXXX', controller: _phone, keyboardType: TextInputType.phone),
+            WinTextField(label: context.l10n.walletPhoneLabel, hint: '6XXXXXXXX', controller: _phone, keyboardType: TextInputType.phone),
             const SizedBox(height: 10),
-            WinTextField(label: 'Confirme le numéro', hint: '6XXXXXXXX', controller: _phoneConfirm, keyboardType: TextInputType.phone),
+            WinTextField(label: context.l10n.walletPhoneConfirm, hint: '6XXXXXXXX', controller: _phoneConfirm, keyboardType: TextInputType.phone),
             const SizedBox(height: 10),
             TextField(
               controller: _amount,
               keyboardType: TextInputType.number,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              decoration: const InputDecoration(labelText: 'Montant (FCFA)', border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: context.l10n.walletAmountLabel, border: const OutlineInputBorder()),
               onChanged: (_) => setState(() {}),
             ),
             if ((_available ?? 0) > 0)
@@ -666,17 +669,17 @@ class _WithdrawSheetState extends State<_WithdrawSheet> {
                 alignment: Alignment.centerLeft,
                 child: TextButton(
                   onPressed: () => setState(() => _amount.text = '${_available!}'),
-                  child: Text('Tout retirer (${_xaf(_available!)})'),
+                  child: Text(context.l10n.walletWithdrawAll(_xaf(_available!))),
                 ),
               ),
           ] else ...[
             const SizedBox(height: 8),
-            _recapRow(s, 'Montant reçu', _xaf(amount), strong: true),
-            _recapRow(s, 'Frais', 'Aucun'),
-            _recapRow(s, 'Opérateur', _operator == 'orange' ? 'Orange Money' : 'MTN MoMo'),
-            _recapRow(s, 'Numéro', _phone.text),
+            _recapRow(s, context.l10n.walletAmountReceived, _xaf(amount), strong: true),
+            _recapRow(s, context.l10n.walletFees, context.l10n.walletNoFees),
+            _recapRow(s, context.l10n.walletOperator, _operator == 'orange' ? 'Orange Money' : 'MTN MoMo'),
+            _recapRow(s, context.l10n.walletNumber, _phone.text),
             const SizedBox(height: 8),
-            Text('Le montant est réservé sur ton solde dès la validation, puis envoyé automatiquement.',
+            Text(context.l10n.walletReservedNotice,
                 style: WinType.bodyS(s.onMuted)),
           ],
           if (_error != null) ...[
@@ -686,7 +689,7 @@ class _WithdrawSheetState extends State<_WithdrawSheet> {
           const SizedBox(height: 16),
           Row(children: [
             Expanded(
-                child: WinButton(_recap ? 'Modifier' : 'Annuler',
+                child: WinButton(_recap ? context.l10n.walletEdit : context.l10n.walletCancel,
                     variant: WinButtonVariant.outline,
                     block: true,
                     onTap: _submitting
@@ -694,7 +697,7 @@ class _WithdrawSheetState extends State<_WithdrawSheet> {
                         : () => _recap ? setState(() => _recap = false) : Navigator.of(context).pop())),
             const SizedBox(width: 10),
             Expanded(
-                child: WinButton(_recap ? 'Retirer ${_xaf(amount)}' : 'Continuer',
+                child: WinButton(_recap ? context.l10n.walletWithdrawAmount(_xaf(amount)) : context.l10n.walletContinue,
                     variant: WinButtonVariant.primary,
                     block: true,
                     loading: _submitting,
@@ -748,11 +751,11 @@ class _RechargeSheetState extends State<_RechargeSheet> {
     final amount = int.tryParse(_amount.text) ?? 0;
     final phone = _phone.text.replaceAll(RegExp(r'\D'), '');
     if (amount < widget.minXaf) {
-      setState(() => _error = 'Le montant minimum de recharge est de ${_xaf(widget.minXaf)}.');
+      setState(() => _error = context.l10n.walletMinRechargeError(_xaf(widget.minXaf)));
       return;
     }
     if (phone.length < 9) {
-      setState(() => _error = 'Numéro Mobile Money invalide : 9 chiffres (ex. 6XXXXXXXX).');
+      setState(() => _error = context.l10n.walletInvalidPhone);
       return;
     }
     setState(() {
@@ -784,7 +787,7 @@ class _RechargeSheetState extends State<_RechargeSheet> {
             setState(() {
               _waiting = false;
               _success = false;
-              _error = message ?? 'Paiement refusé ou expiré. Aucun montant n\'a été crédité.';
+              _error = message ?? L10n.current.walletPaymentRefused;
             });
           }
         } catch (_) {/* réseau : nouvel essai */}
@@ -793,7 +796,7 @@ class _RechargeSheetState extends State<_RechargeSheet> {
           setState(() {
             _waiting = false;
             _success = false;
-            _error = 'Délai dépassé. Si tu as confirmé sur ton téléphone, le montant apparaîtra dès confirmation.';
+            _error = L10n.current.walletTimeout;
           });
         }
       });
@@ -817,13 +820,13 @@ class _RechargeSheetState extends State<_RechargeSheet> {
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           if (_waiting) const CircularProgressIndicator() else Icon(ok ? Icons.check_circle : Icons.error_outline, size: 40, color: ok ? WinColors.success : WinColors.error),
           const SizedBox(height: 12),
-          Text(_waiting ? 'Confirme le paiement sur ton téléphone…' : ok ? 'Recharge confirmée' : 'Recharge non aboutie',
+          Text(_waiting ? context.l10n.walletConfirmOnPhone : ok ? context.l10n.walletRechargeDone : context.l10n.walletRechargeFailed,
               style: WinType.titleM(s.onStrong), textAlign: TextAlign.center),
           const SizedBox(height: 6),
-          Text(_waiting || ok ? '${_xaf(int.tryParse(_amount.text) ?? 0)} via ${_operator == 'orange' ? 'Orange Money' : 'MTN MoMo'}' : (_error ?? ''),
+          Text(_waiting || ok ? context.l10n.walletVia(_xaf(int.tryParse(_amount.text) ?? 0), _operator == 'orange' ? 'Orange Money' : 'MTN MoMo') : (_error ?? ''),
               style: WinType.bodyM(s.onMuted), textAlign: TextAlign.center),
           const SizedBox(height: 16),
-          WinButton(_waiting ? 'Fermer' : 'Terminé',
+          WinButton(_waiting ? context.l10n.walletClose : context.l10n.walletDone,
               variant: WinButtonVariant.primary, block: true, onTap: () => Navigator.of(context).pop(ok)),
         ]),
       );
@@ -832,9 +835,9 @@ class _RechargeSheetState extends State<_RechargeSheet> {
       padding: EdgeInsets.fromLTRB(20, 20, 20, 20 + MediaQuery.of(context).viewInsets.bottom),
       child: SingleChildScrollView(
         child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, mainAxisSize: MainAxisSize.min, children: [
-          Text('Recharger mon portefeuille', style: WinType.archivo(size: 20, color: s.onStrong)),
+          Text(context.l10n.walletRechargeTitle, style: WinType.archivo(size: 20, color: s.onStrong)),
           const SizedBox(height: 6),
-          Text('Le montant est crédité dès la confirmation du paiement Mobile Money. Minimum ${_xaf(widget.minXaf)}.',
+          Text(context.l10n.walletRechargeIntro(_xaf(widget.minXaf)),
               style: WinType.bodyS(s.onMuted)),
           const SizedBox(height: 14),
           SegmentedButton<String>(
@@ -846,20 +849,20 @@ class _RechargeSheetState extends State<_RechargeSheet> {
             onSelectionChanged: (v) => setState(() => _operator = v.first),
           ),
           const SizedBox(height: 12),
-          WinTextField(label: 'Numéro Mobile Money', hint: '6XXXXXXXX', controller: _phone, keyboardType: TextInputType.phone),
+          WinTextField(label: context.l10n.walletPhoneLabel, hint: '6XXXXXXXX', controller: _phone, keyboardType: TextInputType.phone),
           const SizedBox(height: 10),
           TextField(
             controller: _amount,
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            decoration: const InputDecoration(labelText: 'Montant (FCFA)', border: OutlineInputBorder()),
+            decoration: InputDecoration(labelText: context.l10n.walletAmountLabel, border: const OutlineInputBorder()),
           ),
           if (_error != null) ...[
             const SizedBox(height: 10),
             Text(_error!, style: WinType.bodyS(WinColors.error)),
           ],
           const SizedBox(height: 16),
-          WinButton('Recharger', variant: WinButtonVariant.primary, block: true, loading: _submitting, onTap: _submitting ? null : _submit),
+          WinButton(context.l10n.walletRecharge, variant: WinButtonVariant.primary, block: true, loading: _submitting, onTap: _submitting ? null : _submit),
         ]),
       ),
     );

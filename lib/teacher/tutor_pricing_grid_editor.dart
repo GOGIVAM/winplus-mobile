@@ -392,8 +392,9 @@ class _TutorPricingGridEditorState extends State<TutorPricingGridEditor> {
             small: true,
             onTap: () => _emit(modifiers: [
                   ..._g.modifiers,
-                  const TutorRateModifier(
-                      label: 'Soir',
+                  // Nom proposé par défaut, modifiable, dans la langue de l'application.
+                  TutorRateModifier(
+                      label: context.l10n.teacherPricingEveningDefault,
                       daysOfWeek: [1, 2, 3, 4, 5],
                       startTime: '18:00',
                       endTime: '21:00',

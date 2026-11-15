@@ -116,7 +116,7 @@ class ApiSubjectScore {
 
   factory ApiSubjectScore.fromJson(Map<String, dynamic> j) => ApiSubjectScore(
         subjectId: j['subjectId'] as int? ?? 0,
-        subjectTitle: j['subjectTitle'] as String? ?? 'Matière',
+        subjectTitle: j['subjectTitle'] as String? ?? L10n.current.parentSubjectFallback,
         averageScore: ((j['averageScore'] ?? 0) as num).toDouble(),
       );
 }
@@ -450,7 +450,7 @@ class ParentService {
     } on DioException catch (e) {
       final data = e.response?.data;
       throw CoveredChildrenException(
-          (data is Map ? data['error'] as String? : null) ?? "Le choix n'a pas pu être enregistré.");
+          (data is Map ? data['error'] as String? : null) ?? L10n.current.parentCoveredSaveError);
     }
   }
 

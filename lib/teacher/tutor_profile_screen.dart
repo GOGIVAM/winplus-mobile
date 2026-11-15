@@ -59,13 +59,9 @@ const _specialties = [
   'Cours de vacances'
 ];
 const _styles = ['Structuré', 'Interactif', 'Mixte'];
-const _stepLabels = [
-  'Matières & niveaux',
-  'Intervention & zones',
-  'Tarifs & forfaits',
-  'Disponibilités',
-  'Bio & vérification'
-];
+/// Nombre d'étapes du profil (matières, intervention, tarifs, disponibilités,
+/// présentation) ; leurs titres affichés viennent des fichiers de langue.
+const _stepCount = 5;
 /// Jour abrégé (0 = dimanche … 6 = samedi) : « Dim », « Lun »… / « Sun », « Mon »…
 String _dayShort(int d) =>
     WinFormat.weekdayShortCap(d == 0 ? DateTime.sunday : d);
@@ -588,7 +584,7 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
 
   Widget _buildStepper(WinScheme s) {
     return Row(
-        children: List.generate(_stepLabels.length * 2 - 1, (i) {
+        children: List.generate(_stepCount * 2 - 1, (i) {
       if (i.isOdd) {
         final done = (i ~/ 2) < _step;
         return Expanded(

@@ -3,7 +3,7 @@ import '../l10n/class_levels.dart';
 import 'package:flutter/material.dart';
 import '../l10n/l10n.dart';
 import '../theme/win_motion.dart';
-import '../data/mock_data.dart';
+import '../data/reference_data.dart';
 import '../data/models.dart';
 import '../services/session_manager.dart';
 import '../services/user_service.dart';

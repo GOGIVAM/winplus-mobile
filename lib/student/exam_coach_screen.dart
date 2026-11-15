@@ -19,17 +19,18 @@ class ExamCoachScreen extends StatefulWidget {
   State<ExamCoachScreen> createState() => _ExamCoachScreenState();
 }
 
-const _examTypes = <String, String>{
-  'BEPC': "BEPC — Brevet d'Études du Premier Cycle",
-  'BAC_C': 'BAC C — Mathématiques & Sciences Physiques',
-  'BAC_D': 'BAC D — Sciences & Vie de la Terre',
-  'BAC_A': 'BAC A — Lettres & Sciences Humaines',
-  'BAC_TI': 'BAC TI — Technique Industrielle',
-  'BAC_G': 'BAC G — Sciences Économiques & Sociales',
-  'ENSP': 'ENSP',
-  'UY_L1': 'Université — Licence 1',
-  'CONCOURS': "Concours d'entrée",
-};
+/// Codes d'examen envoyés au serveur, affichés tels quels (BEPC, BAC_C…).
+const _examTypes = <String>[
+  'BEPC',
+  'BAC_C',
+  'BAC_D',
+  'BAC_A',
+  'BAC_TI',
+  'BAC_G',
+  'ENSP',
+  'UY_L1',
+  'CONCOURS',
+];
 
 class _ExamCoachScreenState extends State<ExamCoachScreen> {
   bool _loading = true;
@@ -253,10 +254,10 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
         Wrap(
           spacing: 8,
           runSpacing: 8,
-          children: _examTypes.entries.map((e) {
-            final selected = _examType == e.key;
+          children: _examTypes.map((code) {
+            final selected = _examType == code;
             return GestureDetector(
-              onTap: () => setState(() => _examType = e.key),
+              onTap: () => setState(() => _examType = code),
               child: Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -265,7 +266,7 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
                   borderRadius: BorderRadius.circular(WinRadii.full),
                   border: Border.all(color: selected ? s.primary : s.outline),
                 ),
-                child: Text(e.key,
+                child: Text(code,
                     style: WinType.labelM(selected ? s.primary : s.onMuted)),
               ),
             );

@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:dio/dio.dart';
 
+import '../l10n/l10n.dart';
 import 'api_client.dart';
 import 'connectivity_service.dart';
 
@@ -43,17 +44,15 @@ WalletApiException _toWalletError(Object e, String fallback) {
       available = data['balanceXaf'] as num?;
     }
     if (status == null) {
-      return const WalletApiException(
-          'Connexion impossible. Vérifie ton réseau et réessaie.');
+      return WalletApiException(L10n.current.walletErrOffline);
     }
     if (status == 401) {
-      return const WalletApiException('Ta session a expiré. Reconnecte-toi.',
+      return WalletApiException(L10n.current.walletErrSession,
           statusCode: 401);
     }
     // Refus de la politique « adresse vérifiée » (corps vide côté serveur).
     if (status == 403 && serverMessage == null) {
-      return const WalletApiException(
-          'Action non autorisée : vérifie ton adresse e-mail pour effectuer un retrait.',
+      return WalletApiException(L10n.current.walletErrUnverified,
           statusCode: 403);
     }
     return WalletApiException(serverMessage ?? fallback,
@@ -158,17 +157,18 @@ class WalletSummary {
       );
 }
 
-/// Sources filtrables de l'historique, identiques au web et au serveur.
-const walletSources = <(String, String)>[
-  ('all', 'Tout'),
-  ('catalogue', 'Ventes'),
-  ('cours_particulier', 'Cours particuliers'),
-  ('affiliation', 'Affiliation'),
-  ('recharge', 'Recharges'),
-  ('credit_admin', 'Crédits admin'),
-  ('achat', 'Achats'),
-  ('retrait', 'Retraits'),
-];
+/// Sources filtrables de l'historique, identiques au web et au serveur :
+/// (valeur envoyée au serveur, libellé dans la langue de l'application).
+List<(String, String)> get walletSources => [
+      ('all', L10n.current.walletSrcAll),
+      ('catalogue', L10n.current.walletSrcSales),
+      ('cours_particulier', L10n.current.walletSrcTutoring),
+      ('affiliation', L10n.current.walletSrcAffiliation),
+      ('recharge', L10n.current.walletSrcRecharge),
+      ('credit_admin', L10n.current.walletSrcAdmin),
+      ('achat', L10n.current.walletSrcPurchases),
+      ('retrait', L10n.current.walletSrcWithdrawals),
+    ];
 
 class WalletEntry {
   final int id;
@@ -220,7 +220,7 @@ class WalletService {
       final res = await _api.dio.get('/wallet/me');
       return WalletSummary.fromJson(_unwrap(res.data));
     } catch (e) {
-      throw _toWalletError(e, 'Impossible de charger ton solde.');
+      throw _toWalletError(e, L10n.current.walletErrSummary);
     }
   }
 
@@ -236,7 +236,7 @@ class WalletService {
           .toList();
       return WalletEntriesPage(items, _int(d['total']));
     } catch (e) {
-      throw _toWalletError(e, 'Impossible de charger l\'historique.');
+      throw _toWalletError(e, L10n.current.walletErrHistory);
     }
   }
 
@@ -247,7 +247,7 @@ class WalletService {
       final d = body is Map<String, dynamic> ? body['data'] : null;
       return d is Map<String, dynamic> ? WalletWithdrawal.fromJson(d) : null;
     } catch (e) {
-      throw _toWalletError(e, 'Impossible de vérifier le retrait en cours.');
+      throw _toWalletError(e, L10n.current.walletErrActive);
     }
   }
 
@@ -257,7 +257,7 @@ class WalletService {
       final res = await _api.dio.get('/withdrawals/status/$id');
       return WalletWithdrawal.fromJson(_unwrap(res.data));
     } catch (e) {
-      throw _toWalletError(e, 'Impossible de lire le statut du retrait.');
+      throw _toWalletError(e, L10n.current.walletErrWithdrawalStatus);
     }
   }
 
@@ -278,7 +278,7 @@ class WalletService {
       });
       return WalletWithdrawal.fromJson(_unwrap(res.data));
     } catch (e) {
-      throw _toWalletError(e, 'Le retrait n\'a pas pu être enregistré.');
+      throw _toWalletError(e, L10n.current.walletErrWithdrawal);
     }
   }
 
@@ -300,7 +300,7 @@ class WalletService {
       final d = _unwrap(res.data);
       return WalletRechargeStart(_int(d['paymentId']), _int(d['amountXaf']));
     } catch (e) {
-      throw _toWalletError(e, 'La recharge n\'a pas pu être lancée.');
+      throw _toWalletError(e, L10n.current.walletErrRecharge);
     }
   }
 
@@ -314,7 +314,7 @@ class WalletService {
         j['errorMessage'] as String?,
       );
     } catch (e) {
-      throw _toWalletError(e, 'Impossible de lire le statut du paiement.');
+      throw _toWalletError(e, L10n.current.walletErrPaymentStatus);
     }
   }
 }

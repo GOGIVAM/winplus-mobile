@@ -684,7 +684,7 @@ class _StudentWinAITabState extends State<StudentWinAITab> {
       _thinking = true;
     });
     final reply = await ChatbotService.instance.sendMessage(
-      message: 'Analyse ce fichier : $name',
+      message: L10n.current.studentTabsAnalyseFile(name),
     );
     if (!mounted) return;
     setState(() {

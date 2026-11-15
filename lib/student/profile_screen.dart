@@ -309,7 +309,9 @@ class _ProfileScreenState extends State<ProfileScreen>
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                  Text('Android · Yaoundé', style: WinType.titleM(s.onStrong)),
+                  // Pas de liste de sessions côté serveur : seule la session
+                  // de ce téléphone est connue (plus de ville inventée).
+                  Text(context.l10n.studentProfileThisDevice, style: WinType.titleM(s.onStrong)),
                   Text(context.l10n.studentProfileCurrentSession,
                       style: WinType.labelM(s.onFaint)),
                 ])),
