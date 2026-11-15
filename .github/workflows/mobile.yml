@@ -1,0 +1,129 @@
+# Compilation automatique de l'application mobile (lot 2, Communs 6).
+#
+# - À chaque push sur main et chaque pull request : analyse et tests.
+# - Puis Android : APK (installation directe) et AAB (Play Store), gardés
+#   30 jours comme artefacts de l'exécution.
+# - iOS : compilation sans signature, seulement sur une étiquette vX.Y.Z ou à
+#   la demande (les machines macOS coûtent dix fois plus de minutes). La
+#   signature et la publication iOS sont reportées (décision du 14/11).
+#
+# Numéro de version : le nom (3.1.0) vient de pubspec.yaml ; le numéro de
+# compilation est le numéro d'exécution + 100, toujours croissant, comme
+# l'exige le Play Store.
+#
+# Signature Android de production : secrets du dépôt ANDROID_KEYSTORE_BASE64
+# (fichier .jks encodé en base64), ANDROID_KEYSTORE_PASSWORD,
+# ANDROID_KEY_ALIAS et ANDROID_KEY_PASSWORD. Sans eux, la version est signée
+# avec la clé de développement : installable pour tester, pas publiable.
+name: Application mobile
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      ios:
+        description: 'Compiler aussi iOS (sans signature)'
+        type: boolean
+        default: false
+
+concurrency:
+  group: mobile-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  FLUTTER_VERSION: '3.41.4'
+
+jobs:
+  tests:
+    name: Analyse et tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - name: Analyse (erreurs et avertissements)
+        run: flutter analyze --no-fatal-infos
+      - name: Tests
+        run: flutter test
+
+  android:
+    name: Android (APK et AAB)
+    needs: tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - name: Clé de signature de production (si les secrets existent)
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "::warning::Pas de clé de production : APK et AAB signés avec la clé de développement (non publiables)."
+            exit 0
+          fi
+          echo "$KEYSTORE_BASE64" | base64 --decode > android/app/upload-keystore.jks
+          {
+            echo "storeFile=upload-keystore.jks"
+            echo "storePassword=$KEYSTORE_PASSWORD"
+            echo "keyAlias=$KEY_ALIAS"
+            echo "keyPassword=$KEY_PASSWORD"
+          } > android/key.properties
+      - name: APK
+        run: flutter build apk --release --build-number=$((GITHUB_RUN_NUMBER + 100))
+      - name: AAB (Play Store)
+        run: flutter build appbundle --release --build-number=$((GITHUB_RUN_NUMBER + 100))
+      - name: Effacer la clé du poste de compilation
+        if: always()
+        run: rm -f android/app/upload-keystore.jks android/key.properties
+      - uses: actions/upload-artifact@v4
+        with:
+          name: winplus-android-${{ github.run_number }}
+          path: |
+            build/app/outputs/flutter-apk/app-release.apk
+            build/app/outputs/bundle/release/app-release.aab
+          retention-days: 30
+
+  ios:
+    name: iOS (sans signature)
+    needs: tests
+    if: startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && inputs.ios)
+    runs-on: macos-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - name: Compilation iOS sans signature
+        run: flutter build ios --release --no-codesign --build-number=$((GITHUB_RUN_NUMBER + 100))
+      - name: Archive de l'application
+        run: cd build/ios/iphoneos && zip -qr ../../../winplus-ios-non-signe.zip Runner.app
+      - uses: actions/upload-artifact@v4
+        with:
+          name: winplus-ios-${{ github.run_number }}
+          path: winplus-ios-non-signe.zip
+          retention-days: 14
