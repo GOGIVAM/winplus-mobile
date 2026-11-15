@@ -8,6 +8,7 @@ import 'package:workmanager/workmanager.dart';
 import '../app_state.dart' show kLocalePrefKey;
 import '../l10n/l10n.dart';
 import 'api_client.dart';
+import 'http_cache.dart';
 import 'push_service.dart';
 import 'session_manager.dart';
 import 'system_notifications.dart';
@@ -166,6 +167,9 @@ Future<void> _prepareBackgroundIsolate() async {
   final code = prefs.getString(kLocalePrefKey);
   if (code == 'en' || code == 'fr') L10n.locale = Locale(code!);
   SessionManager.reload();
+  // Pas de cache des lectures ici : Hive n'est pas initialisé dans cet
+  // isolat, et les notifications veulent la réponse fraîche du serveur.
+  HttpCache.instance.enabled = false;
   ApiClient.instance.backgroundMode = true;
   ApiClient.instance.mayRefresh = () async => !await _appInForeground();
 }

@@ -46,6 +46,14 @@ class HttpCache {
 
   _Store? _store;
 
+  /// Faux dans les isolats de fond (service de notifications, tâche
+  /// périodique) : Hive n'y est pas initialisé, et ils n'affichent rien.
+  bool enabled = true;
+
+  /// Ouverture déjà tentée sans succès : on ne réessaie plus à chaque
+  /// réponse (chaque essai relevait une erreur de Hive).
+  bool _unavailable = false;
+
   /// Date de la plus ancienne donnée servie depuis le cache depuis le
   /// dernier succès réseau ; null quand tout vient du serveur. Alimente le
   /// bandeau « hors ligne, données du … ».
@@ -56,15 +64,20 @@ class HttpCache {
   @visibleForTesting
   void useMemoryStore() {
     _store = _MemoryStore();
+    enabled = true;
+    _unavailable = false;
     servedFromCacheSince.value = null;
   }
 
   Future<_Store?> _open() async {
+    if (!enabled) return null;
     if (_store != null) return _store;
+    if (_unavailable) return null;
     try {
       _store = _HiveStore(await Hive.openBox(boxName));
     } catch (e) {
-      // Hive non initialisé (outil, test sans cache) : pas de cache.
+      // Hive non initialisé (isolat de fond, outil) : pas de cache.
+      _unavailable = true;
       debugPrint('HttpCache indisponible : $e');
       return null;
     }

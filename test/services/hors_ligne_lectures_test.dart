@@ -96,6 +96,16 @@ void main() {
     expect(HttpCache.isCacheable(get('/student/stats')), isTrue);
   });
 
+  test('isolat de fond (cache desactive) : rien n\'est garde ni servi, sans erreur', () async {
+    final cache = HttpCache.instance;
+    cache.enabled = false;
+    addTearDown(() => cache.enabled = true);
+    faux.repond('GET', '/notifications', {'data': []});
+    await dio.get('/notifications');
+    faux.coupure('GET', '/notifications');
+    await expectLater(dio.get('/notifications'), throwsA(isA<DioException>()));
+  });
+
   test('cles tres longues : gardees malgre la limite de Hive', () async {
     final long = 'x' * 400;
     faux.repond('GET', '/recherche', {'ok': true});
