@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import '../l10n/l10n.dart';
 import 'api_client.dart';
 import 'connectivity_service.dart';
 import 'local_cache_service.dart';
@@ -590,4 +591,51 @@ class ParentService {
     );
     return result.value;
   }
+
+  /// Achat d'un contenu du catalogue pour un enfant lié (POST
+  /// /parent/purchase-for-child), payé par le portefeuille du parent.
+  /// Solde insuffisant : le serveur crée une commande en attente, à régler
+  /// par Mobile Money ([ChildPurchaseResult.orderId]).
+  Future<ChildPurchaseResult> purchaseSubjectForChild(int subjectId, int childId) async {
+    requireOnline();
+    try {
+      final res = await _api.dio.post('/parent/purchase-for-child',
+          data: {'childId': childId, 'subjectId': subjectId});
+      final d = (res.data as Map<String, dynamic>?)?['data'] as Map<String, dynamic>?;
+      return ChildPurchaseResult(
+          done: true, walletLeft: (d?['walletLeft'] as num?)?.toDouble());
+    } on DioException catch (e) {
+      final data = e.response?.data;
+      final m = data is Map ? data : const {};
+      if (e.response?.statusCode == 402 && m['orderId'] is num) {
+        return ChildPurchaseResult(
+          orderId: (m['orderId'] as num).toInt(),
+          price: (m['price'] as num?)?.toDouble(),
+          missing: (m['missingXaf'] as num?)?.toDouble(),
+        );
+      }
+      return ChildPurchaseResult(
+          message: m['error'] as String? ?? L10n.current.svcPurchaseNotCompleted);
+    }
+  }
+}
+
+/// Résultat de [ParentService.purchaseSubjectForChild] : achat fait, commande
+/// à régler par Mobile Money ([orderId]), ou refus ([message]).
+class ChildPurchaseResult {
+  final bool done;
+  final double? walletLeft;
+  final int? orderId;
+  final double? price;
+  final double? missing;
+  final String? message;
+  const ChildPurchaseResult(
+      {this.done = false,
+      this.walletLeft,
+      this.orderId,
+      this.price,
+      this.missing,
+      this.message});
+
+  bool get needsMobileMoney => orderId != null;
 }

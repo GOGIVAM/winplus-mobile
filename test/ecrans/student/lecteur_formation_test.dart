@@ -241,7 +241,7 @@ void main() {
     }));
     await ouvrirLecteur(tester);
     expect(find.text('tableau.xlsx'), findsOneWidget);
-    expect(find.text(L10n.current.studentPlayerOpenOnWeb), findsOneWidget);
+    expect(find.text(L10n.current.studentPlayerOpenWithApp), findsOneWidget);
     expect(find.byIcon(Icons.picture_as_pdf_outlined), findsNothing);
   });
 

@@ -26,6 +26,7 @@ import 'profile_screen.dart';
 import 'my_links_screen.dart';
 import 'tutors/tutor_policy_widgets.dart';
 import '../shared/forum/forum_screen.dart';
+import 'student_tabs.dart' show StudentWinAITab;
 
 class ProfileHubTab extends StatefulWidget {
   const ProfileHubTab({super.key});
@@ -80,9 +81,6 @@ class _ProfileHubTabState extends State<ProfileHubTab> {
       (r) => false,
     );
   }
-
-  void _soon() => ScaffoldMessenger.of(context)
-      .showSnackBar(SnackBar(content: Text(context.l10n.studentHubSoon)));
 
   void _go(Widget screen) =>
       Navigator.push(context, WinPageRoute(builder: (_) => screen));
@@ -227,7 +225,7 @@ class _ProfileHubTabState extends State<ProfileHubTab> {
               color: s.primary,
               label: 'WinAI',
               subtitle: context.l10n.studentHubWinaiSub,
-              onTap: _soon,
+              onTap: () => _go(const StudentWinAITab()),
             ),
             const SizedBox(height: 16),
 

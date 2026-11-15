@@ -5,6 +5,9 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <!-- Détection de l'état du réseau (mode hors ligne, connectivity_plus). -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <!-- Dictée vocale de WinAI (speech_to_text) : demandée à la première
+         dictée, jamais au lancement. -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <!-- Notifications application fermée, sans Firebase (lot 2) : service au
          premier plan qui garde ouvert le flux ntfy. Android 14+ exige le type
          « remoteMessaging » et sa permission. Les permissions générales
@@ -87,6 +90,10 @@
              n'est nécessaire, l'application photo du téléphone prend la vue). -->
         <intent>
             <action android:name="android.media.action.IMAGE_CAPTURE"/>
+        </intent>
+        <!-- Dictée vocale : service de reconnaissance du téléphone. -->
+        <intent>
+            <action android:name="android.speech.RecognitionService"/>
         </intent>
         <!-- url_launcher : ouvrir une page du site dans le navigateur
              (Android 11+ exige de déclarer les intentions interrogées). -->

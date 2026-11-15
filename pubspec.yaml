@@ -36,6 +36,7 @@ dependencies:
   url_launcher: ^6.3.3
   share_plus: ^12.0.2
   google_sign_in: ^7.2.0
+  speech_to_text: ^7.4.0
 
 dev_dependencies:
   # Tests : le projet n'avait pas flutter_test, donc `flutter test` ne compilait rien.

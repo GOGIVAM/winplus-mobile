@@ -145,6 +145,54 @@ class ContentActionsSheet extends StatelessWidget {
     );
   }
 
+  /// Statistiques réelles de la publication, lues sur le serveur.
+  Future<void> _showStats(BuildContext context) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final stats = await TeacherService.instance.getContentStats(content.id);
+    if (!context.mounted) return;
+    if (stats == null) {
+      messenger.showSnackBar(
+          SnackBar(content: Text(context.l10n.teacherStatsLoadError)));
+      return;
+    }
+    final l = context.l10n;
+    final lignes = <(String, String)>[
+      (l.teacherDashDownloads, '${stats.downloads}'),
+      (l.teacherStatsRating(stats.ratingCount),
+          stats.ratingCount > 0 ? stats.rating.toStringAsFixed(1) : '—'),
+      (l.teacherStatsEnrollments, '${stats.enrollments}'),
+      (l.teacherStatsSales, '${stats.sales}'),
+      (l.teacherStatsGross, '${fmtXaf(stats.grossRevenue.round())} XAF'),
+      if (stats.netRevenue != null)
+        (l.teacherStatsNet, '${fmtXaf(stats.netRevenue!.round())} XAF'),
+    ];
+    await showDialog<void>(
+      context: context,
+      builder: (ctx) {
+        final s = WinTheme.of(ctx);
+        return AlertDialog(
+          title: Text(content.title, style: WinType.titleL(s.onStrong)),
+          content: Column(mainAxisSize: MainAxisSize.min, children: [
+            for (final (libelle, valeur) in lignes)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                child: Row(children: [
+                  Expanded(
+                      child: Text(libelle, style: WinType.bodyM(s.onMuted))),
+                  Text(valeur, style: WinType.titleM(s.onStrong)),
+                ]),
+              ),
+          ]),
+          actions: [
+            TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: Text(l.commonClose)),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
@@ -220,8 +268,7 @@ class ContentActionsSheet extends StatelessWidget {
             _ActionRow(
               icon: Icons.bar_chart_outlined,
               label: context.l10n.teacherContentStats,
-              onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(context.l10n.teacherContentComingSoon))),
+              onTap: () => _showStats(context),
             ),
             _ActionRow(
               icon: Icons.edit_outlined,

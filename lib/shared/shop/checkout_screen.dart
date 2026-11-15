@@ -18,8 +18,24 @@ import 'orders_screen.dart';
 /// 1. Récapitulatif + numéro Mobile Money  crée la commande puis initie le
 ///    paiement NotchPay (POST /orders puis POST /payments/initiate).
 /// 2. Attente de confirmation (sondage du statut, comme la réservation).
+/// Commande déjà créée par le serveur, à régler par Mobile Money (achat d'un
+/// parent pour son enfant quand le portefeuille ne suffit pas).
+class PendingOrderPayment {
+  final int orderId;
+  final String orderNumber;
+  final double amount;
+  final String title;
+  const PendingOrderPayment(
+      {required this.orderId,
+      required this.orderNumber,
+      required this.amount,
+      required this.title});
+}
+
 class CheckoutScreen extends StatefulWidget {
-  const CheckoutScreen({super.key});
+  /// Sans [pending] : paiement du panier. Avec : paiement de cette commande.
+  final PendingOrderPayment? pending;
+  const CheckoutScreen({super.key, this.pending});
   @override
   State<CheckoutScreen> createState() => _CheckoutScreenState();
 }
@@ -44,7 +60,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   @override
   void initState() {
     super.initState();
-    _loadCart();
+    if (widget.pending != null) {
+      _loadingCart = false;
+    } else {
+      _loadCart();
+    }
   }
 
   @override
@@ -73,7 +93,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
   Future<void> _submit() async {
     final cart = _cart;
-    if (cart == null || cart.items.isEmpty) return;
+    final pending = widget.pending;
+    if (pending == null && (cart == null || cart.items.isEmpty)) return;
     final phone = _normalizePhone(_phoneCtrl.text);
     if (phone.length < 9) {
       setState(() => _submitError = L10n.current.shopInvalidPhone);
@@ -84,9 +105,18 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       _submitError = null;
     });
     try {
-      // 1. Crée la commande à partir du panier serveur.
-      final order = await OrderService.instance
-          .createOrder(paymentMethod: 'mobile_money');
+      // 1. Crée la commande à partir du panier serveur (ou reprend celle
+      //    déjà créée par le serveur).
+      final order = pending != null
+          ? ApiOrder(
+              id: pending.orderId,
+              orderNumber: pending.orderNumber,
+              totalAmount: pending.amount,
+              status: 'pending',
+              paymentMethod: 'mobile_money',
+              createdAt: DateTime.now())
+          : await OrderService.instance
+              .createOrder(paymentMethod: 'mobile_money');
       // 2. Initie le paiement NotchPay pour cette commande.
       final intent = await PaymentService.instance.initiateForOrder(
         orderId: order.id,
@@ -181,29 +211,35 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   Widget _buildStepPayment(WinScheme s) {
     if (_loadingCart) return const Center(child: CircularProgressIndicator());
     final cart = _cart;
-    if (cart == null || cart.items.isEmpty) {
+    final pending = widget.pending;
+    if (pending == null && (cart == null || cart.items.isEmpty)) {
       return Center(
           child:
               Text(context.l10n.shopCartEmpty, style: WinType.bodyM(s.onMuted)));
     }
+    // Lignes et total : celles du panier, ou la commande à régler.
+    final lignes = pending != null
+        ? [(pending.title, pending.amount)]
+        : [for (final i in cart!.items) (i.title, i.price)];
+    final total = pending?.amount ?? cart!.total;
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
         WinCard(
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(context.l10n.shopItemsCount(cart.itemsCount),
+            Text(context.l10n.shopItemsCount(pending != null ? 1 : cart!.itemsCount),
                 style: WinType.titleM(s.onStrong)),
             const SizedBox(height: 10),
-            ...cart.items.map((i) => Padding(
+            ...lignes.map((i) => Padding(
                   padding: const EdgeInsets.only(bottom: 6),
                   child: Row(children: [
                     Expanded(
-                        child: Text(i.title,
+                        child: Text(i.$1,
                             style: WinType.bodyS(s.onMuted),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis)),
-                    Text('${fmtXaf(i.price.round())} XAF',
+                    Text('${fmtXaf(i.$2.round())} XAF',
                         style: WinType.bodyS(s.onMuted)),
                   ]),
                 )),
@@ -212,7 +248,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             Row(children: [
               Text(context.l10n.shopTotalTtc, style: WinType.titleM(s.onStrong)),
               const Spacer(),
-              Text('${fmtXaf(cart.total.round())} XAF',
+              Text('${fmtXaf(total.round())} XAF',
                   style: WinType.archivo(
                       size: 20, weight: FontWeight.w700, color: s.primary)),
             ]),
@@ -250,7 +286,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           WinErrorShake(child: WinAlert(_submitError!, type: BadgeColor.error)),
         ],
         const SizedBox(height: 24),
-        WinButton(context.l10n.shopPayAmount(fmtXaf(cart.total.round())),
+        WinButton(context.l10n.shopPayAmount(fmtXaf(total.round())),
             block: true,
             loading: _submitting,
             onTap: _submitting ? null : _submit),

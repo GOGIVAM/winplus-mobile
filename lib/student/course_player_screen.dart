@@ -14,6 +14,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../widgets/protected_content.dart';
+import '../widgets/external_links.dart';
 
 class CoursePlayerScreen extends StatefulWidget {
   final int courseId;
@@ -604,7 +605,16 @@ class _LessonView extends StatelessWidget {
                         builder: (_) => RemotePdfScreen(
                             title: l.fileName ?? l.title, url: l.fileUrl!),
                       ))
-                  : null,
+                  // Autre type de fichier (tableur, document Word…) : ouvert
+                  // par l'application du téléphone qui sait le lire.
+                  : () async {
+                      final messenger = ScaffoldMessenger.of(context);
+                      final ok = await ExternalLinks.open(l.fileUrl!);
+                      if (!ok) {
+                        messenger.showSnackBar(SnackBar(
+                            content: Text(L10n.current.commonLinkOpenError)));
+                      }
+                    },
               child: Container(
                 margin: const EdgeInsets.all(16),
                 padding: const EdgeInsets.all(16),
@@ -627,7 +637,7 @@ class _LessonView extends StatelessWidget {
                         Text(
                             isPdf
                                 ? context.l10n.studentPlayerTapToOpen
-                                : context.l10n.studentPlayerOpenOnWeb,
+                                : context.l10n.studentPlayerOpenWithApp,
                             style: WinType.labelS(Colors.white54)),
                       ])),
                   if (isPdf)

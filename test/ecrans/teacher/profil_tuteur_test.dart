@@ -470,7 +470,8 @@ void main() {
       expect(find.text('800 XAF/h'), findsOneWidget);
       expect(find.text(l.teacherProfileTrialOffered), findsOneWidget);
       expect(find.text(l.tutoringDiplomaVerified), findsOneWidget);
-      expect(find.text(l.teacherProfileReviewsSoon), findsOneWidget);
+      // Aucun avis encore : mention neutre (la note s'affiche des le premier avis).
+      expect(find.text(l.teacherProfileNoReviews), findsOneWidget);
       expect(find.text(l.dataSubjectMath), findsOneWidget);
       await tester.tap(find.byTooltip(l.teacherProfileBackToEdit));
       await pomper(tester);

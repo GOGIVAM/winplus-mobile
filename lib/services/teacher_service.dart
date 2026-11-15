@@ -211,6 +211,19 @@ class TeacherService {
     }
   }
 
+  /// Statistiques réelles d'une publication (GET /teacher/contents/{id}/stats) :
+  /// téléchargements, note, inscrits, ventes et revenus. `null` si
+  /// indisponible.
+  Future<ApiContentStats?> getContentStats(int contentId) async {
+    try {
+      final res = await _api.dio.get('/teacher/contents/$contentId/stats');
+      final d = (res.data as Map<String, dynamic>?)?['data'];
+      return d is Map<String, dynamic> ? ApiContentStats.fromJson(d) : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
   Future<List<ApiPublishedContent>> getMyContent() async {
     final res = await _api.dio.get('/teacher/contents/mine');
     final list = res.data as List? ?? [];
@@ -435,4 +448,34 @@ class TeacherService {
     final j = (body is Map && body['data'] is Map) ? body['data'] as Map<String, dynamic> : body as Map<String, dynamic>;
     return ApiAssignment.fromJson(j);
   }
+}
+
+/// Statistiques d'une publication du professeur.
+class ApiContentStats {
+  final int downloads;
+  final double rating;
+  final int ratingCount;
+  final int enrollments;
+  final int sales;
+  final double grossRevenue;
+  final double? netRevenue;
+  const ApiContentStats({
+    required this.downloads,
+    required this.rating,
+    required this.ratingCount,
+    required this.enrollments,
+    required this.sales,
+    required this.grossRevenue,
+    this.netRevenue,
+  });
+
+  factory ApiContentStats.fromJson(Map<String, dynamic> j) => ApiContentStats(
+        downloads: (j['downloads'] as num?)?.toInt() ?? 0,
+        rating: (j['rating'] as num?)?.toDouble() ?? 0,
+        ratingCount: (j['ratingCount'] as num?)?.toInt() ?? 0,
+        enrollments: (j['enrollments'] as num?)?.toInt() ?? 0,
+        sales: (j['sales'] as num?)?.toInt() ?? 0,
+        grossRevenue: (j['grossRevenue'] as num?)?.toDouble() ?? 0,
+        netRevenue: (j['netRevenue'] as num?)?.toDouble(),
+      );
 }

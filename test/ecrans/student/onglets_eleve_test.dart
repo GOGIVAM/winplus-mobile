@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:winplus/l10n/l10n.dart';
 import 'package:winplus/student/course_catalog_screen.dart';
@@ -302,7 +303,12 @@ void main() {
       expect(find.text('Limite atteinte pour aujourd\'hui'), findsOneWidget);
     });
 
-    testWidgets('feuille « Joindre » : trois options ; la voix annonce « bientot »', (tester) async {
+    testWidgets('feuille « Joindre » : trois options ; la voix ouvre la dictee (indisponible sans reconnaissance vocale)', (tester) async {
+      // Telephone sans reconnaissance vocale : le service refuse de demarrer.
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+          const MethodChannel('plugin.csdcorp.com/speech_to_text'), (call) async => false);
+      addTearDown(() => tester.binding.defaultBinaryMessenger
+          .setMockMethodCallHandler(const MethodChannel('plugin.csdcorp.com/speech_to_text'), null));
       await monterEcran(tester, const StudentWinAITab());
       await tester.tap(find.byIcon(Icons.attach_file));
       await pomper(tester);
@@ -315,7 +321,10 @@ void main() {
       await pomper(tester);
       await pomper(tester, const Duration(milliseconds: 400));
       expect(find.text(l.studentTabsAttachFile), findsNothing);
-      expect(find.text(l.studentTabsVoiceSoon), findsOneWidget);
+      await pomper(tester);
+      await pomper(tester, const Duration(milliseconds: 400));
+      // Pas de service de reconnaissance dans les tests : message explicite.
+      expect(find.text(l.voiceUnavailable), findsOneWidget);
     });
 
     testWidgets('« Memoire de WinAI » ouvre la feuille des memoires', (tester) async {

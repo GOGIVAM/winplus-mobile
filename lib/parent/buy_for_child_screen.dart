@@ -5,7 +5,9 @@ import '../data/mock_data.dart';
 import '../data/models.dart';
 import '../services/parent_service.dart';
 import '../services/subject_service.dart';
-import '../shared/shop/account_required_purchase_screen.dart';
+import '../services/connectivity_service.dart';
+import '../services/order_service.dart';
+import '../shared/shop/checkout_screen.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
@@ -46,6 +48,85 @@ class _BuyForChildScreenState extends State<BuyForChildScreen> {
       _wallet = wallet;
       _walletLoading = false;
     });
+  }
+
+  /// Achat dans l'application (lot 6) : confirmation, paiement par le
+  /// portefeuille, ou par Mobile Money quand le solde ne suffit pas.
+  Future<void> _acheter(Content c) async {
+    final l = context.l10n;
+    final enfant = _selected;
+    final messenger = ScaffoldMessenger.of(context);
+    final subjectId = int.tryParse(c.id);
+    if (subjectId == null) return;
+
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l.parentBuyConfirmTitle(enfant.firstName)),
+        content: Text(l.parentBuyConfirmBody(c.title, fmtXaf(c.price), enfant.firstName)),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: Text(l.commonCancel)),
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: Text(l.parentBuyConfirm)),
+        ],
+      ),
+    );
+    if (ok != true || !mounted) return;
+
+    final ChildPurchaseResult res;
+    try {
+      res = await ParentService.instance.purchaseSubjectForChild(subjectId, enfant.id);
+    } on OfflineActionException catch (e) {
+      messenger.showSnackBar(SnackBar(content: Text(e.message)));
+      return;
+    }
+    if (!mounted) return;
+
+    if (res.done) {
+      messenger.showSnackBar(
+          SnackBar(content: Text(l.parentBuyDone(c.title, enfant.firstName))));
+      _loadWallet();
+      return;
+    }
+    if (!res.needsMobileMoney) {
+      messenger.showSnackBar(SnackBar(content: Text(res.message ?? '')));
+      return;
+    }
+
+    // Solde insuffisant : la commande est créée, il reste à la régler.
+    final prix = res.price ?? c.price.toDouble();
+    final payer = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l.parentBuyTopUpTitle),
+        content: Text(l.parentBuyTopUpBody(
+            fmtXaf((res.missing ?? prix).round()), fmtXaf(prix.round()))),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: Text(l.commonCancel)),
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: Text(l.parentBuyPayMomo)),
+        ],
+      ),
+    );
+    if (payer != true || !mounted) return;
+    final commande = await OrderService.instance.getOrderById(res.orderId!);
+    if (!mounted) return;
+    await Navigator.push(
+        context,
+        WinPageRoute(
+            builder: (_) => CheckoutScreen(
+                pending: PendingOrderPayment(
+                    orderId: res.orderId!,
+                    orderNumber: commande?.orderNumber ?? '#${res.orderId}',
+                    amount: commande?.totalAmount ?? prix,
+                    title: c.title))));
+    if (mounted) _loadWallet();
   }
 
   // Module 24 (lot 8) : catalogue réel filtré par le niveau de l'enfant
@@ -165,12 +246,7 @@ class _BuyForChildScreenState extends State<BuyForChildScreen> {
                   .map((c) => _CatalogCard(
                         content: c,
                         childName: _selected.firstName,
-                        onBuy: () => Navigator.push(
-                          context,
-                          WinPageRoute(
-                              builder: (_) =>
-                                  AccountRequiredPurchaseScreen(content: c)),
-                        ),
+                        onBuy: () => _acheter(c),
                       ))
                   .toList(),
             ),

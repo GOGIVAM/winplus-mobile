@@ -32,6 +32,7 @@ import '../widgets/knowledge_base_toggle.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../widgets/mobile_home.dart';
 import '../widgets/win_motion_widgets.dart';
+import '../widgets/voice_dictation_sheet.dart';
 
 export 'student_home.dart' show StudentHomeTab;
 
@@ -696,6 +697,15 @@ class _StudentWinAITabState extends State<StudentWinAITab> {
     });
   }
 
+  /// Dictée vocale : le texte reconnu remplit le champ, à relire avant envoi.
+  Future<void> _dicter() async {
+    final texte = await showVoiceDictation(context);
+    if (!mounted || texte == null || texte.trim().isEmpty) return;
+    final avant = _ctrl.text.trim();
+    _ctrl.text = avant.isEmpty ? texte.trim() : '$avant ${texte.trim()}';
+    _ctrl.selection = TextSelection.collapsed(offset: _ctrl.text.length);
+  }
+
   void _showAttachSheet() {
     final s = WinTheme.of(context);
     showModalBottomSheet(
@@ -732,11 +742,7 @@ class _StudentWinAITabState extends State<StudentWinAITab> {
           _AttachOption(Icons.mic_outlined, context.l10n.studentTabsAttachVoice, WinColors.warn,
               () {
             Navigator.pop(context);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                  content:
-                      Text(context.l10n.studentTabsVoiceSoon)),
-            );
+            _dicter();
           }),
         ]),
       ),

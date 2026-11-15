@@ -4,7 +4,9 @@ import '../../auth/login_screen.dart';
 import '../../auth/role_screen.dart';
 import '../../data/models.dart';
 import '../../l10n/l10n.dart';
+import '../../services/cart_service.dart';
 import '../../services/session_manager.dart';
+import 'cart_screen.dart';
 import '../../theme/win_colors.dart';
 import '../../theme/win_theme.dart';
 import '../../theme/win_typography.dart';
@@ -19,9 +21,8 @@ import '../../widgets/win_widgets.dart';
 ///
 /// - Sans session : redirection vers la connexion ou l'inscription avant
 ///   tout paiement.
-/// - Avec session : l'achat intégré à l'application (panier, commande,
-///   paiement Mobile Money) relève du lot 8 ; en attendant, l'utilisateur est
-///   orienté vers son compte web, et le contenu acheté sera accessible ici.
+/// - Avec session : ajout au panier, puis commande et paiement Mobile Money
+///   dans l'application (lot 6 du plan de correction mobile).
 class AccountRequiredPurchaseScreen extends StatefulWidget {
   final Content content;
   const AccountRequiredPurchaseScreen({super.key, required this.content});
@@ -34,6 +35,24 @@ class AccountRequiredPurchaseScreen extends StatefulWidget {
 class _AccountRequiredPurchaseScreenState
     extends State<AccountRequiredPurchaseScreen> {
   bool? _loggedIn;
+  bool _adding = false;
+
+  Future<void> _ajouterAuPanier() async {
+    final id = int.tryParse(widget.content.id);
+    final messenger = ScaffoldMessenger.of(context);
+    if (id == null) return;
+    setState(() => _adding = true);
+    final cart = await CartService.instance.addItem(id);
+    if (!mounted) return;
+    setState(() => _adding = false);
+    if (cart == null) {
+      messenger.showSnackBar(
+          SnackBar(content: Text(L10n.current.shopUnexpectedError)));
+      return;
+    }
+    Navigator.pushReplacement(
+        context, WinPageRoute(builder: (_) => const CartScreen()));
+  }
 
   @override
   void initState() {
@@ -129,16 +148,19 @@ class _AccountRequiredPurchaseScreenState
                 onTap: () => Navigator.push(
                     context, WinPageRoute(builder: (_) => const RoleScreen()))),
           ] else ...[
-            Text(context.l10n.shopBuyFromAccountTitle,
+            // Connecté (par exemple après s'être connecté depuis cet écran) :
+            // achat dans l'application, par le panier et Mobile Money.
+            Text(context.l10n.shopBuyInAppTitle,
                 style: WinType.headlineS(s.onStrong)),
             const SizedBox(height: 8),
-            Text(context.l10n.shopBuyFromAccountBody,
+            Text(context.l10n.shopBuyInAppBody,
                 style: WinType.bodyM(s.onMuted)),
             const SizedBox(height: 20),
-            WinButton(context.l10n.commonBack,
+            WinButton(context.l10n.studentViewerAddToCart,
                 block: true,
-                variant: WinButtonVariant.outline,
-                onTap: () => Navigator.pop(context)),
+                loading: _adding,
+                icon: Icons.shopping_cart_outlined,
+                onTap: _adding ? null : _ajouterAuPanier),
           ],
         ],
       ),

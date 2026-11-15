@@ -503,8 +503,15 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
                 WinBadge(context.l10n.tutoringDiplomaVerified, color: BadgeColor.teal),
               for (final n in p.endorsedByInstitutions)
                 WinBadge(context.l10n.tutoringEndorsedBy(n), color: BadgeColor.blue),
-              WinBadge(context.l10n.teacherProfileReviewsSoon,
-                  color: BadgeColor.neutral),
+              // Avis réels des élèves (note moyenne et nombre d'avis).
+              if (p.reviewCount > 0 && p.averageRating != null)
+                WinBadge(
+                    context.l10n.teacherProfileRating(
+                        p.averageRating!.toStringAsFixed(1), p.reviewCount),
+                    color: BadgeColor.gold)
+              else
+                WinBadge(context.l10n.teacherProfileNoReviews,
+                    color: BadgeColor.neutral),
             ]),
           ]),
         ),
