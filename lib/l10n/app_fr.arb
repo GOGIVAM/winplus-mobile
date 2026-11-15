@@ -79,7 +79,15 @@
   "authParentGoalHint": "En quelques mots : réussir un examen, combler une lacune, reprendre confiance…",
   "authParentGoalPlaceholder": "Ex. Aider mon fils à progresser en maths avant le brevet",
   "authParentGoalTitle": "Quel est votre objectif pour votre enfant ?",
-  "authPeriodicIntro": "Pour votre sécurité, confirmez votre identité (toutes les 20 jours)",
+  "authPeriodicIntro": "Pour votre sécurité, confirmez votre identité tous les {days} jours.",
+  "@authPeriodicIntro": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "authSessionExpired": "Votre session a expiré. Reconnectez-vous.",
   "authPhoneOptional": "Téléphone (optionnel)",
   "authPhoneSoon": "Connexion par téléphone bientôt disponible !",
   "authPwdCriteria": "Le mot de passe ne respecte pas les critères.",

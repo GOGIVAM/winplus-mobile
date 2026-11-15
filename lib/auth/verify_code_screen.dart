@@ -79,7 +79,8 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
   }
 
   Future<void> _resend() async {
-    _startTimer();
+    // Le compte à rebours réapparaît tout de suite, pas au premier tic.
+    setState(_startTimer);
     await AuthService.instance.resendVerification(widget.email);
   }
 

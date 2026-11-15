@@ -262,9 +262,10 @@ class _TutorVerificationScreenState extends State<TutorVerificationScreen> {
       Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         DropdownButtonFormField<String>(
           initialValue: _docType,
+          isExpanded: true,
           decoration: InputDecoration(labelText: context.l10n.teacherVerifDocType, border: const OutlineInputBorder()),
           items: kIdentityDocumentTypes.entries
-              .map((e) => DropdownMenuItem(value: e.key, child: Text(e.value)))
+              .map((e) => DropdownMenuItem(value: e.key, child: Text(e.value, overflow: TextOverflow.ellipsis)))
               .toList(),
           onChanged: _busy ? null : (v) => setState(() => _docType = v ?? 'cni'),
         ),

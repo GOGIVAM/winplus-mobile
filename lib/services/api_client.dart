@@ -31,9 +31,12 @@ class ApiClient {
         handler.next(options);
       },
       onError: (DioException e, handler) async {
-        if (e.response?.statusCode == 401) {
-          // Tentative de refresh
-          final refreshed = await _tryRefresh();
+        // Seule une requête faite avec une session peut l'avoir perdue : un
+        // refus à la connexion (mauvais mot de passe) n'est pas une
+        // expiration.
+        final hadSession = e.requestOptions.headers['Authorization'] != null;
+        if (e.response?.statusCode == 401 && hadSession) {
+          final refreshed = await _refreshOnce();
           if (refreshed) {
             final token = await SessionManager.getAccessToken();
             final opts = e.requestOptions;
@@ -41,9 +44,11 @@ class ApiClient {
             try {
               final res = await d.fetch(opts);
               return handler.resolve(res);
-            } catch (_) {}
+            } on DioException catch (retry) {
+              return handler.next(retry);
+            }
           }
-          await SessionManager.clear();
+          await _expireSession();
         }
         handler.next(e);
       },
@@ -52,25 +57,56 @@ class ApiClient {
     return d;
   }
 
+  /// Appelé une fois quand la session est perdue (renouvellement refusé) :
+  /// main.dart y ramène l'utilisateur à la connexion avec un message.
+  void Function()? onSessionExpired;
+
+  bool _expiring = false;
+
+  Future<void> _expireSession() async {
+    if (_expiring) return;
+    _expiring = true;
+    try {
+      await SessionManager.clear();
+      onSessionExpired?.call();
+    } finally {
+      _expiring = false;
+    }
+  }
+
+  /// Renouvellement en cours, partagé : plusieurs requêtes refusées en même
+  /// temps attendent le même renouvellement. Sans cela, le serveur, qui
+  /// remplace le jeton de renouvellement à chaque usage, refusait le second
+  /// et déconnectait l'utilisateur.
+  Future<bool>? _refreshing;
+
+  Future<bool> _refreshOnce() {
+    return _refreshing ??= _tryRefresh().whenComplete(() => _refreshing = null);
+  }
+
   Future<bool> _tryRefresh() async {
     final refresh = await SessionManager.getRefreshToken();
     if (refresh == null) return false;
     try {
-      final res = await Dio().post(
-        '${AppConfig.apiBaseUrl}/auth/refresh',
+      // Client sans intercepteur (un 401 ici ne doit pas relancer de
+      // renouvellement), mais même transport que le client principal.
+      final bare = Dio(BaseOptions(
+        baseUrl: AppConfig.apiBaseUrl,
+        connectTimeout: const Duration(seconds: AppConfig.networkTimeout),
+        receiveTimeout: const Duration(seconds: AppConfig.networkTimeout),
+        headers: {'Content-Type': 'application/json'},
+      ))
+        ..httpClientAdapter = _dio.httpClientAdapter;
+      final r = await bare.post(
+        '/auth/refresh',
         data: {'refreshToken': refresh},
       );
-      final data = res.data as Map<String, dynamic>;
-      final userId = await SessionManager.getUserId();
-      final role = await SessionManager.getUserRole() ?? 'student';
-      final name = await SessionManager.getUserName() ?? '';
-      await SessionManager.save(
+      final data = r.data as Map<String, dynamic>;
+      // Seuls les jetons changent : l'identité enregistrée (e-mail, rôle,
+      // nom) reste. L'ancienne version effaçait l'e-mail à chaque fois.
+      await SessionManager.updateTokens(
         accessToken: data['accessToken'] as String,
-        refreshToken: data['refreshToken'] as String,
-        userId: userId ?? 0,
-        email: '',
-        role: role,
-        name: name,
+        refreshToken: data['refreshToken'] as String?,
       );
       return true;
     } catch (_) {

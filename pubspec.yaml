@@ -31,6 +31,9 @@ dependencies:
   phosphor_flutter: ^2.1.0
 
 dev_dependencies:
+  # Tests : le projet n'avait pas flutter_test, donc `flutter test` ne compilait rien.
+  flutter_test:
+    sdk: flutter
   flutter_lints: ^4.0.0
   flutter_launcher_icons: ^0.14.3
 

@@ -197,7 +197,9 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
         WinCard(
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Row(children: [
+            // Wrap : « à partir de », le tarif et « /heure » passent à la
+            // ligne sur écran étroit au lieu de déborder.
+            Wrap(crossAxisAlignment: WrapCrossAlignment.end, children: [
               if (p.rates.isNotEmpty)
                 Padding(
                     padding: const EdgeInsets.only(right: 4, top: 6),

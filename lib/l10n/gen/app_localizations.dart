@@ -491,8 +491,14 @@ abstract class AppLocalizations {
   /// No description provided for @authPeriodicIntro.
   ///
   /// In fr, this message translates to:
-  /// **'Pour votre sécurité, confirmez votre identité (toutes les 20 jours)'**
-  String get authPeriodicIntro;
+  /// **'Pour votre sécurité, confirmez votre identité tous les {days} jours.'**
+  String authPeriodicIntro(int days);
+
+  /// No description provided for @authSessionExpired.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre session a expiré. Reconnectez-vous.'**
+  String get authSessionExpired;
 
   /// No description provided for @authPhoneOptional.
   ///

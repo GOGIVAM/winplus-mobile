@@ -50,6 +50,24 @@ class PushService {
     // Débloque la boucle en attente de fin de flux (cancel() ne déclenche
     // pas onDone).
     if (_done != null && !_done!.isCompleted) _done!.complete();
+    // Et la boucle en attente avant de retenter : pas de minuteur qui survit
+    // à la coquille.
+    _waitTimer?.cancel();
+    _waitTimer = null;
+    if (_waiting != null && !_waiting!.isCompleted) _waiting!.complete();
+  }
+
+  Timer? _waitTimer;
+  Completer<void>? _waiting;
+
+  /// Attente annulable par [stop] (un Future.delayed ne l'est pas).
+  Future<void> _wait(Duration d) {
+    final c = Completer<void>();
+    _waiting = c;
+    _waitTimer = Timer(d, () {
+      if (!c.isCompleted) c.complete();
+    });
+    return c.future;
   }
 
   Future<void> _loop(void Function() onEvent, int run) async {
@@ -57,7 +75,7 @@ class PushService {
     while (alive()) {
       final token = await SessionManager.getAccessToken();
       if (token == null || token.isEmpty) {
-        await Future.delayed(_delay);
+        await _wait(_delay);
         continue;
       }
 
@@ -102,7 +120,7 @@ class PushService {
       }
 
       if (alive()) {
-        await Future.delayed(_delay);
+        await _wait(_delay);
         final nextMs = _delay.inMilliseconds * 2;
         _delay = Duration(milliseconds: nextMs > 60000 ? 60000 : nextMs);
       }

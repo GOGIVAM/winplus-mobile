@@ -4,7 +4,7 @@ import '../l10n/l10n.dart';
 import '../widgets/language_selector.dart';
 import '../theme/win_motion.dart';
 import '../app_state.dart';
-import '../auth/welcome_screen.dart';
+import '../auth/login_screen.dart';
 import '../data/mock_data.dart';
 import '../services/auth_service.dart';
 import '../services/chatbot_service.dart';
@@ -602,8 +602,18 @@ class _InstitutionAnalyticsTabState extends State<InstitutionAnalyticsTab> {
 }
 
 /// ===================== COMPTE =====================
-class InstitutionAccountTab extends StatelessWidget {
+class InstitutionAccountTab extends StatefulWidget {
   const InstitutionAccountTab({super.key});
+  @override
+  State<InstitutionAccountTab> createState() => _InstitutionAccountTabState();
+}
+
+class _InstitutionAccountTabState extends State<InstitutionAccountTab> {
+  // Lu une seule fois : un FutureBuilder dont la future est creee dans build
+  // relancerait l'appel a chaque reconstruction (mode sombre, langue...).
+  late final Future<String?> _name =
+      InstitutionService.instance.getMyInstitutionName();
+
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
@@ -625,7 +635,7 @@ class InstitutionAccountTab extends StatelessWidget {
                       size: 40, color: WinColors.gold)),
               const SizedBox(height: 12),
               FutureBuilder<String?>(
-                future: InstitutionService.instance.getMyInstitutionName(),
+                future: _name,
                 builder: (_, snap) => Text(
                     snap.data ??
                         (snap.connectionState == ConnectionState.done
@@ -679,7 +689,7 @@ class InstitutionAccountTab extends StatelessWidget {
                   await AuthService.instance.signOut();
                   if (!context.mounted) return;
                   Navigator.of(context).pushAndRemoveUntil(
-                    WinPageRoute(builder: (_) => const WelcomeScreen()),
+                    WinPageRoute(builder: (_) => const LoginScreen()),
                     (r) => false,
                   );
                 },

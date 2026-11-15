@@ -221,8 +221,12 @@ class AppLocalizationsFr extends AppLocalizations {
       'Quel est votre objectif pour votre enfant ?';
 
   @override
-  String get authPeriodicIntro =>
-      'Pour votre sécurité, confirmez votre identité (toutes les 20 jours)';
+  String authPeriodicIntro(int days) {
+    return 'Pour votre sécurité, confirmez votre identité tous les $days jours.';
+  }
+
+  @override
+  String get authSessionExpired => 'Votre session a expiré. Reconnectez-vous.';
 
   @override
   String get authPhoneOptional => 'Téléphone (optionnel)';

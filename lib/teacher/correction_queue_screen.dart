@@ -83,15 +83,17 @@ class _CorrectionQueueScreenState extends State<CorrectionQueueScreen> {
       body: Column(children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-          child: Row(
-              children: _filters
-                  .map((f) => Padding(
-                        padding: const EdgeInsets.only(right: 8),
-                        child: WinChip(_filterLabel(context, f),
-                            active: _filter == f,
-                            onTap: () => setState(() => _filter = f)),
-                      ))
-                  .toList()),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: _filters
+                    .map((f) => WinChip(_filterLabel(context, f),
+                        active: _filter == f,
+                        onTap: () => setState(() => _filter = f)))
+                    .toList()),
+          ),
         ),
         const SizedBox(height: 8),
         Expanded(child: _buildList(s)),
@@ -169,10 +171,9 @@ class _SubmissionCard extends StatelessWidget {
           WinButton(context.l10n.teacherCorrectionCorrect,
               small: true, icon: Icons.rate_review_outlined, onTap: onCorrect)
         else
-          Row(children: [
+          Wrap(spacing: 8, runSpacing: 8, children: [
             WinButton(context.l10n.teacherCorrectionView,
                 small: true, variant: WinButtonVariant.outline, onTap: () {}),
-            const SizedBox(width: 8),
             WinButton(context.l10n.commonEdit,
                 small: true, variant: WinButtonVariant.ghost, onTap: onCorrect),
           ]),

@@ -184,7 +184,9 @@ class _MyTutorBookingsScreenState extends State<MyTutorBookingsScreen> {
                   const SizedBox(height: 12),
                   WinButton(context.l10n.commonRetry, onTap: _load),
                 ]))
-              : bookings!.isEmpty && _engagements.isEmpty
+              // Répétiteur attribué sans réservation encore : la carte
+              // « Réserver » doit rester visible.
+              : bookings!.isEmpty && _engagements.isEmpty && _assigned.isEmpty
                   ? Center(
                       child: Padding(
                       padding: const EdgeInsets.all(24),

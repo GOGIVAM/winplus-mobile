@@ -5,7 +5,11 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'app_state.dart';
 import 'l10n/gen/app_localizations.dart';
 import 'theme/win_theme.dart';
+import 'auth/login_screen.dart';
 import 'auth/splash_screen.dart';
+import 'l10n/l10n.dart';
+import 'services/api_client.dart';
+import 'theme/win_motion.dart';
 import 'shared/subscription/subscription_notifier.dart';
 import 'services/connectivity_service.dart';
 import 'services/local_cache_service.dart';
@@ -47,11 +51,25 @@ class _WinPlusAppState extends State<WinPlusApp> {
   final WinAppState _state = WinAppState();
   final SubscriptionNotifier _sub = SubscriptionNotifier();
 
+  /// Navigateur racine : permet de quitter n'importe quel écran quand la
+  /// session expire.
+  final _navigator = GlobalKey<NavigatorState>();
+
   @override
   void initState() {
     super.initState();
     _sub.loadFromApi();
     _state.loadLocale();
+    // Session perdue (renouvellement refusé par le serveur) : retour à la
+    // connexion avec un message, plutôt qu'un écran resté en erreur.
+    ApiClient.instance.onSessionExpired = () {
+      _navigator.currentState?.pushAndRemoveUntil(
+        WinPageRoute(
+            builder: (_) =>
+                LoginScreen(notice: L10n.current.authSessionExpired)),
+        (r) => false,
+      );
+    };
   }
 
   @override
@@ -67,6 +85,7 @@ class _WinPlusAppState extends State<WinPlusApp> {
             return WinTheme(
               scheme: scheme,
               child: MaterialApp(
+                navigatorKey: _navigator,
                 title: 'WinPlus',
                 debugShowCheckedModeBanner: false,
                 theme: winMaterialTheme(scheme),

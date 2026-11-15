@@ -15,13 +15,13 @@ import '../shared/subscription/subscription_notifier.dart';
 import 'forgot_password_screen.dart';
 import 'role_screen.dart';
 
-/// Connexion  composition à la Funica : panneau graphique (dégradé de
-/// marque) en haut avec le bouton retour flottant, feuille blanche à coins
-/// arrondis qui remonte par-dessus et porte le formulaire. Remplace
-/// l'ancienne page plate (back-bar + gif + champs empilés dans une simple
-/// ListView), qui n'avait aucune des deux zones du kit.
+/// Connexion : premier écran de l'application sans session, sur le modèle
+/// de la version téléphone du site (plein écran blanc, barre haute avec
+/// retour rond et logo, contenu centré).
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  /// Message affiché au-dessus du formulaire (session expirée, par exemple).
+  final String? notice;
+  const LoginScreen({super.key, this.notice});
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
@@ -31,13 +31,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final _pwd = TextEditingController();
   bool _obscure = true, _loading = false;
   String? _error;
-
-  WinRole _roleFromString(String? role) => switch (role) {
-        'teacher' => WinRole.teacher,
-        'parent' => WinRole.parent,
-        'institution' => WinRole.institution,
-        _ => WinRole.student,
-      };
 
   Future<void> _login() async {
     final l10n = AppLocalizations.of(context);
@@ -58,7 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (result.success) {
       final roleStr = await SessionManager.getUserRole();
       if (!mounted) return;
-      final role = _roleFromString(roleStr);
+      final role = winRoleFromString(roleStr);
       final appState = WinAppScope.of(context);
       appState.setRole(role);
       // Lot 10.11 : l'application suit la langue du compte (User.Locale).
@@ -85,142 +78,183 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
     final l10n = AppLocalizations.of(context);
-    final topHeight = MediaQuery.of(context).size.height * 0.30;
+    // Premier écran de l'application sans session : pas de retour possible.
+    final canPop = Navigator.of(context).canPop();
 
     return Scaffold(
       backgroundColor: s.bg,
-      body: Column(children: [
-        // ── Panneau graphique ────────────────────────────────────────
-        SizedBox(
-          height: topHeight,
-          child: Stack(children: [
-            Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [s.heroFrom, s.heroTo],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
-              child: Center(
-                child: Image.asset('assets/Login.gif',
-                    height: topHeight * 0.7, fit: BoxFit.contain),
-              ),
-            ),
-            SafeArea(
-              bottom: false,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
-                child: WinCircleIconButton(
-                  icon: Icons.arrow_back,
-                  iconColor: WinColors.ink800,
-                  onTap: () => Navigator.maybePop(context),
-                ),
-              ),
-            ),
-          ]),
-        ),
-
-        // ── Feuille blanche qui remonte par-dessus ───────────────────
-        Expanded(
-          child: Transform.translate(
-            offset: const Offset(0, -24),
-            child: Container(
-              decoration: BoxDecoration(
-                color: s.bg,
-                borderRadius:
-                    BorderRadius.vertical(top: Radius.circular(WinRadii.xl)),
-              ),
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(24, 28, 24, 28),
-                children: [
-                  Text(l10n.loginTitle,
-                      style: WinType.archivo(
-                          size: 24,
-                          weight: FontWeight.w700,
-                          color: s.onStrong)),
-                  const SizedBox(height: 4),
-                  Text(l10n.loginSubtitle, style: WinType.bodyS(s.onMuted)),
-                  const SizedBox(height: 24),
-                  WinTextField(
-                      label: l10n.email,
-                      icon: Icons.mail_outline,
-                      controller: _email),
-                  const SizedBox(height: 14),
-                  WinTextField(
-                      label: l10n.password,
-                      icon: Icons.lock_outline,
-                      controller: _pwd,
-                      obscure: _obscure,
-                      suffixIcon: _obscure
-                          ? Icons.visibility_outlined
-                          : Icons.visibility_off_outlined,
-                      onSuffixTap: () => setState(() => _obscure = !_obscure)),
-                  const SizedBox(height: 8),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: GestureDetector(
-                      onTap: () => Navigator.push(
-                          context,
-                          WinPageRoute(
-                              builder: (_) => const ForgotPasswordScreen())),
-                      child: Text(l10n.forgotPassword,
-                          style: WinType.labelM(s.primaryStrong)),
-                    ),
-                  ),
-                  if (_error != null) ...[
-                    const SizedBox(height: 12),
-                    WinAlert(_error!, type: BadgeColor.error),
-                  ],
-                  const SizedBox(height: 16),
-                  WinButton(l10n.login,
-                      variant: WinButtonVariant.accent,
-                      block: true,
-                      loading: _loading,
-                      onTap: _login),
-                  const SizedBox(height: 24),
-                  _Divider(label: l10n.orContinueWith),
-                  const SizedBox(height: 16),
-                  _SocialButton(
-                      icon: Icons.g_mobiledata,
-                      label: l10n.continueWithGoogle,
-                      onTap: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                                content:
-                                    Text(l10n.authGoogleSoon)));
-                      }),
-                  const SizedBox(height: 10),
-                  _SocialButton(
-                      icon: Icons.phone_outlined,
-                      label: l10n.continueWithPhone,
-                      onTap: () {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text(
-                                l10n.authPhoneSoon)));
-                      }),
-                  const SizedBox(height: 24),
-                  GestureDetector(
-                    onTap: () => Navigator.pushReplacement(context,
-                        WinPageRoute(builder: (_) => const RoleScreen())),
-                    child: Center(
-                      child: Text.rich(TextSpan(
-                        style: WinType.bodyS(s.onMuted),
-                        children: [
-                          TextSpan(text: l10n.noAccountYet),
-                          TextSpan(
-                              text: l10n.createAccount,
-                              style: WinType.bodyS(s.primary)
-                                  .copyWith(fontWeight: FontWeight.w700)),
-                        ],
-                      )),
-                    ),
-                  ),
-                ],
+      body: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, box) => SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: box.maxHeight),
+              child: IntrinsicHeight(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      _AuthTopBar(showBack: canPop),
+                      Expanded(
+                        child: Center(
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 460),
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(22, 8, 22, 32),
+                              child: _form(context, s, l10n),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ]),
               ),
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  /// Contenu calqué sur la version téléphone du site (auth-mobile.css) :
+  /// en-tête centrée (logo, titre, sous-titre), champs à libellé au-dessus,
+  /// action principale pleine largeur, Google en secondaire, bascule vers
+  /// l'inscription en bas.
+  Widget _form(BuildContext context, WinScheme s, AppLocalizations l10n) {
+    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      const SizedBox(height: 8),
+      Image.asset('assets/winplus-logo.png', width: 96, height: 96),
+      const SizedBox(height: 14),
+      Text(l10n.loginTitle,
+          textAlign: TextAlign.center,
+          style: WinType.archivo(
+                  size: 27, weight: FontWeight.w600, color: s.onStrong)
+              .copyWith(letterSpacing: -0.8, height: 1.15)),
+      const SizedBox(height: 8),
+      Text(l10n.loginSubtitle,
+          textAlign: TextAlign.center,
+          style: WinType.manrope(size: 14.5, color: s.onMuted)
+              .copyWith(height: 1.5)),
+      const SizedBox(height: 22),
+      if (widget.notice != null) ...[
+        WinAlert(widget.notice!, type: BadgeColor.warn),
+        const SizedBox(height: 12),
+      ],
+      WinTextField(
+          label: l10n.email,
+          controller: _email,
+          keyboardType: TextInputType.emailAddress),
+      const SizedBox(height: 12),
+      WinTextField(
+          label: l10n.password,
+          controller: _pwd,
+          obscure: _obscure,
+          suffixIcon:
+              _obscure ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+          onSuffixTap: () => setState(() => _obscure = !_obscure)),
+      Align(
+        alignment: Alignment.centerRight,
+        child: InkWell(
+          onTap: () => Navigator.push(context,
+              WinPageRoute(builder: (_) => const ForgotPasswordScreen())),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 44),
+            child: Center(
+              widthFactor: 1,
+              child: Text(l10n.forgotPassword,
+                  style: WinType.manrope(
+                      size: 13.5, weight: FontWeight.w600, color: s.onStrong)),
+            ),
+          ),
+        ),
+      ),
+      if (_error != null) ...[
+        WinAlert(_error!, type: BadgeColor.error),
+        const SizedBox(height: 8),
+      ],
+      const SizedBox(height: 4),
+      WinButton(l10n.login,
+          variant: WinButtonVariant.accent,
+          block: true,
+          loading: _loading,
+          onTap: _login),
+      const SizedBox(height: 18),
+      _Divider(label: l10n.orContinueWith),
+      const SizedBox(height: 18),
+      _SocialButton(
+          icon: Icons.g_mobiledata,
+          label: l10n.continueWithGoogle,
+          onTap: () => ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(l10n.authGoogleSoon)))),
+      const Spacer(),
+      const SizedBox(height: 28),
+      // Bascule vers l'inscription : on y va par-dessus la connexion, le
+      // retour ramène ici.
+      InkWell(
+        onTap: () => Navigator.push(
+            context, WinPageRoute(builder: (_) => const RoleScreen())),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Text.rich(
+            TextSpan(
+              style: WinType.manrope(size: 14, color: s.onMuted),
+              children: [
+                TextSpan(text: l10n.noAccountYet),
+                TextSpan(
+                    text: l10n.createAccount,
+                    style: WinType.manrope(
+                        size: 14, weight: FontWeight.w600, color: s.onStrong)),
+              ],
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ),
+    ]);
+  }
+}
+
+/// Barre haute des écrans d'authentification (version téléphone du site) :
+/// retour rond à gauche quand il y a un écran derrière, logo « Win+ » à droite.
+class _AuthTopBar extends StatelessWidget {
+  final bool showBack;
+  const _AuthTopBar({required this.showBack});
+
+  @override
+  Widget build(BuildContext context) {
+    final s = WinTheme.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 10, 20, 6),
+      child: Row(children: [
+        if (showBack)
+          Material(
+            color: s.surface,
+            shape: CircleBorder(side: BorderSide(color: s.outline)),
+            child: InkWell(
+              customBorder: const CircleBorder(),
+              onTap: () => Navigator.maybePop(context),
+              child: SizedBox(
+                width: 44,
+                height: 44,
+                child: Icon(Icons.chevron_left_rounded,
+                    size: 24, color: s.onStrong),
+              ),
+            ),
+          )
+        else
+          const SizedBox(height: 44),
+        const Spacer(),
+        Image.asset('assets/winplus-logo.png', width: 26, height: 26),
+        const SizedBox(width: 7),
+        Text.rich(TextSpan(
+          style: WinType.archivo(
+                  size: 19, weight: FontWeight.w600, color: s.onStrong)
+              .copyWith(letterSpacing: -0.7),
+          children: const [
+            TextSpan(text: 'Win'),
+            TextSpan(
+                text: '+',
+                style: TextStyle(
+                    color: WinColors.teal600, fontWeight: FontWeight.w500)),
+          ],
+        )),
       ]),
     );
   }

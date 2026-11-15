@@ -357,8 +357,8 @@ class _CartSummary extends StatelessWidget {
   }
 
   Widget _row(WinScheme s, String label, double value) => Row(children: [
-        Text(label, style: WinType.bodyM(s.onMuted)),
-        const Spacer(),
+        Expanded(child: Text(label, style: WinType.bodyM(s.onMuted))),
+        const SizedBox(width: 8),
         Text('${fmtXaf(value.round())} XAF', style: WinType.bodyM(s.onStrong)),
       ]);
 }

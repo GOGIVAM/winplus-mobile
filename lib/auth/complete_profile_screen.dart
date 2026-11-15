@@ -245,7 +245,11 @@ class _StudentProfileWizardState extends State<_StudentProfileWizard> {
           child: Row(children: [
             Icon(Icons.calendar_today_outlined, size: 16, color: s.onMuted),
             const SizedBox(width: 10),
-            Text(label, style: WinType.bodyM(s.onMuted)),
+            Expanded(
+                child: Text(label,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: WinType.bodyM(s.onMuted))),
           ]),
         ),
       ),

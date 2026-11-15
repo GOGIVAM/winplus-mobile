@@ -150,9 +150,11 @@ class _GroupCreateScreenState extends State<GroupCreateScreen> {
                         }).toList()),
                     const SizedBox(height: 24),
                     Row(children: [
-                      Text(context.l10n.instGroupAddStudents,
-                          style: WinType.headlineS(s.onStrong)),
-                      const Spacer(),
+                      Expanded(
+                        child: Text(context.l10n.instGroupAddStudents,
+                            style: WinType.headlineS(s.onStrong)),
+                      ),
+                      const SizedBox(width: 8),
                       Text(context.l10n.instGroupSelected(_selected.length),
                           style: WinType.labelM(s.primary)),
                     ]),

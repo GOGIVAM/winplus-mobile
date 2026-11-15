@@ -3,16 +3,24 @@ import 'package:flutter/material.dart';
 import '../l10n/l10n.dart';
 import '../theme/win_motion.dart';
 import 'package:flutter/services.dart';
+import '../app_state.dart';
+import '../data/models.dart';
+import '../services/auth_service.dart';
 import '../services/session_manager.dart';
+import '../shell/role_shell.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
-import 'welcome_screen.dart';
+import 'login_screen.dart';
 
+/// Reconfirmation périodique d'identité, affichée au démarrage quand le
+/// serveur la demande (GET /auth/reconfirmation-status, tous les 35 jours).
+/// Comme sur le site : pas de retour arrière, l'utilisateur confirme avec le
+/// code reçu par e-mail ou se déconnecte.
 class PeriodicConfirmScreen extends StatefulWidget {
-  final String email;
-  const PeriodicConfirmScreen({super.key, required this.email});
+  final ReconfirmationStatus status;
+  const PeriodicConfirmScreen({super.key, required this.status});
   @override
   State<PeriodicConfirmScreen> createState() => _PeriodicConfirmScreenState();
 }
@@ -40,15 +48,6 @@ class _PeriodicConfirmScreenState extends State<PeriodicConfirmScreen> {
     super.dispose();
   }
 
-  String get _maskedEmail {
-    final parts = widget.email.split('@');
-    if (parts.length != 2) return widget.email;
-    final local = parts[0];
-    final domain = parts[1];
-    final visible = local.length > 1 ? local[0] : local;
-    return '$visible***@$domain';
-  }
-
   String get _code => _ctrls.map((c) => c.text).join();
 
   void _startResendCountdown() {
@@ -69,43 +68,54 @@ class _PeriodicConfirmScreenState extends State<PeriodicConfirmScreen> {
       _sending = true;
       _error = null;
     });
-    await Future.delayed(const Duration(milliseconds: 1200));
+    final res = await AuthService.instance.sendPeriodicCode();
     if (!mounted) return;
     setState(() {
       _sending = false;
-      _codeSent = true;
+      if (res.success) {
+        _codeSent = true;
+      } else {
+        _error = res.message;
+      }
     });
+    if (!res.success) return;
+    for (final c in _ctrls) {
+      c.clear();
+    }
     _startResendCountdown();
-    Future.delayed(const Duration(milliseconds: 150), () {
-      if (mounted && _nodes.isNotEmpty) _nodes[0].requestFocus();
-    });
+    _nodes[0].requestFocus();
   }
 
   Future<void> _confirm() async {
-    if (_code.length < 6) return;
+    if (_code.length < 6 || _loading) return;
     setState(() {
       _loading = true;
       _error = null;
     });
-    // Mock: accept "123456" in devMode
-    await Future.delayed(const Duration(milliseconds: 1000));
+    final res = await AuthService.instance.verifyPeriodicCode(_code);
     if (!mounted) return;
-    final isValid = _code == '123456';
-    setState(() => _loading = false);
-    if (isValid) {
-      await SessionManager.setLastConfirmed();
-      if (!mounted) return;
-      Navigator.pop(context);
-    } else {
-      setState(() => _error = context.l10n.authCodeIncorrect);
+    if (!res.success) {
+      setState(() {
+        _loading = false;
+        _error = res.message;
+      });
+      return;
     }
+    // Identité confirmée : l'espace du compte, sans retour possible ici.
+    final roleStr = await SessionManager.getUserRole();
+    if (!mounted) return;
+    WinAppScope.of(context).setRole(winRoleFromString(roleStr));
+    Navigator.of(context).pushAndRemoveUntil(
+      WinPageRoute(builder: (_) => const RoleShell()),
+      (r) => false,
+    );
   }
 
-  void _logout() {
-    SessionManager.clear();
-    Navigator.pushAndRemoveUntil(
-      context,
-      WinPageRoute(builder: (_) => const WelcomeScreen()),
+  Future<void> _logout() async {
+    await AuthService.instance.signOut();
+    if (!mounted) return;
+    Navigator.of(context).pushAndRemoveUntil(
+      WinPageRoute(builder: (_) => const LoginScreen()),
       (r) => false,
     );
   }
@@ -145,20 +155,27 @@ class _PeriodicConfirmScreenState extends State<PeriodicConfirmScreen> {
               ),
               const SizedBox(height: 12),
               Text(
-                l10n.authPeriodicIntro,
+                l10n.authPeriodicIntro(widget.status.windowDays),
                 style: WinType.bodyM(s.onMuted),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 8),
+              if (widget.status.maskedEmail.isNotEmpty)
               Text(
-                _maskedEmail,
+                widget.status.maskedEmail,
                 style: WinType.bodyM(s.primary)
                     .copyWith(fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 32),
 
               if (!_codeSent) ...[
-                // Step 1: envoyer le code
+                // Step 1: envoyer le code. Un refus d'envoi (trop de
+                // demandes, réseau) doit se voir ici, avant les cases.
+                if (_error != null) ...[
+                  WinAlert(_error!,
+                      type: BadgeColor.error, icon: Icons.error_outline),
+                  const SizedBox(height: 16),
+                ],
                 WinButton(
                   l10n.authSendCode,
                   block: true,

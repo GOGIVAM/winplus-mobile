@@ -1,4 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Accès au serveur WinPlus. Sans cette ligne, seules les versions de
+         développement (debug, profile) avaient le réseau : la version de
+         production ne pouvait joindre aucune API. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- Détection de l'état du réseau (mode hors ligne, connectivity_plus). -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <application
         android:label="winplus"
         android:name="${applicationName}"

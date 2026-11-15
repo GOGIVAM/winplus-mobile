@@ -485,8 +485,10 @@ class _ResultsTab extends StatelessWidget {
                         const Icon(Icons.emoji_events,
                             size: 14, color: WinColors.gold),
                         const SizedBox(width: 4),
-                        Text(context.l10n.parentChildBestSubject,
-                            style: WinType.labelS(s.onMuted)),
+                        Flexible(
+                          child: Text(context.l10n.parentChildBestSubject,
+                              style: WinType.labelS(s.onMuted)),
+                        ),
                       ]),
                       const SizedBox(height: 4),
                       Text(best.subjectTitle,
@@ -508,7 +510,8 @@ class _ResultsTab extends StatelessWidget {
                         const Icon(Icons.warning_amber_rounded,
                             size: 14, color: WinColors.warn),
                         const SizedBox(width: 4),
-                        Text(context.l10n.parentChildToWorkOn, style: WinType.labelS(s.onMuted)),
+                        Flexible(
+                            child: Text(context.l10n.parentChildToWorkOn, style: WinType.labelS(s.onMuted))),
                       ]),
                       const SizedBox(height: 4),
                       Text(worst.subjectTitle,

@@ -145,17 +145,20 @@ class _AtRiskCard extends StatelessWidget {
             ? WinColors.warn
             : WinColors.success;
 
+    // Un bord arrondi exige une bordure de couleur uniforme : la bande de
+    // couleur du risque est donc dessinee a l'interieur, sous le decoupage.
     return Container(
       decoration: BoxDecoration(
         color: s.cardBg,
         borderRadius: BorderRadius.circular(WinRadii.md),
-        border: Border(
-          left: BorderSide(color: riskColor, width: 4),
-          top: BorderSide(color: s.cardBorder),
-          right: BorderSide(color: s.cardBorder),
-          bottom: BorderSide(color: s.cardBorder),
-        ),
+        border: Border.all(color: s.cardBorder),
         boxShadow: WinShadows.sm,
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(WinRadii.md - 1),
+        child: Container(
+      decoration: BoxDecoration(
+        border: Border(left: BorderSide(color: riskColor, width: 4)),
       ),
       padding: const EdgeInsets.all(14),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -216,14 +219,13 @@ class _AtRiskCard extends StatelessWidget {
 
         const SizedBox(height: 12),
 
-        // Action buttons
-        Row(children: [
+        // Action buttons (a la ligne sur un ecran etroit)
+        Wrap(spacing: 8, runSpacing: 8, children: [
           WinButton(context.l10n.instRiskContact,
               small: true,
               icon: Icons.message_outlined,
               onTap: () => Navigator.push(context,
                   WinPageRoute(builder: (_) => const MessagingScreen()))),
-          const SizedBox(width: 8),
           WinButton(context.l10n.instRiskActionPlan,
               small: true,
               variant: WinButtonVariant.outline,
@@ -232,6 +234,8 @@ class _AtRiskCard extends StatelessWidget {
                   WinPageRoute(builder: (_) => const ActionPlanScreen()))),
         ]),
       ]),
+        ),
+      ),
     );
   }
 }

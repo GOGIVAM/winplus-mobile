@@ -102,8 +102,10 @@ class _StudentReportsScreenState extends State<StudentReportsScreen> {
             Row(children: [
               Icon(Icons.lock_outline, size: 14, color: WinColors.warn),
               const SizedBox(width: 6),
-              Text(context.l10n.studentReportsPlanRequired,
-                  style: WinType.labelM(WinColors.warn)),
+              Expanded(
+                child: Text(context.l10n.studentReportsPlanRequired,
+                    style: WinType.labelM(WinColors.warn)),
+              ),
             ]),
           ],
           const SizedBox(height: 20),
@@ -167,11 +169,15 @@ class _StudentReportsScreenState extends State<StudentReportsScreen> {
                       children: [
                         Text('$score', style: WinType.labelS(s.onFaint)),
                         const SizedBox(height: 2),
-                        Container(
-                          height: barH,
-                          decoration: BoxDecoration(
-                            color: _barColor(score),
-                            borderRadius: BorderRadius.circular(WinRadii.full),
+                        // La barre cède la place aux libellés (grands
+                        // caractères) au lieu de déborder du graphique.
+                        Flexible(
+                          child: Container(
+                            height: barH,
+                            decoration: BoxDecoration(
+                              color: _barColor(score),
+                              borderRadius: BorderRadius.circular(WinRadii.full),
+                            ),
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -226,16 +232,20 @@ class _StudentReportsScreenState extends State<StudentReportsScreen> {
               Row(children: [
                 const Icon(Icons.emoji_events, size: 16, color: WinColors.gold),
                 const SizedBox(width: 6),
-                Text(context.l10n.studentReportsBestSubject,
-                    style: WinType.bodyM(s.onStrong)
-                        .copyWith(fontWeight: FontWeight.w600)),
+                Expanded(
+                  child: Text(context.l10n.studentReportsBestSubject,
+                      style: WinType.bodyM(s.onStrong)
+                          .copyWith(fontWeight: FontWeight.w600)),
+                ),
               ]),
               const SizedBox(height: 6),
               Row(children: [
                 const Icon(Icons.warning_amber_rounded,
                     size: 16, color: WinColors.warn),
                 const SizedBox(width: 6),
-                Text(context.l10n.studentReportsToImprove, style: WinType.bodyM(s.onMuted)),
+                Expanded(
+                    child: Text(context.l10n.studentReportsToImprove,
+                        style: WinType.bodyM(s.onMuted))),
               ]),
             ]),
           ),

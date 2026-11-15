@@ -43,10 +43,19 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
   DateTime? _examDate;
   double _hoursPerDay = 2;
 
+  bool _loadStarted = false;
+
+  /// Le plan n'est demandé qu'avec le droit Exam Coach : sans lui l'écran est
+  /// verrouillé et le serveur répondrait 403. Relu quand l'abonnement arrive.
   @override
-  void initState() {
-    super.initState();
-    _load();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_loadStarted) return;
+    if (!SubscriptionScope.of(context).has(EntitlementKeys.examCoach)) return;
+    _loadStarted = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _load();
+    });
   }
 
   Future<void> _load() async {

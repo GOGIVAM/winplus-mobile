@@ -3,12 +3,14 @@ import '../l10n/l10n.dart';
 import '../theme/win_motion.dart';
 import '../app_state.dart';
 import '../data/models.dart';
+import '../services/auth_service.dart';
+import '../services/connectivity_service.dart';
 import '../services/session_manager.dart';
 import '../shell/role_shell.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_typography.dart';
 import 'periodic_confirm_screen.dart';
-import 'welcome_screen.dart';
+import 'login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -25,15 +27,19 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(milliseconds: 2300), _route);
+    // Juste le temps de montrer la marque : l'application ouvre ensuite
+    // directement l'espace du compte, ou la connexion sans session.
+    Future.delayed(const Duration(milliseconds: 1200), _route);
   }
 
-  WinRole _roleFromString(String? role) => switch (role) {
-        'teacher' => WinRole.teacher,
-        'parent' => WinRole.parent,
-        'institution' => WinRole.institution,
-        _ => WinRole.student,
-      };
+  /// Le serveur demande-t-il la reconfirmation d'identité ? Jamais bloquant :
+  /// hors ligne, serveur muet ou trop lent, on ouvre l'espace du compte.
+  Future<ReconfirmationStatus?> _reconfirmation() async {
+    if (!ConnectivityService.instance.isOnline) return null;
+    return AuthService.instance
+        .reconfirmationStatus()
+        .timeout(const Duration(seconds: 5), onTimeout: () => null);
+  }
 
   Future<void> _route() async {
     if (!mounted) return;
@@ -41,29 +47,31 @@ class _SplashScreenState extends State<SplashScreen>
     final loggedIn = await SessionManager.isLoggedIn();
     if (!mounted) return;
 
+    // Pas de présentation à la manière du site : sans session, on se connecte.
     if (!loggedIn) {
       Navigator.of(context).pushReplacement(
-        WinPageRoute(builder: (_) => const WelcomeScreen()),
+        WinPageRoute(builder: (_) => const LoginScreen()),
       );
       return;
     }
 
-    final checkDue = await SessionManager.isPeriodicCheckDue();
+    final status = await _reconfirmation();
     if (!mounted) return;
+    // La session a pu expirer pendant l'appel : main.dart a alors déjà
+    // ouvert la connexion.
+    if (!await SessionManager.isLoggedIn() || !mounted) return;
 
-    if (checkDue) {
-      final email = await SessionManager.getUserEmail() ?? '';
-      if (!mounted) return;
+    if (status != null && status.required) {
       Navigator.of(context).pushReplacement(
-        WinPageRoute(builder: (_) => PeriodicConfirmScreen(email: email)),
+        WinPageRoute(builder: (_) => PeriodicConfirmScreen(status: status)),
       );
       return;
     }
 
-    // Déjà connecté, vérification périodique non requise → RoleShell direct
+    // Déjà connecté, reconfirmation non requise : l'espace du compte.
     final roleStr = await SessionManager.getUserRole();
     if (!mounted) return;
-    WinAppScope.of(context).setRole(_roleFromString(roleStr));
+    WinAppScope.of(context).setRole(winRoleFromString(roleStr));
     Navigator.of(context).pushReplacement(
       WinPageRoute(builder: (_) => const RoleShell()),
     );
@@ -78,7 +86,8 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: WinColors.ink900,
+      // Vert profond de la marque (surfaces sombres du site), plus de presque noir.
+      backgroundColor: WinColors.teal900,
       body: Center(
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           ScaleTransition(
@@ -91,7 +100,7 @@ class _SplashScreenState extends State<SplashScreen>
                   size: 30, weight: FontWeight.w700, color: WinColors.cream50)),
           const SizedBox(height: 4),
           Text(context.l10n.welcomeTagline,
-              style: WinType.bodyS(WinColors.ink300)),
+              style: WinType.bodyS(WinColors.teal200)),
         ]),
       ),
     );

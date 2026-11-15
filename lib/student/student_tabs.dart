@@ -969,9 +969,11 @@ class _AttachOption extends StatelessWidget {
         child: Row(children: [
           winIcon(icon, size: 22, color: color),
           const SizedBox(width: 14),
-          Text(label,
-              style: WinType.bodyM(s.onStrong)
-                  .copyWith(fontWeight: FontWeight.w600)),
+          Expanded(
+            child: Text(label,
+                style: WinType.bodyM(s.onStrong)
+                    .copyWith(fontWeight: FontWeight.w600)),
+          ),
         ]),
       ),
     );

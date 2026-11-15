@@ -394,7 +394,11 @@ class _MobileSearchBarState extends State<MobileSearchBar> {
     final focused = _focus.hasFocus;
     return WinEnter(
       duration: const Duration(milliseconds: 450),
-      child: Row(children: [
+      // Couche Material transparente : le champ reste utilisable même hors
+      // d'un Scaffold (onglet monté seul, feuille du bas).
+      child: Material(
+        type: MaterialType.transparency,
+        child: Row(children: [
         Expanded(
           child: AnimatedContainer(
             duration: WinDurations.base,
@@ -458,6 +462,7 @@ class _MobileSearchBarState extends State<MobileSearchBar> {
           ),
         ),
       ]),
+      ),
     );
   }
 }

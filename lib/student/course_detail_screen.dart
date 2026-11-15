@@ -344,20 +344,32 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
             ]),
             const SizedBox(height: 12),
 
-            // Stats row
-            Row(children: [
-              Icon(Icons.people_outline, size: 15, color: s.onMuted),
-              const SizedBox(width: 4),
-              Text(context.l10n.studentCourseEnrolled(c.enrolledCount),
-                  style: WinType.labelM(s.onMuted)),
-              const SizedBox(width: 12),
-              Icon(Icons.schedule_outlined, size: 15, color: s.onMuted),
-              const SizedBox(width: 4),
-              Text(c.durationStr, style: WinType.labelM(s.onMuted)),
-              const SizedBox(width: 12),
-              Icon(Icons.play_circle_outline, size: 15, color: s.onMuted),
-              const SizedBox(width: 4),
-              Text(context.l10n.studentCourseLessons(totalLessons), style: WinType.labelM(s.onMuted)),
+            // Formateur, comme sur la fiche du site.
+            if (c.instructorName.isNotEmpty) ...[
+              Row(children: [
+                Icon(Icons.person_outline, size: 15, color: s.onMuted),
+                const SizedBox(width: 4),
+                Expanded(
+                  child: Text(c.instructorName,
+                      style: WinType.labelM(s.onStrong)
+                          .copyWith(fontWeight: FontWeight.w600)),
+                ),
+              ]),
+              const SizedBox(height: 8),
+            ],
+
+            // Chiffres : passent à la ligne sur écran étroit.
+            Wrap(spacing: 12, runSpacing: 6, children: [
+              for (final (icon, label) in [
+                (Icons.people_outline, context.l10n.studentCourseEnrolled(c.enrolledCount)),
+                (Icons.schedule_outlined, c.durationStr),
+                (Icons.play_circle_outline, context.l10n.studentCourseLessons(totalLessons)),
+              ])
+                Row(mainAxisSize: MainAxisSize.min, children: [
+                  Icon(icon, size: 15, color: s.onMuted),
+                  const SizedBox(width: 4),
+                  Text(label, style: WinType.labelM(s.onMuted)),
+                ]),
             ]),
 
             if (c.avgRating > 0) ...[
@@ -465,8 +477,10 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                       Icon(Icons.workspace_premium_outlined,
                           size: 14, color: s.onMuted),
                       const SizedBox(width: 6),
-                      Text(context.l10n.studentCourseCertIncluded,
-                          style: WinType.labelM(s.onMuted)),
+                      Flexible(
+                        child: Text(context.l10n.studentCourseCertIncluded,
+                            style: WinType.labelM(s.onMuted)),
+                      ),
                     ]),
                   ],
                 ])),

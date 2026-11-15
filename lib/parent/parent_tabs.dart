@@ -5,7 +5,7 @@ import '../l10n/l10n.dart';
 import '../widgets/language_selector.dart';
 import '../theme/win_motion.dart';
 import '../app_state.dart';
-import '../auth/welcome_screen.dart';
+import '../auth/login_screen.dart';
 import '../data/mock_data.dart';
 import '../data/models.dart';
 import '../services/auth_service.dart';
@@ -1082,7 +1082,7 @@ class _ParentProfileTabState extends State<ParentProfileTab> {
             await AuthService.instance.signOut();
             if (!context.mounted) return;
             Navigator.of(context).pushAndRemoveUntil(
-              WinPageRoute(builder: (_) => const WelcomeScreen()),
+              WinPageRoute(builder: (_) => const LoginScreen()),
               (r) => false,
             );
           },

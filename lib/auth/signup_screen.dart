@@ -154,8 +154,12 @@ class _SignupScreenState extends State<SignupScreen> {
                 borderRadius:
                     BorderRadius.vertical(top: Radius.circular(WinRadii.xl)),
               ),
-              child: ListView(
+              // Formulaire court : tout est construit d'un coup (une liste
+              // paresseuse ne créait pas le bouton du bas avant défilement).
+              child: SingleChildScrollView(
                 padding: const EdgeInsets.fromLTRB(24, 24, 24, 28),
+                child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(l10n.createAccount,
                       style: WinType.archivo(
@@ -256,6 +260,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                   ),
                 ],
+                ),
               ),
             ),
           ),
@@ -276,7 +281,9 @@ class _Constraint extends StatelessWidget {
       Icon(ok ? Icons.check_circle : Icons.radio_button_unchecked,
           size: 16, color: ok ? s.primary : s.onFaint),
       const SizedBox(width: 8),
-      Text(label, style: WinType.bodyS(ok ? s.primary : s.onMuted)),
+      // Sur écran étroit, la règle passe à la ligne au lieu de déborder.
+      Expanded(
+          child: Text(label, style: WinType.bodyS(ok ? s.primary : s.onMuted))),
     ]);
   }
 }

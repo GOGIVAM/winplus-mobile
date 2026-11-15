@@ -115,7 +115,7 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
                     crossAxisCount: 2,
                     mainAxisSpacing: 12,
                     crossAxisSpacing: 12,
-                    childAspectRatio: 0.85,
+                    childAspectRatio: 0.78,
                   ),
                   itemCount: badges.length,
                   itemBuilder: (_, i) => _BadgeCard(badges[i]),
@@ -133,8 +133,10 @@ class _BadgeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
+    // Case de grille à hauteur fixe : les textes se réduisent (Flexible)
+    // au lieu de faire déborder la carte sur petit écran.
     return WinCard(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -157,17 +159,21 @@ class _BadgeCard extends StatelessWidget {
             if (!badge.unlocked) Icon(Icons.lock, size: 18, color: s.onFaint),
           ]),
           const SizedBox(height: 10),
-          Text(badge.name,
-              style: WinType.titleM(s.onStrong),
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis),
+          Flexible(
+            child: Text(badge.name,
+                style: WinType.titleM(s.onStrong),
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis),
+          ),
           const SizedBox(height: 4),
-          Text(badge.description,
-              style: WinType.labelS(s.onMuted),
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis),
+          Flexible(
+            child: Text(badge.description,
+                style: WinType.labelS(s.onMuted),
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis),
+          ),
           const SizedBox(height: 8),
           if (badge.unlocked)
             WinBadge(context.l10n.studentAchUnlocked, color: BadgeColor.teal)

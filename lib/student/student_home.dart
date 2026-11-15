@@ -246,8 +246,10 @@ class _StudentHomeTabState extends State<StudentHomeTab> {
           MobileSection(
             key: const ValueKey('continue'),
             title: l.studentHomeContinue,
+            // Hauteur de la carte : titre, date, barre et pourcentage (100
+            // points coupaient le pourcentage).
             child: SizedBox(
-              height: 100,
+              height: 112,
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 clipBehavior: Clip.none,

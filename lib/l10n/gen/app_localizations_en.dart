@@ -218,8 +218,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authParentGoalTitle => 'What is your goal for your child?';
 
   @override
-  String get authPeriodicIntro =>
-      'For your security, confirm your identity (every 20 days)';
+  String authPeriodicIntro(int days) {
+    return 'For your security, confirm your identity every $days days.';
+  }
+
+  @override
+  String get authSessionExpired =>
+      'Your session has expired. Please sign in again.';
 
   @override
   String get authPhoneOptional => 'Phone (optional)';

@@ -148,7 +148,9 @@ class _Constraint extends StatelessWidget {
       Icon(ok ? Icons.check_circle : Icons.radio_button_unchecked,
           size: 16, color: ok ? s.primary : s.onFaint),
       const SizedBox(width: 8),
-      Text(label, style: WinType.bodyS(ok ? s.primary : s.onMuted)),
+      // Sur écran étroit, la règle passe à la ligne au lieu de déborder.
+      Expanded(
+          child: Text(label, style: WinType.bodyS(ok ? s.primary : s.onMuted))),
     ]);
   }
 }

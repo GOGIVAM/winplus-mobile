@@ -402,7 +402,9 @@ class _CourseCard extends StatelessWidget {
                       style: WinType.labelS(s.onMuted),
                     ),
                   const SizedBox(height: 8),
-                  Row(
+                  Wrap(
+                    spacing: 10,
+                    runSpacing: 4,
                     children: [
                       _StatPill(
                         icon: Icons.menu_book_outlined,
@@ -410,7 +412,6 @@ class _CourseCard extends StatelessWidget {
                             context.l10n.teacherCoursesLessons(course.lessonsCount),
                         color: s.onMuted,
                       ),
-                      const SizedBox(width: 10),
                       _StatPill(
                         icon: Icons.people_outline,
                         label:
@@ -522,7 +523,7 @@ class _CourseOptionsSheetState extends State<_CourseOptionsSheet> {
                   Text(description, style: WinType.bodyM(s.onSurface)),
                 ],
                 const SizedBox(height: 12),
-                Row(children: [
+                Wrap(crossAxisAlignment: WrapCrossAlignment.center, runSpacing: 6, children: [
                   Icon(Icons.menu_book_outlined, size: 14, color: s.onMuted),
                   const SizedBox(width: 4),
                   Text(ctx.l10n.teacherCoursesLessons(lessonsCount),

@@ -238,14 +238,22 @@ class _CertificatesScreenState extends State<CertificatesScreen> {
                                               }),
                                         ),
                                     ]),
-                                    const SizedBox(height: 10),
-                                    Row(children: [
-                                      Icon(Icons.verified_outlined,
-                                          size: 14, color: s.primary),
-                                      const SizedBox(width: 6),
-                                      Text(cert.subjectName,
-                                          style: WinType.labelM(s.onMuted)),
-                                    ]),
+                                    // Matière seulement si elle apporte
+                                    // quelque chose : le serveur la remplit
+                                    // souvent avec le titre, déjà affiché.
+                                    if (cert.subjectName.isNotEmpty &&
+                                        cert.subjectName != cert.title) ...[
+                                      const SizedBox(height: 10),
+                                      Row(children: [
+                                        Icon(Icons.verified_outlined,
+                                            size: 14, color: s.primary),
+                                        const SizedBox(width: 6),
+                                        Expanded(
+                                          child: Text(cert.subjectName,
+                                              style: WinType.labelM(s.onMuted)),
+                                        ),
+                                      ]),
+                                    ],
                                   ]),
                             ),
                           ]),

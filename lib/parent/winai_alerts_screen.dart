@@ -135,16 +135,18 @@ class _WinAIAlertsScreenState extends State<WinAIAlertsScreen> {
                       ]),
                       const SizedBox(height: 6),
                     ],
+                    // Bord arrondi : bordure uniforme dehors, bande de couleur dedans.
                     Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(WinRadii.md),
-                        border: Border(
-                          left: BorderSide(color: color, width: 4),
-                          top: BorderSide(color: s.outline),
-                          right: BorderSide(color: s.outline),
-                          bottom: BorderSide(color: s.outline),
-                        ),
+                        border: Border.all(color: s.outline),
                         color: bg,
+                      ),
+                      child: ClipRRect(
+                      borderRadius: BorderRadius.circular(WinRadii.md - 1),
+                      child: Container(
+                      decoration: BoxDecoration(
+                        border: Border(left: BorderSide(color: color, width: 4)),
                       ),
                       padding: const EdgeInsets.all(14),
                       child: Row(
@@ -157,6 +159,8 @@ class _WinAIAlertsScreenState extends State<WinAIAlertsScreen> {
                                 child: Text(alert.content,
                                     style: WinType.bodyS(s.onSurface))),
                           ]),
+                          ),
+                        ),
                     ),
                     if (child != null) ...[
                       const SizedBox(height: 6),

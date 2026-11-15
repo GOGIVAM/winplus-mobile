@@ -120,7 +120,11 @@ class ApiEntitlements {
   bool has(String key) => values[key] == true;
 
   /// Valeur entière d'un droit (-1 = illimité).
-  int limit(String key) => (values[key] as num?)?.toInt() ?? 0;
+  /// Valeur non numérique envoyée par le serveur : 0, sans planter l'écran.
+  int limit(String key) {
+    final v = values[key];
+    return v is num ? v.toInt() : 0;
+  }
 
   bool isUnlimited(String key) => limit(key) == unlimited;
 

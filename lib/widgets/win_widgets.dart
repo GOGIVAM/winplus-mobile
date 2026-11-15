@@ -114,11 +114,17 @@ class _WinButtonState extends State<WinButton> {
                   winIcon(icon, size: small ? 16 : 18, color: fg),
                   const SizedBox(width: 8)
                 ],
-                Text(label,
-                    style: WinType.manrope(
-                        size: small ? 13 : 14,
-                        weight: FontWeight.w600,
-                        color: fg)),
+                // Libellé coupé proprement plutôt que de déborder quand le
+                // bouton est étroit (deux boutons côte à côte, petit écran).
+                Flexible(
+                  child: Text(label,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: WinType.manrope(
+                          size: small ? 13 : 14,
+                          weight: FontWeight.w600,
+                          color: fg)),
+                ),
               ]);
     return AnimatedScale(
       scale: _pressed ? 0.97 : 1.0,
@@ -229,11 +235,15 @@ class WinChip extends StatelessWidget {
             winIcon(icon, size: 15, color: active ? s.chipActiveFg : s.onMuted),
             const SizedBox(width: 6)
           ],
-          Text(label,
-              style: WinType.manrope(
-                  size: 13,
-                  weight: FontWeight.w600,
-                  color: active ? s.chipActiveFg : s.onSurface)),
+          Flexible(
+            child: Text(label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: WinType.manrope(
+                    size: 13,
+                    weight: FontWeight.w600,
+                    color: active ? s.chipActiveFg : s.onSurface)),
+          ),
         ]),
       ),
     );
@@ -434,12 +444,15 @@ class WinAIOrb extends StatefulWidget {
 
 class _WinAIOrbState extends State<WinAIOrb>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _c =
+  // Créé seulement s'il sert (grande taille, animations permises) : le créer
+  // dans dispose() levait une erreur sur les petites orbes.
+  AnimationController? _ctl;
+  AnimationController get _c => _ctl ??=
       AnimationController(vsync: this, duration: const Duration(seconds: 2))
         ..repeat();
   @override
   void dispose() {
-    _c.dispose();
+    _ctl?.dispose();
     super.dispose();
   }
 

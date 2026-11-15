@@ -15,6 +15,24 @@ class AuthResult {
       {required this.success, this.message, this.errorCode, this.locale});
 }
 
+/// Réponse de GET /auth/reconfirmation-status.
+class ReconfirmationStatus {
+  final bool required;
+  final int windowDays;
+  final String maskedEmail;
+  const ReconfirmationStatus(
+      {required this.required,
+      required this.windowDays,
+      required this.maskedEmail});
+
+  factory ReconfirmationStatus.fromJson(Map<String, dynamic> j) =>
+      ReconfirmationStatus(
+        required: j['required'] == true,
+        windowDays: (j['windowDays'] as num?)?.toInt() ?? 35,
+        maskedEmail: (j['maskedEmail'] as String?) ?? '',
+      );
+}
+
 class AuthService {
   AuthService._();
   static final AuthService instance = AuthService._();
@@ -127,6 +145,57 @@ class AuthService {
       return AuthResult(
           success: false,
           message: data?['error'] as String? ?? L10n.current.commonNetworkError);
+    }
+  }
+
+  /// Reconfirmation périodique d'identité : le serveur dit si elle est due
+  /// (GET /auth/reconfirmation-status, fenêtre de 35 jours). Null si le
+  /// serveur ne répond pas (hors ligne compris) : on ne bloque jamais
+  /// l'utilisateur pour ça, comme le site.
+  Future<ReconfirmationStatus?> reconfirmationStatus() async {
+    try {
+      final res = await _api.dio.get('/auth/reconfirmation-status');
+      final body = res.data as Map<String, dynamic>;
+      final d = (body['data'] ?? body) as Map<String, dynamic>;
+      return ReconfirmationStatus.fromJson(d);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Envoie le code de reconfirmation par e-mail.
+  Future<AuthResult> sendPeriodicCode() async {
+    try {
+      await _api.dio.post('/auth/send-confirmation-code', data: {});
+      return const AuthResult(success: true);
+    } on DioException catch (e) {
+      final data = e.response?.data;
+      return AuthResult(
+          success: false,
+          message: (data is Map ? data['error'] as String? : null) ??
+              L10n.current.commonNetworkError);
+    }
+  }
+
+  /// Vérifie le code ; le serveur renvoie des jetons neufs, enregistrés ici.
+  Future<AuthResult> verifyPeriodicCode(String code) async {
+    try {
+      final res = await _api.dio
+          .post('/auth/verify-confirmation', data: {'code': code});
+      final d = res.data as Map<String, dynamic>;
+      final access = d['accessToken'] as String?;
+      if (access != null && access.isNotEmpty) {
+        await SessionManager.updateTokens(
+            accessToken: access, refreshToken: d['refreshToken'] as String?);
+      }
+      return const AuthResult(success: true);
+    } on DioException catch (e) {
+      final data = e.response?.data;
+      return AuthResult(
+          success: false,
+          message: (data is Map ? data['error'] as String? : null) ??
+              L10n.current.authCodeIncorrect,
+          errorCode: data is Map ? data['errorCode'] as String? : null);
     }
   }
 

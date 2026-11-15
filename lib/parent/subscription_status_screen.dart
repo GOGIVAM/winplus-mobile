@@ -106,26 +106,31 @@ class _SubscriptionStatusScreenState extends State<SubscriptionStatusScreen> {
               : ListView(
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
                   children: [
+                    // Un bord arrondi exige une bordure de couleur uniforme : le liseré du
+                    // haut est dessine a l'interieur, sous le decoupage.
                     Container(
                       decoration: BoxDecoration(
                         color: s.cardBg,
                         borderRadius: BorderRadius.circular(WinRadii.lg),
-                        border: Border(
-                          top: BorderSide(color: s.primary, width: 4),
-                          left: BorderSide(color: s.cardBorder),
-                          right: BorderSide(color: s.cardBorder),
-                          bottom: BorderSide(color: s.cardBorder),
-                        ),
+                        border: Border.all(color: s.cardBorder),
                         boxShadow: WinShadows.md,
+                      ),
+                      child: ClipRRect(
+                      borderRadius: BorderRadius.circular(WinRadii.lg - 1),
+                      child: Container(
+                      decoration: BoxDecoration(
+                        border: Border(top: BorderSide(color: s.primary, width: 4)),
                       ),
                       padding: const EdgeInsets.all(16),
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(children: [
-                              Text(sub.planName,
-                                  style: WinType.displayS(s.onStrong)),
-                              const Spacer(),
+                              Expanded(
+                                child: Text(sub.planName,
+                                    style: WinType.displayS(s.onStrong)),
+                              ),
+                              const SizedBox(width: 8),
                               WinBadge(
                                   !sub.hasPlan
                                       ? context.l10n.commonFree
@@ -149,13 +154,17 @@ class _SubscriptionStatusScreenState extends State<SubscriptionStatusScreen> {
                             Row(children: [
                               Icon(Icons.refresh, size: 14, color: s.onFaint),
                               const SizedBox(width: 4),
-                              Text(
-                                  sub.autoRenew
-                                      ? context.l10n.parentSubAutoRenewOn
-                                      : context.l10n.parentSubManualRenew,
-                                  style: WinType.labelM(s.onFaint)),
+                              Expanded(
+                                child: Text(
+                                    sub.autoRenew
+                                        ? context.l10n.parentSubAutoRenewOn
+                                        : context.l10n.parentSubManualRenew,
+                                    style: WinType.labelM(s.onFaint)),
+                              ),
                             ]),
                           ]),
+                          ),
+                        ),
                     ),
                     const SizedBox(height: 20),
                     // Lot 9.7b : droits réellement appliqués (plus de

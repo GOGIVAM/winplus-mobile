@@ -691,6 +691,10 @@ class TutorBookingService {
 
   Future<TutorPolicy>? _policy;
 
+  /// Tests : oublie la politique gardée en mémoire (une réponse attendue par
+  /// un test terminé ne doit pas bloquer le suivant).
+  void resetPolicyForTest() => _policy = null;
+
   /// Politique publique (endpoint anonyme), gardée en mémoire pour la
   /// session ; un échec n'est pas mis en cache.
   Future<TutorPolicy> getPolicy() {

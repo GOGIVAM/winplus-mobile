@@ -5,6 +5,15 @@ import '../l10n/l10n.dart';
 
 enum WinRole { student, parent, teacher, institution }
 
+/// Rôle enregistré dans la session (« teacher », « parent »…) vers le rôle
+/// de l'application ; élève par défaut.
+WinRole winRoleFromString(String? role) => switch (role) {
+      'teacher' => WinRole.teacher,
+      'parent' => WinRole.parent,
+      'institution' => WinRole.institution,
+      _ => WinRole.student,
+    };
+
 enum ContentType { epreuve, correction, quiz, livre, pack }
 
 String contentTypeLabel(ContentType t) => switch (t) {

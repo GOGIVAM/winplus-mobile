@@ -699,6 +699,7 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
             const SizedBox(height: 8),
             DropdownButtonFormField<String>(
               value: _selectedCity,
+              isExpanded: true,
               hint: Text(context.l10n.teacherProfileChooseCity),
               items: _tutorCities
                   .map((c) => DropdownMenuItem(value: c, child: Text(_cityLabel(context, c))))
@@ -712,6 +713,7 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
             if (_selectedCity != null && _selectedCity != 'Autre ville')
               DropdownButtonFormField<String>(
                 value: _selectedQuartier,
+                isExpanded: true,
                 hint: Text(context.l10n.teacherProfileDistrictHint),
                 items: (_tutorQuartiers[_selectedCity] ?? [])
                     .map((q) => DropdownMenuItem(value: q, child: Text(q)))
@@ -1031,7 +1033,13 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
   }
 
   Widget _buildActions(WinScheme s) {
-    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+    // Wrap : sur un ecran etroit, les boutons passent a la ligne au lieu de
+    // deborder (derniere etape : Precedent, Enregistrer et Activer).
+    return Wrap(
+        alignment: WrapAlignment.spaceBetween,
+        spacing: 8,
+        runSpacing: 8,
+        children: [
       WinButton(context.l10n.teacherProfilePrevious,
           variant: WinButtonVariant.ghost,
           onTap:
@@ -1041,12 +1049,11 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
             loading: _saving,
             onTap: _saving ? null : () => _saveStep(next: _step + 1))
       else
-        Row(children: [
+        Wrap(spacing: 8, runSpacing: 8, children: [
           WinButton(context.l10n.commonSave,
               variant: WinButtonVariant.outline,
               loading: _saving,
               onTap: _saving ? null : () => _saveStep()),
-          const SizedBox(width: 8),
           if (_profile?.isActive != true)
             WinButton(context.l10n.teacherProfileActivate,
                 variant: WinButtonVariant.accent,

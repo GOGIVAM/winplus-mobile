@@ -8,7 +8,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
-import '../auth/welcome_screen.dart';
+import '../auth/login_screen.dart';
 import 'learning_style_quiz_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -648,7 +648,7 @@ class _TabCompteState extends State<_TabCompte> {
     await AuthService.instance.signOut();
     if (!mounted) return;
     Navigator.of(context).pushAndRemoveUntil(
-      WinPageRoute(builder: (_) => const WelcomeScreen()),
+      WinPageRoute(builder: (_) => const LoginScreen()),
       (r) => false,
     );
   }

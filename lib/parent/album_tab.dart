@@ -131,7 +131,7 @@ class _AlbumSection extends StatelessWidget {
         Row(children: [
           Icon(icon, size: 17, color: WinColors.teal600),
           const SizedBox(width: 8),
-          Text(title, style: WinType.titleM(s.onStrong)),
+          Expanded(child: Text(title, style: WinType.titleM(s.onStrong))),
         ]),
         const SizedBox(height: 8),
         Text(text, style: WinType.bodyM(s.onStrong)),
@@ -155,7 +155,7 @@ class _AlbumListSection extends StatelessWidget {
         Row(children: [
           Icon(icon, size: 17, color: WinColors.teal600),
           const SizedBox(width: 8),
-          Text(title, style: WinType.titleM(s.onStrong)),
+          Expanded(child: Text(title, style: WinType.titleM(s.onStrong))),
         ]),
         const SizedBox(height: 8),
         ...items.map((item) => Padding(
