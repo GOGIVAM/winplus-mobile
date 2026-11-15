@@ -8096,4 +8096,36 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get mobileCatalogCart => 'Panier';
+
+  @override
+  String get notifChannelName => 'Notifications WinPlus';
+
+  @override
+  String get notifChannelDesc =>
+      'Messages, corrections, rappels et alertes de votre compte.';
+
+  @override
+  String get notifServiceChannelName => 'Écoute des notifications';
+
+  @override
+  String get notifServiceChannelDesc =>
+      'Notification discrète tant que WinPlus reste à l’écoute.';
+
+  @override
+  String get notifServiceTitle => 'WinPlus reste à l’écoute';
+
+  @override
+  String get notifServiceText =>
+      'Vos notifications arrivent à l’instant. Désactivable dans votre profil.';
+
+  @override
+  String get notifInstantTitle => 'Notifications instantanées';
+
+  @override
+  String get notifInstantHint =>
+      'Une notification discrète reste affichée pour recevoir vos alertes à l’instant, même application fermée. Désactivées, WinPlus vérifie environ toutes les 15 minutes.';
+
+  @override
+  String get notifPermissionDenied =>
+      'Notifications refusées : autorisez-les dans les réglages du téléphone pour les recevoir.';
 }

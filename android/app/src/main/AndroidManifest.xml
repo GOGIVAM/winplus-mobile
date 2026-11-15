@@ -5,6 +5,12 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <!-- Détection de l'état du réseau (mode hors ligne, connectivity_plus). -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <!-- Notifications application fermée, sans Firebase (lot 2) : service au
+         premier plan qui garde ouvert le flux ntfy. Android 14+ exige le type
+         « remoteMessaging » et sa permission. Les permissions générales
+         (FOREGROUND_SERVICE, POST_NOTIFICATIONS, RECEIVE_BOOT_COMPLETED,
+         WAKE_LOCK) viennent des manifestes des bibliothèques. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_REMOTE_MESSAGING"/>
     <!-- Sauvegarde Android : jetons et leçons chiffrées exclus
          (res/xml/backup_rules.xml et data_extraction_rules.xml). -->
     <application
@@ -35,6 +41,12 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <!-- Écoute des notifications (flutter_foreground_task) : ne pas changer
+             le nom du service. Relancée au démarrage du téléphone. -->
+        <service
+            android:name="com.pravera.flutter_foreground_task.service.ForegroundService"
+            android:foregroundServiceType="remoteMessaging"
+            android:exported="false" />
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

@@ -4897,5 +4897,14 @@
       }
     }
   },
-  "mobileCatalogCart": "Panier"
+  "mobileCatalogCart": "Panier",
+  "notifChannelName": "Notifications WinPlus",
+  "notifChannelDesc": "Messages, corrections, rappels et alertes de votre compte.",
+  "notifServiceChannelName": "Écoute des notifications",
+  "notifServiceChannelDesc": "Notification discrète tant que WinPlus reste à l’écoute.",
+  "notifServiceTitle": "WinPlus reste à l’écoute",
+  "notifServiceText": "Vos notifications arrivent à l’instant. Désactivable dans votre profil.",
+  "notifInstantTitle": "Notifications instantanées",
+  "notifInstantHint": "Une notification discrète reste affichée pour recevoir vos alertes à l’instant, même application fermée. Désactivées, WinPlus vérifie environ toutes les 15 minutes.",
+  "notifPermissionDenied": "Notifications refusées : autorisez-les dans les réglages du téléphone pour les recevoir."
 }

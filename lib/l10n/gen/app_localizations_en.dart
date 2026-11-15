@@ -8026,4 +8026,36 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mobileCatalogCart => 'Cart';
+
+  @override
+  String get notifChannelName => 'WinPlus notifications';
+
+  @override
+  String get notifChannelDesc =>
+      'Messages, corrections, reminders and alerts from your account.';
+
+  @override
+  String get notifServiceChannelName => 'Notification listener';
+
+  @override
+  String get notifServiceChannelDesc =>
+      'Discreet notification while WinPlus keeps listening.';
+
+  @override
+  String get notifServiceTitle => 'WinPlus is listening';
+
+  @override
+  String get notifServiceText =>
+      'Your notifications arrive instantly. You can turn this off in your profile.';
+
+  @override
+  String get notifInstantTitle => 'Instant notifications';
+
+  @override
+  String get notifInstantHint =>
+      'A discreet notification stays visible so your alerts arrive instantly, even with the app closed. When off, WinPlus checks about every 15 minutes.';
+
+  @override
+  String get notifPermissionDenied =>
+      'Notifications are blocked: allow them in your phone settings to receive them.';
 }

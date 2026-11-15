@@ -4,6 +4,7 @@ import '../l10n/l10n.dart';
 import '../theme/win_motion.dart';
 import '../app_state.dart';
 import '../data/models.dart';
+import '../services/background_notifications.dart';
 import '../services/push_service.dart';
 import '../services/user_service.dart';
 import '../student/notifications_screen.dart';
@@ -47,10 +48,12 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     _loadUnread();
     _loadProfile();
-    // Module 27 (lot 8) : push ntfy, premier plan uniquement (décision
-    // produit : aucune garantie de livraison app fermée, donc pas de
-    // service natif FCM/APNs). Un évènement SSE rafraîchit juste le badge.
+    // Application ouverte : un évènement du flux ntfy rafraîchit le badge.
     PushService.instance.start(_loadUnread);
+    // Application fermée (Android) : service d'écoute et vérification de
+    // secours, sans Firebase (lot 2). Demande l'autorisation la première
+    // fois.
+    unawaited(BackgroundNotifications.startForAccount());
   }
 
   @override

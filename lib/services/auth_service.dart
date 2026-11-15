@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import '../l10n/l10n.dart';
 import 'api_client.dart';
+import 'background_notifications.dart';
 import 'course_offline_service.dart';
 import 'session_manager.dart';
 import 'user_service.dart';
@@ -208,6 +209,8 @@ class AuthService {
     // la session elle-même (SessionManager.getUserId() doit encore
     // répondre).
     await CourseOfflineService.instance.wipeForLogout();
+    // Plus d'écoute ni de vérification de fond pour le compte qui part.
+    await BackgroundNotifications.stopForAccount();
     await SessionManager.clear();
     // Le badge de notifications ne doit pas survivre au compte précédent.
     UserService.instance.resetNotifications();

@@ -19,6 +19,8 @@ class SessionManager {
   static const _keyUserName = 'user_name';
   // Même clé que kLocalePrefKey (app_state.dart).
   static const _keyLocale = 'winplus_locale';
+  // Même clé que BackgroundNotifications.instantPrefKey.
+  static const _keyInstantNotifications = 'notif_instant_enabled';
 
   static const _secure = FlutterSecureStorage(
     aOptions: AndroidOptions(encryptedSharedPreferences: true),
@@ -127,15 +129,23 @@ class SessionManager {
     // Lot 10.11 : la langue choisie survit à la déconnexion (écran
     // d'accueil et connexion suivante dans la même langue).
     final locale = p.getString(_keyLocale);
+    // Choix « notifications instantanées » (BackgroundNotifications) : un
+    // réglage de l'appareil, pas du compte.
+    final instant = p.getBool(_keyInstantNotifications);
     await p.clear();
     if (locale != null) await p.setString(_keyLocale, locale);
+    if (instant != null) await p.setBool(_keyInstantNotifications, instant);
   }
 
-  /// Tests uniquement : oublie la copie en mémoire, pour relire le stockage
-  /// simulé préparé par le test.
-  static void resetForTest() {
+  /// Oublie la copie en mémoire : le prochain accès relit le trousseau.
+  /// Sert quand un autre isolat (service de notifications, tâche de fond) a
+  /// pu renouveler les jetons entre-temps.
+  static void reload() {
     _access = null;
     _refresh = null;
     _loaded = false;
   }
+
+  /// Tests : relit le stockage simulé préparé par le test.
+  static void resetForTest() => reload();
 }

@@ -13853,6 +13853,60 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Panier'**
   String get mobileCatalogCart;
+
+  /// No description provided for @notifChannelName.
+  ///
+  /// In fr, this message translates to:
+  /// **'Notifications WinPlus'**
+  String get notifChannelName;
+
+  /// No description provided for @notifChannelDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Messages, corrections, rappels et alertes de votre compte.'**
+  String get notifChannelDesc;
+
+  /// No description provided for @notifServiceChannelName.
+  ///
+  /// In fr, this message translates to:
+  /// **'Écoute des notifications'**
+  String get notifServiceChannelName;
+
+  /// No description provided for @notifServiceChannelDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Notification discrète tant que WinPlus reste à l’écoute.'**
+  String get notifServiceChannelDesc;
+
+  /// No description provided for @notifServiceTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'WinPlus reste à l’écoute'**
+  String get notifServiceTitle;
+
+  /// No description provided for @notifServiceText.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vos notifications arrivent à l’instant. Désactivable dans votre profil.'**
+  String get notifServiceText;
+
+  /// No description provided for @notifInstantTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Notifications instantanées'**
+  String get notifInstantTitle;
+
+  /// No description provided for @notifInstantHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une notification discrète reste affichée pour recevoir vos alertes à l’instant, même application fermée. Désactivées, WinPlus vérifie environ toutes les 15 minutes.'**
+  String get notifInstantHint;
+
+  /// No description provided for @notifPermissionDenied.
+  ///
+  /// In fr, this message translates to:
+  /// **'Notifications refusées : autorisez-les dans les réglages du téléphone pour les recevoir.'**
+  String get notifPermissionDenied;
 }
 
 class _AppLocalizationsDelegate

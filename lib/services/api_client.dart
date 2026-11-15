@@ -34,9 +34,10 @@ class ApiClient {
         // Seule une requête faite avec une session peut l'avoir perdue : un
         // refus à la connexion (mauvais mot de passe) n'est pas une
         // expiration.
-        final hadSession = e.requestOptions.headers['Authorization'] != null;
+        final sent = e.requestOptions.headers['Authorization'];
+        final hadSession = sent != null;
         if (e.response?.statusCode == 401 && hadSession) {
-          final refreshed = await _refreshOnce();
+          final refreshed = await _refreshOnce(sent.toString());
           if (refreshed) {
             final token = await SessionManager.getAccessToken();
             final opts = e.requestOptions;
@@ -48,7 +49,10 @@ class ApiClient {
               return handler.next(retry);
             }
           }
-          await _expireSession();
+          // En arrière-plan, un renouvellement refusé ne déconnecte pas :
+          // l'application ouverte a pu renouveler au même instant, elle
+          // reste seule juge de l'expiration.
+          if (!backgroundMode) await _expireSession();
         }
         handler.next(e);
       },
@@ -80,11 +84,31 @@ class ApiClient {
   /// et déconnectait l'utilisateur.
   Future<bool>? _refreshing;
 
-  Future<bool> _refreshOnce() {
-    return _refreshing ??= _tryRefresh().whenComplete(() => _refreshing = null);
+  /// Vrai dans les isolats de fond (service de notifications, tâche
+  /// périodique) : voir le refus de renouvellement ci-dessus.
+  bool backgroundMode = false;
+
+  /// Isolats de fond : le renouvellement est-il permis maintenant ? Le
+  /// service de notifications le refuse quand l'application est ouverte,
+  /// pour ne jamais renouveler en même temps qu'elle.
+  Future<bool> Function()? mayRefresh;
+
+  Future<bool> _refreshOnce(String sentAuthorization) {
+    return _refreshing ??= _tryRefresh(sentAuthorization)
+        .whenComplete(() => _refreshing = null);
   }
 
-  Future<bool> _tryRefresh() async {
+  Future<bool> _tryRefresh(String sentAuthorization) async {
+    // Un autre isolat a peut-être déjà renouvelé : on relit le trousseau,
+    // et si le jeton d'accès a changé, on rejoue avec lui sans consommer le
+    // jeton de renouvellement (le serveur le remplace à chaque usage).
+    SessionManager.reload();
+    final stored = await SessionManager.getAccessToken();
+    if (stored != null && stored.isNotEmpty && 'Bearer $stored' != sentAuthorization) {
+      return true;
+    }
+    final allowed = mayRefresh;
+    if (allowed != null && !await allowed()) return false;
     final refresh = await SessionManager.getRefreshToken();
     if (refresh == null) return false;
     try {

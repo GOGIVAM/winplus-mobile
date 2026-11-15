@@ -9,6 +9,7 @@ import 'auth/login_screen.dart';
 import 'auth/splash_screen.dart';
 import 'l10n/l10n.dart';
 import 'services/api_client.dart';
+import 'services/background_notifications.dart';
 import 'theme/win_motion.dart';
 import 'shared/subscription/subscription_notifier.dart';
 import 'services/connectivity_service.dart';
@@ -37,6 +38,9 @@ Future<void> main() async {
   // Module 44 : épreuves, corrigés et livres ne sont plus téléchargeables ;
   // on efface les copies en clair laissées par les versions précédentes.
   unawaited(LocalDownloadsService.instance.purgeLegacyCatalogFiles());
+  // Notifications application fermée (Android) : canal avec le service
+  // d'écoute et tâche périodique de secours.
+  await BackgroundNotifications.initMainIsolate();
 
   runApp(const WinPlusApp());
 }

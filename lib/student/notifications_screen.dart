@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../l10n/l10n.dart';
+import '../services/background_notifications.dart';
 import '../services/user_service.dart';
+import '../widgets/instant_notifications_tile.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
@@ -160,7 +162,15 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           ),
         ],
       ),
-      body: _buildBody(s),
+      body: Column(children: [
+        // Réglage commun aux quatre profils : l'écran s'ouvre par la cloche.
+        if (BackgroundNotifications.supported)
+          const Padding(
+            padding: EdgeInsets.fromLTRB(16, 4, 16, 4),
+            child: InstantNotificationsTile(),
+          ),
+        Expanded(child: _buildBody(s)),
+      ]),
     );
   }
 
