@@ -149,8 +149,10 @@ class _WinAIFloatingWidgetState extends State<WinAIFloatingWidget> {
           Positioned(
             left: 16,
             right: 16,
-            bottom: pos.dy > maxH / 2 ? null : (maxH - pos.dy - _size) + 16,
-            top: pos.dy > maxH / 2 ? maxH - pos.dy + 16 : null,
+            // Bouton dans la moitié basse : la carte s'ouvre au-dessus de lui ;
+            // dans la moitié haute : en dessous. Elle reste toujours à l'écran.
+            bottom: pos.dy > maxH / 2 ? maxH - pos.dy + 12 : null,
+            top: pos.dy > maxH / 2 ? null : pos.dy + _size + 12,
             child: _MiniCard(
               subtitle: cfg.subtitle,
               accent: cfg.accent,
@@ -178,6 +180,10 @@ class _WinAIFloatingWidgetState extends State<WinAIFloatingWidget> {
               _dragged = true;
               setState(() => _pos = pos + details.delta);
             },
+            // Fin du glissement : le prochain appui doit ouvrir la carte.
+            // (L'indicateur restait vrai et chaque appui suivant était ignoré.)
+            onPanEnd: (_) => _dragged = false,
+            onPanCancel: () => _dragged = false,
             onTap: () {
               if (_dragged) return;
               setState(() => _open = !_open);

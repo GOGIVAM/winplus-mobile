@@ -37,6 +37,7 @@ dependencies:
   share_plus: ^12.0.2
   google_sign_in: ^7.2.0
   speech_to_text: ^7.4.0
+  local_auth: ^3.0.2
 
 dev_dependencies:
   # Tests : le projet n'avait pas flutter_test, donc `flutter test` ne compilait rien.
@@ -73,7 +74,11 @@ flutter:
     - assets/winplus-icon-source-white.png
     - assets/Login.gif
     - assets/winai-bot.png
+    - assets/google-g.png
     - assets/kame-salut.webp
     - assets/kame-mouche.webp
     - assets/home/
-  # Police chargée dynamiquement via google_fonts (Archivo, comme le site).
+    - assets/google_fonts/
+  # Police Archivo (comme le site) embarquée dans l'application : google_fonts
+  # la lit ici au lieu de la télécharger (premier lancement hors ligne).
+  # Fichiers identiques à ceux de fonts.gstatic.com, licence OFL.txt.

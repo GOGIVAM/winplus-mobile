@@ -154,7 +154,6 @@ class _LoginScreenState extends State<LoginScreen> {
       _Divider(label: l10n.orContinueWith),
       const SizedBox(height: 18),
       _SocialButton(
-          icon: Icons.g_mobiledata,
           label: l10n.continueWithGoogle,
           onTap: () => GoogleLogin.start(context)),
       const SizedBox(height: 28),
@@ -186,12 +185,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
 // ── Widgets partagés ─────────────────────────────────────────────────────────
 
+/// Bouton « Continuer avec Google » : logo officiel en couleurs (le même que
+/// le site), conformément aux règles d'usage de la marque Google.
 class _SocialButton extends StatelessWidget {
-  final IconData icon;
   final String label;
   final VoidCallback onTap;
-  const _SocialButton(
-      {required this.icon, required this.label, required this.onTap});
+  const _SocialButton({required this.label, required this.onTap});
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
@@ -209,8 +208,9 @@ class _SocialButton extends StatelessWidget {
               border: Border.all(color: s.outline2, width: 1)),
           alignment: Alignment.center,
           child: Row(mainAxisSize: MainAxisSize.min, children: [
-            Icon(icon, size: 24, color: s.onStrong),
-            const SizedBox(width: 10),
+            Image.asset('assets/google-g.png',
+                width: 20, height: 20, excludeFromSemantics: true),
+            const SizedBox(width: 12),
             Flexible(
                 child: Text(label,
                     textAlign: TextAlign.center,
@@ -231,16 +231,21 @@ class _Divider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    return Row(children: [
-      Expanded(child: Container(height: 1, color: s.outline)),
-      Flexible(
-          flex: 4,
-          child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Text(label,
-                  textAlign: TextAlign.center,
-                  style: WinType.labelM(s.onFaint)))),
-      Expanded(child: Container(height: 1, color: s.outline)),
-    ]);
+    // Deux traits égaux qui occupent toute la largeur, texte au centre
+    // (comme .or-divider du site).
+    // Sur petit écran ou avec un grand texte système, le libellé passe à la
+    // ligne au-delà de 60 % de la largeur au lieu de déborder.
+    return LayoutBuilder(
+        builder: (context, box) => Row(children: [
+              Expanded(child: Container(height: 1, color: s.outline)),
+              ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: box.maxWidth * 0.6),
+                  child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: Text(label,
+                          textAlign: TextAlign.center,
+                          style: WinType.labelM(s.onFaint)))),
+              Expanded(child: Container(height: 1, color: s.outline)),
+            ]));
   }
 }

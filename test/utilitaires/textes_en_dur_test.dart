@@ -36,6 +36,7 @@ const _valeursTechniques = <String>{
   'Service de notifications non démarré : \$e',
   'Tâche périodique non enregistrée : \$e',
   'Vérification des notifications : \$e',
+  'HttpCache : réponse non gardée (\$e)',
 };
 
 final _chaine = RegExp(

@@ -211,15 +211,15 @@ void main() {
     await tester.tap(_bouton());
     await pomper(tester);
     expect(find.text('WinAI'), findsOneWidget);
-  }, skip: true); // Bug probable : voir le commentaire ci-dessus.
+  });
 
-  // Bug probable (lecture du code) : les ancrages de la carte sont inverses.
+  // Corrige (lot 4, constate sur telephone) : les ancrages de la carte sont inverses.
   // Bouton dans la moitie haute : la carte est ancree par son bord BAS a
   // « hauteur - y - 58 + 16 » du bas de l'ecran, donc presque tout en haut, et
   // elle depasse au-dessus de l'ecran ; bouton en bas, elle est ancree par le
   // haut a « hauteur - y + 16 ». La carte doit rester entierement visible et
   // ne pas recouvrir le bouton.
-  testWidgets('BUG PROBABLE : bouton en haut de l ecran, la carte reste visible sous le bouton', (tester) async {
+  testWidgets('bouton en haut de l ecran, la carte reste visible sous le bouton', (tester) async {
     await monterEcran(tester, _coque(WinRole.student));
     await tester.drag(_bouton(), const Offset(0, -600));
     await pomper(tester);
@@ -229,5 +229,5 @@ void main() {
     final titre = tester.getRect(find.text('WinAI'));
     expect(titre.top, greaterThanOrEqualTo(0));
     expect(titre.top, greaterThan(bouton.bottom));
-  }, skip: true); // Bug probable : voir le commentaire ci-dessus.
+  });
 }

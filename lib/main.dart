@@ -19,9 +19,13 @@ import 'services/local_downloads_service.dart';
 import 'services/messaging_service.dart';
 import 'services/outbox_service.dart';
 import 'services/quiz_service.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Polices embarquées (assets/google_fonts) : jamais de téléchargement, ce
+  // qui échouait hors ligne et laissait une police de secours.
+  GoogleFonts.config.allowRuntimeFetching = false;
   // Lot 10.11 : données de dates fr/en pour WinFormat (intl.DateFormat).
   await initializeDateFormatting('fr');
   await initializeDateFormatting('en');
