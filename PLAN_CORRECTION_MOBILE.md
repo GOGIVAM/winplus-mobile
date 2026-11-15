@@ -58,6 +58,8 @@ Dépend du lot 0.
 
 ## Lot 2 : écosystème Android et iOS
 
+**Clos le 15/11/2026.** Fait : Android 1 à 6 (clé de production créée et conservée hors du dépôt, secrets de signature dans GitHub), iOS 1 à 4 préparés, Communs 1 à 6 (liens de réinitialisation vérifiés par Google sur winplus.cm, notifications application fermée, connexion Google, liens et partage, environnement d'intégration, compilation automatique). Restent hors lot : la fiche Play Store (Android 7) et l'identifiant OAuth Android de Google (en cours avec Georges) ; la vérification d'une notification application fermée sur un vrai téléphone passe au lot 8. **Tout ce qui concerne iOS est en pause** (décision du 15/11) : compilation, signature, APNs, liens universels et traductions des autorisations.
+
 Dépend du lot 1. Les étapes marquées *Georges* demandent une décision ou un compte que lui seul possède.
 
 ### Android
@@ -296,8 +298,8 @@ Lot 0 ─┬─ Lot 1 ─┬─ Lot 2 (Android, iOS)
 
 ## Décisions attendues de Georges
 
-1. Clé de signature Android : qui la crée, où elle est conservée.
-2. Compte développeur Google Play. (Compilation iOS reportée et paiement iOS hors périmètre, décisions du 14/11.)
+1. ~~Clé de signature Android~~ : créée et conservée hors du dépôt (15/11), secrets GitHub en place.
+2. Compte développeur Google Play. (iOS en pause, décision du 15/11 ; paiement iOS hors périmètre, décision du 14/11.)
 4. Mode sombre : le garder ou le retirer.
 5. Outil de suivi des plantages.
 6. Ordre de priorité des fonctions du lot 7, s'il faut publier avant la parité complète.
