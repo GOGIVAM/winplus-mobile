@@ -9,6 +9,7 @@ import '../shared/subscription/pricing_screen.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import '../widgets/protected_content.dart';
 
 /// Énoncé (épreuve ou livre) ou corrigé d'une épreuve.
 enum ViewerDocumentKind { document, correction }
@@ -73,11 +74,14 @@ class _DocumentViewerScreenState extends State<DocumentViewerScreen> {
   @override
   void initState() {
     super.initState();
+    // Contenu payant : captures d'écran interdites tant que la page est ouverte.
+    ScreenProtection.acquerir();
     _load();
   }
 
   @override
   void dispose() {
+    ScreenProtection.liberer();
     _bytes = null;
     super.dispose();
   }

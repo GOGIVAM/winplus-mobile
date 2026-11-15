@@ -1,5 +1,30 @@
 package com.example.winplus
 
+import android.view.WindowManager
 import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.plugin.common.MethodChannel
 
-class MainActivity : FlutterActivity()
+class MainActivity : FlutterActivity() {
+    override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
+        super.configureFlutterEngine(flutterEngine)
+        // Protection des contenus payants (visionneuse, lecteur de formation) :
+        // FLAG_SECURE interdit captures et enregistrements d'écran, et masque
+        // la page dans la liste des applications récentes. L'équivalent du
+        // filigrane du site. Appelé par lib/widgets/protected_content.dart.
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "cm.winplus/ecran")
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "proteger" -> {
+                        window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+                        result.success(null)
+                    }
+                    "liberer" -> {
+                        window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+                        result.success(null)
+                    }
+                    else -> result.notImplemented()
+                }
+            }
+    }
+}

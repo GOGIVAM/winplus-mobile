@@ -5,10 +5,14 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <!-- Détection de l'état du réseau (mode hors ligne, connectivity_plus). -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <!-- Sauvegarde Android : jetons et leçons chiffrées exclus
+         (res/xml/backup_rules.xml et data_extraction_rules.xml). -->
     <application
-        android:label="winplus"
+        android:label="WinPlus"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:fullBackupContent="@xml/backup_rules"
+        android:dataExtractionRules="@xml/data_extraction_rules">
         <activity
             android:name=".MainActivity"
             android:exported="true"

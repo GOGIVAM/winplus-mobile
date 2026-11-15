@@ -13,6 +13,7 @@ import '../widgets/remote_pdf_screen.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import '../widgets/protected_content.dart';
 
 class CoursePlayerScreen extends StatefulWidget {
   final int courseId;
@@ -46,11 +47,15 @@ class _CoursePlayerScreenState extends State<CoursePlayerScreen> {
   @override
   void initState() {
     super.initState();
+    // Formation payante : captures d'écran interdites dans le lecteur et les
+    // pages ouvertes par-dessus (PDF d'une leçon), tant qu'il est ouvert.
+    ScreenProtection.acquerir();
     _loadCurriculum();
   }
 
   @override
   void dispose() {
+    ScreenProtection.liberer();
     _saveTimer?.cancel();
     super.dispose();
   }

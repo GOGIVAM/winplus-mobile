@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sauvegarde automatique Android (jusqu'à Android 11).
+     Exclus :
+     - les jetons de session (flutter_secure_storage) : chiffrés par une clé du
+       téléphone qui n'est pas sauvegardée, ils seraient illisibles ailleurs ;
+     - app_flutter : leçons de formation chiffrées, documents téléchargés et
+       cache local (Hive), qui se rechargent depuis le serveur.
+     Les préférences (langue, thème) restent sauvegardées. -->
+<full-backup-content>
+    <exclude domain="sharedpref" path="FlutterSecureStorage.xml" />
+    <exclude domain="root" path="app_flutter/" />
+</full-backup-content>
