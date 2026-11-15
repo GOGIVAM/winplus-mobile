@@ -7,6 +7,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
+import '../app_config.dart';
 
 // ---------------------------------------------------------------------------
 // Model
@@ -165,7 +166,7 @@ class _TeacherCoursesScreenState extends State<TeacherCoursesScreen> {
 
   /// Adresse de l'éditeur de formations du site (tableau de bord enseignant).
   static const _webCourseEditorUrl =
-      'https://winplus.cm/professeur?view=formations';
+      '${AppConfig.siteUrl}/professeur?view=formations';
 
   /// La création et l'édition d'une formation (leçons, vidéos, quiz) se font
   /// sur le site : l'application ne propose pas d'éditeur. On l'indique

@@ -9,6 +9,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import '../app_config.dart';
 
 class CertificatesScreen extends StatefulWidget {
   const CertificatesScreen({super.key});
@@ -233,7 +234,7 @@ class _CertificatesScreenState extends State<CertificatesScreen> {
                                                 final messenger = ScaffoldMessenger.of(context);
                                                 final done = L10n.current.studentCertLinkCopied;
                                                 await Clipboard.setData(ClipboardData(
-                                                    text: 'https://winplus.cm/verify/${cert.verificationCode}'));
+                                                    text: '${AppConfig.siteUrl}/verify/${cert.verificationCode}'));
                                                 messenger.showSnackBar(SnackBar(content: Text(done)));
                                               }),
                                         ),
