@@ -220,7 +220,7 @@ class HttpCacheInterceptor extends Interceptor {
     // le délai de connexion (jusqu'à 30 s par écran sinon).
     if (!ConnectivityService.instance.isOnline &&
         HttpCache.isCacheable(options)) {
-      final cached = await HttpCache.instance.lookup(options);
+      final cached = await _safeLookup(options);
       if (cached != null) return handler.resolve(cached);
     }
     handler.next(options);
@@ -230,7 +230,15 @@ class HttpCacheInterceptor extends Interceptor {
   Future<void> onResponse(
       Response response, ResponseInterceptorHandler handler) async {
     if (response.extra['fromCache'] != true) {
-      await HttpCache.instance.save(response);
+      // Le cache ne doit jamais retenir ni casser une réponse : une erreur
+      // ou une écriture lente est ignorée, la réponse part quand même.
+      try {
+        await HttpCache.instance
+            .save(response)
+            .timeout(const Duration(seconds: 2));
+      } catch (e) {
+        debugPrint('HttpCache : réponse non gardée ($e)');
+      }
     }
     handler.next(response);
   }
@@ -239,10 +247,21 @@ class HttpCacheInterceptor extends Interceptor {
   Future<void> onError(
       DioException err, ErrorInterceptorHandler handler) async {
     if (HttpCache.isNetworkFailure(err)) {
-      final cached = await HttpCache.instance.lookup(err.requestOptions);
+      final cached = await _safeLookup(err.requestOptions);
       if (cached != null) return handler.resolve(cached);
     }
     handler.next(err);
+  }
+
+  static Future<Response?> _safeLookup(RequestOptions o) async {
+    try {
+      return await HttpCache.instance
+          .lookup(o)
+          .timeout(const Duration(seconds: 2));
+    } catch (e) {
+      debugPrint('HttpCache : lecture impossible ($e)');
+      return null;
+    }
   }
 }
 
