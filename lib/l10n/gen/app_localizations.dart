@@ -2991,6 +2991,48 @@ abstract class AppLocalizations {
   /// **'Pour quel enfant ?'**
   String get parentBuyWhichChild;
 
+  /// No description provided for @parentBuyConfirmTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Offrir ce contenu à {name} ?'**
+  String parentBuyConfirmTitle(String name);
+
+  /// No description provided for @parentBuyConfirmBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'« {title} » ({price} XAF) est payé depuis votre portefeuille, puis ajouté à l\'espace de {name}.'**
+  String parentBuyConfirmBody(String title, String price, String name);
+
+  /// No description provided for @parentBuyConfirm.
+  ///
+  /// In fr, this message translates to:
+  /// **'Acheter'**
+  String get parentBuyConfirm;
+
+  /// No description provided for @parentBuyDone.
+  ///
+  /// In fr, this message translates to:
+  /// **'« {title} » est maintenant dans l\'espace de {name}.'**
+  String parentBuyDone(String title, String name);
+
+  /// No description provided for @parentBuyTopUpTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Solde insuffisant'**
+  String get parentBuyTopUpTitle;
+
+  /// No description provided for @parentBuyTopUpBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Il manque {missing} XAF dans votre portefeuille. Vous pouvez régler ce contenu ({price} XAF) par Mobile Money.'**
+  String parentBuyTopUpBody(String missing, String price);
+
+  /// No description provided for @parentBuyPayMomo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Payer par Mobile Money'**
+  String get parentBuyPayMomo;
+
   /// No description provided for @parentChildActivityWeek.
   ///
   /// In fr, this message translates to:
@@ -4077,17 +4119,17 @@ abstract class AppLocalizations {
   /// **'Acheter'**
   String get shopBuy;
 
-  /// No description provided for @shopBuyFromAccountBody.
+  /// No description provided for @shopBuyInAppBody.
   ///
   /// In fr, this message translates to:
-  /// **'Le paiement dans l\'application arrive bientôt. En attendant, achetez ce contenu depuis votre compte sur winplus.cm avec les mêmes identifiants : il sera ensuite disponible ici.'**
-  String get shopBuyFromAccountBody;
+  /// **'Ajoutez ce contenu à votre panier, puis réglez-le par Mobile Money (MTN ou Orange). Il sera ensuite disponible dans votre espace.'**
+  String get shopBuyInAppBody;
 
-  /// No description provided for @shopBuyFromAccountTitle.
+  /// No description provided for @shopBuyInAppTitle.
   ///
   /// In fr, this message translates to:
-  /// **'Achat depuis votre compte'**
-  String get shopBuyFromAccountTitle;
+  /// **'Acheter dans l\'application'**
+  String get shopBuyInAppTitle;
 
   /// No description provided for @shopCartEmpty.
   ///
@@ -5782,12 +5824,6 @@ abstract class AppLocalizations {
   /// **'Reprendre les questions ratées'**
   String get studentHubRevisionQuizSub;
 
-  /// No description provided for @studentHubSoon.
-  ///
-  /// In fr, this message translates to:
-  /// **'Bientôt disponible !'**
-  String get studentHubSoon;
-
   /// No description provided for @studentHubSubscription.
   ///
   /// In fr, this message translates to:
@@ -7030,11 +7066,47 @@ abstract class AppLocalizations {
   /// **'Épreuves'**
   String get studentTabsTypePapers;
 
-  /// No description provided for @studentTabsVoiceSoon.
+  /// No description provided for @voiceListening.
   ///
   /// In fr, this message translates to:
-  /// **'Enregistrement vocal disponible prochainement'**
-  String get studentTabsVoiceSoon;
+  /// **'Je vous écoute…'**
+  String get voiceListening;
+
+  /// No description provided for @voiceNothingHeard.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rien n\'a été entendu.'**
+  String get voiceNothingHeard;
+
+  /// No description provided for @voiceCheckText.
+  ///
+  /// In fr, this message translates to:
+  /// **'Relisez le texte avant de l\'utiliser :'**
+  String get voiceCheckText;
+
+  /// No description provided for @voiceStop.
+  ///
+  /// In fr, this message translates to:
+  /// **'Arrêter'**
+  String get voiceStop;
+
+  /// No description provided for @voiceUseText.
+  ///
+  /// In fr, this message translates to:
+  /// **'Utiliser ce texte'**
+  String get voiceUseText;
+
+  /// No description provided for @voiceRetry.
+  ///
+  /// In fr, this message translates to:
+  /// **'Parler à nouveau'**
+  String get voiceRetry;
+
+  /// No description provided for @voiceUnavailable.
+  ///
+  /// In fr, this message translates to:
+  /// **'La dictée n\'est pas disponible : autorisez le micro pour WinPlus, ou vérifiez que la reconnaissance vocale de Google est installée.'**
+  String get voiceUnavailable;
 
   /// No description provided for @studentVarkApplied.
   ///
@@ -8812,12 +8884,6 @@ abstract class AppLocalizations {
   /// **'Changer le statut'**
   String get teacherContentChangeStatus;
 
-  /// No description provided for @teacherContentComingSoon.
-  ///
-  /// In fr, this message translates to:
-  /// **'Bientôt disponible'**
-  String get teacherContentComingSoon;
-
   /// No description provided for @teacherContentCoursesBanner.
   ///
   /// In fr, this message translates to:
@@ -8871,6 +8937,42 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Statistiques'**
   String get teacherContentStats;
+
+  /// No description provided for @teacherStatsRating.
+  ///
+  /// In fr, this message translates to:
+  /// **'Note moyenne ({count} avis)'**
+  String teacherStatsRating(int count);
+
+  /// No description provided for @teacherStatsEnrollments.
+  ///
+  /// In fr, this message translates to:
+  /// **'Élèves inscrits'**
+  String get teacherStatsEnrollments;
+
+  /// No description provided for @teacherStatsSales.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ventes'**
+  String get teacherStatsSales;
+
+  /// No description provided for @teacherStatsGross.
+  ///
+  /// In fr, this message translates to:
+  /// **'Revenu brut'**
+  String get teacherStatsGross;
+
+  /// No description provided for @teacherStatsNet.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre part'**
+  String get teacherStatsNet;
+
+  /// No description provided for @teacherStatsLoadError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les statistiques de ce contenu n\'ont pas pu être chargées.'**
+  String get teacherStatsLoadError;
 
   /// No description provided for @teacherContentStatusArchived.
   ///
@@ -9858,11 +9960,17 @@ abstract class AppLocalizations {
   String teacherProfileRateSuggested(
       Object rate, Object low, Object high, Object explanation);
 
-  /// No description provided for @teacherProfileReviewsSoon.
+  /// No description provided for @teacherProfileRating.
   ///
   /// In fr, this message translates to:
-  /// **'Avis bientôt disponibles'**
-  String get teacherProfileReviewsSoon;
+  /// **'★ {rating} · {count} avis'**
+  String teacherProfileRating(String rating, int count);
+
+  /// No description provided for @teacherProfileNoReviews.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun avis pour le moment'**
+  String get teacherProfileNoReviews;
 
   /// No description provided for @teacherProfileSaveError.
   ///
@@ -13272,11 +13380,11 @@ abstract class AppLocalizations {
   /// **'Appuyez pour ouvrir le document'**
   String get studentPlayerTapToOpen;
 
-  /// No description provided for @studentPlayerOpenOnWeb.
+  /// No description provided for @studentPlayerOpenWithApp.
   ///
   /// In fr, this message translates to:
-  /// **'Ce type de fichier s\'ouvre depuis le site winplus.cm.'**
-  String get studentPlayerOpenOnWeb;
+  /// **'Touchez pour l\'ouvrir avec une application du téléphone.'**
+  String get studentPlayerOpenWithApp;
 
   /// No description provided for @mobileHomeForYou.
   ///
@@ -13919,6 +14027,30 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Notifications refusées : autorisez-les dans les réglages du téléphone pour les recevoir.'**
   String get notifPermissionDenied;
+
+  /// No description provided for @offlineStripOffline.
+  ///
+  /// In fr, this message translates to:
+  /// **'Hors ligne'**
+  String get offlineStripOffline;
+
+  /// No description provided for @offlineStripServerDown.
+  ///
+  /// In fr, this message translates to:
+  /// **'Serveur injoignable'**
+  String get offlineStripServerDown;
+
+  /// No description provided for @offlineStripDataOf.
+  ///
+  /// In fr, this message translates to:
+  /// **'données du {when}'**
+  String offlineStripDataOf(String when);
+
+  /// No description provided for @offlineStripPending.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{1 action en attente d’envoi} other{{count} actions en attente d’envoi}}'**
+  String offlineStripPending(int count);
 }
 
 class _AppLocalizationsDelegate

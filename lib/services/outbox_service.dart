@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'connectivity_service.dart';
 
@@ -26,12 +27,18 @@ class OutboxService {
 
   Future<void> init() async {
     _box ??= await Hive.openBox(_boxName);
+    _count();
     _connSub ??= ConnectivityService.instance.onStatusChange.listen((online) {
       if (online) flush();
     });
   }
 
   Box get _b => _box!;
+
+  /// Nombre d'actions en attente, pour le bandeau des espaces (lot 3).
+  final ValueNotifier<int> pending = ValueNotifier<int>(0);
+
+  void _count() => pending.value = _box?.length ?? 0;
 
   void registerHandler(String type,
       Future<bool> Function(Map<String, dynamic> payload) handler) {
@@ -48,6 +55,7 @@ class OutboxService {
       'payload': payload,
       'createdAt': DateTime.now().toIso8601String(),
     });
+    _count();
   }
 
   int get pendingCount => _b.length;
@@ -91,6 +99,7 @@ class OutboxService {
       }
     } finally {
       _flushing = false;
+      _count();
     }
   }
 }

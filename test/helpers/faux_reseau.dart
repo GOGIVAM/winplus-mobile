@@ -13,6 +13,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:winplus/l10n/l10n.dart';
 import 'package:winplus/services/api_client.dart';
+import 'package:winplus/services/http_cache.dart';
 import 'package:winplus/services/session_manager.dart';
 import 'package:winplus/services/tutor_booking_service.dart';
 
@@ -117,6 +118,9 @@ FauxReseau preparerEnvironnement({Map<String, Object> prefs = const {}}) {
   // Politique de tutorat gardée en mémoire par le service : une réponse
   // attendue par le test précédent ne viendra jamais.
   TutorBookingService.instance.resetPolicyForTest();
+  // Lectures gardées pour le hors ligne : en mémoire et vides à chaque test
+  // (une écriture Hive sur disque bloquerait le temps simulé).
+  HttpCache.instance.useMemoryStore();
   L10n.locale = const Locale('fr');
   final faux = FauxReseau();
   ApiClient.instance.dio.httpClientAdapter = faux;

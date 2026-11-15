@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import '../app_config.dart';
 import '../l10n/l10n.dart';
+import 'http_cache.dart';
 import 'session_manager.dart';
 
 /// Client Dio centralisé avec intercepteur JWT automatique et refresh token.
@@ -57,6 +58,9 @@ class ApiClient {
         handler.next(e);
       },
     ));
+    // Mode hors ligne (lot 3) : après l'intercepteur de session, pour que
+    // l'échec réseau d'une requête lui parvienne une fois les 401 traités.
+    d.interceptors.add(HttpCacheInterceptor());
 
     return d;
   }

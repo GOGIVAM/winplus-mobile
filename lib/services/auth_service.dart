@@ -3,6 +3,7 @@ import '../l10n/l10n.dart';
 import 'api_client.dart';
 import 'background_notifications.dart';
 import 'course_offline_service.dart';
+import 'http_cache.dart';
 import 'session_manager.dart';
 import 'user_service.dart';
 import '../data/models.dart';
@@ -274,6 +275,8 @@ class AuthService {
     await CourseOfflineService.instance.wipeForLogout();
     // Plus d'écoute ni de vérification de fond pour le compte qui part.
     await BackgroundNotifications.stopForAccount();
+    // Lectures gardées pour le hors ligne : effacées avec le compte.
+    await HttpCache.instance.clearForUser(await SessionManager.getUserId());
     await SessionManager.clear();
     // Le badge de notifications ne doit pas survivre au compte précédent.
     UserService.instance.resetNotifications();

@@ -18,6 +18,7 @@ import '../parent/parent_tabs.dart';
 import '../teacher/teacher_tabs.dart';
 import '../institution/institution_tabs.dart';
 import '../widgets/language_selector.dart';
+import '../widgets/offline_strip.dart';
 import '../widgets/winai_floating_widget.dart';
 import 'shell_nav.dart';
 
@@ -180,7 +181,10 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
       body: SafeArea(
         top: false,
         bottom: false,
-        child: ShellNav(
+        child: Column(children: [
+          // Hors ligne, date des données, actions en attente (lot 3).
+          const OfflineStrip(),
+          Expanded(child: ShellNav(
           goTab: _goTab,
           child: WinAIFloatingWidget(
             role: role,
@@ -208,7 +212,8 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
                   key: ValueKey(safeIndex), child: pages[safeIndex]),
             ),
           ),
-        ),
+        )),
+        ]),
       ),
       bottomNavigationBar: _BottomNav(
         tabs: tabs,

@@ -48,6 +48,13 @@ class ConnectivityService {
     });
   }
 
+  /// Tests : simule le mode avion ou le retour du réseau.
+  void debugSetOnline(bool online) {
+    if (online == _isOnline) return;
+    _isOnline = online;
+    _controller.add(online);
+  }
+
   bool _resultsToOnline(List<ConnectivityResult> results) =>
       results.any((r) => r != ConnectivityResult.none);
 

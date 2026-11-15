@@ -1682,6 +1682,35 @@ class AppLocalizationsFr extends AppLocalizations {
   String get parentBuyWhichChild => 'Pour quel enfant ?';
 
   @override
+  String parentBuyConfirmTitle(String name) {
+    return 'Offrir ce contenu à $name ?';
+  }
+
+  @override
+  String parentBuyConfirmBody(String title, String price, String name) {
+    return '« $title » ($price XAF) est payé depuis votre portefeuille, puis ajouté à l\'espace de $name.';
+  }
+
+  @override
+  String get parentBuyConfirm => 'Acheter';
+
+  @override
+  String parentBuyDone(String title, String name) {
+    return '« $title » est maintenant dans l\'espace de $name.';
+  }
+
+  @override
+  String get parentBuyTopUpTitle => 'Solde insuffisant';
+
+  @override
+  String parentBuyTopUpBody(String missing, String price) {
+    return 'Il manque $missing XAF dans votre portefeuille. Vous pouvez régler ce contenu ($price XAF) par Mobile Money.';
+  }
+
+  @override
+  String get parentBuyPayMomo => 'Payer par Mobile Money';
+
+  @override
   String get parentChildActivityWeek => 'Activité cette semaine';
 
   @override
@@ -2344,11 +2373,11 @@ class AppLocalizationsFr extends AppLocalizations {
   String get shopBuy => 'Acheter';
 
   @override
-  String get shopBuyFromAccountBody =>
-      'Le paiement dans l\'application arrive bientôt. En attendant, achetez ce contenu depuis votre compte sur winplus.cm avec les mêmes identifiants : il sera ensuite disponible ici.';
+  String get shopBuyInAppBody =>
+      'Ajoutez ce contenu à votre panier, puis réglez-le par Mobile Money (MTN ou Orange). Il sera ensuite disponible dans votre espace.';
 
   @override
-  String get shopBuyFromAccountTitle => 'Achat depuis votre compte';
+  String get shopBuyInAppTitle => 'Acheter dans l\'application';
 
   @override
   String get shopCartEmpty => 'Votre panier est vide.';
@@ -3368,9 +3397,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get studentHubRevisionQuizSub => 'Reprendre les questions ratées';
 
   @override
-  String get studentHubSoon => 'Bientôt disponible !';
-
-  @override
   String get studentHubSubscription => 'Mon abonnement';
 
   @override
@@ -4059,8 +4085,26 @@ class AppLocalizationsFr extends AppLocalizations {
   String get studentTabsTypePapers => 'Épreuves';
 
   @override
-  String get studentTabsVoiceSoon =>
-      'Enregistrement vocal disponible prochainement';
+  String get voiceListening => 'Je vous écoute…';
+
+  @override
+  String get voiceNothingHeard => 'Rien n\'a été entendu.';
+
+  @override
+  String get voiceCheckText => 'Relisez le texte avant de l\'utiliser :';
+
+  @override
+  String get voiceStop => 'Arrêter';
+
+  @override
+  String get voiceUseText => 'Utiliser ce texte';
+
+  @override
+  String get voiceRetry => 'Parler à nouveau';
+
+  @override
+  String get voiceUnavailable =>
+      'La dictée n\'est pas disponible : autorisez le micro pour WinPlus, ou vérifiez que la reconnaissance vocale de Google est installée.';
 
   @override
   String get studentVarkApplied => 'Style appliqué !';
@@ -5122,9 +5166,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get teacherContentChangeStatus => 'Changer le statut';
 
   @override
-  String get teacherContentComingSoon => 'Bientôt disponible';
-
-  @override
   String get teacherContentCoursesBanner =>
       'Créez et gérez vos cours structurés';
 
@@ -5153,6 +5194,27 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get teacherContentStats => 'Statistiques';
+
+  @override
+  String teacherStatsRating(int count) {
+    return 'Note moyenne ($count avis)';
+  }
+
+  @override
+  String get teacherStatsEnrollments => 'Élèves inscrits';
+
+  @override
+  String get teacherStatsSales => 'Ventes';
+
+  @override
+  String get teacherStatsGross => 'Revenu brut';
+
+  @override
+  String get teacherStatsNet => 'Votre part';
+
+  @override
+  String get teacherStatsLoadError =>
+      'Les statistiques de ce contenu n\'ont pas pu être chargées.';
 
   @override
   String get teacherContentStatusArchived => 'Archivé';
@@ -5740,7 +5802,12 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get teacherProfileReviewsSoon => 'Avis bientôt disponibles';
+  String teacherProfileRating(String rating, int count) {
+    return '★ $rating · $count avis';
+  }
+
+  @override
+  String get teacherProfileNoReviews => 'Aucun avis pour le moment';
 
   @override
   String get teacherProfileSaveError => 'Erreur lors de l\'enregistrement.';
@@ -7781,8 +7848,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get studentPlayerTapToOpen => 'Appuyez pour ouvrir le document';
 
   @override
-  String get studentPlayerOpenOnWeb =>
-      'Ce type de fichier s\'ouvre depuis le site winplus.cm.';
+  String get studentPlayerOpenWithApp =>
+      'Touchez pour l\'ouvrir avec une application du téléphone.';
 
   @override
   String get mobileHomeForYou => 'Pour toi';
@@ -8138,4 +8205,26 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get notifPermissionDenied =>
       'Notifications refusées : autorisez-les dans les réglages du téléphone pour les recevoir.';
+
+  @override
+  String get offlineStripOffline => 'Hors ligne';
+
+  @override
+  String get offlineStripServerDown => 'Serveur injoignable';
+
+  @override
+  String offlineStripDataOf(String when) {
+    return 'données du $when';
+  }
+
+  @override
+  String offlineStripPending(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count actions en attente d’envoi',
+      one: '1 action en attente d’envoi',
+    );
+    return '$_temp0';
+  }
 }

@@ -918,6 +918,53 @@
   },
   "parentBuyTitle": "Acheter pour…",
   "parentBuyWhichChild": "Pour quel enfant ?",
+  "parentBuyConfirmTitle": "Offrir ce contenu à {name} ?",
+  "@parentBuyConfirmTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "parentBuyConfirmBody": "« {title} » ({price} XAF) est payé depuis votre portefeuille, puis ajouté à l'espace de {name}.",
+  "@parentBuyConfirmBody": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "parentBuyConfirm": "Acheter",
+  "parentBuyDone": "« {title} » est maintenant dans l'espace de {name}.",
+  "@parentBuyDone": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "parentBuyTopUpTitle": "Solde insuffisant",
+  "parentBuyTopUpBody": "Il manque {missing} XAF dans votre portefeuille. Vous pouvez régler ce contenu ({price} XAF) par Mobile Money.",
+  "@parentBuyTopUpBody": {
+    "placeholders": {
+      "missing": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "parentBuyPayMomo": "Payer par Mobile Money",
   "parentChildActivityWeek": "Activité cette semaine",
   "parentChildAiWeek": "IA/sem.",
   "parentChildAllGood": "Tout va bien !",
@@ -1352,8 +1399,8 @@
   "shopAwaitingConfirmation": "En attente de confirmation…",
   "shopBackToCatalog": "Retour au catalogue",
   "shopBuy": "Acheter",
-  "shopBuyFromAccountBody": "Le paiement dans l'application arrive bientôt. En attendant, achetez ce contenu depuis votre compte sur winplus.cm avec les mêmes identifiants : il sera ensuite disponible ici.",
-  "shopBuyFromAccountTitle": "Achat depuis votre compte",
+  "shopBuyInAppBody": "Ajoutez ce contenu à votre panier, puis réglez-le par Mobile Money (MTN ou Orange). Il sera ensuite disponible dans votre espace.",
+  "shopBuyInAppTitle": "Acheter dans l'application",
   "shopCartEmpty": "Votre panier est vide.",
   "shopCartLoadFailed": "Impossible de charger le panier.",
   "shopCartRemoveFailed": "Impossible de retirer cet article.",
@@ -1968,7 +2015,6 @@
   "studentHubReports": "Mes rapports de progression",
   "studentHubRevisionQuiz": "Quiz de révision",
   "studentHubRevisionQuizSub": "Reprendre les questions ratées",
-  "studentHubSoon": "Bientôt disponible !",
   "studentHubSubscription": "Mon abonnement",
   "studentHubSubscriptionSub": "Plan {planName} · Gérer",
   "@studentHubSubscriptionSub": {
@@ -2337,7 +2383,13 @@
   "studentTabsTypeCorrections": "Corrections",
   "studentTabsTypePacks": "Packs",
   "studentTabsTypePapers": "Épreuves",
-  "studentTabsVoiceSoon": "Enregistrement vocal disponible prochainement",
+  "voiceListening": "Je vous écoute…",
+  "voiceNothingHeard": "Rien n'a été entendu.",
+  "voiceCheckText": "Relisez le texte avant de l'utiliser :",
+  "voiceStop": "Arrêter",
+  "voiceUseText": "Utiliser ce texte",
+  "voiceRetry": "Parler à nouveau",
+  "voiceUnavailable": "La dictée n'est pas disponible : autorisez le micro pour WinPlus, ou vérifiez que la reconnaissance vocale de Google est installée.",
   "studentVarkApplied": "Style appliqué !",
   "studentVarkApply": "Appliquer mon style",
   "studentVarkApplying": "Application…",
@@ -2987,7 +3039,6 @@
   "teacherClassesYear": "Année académique",
   "teacherClassesYearHint": "Ex: 2026-2027",
   "teacherContentChangeStatus": "Changer le statut",
-  "teacherContentComingSoon": "Bientôt disponible",
   "teacherContentCoursesBanner": "Créez et gérez vos cours structurés",
   "teacherContentDeleteBody": "« {title} » sera définitivement supprimé.",
   "@teacherContentDeleteBody": {
@@ -3004,6 +3055,19 @@
   "teacherContentManage": "Gérer",
   "teacherContentRating": "Note",
   "teacherContentStats": "Statistiques",
+  "teacherStatsRating": "Note moyenne ({count} avis)",
+  "@teacherStatsRating": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "teacherStatsEnrollments": "Élèves inscrits",
+  "teacherStatsSales": "Ventes",
+  "teacherStatsGross": "Revenu brut",
+  "teacherStatsNet": "Votre part",
+  "teacherStatsLoadError": "Les statistiques de ce contenu n'ont pas pu être chargées.",
   "teacherContentStatusArchived": "Archivé",
   "teacherContentStatusChanged": "Statut changé : {status}",
   "@teacherContentStatusChanged": {
@@ -3373,7 +3437,18 @@
       }
     }
   },
-  "teacherProfileReviewsSoon": "Avis bientôt disponibles",
+  "teacherProfileRating": "★ {rating} · {count} avis",
+  "@teacherProfileRating": {
+    "placeholders": {
+      "rating": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "teacherProfileNoReviews": "Aucun avis pour le moment",
   "teacherProfileSaveError": "Erreur lors de l'enregistrement.",
   "teacherProfileSaving": "Enregistrement…",
   "teacherProfileSpecCatchUp": "Rattrapage express",
@@ -4756,8 +4831,7 @@
   "instMonthlyReportNoEmail": "Aucune adresse e-mail sur ce compte.",
   "studentPdfLoadError": "Le document n'a pas pu être chargé.",
   "studentPlayerTapToOpen": "Appuyez pour ouvrir le document",
-  "studentPlayerOpenOnWeb": "Ce type de fichier s'ouvre depuis le site winplus.cm.",
-  "studentCertShare": "Partager",
+  "studentPlayerOpenWithApp": "Touchez pour l'ouvrir avec une application du téléphone.",
   "mobileHomeForYou": "Pour toi",
   "mobileHomeFilters": "Filtres",
   "mobileHomeSeeAll": "Tout voir",
@@ -4909,5 +4983,23 @@
   "notifServiceText": "Vos notifications arrivent à l’instant. Désactivable dans votre profil.",
   "notifInstantTitle": "Notifications instantanées",
   "notifInstantHint": "Une notification discrète reste affichée pour recevoir vos alertes à l’instant, même application fermée. Désactivées, WinPlus vérifie environ toutes les 15 minutes.",
-  "notifPermissionDenied": "Notifications refusées : autorisez-les dans les réglages du téléphone pour les recevoir."
+  "notifPermissionDenied": "Notifications refusées : autorisez-les dans les réglages du téléphone pour les recevoir.",
+  "offlineStripOffline": "Hors ligne",
+  "offlineStripServerDown": "Serveur injoignable",
+  "offlineStripDataOf": "données du {when}",
+  "@offlineStripDataOf": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineStripPending": "{count, plural, =1{1 action en attente d’envoi} other{{count} actions en attente d’envoi}}",
+  "@offlineStripPending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }
