@@ -1,3 +1,4 @@
+import '../widgets/win_screen.dart';
 import 'package:flutter/material.dart';
 import '../l10n/l10n.dart';
 import '../services/auth_service.dart';
@@ -43,69 +44,46 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
     final l10n = context.l10n;
-    return Scaffold(
-      backgroundColor: s.bg,
-      appBar: AppBar(
-        backgroundColor: s.bg,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
-          onPressed: () => Navigator.pop(context),
+    return WinAuthFrame(children: [
+      WinAuthHeading(l10n.authForgotTitle,
+          subtitle: l10n.authForgotIntro,
+          icon: _sent
+              ? Icons.mark_email_read_outlined
+              : Icons.lock_reset_outlined),
+      if (_sent) ...[
+        WinAlert(
+          l10n.authForgotSent(_ctrl.text.trim()),
+          type: BadgeColor.success,
         ),
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 16),
-              Text(l10n.authForgotTitle, style: WinType.displayS(s.onStrong)),
-              const SizedBox(height: 8),
-              Text(
-                l10n.authForgotIntro,
-                style: WinType.bodyM(s.onMuted),
-              ),
-              const SizedBox(height: 32),
-              if (_sent) ...[
-                WinAlert(
-                  l10n.authForgotSent(_ctrl.text.trim()),
-                  type: BadgeColor.success,
-                ),
-                const SizedBox(height: 24),
-                Text(l10n.authForgotNotReceived,
-                    style: WinType.bodyM(s.onMuted)),
-                const SizedBox(height: 12),
-                WinButton(l10n.authResendEmail,
-                    variant: WinButtonVariant.outline,
-                    block: true,
-                    onTap: () => setState(() => _sent = false)),
-              ] else ...[
-                WinTextField(
-                  label: l10n.authEmailAddress,
-                  hint: l10n.authEmailHint,
-                  icon: Icons.email_outlined,
-                  controller: _ctrl,
-                  keyboardType: TextInputType.emailAddress,
-                ),
-                if (_error != null) ...[
-                  const SizedBox(height: 12),
-                  WinAlert(_error!, type: BadgeColor.error),
-                ],
-                const SizedBox(height: 24),
-                WinButton(l10n.authSendLink,
-                    block: true, loading: _loading, onTap: _send),
-              ],
-              const SizedBox(height: 16),
-              Center(
-                child: WinButton(l10n.authBackToLogin,
-                    variant: WinButtonVariant.ghost,
-                    onTap: () => Navigator.pop(context)),
-              ),
-            ],
-          ),
+        const SizedBox(height: 24),
+        Text(l10n.authForgotNotReceived, style: WinType.bodyM(s.onMuted)),
+        const SizedBox(height: 12),
+        WinButton(l10n.authResendEmail,
+            variant: WinButtonVariant.outline,
+            block: true,
+            onTap: () => setState(() => _sent = false)),
+      ] else ...[
+        WinTextField(
+          label: l10n.authEmailAddress,
+          hint: l10n.authEmailHint,
+          icon: Icons.email_outlined,
+          controller: _ctrl,
+          keyboardType: TextInputType.emailAddress,
         ),
+        if (_error != null) ...[
+          const SizedBox(height: 12),
+          WinAlert(_error!, type: BadgeColor.error),
+        ],
+        const SizedBox(height: 24),
+        WinButton(l10n.authSendLink,
+            block: true, loading: _loading, onTap: _send),
+      ],
+      const SizedBox(height: 16),
+      Center(
+        child: WinButton(l10n.authBackToLogin,
+            variant: WinButtonVariant.ghost,
+            onTap: () => Navigator.pop(context)),
       ),
-    );
+    ]);
   }
 }

@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:winplus/auth/complete_profile_screen.dart';
 import 'package:winplus/auth/onboarding_success_screen.dart';
 import 'package:winplus/l10n/l10n.dart';
 import 'package:winplus/widgets/win_widgets.dart';
+import 'package:winplus/widgets/win_mascot.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
@@ -116,9 +116,9 @@ void main() {
       sessionRole('student');
       telephone(tester);
       await monter(tester, ecran(const CompleteProfileScreen()));
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(find.byType(WinLoadingState), findsOneWidget);
       await reseau(tester);
-      expect(find.byType(CircularProgressIndicator), findsNothing);
+      expect(find.byType(WinLoadingState), findsNothing);
     });
   });
 }

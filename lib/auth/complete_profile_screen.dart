@@ -1,3 +1,4 @@
+import '../widgets/win_screen.dart';
 import '../l10n/class_levels.dart';
 import 'package:flutter/material.dart';
 import '../l10n/l10n.dart';
@@ -10,6 +11,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import '../widgets/win_mascot.dart';
 import 'onboarding_success_screen.dart';
 
 /// Complétion de profil après vérification d'email. Le contenu s'adapte au
@@ -52,7 +54,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
       final s = WinTheme.of(context);
       return Scaffold(
         backgroundColor: s.bg,
-        body: const Center(child: CircularProgressIndicator()),
+        body: const Center(child: WinLoadingState()),
       );
     }
 
@@ -168,63 +170,41 @@ class _StudentProfileWizardState extends State<_StudentProfileWizard> {
     final s = WinTheme.of(context);
     final l10n = context.l10n;
     final steps = [l10n.commonLevel, l10n.authStepStream, l10n.authStepGoal];
-    return Scaffold(
-      backgroundColor: s.bg,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const SizedBox(height: 32),
-            Row(children: [
-              for (int i = 0; i < 3; i++) ...[
-                if (i > 0) const SizedBox(width: 8),
-                Expanded(
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        WinProgressBar(i <= _step ? 100 : 0,
-                            height: 3,
-                            color: i < _step
-                                ? s.primary
-                                : (i == _step ? s.primary : s.outline)),
-                        const SizedBox(height: 4),
-                        Text(steps[i],
-                            style: WinType.labelS(
-                                    i == _step ? s.primary : s.onFaint)
-                                .copyWith(
-                                    fontWeight: i == _step
-                                        ? FontWeight.w700
-                                        : FontWeight.w500)),
-                      ]),
-                ),
-              ],
-            ]),
-            const SizedBox(height: 40),
-            Text(_stepTitle, style: WinType.displayS(s.onStrong)),
-            const SizedBox(height: 8),
-            Text(_stepSubtitle, style: WinType.bodyM(s.onMuted)),
-            const SizedBox(height: 28),
-            Expanded(
+    return WinAuthFrame(showBack: false, centered: false, children: [
+      const SizedBox(height: 32),
+      Row(children: [
+        for (int i = 0; i < 3; i++) ...[
+          if (i > 0) const SizedBox(width: 8),
+          Expanded(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(child: _buildChips(s)),
-                  if (_step == 0) _buildDateOfBirthField(s),
-                ],
-              ),
-            ),
-            WinButton(
-              _step < 2 ? l10n.commonContinue : l10n.authFinish,
-              block: true,
-              loading: _saving,
-              onTap: _canContinue && !_saving ? _next : null,
-            ),
-            const SizedBox(height: 24),
-          ]),
-        ),
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                WinProgressBar(i <= _step ? 100 : 0,
+                    height: 3, color: s.primary),
+                const SizedBox(height: 4),
+                Text(steps[i],
+                    style: WinType.labelS(i == _step ? s.primary : s.onFaint)),
+              ])),
+        ],
+      ]),
+      const SizedBox(height: 24),
+      Text(_stepTitle,
+          style: WinType.archivo(
+              size: 27, weight: FontWeight.w600, color: s.onStrong)),
+      const SizedBox(height: 8),
+      Text(_stepSubtitle, style: WinType.bodyM(s.onMuted)),
+      const SizedBox(height: 28),
+      _buildChips(s),
+      if (_step == 0) _buildDateOfBirthField(s),
+      const SizedBox(height: 24),
+      WinButton(
+        _step < 2 ? l10n.commonContinue : l10n.authFinish,
+        block: true,
+        loading: _saving,
+        onTap: _canContinue && !_saving ? _next : null,
       ),
-    );
+      const SizedBox(height: 24),
+    ]);
   }
 
   Widget _buildDateOfBirthField(WinScheme s) {
@@ -233,26 +213,29 @@ class _StudentProfileWizardState extends State<_StudentProfileWizard> {
         : context.l10n.authBornOn(WinFormat.dateNumeric(_dateOfBirth!));
     return Padding(
       padding: const EdgeInsets.only(top: 16),
-      child: GestureDetector(
-        onTap: _pickDateOfBirth,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-          decoration: BoxDecoration(
-            color: s.surface,
-            borderRadius: BorderRadius.circular(WinRadii.md),
-            border: Border.all(color: s.outline, width: 1.5),
-          ),
-          child: Row(children: [
-            Icon(Icons.calendar_today_outlined, size: 16, color: s.onMuted),
-            const SizedBox(width: 10),
-            Expanded(
-                child: Text(label,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: WinType.bodyM(s.onMuted))),
-          ]),
-        ),
-      ),
+      child: Semantics(
+          button: true,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(14),
+            onTap: _pickDateOfBirth,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              decoration: BoxDecoration(
+                color: s.surface,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: s.outline, width: 1),
+              ),
+              child: Row(children: [
+                Icon(Icons.calendar_today_outlined, size: 16, color: s.onMuted),
+                const SizedBox(width: 10),
+                Expanded(
+                    child: Text(label,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: WinType.bodyM(s.onMuted))),
+              ]),
+            ),
+          )),
     );
   }
 
@@ -301,9 +284,9 @@ class _StudentProfileWizardState extends State<_StudentProfileWizard> {
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
             decoration: BoxDecoration(
               color: active ? WinColors.ink800 : s.surface,
-              borderRadius: BorderRadius.circular(WinRadii.full),
+              borderRadius: BorderRadius.circular(14),
               border: Border.all(
-                  color: active ? WinColors.ink800 : s.outline, width: 1.5),
+                  color: active ? WinColors.ink800 : s.outline, width: 1),
             ),
             child: Text(_optionLabel(item),
                 style: WinType.manrope(
@@ -382,64 +365,52 @@ class _TeacherProfileWizardState extends State<_TeacherProfileWizard> {
     final s = WinTheme.of(context);
     final l10n = context.l10n;
     final steps = [l10n.authStepSubjects, l10n.authStepLevels];
-    return Scaffold(
-      backgroundColor: s.bg,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const SizedBox(height: 32),
-            Row(children: [
-              for (int i = 0; i < 2; i++) ...[
-                if (i > 0) const SizedBox(width: 8),
-                Expanded(
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        WinProgressBar(i <= _step ? 100 : 0,
-                            height: 3,
-                            color: i < _step
-                                ? s.primary
-                                : (i == _step ? s.primary : s.outline)),
-                        const SizedBox(height: 4),
-                        Text(steps[i],
-                            style: WinType.labelS(
-                                    i == _step ? s.primary : s.onFaint)
-                                .copyWith(
-                                    fontWeight: i == _step
-                                        ? FontWeight.w700
-                                        : FontWeight.w500)),
-                      ]),
-                ),
-              ],
+    return WinAuthFrame(showBack: false, centered: false, children: [
+      const SizedBox(height: 32),
+      Row(children: [
+        for (int i = 0; i < 2; i++) ...[
+          if (i > 0) const SizedBox(width: 8),
+          Expanded(
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              WinProgressBar(i <= _step ? 100 : 0,
+                  height: 3,
+                  color: i < _step
+                      ? s.primary
+                      : (i == _step ? s.primary : s.outline)),
+              const SizedBox(height: 4),
+              Text(steps[i],
+                  style: WinType.labelS(i == _step ? s.primary : s.onFaint)
+                      .copyWith(
+                          fontWeight:
+                              i == _step ? FontWeight.w700 : FontWeight.w500)),
             ]),
-            const SizedBox(height: 40),
-            Text(
-                _step == 0
-                    ? l10n.authTeacherSubjectsTitle
-                    : l10n.authTeacherLevelsTitle,
-                style: WinType.displayS(s.onStrong)),
-            const SizedBox(height: 8),
-            Text(
-              _step == 0
-                  ? l10n.authTeacherSubjectsHint
-                  : l10n.authTeacherLevelsHint,
-              style: WinType.bodyM(s.onMuted),
-            ),
-            const SizedBox(height: 28),
-            Expanded(child: _buildChips(s)),
-            WinButton(
-              _step == 0 ? l10n.commonContinue : l10n.authFinish,
-              block: true,
-              loading: _saving,
-              onTap: _canContinue && !_saving ? _next : null,
-            ),
-            const SizedBox(height: 24),
-          ]),
-        ),
+          ),
+        ],
+      ]),
+      const SizedBox(height: 24),
+      Text(
+          _step == 0
+              ? l10n.authTeacherSubjectsTitle
+              : l10n.authTeacherLevelsTitle,
+          style: WinType.archivo(
+              size: 27, weight: FontWeight.w600, color: s.onStrong)),
+      const SizedBox(height: 8),
+      Text(
+        _step == 0 ? l10n.authTeacherSubjectsHint : l10n.authTeacherLevelsHint,
+        style: WinType.bodyM(s.onMuted),
       ),
-    );
+      const SizedBox(height: 28),
+      _buildChips(s),
+      const SizedBox(height: 24),
+      WinButton(
+        _step == 0 ? l10n.commonContinue : l10n.authFinish,
+        block: true,
+        loading: _saving,
+        onTap: _canContinue && !_saving ? _next : null,
+      ),
+      const SizedBox(height: 24),
+    ]);
   }
 
   Widget _buildChips(WinScheme s) {
@@ -459,9 +430,9 @@ class _TeacherProfileWizardState extends State<_TeacherProfileWizard> {
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
             decoration: BoxDecoration(
               color: active ? WinColors.ink800 : s.surface,
-              borderRadius: BorderRadius.circular(WinRadii.full),
+              borderRadius: BorderRadius.circular(14),
               border: Border.all(
-                  color: active ? WinColors.ink800 : s.outline, width: 1.5),
+                  color: active ? WinColors.ink800 : s.outline, width: 1),
             ),
             child: Text(_itemLabel(item),
                 style: WinType.manrope(
@@ -525,8 +496,11 @@ class _ParentProfileWizardState extends State<_ParentProfileWizard> {
 
   Future<void> _skip() async {
     if (!mounted) return;
-    Navigator.pushReplacement(context,
-        WinPageRoute(builder: (_) => const OnboardingSuccessScreen(role: WinRole.parent)));
+    Navigator.pushReplacement(
+        context,
+        WinPageRoute(
+            builder: (_) =>
+                const OnboardingSuccessScreen(role: WinRole.parent)));
   }
 
   Future<void> _next() async {
@@ -540,8 +514,11 @@ class _ParentProfileWizardState extends State<_ParentProfileWizard> {
       parentFollowUpPreference: _followUp,
     );
     if (!mounted) return;
-    Navigator.pushReplacement(context,
-        WinPageRoute(builder: (_) => const OnboardingSuccessScreen(role: WinRole.parent)));
+    Navigator.pushReplacement(
+        context,
+        WinPageRoute(
+            builder: (_) =>
+                const OnboardingSuccessScreen(role: WinRole.parent)));
   }
 
   @override
@@ -555,75 +532,60 @@ class _ParentProfileWizardState extends State<_ParentProfileWizard> {
     final s = WinTheme.of(context);
     final l10n = context.l10n;
     final steps = [l10n.authStepGoal, l10n.authStepFollowUp];
-    return Scaffold(
-      backgroundColor: s.bg,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const SizedBox(height: 32),
-            Row(children: [
-              for (int i = 0; i < 2; i++) ...[
-                if (i > 0) const SizedBox(width: 8),
-                Expanded(
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        WinProgressBar(i <= _step ? 100 : 0,
-                            height: 3,
-                            color: i < _step
-                                ? s.primary
-                                : (i == _step ? s.primary : s.outline)),
-                        const SizedBox(height: 4),
-                        Text(steps[i],
-                            style: WinType.labelS(
-                                    i == _step ? s.primary : s.onFaint)
-                                .copyWith(
-                                    fontWeight: i == _step
-                                        ? FontWeight.w700
-                                        : FontWeight.w500)),
-                      ]),
-                ),
-              ],
+    return WinAuthFrame(showBack: false, centered: false, children: [
+      const SizedBox(height: 32),
+      Row(children: [
+        for (int i = 0; i < 2; i++) ...[
+          if (i > 0) const SizedBox(width: 8),
+          Expanded(
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              WinProgressBar(i <= _step ? 100 : 0,
+                  height: 3,
+                  color: i < _step
+                      ? s.primary
+                      : (i == _step ? s.primary : s.outline)),
+              const SizedBox(height: 4),
+              Text(steps[i],
+                  style: WinType.labelS(i == _step ? s.primary : s.onFaint)
+                      .copyWith(
+                          fontWeight:
+                              i == _step ? FontWeight.w700 : FontWeight.w500)),
             ]),
-            const SizedBox(height: 40),
-            Text(
-                _step == 0
-                    ? l10n.authParentGoalTitle
-                    : l10n.authParentFollowTitle,
-                style: WinType.displayS(s.onStrong)),
-            const SizedBox(height: 8),
-            Text(
-              _step == 0
-                  ? l10n.authParentGoalHint
-                  : l10n.authParentFollowHint,
-              style: WinType.bodyM(s.onMuted),
-            ),
-            const SizedBox(height: 28),
-            Expanded(child: _step == 0 ? _buildObjectiveField(s) : _buildFollowUpChoices(s)),
-            Row(children: [
-              Expanded(
-                child: TextButton(
-                  onPressed: _saving ? null : _skip,
-                  child: Text(l10n.authSkipStep),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: WinButton(
-                  _step == 0 ? l10n.commonContinue : l10n.authFinish,
-                  block: true,
-                  loading: _saving,
-                  onTap: _canContinue && !_saving ? _next : null,
-                ),
-              ),
-            ]),
-            const SizedBox(height: 24),
-          ]),
-        ),
+          ),
+        ],
+      ]),
+      const SizedBox(height: 24),
+      Text(_step == 0 ? l10n.authParentGoalTitle : l10n.authParentFollowTitle,
+          style: WinType.archivo(
+              size: 27, weight: FontWeight.w600, color: s.onStrong)),
+      const SizedBox(height: 8),
+      Text(
+        _step == 0 ? l10n.authParentGoalHint : l10n.authParentFollowHint,
+        style: WinType.bodyM(s.onMuted),
       ),
-    );
+      const SizedBox(height: 28),
+      _step == 0 ? _buildObjectiveField(s) : _buildFollowUpChoices(s),
+      const SizedBox(height: 24),
+      Row(children: [
+        Expanded(
+          child: TextButton(
+            onPressed: _saving ? null : _skip,
+            child: Text(l10n.authSkipStep),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: WinButton(
+            _step == 0 ? l10n.commonContinue : l10n.authFinish,
+            block: true,
+            loading: _saving,
+            onTap: _canContinue && !_saving ? _next : null,
+          ),
+        ),
+      ]),
+      const SizedBox(height: 24),
+    ]);
   }
 
   Widget _buildObjectiveField(WinScheme s) {
@@ -636,7 +598,7 @@ class _ParentProfileWizardState extends State<_ParentProfileWizard> {
         filled: true,
         fillColor: s.surface,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(WinRadii.md),
+          borderRadius: BorderRadius.circular(14),
           borderSide: BorderSide(color: s.outline),
         ),
       ),
@@ -656,9 +618,9 @@ class _ParentProfileWizardState extends State<_ParentProfileWizard> {
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
               color: active ? WinColors.ink800 : s.surface,
-              borderRadius: BorderRadius.circular(WinRadii.md),
+              borderRadius: BorderRadius.circular(14),
               border: Border.all(
-                  color: active ? WinColors.ink800 : s.outline, width: 1.5),
+                  color: active ? WinColors.ink800 : s.outline, width: 1),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

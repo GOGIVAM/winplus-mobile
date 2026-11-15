@@ -1,3 +1,4 @@
+import '../widgets/win_screen.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import '../l10n/l10n.dart';
@@ -88,88 +89,54 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
     final l10n = context.l10n;
-    return Scaffold(
-      backgroundColor: s.bg,
-      appBar: AppBar(
-        backgroundColor: s.bg,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
-          onPressed: () => Navigator.pop(context),
-        ),
+    return WinAuthFrame(children: [
+      WinAuthHeading(l10n.authVerifyEmailTitle,
+          subtitle: l10n.authCodeSentAddress,
+          icon: Icons.mark_email_read_outlined),
+      Text(widget.email,
+          textAlign: TextAlign.center,
+          style:
+              WinType.bodyM(s.onStrong).copyWith(fontWeight: FontWeight.w600)),
+      const SizedBox(height: 24),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: List.generate(
+            6,
+            (i) => _CodeBox(
+                  controller: _ctrls[i],
+                  focusNode: _nodes[i],
+                  onChanged: (v) {
+                    if (v.isNotEmpty && i < 5) {
+                      _nodes[i + 1].requestFocus();
+                    } else if (v.isEmpty && i > 0) {
+                      _nodes[i - 1].requestFocus();
+                    }
+                    setState(() {});
+                  },
+                )),
       ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(height: 8),
-              Container(
-                width: 80,
-                height: 80,
-                decoration: BoxDecoration(
-                  color: s.primary.withValues(alpha: 0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(Icons.mark_email_read_outlined,
-                    size: 40, color: s.primary),
+      const SizedBox(height: 32),
+      if (_error != null) ...[
+        WinAlert(_error!, type: BadgeColor.error),
+        const SizedBox(height: 16),
+      ],
+      WinButton(l10n.authVerify,
+          block: true,
+          loading: _loading,
+          onTap: _code.length == 6 ? _verify : null),
+      const SizedBox(height: 20),
+      Center(
+        child: _countdown > 0
+            ? Text(l10n.authResendCodeParen(_countdown),
+                style: WinType.bodyM(s.onFaint))
+            : TextButton(
+                onPressed: _resend,
+                child: Text(l10n.authResendCode,
+                    style: WinType.bodyM(s.primary)
+                        .copyWith(fontWeight: FontWeight.w600)),
               ),
-              const SizedBox(height: 24),
-              Text(l10n.authVerifyEmailTitle,
-                  style: WinType.displayS(s.onStrong),
-                  textAlign: TextAlign.center),
-              const SizedBox(height: 8),
-              Text(l10n.authCodeSentAddress,
-                  style: WinType.bodyM(s.onMuted), textAlign: TextAlign.center),
-              const SizedBox(height: 8),
-              Text(widget.email,
-                  style: WinType.bodyM(s.primary)
-                      .copyWith(fontWeight: FontWeight.w600)),
-              const SizedBox(height: 32),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: List.generate(
-                    6,
-                    (i) => _CodeBox(
-                          controller: _ctrls[i],
-                          focusNode: _nodes[i],
-                          onChanged: (v) {
-                            if (v.isNotEmpty && i < 5) {
-                              _nodes[i + 1].requestFocus();
-                            } else if (v.isEmpty && i > 0) {
-                              _nodes[i - 1].requestFocus();
-                            }
-                            setState(() {});
-                          },
-                        )),
-              ),
-              const SizedBox(height: 32),
-              if (_error != null) ...[
-                WinAlert(_error!, type: BadgeColor.error),
-                const SizedBox(height: 16),
-              ],
-              WinButton(l10n.authVerify,
-                  block: true,
-                  loading: _loading,
-                  onTap: _code.length == 6 ? _verify : null),
-              const SizedBox(height: 20),
-              Center(
-                child: _countdown > 0
-                    ? Text(l10n.authResendCodeParen(_countdown),
-                        style: WinType.bodyM(s.onFaint))
-                    : GestureDetector(
-                        onTap: _resend,
-                        child: Text(l10n.authResendCode,
-                            style: WinType.bodyM(s.primary)
-                                .copyWith(fontWeight: FontWeight.w600)),
-                      ),
-              ),
-            ],
-          ),
-        ),
       ),
-    );
+    ]);
   }
 }
 
@@ -199,12 +166,13 @@ class _CodeBox extends StatelessWidget {
         style: WinType.archivo(size: 22, color: s.onStrong),
         decoration: InputDecoration(
           counterText: '',
+          contentPadding: EdgeInsets.zero,
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(WinRadii.md),
+            borderRadius: BorderRadius.circular(14),
             borderSide: BorderSide(color: s.outline, width: 1.5),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(WinRadii.md),
+            borderRadius: BorderRadius.circular(14),
             borderSide: const BorderSide(color: WinColors.teal500, width: 2),
           ),
           fillColor: s.surface,

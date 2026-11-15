@@ -1,3 +1,5 @@
+import '../widgets/win_screen.dart';
+export '../widgets/win_screen.dart' show AuthBackBar;
 import 'dart:async';
 import 'package:flutter/material.dart';
 import '../theme/win_motion.dart';
@@ -82,36 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
     // Premier écran de l'application sans session : pas de retour possible.
     final canPop = Navigator.of(context).canPop();
 
-    return Scaffold(
-      backgroundColor: s.bg,
-      body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, box) => SingleChildScrollView(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: box.maxHeight),
-              child: IntrinsicHeight(
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      _AuthTopBar(showBack: canPop),
-                      Expanded(
-                        child: Center(
-                          child: ConstrainedBox(
-                            constraints: const BoxConstraints(maxWidth: 460),
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(22, 8, 22, 32),
-                              child: _form(context, s, l10n),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ]),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
+    return WinAuthFrame(showBack: canPop, children: [_form(context, s, l10n)]);
   }
 
   /// Contenu calqué sur la version téléphone du site (auth-mobile.css) :
@@ -147,8 +120,9 @@ class _LoginScreenState extends State<LoginScreen> {
           label: l10n.password,
           controller: _pwd,
           obscure: _obscure,
-          suffixIcon:
-              _obscure ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+          suffixIcon: _obscure
+              ? Icons.visibility_outlined
+              : Icons.visibility_off_outlined,
           onSuffixTap: () => setState(() => _obscure = !_obscure)),
       Align(
         alignment: Alignment.centerRight,
@@ -183,7 +157,6 @@ class _LoginScreenState extends State<LoginScreen> {
           icon: Icons.g_mobiledata,
           label: l10n.continueWithGoogle,
           onTap: () => GoogleLogin.start(context)),
-      const Spacer(),
       const SizedBox(height: 28),
       // Bascule vers l'inscription : on y va par-dessus la connexion, le
       // retour ramène ici.
@@ -211,55 +184,6 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 }
 
-/// Barre haute des écrans d'authentification (version téléphone du site) :
-/// retour rond à gauche quand il y a un écran derrière, logo « Win+ » à droite.
-class _AuthTopBar extends StatelessWidget {
-  final bool showBack;
-  const _AuthTopBar({required this.showBack});
-
-  @override
-  Widget build(BuildContext context) {
-    final s = WinTheme.of(context);
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 10, 20, 6),
-      child: Row(children: [
-        if (showBack)
-          Material(
-            color: s.surface,
-            shape: CircleBorder(side: BorderSide(color: s.outline)),
-            child: InkWell(
-              customBorder: const CircleBorder(),
-              onTap: () => Navigator.maybePop(context),
-              child: SizedBox(
-                width: 44,
-                height: 44,
-                child: Icon(Icons.chevron_left_rounded,
-                    size: 24, color: s.onStrong),
-              ),
-            ),
-          )
-        else
-          const SizedBox(height: 44),
-        const Spacer(),
-        Image.asset('assets/winplus-logo.png', width: 26, height: 26),
-        const SizedBox(width: 7),
-        Text.rich(TextSpan(
-          style: WinType.archivo(
-                  size: 19, weight: FontWeight.w600, color: s.onStrong)
-              .copyWith(letterSpacing: -0.7),
-          children: const [
-            TextSpan(text: 'Win'),
-            TextSpan(
-                text: '+',
-                style: TextStyle(
-                    color: WinColors.teal600, fontWeight: FontWeight.w500)),
-          ],
-        )),
-      ]),
-    );
-  }
-}
-
 // ── Widgets partagés ─────────────────────────────────────────────────────────
 
 class _SocialButton extends StatelessWidget {
@@ -273,22 +197,27 @@ class _SocialButton extends StatelessWidget {
     final s = WinTheme.of(context);
     return Material(
       color: s.surface,
-      borderRadius: BorderRadius.circular(WinRadii.full),
+      borderRadius: BorderRadius.circular(WinRadii.sm),
       child: InkWell(
-        borderRadius: BorderRadius.circular(WinRadii.full),
+        borderRadius: BorderRadius.circular(WinRadii.sm),
         onTap: onTap,
         child: Container(
-          height: 50,
+          constraints: const BoxConstraints(minHeight: 50),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(WinRadii.full),
-              border: Border.all(color: s.outline2, width: 1.5)),
+              borderRadius: BorderRadius.circular(WinRadii.sm),
+              border: Border.all(color: s.outline2, width: 1)),
           alignment: Alignment.center,
           child: Row(mainAxisSize: MainAxisSize.min, children: [
             Icon(icon, size: 24, color: s.onStrong),
             const SizedBox(width: 10),
-            Text(label,
-                style: WinType.manrope(
-                    size: 14.5, weight: FontWeight.w600, color: s.onStrong)),
+            Flexible(
+                child: Text(label,
+                    textAlign: TextAlign.center,
+                    style: WinType.manrope(
+                        size: 14.5,
+                        weight: FontWeight.w600,
+                        color: s.onStrong))),
           ]),
         ),
       ),
@@ -304,42 +233,14 @@ class _Divider extends StatelessWidget {
     final s = WinTheme.of(context);
     return Row(children: [
       Expanded(child: Container(height: 1, color: s.outline)),
-      Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Text(label, style: WinType.labelM(s.onFaint))),
+      Flexible(
+          flex: 4,
+          child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Text(label,
+                  textAlign: TextAlign.center,
+                  style: WinType.labelM(s.onFaint)))),
       Expanded(child: Container(height: 1, color: s.outline)),
     ]);
-  }
-}
-
-/// Bouton retour + logo utilisé par les autres écrans d'auth (formulaire
-/// plein cadre sans panneau graphique : vérification, mot de passe...).
-class AuthBackBar extends StatelessWidget {
-  final bool logo;
-  const AuthBackBar({super.key, this.logo = false});
-  @override
-  Widget build(BuildContext context) {
-    final s = WinTheme.of(context);
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-      child: Row(children: [
-        InkWell(
-          onTap: () => Navigator.maybePop(context),
-          borderRadius: BorderRadius.circular(WinRadii.full),
-          child: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                  color: s.surface2,
-                  borderRadius: BorderRadius.circular(WinRadii.full)),
-              child: Icon(Icons.arrow_back, size: 20, color: s.onSurface)),
-        ),
-        if (logo)
-          Expanded(
-              child: Center(
-                  child: Image.asset('assets/winplus-logo.png', width: 52))),
-        if (logo) const SizedBox(width: 40),
-      ]),
-    );
   }
 }

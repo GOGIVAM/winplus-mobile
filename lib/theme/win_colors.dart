@@ -25,6 +25,7 @@ class WinColors {
   static const teal900 = Color(0xFF0B3530);
   static const teal850 = Color(0xFF10423C);
   static const teal800 = Color(0xFF17635B);
+
   /// Boutons à texte blanc.
   static const teal700 = Color(0xFF1C756C);
   static const teal600 = Color(0xFF259A8E);
@@ -75,11 +76,10 @@ class WinSpacing {
       x5 = 64;
 }
 
-/// Rayons de bordure  direction visuelle "Funica" (arrondis généreux),
-/// couleurs de marque WinPlus conservées.
+/// Rayons du site. Les champs d'authentification gardent un rayon de 14 px.
 class WinRadii {
   WinRadii._();
-  static const double sm = 12, md = 16, lg = 20, xl = 28, full = 100;
+  static const double sm = 5, md = 6, lg = 7, xl = 14, full = 100;
 }
 
 /// Ombres « ink » (jamais de noir pur).

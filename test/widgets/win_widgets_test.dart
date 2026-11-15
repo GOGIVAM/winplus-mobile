@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:winplus/theme/win_colors.dart';
 import 'package:winplus/theme/win_theme.dart';
 import 'package:winplus/widgets/win_widgets.dart';
+import 'package:winplus/widgets/win_mascot.dart';
 
 import '../helpers/appli.dart';
 import '../helpers/faux_reseau.dart';
@@ -32,7 +33,7 @@ void main() {
       var appels = 0;
       await monter(tester, appli(WinButton('Valider', loading: true, onTap: () => appels++)));
       expect(find.text('Valider'), findsNothing);
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(find.byType(WinLoadingDots), findsOneWidget);
       await tester.tap(find.byType(WinButton));
       await pomper(tester);
       expect(appels, 0);
@@ -45,11 +46,11 @@ void main() {
       expect(find.text('Inactif'), findsOneWidget);
     });
 
-    testWidgets('hauteur : 48 par defaut, 36 en petit', (tester) async {
+    testWidgets('hauteur : 48 par defaut, minimum tactile de 44 en petit', (tester) async {
       await monter(tester, appli(const WinButton('Normal')));
       expect(tester.getSize(find.byType(WinButton)).height, 48);
       await monter(tester, appli(const WinButton('Petit', small: true)));
-      expect(tester.getSize(find.byType(WinButton)).height, 36);
+      expect(tester.getSize(find.byType(WinButton)).height, 44);
     });
 
     testWidgets('en bloc, le bouton prend toute la largeur', (tester) async {
@@ -63,19 +64,19 @@ void main() {
     });
 
     testWidgets('couleur de fond selon la variante', (tester) async {
-      await monter(tester, appli(const WinButton('A', variant: WinButtonVariant.primary)));
+      await monter(tester, appli(WinButton('A', onTap: () {}, variant: WinButtonVariant.primary)));
       // Boutons sarcelle a texte blanc, comme sur le site (palette dd8d7b9).
-      expect(_fondDuBouton(tester), WinColors.teal700);
-      await monter(tester, appli(const WinButton('A', variant: WinButtonVariant.danger)));
+      expect(_fondDuBouton(tester), WinColors.teal600);
+      await monter(tester, appli(WinButton('A', onTap: () {}, variant: WinButtonVariant.danger)));
       expect(_fondDuBouton(tester), WinColors.error);
-      await monter(tester, appli(const WinButton('A', variant: WinButtonVariant.accent)));
-      expect(_fondDuBouton(tester), WinColors.teal700);
-      await monter(tester, appli(const WinButton('A', variant: WinButtonVariant.outline)));
+      await monter(tester, appli(WinButton('A', onTap: () {}, variant: WinButtonVariant.accent)));
+      expect(_fondDuBouton(tester), WinColors.teal600);
+      await monter(tester, appli(WinButton('A', onTap: () {}, variant: WinButtonVariant.outline)));
       expect(_fondDuBouton(tester), Colors.transparent);
     });
 
     testWidgets('la variante accent suit le theme sombre', (tester) async {
-      await monter(tester, appli(const WinButton('A'), schema: WinScheme.dark_));
+      await monter(tester, appli(WinButton('A', onTap: () {}), schema: WinScheme.dark_));
       expect(_fondDuBouton(tester), WinScheme.dark_.primary);
     });
   });
@@ -263,12 +264,12 @@ void main() {
   });
 
   group('WinTextField', () {
-    testWidgets('affiche libelle, indication, prefixe et icone', (tester) async {
+    testWidgets('affiche libelle, indication et prefixe, sans icone a gauche', (tester) async {
       await monter(tester, appli(const WinTextField(label: 'Telephone', hint: '6XX XXX XXX', prefix: '+237', icon: Icons.phone)));
       expect(find.text('Telephone'), findsOneWidget);
       expect(find.text('6XX XXX XXX'), findsOneWidget);
       expect(find.text('+237'), findsOneWidget);
-      expect(find.byIcon(Icons.phone), findsOneWidget);
+      expect(find.byIcon(Icons.phone), findsNothing);
     });
 
     testWidgets('la saisie alimente le controleur et onChanged', (tester) async {

@@ -73,5 +73,7 @@ flutter:
     - assets/winplus-icon-source-white.png
     - assets/Login.gif
     - assets/winai-bot.png
+    - assets/kame-salut.webp
+    - assets/kame-mouche.webp
     - assets/home/
-  # Police chargée dynamiquement via google_fonts (Fraunces + Manrope).
+  # Police chargée dynamiquement via google_fonts (Archivo, comme le site).

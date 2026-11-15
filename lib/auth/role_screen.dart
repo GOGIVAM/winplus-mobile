@@ -1,15 +1,14 @@
+import '../widgets/win_screen.dart';
 import 'package:flutter/material.dart';
 import '../l10n/l10n.dart';
 import '../theme/win_motion.dart';
 import '../data/mock_data.dart';
 import '../data/models.dart';
-import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../services/auth_service.dart';
 import 'google_login.dart';
-import 'login_screen.dart';
 import 'signup_screen.dart';
 
 /// Sélection du rôle à l'inscription.
@@ -32,8 +31,8 @@ class _RoleScreenState extends State<RoleScreen> {
     if (role == null) return;
     final token = widget.googleIdToken;
     if (token == null) {
-      Navigator.push(context,
-          WinPageRoute(builder: (_) => SignupScreen(role: role)));
+      Navigator.push(
+          context, WinPageRoute(builder: (_) => SignupScreen(role: role)));
       return;
     }
     setState(() => _loading = true);
@@ -51,55 +50,34 @@ class _RoleScreenState extends State<RoleScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final s = WinTheme.of(context);
     final l10n = context.l10n;
-    return Scaffold(
-      backgroundColor: s.bg,
-      body: SafeArea(
-        child: Column(children: [
-          const AuthBackBar(),
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.fromLTRB(24, 4, 24, 24),
-              children: [
-                Center(
-                    child: Text(l10n.authIAm,
-                        style: WinType.archivo(
-                            size: 26,
-                            weight: FontWeight.w700,
-                            color: s.onStrong))),
-                const SizedBox(height: 6),
-                Center(
-                    child: Text(
-                        widget.googleIdToken != null
-                            ? l10n.authGoogleChooseProfile
-                            : l10n.authChooseProfile,
-                        textAlign: TextAlign.center,
-                        style: WinType.bodyM(s.onMuted))),
-                const SizedBox(height: 24),
-                ...WinData.roles.map((r) => Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: _RoleCard(
-                          info: r,
-                          selected: _sel == r.role,
-                          onTap: () => setState(() => _sel = r.role)),
-                    )),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
-            child: WinButton(
-              l10n.commonContinue,
-              variant: WinButtonVariant.accent,
-              block: true,
-              loading: _loading,
-              onTap: _sel == null || _loading ? null : _continuer,
-            ),
-          ),
-        ]),
-      ),
-    );
+    return WinAuthFrame(children: [
+      WinAuthHeading(l10n.authIAm,
+          subtitle: widget.googleIdToken != null
+              ? l10n.authGoogleChooseProfile
+              : l10n.authChooseProfile),
+      LayoutBuilder(
+          builder: (context, box) => Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: WinData.roles
+                  .map((r) => SizedBox(
+                        width: MediaQuery.sizeOf(context).width <= 380
+                            ? box.maxWidth
+                            : (box.maxWidth - 10) / 2,
+                        child: _RoleCard(
+                            info: r,
+                            selected: _sel == r.role,
+                            onTap: () => setState(() => _sel = r.role)),
+                      ))
+                  .toList())),
+      const SizedBox(height: 24),
+      WinButton(l10n.commonContinue,
+          variant: WinButtonVariant.accent,
+          block: true,
+          loading: _loading,
+          onTap: _sel == null || _loading ? null : _continuer),
+    ]);
   }
 }
 
@@ -123,52 +101,43 @@ class _RoleCard extends StatelessWidget {
           l10n.authRoleInstitutionDesc
         ),
     };
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
+    return Semantics(
+        button: true,
+        selected: selected,
+        child: Material(
           color: selected ? s.surface2 : s.cardBg,
-          borderRadius: BorderRadius.circular(WinRadii.md),
-          border: Border.all(
-              color: selected ? s.onStrong : s.cardBorder,
-              width: selected ? 2 : 1),
-        ),
-        child: Row(children: [
-          Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                  color: info.color,
-                  borderRadius: BorderRadius.circular(WinRadii.sm)),
-              child: Icon(info.icon, color: Colors.white, size: 24)),
-          const SizedBox(width: 14),
-          Expanded(
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                Text(label, style: WinType.titleL(s.onStrong)),
-                const SizedBox(height: 2),
-                Text(description, style: WinType.bodyS(s.onMuted)),
-              ])),
-          Container(
-            width: 22,
-            height: 22,
-            decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                    color: selected ? s.primary : s.outline2, width: 2)),
-            child: selected
-                ? Center(
-                    child: Container(
-                        width: 12,
-                        height: 12,
-                        decoration: BoxDecoration(
-                            color: s.primary, shape: BoxShape.circle)))
-                : null,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+              side: BorderSide(color: selected ? s.primary : s.cardBorder)),
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(14),
+            child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 13),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(children: [
+                        Icon(info.icon, color: s.primary, size: 24),
+                        const Spacer(),
+                        Icon(
+                            selected
+                                ? Icons.radio_button_checked
+                                : Icons.radio_button_unchecked,
+                            color: selected ? s.primary : s.outline2,
+                            size: 20),
+                      ]),
+                      const SizedBox(height: 10),
+                      Text(label,
+                          style: WinType.archivo(
+                              size: 15,
+                              weight: FontWeight.w600,
+                              color: s.onStrong)),
+                      const SizedBox(height: 4),
+                      Text(description, style: WinType.bodyS(s.onMuted)),
+                    ])),
           ),
-        ]),
-      ),
-    );
+        ));
   }
 }

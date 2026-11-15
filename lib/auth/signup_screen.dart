@@ -1,9 +1,9 @@
+import '../widgets/win_screen.dart';
 import 'package:flutter/material.dart';
 import '../l10n/l10n.dart';
 import '../theme/win_motion.dart';
 import '../data/models.dart';
 import '../services/auth_service.dart';
-import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
@@ -60,7 +60,12 @@ class _SignupScreenState extends State<SignupScreen> {
       setState(() => _error = context.l10n.authFillRequired);
       return;
     }
-    if (!_has8 || !_hasMaj || !_hasMin || !_hasNum || !_hasSpecial || !_matches) {
+    if (!_has8 ||
+        !_hasMaj ||
+        !_hasMin ||
+        !_hasNum ||
+        !_hasSpecial ||
+        !_matches) {
       setState(() => _error = context.l10n.authPwdCriteria);
       return;
     }
@@ -75,7 +80,9 @@ class _SignupScreenState extends State<SignupScreen> {
             ? '+${phoneDigits.startsWith('00') ? phoneDigits.substring(2) : phoneDigits}'
             : phoneDigits;
     if (phone != null &&
-        !(phone.startsWith('+') ? phoneDigits.length >= 10 : phoneDigits.length == 9)) {
+        !(phone.startsWith('+')
+            ? phoneDigits.length >= 10
+            : phoneDigits.length == 9)) {
       setState(() => _error = context.l10n.authPhoneInvalid);
       return;
     }
@@ -109,164 +116,97 @@ class _SignupScreenState extends State<SignupScreen> {
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
     final l10n = context.l10n;
-    final topHeight = 128 + MediaQuery.of(context).padding.top;
-
-    return Scaffold(
-      backgroundColor: s.bg,
-      body: Column(children: [
-        // ── Panneau graphique compact (formulaire plus long) ─────────
-        SizedBox(
-          height: topHeight,
-          child: Stack(children: [
-            Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [s.heroFrom, s.heroTo],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
-              child: Center(
-                child: Image.asset('assets/winplus-logo.png', width: 56),
-              ),
-            ),
-            SafeArea(
-              bottom: false,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
-                child: WinCircleIconButton(
-                  icon: Icons.arrow_back,
-                  iconColor: WinColors.ink800,
-                  onTap: () => Navigator.maybePop(context),
-                ),
-              ),
-            ),
-          ]),
-        ),
-
-        // ── Feuille blanche qui remonte par-dessus ────────────────────
+    return WinAuthFrame(centered: false, children: [
+      WinAuthHeading(l10n.createAccount,
+          subtitle: l10n.authSignupIntro, logo: true),
+      Row(children: [
         Expanded(
-          child: Transform.translate(
-            offset: const Offset(0, -20),
-            child: Container(
-              decoration: BoxDecoration(
-                color: s.bg,
-                borderRadius:
-                    BorderRadius.vertical(top: Radius.circular(WinRadii.xl)),
-              ),
-              // Formulaire court : tout est construit d'un coup (une liste
-              // paresseuse ne créait pas le bouton du bas avant défilement).
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(24, 24, 24, 28),
-                child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(l10n.createAccount,
-                      style: WinType.archivo(
-                          size: 22,
-                          weight: FontWeight.w700,
-                          color: s.onStrong)),
-                  const SizedBox(height: 4),
-                  Text(l10n.authSignupIntro,
-                      style: WinType.bodyS(s.onMuted)),
-                  const SizedBox(height: 24),
-                  Row(children: [
-                    Expanded(
-                        child: WinTextField(
-                            label: l10n.authFirstName,
-                            icon: Icons.person_outline,
-                            controller: _firstNameCtrl)),
-                    const SizedBox(width: 12),
-                    Expanded(
-                        child: WinTextField(
-                            label: l10n.authLastName, controller: _lastNameCtrl)),
-                  ]),
-                  const SizedBox(height: 14),
-                  WinTextField(
-                      label: l10n.authEmailAddress,
-                      hint: l10n.authEmailHint,
-                      icon: Icons.mail_outline,
-                      controller: _emailCtrl,
-                      keyboardType: TextInputType.emailAddress),
-                  const SizedBox(height: 14),
-                  WinTextField(
-                      label: l10n.authPhoneOptional,
-                      hint: '+237 6XX XXX XXX',
-                      icon: Icons.phone_outlined,
-                      controller: _phoneCtrl,
-                      keyboardType: TextInputType.phone),
-                  const SizedBox(height: 14),
-                  WinTextField(
-                      label: l10n.password,
-                      hint: '••••••••',
-                      icon: Icons.lock_outline,
-                      obscure: _obscurePwd,
-                      controller: _pwdCtrl,
-                      suffixIcon: _obscurePwd
-                          ? Icons.visibility_outlined
-                          : Icons.visibility_off_outlined,
-                      onSuffixTap: () =>
-                          setState(() => _obscurePwd = !_obscurePwd),
-                      onChanged: (_) => setState(() {})),
-                  const SizedBox(height: 14),
-                  WinTextField(
-                      label: l10n.authConfirmPassword,
-                      hint: '••••••••',
-                      icon: Icons.lock_outline,
-                      obscure: _obscureConfirm,
-                      controller: _confirmCtrl,
-                      suffixIcon: _obscureConfirm
-                          ? Icons.visibility_outlined
-                          : Icons.visibility_off_outlined,
-                      onSuffixTap: () =>
-                          setState(() => _obscureConfirm = !_obscureConfirm),
-                      onChanged: (_) => setState(() {})),
-                  const SizedBox(height: 16),
-                  _Constraint(l10n.authRule8, _has8),
-                  const SizedBox(height: 6),
-                  _Constraint(l10n.authRuleUpper, _hasMaj),
-                  const SizedBox(height: 6),
-                  _Constraint(l10n.authRuleLower, _hasMin),
-                  const SizedBox(height: 6),
-                  _Constraint(l10n.authRuleDigit, _hasNum),
-                  const SizedBox(height: 6),
-                  _Constraint(l10n.authRuleSpecial, _hasSpecial),
-                  const SizedBox(height: 6),
-                  _Constraint(l10n.authRuleMatch, _matches),
-                  if (_error != null) ...[
-                    const SizedBox(height: 16),
-                    WinAlert(_error!, type: BadgeColor.error),
-                  ],
-                  const SizedBox(height: 24),
-                  WinButton(l10n.authCreateMyAccount,
-                      variant: WinButtonVariant.accent,
-                      block: true,
-                      loading: _loading,
-                      onTap: _submit),
-                  const SizedBox(height: 16),
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: Center(
-                      child: Text.rich(TextSpan(
-                        style: WinType.bodyS(s.onMuted),
-                        children: [
-                          TextSpan(text: l10n.authAlreadyAccount),
-                          TextSpan(
-                              text: l10n.login,
-                              style: WinType.bodyS(s.primary)
-                                  .copyWith(fontWeight: FontWeight.w700)),
-                        ],
-                      )),
-                    ),
-                  ),
-                ],
-                ),
-              ),
-            ),
-          ),
-        ),
+            child: WinTextField(
+                label: l10n.authFirstName,
+                icon: Icons.person_outline,
+                controller: _firstNameCtrl)),
+        const SizedBox(width: 12),
+        Expanded(
+            child: WinTextField(
+                label: l10n.authLastName, controller: _lastNameCtrl)),
       ]),
-    );
+      const SizedBox(height: 14),
+      WinTextField(
+          label: l10n.authEmailAddress,
+          hint: l10n.authEmailHint,
+          icon: Icons.mail_outline,
+          controller: _emailCtrl,
+          keyboardType: TextInputType.emailAddress),
+      const SizedBox(height: 14),
+      WinTextField(
+          label: l10n.authPhoneOptional,
+          hint: '+237 6XX XXX XXX',
+          icon: Icons.phone_outlined,
+          controller: _phoneCtrl,
+          keyboardType: TextInputType.phone),
+      const SizedBox(height: 14),
+      WinTextField(
+          label: l10n.password,
+          hint: '••••••••',
+          icon: Icons.lock_outline,
+          obscure: _obscurePwd,
+          controller: _pwdCtrl,
+          suffixIcon: _obscurePwd
+              ? Icons.visibility_outlined
+              : Icons.visibility_off_outlined,
+          onSuffixTap: () => setState(() => _obscurePwd = !_obscurePwd),
+          onChanged: (_) => setState(() {})),
+      const SizedBox(height: 14),
+      WinTextField(
+          label: l10n.authConfirmPassword,
+          hint: '••••••••',
+          icon: Icons.lock_outline,
+          obscure: _obscureConfirm,
+          controller: _confirmCtrl,
+          suffixIcon: _obscureConfirm
+              ? Icons.visibility_outlined
+              : Icons.visibility_off_outlined,
+          onSuffixTap: () => setState(() => _obscureConfirm = !_obscureConfirm),
+          onChanged: (_) => setState(() {})),
+      const SizedBox(height: 16),
+      _Constraint(l10n.authRule8, _has8),
+      const SizedBox(height: 6),
+      _Constraint(l10n.authRuleUpper, _hasMaj),
+      const SizedBox(height: 6),
+      _Constraint(l10n.authRuleLower, _hasMin),
+      const SizedBox(height: 6),
+      _Constraint(l10n.authRuleDigit, _hasNum),
+      const SizedBox(height: 6),
+      _Constraint(l10n.authRuleSpecial, _hasSpecial),
+      const SizedBox(height: 6),
+      _Constraint(l10n.authRuleMatch, _matches),
+      if (_error != null) ...[
+        const SizedBox(height: 16),
+        WinAlert(_error!, type: BadgeColor.error),
+      ],
+      const SizedBox(height: 24),
+      WinButton(l10n.authCreateMyAccount,
+          variant: WinButtonVariant.accent,
+          block: true,
+          loading: _loading,
+          onTap: _submit),
+      const SizedBox(height: 16),
+      GestureDetector(
+        onTap: () => Navigator.pop(context),
+        child: Center(
+          child: Text.rich(TextSpan(
+            style: WinType.bodyS(s.onMuted),
+            children: [
+              TextSpan(text: l10n.authAlreadyAccount),
+              TextSpan(
+                  text: l10n.login,
+                  style: WinType.bodyS(s.primary)
+                      .copyWith(fontWeight: FontWeight.w700)),
+            ],
+          )),
+        ),
+      ),
+    ]);
   }
 }
 

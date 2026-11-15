@@ -142,6 +142,26 @@ ThemeData winMaterialTheme(WinScheme s) => ThemeData(
         onSurface: s.onSurface,
       ),
       splashFactory: InkRipple.splashFactory,
+      appBarTheme: AppBarTheme(
+        backgroundColor: s.bg,
+        foregroundColor: s.onStrong,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        titleTextStyle: WinType.archivo(
+            size: 20, weight: FontWeight.w600, color: s.onStrong),
+      ),
+      bottomSheetTheme: BottomSheetThemeData(
+        backgroundColor: s.surface,
+        surfaceTintColor: Colors.transparent,
+        showDragHandle: true,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(14))),
+      ),
+      iconButtonTheme: IconButtonThemeData(
+          style: IconButton.styleFrom(
+        minimumSize: const Size(44, 44),
+        foregroundColor: s.onStrong,
+      )),
       textTheme: TextTheme(
         bodyMedium: WinType.bodyM(s.onSurface),
         titleMedium: WinType.titleM(s.onStrong),

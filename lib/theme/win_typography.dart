@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 /// WINPLUS  Typographie.
-/// Titres & chiffres : Archivo (sans, identique web). UI & corps : Manrope (sans).
+/// Archivo pour les titres et le corps, comme --font-sans sur le site.
 class WinType {
   WinType._();
 
@@ -25,7 +25,8 @@ class WinType {
           Color? color,
           double? height,
           double letterSpacing = 0}) =>
-      GoogleFonts.manrope(
+      // Nom conservé pour les écrans existants ; la famille est celle du site.
+      GoogleFonts.archivo(
           fontSize: size,
           fontWeight: weight,
           color: color,

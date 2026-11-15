@@ -4,9 +4,9 @@ import '../theme/win_motion.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import 'win_motion_widgets.dart';
+import 'win_mascot.dart';
 
-/// WINPLUS  Widgets réutilisables  direction visuelle "Funica" (arrondis
-/// généreux, boutons/chips en pilule), couleurs de marque WinPlus conservées.
+/// Widgets communs alignés sur la version téléphone du site.
 
 /// Icône de WinAI : le robot du site (multicolore, affiché tel quel). Partout
 /// où un widget attend une [IconData], passer [winAIIconData] l'affiche à la
@@ -69,12 +69,12 @@ class _WinButtonState extends State<WinButton> {
     late Color bg, fg, bd;
     switch (variant) {
       case WinButtonVariant.primary:
-        bg = WinColors.teal700;
+        bg = WinColors.teal600;
         fg = Colors.white;
         bd = Colors.transparent;
         break;
       case WinButtonVariant.accent:
-        bg = s.dark ? s.primary : WinColors.teal700;
+        bg = s.dark ? s.primary : WinColors.teal600;
         fg = s.dark ? s.onPrimary : Colors.white;
         bd = Colors.transparent;
         break;
@@ -86,7 +86,7 @@ class _WinButtonState extends State<WinButton> {
       case WinButtonVariant.outline:
         bg = Colors.transparent;
         fg = s.onSurface;
-        bd = WinColors.ink300;
+        bd = s.outline2;
         break;
       case WinButtonVariant.ghost:
         bg = Colors.transparent;
@@ -99,13 +99,9 @@ class _WinButtonState extends State<WinButton> {
         bd = Colors.transparent;
         break;
     }
-    double height = small ? 36 : 48;
+    double height = small ? 44 : 48;
     final child = loading
-        ? SizedBox(
-            width: 18,
-            height: 18,
-            child: CircularProgressIndicator(
-                strokeWidth: 2, valueColor: AlwaysStoppedAnimation(fg)))
+        ? Semantics(label: label, child: WinLoadingDots(color: fg))
         : Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -121,23 +117,23 @@ class _WinButtonState extends State<WinButton> {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: WinType.manrope(
-                          size: small ? 13 : 14,
+                          size: small ? 13 : 15,
                           weight: FontWeight.w600,
                           color: fg)),
                 ),
               ]);
     return AnimatedScale(
-      scale: _pressed ? 0.97 : 1.0,
-      duration: WinDurations.fast,
+      scale: _pressed && !winReducedMotion(context) ? 0.97 : 1.0,
+      duration: winReducedMotion(context) ? Duration.zero : WinDurations.fast,
       curve: WinCurves.tap,
       child: SizedBox(
         width: block ? double.infinity : null,
         height: height,
         child: Material(
-          color: bg,
-          borderRadius: BorderRadius.circular(WinRadii.full),
+          color: onTap == null && !loading ? bg.withValues(alpha: .45) : bg,
+          borderRadius: BorderRadius.circular(WinRadii.sm),
           child: InkWell(
-            borderRadius: BorderRadius.circular(WinRadii.full),
+            borderRadius: BorderRadius.circular(WinRadii.sm),
             onTap: loading ? null : onTap,
             onHighlightChanged:
                 loading ? null : (v) => setState(() => _pressed = v),
@@ -145,8 +141,8 @@ class _WinButtonState extends State<WinButton> {
               alignment: Alignment.center,
               padding: EdgeInsets.symmetric(horizontal: small ? 14 : 20),
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(WinRadii.full),
-                  border: Border.all(color: bd, width: 1.5)),
+                  borderRadius: BorderRadius.circular(WinRadii.sm),
+                  border: Border.all(color: bd)),
               child: child,
             ),
           ),
@@ -191,8 +187,8 @@ class _WinCardState extends State<WinCard> {
     );
     if (widget.onTap == null) return content;
     return AnimatedScale(
-      scale: _pressed ? 0.98 : 1.0,
-      duration: WinDurations.fast,
+      scale: _pressed && !winReducedMotion(context) ? 0.98 : 1.0,
+      duration: winReducedMotion(context) ? Duration.zero : WinDurations.fast,
       curve: WinCurves.tap,
       child: Material(
           color: Colors.transparent,
@@ -223,7 +219,7 @@ class WinChip extends StatelessWidget {
       child: AnimatedContainer(
         duration: WinDurations.fast,
         curve: WinCurves.tap,
-        height: 34,
+        height: 44,
         padding: const EdgeInsets.symmetric(horizontal: 12),
         decoration: BoxDecoration(
           color: active ? s.chipActiveBg : s.chipBg,
@@ -269,8 +265,8 @@ class WinBadge extends StatelessWidget {
       BadgeColor.gold: [WinColors.goldBg, WinColors.gold],
     }[color]!;
     return Container(
-      height: 20,
-      padding: const EdgeInsets.symmetric(horizontal: 8),
+      constraints: const BoxConstraints(minHeight: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
           color: pairs[0], borderRadius: BorderRadius.circular(WinRadii.full)),
       alignment: Alignment.center,
@@ -389,23 +385,18 @@ class _WinTextFieldState extends State<WinTextField> {
             padding: const EdgeInsets.only(bottom: 6),
             child: Text(widget.label!,
                 style: WinType.manrope(
-                    size: 13, weight: FontWeight.w500, color: s.onStrong))),
+                    size: 13, weight: FontWeight.w600, color: s.onStrong))),
       Focus(
         onFocusChange: (f) => setState(() => _focused = f),
         child: Container(
-          height: 50,
+          constraints: const BoxConstraints(minHeight: 54),
           padding: const EdgeInsets.symmetric(horizontal: 14),
           decoration: BoxDecoration(
             color: s.surface,
-            borderRadius: BorderRadius.circular(WinRadii.md),
-            border:
-                Border.all(color: _focused ? s.primary : s.outline, width: 1.5),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: _focused ? s.onMuted : s.outline2),
           ),
           child: Row(children: [
-            if (widget.icon != null) ...[
-              Icon(widget.icon, size: 18, color: s.onFaint),
-              const SizedBox(width: 8)
-            ],
             if (widget.prefix != null) ...[
               Text(widget.prefix!, style: WinType.bodyM(s.onMuted)),
               const SizedBox(width: 6)
@@ -416,17 +407,23 @@ class _WinTextFieldState extends State<WinTextField> {
                     obscureText: widget.obscure,
                     keyboardType: widget.keyboardType,
                     onChanged: widget.onChanged,
-                    style: WinType.manrope(size: 15, color: s.onStrong),
+                    style: WinType.manrope(size: 16, color: s.onStrong),
                     decoration: InputDecoration(
                         isDense: true,
+                        contentPadding:
+                            const EdgeInsets.symmetric(vertical: 14),
                         border: InputBorder.none,
                         hintText: widget.hint,
                         hintStyle:
-                            WinType.manrope(size: 15, color: s.onFaint)))),
+                            WinType.manrope(size: 16, color: s.onFaint)))),
             if (widget.suffixIcon != null)
-              GestureDetector(
-                  onTap: widget.onSuffixTap,
-                  child: Icon(widget.suffixIcon, size: 18, color: s.onFaint)),
+              IconButton(
+                  onPressed: widget.onSuffixTap,
+                  tooltip: widget.label,
+                  constraints:
+                      const BoxConstraints(minWidth: 44, minHeight: 44),
+                  padding: EdgeInsets.zero,
+                  icon: Icon(widget.suffixIcon, size: 20, color: s.onMuted)),
           ]),
         ),
       ),
@@ -588,18 +585,28 @@ class WinSkeleton extends StatefulWidget {
 
 class _WinSkeletonState extends State<WinSkeleton>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _c = AnimationController(
-      vsync: this, duration: const Duration(milliseconds: 1200))
-    ..repeat(reverse: true);
+  AnimationController? _controller;
+  AnimationController get _c => _controller ??= AnimationController(
+      vsync: this, duration: const Duration(milliseconds: 1200));
   @override
   void dispose() {
-    _c.dispose();
+    _controller?.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
+    if (winReducedMotion(context)) {
+      _controller?.stop();
+      return Container(
+          width: widget.width,
+          height: widget.height,
+          decoration: BoxDecoration(
+              color: s.skeleton,
+              borderRadius: BorderRadius.circular(WinRadii.sm)));
+    }
+    if (!_c.isAnimating) _c.repeat(reverse: true);
     return AnimatedBuilder(
         animation: _c,
         builder: (_, __) => Container(
