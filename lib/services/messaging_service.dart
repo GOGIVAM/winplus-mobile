@@ -130,7 +130,11 @@ class MessagingService {
 
   Future<void> markRead(int conversationId) async {
     try {
-      await _api.dio.put('/messages/conversations/$conversationId/read');
+      // Hors ligne : la lecture part au retour du réseau (lot 3).
+      await OutboxService.instance.sendOrQueue(
+          method: 'PUT',
+          path: '/messages/conversations/$conversationId/read',
+          label: 'conversation_read');
     } catch (_) {}
   }
 }

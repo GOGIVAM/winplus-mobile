@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import '../app_config.dart';
 import '../l10n/l10n.dart';
 import 'http_cache.dart';
+import 'outbox_service.dart';
 import 'session_manager.dart';
 
 /// Client Dio centralisé avec intercepteur JWT automatique et refresh token.
@@ -29,6 +32,15 @@ class ApiClient {
         }
         // Lot 10.11 : langue de l'application pour les réponses du serveur.
         options.headers['Accept-Language'] = L10n.code;
+        // Lot 3 : écriture envoyée par la file d'attente (ou avant d'y
+        // entrer) : clé unique, pour que le serveur ignore un double envoi.
+        // Une clé par écriture (méthode et chemin), au cas où une action en
+        // ferait plusieurs.
+        final outboxKey = Zone.current[OutboxService.zoneKey];
+        if (outboxKey is String && options.method.toUpperCase() != 'GET') {
+          options.headers['Idempotency-Key'] =
+              '$outboxKey-${_shortHash('${options.method} ${options.path}')}';
+        }
         handler.next(options);
       },
       onError: (DioException e, handler) async {
@@ -63,6 +75,15 @@ class ApiClient {
     d.interceptors.add(HttpCacheInterceptor());
 
     return d;
+  }
+
+  static String _shortHash(String s) {
+    var h = 0x811c9dc5;
+    for (final c in s.codeUnits) {
+      h ^= c;
+      h = (h * 0x01000193) & 0xffffffff;
+    }
+    return h.toRadixString(16);
   }
 
   /// Appelé une fois quand la session est perdue (renouvellement refusé) :

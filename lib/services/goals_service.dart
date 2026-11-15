@@ -1,4 +1,5 @@
 import 'api_client.dart';
+import 'outbox_service.dart';
 
 /// Workflow de proposition d'objectifs (Goal  GoalsController côté backend).
 /// Deux origines pour un objectif actif : créé directement par l'élève, ou
@@ -77,13 +78,16 @@ class GoalsService {
   }
 
   /// L'élève accepte tel quel un objectif proposé. Pending → Active.
+  /// Hors ligne : la réponse part au retour du réseau (lot 3).
   Future<void> accept(int id) async {
-    await _api.dio.post('/goals/$id/accept');
+    await OutboxService.instance
+        .sendOrQueue(method: 'POST', path: '/goals/$id/accept', label: 'goal_accept');
   }
 
   /// L'élève refuse un objectif proposé. Pending → Refused, définitif.
   Future<void> refuse(int id) async {
-    await _api.dio.post('/goals/$id/refuse');
+    await OutboxService.instance
+        .sendOrQueue(method: 'POST', path: '/goals/$id/refuse', label: 'goal_refuse');
   }
 
   /// L'élève modifie une proposition (titre/description/échéance) et l'active

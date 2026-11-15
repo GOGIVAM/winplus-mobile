@@ -791,6 +791,8 @@ class CourseService {
     // Lot 9.7b (F12) : la complétion est validée par le serveur ; un refus
     // (vidéo pas assez regardée, quiz non réussi) répond 409 et remonte en
     // CourseActionRefused avec le message à afficher.
+    // Lot 3 : reste en ligne. Le serveur valide la complétion et peut la
+    // refuser (quiz non réussi), ce que l'écran doit afficher tout de suite.
     final Response res;
     try {
       res = await _api.dio.post(

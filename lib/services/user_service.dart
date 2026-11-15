@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'api_client.dart';
+import 'outbox_service.dart';
 import '../l10n/l10n.dart';
 
 class ApiUserProfile {
@@ -250,8 +251,10 @@ class UserService {
       unreadNotifications.value = unreadNotifications.value - 1;
     }
     try {
-      final res = await _api.dio.put('/notifications/$id/read');
-      _applyUnread(res.data);
+      // Hors ligne : la lecture part au retour du réseau (lot 3), le badge
+      // garde sa valeur optimiste.
+      await OutboxService.instance.sendOrQueue(
+          method: 'PUT', path: '/notifications/$id/read', label: 'notification_read');
       return true;
     } catch (_) {
       refreshUnreadCount();

@@ -50,8 +50,14 @@ class _ThreadDetailScreenState extends State<ThreadDetailScreen> {
     if (text.isEmpty) return;
     setState(() => _sending = true);
     try {
-      await ForumService.instance.reply(widget.thread['id'] as int, text);
+      final sent =
+          await ForumService.instance.reply(widget.thread['id'] as int, text);
       _replyCtrl.clear();
+      // Hors ligne : la réponse attend le réseau (lot 3), on le dit.
+      if (!sent && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(context.l10n.pendingQueuedSnack)));
+      }
       await _loadPosts();
     } catch (_) {
     } finally {

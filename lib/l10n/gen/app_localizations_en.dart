@@ -8157,4 +8157,380 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get walletErrOffline =>
+      'Can\'t connect. Check your network and try again.';
+
+  @override
+  String get walletErrSession =>
+      'Your session has expired. Please sign in again.';
+
+  @override
+  String get walletErrUnverified =>
+      'Not allowed: verify your email address to make a withdrawal.';
+
+  @override
+  String get walletErrSummary => 'Your balance couldn\'t be loaded.';
+
+  @override
+  String get walletErrHistory => 'The history couldn\'t be loaded.';
+
+  @override
+  String get walletErrActive => 'The pending withdrawal couldn\'t be checked.';
+
+  @override
+  String get walletErrWithdrawalStatus =>
+      'The withdrawal status couldn\'t be read.';
+
+  @override
+  String get walletErrWithdrawal => 'The withdrawal couldn\'t be recorded.';
+
+  @override
+  String get walletErrRecharge => 'The top-up couldn\'t be started.';
+
+  @override
+  String get walletErrPaymentStatus => 'The payment status couldn\'t be read.';
+
+  @override
+  String get walletSrcAll => 'All';
+
+  @override
+  String get walletSrcSales => 'Sales';
+
+  @override
+  String get walletSrcTutoring => 'Private lessons';
+
+  @override
+  String get walletSrcAffiliation => 'Affiliation';
+
+  @override
+  String get walletSrcRecharge => 'Top-ups';
+
+  @override
+  String get walletSrcAdmin => 'Admin credits';
+
+  @override
+  String get walletSrcPurchases => 'Purchases';
+
+  @override
+  String get walletSrcWithdrawals => 'Withdrawals';
+
+  @override
+  String get walletSessionExpired => 'Session expired';
+
+  @override
+  String get walletUnavailable => 'Balance unavailable';
+
+  @override
+  String get walletSignInAgain => 'Sign in again';
+
+  @override
+  String get walletAvailableCaps => 'AVAILABLE BALANCE';
+
+  @override
+  String walletPending(String amount) {
+    return 'Pending: $amount';
+  }
+
+  @override
+  String walletEngaged(String amount) {
+    return 'Committed (withdrawal in progress): $amount';
+  }
+
+  @override
+  String walletMinWithdrawal(String amount) {
+    return 'Minimum withdrawal $amount, no fees';
+  }
+
+  @override
+  String get walletAnomaly => 'Balance anomaly reported to WinPlus support.';
+
+  @override
+  String get walletWithdraw => 'Withdraw';
+
+  @override
+  String get walletRecharge => 'Top up';
+
+  @override
+  String get walletEmpty =>
+      'Your wallet is empty for now. Your sales, private lessons, commissions and top-ups will fill it.';
+
+  @override
+  String walletTutoringShare(String plan) {
+    return 'Private lessons$plan';
+  }
+
+  @override
+  String walletPlanSuffix(String name) {
+    return ' · $name plan';
+  }
+
+  @override
+  String walletShareSplit(String teacher, String platform) {
+    return '$teacher% for you · $platform% WinPlus';
+  }
+
+  @override
+  String get walletHistory => 'History';
+
+  @override
+  String get walletRevenueByContent => 'Revenue by content';
+
+  @override
+  String walletSalesCount(String count) {
+    return '$count sales';
+  }
+
+  @override
+  String get walletNoEntries => 'No transactions yet.';
+
+  @override
+  String get walletNoEntriesSource => 'No transactions for this source.';
+
+  @override
+  String get walletLoading => 'Loading…';
+
+  @override
+  String walletSeeMore(String count) {
+    return 'See more ($count)';
+  }
+
+  @override
+  String get walletStatusPending => ' · pending';
+
+  @override
+  String get walletStatusReversed => ' · cancelled';
+
+  @override
+  String get walletPaidOut => 'Paid out';
+
+  @override
+  String get walletWithdrawalDone => 'Withdrawal completed';
+
+  @override
+  String get walletWithdrawalFailed => 'Withdrawal failed';
+
+  @override
+  String get walletWithdrawalInProgress => 'Transfer in progress…';
+
+  @override
+  String walletWithdrawalDoneDetail(
+      String amount, String operator, String phone, String date) {
+    return '$amount sent to $operator $phone$date.';
+  }
+
+  @override
+  String walletOnDate(String date) {
+    return ' on $date';
+  }
+
+  @override
+  String get walletTransferFailed => 'The transfer failed.';
+
+  @override
+  String walletWithdrawalFailedDetail(String reason, String amount) {
+    return '$reason The $amount has been returned to your balance.';
+  }
+
+  @override
+  String walletWithdrawalProgressDetail(
+      String amount, String operator, String phone) {
+    return '$amount to $operator $phone. The transfer continues even if you leave the app; you\'ll be notified of the outcome.';
+  }
+
+  @override
+  String get walletClose => 'Close';
+
+  @override
+  String get walletInvalidPhone =>
+      'Invalid Mobile Money number: 9 digits (e.g. 6XXXXXXXX).';
+
+  @override
+  String get walletPhonesMismatch => 'The two numbers entered don\'t match.';
+
+  @override
+  String walletMinWithdrawalError(String amount) {
+    return 'The minimum withdrawal amount is $amount.';
+  }
+
+  @override
+  String walletInsufficient(String amount) {
+    return 'Insufficient balance: $amount available.';
+  }
+
+  @override
+  String get walletConfirmWithdrawal => 'Confirm the withdrawal';
+
+  @override
+  String get walletWithdrawFunds => 'Withdraw funds';
+
+  @override
+  String walletWithdrawIntro(String min, String available) {
+    return 'Minimum $min, no fees, no limit. Available: $available.';
+  }
+
+  @override
+  String get walletPhoneLabel => 'Mobile Money number';
+
+  @override
+  String get walletPhoneConfirm => 'Confirm the number';
+
+  @override
+  String get walletAmountLabel => 'Amount (FCFA)';
+
+  @override
+  String walletWithdrawAll(String amount) {
+    return 'Withdraw all ($amount)';
+  }
+
+  @override
+  String get walletAmountReceived => 'Amount received';
+
+  @override
+  String get walletFees => 'Fees';
+
+  @override
+  String get walletNoFees => 'None';
+
+  @override
+  String get walletOperator => 'Operator';
+
+  @override
+  String get walletNumber => 'Number';
+
+  @override
+  String get walletReservedNotice =>
+      'The amount is set aside from your balance as soon as you confirm, then sent automatically.';
+
+  @override
+  String get walletEdit => 'Edit';
+
+  @override
+  String get walletCancel => 'Cancel';
+
+  @override
+  String walletWithdrawAmount(String amount) {
+    return 'Withdraw $amount';
+  }
+
+  @override
+  String get walletContinue => 'Continue';
+
+  @override
+  String walletMinRechargeError(String amount) {
+    return 'The minimum top-up amount is $amount.';
+  }
+
+  @override
+  String get walletPaymentRefused =>
+      'Payment declined or expired. Nothing was credited.';
+
+  @override
+  String get walletTimeout =>
+      'Timed out. If you confirmed on your phone, the amount will appear once it\'s confirmed.';
+
+  @override
+  String get walletConfirmOnPhone => 'Confirm the payment on your phone…';
+
+  @override
+  String get walletRechargeDone => 'Top-up confirmed';
+
+  @override
+  String get walletRechargeFailed => 'Top-up failed';
+
+  @override
+  String walletVia(String amount, String operator) {
+    return '$amount via $operator';
+  }
+
+  @override
+  String get walletDone => 'Done';
+
+  @override
+  String get walletRechargeTitle => 'Top up my wallet';
+
+  @override
+  String walletRechargeIntro(String amount) {
+    return 'The amount is credited once the Mobile Money payment is confirmed. Minimum $amount.';
+  }
+
+  @override
+  String get walletRetry => 'Try again';
+
+  @override
+  String get pendingTitle => 'Waiting to be sent';
+
+  @override
+  String get pendingEmpty => 'Nothing waiting: everything has been sent.';
+
+  @override
+  String get pendingIntro =>
+      'These actions were made without a connection. They are sent automatically once you are back online, only once.';
+
+  @override
+  String get pendingWaiting => 'Waiting for the network';
+
+  @override
+  String get pendingFailed => 'Not sent';
+
+  @override
+  String get pendingRetry => 'Retry';
+
+  @override
+  String get pendingDelete => 'Delete';
+
+  @override
+  String get pendingQueuedSnack =>
+      'Offline: this will be sent as soon as you are back online.';
+
+  @override
+  String get pendingLabelQuiz => 'Quiz answers';
+
+  @override
+  String get pendingLabelMessage => 'Message';
+
+  @override
+  String get pendingLabelFavoriteAdd => 'Added to favorites';
+
+  @override
+  String get pendingLabelFavoriteRemove => 'Removed from favorites';
+
+  @override
+  String get pendingLabelGoalAccept => 'Goal accepted';
+
+  @override
+  String get pendingLabelGoalRefuse => 'Goal declined';
+
+  @override
+  String get pendingLabelNotificationRead => 'Notification read';
+
+  @override
+  String get pendingLabelAlertRead => 'WinAI advice read';
+
+  @override
+  String get pendingLabelConversationRead => 'Conversation read';
+
+  @override
+  String get pendingLabelForumReply => 'Forum reply';
+
+  @override
+  String get pendingLabelOther => 'Action';
+
+  @override
+  String get studentProfileThisDevice => 'This phone';
+
+  @override
+  String get parentSubjectFallback => 'Subject';
+
+  @override
+  String get parentCoveredSaveError => 'Your choice couldn\'t be saved.';
+
+  @override
+  String get teacherPricingEveningDefault => 'Evening';
+
+  @override
+  String studentTabsAnalyseFile(String name) {
+    return 'Analyse this file: $name';
+  }
 }

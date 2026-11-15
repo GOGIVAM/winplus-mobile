@@ -1,4 +1,5 @@
 import '../services/api_client.dart';
+import '../services/outbox_service.dart';
 
 class ForumService {
   static final instance = ForumService._();
@@ -33,9 +34,15 @@ class ForumService {
     });
   }
 
-  Future<void> reply(int threadId, String content) async {
-    await ApiClient.instance
-        .post('/forums/threads/$threadId/posts', data: {'content': content});
+  /// Hors ligne : la réponse part au retour du réseau (lot 3). Renvoie vrai
+  /// si elle est partie tout de suite, faux si elle attend.
+  Future<bool> reply(int threadId, String content) async {
+    final outcome = await OutboxService.instance.sendOrQueue(
+        method: 'POST',
+        path: '/forums/threads/$threadId/posts',
+        data: {'content': content},
+        label: 'forum_reply');
+    return outcome == SendOutcome.sent;
   }
 
   Future<void> vote(int postId, String type) async {

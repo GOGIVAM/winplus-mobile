@@ -14051,6 +14051,650 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'{count, plural, =1{1 action en attente d’envoi} other{{count} actions en attente d’envoi}}'**
   String offlineStripPending(int count);
+
+  /// No description provided for @walletErrOffline.
+  ///
+  /// In fr, this message translates to:
+  /// **'Connexion impossible. Vérifie ton réseau et réessaie.'**
+  String get walletErrOffline;
+
+  /// No description provided for @walletErrSession.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ta session a expiré. Reconnecte-toi.'**
+  String get walletErrSession;
+
+  /// No description provided for @walletErrUnverified.
+  ///
+  /// In fr, this message translates to:
+  /// **'Action non autorisée : vérifie ton adresse e-mail pour effectuer un retrait.'**
+  String get walletErrUnverified;
+
+  /// No description provided for @walletErrSummary.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible de charger ton solde.'**
+  String get walletErrSummary;
+
+  /// No description provided for @walletErrHistory.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible de charger l\'historique.'**
+  String get walletErrHistory;
+
+  /// No description provided for @walletErrActive.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible de vérifier le retrait en cours.'**
+  String get walletErrActive;
+
+  /// No description provided for @walletErrWithdrawalStatus.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible de lire le statut du retrait.'**
+  String get walletErrWithdrawalStatus;
+
+  /// No description provided for @walletErrWithdrawal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le retrait n\'a pas pu être enregistré.'**
+  String get walletErrWithdrawal;
+
+  /// No description provided for @walletErrRecharge.
+  ///
+  /// In fr, this message translates to:
+  /// **'La recharge n\'a pas pu être lancée.'**
+  String get walletErrRecharge;
+
+  /// No description provided for @walletErrPaymentStatus.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible de lire le statut du paiement.'**
+  String get walletErrPaymentStatus;
+
+  /// No description provided for @walletSrcAll.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tout'**
+  String get walletSrcAll;
+
+  /// No description provided for @walletSrcSales.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ventes'**
+  String get walletSrcSales;
+
+  /// No description provided for @walletSrcTutoring.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cours particuliers'**
+  String get walletSrcTutoring;
+
+  /// No description provided for @walletSrcAffiliation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Affiliation'**
+  String get walletSrcAffiliation;
+
+  /// No description provided for @walletSrcRecharge.
+  ///
+  /// In fr, this message translates to:
+  /// **'Recharges'**
+  String get walletSrcRecharge;
+
+  /// No description provided for @walletSrcAdmin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Crédits admin'**
+  String get walletSrcAdmin;
+
+  /// No description provided for @walletSrcPurchases.
+  ///
+  /// In fr, this message translates to:
+  /// **'Achats'**
+  String get walletSrcPurchases;
+
+  /// No description provided for @walletSrcWithdrawals.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retraits'**
+  String get walletSrcWithdrawals;
+
+  /// No description provided for @walletSessionExpired.
+  ///
+  /// In fr, this message translates to:
+  /// **'Session expirée'**
+  String get walletSessionExpired;
+
+  /// No description provided for @walletUnavailable.
+  ///
+  /// In fr, this message translates to:
+  /// **'Solde indisponible'**
+  String get walletUnavailable;
+
+  /// No description provided for @walletSignInAgain.
+  ///
+  /// In fr, this message translates to:
+  /// **'Se reconnecter'**
+  String get walletSignInAgain;
+
+  /// No description provided for @walletAvailableCaps.
+  ///
+  /// In fr, this message translates to:
+  /// **'SOLDE DISPONIBLE'**
+  String get walletAvailableCaps;
+
+  /// No description provided for @walletPending.
+  ///
+  /// In fr, this message translates to:
+  /// **'En attente : {amount}'**
+  String walletPending(String amount);
+
+  /// No description provided for @walletEngaged.
+  ///
+  /// In fr, this message translates to:
+  /// **'Engagé (retrait en cours) : {amount}'**
+  String walletEngaged(String amount);
+
+  /// No description provided for @walletMinWithdrawal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retrait minimum {amount}, sans frais'**
+  String walletMinWithdrawal(String amount);
+
+  /// No description provided for @walletAnomaly.
+  ///
+  /// In fr, this message translates to:
+  /// **'Anomalie de solde signalée au support WinPlus.'**
+  String get walletAnomaly;
+
+  /// No description provided for @walletWithdraw.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retirer'**
+  String get walletWithdraw;
+
+  /// No description provided for @walletRecharge.
+  ///
+  /// In fr, this message translates to:
+  /// **'Recharger'**
+  String get walletRecharge;
+
+  /// No description provided for @walletEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ton portefeuille est vide pour l\'instant. Tes ventes, tes séances de cours particulier, tes commissions et tes recharges l\'alimenteront.'**
+  String get walletEmpty;
+
+  /// No description provided for @walletTutoringShare.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cours particuliers{plan}'**
+  String walletTutoringShare(String plan);
+
+  /// No description provided for @walletPlanSuffix.
+  ///
+  /// In fr, this message translates to:
+  /// **' · plan {name}'**
+  String walletPlanSuffix(String name);
+
+  /// No description provided for @walletShareSplit.
+  ///
+  /// In fr, this message translates to:
+  /// **'{teacher} % pour toi · {platform} % WinPlus'**
+  String walletShareSplit(String teacher, String platform);
+
+  /// No description provided for @walletHistory.
+  ///
+  /// In fr, this message translates to:
+  /// **'Historique'**
+  String get walletHistory;
+
+  /// No description provided for @walletRevenueByContent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Revenus par contenu'**
+  String get walletRevenueByContent;
+
+  /// No description provided for @walletSalesCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} ventes'**
+  String walletSalesCount(String count);
+
+  /// No description provided for @walletNoEntries.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune opération pour l\'instant.'**
+  String get walletNoEntries;
+
+  /// No description provided for @walletNoEntriesSource.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune opération pour cette source.'**
+  String get walletNoEntriesSource;
+
+  /// No description provided for @walletLoading.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chargement…'**
+  String get walletLoading;
+
+  /// No description provided for @walletSeeMore.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir plus ({count})'**
+  String walletSeeMore(String count);
+
+  /// No description provided for @walletStatusPending.
+  ///
+  /// In fr, this message translates to:
+  /// **' · en attente'**
+  String get walletStatusPending;
+
+  /// No description provided for @walletStatusReversed.
+  ///
+  /// In fr, this message translates to:
+  /// **' · annulée'**
+  String get walletStatusReversed;
+
+  /// No description provided for @walletPaidOut.
+  ///
+  /// In fr, this message translates to:
+  /// **'Versé'**
+  String get walletPaidOut;
+
+  /// No description provided for @walletWithdrawalDone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retrait effectué'**
+  String get walletWithdrawalDone;
+
+  /// No description provided for @walletWithdrawalFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retrait non abouti'**
+  String get walletWithdrawalFailed;
+
+  /// No description provided for @walletWithdrawalInProgress.
+  ///
+  /// In fr, this message translates to:
+  /// **'Transfert en cours…'**
+  String get walletWithdrawalInProgress;
+
+  /// No description provided for @walletWithdrawalDoneDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'{amount} envoyés vers {operator} {phone}{date}.'**
+  String walletWithdrawalDoneDetail(
+      String amount, String operator, String phone, String date);
+
+  /// No description provided for @walletOnDate.
+  ///
+  /// In fr, this message translates to:
+  /// **' le {date}'**
+  String walletOnDate(String date);
+
+  /// No description provided for @walletTransferFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le transfert a échoué.'**
+  String get walletTransferFailed;
+
+  /// No description provided for @walletWithdrawalFailedDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'{reason} Les {amount} ont été remis sur ton solde.'**
+  String walletWithdrawalFailedDetail(String reason, String amount);
+
+  /// No description provided for @walletWithdrawalProgressDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'{amount} vers {operator} {phone}. L\'opération se poursuit même si tu quittes l\'application ; tu seras notifié de son issue.'**
+  String walletWithdrawalProgressDetail(
+      String amount, String operator, String phone);
+
+  /// No description provided for @walletClose.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fermer'**
+  String get walletClose;
+
+  /// No description provided for @walletInvalidPhone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Numéro Mobile Money invalide : 9 chiffres (ex. 6XXXXXXXX).'**
+  String get walletInvalidPhone;
+
+  /// No description provided for @walletPhonesMismatch.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les deux numéros saisis ne correspondent pas.'**
+  String get walletPhonesMismatch;
+
+  /// No description provided for @walletMinWithdrawalError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le montant minimum de retrait est de {amount}.'**
+  String walletMinWithdrawalError(String amount);
+
+  /// No description provided for @walletInsufficient.
+  ///
+  /// In fr, this message translates to:
+  /// **'Solde insuffisant : {amount} disponibles.'**
+  String walletInsufficient(String amount);
+
+  /// No description provided for @walletConfirmWithdrawal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Confirmer le retrait'**
+  String get walletConfirmWithdrawal;
+
+  /// No description provided for @walletWithdrawFunds.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retirer des fonds'**
+  String get walletWithdrawFunds;
+
+  /// No description provided for @walletWithdrawIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Minimum {min}, aucun frais, pas de plafond. Disponible : {available}.'**
+  String walletWithdrawIntro(String min, String available);
+
+  /// No description provided for @walletPhoneLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Numéro Mobile Money'**
+  String get walletPhoneLabel;
+
+  /// No description provided for @walletPhoneConfirm.
+  ///
+  /// In fr, this message translates to:
+  /// **'Confirme le numéro'**
+  String get walletPhoneConfirm;
+
+  /// No description provided for @walletAmountLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant (FCFA)'**
+  String get walletAmountLabel;
+
+  /// No description provided for @walletWithdrawAll.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tout retirer ({amount})'**
+  String walletWithdrawAll(String amount);
+
+  /// No description provided for @walletAmountReceived.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant reçu'**
+  String get walletAmountReceived;
+
+  /// No description provided for @walletFees.
+  ///
+  /// In fr, this message translates to:
+  /// **'Frais'**
+  String get walletFees;
+
+  /// No description provided for @walletNoFees.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun'**
+  String get walletNoFees;
+
+  /// No description provided for @walletOperator.
+  ///
+  /// In fr, this message translates to:
+  /// **'Opérateur'**
+  String get walletOperator;
+
+  /// No description provided for @walletNumber.
+  ///
+  /// In fr, this message translates to:
+  /// **'Numéro'**
+  String get walletNumber;
+
+  /// No description provided for @walletReservedNotice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le montant est réservé sur ton solde dès la validation, puis envoyé automatiquement.'**
+  String get walletReservedNotice;
+
+  /// No description provided for @walletEdit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier'**
+  String get walletEdit;
+
+  /// No description provided for @walletCancel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annuler'**
+  String get walletCancel;
+
+  /// No description provided for @walletWithdrawAmount.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retirer {amount}'**
+  String walletWithdrawAmount(String amount);
+
+  /// No description provided for @walletContinue.
+  ///
+  /// In fr, this message translates to:
+  /// **'Continuer'**
+  String get walletContinue;
+
+  /// No description provided for @walletMinRechargeError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le montant minimum de recharge est de {amount}.'**
+  String walletMinRechargeError(String amount);
+
+  /// No description provided for @walletPaymentRefused.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paiement refusé ou expiré. Aucun montant n\'a été crédité.'**
+  String get walletPaymentRefused;
+
+  /// No description provided for @walletTimeout.
+  ///
+  /// In fr, this message translates to:
+  /// **'Délai dépassé. Si tu as confirmé sur ton téléphone, le montant apparaîtra dès confirmation.'**
+  String get walletTimeout;
+
+  /// No description provided for @walletConfirmOnPhone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Confirme le paiement sur ton téléphone…'**
+  String get walletConfirmOnPhone;
+
+  /// No description provided for @walletRechargeDone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Recharge confirmée'**
+  String get walletRechargeDone;
+
+  /// No description provided for @walletRechargeFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Recharge non aboutie'**
+  String get walletRechargeFailed;
+
+  /// No description provided for @walletVia.
+  ///
+  /// In fr, this message translates to:
+  /// **'{amount} via {operator}'**
+  String walletVia(String amount, String operator);
+
+  /// No description provided for @walletDone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Terminé'**
+  String get walletDone;
+
+  /// No description provided for @walletRechargeTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Recharger mon portefeuille'**
+  String get walletRechargeTitle;
+
+  /// No description provided for @walletRechargeIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le montant est crédité dès la confirmation du paiement Mobile Money. Minimum {amount}.'**
+  String walletRechargeIntro(String amount);
+
+  /// No description provided for @walletRetry.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réessayer'**
+  String get walletRetry;
+
+  /// No description provided for @pendingTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'En attente d’envoi'**
+  String get pendingTitle;
+
+  /// No description provided for @pendingEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rien en attente : tout est envoyé.'**
+  String get pendingEmpty;
+
+  /// No description provided for @pendingIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ces actions ont été faites sans réseau. Elles partent seules au retour de la connexion, une seule fois.'**
+  String get pendingIntro;
+
+  /// No description provided for @pendingWaiting.
+  ///
+  /// In fr, this message translates to:
+  /// **'En attente du réseau'**
+  String get pendingWaiting;
+
+  /// No description provided for @pendingFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Non envoyée'**
+  String get pendingFailed;
+
+  /// No description provided for @pendingRetry.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réessayer'**
+  String get pendingRetry;
+
+  /// No description provided for @pendingDelete.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer'**
+  String get pendingDelete;
+
+  /// No description provided for @pendingQueuedSnack.
+  ///
+  /// In fr, this message translates to:
+  /// **'Hors ligne : ce sera envoyé dès le retour du réseau.'**
+  String get pendingQueuedSnack;
+
+  /// No description provided for @pendingLabelQuiz.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réponses à un quiz'**
+  String get pendingLabelQuiz;
+
+  /// No description provided for @pendingLabelMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Message'**
+  String get pendingLabelMessage;
+
+  /// No description provided for @pendingLabelFavoriteAdd.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajout aux favoris'**
+  String get pendingLabelFavoriteAdd;
+
+  /// No description provided for @pendingLabelFavoriteRemove.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retrait des favoris'**
+  String get pendingLabelFavoriteRemove;
+
+  /// No description provided for @pendingLabelGoalAccept.
+  ///
+  /// In fr, this message translates to:
+  /// **'Objectif accepté'**
+  String get pendingLabelGoalAccept;
+
+  /// No description provided for @pendingLabelGoalRefuse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Objectif refusé'**
+  String get pendingLabelGoalRefuse;
+
+  /// No description provided for @pendingLabelNotificationRead.
+  ///
+  /// In fr, this message translates to:
+  /// **'Notification lue'**
+  String get pendingLabelNotificationRead;
+
+  /// No description provided for @pendingLabelAlertRead.
+  ///
+  /// In fr, this message translates to:
+  /// **'Conseil WinAI lu'**
+  String get pendingLabelAlertRead;
+
+  /// No description provided for @pendingLabelConversationRead.
+  ///
+  /// In fr, this message translates to:
+  /// **'Conversation lue'**
+  String get pendingLabelConversationRead;
+
+  /// No description provided for @pendingLabelForumReply.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réponse au forum'**
+  String get pendingLabelForumReply;
+
+  /// No description provided for @pendingLabelOther.
+  ///
+  /// In fr, this message translates to:
+  /// **'Action'**
+  String get pendingLabelOther;
+
+  /// No description provided for @studentProfileThisDevice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce téléphone'**
+  String get studentProfileThisDevice;
+
+  /// No description provided for @parentSubjectFallback.
+  ///
+  /// In fr, this message translates to:
+  /// **'Matière'**
+  String get parentSubjectFallback;
+
+  /// No description provided for @parentCoveredSaveError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le choix n\'a pas pu être enregistré.'**
+  String get parentCoveredSaveError;
+
+  /// No description provided for @teacherPricingEveningDefault.
+  ///
+  /// In fr, this message translates to:
+  /// **'Soir'**
+  String get teacherPricingEveningDefault;
+
+  /// No description provided for @studentTabsAnalyseFile.
+  ///
+  /// In fr, this message translates to:
+  /// **'Analyse ce fichier : {name}'**
+  String studentTabsAnalyseFile(String name);
 }
 
 class _AppLocalizationsDelegate

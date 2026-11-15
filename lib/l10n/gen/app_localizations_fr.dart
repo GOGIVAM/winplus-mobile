@@ -8227,4 +8227,381 @@ class AppLocalizationsFr extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get walletErrOffline =>
+      'Connexion impossible. Vérifie ton réseau et réessaie.';
+
+  @override
+  String get walletErrSession => 'Ta session a expiré. Reconnecte-toi.';
+
+  @override
+  String get walletErrUnverified =>
+      'Action non autorisée : vérifie ton adresse e-mail pour effectuer un retrait.';
+
+  @override
+  String get walletErrSummary => 'Impossible de charger ton solde.';
+
+  @override
+  String get walletErrHistory => 'Impossible de charger l\'historique.';
+
+  @override
+  String get walletErrActive => 'Impossible de vérifier le retrait en cours.';
+
+  @override
+  String get walletErrWithdrawalStatus =>
+      'Impossible de lire le statut du retrait.';
+
+  @override
+  String get walletErrWithdrawal => 'Le retrait n\'a pas pu être enregistré.';
+
+  @override
+  String get walletErrRecharge => 'La recharge n\'a pas pu être lancée.';
+
+  @override
+  String get walletErrPaymentStatus =>
+      'Impossible de lire le statut du paiement.';
+
+  @override
+  String get walletSrcAll => 'Tout';
+
+  @override
+  String get walletSrcSales => 'Ventes';
+
+  @override
+  String get walletSrcTutoring => 'Cours particuliers';
+
+  @override
+  String get walletSrcAffiliation => 'Affiliation';
+
+  @override
+  String get walletSrcRecharge => 'Recharges';
+
+  @override
+  String get walletSrcAdmin => 'Crédits admin';
+
+  @override
+  String get walletSrcPurchases => 'Achats';
+
+  @override
+  String get walletSrcWithdrawals => 'Retraits';
+
+  @override
+  String get walletSessionExpired => 'Session expirée';
+
+  @override
+  String get walletUnavailable => 'Solde indisponible';
+
+  @override
+  String get walletSignInAgain => 'Se reconnecter';
+
+  @override
+  String get walletAvailableCaps => 'SOLDE DISPONIBLE';
+
+  @override
+  String walletPending(String amount) {
+    return 'En attente : $amount';
+  }
+
+  @override
+  String walletEngaged(String amount) {
+    return 'Engagé (retrait en cours) : $amount';
+  }
+
+  @override
+  String walletMinWithdrawal(String amount) {
+    return 'Retrait minimum $amount, sans frais';
+  }
+
+  @override
+  String get walletAnomaly => 'Anomalie de solde signalée au support WinPlus.';
+
+  @override
+  String get walletWithdraw => 'Retirer';
+
+  @override
+  String get walletRecharge => 'Recharger';
+
+  @override
+  String get walletEmpty =>
+      'Ton portefeuille est vide pour l\'instant. Tes ventes, tes séances de cours particulier, tes commissions et tes recharges l\'alimenteront.';
+
+  @override
+  String walletTutoringShare(String plan) {
+    return 'Cours particuliers$plan';
+  }
+
+  @override
+  String walletPlanSuffix(String name) {
+    return ' · plan $name';
+  }
+
+  @override
+  String walletShareSplit(String teacher, String platform) {
+    return '$teacher % pour toi · $platform % WinPlus';
+  }
+
+  @override
+  String get walletHistory => 'Historique';
+
+  @override
+  String get walletRevenueByContent => 'Revenus par contenu';
+
+  @override
+  String walletSalesCount(String count) {
+    return '$count ventes';
+  }
+
+  @override
+  String get walletNoEntries => 'Aucune opération pour l\'instant.';
+
+  @override
+  String get walletNoEntriesSource => 'Aucune opération pour cette source.';
+
+  @override
+  String get walletLoading => 'Chargement…';
+
+  @override
+  String walletSeeMore(String count) {
+    return 'Voir plus ($count)';
+  }
+
+  @override
+  String get walletStatusPending => ' · en attente';
+
+  @override
+  String get walletStatusReversed => ' · annulée';
+
+  @override
+  String get walletPaidOut => 'Versé';
+
+  @override
+  String get walletWithdrawalDone => 'Retrait effectué';
+
+  @override
+  String get walletWithdrawalFailed => 'Retrait non abouti';
+
+  @override
+  String get walletWithdrawalInProgress => 'Transfert en cours…';
+
+  @override
+  String walletWithdrawalDoneDetail(
+      String amount, String operator, String phone, String date) {
+    return '$amount envoyés vers $operator $phone$date.';
+  }
+
+  @override
+  String walletOnDate(String date) {
+    return ' le $date';
+  }
+
+  @override
+  String get walletTransferFailed => 'Le transfert a échoué.';
+
+  @override
+  String walletWithdrawalFailedDetail(String reason, String amount) {
+    return '$reason Les $amount ont été remis sur ton solde.';
+  }
+
+  @override
+  String walletWithdrawalProgressDetail(
+      String amount, String operator, String phone) {
+    return '$amount vers $operator $phone. L\'opération se poursuit même si tu quittes l\'application ; tu seras notifié de son issue.';
+  }
+
+  @override
+  String get walletClose => 'Fermer';
+
+  @override
+  String get walletInvalidPhone =>
+      'Numéro Mobile Money invalide : 9 chiffres (ex. 6XXXXXXXX).';
+
+  @override
+  String get walletPhonesMismatch =>
+      'Les deux numéros saisis ne correspondent pas.';
+
+  @override
+  String walletMinWithdrawalError(String amount) {
+    return 'Le montant minimum de retrait est de $amount.';
+  }
+
+  @override
+  String walletInsufficient(String amount) {
+    return 'Solde insuffisant : $amount disponibles.';
+  }
+
+  @override
+  String get walletConfirmWithdrawal => 'Confirmer le retrait';
+
+  @override
+  String get walletWithdrawFunds => 'Retirer des fonds';
+
+  @override
+  String walletWithdrawIntro(String min, String available) {
+    return 'Minimum $min, aucun frais, pas de plafond. Disponible : $available.';
+  }
+
+  @override
+  String get walletPhoneLabel => 'Numéro Mobile Money';
+
+  @override
+  String get walletPhoneConfirm => 'Confirme le numéro';
+
+  @override
+  String get walletAmountLabel => 'Montant (FCFA)';
+
+  @override
+  String walletWithdrawAll(String amount) {
+    return 'Tout retirer ($amount)';
+  }
+
+  @override
+  String get walletAmountReceived => 'Montant reçu';
+
+  @override
+  String get walletFees => 'Frais';
+
+  @override
+  String get walletNoFees => 'Aucun';
+
+  @override
+  String get walletOperator => 'Opérateur';
+
+  @override
+  String get walletNumber => 'Numéro';
+
+  @override
+  String get walletReservedNotice =>
+      'Le montant est réservé sur ton solde dès la validation, puis envoyé automatiquement.';
+
+  @override
+  String get walletEdit => 'Modifier';
+
+  @override
+  String get walletCancel => 'Annuler';
+
+  @override
+  String walletWithdrawAmount(String amount) {
+    return 'Retirer $amount';
+  }
+
+  @override
+  String get walletContinue => 'Continuer';
+
+  @override
+  String walletMinRechargeError(String amount) {
+    return 'Le montant minimum de recharge est de $amount.';
+  }
+
+  @override
+  String get walletPaymentRefused =>
+      'Paiement refusé ou expiré. Aucun montant n\'a été crédité.';
+
+  @override
+  String get walletTimeout =>
+      'Délai dépassé. Si tu as confirmé sur ton téléphone, le montant apparaîtra dès confirmation.';
+
+  @override
+  String get walletConfirmOnPhone => 'Confirme le paiement sur ton téléphone…';
+
+  @override
+  String get walletRechargeDone => 'Recharge confirmée';
+
+  @override
+  String get walletRechargeFailed => 'Recharge non aboutie';
+
+  @override
+  String walletVia(String amount, String operator) {
+    return '$amount via $operator';
+  }
+
+  @override
+  String get walletDone => 'Terminé';
+
+  @override
+  String get walletRechargeTitle => 'Recharger mon portefeuille';
+
+  @override
+  String walletRechargeIntro(String amount) {
+    return 'Le montant est crédité dès la confirmation du paiement Mobile Money. Minimum $amount.';
+  }
+
+  @override
+  String get walletRetry => 'Réessayer';
+
+  @override
+  String get pendingTitle => 'En attente d’envoi';
+
+  @override
+  String get pendingEmpty => 'Rien en attente : tout est envoyé.';
+
+  @override
+  String get pendingIntro =>
+      'Ces actions ont été faites sans réseau. Elles partent seules au retour de la connexion, une seule fois.';
+
+  @override
+  String get pendingWaiting => 'En attente du réseau';
+
+  @override
+  String get pendingFailed => 'Non envoyée';
+
+  @override
+  String get pendingRetry => 'Réessayer';
+
+  @override
+  String get pendingDelete => 'Supprimer';
+
+  @override
+  String get pendingQueuedSnack =>
+      'Hors ligne : ce sera envoyé dès le retour du réseau.';
+
+  @override
+  String get pendingLabelQuiz => 'Réponses à un quiz';
+
+  @override
+  String get pendingLabelMessage => 'Message';
+
+  @override
+  String get pendingLabelFavoriteAdd => 'Ajout aux favoris';
+
+  @override
+  String get pendingLabelFavoriteRemove => 'Retrait des favoris';
+
+  @override
+  String get pendingLabelGoalAccept => 'Objectif accepté';
+
+  @override
+  String get pendingLabelGoalRefuse => 'Objectif refusé';
+
+  @override
+  String get pendingLabelNotificationRead => 'Notification lue';
+
+  @override
+  String get pendingLabelAlertRead => 'Conseil WinAI lu';
+
+  @override
+  String get pendingLabelConversationRead => 'Conversation lue';
+
+  @override
+  String get pendingLabelForumReply => 'Réponse au forum';
+
+  @override
+  String get pendingLabelOther => 'Action';
+
+  @override
+  String get studentProfileThisDevice => 'Ce téléphone';
+
+  @override
+  String get parentSubjectFallback => 'Matière';
+
+  @override
+  String get parentCoveredSaveError => 'Le choix n\'a pas pu être enregistré.';
+
+  @override
+  String get teacherPricingEveningDefault => 'Soir';
+
+  @override
+  String studentTabsAnalyseFile(String name) {
+    return 'Analyse ce fichier : $name';
+  }
 }

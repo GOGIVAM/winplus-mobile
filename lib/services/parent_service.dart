@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import '../l10n/l10n.dart';
 import 'api_client.dart';
+import 'outbox_service.dart';
 import 'connectivity_service.dart';
 import 'local_cache_service.dart';
 
@@ -569,7 +570,9 @@ class ParentService {
 
   Future<void> markAlertRead(int alertId) async {
     try {
-      await _api.dio.patch('/parent-alerts/$alertId/read');
+      // Hors ligne : la lecture part au retour du réseau (lot 3).
+      await OutboxService.instance.sendOrQueue(
+          method: 'PATCH', path: '/parent-alerts/$alertId/read', label: 'alert_read');
     } catch (_) {}
   }
 

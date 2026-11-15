@@ -5001,5 +5001,280 @@
         "type": "int"
       }
     }
-  }
+  },
+  "walletErrOffline": "Connexion impossible. Vérifie ton réseau et réessaie.",
+  "walletErrSession": "Ta session a expiré. Reconnecte-toi.",
+  "walletErrUnverified": "Action non autorisée : vérifie ton adresse e-mail pour effectuer un retrait.",
+  "walletErrSummary": "Impossible de charger ton solde.",
+  "walletErrHistory": "Impossible de charger l'historique.",
+  "walletErrActive": "Impossible de vérifier le retrait en cours.",
+  "walletErrWithdrawalStatus": "Impossible de lire le statut du retrait.",
+  "walletErrWithdrawal": "Le retrait n'a pas pu être enregistré.",
+  "walletErrRecharge": "La recharge n'a pas pu être lancée.",
+  "walletErrPaymentStatus": "Impossible de lire le statut du paiement.",
+  "walletSrcAll": "Tout",
+  "walletSrcSales": "Ventes",
+  "walletSrcTutoring": "Cours particuliers",
+  "walletSrcAffiliation": "Affiliation",
+  "walletSrcRecharge": "Recharges",
+  "walletSrcAdmin": "Crédits admin",
+  "walletSrcPurchases": "Achats",
+  "walletSrcWithdrawals": "Retraits",
+  "walletSessionExpired": "Session expirée",
+  "walletUnavailable": "Solde indisponible",
+  "walletSignInAgain": "Se reconnecter",
+  "walletAvailableCaps": "SOLDE DISPONIBLE",
+  "walletPending": "En attente : {amount}",
+  "@walletPending": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletEngaged": "Engagé (retrait en cours) : {amount}",
+  "@walletEngaged": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletMinWithdrawal": "Retrait minimum {amount}, sans frais",
+  "@walletMinWithdrawal": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletAnomaly": "Anomalie de solde signalée au support WinPlus.",
+  "walletWithdraw": "Retirer",
+  "walletRecharge": "Recharger",
+  "walletEmpty": "Ton portefeuille est vide pour l'instant. Tes ventes, tes séances de cours particulier, tes commissions et tes recharges l'alimenteront.",
+  "walletTutoringShare": "Cours particuliers{plan}",
+  "@walletTutoringShare": {
+    "placeholders": {
+      "plan": {
+        "type": "String"
+      }
+    }
+  },
+  "walletPlanSuffix": " · plan {name}",
+  "@walletPlanSuffix": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "walletShareSplit": "{teacher} % pour toi · {platform} % WinPlus",
+  "@walletShareSplit": {
+    "placeholders": {
+      "teacher": {
+        "type": "String"
+      },
+      "platform": {
+        "type": "String"
+      }
+    }
+  },
+  "walletHistory": "Historique",
+  "walletRevenueByContent": "Revenus par contenu",
+  "walletSalesCount": "{count} ventes",
+  "@walletSalesCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "walletNoEntries": "Aucune opération pour l'instant.",
+  "walletNoEntriesSource": "Aucune opération pour cette source.",
+  "walletLoading": "Chargement…",
+  "walletSeeMore": "Voir plus ({count})",
+  "@walletSeeMore": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "walletStatusPending": " · en attente",
+  "walletStatusReversed": " · annulée",
+  "walletPaidOut": "Versé",
+  "walletWithdrawalDone": "Retrait effectué",
+  "walletWithdrawalFailed": "Retrait non abouti",
+  "walletWithdrawalInProgress": "Transfert en cours…",
+  "walletWithdrawalDoneDetail": "{amount} envoyés vers {operator} {phone}{date}.",
+  "@walletWithdrawalDoneDetail": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "operator": {
+        "type": "String"
+      },
+      "phone": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "walletOnDate": " le {date}",
+  "@walletOnDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "walletTransferFailed": "Le transfert a échoué.",
+  "walletWithdrawalFailedDetail": "{reason} Les {amount} ont été remis sur ton solde.",
+  "@walletWithdrawalFailedDetail": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletWithdrawalProgressDetail": "{amount} vers {operator} {phone}. L'opération se poursuit même si tu quittes l'application ; tu seras notifié de son issue.",
+  "@walletWithdrawalProgressDetail": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "operator": {
+        "type": "String"
+      },
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
+  "walletClose": "Fermer",
+  "walletInvalidPhone": "Numéro Mobile Money invalide : 9 chiffres (ex. 6XXXXXXXX).",
+  "walletPhonesMismatch": "Les deux numéros saisis ne correspondent pas.",
+  "walletMinWithdrawalError": "Le montant minimum de retrait est de {amount}.",
+  "@walletMinWithdrawalError": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletInsufficient": "Solde insuffisant : {amount} disponibles.",
+  "@walletInsufficient": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletConfirmWithdrawal": "Confirmer le retrait",
+  "walletWithdrawFunds": "Retirer des fonds",
+  "walletWithdrawIntro": "Minimum {min}, aucun frais, pas de plafond. Disponible : {available}.",
+  "@walletWithdrawIntro": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "available": {
+        "type": "String"
+      }
+    }
+  },
+  "walletPhoneLabel": "Numéro Mobile Money",
+  "walletPhoneConfirm": "Confirme le numéro",
+  "walletAmountLabel": "Montant (FCFA)",
+  "walletWithdrawAll": "Tout retirer ({amount})",
+  "@walletWithdrawAll": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletAmountReceived": "Montant reçu",
+  "walletFees": "Frais",
+  "walletNoFees": "Aucun",
+  "walletOperator": "Opérateur",
+  "walletNumber": "Numéro",
+  "walletReservedNotice": "Le montant est réservé sur ton solde dès la validation, puis envoyé automatiquement.",
+  "walletEdit": "Modifier",
+  "walletCancel": "Annuler",
+  "walletWithdrawAmount": "Retirer {amount}",
+  "@walletWithdrawAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletContinue": "Continuer",
+  "walletMinRechargeError": "Le montant minimum de recharge est de {amount}.",
+  "@walletMinRechargeError": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletPaymentRefused": "Paiement refusé ou expiré. Aucun montant n'a été crédité.",
+  "walletTimeout": "Délai dépassé. Si tu as confirmé sur ton téléphone, le montant apparaîtra dès confirmation.",
+  "walletConfirmOnPhone": "Confirme le paiement sur ton téléphone…",
+  "walletRechargeDone": "Recharge confirmée",
+  "walletRechargeFailed": "Recharge non aboutie",
+  "walletVia": "{amount} via {operator}",
+  "@walletVia": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "operator": {
+        "type": "String"
+      }
+    }
+  },
+  "walletDone": "Terminé",
+  "walletRechargeTitle": "Recharger mon portefeuille",
+  "walletRechargeIntro": "Le montant est crédité dès la confirmation du paiement Mobile Money. Minimum {amount}.",
+  "@walletRechargeIntro": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletRetry": "Réessayer",
+  "pendingTitle": "En attente d’envoi",
+  "pendingEmpty": "Rien en attente : tout est envoyé.",
+  "pendingIntro": "Ces actions ont été faites sans réseau. Elles partent seules au retour de la connexion, une seule fois.",
+  "pendingWaiting": "En attente du réseau",
+  "pendingFailed": "Non envoyée",
+  "pendingRetry": "Réessayer",
+  "pendingDelete": "Supprimer",
+  "pendingQueuedSnack": "Hors ligne : ce sera envoyé dès le retour du réseau.",
+  "pendingLabelQuiz": "Réponses à un quiz",
+  "pendingLabelMessage": "Message",
+  "pendingLabelFavoriteAdd": "Ajout aux favoris",
+  "pendingLabelFavoriteRemove": "Retrait des favoris",
+  "pendingLabelGoalAccept": "Objectif accepté",
+  "pendingLabelGoalRefuse": "Objectif refusé",
+  "pendingLabelNotificationRead": "Notification lue",
+  "pendingLabelAlertRead": "Conseil WinAI lu",
+  "pendingLabelConversationRead": "Conversation lue",
+  "pendingLabelForumReply": "Réponse au forum",
+  "pendingLabelOther": "Action",
+  "studentProfileThisDevice": "Ce téléphone",
+  "parentSubjectFallback": "Matière",
+  "parentCoveredSaveError": "Le choix n'a pas pu être enregistré.",
+  "teacherPricingEveningDefault": "Soir",
+  "studentTabsAnalyseFile": "Analyse ce fichier : {name}",
+  "@studentTabsAnalyseFile": {"placeholders": {"name": {"type": "String"}}}
 }

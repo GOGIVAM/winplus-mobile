@@ -6,6 +6,8 @@ import '../l10n/l10n.dart';
 import '../services/connectivity_service.dart';
 import '../services/http_cache.dart';
 import '../services/outbox_service.dart';
+import '../shared/pending_actions_screen.dart';
+import '../theme/win_motion.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_typography.dart';
 
@@ -63,7 +65,14 @@ class _OfflineStripState extends State<OfflineStrip> {
                 ? const SizedBox(width: double.infinity)
                 : Semantics(
                     liveRegion: true,
-                    child: Container(
+                    button: pending > 0,
+                    // Actions en attente : toucher le bandeau ouvre leur liste.
+                    child: GestureDetector(
+                      onTap: pending > 0
+                          ? () => Navigator.of(context).push(WinPageRoute(
+                              builder: (_) => const PendingActionsScreen()))
+                          : null,
+                      child: Container(
                       width: double.infinity,
                       color: WinColors.teal900,
                       padding: const EdgeInsets.symmetric(
@@ -82,7 +91,11 @@ class _OfflineStripState extends State<OfflineStrip> {
                               overflow: TextOverflow.ellipsis,
                               style: WinType.labelM(WinColors.cream50)),
                         ),
+                        if (pending > 0)
+                          const Icon(Icons.chevron_right,
+                              size: 18, color: WinColors.cream50),
                       ]),
+                    ),
                     ),
                   ),
           );

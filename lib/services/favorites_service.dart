@@ -1,4 +1,5 @@
 import 'api_client.dart';
+import 'outbox_service.dart';
 
 class ApiFavorite {
   final int id;
@@ -35,9 +36,12 @@ class FavoritesService {
         .toList();
   }
 
+  /// Hors ligne, l'ajout part au retour du réseau (lot 3) : il compte comme
+  /// fait pour l'écran.
   Future<bool> add(int subjectId) async {
     try {
-      await _api.dio.post('/favorites/$subjectId');
+      await OutboxService.instance.sendOrQueue(
+          method: 'POST', path: '/favorites/$subjectId', label: 'favorite_add');
       return true;
     } catch (_) {
       return false;
@@ -46,7 +50,10 @@ class FavoritesService {
 
   Future<bool> remove(int favoriteId) async {
     try {
-      await _api.dio.delete('/favorites/$favoriteId');
+      await OutboxService.instance.sendOrQueue(
+          method: 'DELETE',
+          path: '/favorites/$favoriteId',
+          label: 'favorite_remove');
       return true;
     } catch (_) {
       return false;
