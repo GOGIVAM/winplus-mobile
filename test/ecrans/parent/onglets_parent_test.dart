@@ -8,7 +8,6 @@ import 'package:winplus/app_state.dart';
 import 'package:winplus/data/models.dart' show fmtXaf;
 import 'package:winplus/l10n/l10n.dart';
 import 'package:winplus/parent/add_child_screen.dart';
-import 'package:winplus/parent/buy_for_child_screen.dart';
 import 'package:winplus/parent/child_activity_screen.dart';
 import 'package:winplus/parent/covered_children_screen.dart';
 import 'package:winplus/parent/parent_tabs.dart';
