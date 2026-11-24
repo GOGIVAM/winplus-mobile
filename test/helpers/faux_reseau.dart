@@ -18,6 +18,12 @@ import 'package:winplus/services/http_cache.dart';
 import 'package:winplus/services/session_manager.dart';
 import 'package:winplus/services/tutor_booking_service.dart';
 
+/// Corps brut, envoyé tel quel (flux d'évènements « data: … » par exemple).
+class FauxTexte {
+  final String texte;
+  const FauxTexte(this.texte);
+}
+
 /// Réponse simulée du serveur.
 class FauxReponse {
   final Object? corps;
@@ -56,7 +62,12 @@ class FauxReseau implements HttpClientAdapter {
     requetes.add(options);
     final h = _routes['${options.method} ${options.path}'];
     final r = h == null ? const FauxReponse({'error': 'route non simulee'}, 404) : h(options);
-    final texte = r.corps == null ? '' : jsonEncode(r.corps);
+    final corps = r.corps;
+    final texte = corps == null
+        ? ''
+        : corps is FauxTexte
+            ? corps.texte
+            : jsonEncode(corps);
     return ResponseBody.fromString(
       texte,
       r.statut,

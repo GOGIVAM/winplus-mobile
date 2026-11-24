@@ -1,6 +1,7 @@
 import '../l10n/class_levels.dart';
 import 'package:flutter/material.dart';
 import '../l10n/l10n.dart';
+import '../widgets/winai_markdown.dart';
 import '../widgets/language_selector.dart';
 import '../theme/win_motion.dart';
 import '../app_state.dart';
@@ -746,6 +747,8 @@ class _InstitutionWinAITabState extends State<InstitutionWinAITab> {
   final _ctrl = TextEditingController();
   final List<({bool me, String text})> _msgs = [];
   bool _thinking = false;
+  /// Conversation en cours (créée par le serveur au premier message).
+  int? _conversationId;
 
   List<String> get _suggestions => [
     context.l10n.instAiSuggestion1,
@@ -771,14 +774,31 @@ class _InstitutionWinAITabState extends State<InstitutionWinAITab> {
       _ctrl.clear();
       _thinking = true;
     });
-    final reply = await ChatbotService.instance.sendMessage(message: t);
+    // Réponse écrite en direct (comme le site), dans la même conversation
+    // que les messages précédents : WinAI garde le contexte.
+    var started = false;
+    void show(String text) {
+      if (!started) {
+        started = true;
+        _thinking = false;
+        _msgs.add((me: false, text: text));
+      } else {
+        _msgs[_msgs.length - 1] = (me: false, text: text);
+      }
+    }
+
+    final reply = await ChatbotService.instance.streamMessage(
+      message: t,
+      conversationId: _conversationId,
+      onConversation: (id) => _conversationId = id,
+      onText: (text) {
+        if (mounted) setState(() => show(text));
+      },
+    );
     if (!mounted) return;
     setState(() {
       _thinking = false;
-      _msgs.add((
-        me: false,
-        text: reply ?? L10n.current.studentTabsAiNoReply
-      ));
+      show(reply ?? L10n.current.studentTabsAiNoReply);
     });
   }
 
@@ -915,9 +935,10 @@ class _InstitutionWinAITabState extends State<InstitutionWinAITab> {
                           border: m.me ? null : Border.all(color: s.cardBorder),
                           borderRadius: BorderRadius.circular(WinRadii.lg),
                         ),
-                        child: Text(m.text,
-                            style: WinType.bodyM(
-                                m.me ? WinColors.cream50 : s.onSurface)),
+                        child: (m.me
+    ? Text(m.text, style: WinType.bodyM(WinColors.cream50))
+    // Réponse de WinAI : Markdown et formules compilées.
+    : WinAIMarkdown(m.text, color: s.onSurface)),
                       ),
                     );
                   },

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:dio/dio.dart';
@@ -142,6 +143,96 @@ class ChatbotService {
       return quotaRefusalMessage(e.response?.statusCode, e.response?.data);
     } catch (_) {
       return null;
+    }
+  }
+
+  /// Réponse WinAI écrite en direct (POST /chatbot/stream, comme le site).
+  /// [onText] reçoit le texte complet de la réponse à chaque fragment reçu.
+  /// Renvoie le texte final, un message de refus (hors ligne, quota), ou
+  /// null. Sans fragment dans les 15 premières secondes, ou si le flux casse
+  /// avant le premier, la réponse passe par la route classique (comme le
+  /// site), en une fois.
+  Future<String?> streamMessage({
+    required String message,
+    int? conversationId,
+    required void Function(String text) onText,
+    void Function(int conversationId)? onConversation,
+  }) async {
+    if (!ConnectivityService.instance.isOnline) {
+      return OfflineActionException().message;
+    }
+    final clientMessageId = _newClientMessageId();
+    final full = StringBuffer();
+    var gotToken = false;
+    Future<String?> fallback() => sendMessage(message: message, sessionId: conversationId);
+    try {
+      final res = await _api.dio.post<ResponseBody>(
+        '/chatbot/stream',
+        data: {
+          'message': message,
+          if (conversationId != null) 'conversationId': conversationId,
+          'forceLanguage': L10n.isEn ? 'english' : 'french',
+          'clientMessageId': clientMessageId,
+          'knowledgeBase': knowledgeBase.value,
+        },
+        options: Options(
+          responseType: ResponseType.stream,
+          headers: {'Accept': 'text/event-stream'},
+          receiveTimeout: const Duration(minutes: 3),
+        ),
+      );
+      final body = res.data;
+      if (body == null) return fallback();
+      final lines = utf8.decoder
+          .bind(body.stream)
+          .transform(const LineSplitter())
+          .timeout(const Duration(seconds: 15), onTimeout: (sink) {
+        // Rien depuis 15 s : avant le premier fragment, on abandonne le flux.
+        if (!gotToken) sink.close();
+      });
+      await for (final line in lines) {
+        if (!line.startsWith('data:')) continue;
+        final chunk = line.substring(5).trim();
+        if (chunk == '[DONE]') break;
+        var token = chunk;
+        try {
+          final parsed = jsonDecode(chunk);
+          if (parsed is Map) {
+            final id = parsed['conversationId'];
+            if (id is num) onConversation?.call(id.toInt());
+            if (parsed['error'] != null && !gotToken) return fallback();
+            token = (parsed['delta'] ?? parsed['content'] ?? parsed['token'] ?? '')
+                .toString();
+          }
+        } catch (_) {
+          // Fragment en texte brut.
+        }
+        if (token.isEmpty) continue;
+        gotToken = true;
+        full.write(token);
+        onText(full.toString());
+      }
+      if (!gotToken) return fallback();
+      return full.toString();
+    } on DioException catch (e) {
+      // Refus avant le flux : corps JSON à lire depuis le flux de réponse.
+      final status = e.response?.statusCode;
+      Object? data = e.response?.data;
+      if (data is ResponseBody) {
+        try {
+          data = jsonDecode(await utf8.decoder.bind(data.stream).join());
+        } catch (_) {
+          data = null;
+        }
+      }
+      final refusal = quotaRefusalMessage(status, data) ??
+          (status == 403 && data is Map ? data['message'] as String? : null);
+      if (refusal != null) return refusal;
+      if (gotToken) return full.toString();
+      return fallback();
+    } catch (_) {
+      if (gotToken) return full.toString();
+      return fallback();
     }
   }
 
