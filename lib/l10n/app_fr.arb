@@ -5314,5 +5314,29 @@
   "studentReportsNoData": "Aucun quiz terminé sur cette période. Vos résultats apparaîtront ici dès votre premier quiz.",
   "studentReportsLoadError": "Le rapport n’a pas pu être chargé.",
   "instGroupNoStudents": "Aucun élève inscrit dans l’établissement pour le moment. Vous pourrez en ajouter au groupe plus tard.",
-  "instGroupStudentsLoadError": "La liste des élèves n’a pas pu être chargée."
+  "instGroupStudentsLoadError": "La liste des élèves n’a pas pu être chargée.",
+  "teacherSessionsDay": "{weekday} {date}",
+  "@teacherSessionsDay": {
+    "placeholders": {
+      "weekday": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "teacherSessionsEmpty": "Aucune séance prévue dans les 14 prochains jours.",
+  "teacherSessionsLoadError": "Les séances n’ont pas pu être chargées.",
+  "teacherSessionsJoin": "Rejoindre",
+  "teacherSessionsEnrolled": "{count, plural, =0{Aucun inscrit} =1{1 inscrit} other{{count} inscrits}}",
+  "@teacherSessionsEnrolled": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "teacherSessionsCancelled": "Annulée",
+  "shellTabMore": "Plus"
 }

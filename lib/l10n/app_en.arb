@@ -2449,5 +2449,12 @@
   "studentReportsNoData": "No quiz completed in this period. Your results will show here after your first quiz.",
   "studentReportsLoadError": "The report could not be loaded.",
   "instGroupNoStudents": "No students enrolled in the institution yet. You can add them to the group later.",
-  "instGroupStudentsLoadError": "The student list could not be loaded."
+  "instGroupStudentsLoadError": "The student list could not be loaded.",
+  "teacherSessionsDay": "{weekday} {date}",
+  "teacherSessionsEmpty": "No session planned in the next 14 days.",
+  "teacherSessionsLoadError": "Sessions could not be loaded.",
+  "teacherSessionsJoin": "Join",
+  "teacherSessionsEnrolled": "{count, plural, =0{No one enrolled} =1{1 enrolled} other{{count} enrolled}}",
+  "teacherSessionsCancelled": "Cancelled",
+  "shellTabMore": "More"
 }

@@ -14803,6 +14803,48 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'La liste des élèves n’a pas pu être chargée.'**
   String get instGroupStudentsLoadError;
+
+  /// No description provided for @teacherSessionsDay.
+  ///
+  /// In fr, this message translates to:
+  /// **'{weekday} {date}'**
+  String teacherSessionsDay(String weekday, String date);
+
+  /// No description provided for @teacherSessionsEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune séance prévue dans les 14 prochains jours.'**
+  String get teacherSessionsEmpty;
+
+  /// No description provided for @teacherSessionsLoadError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les séances n’ont pas pu être chargées.'**
+  String get teacherSessionsLoadError;
+
+  /// No description provided for @teacherSessionsJoin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rejoindre'**
+  String get teacherSessionsJoin;
+
+  /// No description provided for @teacherSessionsEnrolled.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =0{Aucun inscrit} =1{1 inscrit} other{{count} inscrits}}'**
+  String teacherSessionsEnrolled(int count);
+
+  /// No description provided for @teacherSessionsCancelled.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annulée'**
+  String get teacherSessionsCancelled;
+
+  /// No description provided for @shellTabMore.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plus'**
+  String get shellTabMore;
 }
 
 class _AppLocalizationsDelegate

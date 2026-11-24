@@ -186,6 +186,23 @@ class TeacherService {
   /// champ texte libre (pas encore un vrai sélecteur date/heure côté écran) :
   /// on tente un parse ISO, sinon on programme demain à défaut plutôt que
   /// d'échouer silencieusement.
+  /// GET /sessions/mine — séances du professeur entre [from] et [to]
+  /// (calendrier du site). Une erreur remonte : l'écran affiche « réessayer »
+  /// au lieu d'une liste vide trompeuse.
+  Future<List<ApiTeachingSession>> getMySessions(
+      {DateTime? from, DateTime? to}) async {
+    final res = await _api.dio.get('/sessions/mine', queryParameters: {
+      if (from != null) 'from': from.toUtc().toIso8601String(),
+      if (to != null) 'to': to.toUtc().toIso8601String(),
+    });
+    final body = res.data;
+    final list = body is Map ? body['data'] as List? ?? const [] : body as List? ?? const [];
+    return [
+      for (final e in list)
+        if (e is Map) ApiTeachingSession.fromJson(Map<String, dynamic>.from(e)),
+    ]..sort((a, b) => a.start.compareTo(b.start));
+  }
+
   Future<bool> createSession({
     required String title,
     required String date,
@@ -478,4 +495,54 @@ class ApiContentStats {
         grossRevenue: (j['grossRevenue'] as num?)?.toDouble() ?? 0,
         netRevenue: (j['netRevenue'] as num?)?.toDouble(),
       );
+}
+
+/// Séance d'un professeur (TeachingSessionDto du serveur).
+class ApiTeachingSession {
+  final int id;
+  final String title;
+  final String? subject;
+  final String? level;
+  final DateTime start;
+  final DateTime end;
+  final int durationMinutes;
+  final String? externalLink;
+  final String status;
+  final int enrolledCount;
+
+  const ApiTeachingSession({
+    required this.id,
+    required this.title,
+    this.subject,
+    this.level,
+    required this.start,
+    required this.end,
+    required this.durationMinutes,
+    this.externalLink,
+    required this.status,
+    this.enrolledCount = 0,
+  });
+
+  factory ApiTeachingSession.fromJson(Map<String, dynamic> j) {
+    final start = DateTime.tryParse(j['startDate']?.toString() ?? '')?.toLocal() ??
+        DateTime.now();
+    final minutes = (j['durationMinutes'] as num?)?.toInt() ?? 60;
+    return ApiTeachingSession(
+      id: (j['id'] as num?)?.toInt() ?? 0,
+      title: j['title']?.toString() ?? '',
+      subject: j['subject'] as String?,
+      level: j['level'] as String?,
+      start: start,
+      end: DateTime.tryParse(j['endDate']?.toString() ?? '')?.toLocal() ??
+          start.add(Duration(minutes: minutes)),
+      durationMinutes: minutes,
+      externalLink: (j['externalLink'] as String?)?.trim().isEmpty ?? true
+          ? null
+          : (j['externalLink'] as String).trim(),
+      status: j['status']?.toString() ?? '',
+      enrolledCount: (j['enrolledCount'] as num?)?.toInt() ?? 0,
+    );
+  }
+
+  bool get isCancelled => status.toLowerCase() == 'cancelled';
 }

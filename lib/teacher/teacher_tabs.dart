@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/external_links.dart';
 import '../theme/win_motion.dart';
 import '../data/models.dart';
 import '../services/chatbot_service.dart';
@@ -762,68 +763,170 @@ class _TeacherStudentsTabState extends State<TeacherStudentsTab> {
 }
 
 /// ===================== SESSIONS =====================
-class TeacherSessionsTab extends StatelessWidget {
+/// Séances du professeur (cours en direct qu'il a planifiés), lues sur le
+/// serveur pour les 14 prochains jours, comme le calendrier du site. Avant :
+/// deux séances inventées (« 14:00 – 15:30 ») et des boutons sans action.
+class TeacherSessionsTab extends StatefulWidget {
   const TeacherSessionsTab({super.key});
+  @override
+  State<TeacherSessionsTab> createState() => _TeacherSessionsTabState();
+}
+
+class _TeacherSessionsTabState extends State<TeacherSessionsTab> {
+  List<ApiTeachingSession>? _sessions;
+  bool _error = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    setState(() {
+      _error = false;
+      _sessions = null;
+    });
+    final now = DateTime.now();
+    try {
+      final list = await TeacherService.instance.getMySessions(
+        // Depuis le début de la journée : une séance en cours reste visible.
+        from: DateTime(now.year, now.month, now.day),
+        to: now.add(const Duration(days: 14)),
+      );
+      if (mounted) setState(() => _sessions = list);
+    } catch (_) {
+      if (mounted) {
+        setState(() {
+          _sessions = const [];
+          _error = true;
+        });
+      }
+    }
+  }
+
+  Future<void> _plan() async {
+    await Navigator.push(
+        context, WinPageRoute(builder: (_) => const SessionCreateScreen()));
+    if (mounted) _load();
+  }
+
+  String _dayLabel(DateTime d) {
+    final now = DateTime.now();
+    final same = d.year == now.year && d.month == now.month && d.day == now.day;
+    final weekday = WinFormat.weekday(d.weekday);
+    final date = WinFormat.dayMonth(d);
+    return same
+        ? context.l10n.teacherSessionsToday(weekday, date)
+        : context.l10n.teacherSessionsDay(weekday, date);
+  }
+
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    final sessions = [
-      (WinColors.teal500, context.l10n.teacherSessionsDemo1, '14:00 – 15:30', true),
-      (WinColors.blue500, context.l10n.teacherSessionsDemo2, '16:30 – 17:30', false)
-    ];
-    final now = DateTime.now();
-    final dateLabel = context.l10n
-        .teacherSessionsToday(WinFormat.weekday(now.weekday), WinFormat.dayMonth(now));
-    return Column(children: [
-      Expanded(
-          child: ListView(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-              children: [
-            Text(dateLabel, style: WinType.titleS(s.onMuted)),
+    final l = context.l10n;
+    final sessions = _sessions;
+    final children = <Widget>[];
+    if (sessions == null) {
+      children.add(const Padding(
+        padding: EdgeInsets.only(top: 48),
+        child: Center(child: CircularProgressIndicator()),
+      ));
+    } else if (_error) {
+      children.addAll([
+        const SizedBox(height: 32),
+        Text(l.teacherSessionsLoadError,
+            textAlign: TextAlign.center, style: WinType.bodyM(s.onMuted)),
+        const SizedBox(height: 12),
+        WinButton(l.commonRetry, variant: WinButtonVariant.outline, onTap: _load),
+      ]);
+    } else if (sessions.isEmpty) {
+      children.addAll([
+        const SizedBox(height: 32),
+        Text(l.teacherSessionsEmpty,
+            textAlign: TextAlign.center, style: WinType.bodyM(s.onMuted)),
+      ]);
+    } else {
+      String? lastDay;
+      for (final se in sessions) {
+        final day = _dayLabel(se.start);
+        if (day != lastDay) {
+          if (lastDay != null) children.add(const SizedBox(height: 8));
+          children.addAll([
+            Text(day, style: WinType.titleS(s.onMuted)),
             const SizedBox(height: 12),
-            ...sessions.map((se) {
-              return Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: WinCard(
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                        Row(children: [
-                          Container(width: 4, height: 36, color: se.$1),
-                          const SizedBox(width: 10),
-                          Expanded(
-                              child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                Text(se.$2, style: WinType.titleM(s.onStrong)),
-                                Text(se.$3, style: WinType.labelM(s.onMuted))
-                              ])),
-                          if (se.$4)
-                            WinBadge(context.l10n.teacherSessionsSoon,
-                                color: BadgeColor.error),
-                        ]),
-                        const SizedBox(height: 12),
-                        WinButton(
-                            se.$4 ? context.l10n.studentSessionStart : context.l10n.teacherSessionsViewDetails,
-                            variant: se.$4
-                                ? WinButtonVariant.accent
-                                : WinButtonVariant.outline,
-                            block: true,
-                            small: true,
-                            icon: se.$4
-                                ? Icons.play_arrow_rounded
-                                : Icons.event_outlined),
-                      ])));
-            }),
-            const SizedBox(height: 8),
-            WinButton(context.l10n.teacherSessionsPlan,
-                variant: WinButtonVariant.outline,
+          ]);
+          lastDay = day;
+        }
+        children.add(_SessionCard(session: se));
+      }
+    }
+    return RefreshIndicator(
+      onRefresh: _load,
+      child: ListView(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+        children: [
+          ...children,
+          const SizedBox(height: 8),
+          WinButton(l.teacherSessionsPlan,
+              variant: WinButtonVariant.outline,
+              block: true,
+              icon: Icons.add,
+              onTap: _plan),
+        ],
+      ),
+    );
+  }
+}
+
+class _SessionCard extends StatelessWidget {
+  final ApiTeachingSession session;
+  const _SessionCard({required this.session});
+
+  @override
+  Widget build(BuildContext context) {
+    final s = WinTheme.of(context);
+    final l = context.l10n;
+    final se = session;
+    final now = DateTime.now();
+    // « Bientôt » : commence dans l'heure, ou déjà commencée et pas finie.
+    final soon = !se.isCancelled &&
+        se.start.difference(now).inMinutes <= 60 &&
+        se.end.isAfter(now);
+    final time = '${WinFormat.time(se.start)} – ${WinFormat.time(se.end)}';
+    final color = se.isCancelled ? s.onFaint : (soon ? WinColors.teal500 : WinColors.blue500);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: WinCard(
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Row(children: [
+            Container(width: 4, height: 40, color: color),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(se.title, style: WinType.titleM(s.onStrong)),
+                Text('$time · ${l.teacherSessionsEnrolled(se.enrolledCount)}',
+                    style: WinType.labelM(s.onMuted)),
+              ]),
+            ),
+            if (se.isCancelled)
+              WinBadge(l.teacherSessionsCancelled)
+            else if (soon)
+              WinBadge(l.teacherSessionsSoon, color: BadgeColor.error),
+          ]),
+          // Lien de la séance (Meet, Zoom…) : seule action réelle possible ici.
+          if (se.externalLink != null && !se.isCancelled) ...[
+            const SizedBox(height: 12),
+            WinButton(l.teacherSessionsJoin,
+                variant: soon ? WinButtonVariant.accent : WinButtonVariant.outline,
                 block: true,
-                icon: Icons.add,
-                onTap: () => Navigator.push(context,
-                    WinPageRoute(builder: (_) => const SessionCreateScreen()))),
-          ])),
-    ]);
+                small: true,
+                icon: Icons.videocam_outlined,
+                onTap: () => ExternalLinks.open(se.externalLink!)),
+          ],
+        ]),
+      ),
+    );
   }
 }
 

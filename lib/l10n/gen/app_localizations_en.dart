@@ -8595,4 +8595,36 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get instGroupStudentsLoadError =>
       'The student list could not be loaded.';
+
+  @override
+  String teacherSessionsDay(String weekday, String date) {
+    return '$weekday $date';
+  }
+
+  @override
+  String get teacherSessionsEmpty => 'No session planned in the next 14 days.';
+
+  @override
+  String get teacherSessionsLoadError => 'Sessions could not be loaded.';
+
+  @override
+  String get teacherSessionsJoin => 'Join';
+
+  @override
+  String teacherSessionsEnrolled(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count enrolled',
+      one: '1 enrolled',
+      zero: 'No one enrolled',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get teacherSessionsCancelled => 'Cancelled';
+
+  @override
+  String get shellTabMore => 'More';
 }

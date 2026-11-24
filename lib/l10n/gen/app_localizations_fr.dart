@@ -8668,4 +8668,38 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get instGroupStudentsLoadError =>
       'La liste des élèves n’a pas pu être chargée.';
+
+  @override
+  String teacherSessionsDay(String weekday, String date) {
+    return '$weekday $date';
+  }
+
+  @override
+  String get teacherSessionsEmpty =>
+      'Aucune séance prévue dans les 14 prochains jours.';
+
+  @override
+  String get teacherSessionsLoadError =>
+      'Les séances n’ont pas pu être chargées.';
+
+  @override
+  String get teacherSessionsJoin => 'Rejoindre';
+
+  @override
+  String teacherSessionsEnrolled(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count inscrits',
+      one: '1 inscrit',
+      zero: 'Aucun inscrit',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get teacherSessionsCancelled => 'Annulée';
+
+  @override
+  String get shellTabMore => 'Plus';
 }
