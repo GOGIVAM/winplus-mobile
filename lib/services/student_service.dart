@@ -22,6 +22,19 @@ class StudentService {
     return ApiStudentStats.fromJson(data);
   }
 
+  /// GET /student/reports?period= — rapport de progression calculé par le
+  /// serveur (quiz, sessions d'étude, téléchargements), comme le site.
+  /// [periodDays] : 7, 30, 90 ou 365.
+  Future<ApiStudentReport> getReport(int periodDays) async {
+    final res = await _api.dio
+        .get('/student/reports', queryParameters: {'period': periodDays});
+    final body = res.data;
+    final data = body is Map && body['data'] is Map
+        ? Map<String, dynamic>.from(body['data'] as Map)
+        : const <String, dynamic>{};
+    return ApiStudentReport.fromJson(data);
+  }
+
   /// GET /student/learning/continue — formations en cours, non terminées.
   Future<List<InProgressContent>> getContinueLearning() async {
     final res = await _api.dio.get('/student/learning/continue');
@@ -91,4 +104,68 @@ class ApiStudentStats {
             .toList(),
         totalDownloads: j['totalDownloads'] as int? ?? 0,
       );
+}
+
+/// Rapport de progression de l'élève (GET /student/reports). Les valeurs
+/// absentes (aucun quiz sur la période) restent nulles : l'écran affiche
+/// « — » au lieu d'un chiffre inventé.
+class ApiStudentReport {
+  final int periodDays;
+  final int? avgScore;
+  final int quizTotal;
+  final int? quizSuccessRate;
+  final double studyHours;
+  final int downloads;
+  final List<({String subject, int score, int quizzes})> subjectScores;
+  final List<({DateTime weekStart, int? score, int quizzes})> weeklyScores;
+  final String? bestSubject;
+  final String? weakestSubject;
+
+  const ApiStudentReport({
+    required this.periodDays,
+    this.avgScore,
+    this.quizTotal = 0,
+    this.quizSuccessRate,
+    this.studyHours = 0,
+    this.downloads = 0,
+    this.subjectScores = const [],
+    this.weeklyScores = const [],
+    this.bestSubject,
+    this.weakestSubject,
+  });
+
+  static int? _int(Object? v) => v is num ? v.round() : null;
+
+  factory ApiStudentReport.fromJson(Map<String, dynamic> j) => ApiStudentReport(
+        periodDays: _int(j['periodDays']) ?? 30,
+        avgScore: _int(j['avgScore']),
+        quizTotal: _int(j['quizTotal']) ?? 0,
+        quizSuccessRate: _int(j['quizSuccessRate']),
+        studyHours: (j['studyHours'] as num?)?.toDouble() ?? 0,
+        downloads: _int(j['downloads']) ?? 0,
+        subjectScores: [
+          for (final e in (j['subjectScores'] as List? ?? const []))
+            if (e is Map)
+              (
+                subject: e['subject']?.toString() ?? '',
+                score: _int(e['score']) ?? 0,
+                quizzes: _int(e['quizzes']) ?? 0,
+              ),
+        ],
+        weeklyScores: [
+          for (final e in (j['weeklyScores'] as List? ?? const []))
+            if (e is Map)
+              (
+                weekStart: DateTime.tryParse(e['weekStart']?.toString() ?? '') ??
+                    DateTime.now(),
+                score: _int(e['score']),
+                quizzes: _int(e['quizzes']) ?? 0,
+              ),
+        ],
+        bestSubject: j['bestSubject'] as String?,
+        weakestSubject: j['weakestSubject'] as String?,
+      );
+
+  /// Aucun quiz terminé sur la période.
+  bool get isEmpty => quizTotal == 0;
 }

@@ -8564,4 +8564,35 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get biometricToggleHint => 'Asked each time you open the app.';
+
+  @override
+  String studentReportsBest(String subject) {
+    return 'Best subject: $subject';
+  }
+
+  @override
+  String studentReportsWeakest(String subject) {
+    return 'To work on: $subject';
+  }
+
+  @override
+  String get studentReportsStudyHours => 'Study hours';
+
+  @override
+  String get studentReportsDownloads => 'Downloads';
+
+  @override
+  String get studentReportsNoData =>
+      'No quiz completed in this period. Your results will show here after your first quiz.';
+
+  @override
+  String get studentReportsLoadError => 'The report could not be loaded.';
+
+  @override
+  String get instGroupNoStudents =>
+      'No students enrolled in the institution yet. You can add them to the group later.';
+
+  @override
+  String get instGroupStudentsLoadError =>
+      'The student list could not be loaded.';
 }

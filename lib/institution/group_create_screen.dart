@@ -26,20 +26,51 @@ class _GroupCreateScreenState extends State<GroupCreateScreen> {
     'Concours'
   ];
 
-  static const _mockStudents = [
-    'Ahmed Nkono',
-    'Sonia Kombe',
-    'Armand Talla',
-    'Fadel Moussa',
-    'Carole Biya',
-    'Rodrigue Nkeng',
-    'Martine Abanda',
-    'Boris Nguyen',
-    'Sylvie Meka',
-    'Jean-Paul Ekwalla',
-    'Hortense Ebang',
-    'Blanche Owona',
-  ];
+  // Élèves réels de l'établissement (annuaire du serveur). Avant : douze
+  // noms inventés, jamais envoyés au serveur, alors que la confirmation
+  // annonçait « N élèves ajoutés ».
+  List<ApiInstitutionStudent>? _students;
+  bool _studentsError = false;
+  String _query = '';
+  int _added = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadStudents();
+  }
+
+  Future<void> _loadStudents() async {
+    setState(() {
+      _students = null;
+      _studentsError = false;
+    });
+    try {
+      final id = await InstitutionService.instance.getMyInstitutionId();
+      if (id == null) throw StateError('etablissement introuvable');
+      final list = await InstitutionService.instance
+          .getStudentDirectory(id, pageSize: 200);
+      if (mounted) setState(() => _students = list);
+    } catch (_) {
+      if (mounted) {
+        setState(() {
+          _students = const [];
+          _studentsError = true;
+        });
+      }
+    }
+  }
+
+  List<ApiInstitutionStudent> get _visible {
+    final q = _query.trim().toLowerCase();
+    final all = _students ?? const <ApiInstitutionStudent>[];
+    if (q.isEmpty) return all;
+    return all
+        .where((st) => '${st.firstName} ${st.lastName} ${st.email}'
+            .toLowerCase()
+            .contains(q))
+        .toList();
+  }
 
   String _levelLabel(String lv) => switch (lv) {
         'Licence' => context.l10n.instGroupLevelLicence,
@@ -47,18 +78,32 @@ class _GroupCreateScreenState extends State<GroupCreateScreen> {
         _ => lv,
       };
 
-  final _selected = <String>{};
+  final _selected = <int>{};
 
   Future<void> _submit() async {
     if (_nameCtrl.text.trim().isEmpty || _level == null) return;
     setState(() => _loading = true);
-    final ok = await InstitutionService.instance.createGroup(
+    final groupId = await InstitutionService.instance.createGroupWithId(
       name: _nameCtrl.text.trim(),
       level: _level!,
     );
     if (!mounted) return;
-    if (ok) {
+    if (groupId != null) {
+      // Les élèves choisis sont réellement ajoutés, un par un ; la
+      // confirmation annonce le nombre ajouté, pas le nombre coché.
+      var added = 0;
+      if (groupId > 0) {
+        for (final st in (_students ?? const <ApiInstitutionStudent>[])
+            .where((st) => _selected.contains(st.id))) {
+          if (await InstitutionService.instance
+              .addMemberToGroup(groupId, st.email)) {
+            added++;
+          }
+        }
+      }
+      if (!mounted) return;
       setState(() {
+        _added = added;
         _loading = false;
         _done = true;
       });
@@ -94,7 +139,7 @@ class _GroupCreateScreenState extends State<GroupCreateScreen> {
                 Text(context.l10n.instGroupCreated, style: WinType.displayS(s.onStrong)),
                 const SizedBox(height: 8),
                 Text(
-                  context.l10n.instGroupCreatedSummary(_nameCtrl.text.trim(), _selected.length),
+                  context.l10n.instGroupCreatedSummary(_nameCtrl.text.trim(), _added),
                   style: WinType.bodyM(s.onMuted),
                   textAlign: TextAlign.center,
                 ),
@@ -162,46 +207,75 @@ class _GroupCreateScreenState extends State<GroupCreateScreen> {
                     WinTextField(
                       hint: context.l10n.instGroupSearchStudent,
                       icon: Icons.search,
+                      onChanged: (v) => setState(() => _query = v),
                     ),
                     const SizedBox(height: 12),
-                    ...(_mockStudents.map((name) {
-                      final sel = _selected.contains(name);
-                      return GestureDetector(
-                        onTap: () => setState(() {
-                          if (sel) {
-                            _selected.remove(name);
-                          } else {
-                            _selected.add(name);
-                          }
-                        }),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 14, vertical: 10),
-                          margin: const EdgeInsets.only(bottom: 6),
-                          decoration: BoxDecoration(
-                            color: sel ? s.primaryContainer : s.cardBg,
-                            borderRadius: BorderRadius.circular(WinRadii.md),
-                            border: Border.all(
-                              color: sel ? s.primary : s.cardBorder,
-                              width: sel ? 1.5 : 1,
-                            ),
-                          ),
-                          child: Row(children: [
-                            WinAvatar(name, size: 36),
-                            const SizedBox(width: 12),
-                            Expanded(
-                                child: Text(name,
-                                    style: WinType.titleM(s.onStrong))),
-                            if (sel)
-                              Icon(Icons.check_circle,
-                                  size: 20, color: s.primary)
-                            else
-                              Icon(Icons.radio_button_unchecked,
-                                  size: 20, color: s.onFaint),
-                          ]),
+                    if (_students == null)
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 24),
+                        child: Center(child: CircularProgressIndicator()),
+                      )
+                    else if (_studentsError)
+                      Row(children: [
+                        Expanded(
+                          child: Text(context.l10n.instGroupStudentsLoadError,
+                              style: WinType.bodyM(s.onMuted)),
                         ),
-                      );
-                    })),
+                        TextButton(
+                            onPressed: _loadStudents,
+                            child: Text(context.l10n.commonRetry)),
+                      ])
+                    else if (_students!.isEmpty)
+                      Text(context.l10n.instGroupNoStudents,
+                          style: WinType.bodyM(s.onMuted))
+                    else
+                      ..._visible.map((st) {
+                        final name = '${st.firstName} ${st.lastName}'.trim();
+                        final sel = _selected.contains(st.id);
+                        return GestureDetector(
+                          onTap: () => setState(() {
+                            if (sel) {
+                              _selected.remove(st.id);
+                            } else {
+                              _selected.add(st.id);
+                            }
+                          }),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 14, vertical: 10),
+                            margin: const EdgeInsets.only(bottom: 6),
+                            decoration: BoxDecoration(
+                              color: sel ? s.primaryContainer : s.cardBg,
+                              borderRadius: BorderRadius.circular(WinRadii.md),
+                              border: Border.all(
+                                color: sel ? s.primary : s.cardBorder,
+                                width: sel ? 1.5 : 1,
+                              ),
+                            ),
+                            child: Row(children: [
+                              WinAvatar(name.isEmpty ? st.email : name, size: 36),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(name.isEmpty ? st.email : name,
+                                          style: WinType.titleM(s.onStrong)),
+                                      if (st.level != null && st.level!.isNotEmpty)
+                                        Text(st.level!,
+                                            style: WinType.bodyS(s.onMuted)),
+                                    ]),
+                              ),
+                              if (sel)
+                                Icon(Icons.check_circle,
+                                    size: 20, color: s.primary)
+                              else
+                                Icon(Icons.radio_button_unchecked,
+                                    size: 20, color: s.onFaint),
+                            ]),
+                          ),
+                        );
+                      }),
                     const SizedBox(height: 28),
                     WinButton(context.l10n.instGroupCreateSubmit,
                         block: true,

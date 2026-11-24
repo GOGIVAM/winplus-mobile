@@ -14755,6 +14755,54 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Demandé à chaque ouverture de l’application.'**
   String get biometricToggleHint;
+
+  /// No description provided for @studentReportsBest.
+  ///
+  /// In fr, this message translates to:
+  /// **'Meilleure matière : {subject}'**
+  String studentReportsBest(String subject);
+
+  /// No description provided for @studentReportsWeakest.
+  ///
+  /// In fr, this message translates to:
+  /// **'À travailler : {subject}'**
+  String studentReportsWeakest(String subject);
+
+  /// No description provided for @studentReportsStudyHours.
+  ///
+  /// In fr, this message translates to:
+  /// **'Heures d’étude'**
+  String get studentReportsStudyHours;
+
+  /// No description provided for @studentReportsDownloads.
+  ///
+  /// In fr, this message translates to:
+  /// **'Téléchargements'**
+  String get studentReportsDownloads;
+
+  /// No description provided for @studentReportsNoData.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun quiz terminé sur cette période. Vos résultats apparaîtront ici dès votre premier quiz.'**
+  String get studentReportsNoData;
+
+  /// No description provided for @studentReportsLoadError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le rapport n’a pas pu être chargé.'**
+  String get studentReportsLoadError;
+
+  /// No description provided for @instGroupNoStudents.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun élève inscrit dans l’établissement pour le moment. Vous pourrez en ajouter au groupe plus tard.'**
+  String get instGroupNoStudents;
+
+  /// No description provided for @instGroupStudentsLoadError.
+  ///
+  /// In fr, this message translates to:
+  /// **'La liste des élèves n’a pas pu être chargée.'**
+  String get instGroupStudentsLoadError;
 }
 
 class _AppLocalizationsDelegate

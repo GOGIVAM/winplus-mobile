@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:winplus/institution/action_plan_screen.dart';
@@ -230,46 +231,98 @@ void main() {
       await pomper(tester);
     }
 
-    testWidgets('formulaire : champ nom, niveaux et 12 eleves a cocher', (tester) async {
+    void annuaire({List<Map<String, dynamic>>? eleves, int statut = 200}) {
+      faux.repond('GET', '/institution/me', {'data': {'id': 3, 'name': 'Lycee'}, 'success': true});
+      faux.repond('GET', '/institution/3/students', {
+        'items': eleves ??
+            [
+              {'id': 11, 'firstName': 'Ada', 'lastName': 'Eto', 'email': 'ada@x.cm', 'level': 'Tle C', 'isActive': true},
+              {'id': 12, 'firstName': 'Bruno', 'lastName': 'Mba', 'email': 'bruno@x.cm', 'isActive': true},
+            ],
+      }, statut: statut);
+    }
+
+    List<RequestOptions> envois() => faux.requetes.where((o) => o.method != 'GET').toList();
+
+    testWidgets('les eleves proposes sont ceux de l\'etablissement (annuaire du serveur)', (tester) async {
+      annuaire();
       await monterEcran(tester, const GroupCreateScreen());
       expect(find.text(L10n.current.instGroupNameLabel), findsOneWidget);
       expect(find.text('BEPC'), findsOneWidget);
-      expect(find.text(L10n.current.instGroupSelected(0)), findsOneWidget);
+      expect(find.text('Ada Eto'), findsOneWidget);
+      expect(find.text('Bruno Mba'), findsOneWidget);
+      expect(find.text('Ahmed Nkono'), findsNothing, reason: 'plus aucun nom invente');
+      expect(faux.recues('GET', '/institution/3/students').single.queryParameters['pageSize'], 200);
     });
 
     testWidgets('sans nom ou sans niveau : aucun envoi', (tester) async {
+      annuaire();
       await monterEcran(tester, const GroupCreateScreen());
       await _toucher(tester, _bouton(L10n.current.instGroupCreateSubmit));
-      expect(faux.requetes, isEmpty);
+      expect(envois(), isEmpty);
       await nommer(tester, 'TLE C');
       await _toucher(tester, _bouton(L10n.current.instGroupCreateSubmit));
-      expect(faux.requetes, isEmpty, reason: 'le niveau manque encore');
+      expect(envois(), isEmpty, reason: 'le niveau manque encore');
     });
 
-    testWidgets('cocher des eleves met a jour le compteur', (tester) async {
+    testWidgets('cocher des eleves met a jour le compteur ; la recherche filtre', (tester) async {
+      annuaire();
       await monterEcran(tester, const GroupCreateScreen());
-      await tester.ensureVisible(find.text('Ahmed Nkono'));
-      await tester.tap(find.text('Ahmed Nkono'));
+      await tester.ensureVisible(find.text('Ada Eto'));
+      await tester.tap(find.text('Ada Eto'));
       await pomper(tester);
       expect(find.text(L10n.current.instGroupSelected(1)), findsOneWidget);
-      await tester.tap(find.text('Ahmed Nkono'));
+      await tester.enterText(find.byType(TextField).last, 'bruno');
       await pomper(tester);
-      expect(find.text(L10n.current.instGroupSelected(0)), findsOneWidget);
+      expect(find.text('Ada Eto'), findsNothing);
+      expect(find.text('Bruno Mba'), findsOneWidget);
     });
 
-    testWidgets('creation reussie : confirmation avec le nom du groupe', (tester) async {
-      faux.repond('POST', '/institution/groups', {});
+    testWidgets('creation : le groupe est cree puis les eleves coches y sont reellement ajoutes', (tester) async {
+      annuaire();
+      faux.repond('POST', '/institution/groups', {'id': 9, 'joinCode': 'ABC'});
+      faux.repond('POST', '/institution/groups/9/members', {});
       await monterEcran(tester, const GroupCreateScreen());
       await nommer(tester, '  TLE C 2027 ');
       await tester.tap(find.text('BAC'));
       await pomper(tester);
+      await tester.ensureVisible(find.text('Ada Eto'));
+      await tester.tap(find.text('Ada Eto'));
+      await pomper(tester);
       await _toucher(tester, _bouton(L10n.current.instGroupCreateSubmit));
       expect(faux.recues('POST', '/institution/groups').single.data, {'name': 'TLE C 2027', 'level': 'BAC'});
+      expect(faux.recues('POST', '/institution/groups/9/members').single.data, {'email': 'ada@x.cm'});
       expect(find.text(L10n.current.instGroupCreated), findsOneWidget);
-      expect(find.text(L10n.current.instGroupCreatedSummary('TLE C 2027', 0)), findsOneWidget);
+      expect(find.text(L10n.current.instGroupCreatedSummary('TLE C 2027', 1)), findsOneWidget);
+    });
+
+    testWidgets('un ajout refuse n\'est pas compte comme ajoute', (tester) async {
+      annuaire();
+      faux.repond('POST', '/institution/groups', {'id': 9});
+      faux.repond('POST', '/institution/groups/9/members', {'error': 'deja membre'}, statut: 409);
+      await monterEcran(tester, const GroupCreateScreen());
+      await nommer(tester, 'TLE C');
+      await tester.tap(find.text('BAC'));
+      await pomper(tester);
+      await tester.ensureVisible(find.text('Ada Eto'));
+      await tester.tap(find.text('Ada Eto'));
+      await pomper(tester);
+      await _toucher(tester, _bouton(L10n.current.instGroupCreateSubmit));
+      expect(find.text(L10n.current.instGroupCreatedSummary('TLE C', 0)), findsOneWidget);
+    });
+
+    testWidgets('annuaire vide ou en erreur : message, pas de liste inventee', (tester) async {
+      annuaire(eleves: []);
+      await monterEcran(tester, const GroupCreateScreen());
+      expect(find.text(L10n.current.instGroupNoStudents), findsOneWidget);
+      await monter(tester, const SizedBox());
+      annuaire(statut: 500);
+      await monterEcran(tester, const GroupCreateScreen());
+      expect(find.text(L10n.current.instGroupStudentsLoadError), findsOneWidget);
     });
 
     testWidgets('echec serveur : message d\'erreur et formulaire conserve', (tester) async {
+      annuaire();
       faux.repond('POST', '/institution/groups', {}, statut: 500);
       await monterEcran(tester, const GroupCreateScreen());
       await nommer(tester, 'TLE C');

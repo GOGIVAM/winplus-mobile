@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import '../l10n/l10n.dart';
+import '../services/student_service.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 
+/// « Mes rapports » : progression réelle de l'élève, calculée par le serveur
+/// (GET /student/reports) à partir de ses quiz, sessions d'étude et
+/// téléchargements, comme la page du site. Avant, tout l'écran était fait de
+/// chiffres fixes (scores par matière, progression, 47 quiz, 74 %) et d'une
+/// restriction de plan inventée.
 class StudentReportsScreen extends StatefulWidget {
   const StudentReportsScreen({super.key});
   @override
@@ -12,36 +18,54 @@ class StudentReportsScreen extends StatefulWidget {
 }
 
 class _StudentReportsScreenState extends State<StudentReportsScreen> {
-  String _period = '7 jours';
-  static const _periods = ['7 jours', '30 jours', '90 jours', '1 an'];
+  /// Périodes du site, en jours ; 30 par défaut.
+  static const _periods = [7, 30, 90, 365];
+  int _period = 30;
 
-  static const _subjectScores = {
-    'Maths': 84,
-    'Physique': 71,
-    'Chimie': 52,
-    'Français': 79,
-    'SVT': 66,
-  };
+  ApiStudentReport? _report;
+  bool _error = false;
+  bool _loading = true;
 
-  static const _weeklyScores = [65, 70, 72, 69, 74, 76, 78];
-  static const _quizTotal = 47;
-  static const _quizSuccessRate = 74;
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
 
-  // Libellés affichés ; les valeurs internes restent celles d'origine.
-  String _periodLabel(String p) => switch (p) {
-        '7 jours' => context.l10n.studentReportsPeriod7,
-        '30 jours' => context.l10n.studentReportsPeriod30,
-        '90 jours' => context.l10n.studentReportsPeriod90,
-        '1 an' => context.l10n.studentHistPeriod1y,
-        _ => p,
-      };
+  Future<void> _load() async {
+    setState(() {
+      _loading = true;
+      _error = false;
+    });
+    try {
+      final r = await StudentService.instance.getReport(_period);
+      if (mounted) {
+        setState(() {
+          _report = r;
+          _loading = false;
+        });
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(() {
+          _error = true;
+          _loading = false;
+        });
+      }
+    }
+  }
 
-  String _subjectLabel(String k) => switch (k) {
-        'Maths' => context.l10n.dataSubjectMathShort,
-        'Physique' => context.l10n.dataSubjectPhysics,
-        'Chimie' => context.l10n.dataSubjectChemistry,
-        'Français' => context.l10n.dataSubjectFrench,
-        _ => k,
+  void _select(int days) {
+    if (days == _period) return;
+    setState(() => _period = days);
+    _load();
+  }
+
+  String _periodLabel(int days) => switch (days) {
+        7 => context.l10n.studentReportsPeriod7,
+        30 => context.l10n.studentReportsPeriod30,
+        90 => context.l10n.studentReportsPeriod90,
+        _ => context.l10n.studentHistPeriod1y,
       };
 
   Color _barColor(int score) {
@@ -50,21 +74,11 @@ class _StudentReportsScreenState extends State<StudentReportsScreen> {
     return WinColors.error;
   }
 
-  int get _avgScore {
-    final vals = _subjectScores.values;
-    return vals.fold(0, (a, b) => a + b) ~/ vals.length;
-  }
-
-  List<MapEntry<String, int>> get _sortedScores {
-    final entries = _subjectScores.entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
-    return entries;
-  }
-
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    final maxWeekly = _weeklyScores.reduce((a, b) => a > b ? a : b);
+    final l = context.l10n;
+    final r = _report;
 
     return Scaffold(
       backgroundColor: s.bg,
@@ -75,186 +89,227 @@ class _StudentReportsScreenState extends State<StudentReportsScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(context.l10n.studentReportsTitle, style: WinType.headlineS(s.onStrong)),
+        title: Text(l.studentReportsTitle, style: WinType.headlineS(s.onStrong)),
       ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
-        children: [
-          // 1. Chips période
-          SizedBox(
-            height: 36,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: _periods
-                  .map((p) => Padding(
-                        padding: const EdgeInsets.only(right: 8),
-                        child: WinChip(
-                          _periodLabel(p),
-                          active: _period == p,
-                          onTap: () => setState(() => _period = p),
-                        ),
-                      ))
-                  .toList(),
-            ),
-          ),
-          if (_period != '7 jours') ...[
-            const SizedBox(height: 10),
-            Row(children: [
-              Icon(Icons.lock_outline, size: 14, color: WinColors.warn),
-              const SizedBox(width: 6),
-              Expanded(
-                child: Text(context.l10n.studentReportsPlanRequired,
-                    style: WinType.labelM(WinColors.warn)),
-              ),
-            ]),
-          ],
-          const SizedBox(height: 20),
-
-          // 2. Card score moyen
-          WinCard(
-            padding: const EdgeInsets.all(20),
-            child: Column(children: [
-              Text(
-                '$_avgScore%',
-                style: WinType.archivo(size: 48, color: _barColor(_avgScore)),
-              ),
-              const SizedBox(height: 4),
-              Text(context.l10n.studentReportsAvgScore, style: WinType.labelM(s.onMuted)),
-            ]),
-          ),
-          const SizedBox(height: 24),
-
-          // 3. Score par matière
-          WinSectionHeader(context.l10n.studentReportsBySubject),
-          ..._sortedScores.map((e) => Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: Row(children: [
-                  SizedBox(
-                    width: 72,
-                    child: Text(_subjectLabel(e.key),
-                        style: WinType.bodyM(s.onStrong)
-                            .copyWith(fontWeight: FontWeight.w600)),
-                  ),
-                  Expanded(
-                    child: WinProgressBar(
-                      e.value.toDouble(),
-                      color: _barColor(e.value),
+      body: RefreshIndicator(
+        onRefresh: _load,
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+          children: [
+            // 1. Période
+            SizedBox(
+              height: 36,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: [
+                  for (final p in _periods)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: WinChip(
+                        _periodLabel(p),
+                        active: _period == p,
+                        onTap: () => _select(p),
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 8),
-                  SizedBox(
-                    width: 40,
-                    child: Text('${e.value}%',
-                        textAlign: TextAlign.right,
-                        style: WinType.labelM(s.onMuted)),
-                  ),
-                ]),
-              )),
-          const SizedBox(height: 24),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            if (_loading && r == null)
+              const Padding(
+                padding: EdgeInsets.only(top: 48),
+                child: Center(child: CircularProgressIndicator()),
+              )
+            else if (_error && r == null)
+              Column(children: [
+                const SizedBox(height: 32),
+                Text(l.studentReportsLoadError,
+                    textAlign: TextAlign.center,
+                    style: WinType.bodyM(s.onMuted)),
+                const SizedBox(height: 12),
+                WinButton(l.commonRetry,
+                    variant: WinButtonVariant.outline, onTap: _load),
+              ])
+            else if (r != null)
+              ..._content(r, s, l),
+          ],
+        ),
+      ),
+    );
+  }
 
-          // 4. Progression hebdomadaire
-          WinSectionHeader(context.l10n.studentReportsWeekly),
-          SizedBox(
-            height: 110,
+  List<Widget> _content(ApiStudentReport r, WinScheme s, AppLocalizations l) {
+    final weeklyMax = r.weeklyScores
+        .map((w) => w.score ?? 0)
+        .fold<int>(1, (a, b) => a > b ? a : b);
+    return [
+      // 2. Score moyen
+      WinCard(
+        padding: const EdgeInsets.all(20),
+        child: Column(children: [
+          Text(
+            r.avgScore == null ? '—' : '${r.avgScore}%',
+            style: WinType.archivo(
+                size: 48,
+                color: r.avgScore == null ? s.onMuted : _barColor(r.avgScore!)),
+          ),
+          const SizedBox(height: 4),
+          Text(l.studentReportsAvgScore, style: WinType.labelM(s.onMuted)),
+        ]),
+      ),
+      if (r.isEmpty) ...[
+        const SizedBox(height: 16),
+        Text(l.studentReportsNoData,
+            textAlign: TextAlign.center, style: WinType.bodyM(s.onMuted)),
+      ],
+      const SizedBox(height: 24),
+
+      // 3. Score par matière (seulement les matières réellement travaillées)
+      if (r.subjectScores.isNotEmpty) ...[
+        WinSectionHeader(l.studentReportsBySubject),
+        for (final e in r.subjectScores)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: Row(children: [
+              SizedBox(
+                width: 96,
+                child: Text(e.subject,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: WinType.bodyM(s.onStrong)
+                        .copyWith(fontWeight: FontWeight.w600)),
+              ),
+              Expanded(
+                child: WinProgressBar(e.score.toDouble(),
+                    color: _barColor(e.score)),
+              ),
+              const SizedBox(width: 8),
+              SizedBox(
+                width: 40,
+                child: Text('${e.score}%',
+                    textAlign: TextAlign.right,
+                    style: WinType.labelM(s.onMuted)),
+              ),
+            ]),
+          ),
+        const SizedBox(height: 24),
+      ],
+
+      // 4. Progression hebdomadaire (semaines sans quiz : barre vide, « — »)
+      if (r.weeklyScores.isNotEmpty && !r.isEmpty) ...[
+        WinSectionHeader(l.studentReportsWeekly),
+        SizedBox(
+          height: 120,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            reverse: true,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
-              children: List.generate(_weeklyScores.length, (i) {
-                final score = _weeklyScores[i];
-                final barH = (score / maxWeekly) * 80;
-                return Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 3),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text('$score', style: WinType.labelS(s.onFaint)),
-                        const SizedBox(height: 2),
-                        // La barre cède la place aux libellés (grands
-                        // caractères) au lieu de déborder du graphique.
-                        Flexible(
-                          child: Container(
-                            height: barH,
-                            decoration: BoxDecoration(
-                              color: _barColor(score),
-                              borderRadius: BorderRadius.circular(WinRadii.full),
+              children: [
+                for (final w in r.weeklyScores)
+                  SizedBox(
+                    width: 44,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 3),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(w.score == null ? '—' : '${w.score}',
+                              style: WinType.labelS(s.onFaint)),
+                          const SizedBox(height: 2),
+                          Flexible(
+                            child: Container(
+                              height: ((w.score ?? 0) / weeklyMax) * 72,
+                              decoration: BoxDecoration(
+                                color: w.score == null
+                                    ? s.outline
+                                    : _barColor(w.score!),
+                                borderRadius:
+                                    BorderRadius.circular(WinRadii.full),
+                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(context.l10n.studentReportsWeekShort(i + 1), style: WinType.labelS(s.onMuted)),
-                      ],
+                          const SizedBox(height: 4),
+                          Text(WinFormat.dayMonthShort(w.weekStart.toLocal()),
+                              maxLines: 1,
+                              overflow: TextOverflow.clip,
+                              style: WinType.labelS(s.onMuted)),
+                        ],
+                      ),
                     ),
                   ),
-                );
-              }),
+              ],
             ),
           ),
-          const SizedBox(height: 24),
+        ),
+        const SizedBox(height: 24),
+      ],
 
-          // 5. Quiz
-          WinSectionHeader(context.l10n.studentReportsQuiz),
-          Row(children: [
-            Expanded(
-              child: WinCard(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('$_quizTotal',
-                          style: WinType.archivo(size: 28, color: s.onStrong)),
-                      const SizedBox(height: 4),
-                      Text(context.l10n.studentReportsQuizDone, style: WinType.labelM(s.onMuted)),
-                    ]),
-              ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: WinCard(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('$_quizSuccessRate%',
-                          style: WinType.archivo(
-                              size: 28, color: WinColors.success)),
-                      const SizedBox(height: 4),
-                      Text(context.l10n.studentReportsSuccessRate,
-                          style: WinType.labelM(s.onMuted)),
-                    ]),
-              ),
-            ),
-          ]),
-          const SizedBox(height: 12),
-          WinCard(
-            padding: const EdgeInsets.all(14),
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      // 5. Quiz, étude et téléchargements
+      WinSectionHeader(l.studentReportsQuiz),
+      Row(children: [
+        Expanded(child: _figure(s, '${r.quizTotal}', l.studentReportsQuizDone)),
+        const SizedBox(width: 10),
+        Expanded(
+          child: _figure(
+            s,
+            r.quizSuccessRate == null ? '—' : '${r.quizSuccessRate}%',
+            l.studentReportsSuccessRate,
+            color: r.quizSuccessRate == null ? null : WinColors.success,
+          ),
+        ),
+      ]),
+      const SizedBox(height: 10),
+      Row(children: [
+        Expanded(
+            child: _figure(s, WinFormat.number(r.studyHours.round()),
+                l.studentReportsStudyHours)),
+        const SizedBox(width: 10),
+        Expanded(child: _figure(s, '${r.downloads}', l.studentReportsDownloads)),
+      ]),
+      if (r.bestSubject != null || r.weakestSubject != null) ...[
+        const SizedBox(height: 12),
+        WinCard(
+          padding: const EdgeInsets.all(14),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            if (r.bestSubject != null)
               Row(children: [
                 const Icon(Icons.emoji_events, size: 16, color: WinColors.gold),
                 const SizedBox(width: 6),
                 Expanded(
-                  child: Text(context.l10n.studentReportsBestSubject,
+                  child: Text(l.studentReportsBest(r.bestSubject!),
                       style: WinType.bodyM(s.onStrong)
                           .copyWith(fontWeight: FontWeight.w600)),
                 ),
               ]),
+            // Une seule matière travaillée : elle n'est pas aussi « à
+            // travailler ».
+            if (r.weakestSubject != null &&
+                r.weakestSubject != r.bestSubject) ...[
               const SizedBox(height: 6),
               Row(children: [
                 const Icon(Icons.warning_amber_rounded,
                     size: 16, color: WinColors.warn),
                 const SizedBox(width: 6),
                 Expanded(
-                    child: Text(context.l10n.studentReportsToImprove,
+                    child: Text(l.studentReportsWeakest(r.weakestSubject!),
                         style: WinType.bodyM(s.onMuted))),
               ]),
-            ]),
-          ),
-          // Lot 10.6 : plus de bouton « Exporter PDF » : aucun export de
-          // rapport n'existe côté serveur (ni sur le web), le bouton
-          // n'affichait qu'un message d'offre.
-          const SizedBox(height: 8),
-        ],
-      ),
-    );
+            ],
+          ]),
+        ),
+      ],
+      const SizedBox(height: 8),
+    ];
   }
+
+  Widget _figure(WinScheme s, String value, String label, {Color? color}) =>
+      WinCard(
+        padding: const EdgeInsets.all(16),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(value, style: WinType.archivo(size: 28, color: color ?? s.onStrong)),
+          const SizedBox(height: 4),
+          Text(label, style: WinType.labelM(s.onMuted)),
+        ]),
+      );
 }

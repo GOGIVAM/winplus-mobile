@@ -11,41 +11,80 @@ import '../../helpers/faux_reseau.dart';
 void main() {
   late FauxReseau faux;
 
+  setUpAll(initialiserDates);
   setUp(() => faux = preparerEnvironnement());
 
   group('StudentReportsScreen', () {
-    testWidgets('score moyen calcule sur les cinq matieres (84, 71, 52, 79, 66 = 70 %)', (tester) async {
-      await monterEcran(tester, const StudentReportsScreen());
-      expect(find.text('70%'), findsOneWidget);
-      expect(find.text(L10n.current.studentReportsAvgScore), findsOneWidget);
-      expect(find.text('84%'), findsOneWidget);
-      expect(find.text('52%'), findsOneWidget);
+    Map<String, dynamic> rapport({int period = 30, bool vide = false}) => {
+          'data': vide
+              ? {'periodDays': period, 'avgScore': null, 'quizTotal': 0, 'quizSuccessRate': null, 'studyHours': 0, 'downloads': 0, 'subjectScores': [], 'weeklyScores': [], 'bestSubject': null, 'weakestSubject': null}
+              : {
+                  'periodDays': period,
+                  'avgScore': 68,
+                  'quizTotal': 12,
+                  'quizSuccessRate': 75,
+                  'studyHours': 6.4,
+                  'downloads': 3,
+                  'subjectScores': [
+                    {'subject': 'Mathematiques', 'score': 82, 'quizzes': 7},
+                    {'subject': 'Chimie', 'score': 49, 'quizzes': 5},
+                  ],
+                  'weeklyScores': [
+                    {'weekStart': '2026-11-03T00:00:00Z', 'score': null, 'quizzes': 0},
+                    {'weekStart': '2026-11-10T00:00:00Z', 'score': 61, 'quizzes': 4},
+                    {'weekStart': '2026-11-17T00:00:00Z', 'score': 72, 'quizzes': 8},
+                  ],
+                  'bestSubject': 'Mathematiques',
+                  'weakestSubject': 'Chimie',
+                },
+          'success': true,
+        };
+
+    testWidgets('chiffres du serveur : moyenne, matieres, quiz, etude, telechargements', (tester) async {
+      faux.sur('GET', '/student/reports', (o) => FauxReponse(rapport(period: o.queryParameters['period'] as int)));
+      telephone(tester);
+      tester.view.physicalSize = const Size(800, 3200);
+      await monter(tester, ecran(const StudentReportsScreen()));
+      await reseau(tester);
+      final l = L10n.current;
+      expect(faux.recues('GET', '/student/reports').single.queryParameters, {'period': 30});
+      expect(find.text('68%'), findsOneWidget);
+      expect(find.text('Mathematiques'), findsOneWidget);
+      expect(find.text('82%'), findsOneWidget);
+      expect(find.text('12'), findsOneWidget);
+      expect(find.text('75%'), findsOneWidget);
+      expect(find.text('6'), findsOneWidget, reason: 'heures d\'etude arrondies');
+      expect(find.text(l.studentReportsBest('Mathematiques')), findsOneWidget);
+      expect(find.text(l.studentReportsWeakest('Chimie')), findsOneWidget);
+      expect(find.text('—'), findsOneWidget, reason: 'semaine sans quiz');
+      expect(find.text(l.studentReportsPlanRequired), findsNothing, reason: 'aucune restriction inventee');
     });
 
-    testWidgets('matieres triees de la meilleure a la plus faible', (tester) async {
+    testWidgets('changer de periode relit le rapport du serveur', (tester) async {
+      faux.sur('GET', '/student/reports', (o) => FauxReponse(rapport(period: o.queryParameters['period'] as int)));
       await monterEcran(tester, const StudentReportsScreen());
-      final maths = tester.getTopLeft(find.text(L10n.current.dataSubjectMathShort)).dy;
-      final chimie = tester.getTopLeft(find.text(L10n.current.dataSubjectChemistry)).dy;
-      expect(maths, lessThan(chimie));
-    });
-
-    testWidgets('periode 7 jours : pas d\'avertissement de plan ; autre periode : avertissement', (tester) async {
-      await monterEcran(tester, const StudentReportsScreen());
-      expect(find.text(L10n.current.studentReportsPlanRequired), findsNothing);
-      await tester.tap(find.text(L10n.current.studentReportsPeriod30));
-      await pomper(tester);
-      expect(find.text(L10n.current.studentReportsPlanRequired), findsOneWidget);
       await tester.tap(find.text(L10n.current.studentReportsPeriod7));
-      await pomper(tester);
-      expect(find.text(L10n.current.studentReportsPlanRequired), findsNothing);
+      await reseau(tester);
+      final periodes = faux.recues('GET', '/student/reports').map((o) => o.queryParameters['period']).toList();
+      expect(periodes, [30, 7]);
     });
 
-    testWidgets('sept barres hebdomadaires et totaux de quiz', (tester) async {
+    testWidgets('aucun quiz sur la periode : « — » et message, pas de chiffre invente', (tester) async {
+      faux.repond('GET', '/student/reports', rapport(vide: true));
       await monterEcran(tester, const StudentReportsScreen());
-      await tester.scrollUntilVisible(find.text(L10n.current.studentReportsQuizDone), 300, scrollable: find.byType(Scrollable).first);
-      expect(find.text('47'), findsOneWidget);
-      expect(find.text('74%'), findsWidgets);
-      expect(find.text(L10n.current.studentReportsWeekShort(7)), findsOneWidget);
+      expect(find.text('—'), findsWidgets);
+      expect(find.text(L10n.current.studentReportsNoData), findsOneWidget);
+      expect(find.text(L10n.current.studentReportsBySubject), findsNothing);
+    });
+
+    testWidgets('serveur en erreur : message et « Reessayer »', (tester) async {
+      faux.repond('GET', '/student/reports', {'error': 'panne'}, statut: 500);
+      await monterEcran(tester, const StudentReportsScreen());
+      expect(find.text(L10n.current.studentReportsLoadError), findsOneWidget);
+      faux.sur('GET', '/student/reports', (o) => FauxReponse(rapport()));
+      await tester.tap(find.text(L10n.current.commonRetry));
+      await reseau(tester);
+      expect(find.text('68%'), findsOneWidget);
     });
   });
 

@@ -5292,5 +5292,27 @@
   "biometricOfferYes": "Activer",
   "biometricOfferNo": "Plus tard",
   "biometricToggleTitle": "Déverrouillage par empreinte",
-  "biometricToggleHint": "Demandé à chaque ouverture de l’application."
+  "biometricToggleHint": "Demandé à chaque ouverture de l’application.",
+  "studentReportsBest": "Meilleure matière : {subject}",
+  "@studentReportsBest": {
+    "placeholders": {
+      "subject": {
+        "type": "String"
+      }
+    }
+  },
+  "studentReportsWeakest": "À travailler : {subject}",
+  "@studentReportsWeakest": {
+    "placeholders": {
+      "subject": {
+        "type": "String"
+      }
+    }
+  },
+  "studentReportsStudyHours": "Heures d’étude",
+  "studentReportsDownloads": "Téléchargements",
+  "studentReportsNoData": "Aucun quiz terminé sur cette période. Vos résultats apparaîtront ici dès votre premier quiz.",
+  "studentReportsLoadError": "Le rapport n’a pas pu être chargé.",
+  "instGroupNoStudents": "Aucun élève inscrit dans l’établissement pour le moment. Vous pourrez en ajouter au groupe plus tard.",
+  "instGroupStudentsLoadError": "La liste des élèves n’a pas pu être chargée."
 }

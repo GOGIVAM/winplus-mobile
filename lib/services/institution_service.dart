@@ -316,16 +316,31 @@ class InstitutionService {
     required String name,
     required String level,
     String? description,
+  }) async =>
+      await createGroupWithId(
+          name: name, level: level, description: description) !=
+      null;
+
+  /// Crée le groupe et renvoie son identifiant (pour y ajouter les élèves
+  /// choisis), ou null en cas d'échec.
+  Future<int?> createGroupWithId({
+    required String name,
+    required String level,
+    String? description,
   }) async {
     try {
-      await _api.dio.post('/institution/groups', data: {
+      final res = await _api.dio.post('/institution/groups', data: {
         'name': name,
         'level': level,
         if (description != null) 'description': description,
       });
-      return true;
+      final body = res.data;
+      final data = body is Map && body['data'] is Map ? body['data'] : body;
+      final id = data is Map ? data['id'] : null;
+      // Ancienne réponse sans identifiant : le groupe existe quand même.
+      return id is num ? id.toInt() : 0;
     } catch (_) {
-      return false;
+      return null;
     }
   }
 

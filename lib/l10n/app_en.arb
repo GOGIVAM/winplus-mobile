@@ -2441,5 +2441,13 @@
   "biometricOfferYes": "Turn on",
   "biometricOfferNo": "Later",
   "biometricToggleTitle": "Fingerprint unlock",
-  "biometricToggleHint": "Asked each time you open the app."
+  "biometricToggleHint": "Asked each time you open the app.",
+  "studentReportsBest": "Best subject: {subject}",
+  "studentReportsWeakest": "To work on: {subject}",
+  "studentReportsStudyHours": "Study hours",
+  "studentReportsDownloads": "Downloads",
+  "studentReportsNoData": "No quiz completed in this period. Your results will show here after your first quiz.",
+  "studentReportsLoadError": "The report could not be loaded.",
+  "instGroupNoStudents": "No students enrolled in the institution yet. You can add them to the group later.",
+  "instGroupStudentsLoadError": "The student list could not be loaded."
 }
