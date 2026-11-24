@@ -50,6 +50,7 @@ class Subject {
       'Info' => l.dataSubjectComputingShort,
       'Philosophie' => l.dataSubjectPhilosophy,
       'Philo' => l.dataSubjectPhilosophyShort,
+      'Autre' => l.authOptOther,
       'Histoire-Géo' => l.dataSubjectHistGeo,
       'Hist-Géo' => l.dataSubjectHistGeoShort,
       _ => fr,
@@ -72,6 +73,9 @@ class Content {
   /// corrigés et livres se lisent uniquement dans la visionneuse intégrée
   /// (DocumentViewerScreen), à partir de l'identifiant du contenu.
   final bool hasCorrection;
+
+  /// Image de couverture du contenu (null : visuel de la matière).
+  final String? imageUrl;
   Content({
     required this.id,
     required this.title,
@@ -92,6 +96,7 @@ class Content {
     this.difficulty = 3,
     this.reviews = const [],
     this.hasCorrection = false,
+    this.imageUrl,
   });
 
   double get rating => rating100 / 10.0;

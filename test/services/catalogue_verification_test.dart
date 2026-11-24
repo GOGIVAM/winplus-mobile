@@ -55,11 +55,12 @@ void main() {
       expect(c.fav, isFalse);
     });
 
-    test('toContent sans donnees : BAC, Terminale, annee courante, matiere math, epreuve', () {
+    test('toContent sans donnees : BAC, Terminale, annee courante, matiere neutre, epreuve', () {
       final c = ApiSubject.fromJson(<String, dynamic>{}).toContent();
       expect(c.exam, 'BAC');
       expect(c.level, 'Terminale');
-      expect(c.subjectId, 'math');
+      // Sans matiere : visuel neutre, plus les mathematiques par defaut.
+      expect(c.subjectId, 'autre');
       expect(c.type, ContentType.epreuve);
       expect(c.year, DateTime.now().year);
     });
@@ -71,12 +72,26 @@ void main() {
       expect(id('Français'), 'fr');
       expect(id('Histoire'), 'hg');
       expect(id('Philo'), 'philo');
-      expect(id('English'), 'en');
-      expect(id('inconnue'), 'math');
+      // Identifiant de la liste des matieres (angl), pas « en » qui n'y figure pas.
+      expect(id('English'), 'angl');
+      // Libelles reels du serveur, sans tenir compte des accents ni de la casse.
+      expect(id('Science physique'), 'pc');
+      expect(id('PHYSIQUE'), 'pc');
+      expect(id('Mathématiques'), 'math');
+      expect(id('Chimie'), 'chimie');
+      expect(id('Culture générale'), 'autre');
+      expect(id('inconnue'), 'autre');
+    });
+
+    test('prix nul : contenu gratuit ; image de couverture transmise', () {
+      final c = ApiSubject.fromJson({'price': 0, 'thumbnailUrl': 'https://x/couv.jpg'}).toContent();
+      expect(c.free, isTrue);
+      expect(c.imageUrl, 'https://x/couv.jpg');
+      expect(ApiSubject.fromJson({'price': 250}).toContent().free, isFalse);
     });
 
     test('toContent : la matiere retombe sur la categorie ; correspondance des types', () {
-      expect(ApiSubject.fromJson({'category': 'anglais'}).toContent().subjectId, 'en');
+      expect(ApiSubject.fromJson({'category': 'anglais'}).toContent().subjectId, 'angl');
       ContentType t(String cat) => ApiSubject.fromJson({'category': cat}).toContent().type;
       expect(t('correction'), ContentType.correction);
       expect(t('Quiz'), ContentType.quiz);

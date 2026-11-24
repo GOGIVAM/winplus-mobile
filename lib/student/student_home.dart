@@ -376,6 +376,38 @@ class _ExamCountdownCard extends StatelessWidget {
 }
 
 /// Carte de contenu (catalogue).
+/// Visuel de secours d'un contenu : la couleur de la matière en dégradé doux
+/// et son pictogramme dans un rond blanc.
+Widget _visuelMatiere(Subject subj) => DecoratedBox(
+  decoration: BoxDecoration(
+    gradient: LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [
+        subj.color.withValues(alpha: 0.20),
+        subj.color.withValues(alpha: 0.07),
+      ],
+    ),
+  ),
+  child: Center(
+    child: Container(
+      width: 58,
+      height: 58,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+              color: subj.color.withValues(alpha: 0.25),
+              blurRadius: 16,
+              offset: const Offset(0, 6)),
+        ],
+      ),
+      child: Icon(subj.icon, size: 28, color: subj.color),
+    ),
+  ),
+);
+
 class ContentCard extends StatefulWidget {
   final Content content;
   const ContentCard({super.key, required this.content});
@@ -415,37 +447,15 @@ class _ContentCardState extends State<ContentCard> {
           Expanded(
             flex: 11,
             child: Stack(fit: StackFit.expand, children: [
-              // Visuel : la couleur de la matière en dégradé doux et son
-              // pictogramme dans un rond blanc.
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      subj.color.withValues(alpha: 0.20),
-                      subj.color.withValues(alpha: 0.07),
-                    ],
-                  ),
-                ),
-                child: Center(
-                  child: Container(
-                    width: 58,
-                    height: 58,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                            color: subj.color.withValues(alpha: 0.25),
-                            blurRadius: 16,
-                            offset: const Offset(0, 6)),
-                      ],
-                    ),
-                    child: Icon(subj.icon, size: 28, color: subj.color),
-                  ),
-                ),
-              ),
+              // Image de couverture du contenu (comme le site) ; sans image,
+              // ou si elle ne se charge pas : la couleur de la matière et son
+              // pictogramme.
+              if (content.imageUrl != null && content.imageUrl!.isNotEmpty)
+                Image.network(content.imageUrl!,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => _visuelMatiere(subj))
+              else
+                _visuelMatiere(subj),
               Positioned(
                 top: 8,
                 left: 8,

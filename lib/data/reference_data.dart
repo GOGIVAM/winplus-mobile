@@ -27,10 +27,13 @@ class WinData {
     Subject('philo', 'Philosophie', 'Philo', WinColors.blue400,
         Icons.psychology_outlined),
     Subject('hg', 'Histoire-Géo', 'Hist-Géo', Color(0xFF8A6D3B), Icons.public),
+    // Matière non reconnue (culture générale, spécialités…) : visuel neutre.
+    Subject('autre', 'Autre', 'Autre', WinColors.teal600,
+        Icons.description_outlined),
   ];
 
   static Subject subjectById(String id) =>
-      subjects.firstWhere((s) => s.id == id, orElse: () => subjects.first);
+      subjects.firstWhere((s) => s.id == id, orElse: () => subjects.last);
 
   static const roles = <RoleInfo>[
     RoleInfo(

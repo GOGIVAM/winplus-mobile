@@ -32,6 +32,9 @@ class ApiSubject {
 
   /// Lot 10.7 : langue d'origine ("en" pour une épreuve GCE, jamais traduite).
   final String language;
+
+  /// Image de couverture (thumbnailUrl), affichée sur les cartes comme sur le site.
+  final String? thumbnailUrl;
   const ApiSubject({
     required this.id,
     required this.title,
@@ -48,6 +51,7 @@ class ApiSubject {
     this.rating,
     this.ratingsCount = 0,
     this.language = 'fr',
+    this.thumbnailUrl,
   });
 
   factory ApiSubject.fromJson(Map<String, dynamic> j) => ApiSubject(
@@ -66,6 +70,7 @@ class ApiSubject {
         rating: ((j['averageRating'] ?? 0) as num).toDouble(),
         ratingsCount: j['ratingsCount'] as int? ?? 0,
         language: j['language'] as String? ?? 'fr',
+        thumbnailUrl: (j['thumbnailUrl'] ?? j['coverImageUrl']) as String?,
       );
 }
 
@@ -82,22 +87,34 @@ extension ApiSubjectToContent on ApiSubject {
         rating100: ((rating ?? 0) * 10).round(),
         ratings: ratingsCount,
         downloads: downloadCount,
-        free: isFree,
+        // Un prix nul est un contenu gratuit (le serveur n'envoie pas toujours isFree).
+        free: isFree || price <= 0,
         description: description,
         hasCorrection: hasCorrection,
+        imageUrl: thumbnailUrl,
       );
 }
 
-String _subjectCategoryToId(String? cat) => switch (cat?.toLowerCase()) {
-      'mathematiques' || 'maths' || 'math' || 'mathematique' => 'math',
-      'physique-chimie' || 'physique' || 'chimie' || 'pc' => 'pc',
-      'svt' || 'biologie' || 'sciences naturelles' => 'svt',
-      'français' || 'francais' || 'litterature' => 'fr',
-      'histoire-geo' || 'histoire' || 'geographie' || 'hg' => 'hg',
-      'philosophie' || 'philo' => 'philo',
-      'anglais' || 'english' => 'en',
-      _ => 'math',
-    };
+/// Matière d'un contenu à partir du libellé libre du serveur (« Science
+/// physique », « PHYSIQUE », « Mathématiques »…), sans tenir compte des
+/// accents ni de la casse. Libellé inconnu : matière neutre « autre », plus
+/// les mathématiques (qui donnaient un « Σ » à tous les contenus).
+String _subjectCategoryToId(String? cat) {
+  // Lettres accentuées (codes Unicode) ramenées à la lettre simple.
+  const accents = {'\u00e0': 'a', '\u00e2': 'a', '\u00e9': 'e', '\u00e8': 'e', '\u00ea': 'e', '\u00eb': 'e', '\u00ee': 'i', '\u00ef': 'i', '\u00f4': 'o', '\u00f9': 'u', '\u00fb': 'u', '\u00e7': 'c'};
+  final c = (cat ?? '').toLowerCase().split('').map((x) => accents[x] ?? x).join();
+  if (c.isEmpty) return 'autre';
+  if (c.contains('math')) return 'math';
+  if (c.contains('chimie') && !c.contains('physique')) return 'chimie';
+  if (c.contains('physique') || c == 'pc') return 'pc';
+  if (c.contains('svt') || c.contains('biologie') || c.contains('sciences naturelles') || c.contains('vie et de la terre')) return 'svt';
+  if (c.contains('francais') || c.contains('litterature')) return 'fr';
+  if (c.contains('histoire') || c.contains('geographie') || c == 'hg') return 'hg';
+  if (c.contains('philo')) return 'philo';
+  if (c.contains('anglais') || c.contains('english')) return 'angl';
+  if (c.contains('informatique')) return 'info';
+  return 'autre';
+}
 
 ContentType _categoryToContentType(String? cat) => switch (cat?.toLowerCase()) {
       'epreuve' || 'épreuve' || 'epreuves' => ContentType.epreuve,
