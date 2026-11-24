@@ -361,6 +361,13 @@ Analyse complète de `lib/` face au site en largeur téléphone. Données invent
 - Enseignant : coaching WinAI, bibliothèque, affiliation, cahier de textes, banque de questions, réunions.
 - Établissement : enseignants, devoirs, emploi du temps, examens blancs, bulletins, annonces.
 - Tous : aide, questions fréquentes, contact.
+- Tous, en priorité : cours en direct (visio WinPlus, comme `/visio/:type/:id` du site). Session mobile, en cours le 24/11 : la salle s'ouvre dans Chrome avec le jeton de `GET /visio/jeton` (pas de SDK Jitsi : plusieurs dizaines de Mo en plus) ; entrées : séances du professeur, réservations de l'élève et du répétiteur, lien partagé `/visio/...`.
+
+### Avancement du 24/11 (session 3)
+
+- 9.2, zones mortes (`cf5209d`) : partage d'un contenu, photo de profil de l'élève, « Gérer l'abonnement », code de groupe copié, recherche des groupes de l'établissement. Retirés faute de fonction sur le serveur : « Assigner » (catalogue établissement), « Administrateurs », « Groupes » et « Facturation » (compte établissement), « Voir » (correction déjà notée). Corrections et catalogue établissement : une panne affiche « Impossible de charger » et « Réessayer ».
+- 9.3, cartes (`1855263`) : l'écart avec le site venait des arrondis (7 px sur le mobile, 14 px sur le site). Échelle `WinRadii` alignée (10, 12, 14, 16) ; cartes de chiffres au dessin sobre du site.
+- Reste en 9.3 : en-tête et pied de carte communs (titre, sous-titre, lien « Voir le détail »), états vides et d'erreur communs partout, icônes Phosphor, un seul WinAI, un seul profil, découpage des fichiers `*_tabs.dart`.
 
 ### Session et compilation automatique (24/11)
 
