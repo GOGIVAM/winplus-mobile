@@ -4,6 +4,7 @@ import '../l10n/l10n.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
+import 'biometric_toggle.dart';
 
 /// Bascule FR/EN (accueil, réglages de chaque espace). Persistée par
 /// WinAppState.setLocale : SharedPreferences, et User.Locale si connecté.
@@ -72,6 +73,8 @@ Future<void> showLanguageSheet(BuildContext context) {
               ]),
               const SizedBox(height: 10),
               Text(ctx.l10n.languageHint, style: WinType.bodyS(s.onMuted)),
+              // Déverrouillage par empreinte (si le téléphone en a une).
+              const BiometricToggle(),
             ],
           ),
         ),

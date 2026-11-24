@@ -253,6 +253,7 @@ class AuthService {
         await SessionManager.updateTokens(
             accessToken: access, refreshToken: d['refreshToken'] as String?);
       }
+      await SessionManager.markIdentityChecked();
       return const AuthResult(success: true);
     } on DioException catch (e) {
       final data = e.response?.data;

@@ -8604,4 +8604,37 @@ class AppLocalizationsFr extends AppLocalizations {
   String studentTabsAnalyseFile(String name) {
     return 'Analyse ce fichier : $name';
   }
+
+  @override
+  String get biometricReason => 'Déverrouillez WinPlus';
+
+  @override
+  String get biometricLockedTitle => 'WinPlus est verrouillé';
+
+  @override
+  String get biometricLockedHint =>
+      'Utilisez votre empreinte pour ouvrir votre espace.';
+
+  @override
+  String get biometricUnlock => 'Déverrouiller';
+
+  @override
+  String get biometricOfferTitle => 'Déverrouiller avec votre empreinte ?';
+
+  @override
+  String get biometricOfferBody =>
+      'Vous ouvrirez WinPlus avec votre empreinte, sans code de vérification par e-mail. Modifiable plus tard depuis votre avatar.';
+
+  @override
+  String get biometricOfferYes => 'Activer';
+
+  @override
+  String get biometricOfferNo => 'Plus tard';
+
+  @override
+  String get biometricToggleTitle => 'Déverrouillage par empreinte';
+
+  @override
+  String get biometricToggleHint =>
+      'Demandé à chaque ouverture de l’application.';
 }

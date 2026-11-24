@@ -67,6 +67,23 @@ class SessionManager {
     await p.setString(_keyUserEmail, email);
     await p.setString(_keyUserRole, role);
     await p.setString(_keyUserName, name);
+    // Une connexion (mot de passe, Google, inscription) prouve l'identité :
+    // pas de reconfirmation par code juste après.
+    await markIdentityChecked();
+  }
+
+  static const _keyIdentityCheck = 'last_identity_check';
+
+  /// Dernière preuve d'identité sur ce téléphone : connexion, code de
+  /// reconfirmation reçu par e-mail, ou empreinte.
+  static Future<void> markIdentityChecked() async {
+    final p = await SharedPreferences.getInstance();
+    await p.setString(_keyIdentityCheck, DateTime.now().toUtc().toIso8601String());
+  }
+
+  static Future<DateTime?> lastIdentityCheck() async {
+    final p = await SharedPreferences.getInstance();
+    return DateTime.tryParse(p.getString(_keyIdentityCheck) ?? '');
   }
 
   /// Remplace seulement les jetons (renouvellement, reconfirmation), sans

@@ -5276,5 +5276,21 @@
   "parentCoveredSaveError": "Le choix n'a pas pu être enregistré.",
   "teacherPricingEveningDefault": "Soir",
   "studentTabsAnalyseFile": "Analyse ce fichier : {name}",
-  "@studentTabsAnalyseFile": {"placeholders": {"name": {"type": "String"}}}
+  "@studentTabsAnalyseFile": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "biometricReason": "Déverrouillez WinPlus",
+  "biometricLockedTitle": "WinPlus est verrouillé",
+  "biometricLockedHint": "Utilisez votre empreinte pour ouvrir votre espace.",
+  "biometricUnlock": "Déverrouiller",
+  "biometricOfferTitle": "Déverrouiller avec votre empreinte ?",
+  "biometricOfferBody": "Vous ouvrirez WinPlus avec votre empreinte, sans code de vérification par e-mail. Modifiable plus tard depuis votre avatar.",
+  "biometricOfferYes": "Activer",
+  "biometricOfferNo": "Plus tard",
+  "biometricToggleTitle": "Déverrouillage par empreinte",
+  "biometricToggleHint": "Demandé à chaque ouverture de l’application."
 }

@@ -13,6 +13,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:winplus/l10n/l10n.dart';
 import 'package:winplus/services/api_client.dart';
+import 'package:winplus/services/biometric_service.dart';
 import 'package:winplus/services/http_cache.dart';
 import 'package:winplus/services/session_manager.dart';
 import 'package:winplus/services/tutor_booking_service.dart';
@@ -121,6 +122,10 @@ FauxReseau preparerEnvironnement({Map<String, Object> prefs = const {}}) {
   // Lectures gardées pour le hors ligne : en mémoire et vides à chaque test
   // (une écriture Hive sur disque bloquerait le temps simulé).
   HttpCache.instance.useMemoryStore();
+  // Empreinte : comportement réel (aucune sous Windows) sauf si le test le
+  // simule.
+  BiometricService.instance.debugAvailable = null;
+  BiometricService.instance.debugAuthenticate = null;
   L10n.locale = const Locale('fr');
   final faux = FauxReseau();
   ApiClient.instance.dio.httpClientAdapter = faux;

@@ -82,4 +82,7 @@ flutter {
 
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
+    // Thèmes Theme.AppCompat du lancement : exigés par local_auth (sinon la
+    // fenêtre d'empreinte plante sur Android 8 et avant).
+    implementation("androidx.appcompat:appcompat:1.7.0")
 }

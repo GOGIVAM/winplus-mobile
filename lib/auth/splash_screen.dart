@@ -4,14 +4,20 @@ import '../theme/win_motion.dart';
 import '../app_state.dart';
 import '../data/models.dart';
 import '../services/auth_service.dart';
+import '../services/biometric_service.dart';
 import '../services/connectivity_service.dart';
 import '../services/deep_links.dart';
 import '../services/session_manager.dart';
 import '../shell/role_shell.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_typography.dart';
+import 'app_lock_screen.dart';
 import 'periodic_confirm_screen.dart';
 import 'login_screen.dart';
+
+/// Délai après lequel l'identité doit être reprouvée (35 jours, comme le
+/// serveur).
+const reconfirmWindow = Duration(days: 35);
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -37,6 +43,14 @@ class _SplashScreenState extends State<SplashScreen>
   /// hors ligne, serveur muet ou trop lent, on ouvre l'espace du compte.
   Future<ReconfirmationStatus?> _reconfirmation() async {
     if (!ConnectivityService.instance.isOnline) return null;
+    // Identité prouvée récemment sur ce téléphone (connexion, code reçu par
+    // e-mail, empreinte) : pas de code à redemander. Le serveur, lui, ne
+    // connaît que la dernière reconfirmation par code.
+    final last = await SessionManager.lastIdentityCheck();
+    if (last != null &&
+        DateTime.now().toUtc().difference(last) < reconfirmWindow) {
+      return null;
+    }
     return AuthService.instance
         .reconfirmationStatus()
         .timeout(const Duration(seconds: 5), onTimeout: () => null);
@@ -65,6 +79,20 @@ class _SplashScreenState extends State<SplashScreen>
         WinPageRoute(builder: (_) => const LoginScreen()),
       );
       return;
+    }
+
+    // Déverrouillage par empreinte choisi : demandé avant tout. Une réussite
+    // vaut preuve d'identité ; un refus ou une annulation mène à l'écran
+    // verrouillé (réessayer ou se déconnecter).
+    if (await BiometricService.instance.isEnabled()) {
+      final ok = await BiometricService.instance.authenticate();
+      if (!mounted) return;
+      if (!ok) {
+        Navigator.of(context).pushReplacement(
+          WinPageRoute(builder: (_) => const AppLockScreen()),
+        );
+        return;
+      }
     }
 
     final status = await _reconfirmation();

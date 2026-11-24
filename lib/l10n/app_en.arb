@@ -2431,5 +2431,15 @@
   "parentSubjectFallback": "Subject",
   "parentCoveredSaveError": "Your choice couldn't be saved.",
   "teacherPricingEveningDefault": "Evening",
-  "studentTabsAnalyseFile": "Analyse this file: {name}"
+  "studentTabsAnalyseFile": "Analyse this file: {name}",
+  "biometricReason": "Unlock WinPlus",
+  "biometricLockedTitle": "WinPlus is locked",
+  "biometricLockedHint": "Use your fingerprint to open your space.",
+  "biometricUnlock": "Unlock",
+  "biometricOfferTitle": "Unlock with your fingerprint?",
+  "biometricOfferBody": "You will open WinPlus with your fingerprint, without an e-mail verification code. You can change this later from your avatar.",
+  "biometricOfferYes": "Turn on",
+  "biometricOfferNo": "Later",
+  "biometricToggleTitle": "Fingerprint unlock",
+  "biometricToggleHint": "Asked each time you open the app."
 }

@@ -14695,6 +14695,66 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Analyse ce fichier : {name}'**
   String studentTabsAnalyseFile(String name);
+
+  /// No description provided for @biometricReason.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déverrouillez WinPlus'**
+  String get biometricReason;
+
+  /// No description provided for @biometricLockedTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'WinPlus est verrouillé'**
+  String get biometricLockedTitle;
+
+  /// No description provided for @biometricLockedHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Utilisez votre empreinte pour ouvrir votre espace.'**
+  String get biometricLockedHint;
+
+  /// No description provided for @biometricUnlock.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déverrouiller'**
+  String get biometricUnlock;
+
+  /// No description provided for @biometricOfferTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déverrouiller avec votre empreinte ?'**
+  String get biometricOfferTitle;
+
+  /// No description provided for @biometricOfferBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous ouvrirez WinPlus avec votre empreinte, sans code de vérification par e-mail. Modifiable plus tard depuis votre avatar.'**
+  String get biometricOfferBody;
+
+  /// No description provided for @biometricOfferYes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Activer'**
+  String get biometricOfferYes;
+
+  /// No description provided for @biometricOfferNo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plus tard'**
+  String get biometricOfferNo;
+
+  /// No description provided for @biometricToggleTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déverrouillage par empreinte'**
+  String get biometricToggleTitle;
+
+  /// No description provided for @biometricToggleHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Demandé à chaque ouverture de l’application.'**
+  String get biometricToggleHint;
 }
 
 class _AppLocalizationsDelegate

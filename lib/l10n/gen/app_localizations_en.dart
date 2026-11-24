@@ -8533,4 +8533,35 @@ class AppLocalizationsEn extends AppLocalizations {
   String studentTabsAnalyseFile(String name) {
     return 'Analyse this file: $name';
   }
+
+  @override
+  String get biometricReason => 'Unlock WinPlus';
+
+  @override
+  String get biometricLockedTitle => 'WinPlus is locked';
+
+  @override
+  String get biometricLockedHint => 'Use your fingerprint to open your space.';
+
+  @override
+  String get biometricUnlock => 'Unlock';
+
+  @override
+  String get biometricOfferTitle => 'Unlock with your fingerprint?';
+
+  @override
+  String get biometricOfferBody =>
+      'You will open WinPlus with your fingerprint, without an e-mail verification code. You can change this later from your avatar.';
+
+  @override
+  String get biometricOfferYes => 'Turn on';
+
+  @override
+  String get biometricOfferNo => 'Later';
+
+  @override
+  String get biometricToggleTitle => 'Fingerprint unlock';
+
+  @override
+  String get biometricToggleHint => 'Asked each time you open the app.';
 }

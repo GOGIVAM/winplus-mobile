@@ -17,6 +17,7 @@ import '../student/profile_hub_tab.dart';
 import '../parent/parent_tabs.dart';
 import '../teacher/teacher_tabs.dart';
 import '../institution/institution_tabs.dart';
+import '../widgets/biometric_toggle.dart';
 import '../widgets/language_selector.dart';
 import '../widgets/offline_strip.dart';
 import '../widgets/winai_floating_widget.dart';
@@ -55,6 +56,10 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
     // secours, sans Firebase (lot 2). Demande l'autorisation la première
     // fois.
     unawaited(BackgroundNotifications.startForAccount());
+    // Après une connexion : proposer une fois le déverrouillage par empreinte.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) unawaited(offerBiometricIfUseful(context));
+    });
   }
 
   @override

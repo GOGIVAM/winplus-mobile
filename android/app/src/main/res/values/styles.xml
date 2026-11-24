@@ -2,12 +2,12 @@
 <resources>
     <!-- Fenêtre affichée au lancement, jusqu'à la première image de Flutter :
          fond vert profond et logo (drawable/launch_background.xml). -->
-    <style name="LaunchTheme" parent="@android:style/Theme.Light.NoTitleBar">
+    <style name="LaunchTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowBackground">@drawable/launch_background</item>
     </style>
     <!-- Fond de la fenêtre derrière Flutter pendant son démarrage : le même
          vert, pour éviter un éclair blanc entre le logo et l'application. -->
-    <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
+    <style name="NormalTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowBackground">@color/winplus_abyss</item>
     </style>
 </resources>
