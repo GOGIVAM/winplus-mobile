@@ -303,3 +303,66 @@ Lot 0 ─┬─ Lot 1 ─┬─ Lot 2 (Android, iOS)
 4. Mode sombre : le garder ou le retirer.
 5. Outil de suivi des plantages.
 6. Ordre de priorité des fonctions du lot 7, s'il faut publier avant la parité complète.
+
+## Seconde analyse (24 novembre 2026) et lot 9 : refonte de la coque et nettoyage
+
+Analyse complète de `lib/` face au site en largeur téléphone. Données inventées et zones mortes vérifiées une à une dans le code ; comptages issus d'un relevé automatique.
+
+### Pourquoi l'application ne ressemble pas au site
+
+- Seuls l'accueil et les écrans de connexion ont été alignés (lot 4 commencé).
+- Accueil : le site a des onglets de chiffres (`StatTabs` : chiffres, graphique, tâches) ; l'application a une bande de cartes.
+- Menu : le site donne 15 à 20 entrées groupées par espace ; l'application a 4 ou 5 onglets figés.
+- Barre du haut : le site a panier, messages et menu du compte ; l'application a la cloche et un avatar qui n'ouvre que la langue et l'empreinte.
+- Icônes : 790 Material contre 46 Phosphor (famille du site).
+- Composants : 79 `AppBar` faits main contre 3 en-têtes communs, 22 `AlertDialog`, 34 `TextField` bruts ; états communs (vide, erreur, squelette) adoptés dans 2 écrans.
+
+### Décisions de Georges (24/11)
+
+- Barre du bas : **Accueil, deux onglets métier, Messages, Plus**. « Plus » ouvre le reste des fonctions de l'espace (menu groupé du site), le profil, les réglages et la déconnexion. Pas de menu latéral.
+- Ordre : coque, puis données inventées et zones mortes, puis accueil et composants, puis fonctions manquantes.
+- Mode sombre : gardé ; suit le téléphone par défaut, choix Clair / Sombre / Système.
+- Présentation en trois écrans avec photos avant la connexion ; logo dans un disque blanc à l'ouverture (fait, `b35dd85`).
+
+### 9.1 Coque commune (session 3)
+
+1. Barre du bas à 5 onglets par espace, « Messages » pour tous, « Plus » en dernier.
+2. Écran « Plus » : entrées groupées comme le menu du site, profil, réglages (langue, thème, empreinte, notifications), aide, déconnexion. Aujourd'hui l'enseignant n'a ni déconnexion, ni profil, ni messagerie ; l'élève n'a pas la messagerie.
+3. Barre du haut : panier (avec compteur), cloche, avatar.
+4. Garder dans la coque : bandeau hors ligne, écoute des notifications, proposition d'empreinte.
+
+### 9.2 Données inventées et zones mortes
+
+| Élément | Fichier | À faire | Qui |
+|---|---|---|---|
+| Onglet Séances : 2 séances fictives, bouton sans action | `teacher/teacher_tabs.dart` (`TeacherSessionsTab`) | Séances réelles du serveur | session mobile |
+| Création de groupe : 12 élèves inventés, sélection non envoyée, recherche inactive | `institution/group_create_screen.dart` | Élèves réels, envoi des membres | session mobile (en cours) |
+| Accueil parent : tendance toujours « stable », activité « maintenant » | `parent/parent_tabs.dart` | Valeurs du serveur ou rien | session mobile |
+| Profil élève : 5 réglages de notifications et 2 de confidentialité non enregistrés | `student/profile_screen.dart` | Enregistrer côté serveur ou retirer | session mobile |
+| Profil parent : interrupteur de notifications toujours allumé | `parent/parent_tabs.dart` | Brancher ou retirer | session mobile |
+| 77 erreurs de service avalées (« vide » au lieu d'« erreur ») | `services/*` | Remonter l'erreur, état « Réessayer » | session mobile |
+| Compte établissement : Administrateurs, Groupes, Facturation sans action ; « Assigner » sans action ; recherche de groupes inactive | `institution/institution_tabs.dart` | Brancher ou retirer | session 3 |
+| Profil élève : changer la photo, confidentialité, conditions, gérer l'abonnement | `student/profile_screen.dart` | Brancher | session 3 |
+| Partager un contenu ; « Voir » une correction ; code de groupe | `content_detail_screen`, `correction_queue_screen`, `study_groups_screen` | Brancher | session 3 |
+| 31 modèles de démonstration inutilisés ; écrans jamais ouverts (`ParentPaymentsTab`, `ChildCard`, `WinStatCard`) | `data/models.dart`, divers | Supprimer | session 3 |
+
+### 9.3 Accueil et composants (session 3)
+
+- Onglets de chiffres du site (`StatTabs`) sur les quatre accueils.
+- Un seul écran WinAI (4 copies), un seul catalogue (3 versions), un seul profil élève (2), listes de niveaux et matières en un seul endroit (6 copies).
+- Icônes Phosphor ; en-tête, feuille, fenêtre, champ et états communs partout ; plus de `heroFrom`.
+- 37 écrans sans état d'erreur : état commun « Réessayer ».
+- Découper les 4 fichiers `*_tabs.dart` (1 000 à 1 500 lignes, 11 à 18 écrans chacun) : un écran par fichier.
+
+### 9.4 Fonctions du site absentes (ordre à fixer par Georges)
+
+- Élève : programme, parcours, devoirs, comparaison avec les pairs.
+- Parent : baromètre, rendez-vous.
+- Enseignant : coaching WinAI, bibliothèque, affiliation, cahier de textes, banque de questions, réunions.
+- Établissement : enseignants, devoirs, emploi du temps, examens blancs, bulletins, annonces.
+- Tous : aide, questions fréquentes, contact.
+
+### Session et compilation automatique (24/11)
+
+- Session : une coupure réseau pendant le renouvellement du jeton déconnectait l'utilisateur (`api_client.dart`) ; corrigé par la session mobile (`5932e84`), avec la lecture protégée du trousseau.
+- Compilation automatique : en échec depuis le 15/11. Cause du 24/11 : deux imports inutilisés (corrigé, `2c66a5d`). La vérification locale doit être `flutter analyze --no-fatal-infos` avec son code de sortie, sans filtre de texte. Suivi jusqu'au vert : session mobile.
