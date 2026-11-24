@@ -5,6 +5,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import 'package:flutter/services.dart';
 
 /// Module 24 (lot 8, rattrapage 16.3) : groupes d'étude réels
 /// (StudyGroupsController.cs, mêmes endpoints que le web
@@ -409,7 +410,17 @@ class _GroupDetailSheetState extends State<_GroupDetailSheet> {
                 Row(children: [
                   Text(context.l10n.studentGroupsMembersCount(detail.members.length), style: WinType.bodyS(s.onMuted)),
                   const SizedBox(width: 10),
-                  WinButton(detail.joinCode, small: true, variant: WinButtonVariant.outline, onTap: () {}),
+                  WinButton(detail.joinCode,
+                      small: true,
+                      variant: WinButtonVariant.outline,
+                      icon: Icons.copy_outlined,
+                      onTap: () async {
+                        final messenger = ScaffoldMessenger.of(context);
+                        final msg = context.l10n.studentGroupsCodeCopied;
+                        await Clipboard.setData(
+                            ClipboardData(text: detail.joinCode));
+                        messenger.showSnackBar(SnackBar(content: Text(msg)));
+                      }),
                 ]),
                 const SizedBox(height: 20),
                 Text(context.l10n.studentGroupsMembers, style: WinType.titleM(s.onStrong)),

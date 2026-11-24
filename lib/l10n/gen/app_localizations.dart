@@ -14995,6 +14995,108 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Impossible de charger. Vérifie ta connexion puis réessaie.'**
   String get commonLoadError;
+
+  /// No description provided for @visioTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cours en direct'**
+  String get visioTitle;
+
+  /// No description provided for @visioPreparing.
+  ///
+  /// In fr, this message translates to:
+  /// **'Préparation de la salle…'**
+  String get visioPreparing;
+
+  /// No description provided for @visioHost.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tu animes'**
+  String get visioHost;
+
+  /// No description provided for @visioJoin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rejoindre la visio'**
+  String get visioJoin;
+
+  /// No description provided for @visioStart.
+  ///
+  /// In fr, this message translates to:
+  /// **'Démarrer la visio'**
+  String get visioStart;
+
+  /// No description provided for @visioReopen.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rouvrir la salle'**
+  String get visioReopen;
+
+  /// No description provided for @visioOpenedHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'La salle s’est ouverte. Reviens ici pour la rouvrir si tu l’as quittée.'**
+  String get visioOpenedHint;
+
+  /// No description provided for @visioNotYet.
+  ///
+  /// In fr, this message translates to:
+  /// **'La salle ouvre le {date} à {time}.'**
+  String visioNotYet(String date, String time);
+
+  /// No description provided for @visioNotYetHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Garde cet écran ouvert : tu entreras automatiquement à l’ouverture.'**
+  String get visioNotYetHint;
+
+  /// No description provided for @visioEnded.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette séance est terminée.'**
+  String get visioEnded;
+
+  /// No description provided for @visioNotFound.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette séance n’existe pas ou tu n’y es pas inscrit.'**
+  String get visioNotFound;
+
+  /// No description provided for @visioUnavailable.
+  ///
+  /// In fr, this message translates to:
+  /// **'La visio est momentanément indisponible. Réessaie dans quelques instants.'**
+  String get visioUnavailable;
+
+  /// No description provided for @visioError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible d’ouvrir la salle pour le moment.'**
+  String get visioError;
+
+  /// No description provided for @visioLeave.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quitter'**
+  String get visioLeave;
+
+  /// No description provided for @studentGroupsCodeCopied.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code du groupe copié.'**
+  String get studentGroupsCodeCopied;
+
+  /// No description provided for @studentProfilePhotoUpdated.
+  ///
+  /// In fr, this message translates to:
+  /// **'Photo de profil mise à jour.'**
+  String get studentProfilePhotoUpdated;
+
+  /// No description provided for @studentProfilePhotoError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible d\'envoyer la photo. Choisis une image JPG ou PNG de moins de 5 Mo puis réessaie.'**
+  String get studentProfilePhotoError;
 }
 
 class _AppLocalizationsDelegate

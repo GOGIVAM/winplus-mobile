@@ -8705,4 +8705,62 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get commonLoadError =>
       'Could not load. Check your connection and try again.';
+
+  @override
+  String get visioTitle => 'Live class';
+
+  @override
+  String get visioPreparing => 'Preparing the room…';
+
+  @override
+  String get visioHost => 'You are hosting';
+
+  @override
+  String get visioJoin => 'Join the video call';
+
+  @override
+  String get visioStart => 'Start the video call';
+
+  @override
+  String get visioReopen => 'Reopen the room';
+
+  @override
+  String get visioOpenedHint =>
+      'The room is open. Come back here to reopen it if you left.';
+
+  @override
+  String visioNotYet(String date, String time) {
+    return 'The room opens on $date at $time.';
+  }
+
+  @override
+  String get visioNotYetHint =>
+      'Keep this screen open: you will join automatically when it opens.';
+
+  @override
+  String get visioEnded => 'This session has ended.';
+
+  @override
+  String get visioNotFound =>
+      'This session does not exist or you are not enrolled.';
+
+  @override
+  String get visioUnavailable =>
+      'Video calls are temporarily unavailable. Please try again shortly.';
+
+  @override
+  String get visioError => 'The room cannot be opened right now.';
+
+  @override
+  String get visioLeave => 'Leave';
+
+  @override
+  String get studentGroupsCodeCopied => 'Group code copied.';
+
+  @override
+  String get studentProfilePhotoUpdated => 'Profile photo updated.';
+
+  @override
+  String get studentProfilePhotoError =>
+      'Could not upload the photo. Pick a JPG or PNG image under 5 MB and try again.';
 }

@@ -124,6 +124,15 @@ class UserService {
     return ApiUserProfile.fromJson(res.data as Map<String, dynamic>);
   }
 
+  /// Envoie la photo de profil (JPG, PNG, GIF ou WEBP, 5 Mo au plus) et
+  /// renvoie son adresse. Lève une exception si le serveur la refuse.
+  Future<String?> uploadAvatar(List<int> bytes, String filename) async {
+    final res = await _api.dio.post('/users/profile/avatar',
+        data: FormData.fromMap(
+            {'file': MultipartFile.fromBytes(bytes, filename: filename)}));
+    return (res.data as Map<String, dynamic>?)?['avatarUrl'] as String?;
+  }
+
   Future<bool> updateProfile({
     String? firstName,
     String? lastName,

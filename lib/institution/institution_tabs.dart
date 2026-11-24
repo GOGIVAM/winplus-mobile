@@ -29,6 +29,7 @@ import '../widgets/knowledge_base_toggle.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../shell/shell_nav.dart';
 import '../widgets/mobile_home.dart';
+import '../widgets/win_screen.dart';
 
 Widget _statCard(BuildContext c, IconData icon, String value, String label) {
   final s = WinTheme.of(c);
@@ -351,6 +352,12 @@ class InstitutionGroupsTab extends StatefulWidget {
 
 class _InstitutionGroupsTabState extends State<InstitutionGroupsTab> {
   List<ApiGroup>? _groups;
+  String _query = '';
+
+  /// Groupes dont le nom contient le texte cherché.
+  List<ApiGroup> get _shown => _query.isEmpty
+      ? _groups!
+      : _groups!.where((g) => g.name.toLowerCase().contains(_query)).toList();
 
   @override
   void initState() {
@@ -368,8 +375,10 @@ class _InstitutionGroupsTabState extends State<InstitutionGroupsTab> {
     return Column(children: [
       Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child:
-              WinTextField(icon: Icons.search, hint: context.l10n.instGroupSearch)),
+          child: WinTextField(
+              icon: Icons.search,
+              hint: context.l10n.instGroupSearch,
+              onChanged: (v) => setState(() => _query = v.trim().toLowerCase()))),
       const SizedBox(height: 12),
       Expanded(
           child: _groups == null
@@ -380,10 +389,10 @@ class _InstitutionGroupsTabState extends State<InstitutionGroupsTab> {
                       ListView.separated(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
-                        itemCount: _groups!.length,
+                        itemCount: _shown.length,
                         separatorBuilder: (_, __) => const SizedBox(height: 10),
                         itemBuilder: (_, i) =>
-                            _GroupRow(g: _groups![i], showActions: true),
+                            _GroupRow(g: _shown[i], showActions: true),
                       ),
                       const SizedBox(height: 14),
                       WinButton(context.l10n.studentGroupsCreate,
@@ -410,6 +419,7 @@ class InstitutionCatalogTab extends StatefulWidget {
 
 class _InstitutionCatalogTabState extends State<InstitutionCatalogTab> {
   List<ApiSubject>? _items;
+  bool _failed = false;
 
   @override
   void initState() {
@@ -420,9 +430,20 @@ class _InstitutionCatalogTabState extends State<InstitutionCatalogTab> {
   Future<void> _load() async {
     try {
       final page = await SubjectService.instance.getAll(pageSize: 40);
-      if (mounted) setState(() => _items = page.items);
+      if (mounted) {
+        setState(() {
+          _items = page.items;
+          _failed = false;
+        });
+      }
     } catch (_) {
-      if (mounted) setState(() => _items = []);
+      // Une panne n'est pas un catalogue vide.
+      if (mounted) {
+        setState(() {
+          _items = [];
+          _failed = true;
+        });
+      }
     }
   }
 
@@ -449,7 +470,14 @@ class _InstitutionCatalogTabState extends State<InstitutionCatalogTab> {
       Expanded(
           child: items == null
               ? const Center(child: CircularProgressIndicator())
-              : items.isEmpty
+              : _failed
+                  ? WinErrorState(
+                      message: context.l10n.commonLoadError,
+                      onRetry: () {
+                        setState(() => _items = null);
+                        _load();
+                      })
+                  : items.isEmpty
                   ? Center(
                       child: Text(context.l10n.studentTabsNoContent,
                           style: WinType.bodyM(s.onMuted)))
@@ -486,10 +514,6 @@ class _InstitutionCatalogTabState extends State<InstitutionCatalogTab> {
                                     Text('${subj.short} · ${ClassLevels.label(item.level)}',
                                         style: WinType.labelM(s.onMuted)),
                                   ])),
-                              WinButton(context.l10n.instCatalogAssign,
-                                  variant: WinButtonVariant.outline,
-                                  small: true,
-                                  icon: Icons.add),
                             ]));
                       },
                     )),
@@ -663,9 +687,6 @@ class _InstitutionAccountTabState extends State<InstitutionAccountTab> {
               ),
             ),
             const SizedBox(height: 20),
-            _Row(Icons.people_outline, context.l10n.instAccountAdmins),
-            _Row(Icons.grid_view_outlined, context.l10n.instAccountGroups),
-            _Row(Icons.receipt_long_outlined, context.l10n.instAccountBilling),
             // Lot 9.3 : attribution de tuteurs, réservations et portefeuille institution.
             _Row(Icons.school_outlined, context.l10n.instAccountTutoring,
                 onTap: () => Navigator.push(context,

@@ -5,6 +5,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
+import '../widgets/win_screen.dart';
 
 class CorrectionQueueScreen extends StatefulWidget {
   const CorrectionQueueScreen({super.key});
@@ -14,6 +15,7 @@ class CorrectionQueueScreen extends StatefulWidget {
 
 class _CorrectionQueueScreenState extends State<CorrectionQueueScreen> {
   List<ApiSubmission>? _subs;
+  bool _failed = false;
   String _filter = 'Tout';
   static const _filters = ['Tout', 'En attente', 'Corrigé'];
 
@@ -26,9 +28,20 @@ class _CorrectionQueueScreenState extends State<CorrectionQueueScreen> {
   Future<void> _load() async {
     try {
       final subs = await TeacherService.instance.getSubmissions();
-      if (mounted) setState(() => _subs = subs);
+      if (mounted) {
+        setState(() {
+          _subs = subs;
+          _failed = false;
+        });
+      }
     } catch (_) {
-      if (mounted) setState(() => _subs = []);
+      // Une panne n'est pas « rien à corriger ».
+      if (mounted) {
+        setState(() {
+          _subs = [];
+          _failed = true;
+        });
+      }
     }
   }
 
@@ -103,6 +116,14 @@ class _CorrectionQueueScreenState extends State<CorrectionQueueScreen> {
 
   Widget _buildList(WinScheme s) {
     if (_subs == null) return const Center(child: CircularProgressIndicator());
+    if (_failed) {
+      return WinErrorState(
+          message: context.l10n.commonLoadError,
+          onRetry: () {
+            setState(() => _subs = null);
+            _load();
+          });
+    }
     if (_items.isEmpty) {
       return Center(
           child: Column(mainAxisSize: MainAxisSize.min, children: [
@@ -171,12 +192,10 @@ class _SubmissionCard extends StatelessWidget {
           WinButton(context.l10n.teacherCorrectionCorrect,
               small: true, icon: Icons.rate_review_outlined, onTap: onCorrect)
         else
-          Wrap(spacing: 8, runSpacing: 8, children: [
-            WinButton(context.l10n.teacherCorrectionView,
-                small: true, variant: WinButtonVariant.outline, onTap: () {}),
-            WinButton(context.l10n.commonEdit,
-                small: true, variant: WinButtonVariant.ghost, onTap: onCorrect),
-          ]),
+          // La feuille de correction montre la note et le commentaire déjà
+          // donnés : un seul bouton suffit pour les revoir et les modifier.
+          WinButton(context.l10n.commonEdit,
+              small: true, variant: WinButtonVariant.outline, onTap: onCorrect),
       ]),
     );
   }

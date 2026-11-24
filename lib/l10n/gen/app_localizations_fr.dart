@@ -8783,4 +8783,62 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get commonLoadError =>
       'Impossible de charger. Vérifie ta connexion puis réessaie.';
+
+  @override
+  String get visioTitle => 'Cours en direct';
+
+  @override
+  String get visioPreparing => 'Préparation de la salle…';
+
+  @override
+  String get visioHost => 'Tu animes';
+
+  @override
+  String get visioJoin => 'Rejoindre la visio';
+
+  @override
+  String get visioStart => 'Démarrer la visio';
+
+  @override
+  String get visioReopen => 'Rouvrir la salle';
+
+  @override
+  String get visioOpenedHint =>
+      'La salle s’est ouverte. Reviens ici pour la rouvrir si tu l’as quittée.';
+
+  @override
+  String visioNotYet(String date, String time) {
+    return 'La salle ouvre le $date à $time.';
+  }
+
+  @override
+  String get visioNotYetHint =>
+      'Garde cet écran ouvert : tu entreras automatiquement à l’ouverture.';
+
+  @override
+  String get visioEnded => 'Cette séance est terminée.';
+
+  @override
+  String get visioNotFound =>
+      'Cette séance n’existe pas ou tu n’y es pas inscrit.';
+
+  @override
+  String get visioUnavailable =>
+      'La visio est momentanément indisponible. Réessaie dans quelques instants.';
+
+  @override
+  String get visioError => 'Impossible d’ouvrir la salle pour le moment.';
+
+  @override
+  String get visioLeave => 'Quitter';
+
+  @override
+  String get studentGroupsCodeCopied => 'Code du groupe copié.';
+
+  @override
+  String get studentProfilePhotoUpdated => 'Photo de profil mise à jour.';
+
+  @override
+  String get studentProfilePhotoError =>
+      'Impossible d\'envoyer la photo. Choisis une image JPG ou PNG de moins de 5 Mo puis réessaie.';
 }

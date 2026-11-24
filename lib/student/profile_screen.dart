@@ -12,6 +12,9 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../auth/login_screen.dart';
 import 'learning_style_quiz_screen.dart';
+import 'package:image_picker/image_picker.dart';
+import '../app_config.dart';
+import '../shared/subscription/pricing_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -24,6 +27,8 @@ class _ProfileScreenState extends State<ProfileScreen>
   late final TabController _tab = TabController(length: 5, vsync: this);
 
   ApiUserProfile? _profile;
+  String? _avatarUrl;
+  bool _uploadingPhoto = false;
   final _nameCtrl = TextEditingController();
   final _emailCtrl = TextEditingController();
   final _phoneCtrl = TextEditingController();
@@ -50,6 +55,7 @@ class _ProfileScreenState extends State<ProfileScreen>
       if (mounted) {
         setState(() {
           _profile = p;
+          _avatarUrl = _absolute(p.avatarUrl);
           _nameCtrl.text = p.fullName;
           _emailCtrl.text = p.email;
           _phoneCtrl.text = p.phone ?? '';
@@ -57,6 +63,42 @@ class _ProfileScreenState extends State<ProfileScreen>
         });
       }
     } catch (_) {}
+  }
+
+  /// Adresse complète de la photo (le serveur peut renvoyer un chemin).
+  static String? _absolute(String? url) {
+    if (url == null || url.isEmpty) return null;
+    if (url.startsWith('http')) return url;
+    return '${AppConfig.siteUrl}${url.startsWith('/') ? '' : '/'}$url';
+  }
+
+  /// Choisit une image dans la galerie puis l'envoie comme photo de profil.
+  Future<void> _changePhoto() async {
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      final shot = await ImagePicker().pickImage(
+          source: ImageSource.gallery,
+          maxWidth: 800,
+          maxHeight: 800,
+          imageQuality: 85);
+      if (shot == null || !mounted) return;
+      setState(() => _uploadingPhoto = true);
+      final bytes = await shot.readAsBytes();
+      final name = shot.name.contains('.') ? shot.name : 'photo.jpg';
+      final url = await UserService.instance.uploadAvatar(bytes, name);
+      if (!mounted) return;
+      setState(() {
+        _uploadingPhoto = false;
+        _avatarUrl = _absolute(url) ?? _avatarUrl;
+      });
+      messenger.showSnackBar(
+          SnackBar(content: Text(L10n.current.studentProfilePhotoUpdated)));
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _uploadingPhoto = false);
+      messenger.showSnackBar(
+          SnackBar(content: Text(L10n.current.studentProfilePhotoError)));
+    }
   }
 
   Future<void> _saveProfile() async {
@@ -151,13 +193,33 @@ class _ProfileScreenState extends State<ProfileScreen>
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Center(
                 child: Column(children: [
-              WinAvatar(_profile?.fullName ?? '…', size: 72),
+              if (_avatarUrl != null)
+                ClipOval(
+                    child: Image.network(_avatarUrl!,
+                        width: 72,
+                        height: 72,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => WinAvatar(
+                            _profile?.fullName ?? '…',
+                            size: 72)))
+              else
+                WinAvatar(_profile?.fullName ?? '…', size: 72),
               const SizedBox(height: 8),
               GestureDetector(
-                onTap: () {},
-                child: Text(context.l10n.studentProfileChangePhoto,
-                    style: WinType.labelM(s.primary)
-                        .copyWith(fontWeight: FontWeight.w600)),
+                behavior: HitTestBehavior.opaque,
+                onTap: _uploadingPhoto ? null : _changePhoto,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  child: _uploadingPhoto
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2))
+                      : Text(context.l10n.studentProfileChangePhoto,
+                          style: WinType.labelM(s.primary)
+                              .copyWith(fontWeight: FontWeight.w600)),
+                ),
               ),
             ])),
             const SizedBox(height: 24),
@@ -592,7 +654,8 @@ class _TabCompteState extends State<_TabCompte> {
             block: true,
             variant: WinButtonVariant.outline,
             icon: Icons.credit_card_outlined,
-            onTap: () {}),
+            onTap: () => Navigator.push(context,
+                WinPageRoute(builder: (_) => const PricingScreen()))),
       ])),
       const SizedBox(height: 24),
       WinDivider(label: context.l10n.studentProfileDangerZone),

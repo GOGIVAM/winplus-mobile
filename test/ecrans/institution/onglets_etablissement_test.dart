@@ -130,27 +130,22 @@ void main() {
       expect(find.text('Epreuve de maths'), findsOneWidget);
       expect(find.text('Livre de physique'), findsOneWidget);
       expect(find.textContaining('Terminale'), findsOneWidget);
-      expect(_bouton(l.instCatalogAssign), findsNWidgets(2));
+      // Pas de bouton « Assigner » : le serveur n'a pas cette fonction.
+      expect(find.text(l.instCatalogAssign), findsNothing);
       expect(faux.recues('GET', '/subjects').single.queryParameters['pageSize'], 40);
     });
 
-    testWidgets('catalogue en erreur ou vide : « aucun contenu »', (tester) async {
-      faux.repond('GET', '/subjects', {}, statut: 500);
+    testWidgets('catalogue vide : « aucun contenu » ; panne : erreur et bouton Reessayer', (tester) async {
+      faux.repond('GET', '/subjects', {'items': []});
       await monterEcran(tester, _page(const InstitutionCatalogTab()));
       expect(find.text(L10n.current.studentTabsNoContent), findsOneWidget);
-    });
-
-    // Bug probable (lecture du code) : le bouton « Assigner » de chaque contenu
-    // n'a pas d'action (onTap absent) : il est affiche mais ne fait rien.
-    testWidgets('BUG PROBABLE : « Assigner » est actif', (tester) async {
-      faux.repond('GET', '/subjects', {
-        'items': [
-          {'id': 1, 'title': 'Epreuve de maths', 'level': 'Terminale', 'price': 500},
-        ],
-      });
+      await monter(tester, const SizedBox());
+      faux.repond('GET', '/subjects', {}, statut: 500);
       await monterEcran(tester, _page(const InstitutionCatalogTab()));
-      expect(tester.widget<WinButton>(_bouton(L10n.current.instCatalogAssign)).onTap, isNotNull);
-    }, skip: true); // Bug probable : voir le commentaire ci-dessus.
+      expect(find.text(L10n.current.studentTabsNoContent), findsNothing);
+      expect(find.text(L10n.current.commonLoadError), findsOneWidget);
+      expect(find.text(L10n.current.commonRetry), findsOneWidget);
+    });
   });
 
   group('InstitutionAnalyticsTab', () {

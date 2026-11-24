@@ -32,7 +32,7 @@ void main() {
     expect(find.text('15/20'), findsOneWidget);
     expect(find.text(l.teacherCorrectionPendingCount(2)), findsOneWidget);
     expect(_bouton(l.teacherCorrectionCorrect), findsNWidgets(2));
-    expect(_bouton(l.teacherCorrectionView), findsOneWidget);
+    expect(_bouton(l.commonEdit), findsOneWidget);
   });
 
   testWidgets('liste enveloppee dans { items } acceptee', (tester) async {
@@ -41,14 +41,19 @@ void main() {
     expect(find.text('Ada Eto'), findsOneWidget);
   });
 
-  testWidgets('aucune copie ou erreur serveur : message « rien a corriger »', (tester) async {
+  testWidgets('aucune copie : « rien a corriger » ; panne : erreur et bouton Reessayer', (tester) async {
     faux.repond('GET', '/teacher/corrections/pending', []);
     await monterEcran(tester, const CorrectionQueueScreen());
     expect(find.text(L10n.current.teacherCorrectionEmpty), findsOneWidget);
     faux.repond('GET', '/teacher/corrections/pending', {}, statut: 500);
     await tester.tap(find.byIcon(Icons.refresh_outlined));
     await reseau(tester);
-    expect(find.text(L10n.current.teacherCorrectionEmpty), findsOneWidget);
+    expect(find.text(L10n.current.teacherCorrectionEmpty), findsNothing);
+    expect(find.text(L10n.current.commonLoadError), findsOneWidget);
+    faux.repond('GET', '/teacher/corrections/pending', _copies);
+    await tester.tap(find.text(L10n.current.commonRetry));
+    await reseau(tester);
+    expect(find.text('Ada Eto'), findsOneWidget);
   });
 
   testWidgets('filtres : « En attente » et « Corrige »', (tester) async {

@@ -19,6 +19,8 @@ import '../widgets/win_widgets.dart';
 import 'document_viewer_screen.dart';
 import 'quiz_screen.dart';
 import 'student_home.dart' show ContentCard;
+import '../widgets/external_links.dart';
+import '../app_config.dart';
 
 class ContentDetailScreen extends StatefulWidget {
   final Content content;
@@ -132,7 +134,13 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                 }),
               ),
               const SizedBox(width: 8),
-              WinCircleIconButton(icon: Icons.share_outlined, onTap: () {}),
+              WinCircleIconButton(
+                  icon: Icons.share_outlined,
+                  // Le lien du site : il ouvre le contenu, dans l'application
+                  // si elle est installée.
+                  onTap: () => ExternalLinks.share(
+                      '${AppConfig.siteUrl}/subjects/${widget.content.id}',
+                      subject: widget.content.title)),
               const SizedBox(width: 8),
             ],
             flexibleSpace: FlexibleSpaceBar(
