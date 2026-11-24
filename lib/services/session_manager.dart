@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -34,8 +35,22 @@ class SessionManager {
 
   static Future<void> _load() async {
     if (_loaded) return;
-    _access = await _secure.read(key: _keyToken);
-    _refresh = await _secure.read(key: _keyRefresh);
+    try {
+      _access = await _secure.read(key: _keyToken);
+      _refresh = await _secure.read(key: _keyRefresh);
+    } catch (e) {
+      // Trousseau illisible (cas connu sur Android, après une restauration
+      // de sauvegarde ou un changement de verrouillage) : sans cette
+      // protection, chaque requête levait la même erreur. On repart sans
+      // session (nouvelle connexion) et on efface les entrées illisibles.
+      debugPrint('SessionManager: trousseau illisible ($e)');
+      _access = null;
+      _refresh = null;
+      try {
+        await _secure.delete(key: _keyToken);
+        await _secure.delete(key: _keyRefresh);
+      } catch (_) {}
+    }
     // Reprise d'une session enregistrée en clair par une version précédente.
     final p = await SharedPreferences.getInstance();
     final oldAccess = p.getString(_keyToken);

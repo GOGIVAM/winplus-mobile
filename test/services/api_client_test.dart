@@ -165,6 +165,52 @@ void main() {
       expect(faux.recues('POST', '/auth/refresh'), isEmpty);
     });
 
+    test('coupure pendant le renouvellement : la session reste, aucun signal', () async {
+      await SessionManager.save(accessToken: 'vieux', refreshToken: 'r1', userId: 1, email: 'a@b.cm', role: 'student', name: 'A');
+      var signaux = 0;
+      ApiClient.instance.onSessionExpired = () => signaux++;
+      faux.repond('GET', '/prive', {'error': 'expire'}, statut: 401);
+      faux.coupure('POST', '/auth/refresh');
+      await expectLater(ApiClient.instance.dio.get('/prive'), throwsA(isA<DioException>()));
+      expect(await SessionManager.isLoggedIn(), isTrue);
+      expect(await SessionManager.getRefreshToken(), 'r1');
+      expect(signaux, 0);
+    });
+
+    test('serveur en panne pendant le renouvellement (500) : la session reste', () async {
+      await SessionManager.save(accessToken: 'vieux', refreshToken: 'r1', userId: 1, email: 'a@b.cm', role: 'student', name: 'A');
+      var signaux = 0;
+      ApiClient.instance.onSessionExpired = () => signaux++;
+      faux.repond('GET', '/prive', {'error': 'expire'}, statut: 401);
+      faux.repond('POST', '/auth/refresh', {'error': 'panne'}, statut: 500);
+      await expectLater(ApiClient.instance.dio.get('/prive'), throwsA(isA<DioException>()));
+      expect(await SessionManager.isLoggedIn(), isTrue);
+      expect(signaux, 0);
+    });
+
+    test('jeton de renouvellement refuse (400) : fin de session', () async {
+      await SessionManager.save(accessToken: 'vieux', refreshToken: 'r1', userId: 1, email: 'a@b.cm', role: 'student', name: 'A');
+      var signaux = 0;
+      ApiClient.instance.onSessionExpired = () => signaux++;
+      faux.repond('GET', '/prive', {'error': 'expire'}, statut: 401);
+      faux.repond('POST', '/auth/refresh', {'error': 'jeton invalide'}, statut: 400);
+      await expectLater(ApiClient.instance.dio.get('/prive'), throwsA(isA<DioException>()));
+      expect(await SessionManager.isLoggedIn(), isFalse);
+      expect(signaux, 1);
+    });
+
+    test('apres une coupure, le renouvellement repart a la requete suivante', () async {
+      await SessionManager.save(accessToken: 'vieux', refreshToken: 'r1', userId: 1, email: 'a@b.cm', role: 'student', name: 'A');
+      faux.sur('GET', '/prive', (o) => o.headers['Authorization'] == 'Bearer neuf'
+          ? const FauxReponse({'ok': true})
+          : const FauxReponse({'error': 'expire'}, 401));
+      faux.coupure('POST', '/auth/refresh');
+      await expectLater(ApiClient.instance.dio.get('/prive'), throwsA(isA<DioException>()));
+      faux.repond('POST', '/auth/refresh', {'accessToken': 'neuf', 'refreshToken': 'r2'});
+      final res = await ApiClient.instance.dio.get('/prive');
+      expect(res.data, {'ok': true});
+    });
+
     test('une erreur 403 n\'efface pas la session', () async {
       await SessionManager.save(accessToken: 'abc', refreshToken: 'r', userId: 1, email: 'a@b.cm', role: 'student', name: 'A');
       faux.repond('GET', '/interdit', {'error': 'non'}, statut: 403);

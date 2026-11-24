@@ -50,8 +50,8 @@ class ApiClient {
         final sent = e.requestOptions.headers['Authorization'];
         final hadSession = sent != null;
         if (e.response?.statusCode == 401 && hadSession) {
-          final refreshed = await _refreshOnce(sent.toString());
-          if (refreshed) {
+          final outcome = await _refreshOnce(sent.toString());
+          if (outcome == _Refresh.renewed) {
             final token = await SessionManager.getAccessToken();
             final opts = e.requestOptions;
             opts.headers['Authorization'] = 'Bearer $token';
@@ -62,10 +62,16 @@ class ApiClient {
               return handler.next(retry);
             }
           }
-          // En arrière-plan, un renouvellement refusé ne déconnecte pas :
-          // l'application ouverte a pu renouveler au même instant, elle
-          // reste seule juge de l'expiration.
-          if (!backgroundMode) await _expireSession();
+          // Seul un refus du serveur met fin à la session. Une coupure, un
+          // délai dépassé ou une panne du serveur pendant le renouvellement
+          // la laissent intacte : la requête échoue comme hors ligne, le
+          // renouvellement repartira à la suivante. Avant, toute erreur
+          // déconnectait (une coupure toutes les 15 minutes suffisait).
+          // En arrière-plan, même un refus ne déconnecte pas : l'application
+          // ouverte a pu renouveler au même instant, elle reste seule juge.
+          if (outcome == _Refresh.refused && !backgroundMode) {
+            await _expireSession();
+          }
         }
         handler.next(e);
       },
@@ -107,7 +113,7 @@ class ApiClient {
   /// temps attendent le même renouvellement. Sans cela, le serveur, qui
   /// remplace le jeton de renouvellement à chaque usage, refusait le second
   /// et déconnectait l'utilisateur.
-  Future<bool>? _refreshing;
+  Future<_Refresh>? _refreshing;
 
   /// Vrai dans les isolats de fond (service de notifications, tâche
   /// périodique) : voir le refus de renouvellement ci-dessus.
@@ -118,24 +124,24 @@ class ApiClient {
   /// pour ne jamais renouveler en même temps qu'elle.
   Future<bool> Function()? mayRefresh;
 
-  Future<bool> _refreshOnce(String sentAuthorization) {
+  Future<_Refresh> _refreshOnce(String sentAuthorization) {
     return _refreshing ??= _tryRefresh(sentAuthorization)
         .whenComplete(() => _refreshing = null);
   }
 
-  Future<bool> _tryRefresh(String sentAuthorization) async {
+  Future<_Refresh> _tryRefresh(String sentAuthorization) async {
     // Un autre isolat a peut-être déjà renouvelé : on relit le trousseau,
     // et si le jeton d'accès a changé, on rejoue avec lui sans consommer le
     // jeton de renouvellement (le serveur le remplace à chaque usage).
     SessionManager.reload();
     final stored = await SessionManager.getAccessToken();
     if (stored != null && stored.isNotEmpty && 'Bearer $stored' != sentAuthorization) {
-      return true;
+      return _Refresh.renewed;
     }
     final allowed = mayRefresh;
-    if (allowed != null && !await allowed()) return false;
+    if (allowed != null && !await allowed()) return _Refresh.unavailable;
     final refresh = await SessionManager.getRefreshToken();
-    if (refresh == null) return false;
+    if (refresh == null || refresh.isEmpty) return _Refresh.refused;
     try {
       // Client sans intercepteur (un 401 ici ne doit pas relancer de
       // renouvellement), mais même transport que le client principal.
@@ -157,9 +163,16 @@ class ApiClient {
         accessToken: data['accessToken'] as String,
         refreshToken: data['refreshToken'] as String?,
       );
-      return true;
+      return _Refresh.renewed;
+    } on DioException catch (e) {
+      // Le serveur refuse le jeton de renouvellement : fin de session.
+      final code = e.response?.statusCode;
+      if (code == 400 || code == 401 || code == 403) return _Refresh.refused;
+      // Coupure, délai dépassé, panne du serveur : la session reste.
+      return _Refresh.unavailable;
     } catch (_) {
-      return false;
+      // Réponse inattendue (corps illisible) : pas une preuve de refus.
+      return _Refresh.unavailable;
     }
   }
 
@@ -184,4 +197,16 @@ class ApiClient {
   Future<void> delete(String path) async {
     await _dio.delete(path);
   }
+}
+
+/// Issue d'un renouvellement du jeton d'accès.
+enum _Refresh {
+  /// Nouveau jeton (ou déjà renouvelé par un autre isolat).
+  renewed,
+
+  /// Le serveur refuse le jeton de renouvellement : la session est finie.
+  refused,
+
+  /// Serveur injoignable ou en panne : la session reste.
+  unavailable,
 }
