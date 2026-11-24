@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../shared/visio/visio_screen.dart';
+import '../services/visio_service.dart';
 
 import '../services/tutor_booking_service.dart';
 import '../services/tutor_engagement_service.dart';
@@ -632,6 +634,15 @@ class _UpcomingCard extends StatelessWidget {
           WinBadge(_statusLabel, color: _statusColor),
         ]),
         _BookingDetails(b),
+        // Lot 9.4 : séance en ligne confirmée, animée sur la visio WinPlus.
+        if (b.mode == 'online' && b.status == 'confirmed') ...[
+          const SizedBox(height: 10),
+          WinButton(context.l10n.visioStart,
+              block: true,
+              small: true,
+              icon: Icons.videocam_outlined,
+              onTap: () => VisioScreen.open(context, VisioType.tutorat, b.id)),
+        ],
         if (b.isDisputed && (b.disputeReason ?? '').isNotEmpty) ...[
           const SizedBox(height: 8),
           WinAlert(context.l10n.teacherBookingDisputeReason(b.disputeReason!),

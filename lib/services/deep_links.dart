@@ -4,6 +4,8 @@ import 'package:app_links/app_links.dart';
 import 'package:flutter/widgets.dart';
 
 import '../auth/reset_password_screen.dart';
+import '../shared/visio/visio_screen.dart';
+import 'visio_service.dart';
 import '../theme/win_motion.dart';
 
 /// Liens du site ouverts dans l'application (lot 2, App Links Android).
@@ -13,6 +15,8 @@ import '../theme/win_motion.dart';
 /// l'application au lieu du navigateur. Seuls les liens qui ont un écran
 /// mobile sont pris en charge :
 /// - /reset-password/{jeton} : lien de l'e-mail « mot de passe oublié ».
+/// - /visio/{seance|tutorat}/{id} : lien partagé d'un cours en direct
+///   (seule entrée de l'élève inscrit à une séance, comme sur le site).
 ///
 /// Un lien reçu au lancement attend que l'écran de démarrage ait fini son
 /// routage ([ready]), sinon son remplacement effacerait la page ouverte.
@@ -65,6 +69,11 @@ class DeepLinks {
     final s = lien.pathSegments.where((e) => e.isNotEmpty).toList();
     if (s.length == 2 && s[0] == 'reset-password') {
       return ResetPasswordScreen(token: s[1]);
+    }
+    if (s.length == 3 && s[0] == 'visio') {
+      final type = visioTypeFrom(s[1]);
+      final id = int.tryParse(s[2]);
+      if (type != null && id != null) return VisioScreen(type: type, id: id);
     }
     return null;
   }

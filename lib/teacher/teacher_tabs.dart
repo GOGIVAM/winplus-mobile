@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../shared/visio/visio_screen.dart';
+import '../services/visio_service.dart';
 import '../widgets/external_links.dart';
 import '../theme/win_motion.dart';
 import '../data/models.dart';
@@ -914,7 +916,19 @@ class _SessionCard extends StatelessWidget {
             else if (soon)
               WinBadge(l.teacherSessionsSoon, color: BadgeColor.error),
           ]),
-          // Lien de la séance (Meet, Zoom…) : seule action réelle possible ici.
+          // Séance en direct sans lien externe : salle de visio WinPlus,
+          // animée par le professeur (même règle que le site).
+          if (se.hasWinPlusVisio) ...[
+            const SizedBox(height: 12),
+            WinButton(l.visioStart,
+                variant: soon ? WinButtonVariant.accent : WinButtonVariant.outline,
+                block: true,
+                small: true,
+                icon: Icons.videocam_outlined,
+                onTap: () => VisioScreen.open(context, VisioType.seance, se.id,
+                    title: se.title)),
+          ],
+          // Lien de la séance (Meet, Zoom…).
           if (se.externalLink != null && !se.isCancelled) ...[
             const SizedBox(height: 12),
             WinButton(l.teacherSessionsJoin,

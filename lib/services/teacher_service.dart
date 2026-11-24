@@ -510,6 +510,10 @@ class ApiTeachingSession {
   final String status;
   final int enrolledCount;
 
+  /// live, recording ou correction : seule une séance live a une salle de
+  /// visio WinPlus.
+  final String type;
+
   const ApiTeachingSession({
     required this.id,
     required this.title,
@@ -521,6 +525,7 @@ class ApiTeachingSession {
     this.externalLink,
     required this.status,
     this.enrolledCount = 0,
+    this.type = 'live',
   });
 
   factory ApiTeachingSession.fromJson(Map<String, dynamic> j) {
@@ -541,8 +546,13 @@ class ApiTeachingSession {
           : (j['externalLink'] as String).trim(),
       status: j['status']?.toString() ?? '',
       enrolledCount: (j['enrolledCount'] as num?)?.toInt() ?? 0,
+      type: j['type']?.toString().toLowerCase() ?? 'live',
     );
   }
 
   bool get isCancelled => status.toLowerCase() == 'cancelled';
+
+  /// Salle de visio WinPlus, comme sur le site : séance en direct sans lien
+  /// externe (Meet, Zoom…), non annulée.
+  bool get hasWinPlusVisio => type == 'live' && externalLink == null && !isCancelled;
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../shared/visio/visio_screen.dart';
+import '../../services/visio_service.dart';
 
 import '../../l10n/l10n.dart';
 import '../../services/tutor_booking_service.dart';
@@ -386,6 +388,16 @@ class _BookingCardState extends State<_BookingCard> {
           const SizedBox(height: 10),
           WinAlert(context.l10n.tutoringDisputeSentReason('${b.disputeReason}'),
               type: BadgeColor.error),
+        ],
+        // Lot 9.4 : séance en ligne confirmée, sur la visio WinPlus
+        // (participants seulement, comme le site).
+        if (b.mode == 'online' && b.status == 'confirmed' && b.viewerIsParticipant != false) ...[
+          const SizedBox(height: 10),
+          WinButton(context.l10n.visioJoin,
+              block: true,
+              small: true,
+              icon: Icons.videocam_outlined,
+              onTap: () => VisioScreen.open(context, VisioType.tutorat, b.id)),
         ],
         // Lot 9.6 : support de séance WinAI partagé par le tuteur.
         if (b.sessionMaterialStatus == 'shared') ...[

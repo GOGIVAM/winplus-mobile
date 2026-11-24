@@ -46,7 +46,8 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
             <!-- Liens du site ouverts dans l'application (App Links, lot 2) :
-                 lien « mot de passe oublié » reçu par e-mail. Vérifiés par
+                 lien « mot de passe oublié » reçu par e-mail, lien d'un cours
+                 en direct. Vérifiés par
                  https://winplus.cm/.well-known/assetlinks.json (empreinte de
                  la clé de signature). Traités par lib/services/deep_links.dart. -->
             <intent-filter android:autoVerify="true">
@@ -58,6 +59,9 @@
                 <data android:host="www.winplus.cm"/>
                 <data android:host="integration.winplus.cm"/>
                 <data android:pathPrefix="/reset-password/"/>
+                <!-- Lot 9.4 : lien partagé d'un cours en direct
+                     (/visio/seance/{id}, /visio/tutorat/{id}). -->
+                <data android:pathPrefix="/visio/"/>
             </intent-filter>
             <!-- Les liens passent par app_links, pas par le routage nommé de
                  Flutter (l'application n'a pas de routes nommées). -->
