@@ -11,6 +11,7 @@ import 'package:winplus/services/local_cache_service.dart';
 import 'package:winplus/services/user_service.dart';
 import 'package:winplus/shell/role_shell.dart';
 import 'package:winplus/student/notifications_screen.dart';
+import 'package:winplus/shell/more_screen.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
@@ -54,39 +55,85 @@ void main() {
     await monterEcran(tester, const RoleShell(), etat: etat);
   }
 
-  testWidgets('eleve : quatre onglets, accueil par defaut', (tester) async {
+  // Meme barre pour tous : Accueil, deux onglets de l'espace, Messages, Plus.
+  testWidgets('eleve : accueil, catalogue, mon espace, messages, plus', (tester) async {
     await monterCoque(tester, WinRole.student);
     final l = L10n.current;
-    for (final t in [l.shellTabHome, l.shellTabCatalog, l.shellTabMySpace, l.shellTabMe]) {
+    for (final t in [l.shellTabHome, l.shellTabCatalog, l.shellTabMySpace, l.shellTabMessages, l.shellTabMore]) {
       expect(_onglet(t), findsOneWidget, reason: t);
     }
     expect(find.text(l.shellTabChildren), findsNothing);
-    expect(find.byIcon(Icons.home_outlined), findsOneWidget);
   });
 
-  testWidgets('parent : cinq onglets dont les messages', (tester) async {
+  testWidgets('parent : accueil, enfants, ressources, messages, plus', (tester) async {
     await monterCoque(tester, WinRole.parent);
     final l = L10n.current;
-    for (final t in [l.shellTabHome, l.shellTabChildren, l.shellTabResources, l.shellTabMessages, l.shellTabProfile]) {
+    for (final t in [l.shellTabHome, l.shellTabChildren, l.shellTabResources, l.shellTabMessages, l.shellTabMore]) {
       expect(_onglet(t), findsOneWidget, reason: t);
     }
   });
 
-  testWidgets('professeur : cinq onglets dont les gains', (tester) async {
+  testWidgets('professeur : accueil, contenus, etudiants, messages, plus', (tester) async {
     await monterCoque(tester, WinRole.teacher);
     final l = L10n.current;
-    for (final t in [l.shellTabHome, l.shellTabContent, l.shellTabStudents, l.shellTabSessions, l.shellTabEarnings]) {
+    for (final t in [l.shellTabHome, l.shellTabContent, l.shellTabStudents, l.shellTabMessages, l.shellTabMore]) {
       expect(_onglet(t), findsOneWidget, reason: t);
     }
   });
 
-  testWidgets('etablissement : cinq onglets, avatar en icone d\'immeuble', (tester) async {
+  testWidgets('etablissement : accueil, groupes, analyses, messages, plus ; avatar en icone d\'immeuble', (tester) async {
     await monterCoque(tester, WinRole.institution);
     final l = L10n.current;
-    for (final t in [l.shellTabHome, l.shellTabGroups, l.shellTabCatalog, l.shellTabAnalytics, l.shellTabAccount]) {
+    for (final t in [l.shellTabHome, l.shellTabGroups, l.shellTabAnalytics, l.shellTabMessages, l.shellTabMore]) {
       expect(_onglet(t), findsOneWidget, reason: t);
     }
     expect(find.byIcon(Icons.apartment_outlined), findsWidgets);
+  });
+
+  testWidgets('professeur, « Plus » : seances, revenus, corrections, reglages et deconnexion', (tester) async {
+    faux.repond('POST', '/auth/logout', {});
+    await monterCoque(tester, WinRole.teacher);
+    final l = L10n.current;
+    await tester.tap(_onglet(l.shellTabMore));
+    await pomper(tester, const Duration(milliseconds: 400));
+    await reseau(tester);
+    expect(find.byType(MoreScreen), findsOneWidget);
+    for (final t in [l.mobileHomeSessions, l.shellTabEarnings, l.mobileHomeCorrections, l.language, l.commonDarkMode]) {
+      expect(find.text(t), findsWidgets, reason: t);
+    }
+    final sortie = find.text(l.commonLogout);
+    await tester.scrollUntilVisible(sortie, 300, scrollable: find.byType(Scrollable).last);
+    expect(sortie, findsOneWidget);
+  });
+
+  testWidgets('professeur, « Plus » : une entree ouvre sa page avec retour', (tester) async {
+    await monterCoque(tester, WinRole.teacher);
+    final l = L10n.current;
+    await tester.tap(_onglet(l.shellTabMore));
+    await pomper(tester, const Duration(milliseconds: 400));
+    await reseau(tester);
+    await tester.tap(find.text(l.shellTabEarnings));
+    await pomper(tester);
+    await pomper(tester, const Duration(milliseconds: 400));
+    await reseau(tester);
+    expect(find.byType(MorePage), findsOneWidget);
+    expect(find.byIcon(Icons.arrow_back), findsOneWidget);
+  });
+
+  testWidgets('l\'avatar ouvre « Plus »', (tester) async {
+    await monterCoque(tester, WinRole.teacher);
+    await tester.tap(find.text('AE'));
+    await pomper(tester, const Duration(milliseconds: 400));
+    await reseau(tester);
+    expect(find.byType(MoreScreen), findsOneWidget);
+  });
+
+  testWidgets('panier dans la barre du haut pour l\'eleve et le parent, pas pour le professeur', (tester) async {
+    await monterCoque(tester, WinRole.student);
+    expect(find.byTooltip(L10n.current.mobileCatalogCart), findsOneWidget);
+    await monter(tester, const SizedBox());
+    await monterCoque(tester, WinRole.teacher);
+    expect(find.byTooltip(L10n.current.mobileCatalogCart), findsNothing);
   });
 
   testWidgets('l\'avatar de l\'eleve affiche les initiales du profil (deux premiers mots)', (tester) async {
@@ -114,7 +161,8 @@ void main() {
     faux.repond('GET', '/notifications', {'data': [], 'total': 0});
     await monterCoque(tester, WinRole.student);
     final avant = faux.recues('GET', '/notifications/unread-count').length;
-    await tester.tap(find.byIcon(Icons.notifications_outlined));
+    await tester.tap(find.byTooltip(L10n.current.studentNotifTitle));
+    await pomper(tester);
     await pomper(tester, const Duration(milliseconds: 400));
     await reseau(tester);
     expect(find.byType(NotificationsScreen), findsOneWidget);
@@ -128,20 +176,11 @@ void main() {
   testWidgets('choisir un onglet remplace le logo par le titre de l\'onglet', (tester) async {
     await monterCoque(tester, WinRole.student);
     expect(find.byType(Image), findsWidgets);
-    await tester.tap(find.text(L10n.current.shellTabMe));
+    await tester.tap(_onglet(L10n.current.shellTabMySpace));
     await pomper(tester, const Duration(milliseconds: 300));
     await reseau(tester);
-    expect(find.text(L10n.current.shellTabMe), findsWidgets);
-    expect(find.byIcon(Icons.person_outline), findsWidgets);
-  });
-
-  testWidgets('l\'avatar ouvre le choix de la langue', (tester) async {
-    await monterCoque(tester, WinRole.student);
-    await tester.tap(find.text('AE'));
-    await pomper(tester, const Duration(milliseconds: 400));
-    expect(find.text(L10n.current.language), findsOneWidget);
-    expect(find.text('FR'), findsOneWidget);
-    expect(find.text('EN'), findsOneWidget);
+    // Le titre de la barre du haut et le libelle de l'onglet.
+    expect(find.text(L10n.current.shellTabMySpace), findsNWidgets(2));
   });
 
   testWidgets('la langue du compte est appliquee au demarrage', (tester) async {

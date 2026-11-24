@@ -18,15 +18,28 @@ import '../parent/parent_tabs.dart';
 import '../teacher/teacher_tabs.dart';
 import '../institution/institution_tabs.dart';
 import '../widgets/biometric_toggle.dart';
-import '../widgets/language_selector.dart';
 import '../widgets/offline_strip.dart';
 import '../widgets/winai_floating_widget.dart';
 import 'shell_nav.dart';
+import 'more_screen.dart';
+import '../institution/student_directory_screen.dart';
+import '../institution/reports_screen.dart';
+import '../institution/license_screen.dart';
+import '../institution/at_risk_screen.dart';
+import '../teacher/tutor_profile_screen.dart';
+import '../teacher/tutor_bookings_screen.dart';
+import '../teacher/teacher_links_screen.dart';
+import '../teacher/teacher_courses_screen.dart';
+import '../teacher/correction_queue_screen.dart';
+import '../shared/shop/cart_screen.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class NavItem {
   final String label;
-  final IconData icon;
-  const NavItem(this.label, this.icon);
+
+  /// Pictogramme au trait, et sa version pleine pour l'onglet ouvert.
+  final IconData icon, activeIcon;
+  const NavItem(this.label, this.icon, this.activeIcon);
 }
 
 /// Coquille principale : barre de navigation basse propre à chaque rôle.
@@ -110,6 +123,46 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
     });
   }
 
+  /// Renvois des écrans (`ShellNav.go(context, n)`), écrits avec les indices
+  /// de l'ancienne barre du bas : chacun mène soit à un onglet de la nouvelle
+  /// barre, soit à la page correspondante ouverte par-dessus (elle se trouve
+  /// désormais dans « Plus »).
+  void _goLegacy(int legacy) {
+    final role = WinAppScope.of(context).role;
+    final l = context.l10n;
+    switch (role) {
+      case WinRole.student:
+        // Accueil, Catalogue, Mon espace, [Messages], Plus (ancien profil).
+        _goTab(legacy == 3 ? 4 : legacy.clamp(0, 2));
+      case WinRole.parent:
+        _goTab(legacy.clamp(0, 4));
+      case WinRole.teacher:
+        if (legacy == 3) {
+          _push(MorePage(
+              title: l.mobileHomeSessions, child: const TeacherSessionsTab()));
+        } else if (legacy == 4) {
+          _push(MorePage(
+              title: l.shellTabEarnings, child: const TeacherRevenueTab()));
+        } else {
+          _goTab(legacy.clamp(0, 2));
+        }
+      case WinRole.institution:
+        if (legacy == 2) {
+          _push(MorePage(
+              title: l.shellTabCatalog, child: const InstitutionCatalogTab()));
+        } else if (legacy == 3) {
+          _goTab(2);
+        } else if (legacy == 4) {
+          _goTab(4);
+        } else {
+          _goTab(legacy.clamp(0, 1));
+        }
+    }
+  }
+
+  void _push(Widget page) =>
+      Navigator.push(context, WinPageRoute(builder: (_) => page));
+
   Future<void> _openNotifications() async {
     await Navigator.push(
         context, WinPageRoute(builder: (_) => const NotificationsScreen()));
@@ -121,7 +174,7 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
     final s = WinTheme.of(context);
     final role = WinAppScope.of(context).role;
     final tabs = _tabsFor(role, context.l10n);
-    final pages = _pagesFor(role);
+    final pages = _pagesFor(role, context.l10n);
     final safeIndex = _index.clamp(0, tabs.length - 1);
     final tab = tabs[safeIndex];
 
@@ -139,10 +192,18 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
             : Text(tab.label,
                 style: WinType.archivo(size: 20, color: s.onStrong)),
         actions: [
+          // Panier : élève et parent achètent des contenus.
+          if (role == WinRole.student || role == WinRole.parent)
+            IconButton(
+              icon: Icon(PhosphorIconsRegular.shoppingCart, color: s.onSurface),
+              tooltip: context.l10n.mobileCatalogCart,
+              onPressed: () => _push(const CartScreen()),
+            ),
           Stack(
             children: [
               IconButton(
-                icon: Icon(Icons.notifications_outlined, color: s.onSurface),
+                icon: Icon(PhosphorIconsRegular.bell, color: s.onSurface),
+                tooltip: context.l10n.studentNotifTitle,
                 onPressed: _openNotifications,
               ),
               ValueListenableBuilder<int>(
@@ -190,7 +251,7 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
           // Hors ligne, date des données, actions en attente (lot 3).
           const OfflineStrip(),
           Expanded(child: ShellNav(
-          goTab: _goTab,
+          goTab: _goLegacy,
           child: WinAIFloatingWidget(
             role: role,
             // L'onglet ouvert glisse depuis le côté de son bouton dans la
@@ -230,17 +291,16 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
 
   bool _isCatalogTab(WinRole role, int i) => switch (role) {
         WinRole.student => i == 1,
-        WinRole.institution => i == 2,
         _ => false,
       };
 
   Widget _avatarFor(WinRole role) {
-    // Lot 10.11 : l'avatar ouvre le réglage de la langue (le professeur n'a
-    // pas d'écran de réglages ; les autres l'ont aussi dans leur profil).
+    // L'avatar ouvre « Plus » : compte, réglages (langue, mode sombre,
+    // empreinte) et déconnexion, pour tous les espaces.
     return Padding(
       padding: const EdgeInsets.only(right: 4),
       child: GestureDetector(
-        onTap: () => showLanguageSheet(context),
+        onTap: () => _goTab(4),
         child: switch (role) {
         WinRole.student => Container(
             width: 34,
@@ -295,64 +355,123 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
     );
   }
 
-  List<NavItem> _tabsFor(WinRole role, AppLocalizations l10n) =>
-      switch (role) {
-        WinRole.student => [
-            NavItem(l10n.shellTabHome, Icons.home_outlined),
-            NavItem(l10n.shellTabCatalog, Icons.layers_outlined),
-            NavItem(l10n.shellTabMySpace, Icons.grid_view_outlined),
-            NavItem(l10n.shellTabMe, Icons.person_outline),
-          ],
-        WinRole.parent => [
-            NavItem(l10n.shellTabHome, Icons.home_outlined),
-            NavItem(l10n.shellTabChildren, Icons.people_outline),
-            NavItem(l10n.shellTabResources, Icons.layers_outlined),
-            NavItem(l10n.shellTabMessages, Icons.chat_bubble_outlined),
-            NavItem(l10n.shellTabProfile, Icons.person_outline),
-          ],
-        WinRole.teacher => [
-            NavItem(l10n.shellTabHome, Icons.home_outlined),
-            NavItem(l10n.shellTabContent, Icons.layers_outlined),
-            NavItem(l10n.shellTabStudents, Icons.people_outline),
-            NavItem(l10n.shellTabSessions, Icons.event_outlined),
-            NavItem(l10n.shellTabEarnings, Icons.account_balance_wallet_outlined),
-          ],
-        WinRole.institution => [
-            NavItem(l10n.shellTabHome, Icons.home_outlined),
-            NavItem(l10n.shellTabGroups, Icons.people_outline),
-            NavItem(l10n.shellTabCatalog, Icons.layers_outlined),
-            NavItem(l10n.shellTabAnalytics, Icons.bar_chart_outlined),
-            NavItem(l10n.shellTabAccount, Icons.apartment_outlined),
-          ],
-      };
+  /// Barre du bas, la même construction pour tous les espaces : Accueil,
+  /// deux onglets propres à l'espace, Messages, Plus.
+  List<NavItem> _tabsFor(WinRole role, AppLocalizations l10n) {
+    final home = NavItem(l10n.shellTabHome, PhosphorIconsRegular.house,
+        PhosphorIconsFill.house);
+    final messages = NavItem(l10n.shellTabMessages,
+        PhosphorIconsRegular.chatCircleDots, PhosphorIconsFill.chatCircleDots);
+    final more = NavItem(l10n.shellTabMore,
+        PhosphorIconsRegular.dotsThreeCircle, PhosphorIconsFill.dotsThreeCircle);
+    final middle = switch (role) {
+      WinRole.student => [
+          NavItem(l10n.shellTabCatalog, PhosphorIconsRegular.books,
+              PhosphorIconsFill.books),
+          NavItem(l10n.shellTabMySpace, PhosphorIconsRegular.squaresFour,
+              PhosphorIconsFill.squaresFour),
+        ],
+      WinRole.parent => [
+          NavItem(l10n.shellTabChildren, PhosphorIconsRegular.usersThree,
+              PhosphorIconsFill.usersThree),
+          NavItem(l10n.shellTabResources, PhosphorIconsRegular.books,
+              PhosphorIconsFill.books),
+        ],
+      WinRole.teacher => [
+          NavItem(l10n.shellTabContent, PhosphorIconsRegular.files,
+              PhosphorIconsFill.files),
+          NavItem(l10n.shellTabStudents, PhosphorIconsRegular.student,
+              PhosphorIconsFill.student),
+        ],
+      WinRole.institution => [
+          NavItem(l10n.shellTabGroups, PhosphorIconsRegular.usersThree,
+              PhosphorIconsFill.usersThree),
+          NavItem(l10n.shellTabAnalytics, PhosphorIconsRegular.chartBar,
+              PhosphorIconsFill.chartBar),
+        ],
+    };
+    return [home, ...middle, messages, more];
+  }
 
-  List<Widget> _pagesFor(WinRole role) => switch (role) {
+  List<Widget> _pagesFor(WinRole role, AppLocalizations l) => switch (role) {
         WinRole.student => const [
             StudentHomeTab(),
             StudentCatalogTab(),
             StudentSpaceTab(),
-            ProfileHubTab()
+            MessagingScreen(),
+            // Profil, outils, réglages et déconnexion de l'élève.
+            ProfileHubTab(),
           ],
         WinRole.parent => const [
             ParentDashTab(),
             ParentChildrenTab(),
             ParentResourcesTab(),
             MessagingScreen(),
-            ParentProfileTab()
+            // Compte, abonnement, réglages et déconnexion du parent.
+            ParentProfileTab(),
           ],
-        WinRole.teacher => const [
-            TeacherDashTab(),
-            TeacherContentTab(),
-            TeacherStudentsTab(),
-            TeacherSessionsTab(),
-            TeacherRevenueTab()
+        WinRole.teacher => [
+            const TeacherDashTab(),
+            const TeacherContentTab(),
+            const TeacherStudentsTab(),
+            const MessagingScreen(),
+            MoreScreen(entries: [
+              MoreEntry(
+                  l.mobileHomeSessions,
+                  PhosphorIconsRegular.calendarDots,
+                  (_) => MorePage(
+                      title: l.mobileHomeSessions,
+                      child: const TeacherSessionsTab())),
+              MoreEntry(
+                  l.shellTabEarnings,
+                  PhosphorIconsRegular.wallet,
+                  (_) => MorePage(
+                      title: l.shellTabEarnings,
+                      child: const TeacherRevenueTab())),
+              MoreEntry(l.mobileHomeCorrections,
+                  PhosphorIconsRegular.checkSquareOffset,
+                  (_) => const CorrectionQueueScreen()),
+              MoreEntry(l.studentMyCoursesTitle,
+                  PhosphorIconsRegular.graduationCap,
+                  (_) => const TeacherCoursesScreen()),
+              MoreEntry(l.teacherProfileTitle,
+                  PhosphorIconsRegular.identificationBadge,
+                  (_) => const TutorProfileScreen()),
+              MoreEntry(l.teacherClassesMyBookings,
+                  PhosphorIconsRegular.calendarCheck,
+                  (_) => const TutorBookingsScreen()),
+              MoreEntry(l.teacherClassesMyLinks, PhosphorIconsRegular.link,
+                  (_) => const TeacherLinksScreen()),
+            ]),
           ],
-        WinRole.institution => const [
-            InstitutionDashTab(),
-            InstitutionGroupsTab(),
-            InstitutionCatalogTab(),
-            InstitutionAnalyticsTab(),
-            InstitutionAccountTab()
+        WinRole.institution => [
+            const InstitutionDashTab(),
+            const InstitutionGroupsTab(),
+            const InstitutionAnalyticsTab(),
+            const MessagingScreen(),
+            MoreScreen(entries: [
+              MoreEntry(
+                  l.shellTabCatalog,
+                  PhosphorIconsRegular.books,
+                  (_) => MorePage(
+                      title: l.shellTabCatalog,
+                      child: const InstitutionCatalogTab())),
+              MoreEntry(l.mobileHomeDirectory, PhosphorIconsRegular.addressBook,
+                  (_) => const StudentDirectoryScreen()),
+              MoreEntry(l.instRiskTitle, PhosphorIconsRegular.warning,
+                  (_) => const AtRiskScreen()),
+              MoreEntry(l.instReportsTitle, PhosphorIconsRegular.fileText,
+                  (_) => const ReportsScreen()),
+              MoreEntry(l.mobileHomeLicense,
+                  PhosphorIconsRegular.identificationCard,
+                  (_) => const LicenseScreen()),
+              MoreEntry(
+                  l.shellTabAccount,
+                  PhosphorIconsRegular.buildings,
+                  (_) => MorePage(
+                      title: l.shellTabAccount,
+                      child: const InstitutionAccountTab())),
+            ]),
           ],
       };
 }
@@ -384,10 +503,12 @@ class _BottomNav extends StatelessWidget {
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(t.icon,
-                            size: 22, color: on ? s.primary : s.onFaint),
+                        Icon(on ? t.activeIcon : t.icon,
+                            size: 24, color: on ? s.primary : s.onFaint),
                         const SizedBox(height: 3),
                         Text(t.label,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                             style: WinType.manrope(
                                 size: 10,
                                 weight: on ? FontWeight.w600 : FontWeight.w500,
