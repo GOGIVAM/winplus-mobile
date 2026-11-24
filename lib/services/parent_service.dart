@@ -89,18 +89,40 @@ class ApiChildStats {
   final int quizzesThisWeek;
   final double averageScore;
   final int aiSessionsThisWeek;
+
+  /// Jours d'activité d'affilée (quiz, étude, téléchargement).
+  final int currentStreak;
+
+  /// Jours depuis la dernière activité ; 0 aussi pour un enfant sans aucune
+  /// activité (voir [lastActiveAt]).
+  final int inactivityDays;
   const ApiChildStats({
     this.downloadsThisWeek = 0,
     this.quizzesThisWeek = 0,
     this.averageScore = 0,
     this.aiSessionsThisWeek = 0,
+    this.currentStreak = 0,
+    this.inactivityDays = 0,
   });
+
+  /// Date approximative de la dernière activité, ou null si l'enfant n'a
+  /// jamais été actif (le serveur renvoie alors 0 jour et aucune série).
+  DateTime? get lastActiveAt {
+    final never = inactivityDays == 0 && currentStreak == 0 &&
+        quizzesThisWeek == 0 && downloadsThisWeek == 0;
+    if (never) return null;
+    final today = DateTime.now();
+    return DateTime(today.year, today.month, today.day)
+        .subtract(Duration(days: inactivityDays));
+  }
 
   factory ApiChildStats.fromJson(Map<String, dynamic> j) => ApiChildStats(
         downloadsThisWeek: j['downloadsThisWeek'] as int? ?? 0,
         quizzesThisWeek: j['quizzesThisWeek'] as int? ?? 0,
         averageScore: ((j['averageScore'] ?? 0) as num).toDouble(),
         aiSessionsThisWeek: j['aiSessionsThisWeek'] as int? ?? 0,
+        currentStreak: (j['currentStreak'] as num?)?.toInt() ?? 0,
+        inactivityDays: (j['inactivityDays'] as num?)?.toInt() ?? 0,
       );
 }
 

@@ -493,15 +493,17 @@ enum Trend { up, down, stable }
 class TrackedChild {
   final String id, name, level;
   final int avgScore;
-  final Trend trend;
-  final DateTime lastActiveAt;
+  /// Null : aucune tendance calculée par le serveur (rien n'est affiché).
+  final Trend? trend;
+  /// Null : l'enfant n'a encore aucune activité.
+  final DateTime? lastActiveAt;
   const TrackedChild({
     required this.id,
     required this.name,
     required this.level,
     required this.avgScore,
-    required this.trend,
-    required this.lastActiveAt,
+    this.trend,
+    this.lastActiveAt,
   });
 }
 

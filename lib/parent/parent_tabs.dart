@@ -59,6 +59,8 @@ class _ParentDashTabState extends State<ParentDashTab> {
   // chargés une fois les enfants connus. `null` tant que non chargé pour
   // chaque enfant : évite d'afficher un score à 0 trompeur pendant l'attente.
   final Map<int, double> _childScores = {};
+  // Dernière activité réelle de chaque enfant (null : jamais actif).
+  final Map<int, DateTime?> _childLastActive = {};
   bool _offline = !ConnectivityService.instance.isOnline;
   StreamSubscription<bool>? _connSub;
 
@@ -104,7 +106,10 @@ class _ParentDashTabState extends State<ParentDashTab> {
       for (final child in kids) {
         ParentService.instance.getChildStats(child.id).then((stats) {
           if (mounted) {
-            setState(() => _childScores[child.id] = stats.averageScore);
+            setState(() {
+              _childScores[child.id] = stats.averageScore;
+              _childLastActive[child.id] = stats.lastActiveAt;
+            });
           }
         }).catchError((_) {});
       }
@@ -142,8 +147,10 @@ class _ParentDashTabState extends State<ParentDashTab> {
               name: c.fullName,
               level: c.level ?? '',
               avgScore: (_childScores[c.id] ?? 0).round(),
-              trend: Trend.stable,
-              lastActiveAt: DateTime.now(),
+              // Activité réelle (statistiques du serveur), plus « actif »
+              // d'office ; aucune tendance n'est calculée par le serveur, on
+              // n'en affiche donc pas.
+              lastActiveAt: _childLastActive[c.id],
             ))
         .toList();
     // Évènements réels uniquement : fin de période de l'abonnement en cours
@@ -393,11 +400,16 @@ class _TrackedChildCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
     final now = DateTime.now();
-    final diff = now.difference(child.lastActiveAt);
+    final today = DateTime(now.year, now.month, now.day);
+    // Jours entiers depuis la dernière activité ; jamais actif : très ancien.
+    final last = child.lastActiveAt;
+    final diff = last == null
+        ? const Duration(days: 365)
+        : today.difference(DateTime(last.year, last.month, last.day));
 
     final Color statusColor;
     final String statusLabel;
-    if (diff.inHours < 24) {
+    if (diff.inDays == 0) {
       statusColor = WinColors.success;
       statusLabel = context.l10n.commonActive;
     } else if (diff.inDays == 1) {
@@ -462,8 +474,11 @@ class _TrackedChildCard extends StatelessWidget {
           Row(children: [
             Text('${child.avgScore}%',
                 style: WinType.archivo(size: 14, color: scoreColor)),
-            const SizedBox(width: 6),
-            Icon(trendIcon, size: 14, color: trendColor),
+            // Tendance affichée seulement si le serveur en calcule une.
+            if (child.trend != null) ...[
+              const SizedBox(width: 6),
+              Icon(trendIcon, size: 14, color: trendColor),
+            ],
           ]),
           const SizedBox(height: 6),
           Row(children: [

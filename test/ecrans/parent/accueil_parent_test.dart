@@ -191,4 +191,20 @@ void main() {
     await ouvrir(tester, achat);
     expect(find.byType(BuyForChildScreen), findsOneWidget);
   });
+  testWidgets('activite reelle des enfants : active, hier, inactif, jamais actif ; pas de tendance inventee', (tester) async {
+    routes(enfants: [
+      {'id': 4, 'firstName': 'Zoe', 'lastName': 'Eto'},
+      {'id': 5, 'firstName': 'Leo', 'lastName': 'Eto'},
+      {'id': 7, 'firstName': 'Ivy', 'lastName': 'Eto'},
+    ]);
+    faux.repond('GET', '/parent/children/4/stats', {'averageScore': 70, 'inactivityDays': 0, 'currentStreak': 3});
+    faux.repond('GET', '/parent/children/5/stats', {'averageScore': 60, 'inactivityDays': 1, 'currentStreak': 1});
+    faux.repond('GET', '/parent/children/7/stats', {'averageScore': 0, 'inactivityDays': 0, 'currentStreak': 0});
+    await monterHaut(tester);
+    final l = L10n.current;
+    expect(find.text(l.commonActive), findsOneWidget, reason: 'seule Zoe a ete active aujourd\'hui');
+    expect(find.text(l.commonYesterday), findsOneWidget);
+    expect(find.text(l.parentChildInactive), findsOneWidget, reason: 'Ivy n''a jamais ete active');
+    expect(find.byIcon(Icons.trending_flat_rounded), findsNothing, reason: 'le serveur ne calcule aucune tendance');
+  });
 }
