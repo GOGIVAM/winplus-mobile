@@ -66,10 +66,10 @@ void main() {
     expect(find.text(l.shellTabChildren), findsNothing);
   });
 
-  testWidgets('parent : accueil, enfants, ressources, messages, plus', (tester) async {
+  testWidgets('parent : accueil, enfants, catalogue, messages, plus', (tester) async {
     await monterCoque(tester, WinRole.parent);
     final l = L10n.current;
-    for (final t in [l.shellTabHome, l.shellTabChildren, l.shellTabResources, l.shellTabMessages, l.shellTabMore]) {
+    for (final t in [l.shellTabHome, l.shellTabChildren, l.shellTabCatalog, l.shellTabMessages, l.shellTabMore]) {
       expect(_onglet(t), findsOneWidget, reason: t);
     }
   });
@@ -99,7 +99,7 @@ void main() {
     await pomper(tester, const Duration(milliseconds: 400));
     await reseau(tester);
     expect(find.byType(MoreScreen), findsOneWidget);
-    for (final t in [l.mobileHomeSessions, l.shellTabEarnings, l.mobileHomeCorrections, l.settingsTitle]) {
+    for (final t in [l.shellTabCatalog, l.mobileHomeSessions, l.shellTabEarnings, l.mobileHomeCorrections, l.settingsTitle]) {
       expect(find.text(t), findsWidgets, reason: t);
     }
     final sortie = find.text(l.commonLogout);

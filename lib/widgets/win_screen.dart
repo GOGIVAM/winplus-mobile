@@ -4,6 +4,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import 'win_widgets.dart';
+import 'win_logo.dart';
 
 /// Barre commune : retour rond de 44 px, titre ou marque, action à droite.
 class WinScreenHeader extends StatelessWidget implements PreferredSizeWidget {
@@ -60,8 +61,8 @@ class WinScreenHeader extends StatelessWidget implements PreferredSizeWidget {
               ] else
                 const Spacer(),
               if (showBrand) ...[
-                Image.asset('assets/winplus-logo.png',
-                    width: 26, height: 26, excludeFromSemantics: true),
+                // Logo dans son disque blanc : lisible en clair comme en sombre.
+                const WinLogo(size: 32, shadow: false),
                 const SizedBox(width: 7),
                 Text.rich(TextSpan(
                   style: WinType.archivo(

@@ -33,6 +33,7 @@ import '../teacher/teacher_courses_screen.dart';
 import '../teacher/correction_queue_screen.dart';
 import '../shared/shop/cart_screen.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/win_logo.dart';
 
 class NavItem {
   final String label;
@@ -188,7 +189,9 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
         // Accueil et catalogue : le logo seul, pas le nom de l'onglet
         // (la page commence par sa recherche, comme sur le site).
         title: safeIndex == 0 || _isCatalogTab(role, safeIndex)
-            ? Image.asset('assets/winplus-logo.png', width: 36)
+            ? const Align(
+                alignment: Alignment.centerLeft,
+                child: WinLogo(size: 38, shadow: false))
             : Text(tab.label,
                 style: WinType.archivo(size: 20, color: s.onStrong)),
         actions: [
@@ -374,7 +377,8 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
       WinRole.parent => [
           NavItem(l10n.shellTabChildren, PhosphorIconsRegular.usersThree,
               PhosphorIconsFill.usersThree),
-          NavItem(l10n.shellTabResources, PhosphorIconsRegular.books,
+          // Le catalogue complet (recommandés en tête), nommé comme sur le site.
+          NavItem(l10n.shellTabCatalog, PhosphorIconsRegular.books,
               PhosphorIconsFill.books),
         ],
       WinRole.teacher => [
@@ -428,6 +432,12 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
             const TeacherStudentsTab(),
             const MessagingScreen(),
             MoreScreen(entries: [
+              MoreEntry(
+                  l.shellTabCatalog,
+                  PhosphorIconsRegular.books,
+                  (_) => MorePage(
+                      title: l.shellTabCatalog,
+                      child: const StudentCatalogTab())),
               MoreEntry(
                   l.mobileHomeSessions,
                   PhosphorIconsRegular.calendarDots,
