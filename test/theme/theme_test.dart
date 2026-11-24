@@ -47,7 +47,7 @@ void main() {
 
     test('rayons croissants, le dernier est une pilule', () {
       // Rayons du site actuel ; 14 reste réservé aux champs et cartes d'auth.
-      expect([WinRadii.sm, WinRadii.md, WinRadii.lg, WinRadii.xl, WinRadii.full], [5, 6, 7, 14, 100]);
+      expect([WinRadii.sm, WinRadii.md, WinRadii.lg, WinRadii.xl, WinRadii.full], [10, 12, 14, 16, 100]);
     });
 
     test('ombres : une par niveau, le flou augmente avec le niveau', () {

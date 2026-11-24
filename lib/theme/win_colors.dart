@@ -79,7 +79,9 @@ class WinSpacing {
 /// Rayons du site. Les champs d'authentification gardent un rayon de 14 px.
 class WinRadii {
   WinRadii._();
-  static const double sm = 5, md = 6, lg = 7, xl = 14, full = 100;
+  // Meme echelle que le tableau de bord du site sur telephone : boutons et
+  // champs 10, tuiles 12, cartes 14, grandes cartes photo 16.
+  static const double sm = 10, md = 12, lg = 14, xl = 16, full = 100;
 }
 
 /// Ombres « ink » (jamais de noir pur).

@@ -1025,27 +1025,11 @@ class _StatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    final (Color bg, Color border, Color label, Color value) = switch (stat.tone) {
-      MobileStatTone.ink => (
-          MobileHomeColors.abyss,
-          MobileHomeColors.abyss,
-          WinColors.ink200,
-          Colors.white
-        ),
-      MobileStatTone.teal => (
-          s.dark ? WinColors.teal700.withValues(alpha: .25) : WinColors.teal50,
-          s.dark ? WinColors.teal700 : WinColors.teal100,
-          s.onMuted,
-          s.dark ? WinColors.teal300 : WinColors.teal700
-        ),
-      MobileStatTone.gold => (
-          s.dark ? WinColors.gold.withValues(alpha: .18) : WinColors.goldBg,
-          s.dark ? WinColors.gold.withValues(alpha: .4) : const Color(0xFFEBDDB8),
-          s.onMuted,
-          s.dark ? WinColors.warn : WinColors.gold
-        ),
-      MobileStatTone.white => (s.surface, s.outline, s.onMuted, s.onStrong),
-    };
+    // Comme sur le site : toutes les cartes de chiffres ont le meme dessin
+    // sobre (fond de carte, filet, chiffre a l'encre), quelle que soit
+    // l'ancienne teinte demandee.
+    final (Color bg, Color border, Color label, Color value) =
+        (s.cardBg, s.cardBorder, s.onMuted, s.onStrong);
     final tap = onTap ?? stat.onTap;
     final card = Container(
       padding: EdgeInsets.all(compact ? 12 : 16),
