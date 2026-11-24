@@ -8763,4 +8763,124 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get studentProfilePhotoError =>
       'Could not upload the photo. Pick a JPG or PNG image under 5 MB and try again.';
+
+  @override
+  String get liveTitle => 'Live classes';
+
+  @override
+  String get liveSectionOpen => 'Right now';
+
+  @override
+  String get liveSectionUpcoming => 'Upcoming';
+
+  @override
+  String get liveSectionEnded => 'Past';
+
+  @override
+  String get liveEmpty => 'No live classes yet.';
+
+  @override
+  String get liveEmptyHint =>
+      'Your live sessions and online tutoring will appear here.';
+
+  @override
+  String liveWith(String name) {
+    return 'With $name';
+  }
+
+  @override
+  String liveForChild(String name) {
+    return 'For $name';
+  }
+
+  @override
+  String get liveChildReadOnly => 'Only your child can join the room.';
+
+  @override
+  String get livePendingPayment => 'Payment pending';
+
+  @override
+  String get liveStateOpen => 'Room open';
+
+  @override
+  String get liveStateUpcoming => 'Upcoming';
+
+  @override
+  String get liveStateEnded => 'Ended';
+
+  @override
+  String liveRecordingsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count recordings',
+      one: '1 recording',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get liveRecordingsTitle => 'Recordings';
+
+  @override
+  String get liveRecordingsEmpty => 'No recordings for this session.';
+
+  @override
+  String get liveRecordingsHint => 'Each video link is valid for 6 hours.';
+
+  @override
+  String get liveSessionTitle => 'Live session';
+
+  @override
+  String liveSessionBy(String name) {
+    return 'By $name';
+  }
+
+  @override
+  String liveSessionPrice(String price) {
+    return '$price XAF';
+  }
+
+  @override
+  String liveSessionPlaces(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count seats left',
+      one: '1 seat left',
+      zero: 'Full',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get liveSessionEnroll => 'Enroll';
+
+  @override
+  String get liveSessionPay => 'Pay and enroll';
+
+  @override
+  String get liveSessionPhone => 'Mobile Money number';
+
+  @override
+  String get liveSessionPhoneRequired => 'Enter your Mobile Money number.';
+
+  @override
+  String get liveSessionEnrolled => 'You are enrolled in this session.';
+
+  @override
+  String get liveSessionPendingPayment =>
+      'Payment pending: confirm it on your phone, then check.';
+
+  @override
+  String get liveSessionCheckPayment => 'Check payment';
+
+  @override
+  String get liveSessionCancelled => 'This session has been cancelled.';
+
+  @override
+  String get liveSessionExternal => 'Open the session link';
+
+  @override
+  String get liveSessionEnrollError => 'Enrollment failed.';
 }

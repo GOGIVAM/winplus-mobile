@@ -4,6 +4,7 @@ import 'package:app_links/app_links.dart';
 import 'package:flutter/widgets.dart';
 
 import '../auth/reset_password_screen.dart';
+import '../shared/visio/live_session_screen.dart';
 import '../shared/visio/visio_screen.dart';
 import 'visio_service.dart';
 import '../theme/win_motion.dart';
@@ -15,8 +16,9 @@ import '../theme/win_motion.dart';
 /// l'application au lieu du navigateur. Seuls les liens qui ont un écran
 /// mobile sont pris en charge :
 /// - /reset-password/{jeton} : lien de l'e-mail « mot de passe oublié ».
-/// - /visio/{seance|tutorat}/{id} : lien partagé d'un cours en direct
-///   (seule entrée de l'élève inscrit à une séance, comme sur le site).
+/// - /visio/{seance|tutorat}/{id} : salle d'un cours en direct.
+/// - /sessions/{id} : fiche d'une séance en direct (lien partagé par le
+///   professeur) : inscription, puis entrée dans la salle.
 ///
 /// Un lien reçu au lancement attend que l'écran de démarrage ait fini son
 /// routage ([ready]), sinon son remplacement effacerait la page ouverte.
@@ -74,6 +76,10 @@ class DeepLinks {
       final type = visioTypeFrom(s[1]);
       final id = int.tryParse(s[2]);
       if (type != null && id != null) return VisioScreen(type: type, id: id);
+    }
+    if (s.length == 2 && s[0] == 'sessions') {
+      final id = int.tryParse(s[1]);
+      if (id != null) return LiveSessionScreen(id: id);
     }
     return null;
   }

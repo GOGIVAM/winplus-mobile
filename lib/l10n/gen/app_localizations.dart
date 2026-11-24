@@ -15097,6 +15097,192 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Impossible d\'envoyer la photo. Choisis une image JPG ou PNG de moins de 5 Mo puis réessaie.'**
   String get studentProfilePhotoError;
+
+  /// No description provided for @liveTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cours en direct'**
+  String get liveTitle;
+
+  /// No description provided for @liveSectionOpen.
+  ///
+  /// In fr, this message translates to:
+  /// **'En ce moment'**
+  String get liveSectionOpen;
+
+  /// No description provided for @liveSectionUpcoming.
+  ///
+  /// In fr, this message translates to:
+  /// **'À venir'**
+  String get liveSectionUpcoming;
+
+  /// No description provided for @liveSectionEnded.
+  ///
+  /// In fr, this message translates to:
+  /// **'Terminés'**
+  String get liveSectionEnded;
+
+  /// No description provided for @liveEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun cours en direct pour l’instant.'**
+  String get liveEmpty;
+
+  /// No description provided for @liveEmptyHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tes séances en direct et tes tutorats en ligne apparaîtront ici.'**
+  String get liveEmptyHint;
+
+  /// No description provided for @liveWith.
+  ///
+  /// In fr, this message translates to:
+  /// **'Avec {name}'**
+  String liveWith(String name);
+
+  /// No description provided for @liveForChild.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pour {name}'**
+  String liveForChild(String name);
+
+  /// No description provided for @liveChildReadOnly.
+  ///
+  /// In fr, this message translates to:
+  /// **'Seul ton enfant peut entrer dans la salle.'**
+  String get liveChildReadOnly;
+
+  /// No description provided for @livePendingPayment.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paiement en attente'**
+  String get livePendingPayment;
+
+  /// No description provided for @liveStateOpen.
+  ///
+  /// In fr, this message translates to:
+  /// **'Salle ouverte'**
+  String get liveStateOpen;
+
+  /// No description provided for @liveStateUpcoming.
+  ///
+  /// In fr, this message translates to:
+  /// **'À venir'**
+  String get liveStateUpcoming;
+
+  /// No description provided for @liveStateEnded.
+  ///
+  /// In fr, this message translates to:
+  /// **'Terminé'**
+  String get liveStateEnded;
+
+  /// No description provided for @liveRecordingsCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{1 enregistrement} other{{count} enregistrements}}'**
+  String liveRecordingsCount(int count);
+
+  /// No description provided for @liveRecordingsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrements'**
+  String get liveRecordingsTitle;
+
+  /// No description provided for @liveRecordingsEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun enregistrement pour cette séance.'**
+  String get liveRecordingsEmpty;
+
+  /// No description provided for @liveRecordingsHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le lien de chaque vidéo est valable 6 heures.'**
+  String get liveRecordingsHint;
+
+  /// No description provided for @liveSessionTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Séance en direct'**
+  String get liveSessionTitle;
+
+  /// No description provided for @liveSessionBy.
+  ///
+  /// In fr, this message translates to:
+  /// **'Par {name}'**
+  String liveSessionBy(String name);
+
+  /// No description provided for @liveSessionPrice.
+  ///
+  /// In fr, this message translates to:
+  /// **'{price} XAF'**
+  String liveSessionPrice(String price);
+
+  /// No description provided for @liveSessionPlaces.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =0{Complet} =1{1 place restante} other{{count} places restantes}}'**
+  String liveSessionPlaces(int count);
+
+  /// No description provided for @liveSessionEnroll.
+  ///
+  /// In fr, this message translates to:
+  /// **'M’inscrire'**
+  String get liveSessionEnroll;
+
+  /// No description provided for @liveSessionPay.
+  ///
+  /// In fr, this message translates to:
+  /// **'Payer et m’inscrire'**
+  String get liveSessionPay;
+
+  /// No description provided for @liveSessionPhone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Numéro Mobile Money'**
+  String get liveSessionPhone;
+
+  /// No description provided for @liveSessionPhoneRequired.
+  ///
+  /// In fr, this message translates to:
+  /// **'Indique ton numéro Mobile Money.'**
+  String get liveSessionPhoneRequired;
+
+  /// No description provided for @liveSessionEnrolled.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tu es inscrit à cette séance.'**
+  String get liveSessionEnrolled;
+
+  /// No description provided for @liveSessionPendingPayment.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paiement en attente : valide-le sur ton téléphone, puis vérifie.'**
+  String get liveSessionPendingPayment;
+
+  /// No description provided for @liveSessionCheckPayment.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vérifier le paiement'**
+  String get liveSessionCheckPayment;
+
+  /// No description provided for @liveSessionCancelled.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette séance a été annulée.'**
+  String get liveSessionCancelled;
+
+  /// No description provided for @liveSessionExternal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouvrir le lien de la séance'**
+  String get liveSessionExternal;
+
+  /// No description provided for @liveSessionEnrollError.
+  ///
+  /// In fr, this message translates to:
+  /// **'L’inscription n’a pas abouti.'**
+  String get liveSessionEnrollError;
 }
 
 class _AppLocalizationsDelegate

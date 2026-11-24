@@ -23,8 +23,12 @@ void main() {
       ouvertes.add(a);
       return true;
     };
+    VisioScreen.presenceEnabled = false;
   });
-  tearDown(() => VisioScreen.launcher = lanceurOrigine);
+  tearDown(() {
+    VisioScreen.launcher = lanceurOrigine;
+    VisioScreen.presenceEnabled = true;
+  });
 
   Map<String, dynamic> jeton({bool moderateur = false}) => {
         'success': true,

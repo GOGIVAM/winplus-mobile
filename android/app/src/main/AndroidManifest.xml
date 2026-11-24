@@ -62,6 +62,8 @@
                 <!-- Lot 9.4 : lien partagé d'un cours en direct
                      (/visio/seance/{id}, /visio/tutorat/{id}). -->
                 <data android:pathPrefix="/visio/"/>
+                <!-- Fiche d'une séance en direct partagée (/sessions/{id}). -->
+                <data android:pathPrefix="/sessions/"/>
             </intent-filter>
             <!-- Les liens passent par app_links, pas par le routage nommé de
                  Flutter (l'application n'a pas de routes nommées). -->

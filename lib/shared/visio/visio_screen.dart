@@ -40,6 +40,11 @@ class VisioScreen extends StatefulWidget {
   static Future<bool> Function(ApiVisioAccess access) launcher =
       (access) => ExternalLinks.open(access.webUrl.toString());
 
+  /// Signaux de présence (appel du professeur). Les tests qui ne portent
+  /// pas dessus les coupent : le signal de départ part à la fermeture de
+  /// l'écran, après la fin du test.
+  static bool presenceEnabled = true;
+
   @override
   State<VisioScreen> createState() => _VisioScreenState();
 }
@@ -54,6 +59,17 @@ class _VisioScreenState extends State<VisioScreen> {
   bool _ouvertureRatee = false;
   Timer? _attente;
 
+  // Appel du professeur (POST /visio/presence) : arrivée à l'ouverture de la
+  // salle, signal chaque minute tant que cet écran reste ouvert, départ à sa
+  // fermeture. La salle est dans Chrome : l'application ne voit pas quand la
+  // personne quitte Jitsi ; le serveur la compte partie 3 min après le
+  // dernier signal.
+  int? _presenceId;
+  Timer? _presenceTimer;
+  bool _presenceStarted = false;
+  VisioType? _presenceType;
+  int? _presenceRef;
+
   @override
   void initState() {
     super.initState();
@@ -65,6 +81,7 @@ class _VisioScreenState extends State<VisioScreen> {
     super.didUpdateWidget(old);
     // Autre séance dans le même écran (lien reçu pendant qu'il est ouvert).
     if (old.type != widget.type || old.id != widget.id) {
+      _stopPresence();
       _acces = null;
       _charger();
     }
@@ -73,7 +90,39 @@ class _VisioScreenState extends State<VisioScreen> {
   @override
   void dispose() {
     _attente?.cancel();
+    _stopPresence();
     super.dispose();
+  }
+
+  void _startPresence() {
+    if (_presenceStarted || !VisioScreen.presenceEnabled) return;
+    _presenceStarted = true;
+    _presenceType = widget.type;
+    _presenceRef = widget.id;
+    _signal('arrivee');
+    _presenceTimer = Timer.periodic(const Duration(minutes: 1), (_) => _signal('present'));
+  }
+
+  void _stopPresence() {
+    _presenceTimer?.cancel();
+    _presenceTimer = null;
+    if (_presenceStarted) _signal('depart');
+    _presenceStarted = false;
+    _presenceId = null;
+  }
+
+  Future<void> _signal(String event) async {
+    final type = _presenceType, ref = _presenceRef;
+    if (type == null || ref == null) return;
+    try {
+      final id = await VisioService.instance
+          .presence(type, ref, event, presenceId: _presenceId);
+      if (event != 'depart' && id != null) _presenceId = id;
+    } catch (e) {
+      // Signal facultatif : l'appel du professeur peut manquer une minute,
+      // la personne n'a rien à faire.
+      debugPrint('Visio : signal de presence « $event » non envoye ($e)');
+    }
   }
 
   Future<void> _charger() async {
@@ -124,7 +173,9 @@ class _VisioScreenState extends State<VisioScreen> {
     final acces = _acces;
     if (acces == null) return;
     final ok = await VisioScreen.launcher(acces);
-    if (mounted) setState(() => _ouvertureRatee = !ok);
+    if (!mounted) return;
+    setState(() => _ouvertureRatee = !ok);
+    if (ok) _startPresence();
   }
 
   @override

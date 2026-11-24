@@ -129,6 +129,10 @@ void main() {
       await pomper(tester, const Duration(milliseconds: 400));
       await reseau(tester);
       expect(find.byType(MoreScreen), findsOneWidget, reason: '$role');
+      // Lot 9.4 : cours en direct dans « Plus » pour chaque espace.
+      final cours = find.text(l.liveTitle);
+      await tester.scrollUntilVisible(cours, 200, scrollable: find.byType(Scrollable).last);
+      expect(cours, findsOneWidget, reason: '$role');
       final ligne = find.text(l.settingsTitle);
       await tester.scrollUntilVisible(ligne, 200, scrollable: find.byType(Scrollable).last);
       await tester.tap(ligne);

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import '../shared/visio/live_classes_screen.dart';
 import '../l10n/l10n.dart';
 import '../theme/win_motion.dart';
 import '../app_state.dart';
@@ -410,6 +411,8 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
                   PhosphorIconsRegular.userCircle,
                   (_) => MorePage(
                       title: l.shellTabProfile, child: const ProfileHubTab())),
+              MoreEntry(l.liveTitle, PhosphorIconsRegular.videoCamera,
+                  (_) => const LiveClassesScreen()),
             ]),
           ],
         WinRole.parent => [
@@ -424,6 +427,8 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
                   PhosphorIconsRegular.userCircle,
                   (_) => MorePage(
                       title: l.shellTabProfile, child: const ParentProfileTab())),
+              MoreEntry(l.liveTitle, PhosphorIconsRegular.videoCamera,
+                  (_) => const LiveClassesScreen()),
             ]),
           ],
         WinRole.teacher => [
@@ -444,6 +449,8 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
                   (_) => MorePage(
                       title: l.mobileHomeSessions,
                       child: const TeacherSessionsTab())),
+              MoreEntry(l.liveTitle, PhosphorIconsRegular.videoCamera,
+                  (_) => const LiveClassesScreen()),
               MoreEntry(
                   l.shellTabEarnings,
                   PhosphorIconsRegular.wallet,
@@ -478,6 +485,8 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
                   (_) => MorePage(
                       title: l.shellTabCatalog,
                       child: const InstitutionCatalogTab())),
+              MoreEntry(l.liveTitle, PhosphorIconsRegular.videoCamera,
+                  (_) => const LiveClassesScreen()),
               MoreEntry(l.mobileHomeDirectory, PhosphorIconsRegular.addressBook,
                   (_) => const StudentDirectoryScreen()),
               MoreEntry(l.instRiskTitle, PhosphorIconsRegular.warning,

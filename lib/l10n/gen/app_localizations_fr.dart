@@ -8841,4 +8841,125 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get studentProfilePhotoError =>
       'Impossible d\'envoyer la photo. Choisis une image JPG ou PNG de moins de 5 Mo puis réessaie.';
+
+  @override
+  String get liveTitle => 'Cours en direct';
+
+  @override
+  String get liveSectionOpen => 'En ce moment';
+
+  @override
+  String get liveSectionUpcoming => 'À venir';
+
+  @override
+  String get liveSectionEnded => 'Terminés';
+
+  @override
+  String get liveEmpty => 'Aucun cours en direct pour l’instant.';
+
+  @override
+  String get liveEmptyHint =>
+      'Tes séances en direct et tes tutorats en ligne apparaîtront ici.';
+
+  @override
+  String liveWith(String name) {
+    return 'Avec $name';
+  }
+
+  @override
+  String liveForChild(String name) {
+    return 'Pour $name';
+  }
+
+  @override
+  String get liveChildReadOnly => 'Seul ton enfant peut entrer dans la salle.';
+
+  @override
+  String get livePendingPayment => 'Paiement en attente';
+
+  @override
+  String get liveStateOpen => 'Salle ouverte';
+
+  @override
+  String get liveStateUpcoming => 'À venir';
+
+  @override
+  String get liveStateEnded => 'Terminé';
+
+  @override
+  String liveRecordingsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count enregistrements',
+      one: '1 enregistrement',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get liveRecordingsTitle => 'Enregistrements';
+
+  @override
+  String get liveRecordingsEmpty => 'Aucun enregistrement pour cette séance.';
+
+  @override
+  String get liveRecordingsHint =>
+      'Le lien de chaque vidéo est valable 6 heures.';
+
+  @override
+  String get liveSessionTitle => 'Séance en direct';
+
+  @override
+  String liveSessionBy(String name) {
+    return 'Par $name';
+  }
+
+  @override
+  String liveSessionPrice(String price) {
+    return '$price XAF';
+  }
+
+  @override
+  String liveSessionPlaces(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count places restantes',
+      one: '1 place restante',
+      zero: 'Complet',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get liveSessionEnroll => 'M’inscrire';
+
+  @override
+  String get liveSessionPay => 'Payer et m’inscrire';
+
+  @override
+  String get liveSessionPhone => 'Numéro Mobile Money';
+
+  @override
+  String get liveSessionPhoneRequired => 'Indique ton numéro Mobile Money.';
+
+  @override
+  String get liveSessionEnrolled => 'Tu es inscrit à cette séance.';
+
+  @override
+  String get liveSessionPendingPayment =>
+      'Paiement en attente : valide-le sur ton téléphone, puis vérifie.';
+
+  @override
+  String get liveSessionCheckPayment => 'Vérifier le paiement';
+
+  @override
+  String get liveSessionCancelled => 'Cette séance a été annulée.';
+
+  @override
+  String get liveSessionExternal => 'Ouvrir le lien de la séance';
+
+  @override
+  String get liveSessionEnrollError => 'L’inscription n’a pas abouti.';
 }
