@@ -87,9 +87,13 @@ void main() {
   testWidgets('une carte ne montre que trois matieres', (tester) async {
     routes([_tuteur({'subjects': ['Maths', 'Physique', 'Chimie', 'SVT']})]);
     await monterEcran(tester, const TutorSearchScreen());
-    expect(find.text('Maths'), findsOneWidget);
-    expect(find.text('Chimie'), findsOneWidget);
-    expect(find.text('SVT'), findsNothing);
+    // On regarde la carte du tuteur seule : la rangee de filtres peut aussi
+    // montrer une puce « Chimie » ou « SVT ».
+    final carte = find.ancestor(of: find.text('Mme Ngo'), matching: find.byType(WinCard)).first;
+    Finder dans(String t) => find.descendant(of: carte, matching: find.text(t));
+    expect(dans('Maths'), findsOneWidget);
+    expect(dans('Chimie'), findsOneWidget);
+    expect(dans('SVT'), findsNothing);
   });
 
   testWidgets('modes : « Presentiel possible » avec diplome verifie et caution', (tester) async {
