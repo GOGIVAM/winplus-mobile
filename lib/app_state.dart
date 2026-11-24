@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui' show Brightness, PlatformDispatcher;
 import 'package:flutter/material.dart';
 import 'l10n/l10n.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,25 +10,70 @@ import 'services/user_service.dart';
 /// Clé de la langue choisie sur l'appareil (conservée à la déconnexion).
 const kLocalePrefKey = 'winplus_locale';
 
+/// Clé du thème choisi sur l'appareil (« dark » ou « light » ; absente :
+/// l'application suit le réglage du téléphone).
+const kThemePrefKey = 'winplus_theme';
+
 /// WINPLUS  État global léger (thème + rôle actif + langue).
 /// Pour une app de production, remplacer par Riverpod / Provider / Bloc.
 class WinAppState extends ChangeNotifier {
-  bool _dark = false;
+  /// Choix fait dans l'application ; `null` : suivre le réglage du téléphone.
+  bool? _darkChoice;
   WinRole _role = WinRole.student;
   Locale _locale = const Locale('fr');
 
-  bool get dark => _dark;
+  /// Mode sombre : le choix fait dans l'application, sinon celui du téléphone.
+  bool get dark =>
+      _darkChoice ??
+      PlatformDispatcher.instance.platformBrightness == Brightness.dark;
+
+  /// Vrai tant qu'aucun choix n'a été fait dans l'application.
+  bool get followsSystemTheme => _darkChoice == null;
   WinRole get role => _role;
   Locale get locale => _locale;
 
-  void toggleTheme() {
-    _dark = !_dark;
-    notifyListeners();
-  }
+  void toggleTheme() => setDark(!dark);
 
   void setDark(bool v) {
-    _dark = v;
+    _darkChoice = v;
     notifyListeners();
+    unawaited(_saveTheme());
+  }
+
+  /// Revenir au réglage du téléphone.
+  void followSystemTheme() {
+    _darkChoice = null;
+    notifyListeners();
+    unawaited(_saveTheme());
+  }
+
+  /// Le téléphone vient de changer de mode clair ou sombre.
+  void systemThemeChanged() {
+    if (_darkChoice == null) notifyListeners();
+  }
+
+  /// Thème au démarrage : le choix enregistré sur l'appareil, sinon le
+  /// réglage du téléphone.
+  Future<void> loadTheme() async {
+    final prefs = await SharedPreferences.getInstance();
+    final saved = prefs.getString(kThemePrefKey);
+    if (saved == 'dark' || saved == 'light') {
+      _darkChoice = saved == 'dark';
+      notifyListeners();
+    }
+  }
+
+  Future<void> _saveTheme() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      if (_darkChoice == null) {
+        await prefs.remove(kThemePrefKey);
+      } else {
+        await prefs.setString(kThemePrefKey, _darkChoice! ? 'dark' : 'light');
+      }
+    } catch (_) {
+      // Le choix reste valable pour la session en cours.
+    }
   }
 
   void setRole(WinRole r) {

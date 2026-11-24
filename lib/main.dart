@@ -56,7 +56,8 @@ class WinPlusApp extends StatefulWidget {
   State<WinPlusApp> createState() => _WinPlusAppState();
 }
 
-class _WinPlusAppState extends State<WinPlusApp> {
+class _WinPlusAppState extends State<WinPlusApp>
+    with WidgetsBindingObserver {
   final WinAppState _state = WinAppState();
   final SubscriptionNotifier _sub = SubscriptionNotifier();
 
@@ -67,8 +68,11 @@ class _WinPlusAppState extends State<WinPlusApp> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _sub.loadFromApi();
     _state.loadLocale();
+    // Mode clair ou sombre : le choix enregistré, sinon celui du téléphone.
+    _state.loadTheme();
     // Liens du site ouverts dans l'application (réinitialisation du mot de
     // passe reçue par e-mail).
     DeepLinks.instance.start(_navigator);
@@ -83,6 +87,17 @@ class _WinPlusAppState extends State<WinPlusApp> {
       );
     };
   }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  /// Le téléphone passe en clair ou en sombre : l'application suit, sauf si
+  /// un choix a été fait dans ses réglages.
+  @override
+  void didChangePlatformBrightness() => _state.systemThemeChanged();
 
   @override
   Widget build(BuildContext context) {

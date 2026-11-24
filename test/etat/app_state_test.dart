@@ -40,6 +40,26 @@ void main() {
       expect(appels, 2);
     });
 
+    test('sans choix : le theme suit le telephone ; un choix prend le dessus, followSystemTheme y revient', () {
+      final s = WinAppState();
+      expect(s.followsSystemTheme, isTrue);
+      s.setDark(true);
+      expect(s.followsSystemTheme, isFalse);
+      expect(s.dark, isTrue);
+      s.followSystemTheme();
+      expect(s.followsSystemTheme, isTrue);
+      // Le telephone de test est en mode clair.
+      expect(s.dark, isFalse);
+    });
+
+    test('loadTheme reprend le choix enregistre sur le telephone', () async {
+      SharedPreferences.setMockInitialValues({kThemePrefKey: 'dark'});
+      final s = WinAppState();
+      await s.loadTheme();
+      expect(s.dark, isTrue);
+      expect(s.followsSystemTheme, isFalse);
+    });
+
     test('setDark fixe le theme et previent meme si la valeur ne change pas', () {
       final s = WinAppState();
       var appels = 0;
