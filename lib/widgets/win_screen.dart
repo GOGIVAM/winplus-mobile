@@ -189,12 +189,23 @@ class WinEmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    return Padding(
+    // Centre dans l'espace disponible (un ecran vide ne colle plus son
+    // message en haut) ; dans une liste, le bloc garde sa hauteur.
+    return Center(
+        child: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 40, color: s.onMuted),
+            // Pastille d'icone, comme l'etat vide du site.
+            Container(
+                width: 52,
+                height: 52,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                    color: s.outline2,
+                    borderRadius: BorderRadius.circular(WinRadii.lg)),
+                child: Icon(icon, size: 26, color: s.onMuted)),
             const SizedBox(height: 16),
             Text(title,
                 textAlign: TextAlign.center,
@@ -209,7 +220,7 @@ class WinEmptyState extends StatelessWidget {
               WinButton(actionLabel!, onTap: onAction)
             ],
           ],
-        ));
+        )));
   }
 }
 
