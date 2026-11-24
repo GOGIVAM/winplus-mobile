@@ -394,21 +394,33 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
   }
 
   List<Widget> _pagesFor(WinRole role, AppLocalizations l) => switch (role) {
-        WinRole.student => const [
-            StudentHomeTab(),
-            StudentCatalogTab(),
-            StudentSpaceTab(),
-            MessagingScreen(),
-            // Profil, outils, réglages et déconnexion de l'élève.
-            ProfileHubTab(),
+        WinRole.student => [
+            const StudentHomeTab(),
+            const StudentCatalogTab(),
+            const StudentSpaceTab(),
+            const MessagingScreen(),
+            // Profil et outils de l'élève (sa page existante), puis Paramètres.
+            MoreScreen(entries: [
+              MoreEntry(
+                  l.shellTabProfile,
+                  PhosphorIconsRegular.userCircle,
+                  (_) => MorePage(
+                      title: l.shellTabProfile, child: const ProfileHubTab())),
+            ]),
           ],
-        WinRole.parent => const [
-            ParentDashTab(),
-            ParentChildrenTab(),
-            ParentResourcesTab(),
-            MessagingScreen(),
-            // Compte, abonnement, réglages et déconnexion du parent.
-            ParentProfileTab(),
+        WinRole.parent => [
+            const ParentDashTab(),
+            const ParentChildrenTab(),
+            const ParentResourcesTab(),
+            const MessagingScreen(),
+            // Compte et abonnement du parent (sa page existante), puis Paramètres.
+            MoreScreen(entries: [
+              MoreEntry(
+                  l.shellTabProfile,
+                  PhosphorIconsRegular.userCircle,
+                  (_) => MorePage(
+                      title: l.shellTabProfile, child: const ParentProfileTab())),
+            ]),
           ],
         WinRole.teacher => [
             const TeacherDashTab(),

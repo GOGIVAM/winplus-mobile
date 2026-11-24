@@ -12,6 +12,7 @@ import 'package:winplus/services/user_service.dart';
 import 'package:winplus/shell/role_shell.dart';
 import 'package:winplus/student/notifications_screen.dart';
 import 'package:winplus/shell/more_screen.dart';
+import 'package:winplus/shell/settings_screen.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
@@ -98,7 +99,7 @@ void main() {
     await pomper(tester, const Duration(milliseconds: 400));
     await reseau(tester);
     expect(find.byType(MoreScreen), findsOneWidget);
-    for (final t in [l.mobileHomeSessions, l.shellTabEarnings, l.mobileHomeCorrections, l.language, l.commonDarkMode]) {
+    for (final t in [l.mobileHomeSessions, l.shellTabEarnings, l.mobileHomeCorrections, l.settingsTitle]) {
       expect(find.text(t), findsWidgets, reason: t);
     }
     final sortie = find.text(l.commonLogout);
@@ -118,6 +119,26 @@ void main() {
     await reseau(tester);
     expect(find.byType(MorePage), findsOneWidget);
     expect(find.byIcon(Icons.arrow_back), findsOneWidget);
+  });
+
+  testWidgets('« Plus » puis « Parametres », pour chaque espace : langue et mode sombre', (tester) async {
+    final l = L10n.current;
+    for (final role in WinRole.values) {
+      await monterCoque(tester, role);
+      await tester.tap(_onglet(l.shellTabMore));
+      await pomper(tester, const Duration(milliseconds: 400));
+      await reseau(tester);
+      expect(find.byType(MoreScreen), findsOneWidget, reason: '$role');
+      final ligne = find.text(l.settingsTitle);
+      await tester.scrollUntilVisible(ligne, 200, scrollable: find.byType(Scrollable).last);
+      await tester.tap(ligne);
+      await pomper(tester);
+      await pomper(tester, const Duration(milliseconds: 400));
+      expect(find.byType(SettingsScreen), findsOneWidget, reason: '$role');
+      expect(find.text(l.language), findsOneWidget);
+      expect(find.text(l.commonDarkMode), findsOneWidget);
+      await monter(tester, const SizedBox());
+    }
   });
 
   testWidgets('l\'avatar ouvre « Plus »', (tester) async {

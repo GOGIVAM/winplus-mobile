@@ -1,20 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-import '../app_state.dart';
 import '../auth/login_screen.dart';
 import '../l10n/l10n.dart';
 import '../services/auth_service.dart';
 import '../services/user_service.dart';
-import '../shared/legal_screen.dart';
-import '../shared/pending_actions_screen.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_motion.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
-import '../widgets/biometric_toggle.dart';
-import '../widgets/language_selector.dart';
 import '../widgets/win_widgets.dart';
+import 'settings_screen.dart';
 
 /// Entrée de l'onglet « Plus » : une fonction de l'espace qui n'a pas sa
 /// place dans la barre du bas.
@@ -57,9 +53,7 @@ class MorePage extends StatelessWidget {
 
 /// Onglet « Plus » (dernier de la barre du bas) : tout ce que l'espace
 /// propose en dehors des quatre premiers onglets, comme le menu du site,
-/// puis les réglages (langue, mode sombre, empreinte), les pages légales et
-/// la déconnexion. Commun à tous les espaces qui n'ont pas déjà leur propre
-/// page de profil.
+/// puis « Paramètres » et la déconnexion. Commun aux quatre espaces.
 class MoreScreen extends StatefulWidget {
   final List<MoreEntry> entries;
   const MoreScreen({super.key, required this.entries});
@@ -98,7 +92,6 @@ class _MoreScreenState extends State<MoreScreen> {
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
     final l = context.l10n;
-    final state = WinAppScope.of(context);
     final name = _name ?? '';
 
     return ListView(
@@ -130,45 +123,20 @@ class _MoreScreenState extends State<MoreScreen> {
 
         // Fonctions de l'espace.
         if (widget.entries.isNotEmpty) ...[
-          _Group(children: [
+          MoreGroup(children: [
             for (final e in widget.entries)
-              _Line(icon: e.icon, label: e.label, onTap: () => _open(e.page)),
+              MoreLine(icon: e.icon, label: e.label, onTap: () => _open(e.page)),
           ]),
           const SizedBox(height: 16),
         ],
 
-        // Réglages.
-        _Group(children: [
-          _Line(
-              icon: PhosphorIconsRegular.translate,
-              label: l.language,
-              trailing: const LanguageToggle()),
-          _Line(
-              icon: PhosphorIconsRegular.moon,
-              label: l.commonDarkMode,
-              trailing: Switch(
-                  value: state.dark,
-                  activeThumbColor: s.primary,
-                  onChanged: state.setDark)),
-          _Line(
-              icon: PhosphorIconsRegular.clockCounterClockwise,
-              label: l.pendingTitle,
-              onTap: () => _open((_) => const PendingActionsScreen())),
-        ]),
-        const SizedBox(height: 8),
-        const BiometricToggle(),
-        const SizedBox(height: 16),
-
-        // Pages légales.
-        _Group(children: [
-          _Line(
-              icon: PhosphorIconsRegular.fileText,
-              label: l.studentHubTerms,
-              onTap: () => LegalScreen.showCgu(context)),
-          _Line(
-              icon: PhosphorIconsRegular.shieldCheck,
-              label: l.studentHubPrivacy,
-              onTap: () => LegalScreen.showPrivacy(context)),
+        // Paramètres de l'application (langue, mode sombre, empreinte,
+        // actions en attente, pages légales) sur leur propre page.
+        MoreGroup(children: [
+          MoreLine(
+              icon: PhosphorIconsRegular.gearSix,
+              label: l.settingsTitle,
+              onTap: () => _open((_) => const SettingsScreen())),
         ]),
         const SizedBox(height: 20),
 
@@ -183,9 +151,9 @@ class _MoreScreenState extends State<MoreScreen> {
 }
 
 /// Groupe de lignes dans une carte, séparées par un filet.
-class _Group extends StatelessWidget {
+class MoreGroup extends StatelessWidget {
   final List<Widget> children;
-  const _Group({required this.children});
+  const MoreGroup({super.key, required this.children});
 
   @override
   Widget build(BuildContext context) {
@@ -203,13 +171,17 @@ class _Group extends StatelessWidget {
 }
 
 /// Ligne du menu : pictogramme, libellé, puis chevron (ou un réglage).
-class _Line extends StatelessWidget {
+class MoreLine extends StatelessWidget {
   final IconData icon;
   final String label;
   final VoidCallback? onTap;
   final Widget? trailing;
-  const _Line(
-      {required this.icon, required this.label, this.onTap, this.trailing});
+  const MoreLine(
+      {super.key,
+      required this.icon,
+      required this.label,
+      this.onTap,
+      this.trailing});
 
   @override
   Widget build(BuildContext context) {
