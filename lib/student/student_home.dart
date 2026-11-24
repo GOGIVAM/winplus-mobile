@@ -410,7 +410,11 @@ Widget _visuelMatiere(Subject subj) => DecoratedBox(
 
 class ContentCard extends StatefulWidget {
   final Content content;
-  const ContentCard({super.key, required this.content});
+
+  /// Action au toucher ; par défaut, la fiche du contenu (le parent, lui,
+  /// achète pour un enfant).
+  final VoidCallback? onTap;
+  const ContentCard({super.key, required this.content, this.onTap});
   @override
   State<ContentCard> createState() => _ContentCardState();
 }
@@ -424,8 +428,9 @@ class _ContentCardState extends State<ContentCard> {
     final content = widget.content;
     final subj = WinData.subjectById(content.subjectId);
     return WinPressable(
-      onTap: () => Navigator.push(context,
-          WinPageRoute(builder: (_) => ContentDetailScreen(content: content))),
+      onTap: widget.onTap ??
+          () => Navigator.push(context,
+              WinPageRoute(builder: (_) => ContentDetailScreen(content: content))),
       borderRadius: BorderRadius.circular(16),
       pressedScale: 0.97,
       child: Container(

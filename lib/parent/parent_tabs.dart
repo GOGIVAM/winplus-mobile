@@ -36,6 +36,8 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../shell/shell_nav.dart';
 import '../student/search_screen.dart';
 import '../widgets/mobile_home.dart';
+import '../student/content_detail_screen.dart';
+import '../student/student_home.dart' show ContentCard;
 
 /// ===================== ACCUEIL PARENT =====================
 
@@ -599,124 +601,206 @@ class ParentResourcesTab extends StatefulWidget {
 }
 
 class _ParentResourcesTabState extends State<ParentResourcesTab> {
+  static const _pageSize = 20;
+
+  /// Recommandés : premiers contenus payants (en tête, comme sur le site).
   List<Content>? _reco;
   List<ApiChild> _children = [];
+
+  /// Catalogue complet, page par page, avec la recherche en cours.
+  final List<Content> _items = [];
+  String _query = '';
+  int _page = 0;
+  int _totalPages = 1;
+  int _total = 0;
+  bool _loadingPage = false;
+  bool _error = false;
 
   @override
   void initState() {
     super.initState();
-    _load();
+    _loadReco();
+    _loadPage(reset: true);
+    ParentService.instance.getChildren().then((kids) {
+      if (mounted) setState(() => _children = kids);
+    }).catchError((_) {});
   }
 
-  Future<void> _load() async {
+  Future<void> _loadReco() async {
     try {
-      final page = await SubjectService.instance.getAll(pageSize: 4);
-      if (mounted) {
-        setState(() => _reco = page.items
-            .where((s) => !s.isFree)
-            .take(4)
-            .map((s) => s.toContent())
-            .toList());
-      }
+      final page = await SubjectService.instance.getAll(pageSize: 12);
+      if (!mounted) return;
+      setState(() => _reco = page.items
+          .map((s) => s.toContent())
+          .where((c) => !c.free)
+          .take(4)
+          .toList());
     } catch (_) {
       if (mounted) setState(() => _reco = []);
     }
-    try {
-      final kids = await ParentService.instance.getChildren();
-      if (mounted) setState(() => _children = kids);
-    } catch (_) {}
   }
+
+  Future<void> _loadPage({bool reset = false}) async {
+    if (_loadingPage) return;
+    final next = reset ? 1 : _page + 1;
+    setState(() {
+      _loadingPage = true;
+      _error = false;
+      if (reset) _items.clear();
+    });
+    try {
+      final page = await SubjectService.instance
+          .getAll(q: _query, page: next, pageSize: _pageSize);
+      if (!mounted) return;
+      setState(() {
+        _items.addAll(page.items.map((s) => s.toContent()));
+        _page = page.page;
+        _totalPages = page.totalPages;
+        _total = page.totalCount;
+      });
+    } catch (_) {
+      if (mounted) setState(() => _error = true);
+    } finally {
+      if (mounted) setState(() => _loadingPage = false);
+    }
+  }
+
+  void _search(String q) {
+    _query = q.trim();
+    _loadPage(reset: true);
+  }
+
+  /// Toucher un contenu : gratuit, sa fiche ; payant, l'achat pour un enfant
+  /// (choix de l'enfant s'il y en a plusieurs).
+  Future<void> _ouvrir(Content c) async {
+    if (c.free) {
+      Navigator.push(context,
+          WinPageRoute(builder: (_) => ContentDetailScreen(content: c)));
+      return;
+    }
+    if (_children.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.parentDashNoChild)));
+      return;
+    }
+    final enfant = _children.length == 1
+        ? _children.first
+        : await showModalBottomSheet<ApiChild>(
+            context: context,
+            builder: (ctx) => SafeArea(
+              child: Column(mainAxisSize: MainAxisSize.min, children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 18, 20, 8),
+                  child: Text(ctx.l10n.parentBuyWhichChild,
+                      style: WinType.titleL(WinTheme.of(ctx).onStrong)),
+                ),
+                for (final k in _children)
+                  ListTile(
+                    leading: WinAvatar(k.fullName, size: 36),
+                    title: Text(k.fullName),
+                    onTap: () => Navigator.pop(ctx, k),
+                  ),
+                const SizedBox(height: 8),
+              ]),
+            ),
+          );
+    if (enfant == null || !mounted) return;
+    await acheterPourEnfant(context, c, enfant);
+  }
+
+  Widget _grid(List<Content> items) => GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        // Même carte que le catalogue de l'élève : image de couverture,
+        // matière, niveau et prix.
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            mainAxisSpacing: 14,
+            crossAxisSpacing: 12,
+            childAspectRatio: 0.70),
+        itemCount: items.length,
+        itemBuilder: (_, i) =>
+            ContentCard(content: items[i], onTap: () => _ouvrir(items[i])),
+      );
 
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
+    final l = context.l10n;
     final reco = _reco;
     // Pas de titre dans la page : la barre du haut porte déjà « Ressources ».
-    return Column(children: [
-      Expanded(
-          child: ListView(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-              children: [
+    return RefreshIndicator(
+      color: WinColors.teal600,
+      onRefresh: () async {
+        await Future.wait([_loadReco(), _loadPage(reset: true)]);
+      },
+      child: ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+          children: [
+            MobileSearchBar(
+              hint: l.mobileHomeSearchPaper,
+              onSubmit: _search,
+              onFilters: () => _search(''),
+            ),
+            const SizedBox(height: 16),
             WinCard(
                 child: Row(children: [
               const WinAIOrb(size: 26),
               const SizedBox(width: 12),
               Expanded(
-                  child: Text(
-                      context.l10n.parentResourcesIntro,
-                      style: WinType.bodyS(WinColors.ink700)))
+                  child: Text(l.parentResourcesIntro,
+                      style: WinType.bodyS(s.onMuted)))
             ])),
-            const SizedBox(height: 16),
-            Text(context.l10n.parentResourcesRecommended,
-                style: WinType.archivo(size: 18, color: s.onStrong)),
+            if (_query.isEmpty) ...[
+              const SizedBox(height: 18),
+              Text(l.parentResourcesRecommended,
+                  style: WinType.archivo(size: 18, color: s.onStrong)),
+              const SizedBox(height: 12),
+              if (reco == null)
+                const Center(child: CircularProgressIndicator())
+              else if (reco.isNotEmpty)
+                _grid(reco),
+            ],
+            const SizedBox(height: 22),
+            Row(children: [
+              Expanded(
+                  child: Text(l.shellTabCatalog,
+                      style: WinType.archivo(size: 18, color: s.onStrong))),
+              if (_total > 0)
+                Text(l.mobileCatalogCount(_total),
+                    style: WinType.labelM(s.onMuted)),
+            ]),
             const SizedBox(height: 12),
-            if (reco == null)
-              const Center(child: CircularProgressIndicator())
-            else if (reco.isEmpty)
-              Text(context.l10n.studentTabsNoContent, style: WinType.bodyM(s.onMuted))
-            else
-              GridView.count(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                crossAxisCount: 2,
-                mainAxisSpacing: 12,
-                crossAxisSpacing: 12,
-                childAspectRatio: 0.72,
-                children:
-                    reco.map((c) => _ParentContentCard(content: c)).toList(),
-              ),
-            const SizedBox(height: 20),
-            WinButton(
-              context.l10n.parentBuyContentForChild,
-              block: true,
-              icon: Icons.shopping_bag_outlined,
-              onTap: _children.isEmpty
-                  ? null
-                  : () => Navigator.push(
-                      context,
-                      WinPageRoute(
-                          builder: (_) =>
-                              BuyForChildScreen(children: _children))),
-            ),
-          ])),
-    ]);
-  }
-}
-
-class _ParentContentCard extends StatelessWidget {
-  final Content content;
-  const _ParentContentCard({required this.content});
-  @override
-  Widget build(BuildContext context) {
-    final s = WinTheme.of(context);
-    final subj = WinData.subjectById(content.subjectId);
-    return WinCard(
-        padding: EdgeInsets.zero,
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Container(
-              height: 92,
-              decoration: BoxDecoration(
-                  color: subj.color.withValues(alpha: 0.12),
-                  borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(WinRadii.lg))),
-              child:
-                  Center(child: Icon(subj.icon, size: 38, color: subj.color))),
-          Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                        height: 38,
-                        child: Text(content.title,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: WinType.titleM(s.onStrong))),
-                    const SizedBox(height: 8),
-                    Text('${fmtXaf(content.price)}\u00a0XAF',
-                        style: WinType.archivo(size: 18, color: s.onStrong)),
-                  ])),
-        ]));
+            if (_items.isEmpty && _loadingPage)
+              const Padding(
+                  padding: EdgeInsets.all(24),
+                  child: Center(child: CircularProgressIndicator()))
+            else if (_items.isEmpty && _error)
+              Column(children: [
+                Text(l.studentTabsCatalogLoadError,
+                    style: WinType.bodyM(s.onMuted),
+                    textAlign: TextAlign.center),
+                const SizedBox(height: 10),
+                WinButton(l.commonRetry,
+                    variant: WinButtonVariant.outline,
+                    onTap: () => _loadPage(reset: true)),
+              ])
+            else if (_items.isEmpty)
+              Text(l.studentTabsNoContent, style: WinType.bodyM(s.onMuted))
+            else ...[
+              _grid(_items),
+              if (_page < _totalPages) ...[
+                const SizedBox(height: 14),
+                WinButton(l.studentCatalogLoadMore,
+                    variant: WinButtonVariant.outline,
+                    block: true,
+                    loading: _loadingPage,
+                    onTap: _loadingPage ? null : () => _loadPage()),
+              ],
+            ],
+          ]),
+    );
   }
 }
 

@@ -119,51 +119,101 @@ void main() {
   });
 
   group('ParentResourcesTab', () {
-    testWidgets('recommandations payantes seulement, avec leur prix', (tester) async {
-      faux.repond('GET', '/subjects', {
-        'items': [
-          {'id': 1, 'title': 'Epreuve de maths', 'category': 'epreuve', 'price': 500},
-          {'id': 2, 'title': 'Livre gratuit', 'category': 'livre', 'isFree': true},
-        ],
-      });
-      faux.repond('GET', '/parent/children', []);
+    final contenus = {
+      'items': [
+        {'id': 1, 'title': 'Epreuve de maths', 'category': 'Mathématiques', 'price': 500},
+        {'id': 2, 'title': 'Livre gratuit', 'category': 'livre', 'isFree': true},
+      ],
+      'totalCount': 2,
+      'page': 1,
+      'totalPages': 1,
+    };
+
+    /// Ecran haut : recommandes et catalogue construits sans defilement.
+    Future<void> monterHaut(WidgetTester tester) async {
       telephone(tester);
+      tester.view.physicalSize = const Size(800, 4000);
       await monter(tester, ecran(_page(const ParentResourcesTab())));
       await reseau(tester);
+    }
+
+    testWidgets('recommandes payants en tete, puis le catalogue complet avec son compteur', (tester) async {
+      faux.repond('GET', '/subjects', contenus);
+      faux.repond('GET', '/parent/children', []);
+      await monterHaut(tester);
       final l = L10n.current;
       expect(find.text(l.parentResourcesIntro), findsOneWidget);
       expect(find.text(l.parentResourcesRecommended), findsOneWidget);
-      expect(find.text('Epreuve de maths'), findsOneWidget);
-      expect(find.text('Livre gratuit'), findsNothing);
-      expect(find.text('${fmtXaf(500)} XAF'), findsOneWidget);
-      expect(faux.recues('GET', '/subjects').single.queryParameters['pageSize'], 4);
+      expect(find.text(l.shellTabCatalog), findsOneWidget);
+      expect(find.text(l.mobileCatalogCount(2)), findsOneWidget);
+      // Le contenu payant est dans les recommandes ET le catalogue ; le gratuit
+      // seulement dans le catalogue.
+      expect(find.text('Epreuve de maths'), findsNWidgets(2));
+      expect(find.text('Livre gratuit'), findsOneWidget);
+      expect(find.text('${fmtXaf(500)} XAF'), findsNWidgets(2));
+      expect(find.text(l.commonFree), findsOneWidget);
     });
 
-    testWidgets('catalogue vide ou en erreur : message « aucun contenu »', (tester) async {
+    testWidgets('catalogue en erreur : message et « Reessayer » qui relit', (tester) async {
       faux.repond('GET', '/subjects', {}, statut: 500);
       faux.repond('GET', '/parent/children', []);
-      await monterEcran(tester, _page(const ParentResourcesTab()));
+      await monterHaut(tester);
+      final l = L10n.current;
+      expect(find.text(l.studentTabsCatalogLoadError), findsOneWidget);
+      faux.repond('GET', '/subjects', contenus);
+      await tester.tap(_bouton(l.commonRetry));
+      await reseau(tester);
+      expect(find.text('Livre gratuit'), findsOneWidget);
+    });
+
+    testWidgets('catalogue vide : message « aucun contenu »', (tester) async {
+      faux.repond('GET', '/subjects', {'items': [], 'totalCount': 0, 'page': 1, 'totalPages': 1});
+      faux.repond('GET', '/parent/children', []);
+      await monterHaut(tester);
       expect(find.text(L10n.current.studentTabsNoContent), findsOneWidget);
     });
 
-    testWidgets('achat pour un enfant : inactif sans enfant', (tester) async {
-      faux.repond('GET', '/subjects', {'items': []});
+    testWidgets('recherche : la saisie validee relit le catalogue avec q', (tester) async {
+      faux.repond('GET', '/subjects', contenus);
       faux.repond('GET', '/parent/children', []);
-      await monterEcran(tester, _page(const ParentResourcesTab()));
-      expect(tester.widget<WinButton>(_bouton(L10n.current.parentBuyContentForChild)).onTap, isNull);
+      await monterHaut(tester);
+      await tester.enterText(find.byType(TextField), 'physique');
+      await tester.testTextInput.receiveAction(TextInputAction.search);
+      await reseau(tester);
+      expect(faux.recues('GET', '/subjects').last.queryParameters['q'], 'physique');
     });
 
-    testWidgets('achat pour un enfant : ouvre l\'ecran d\'achat avec les enfants du parent', (tester) async {
-      faux.repond('GET', '/subjects', {'items': []});
-      faux.repond('GET', '/parent/children', [_enfant(4, 'Zoe')]);
-      faux.repond('GET', '/parent/credits', {'data': null});
-      await monterEcran(tester, _page(const ParentResourcesTab()));
-      final b = _bouton(L10n.current.parentBuyContentForChild);
-      await tester.scrollUntilVisible(b, 300, scrollable: find.byType(Scrollable).first);
-      await tester.tap(b);
+    testWidgets('« Charger plus » demande la page suivante', (tester) async {
+      faux.repond('GET', '/subjects', {...contenus, 'totalPages': 2});
+      faux.repond('GET', '/parent/children', []);
+      await monterHaut(tester);
+      await tester.tap(_bouton(L10n.current.studentCatalogLoadMore));
       await reseau(tester);
-      final achat = tester.widget<BuyForChildScreen>(find.byType(BuyForChildScreen));
-      expect(achat.children.single.firstName, 'Zoe');
+      expect(faux.recues('GET', '/subjects').last.queryParameters['page'], 2);
+    });
+
+    testWidgets('toucher un contenu payant sans enfant : message « aucun enfant »', (tester) async {
+      faux.repond('GET', '/subjects', contenus);
+      faux.repond('GET', '/parent/children', []);
+      await monterHaut(tester);
+      await tester.tap(find.text('Epreuve de maths').first);
+      await pomper(tester);
+      expect(find.text(L10n.current.parentDashNoChild), findsOneWidget);
+    });
+
+    testWidgets('toucher un contenu payant avec un enfant : confirmation d\'achat pour cet enfant', (tester) async {
+      faux.repond('GET', '/subjects', contenus);
+      faux.repond('GET', '/parent/children', [_enfant(4, 'Zoe')]);
+      await monterHaut(tester);
+      await tester.tap(find.text('Epreuve de maths').first);
+      await pomper(tester);
+      await pomper(tester, const Duration(milliseconds: 400));
+      final l = L10n.current;
+      expect(find.text(l.parentBuyConfirmTitle('Zoe')), findsOneWidget);
+      await tester.tap(find.text(l.commonCancel));
+      await pomper(tester);
+      await pomper(tester, const Duration(milliseconds: 400));
+      expect(faux.recues('POST', '/parent/purchase-for-child'), isEmpty);
     });
   });
 

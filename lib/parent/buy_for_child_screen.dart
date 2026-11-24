@@ -14,6 +14,83 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
 
+/// Achat d'un contenu pour un enfant (lot 6), partagé par l'écran « Acheter
+/// pour un enfant » et le catalogue du parent : confirmation, paiement par le
+/// portefeuille, ou par Mobile Money quand le solde ne suffit pas.
+Future<void> acheterPourEnfant(BuildContext context, Content c, ApiChild enfant) async {
+  final l = context.l10n;
+  final messenger = ScaffoldMessenger.of(context);
+  final subjectId = int.tryParse(c.id);
+  if (subjectId == null) return;
+
+  final ok = await showDialog<bool>(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      title: Text(l.parentBuyConfirmTitle(enfant.firstName)),
+      content: Text(l.parentBuyConfirmBody(c.title, fmtXaf(c.price), enfant.firstName)),
+      actions: [
+        TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l.commonCancel)),
+        TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l.parentBuyConfirm)),
+      ],
+    ),
+  );
+  if (ok != true || !context.mounted) return;
+
+  final ChildPurchaseResult res;
+  try {
+    res = await ParentService.instance.purchaseSubjectForChild(subjectId, enfant.id);
+  } on OfflineActionException catch (e) {
+    messenger.showSnackBar(SnackBar(content: Text(e.message)));
+    return;
+  }
+  if (!context.mounted) return;
+
+  if (res.done) {
+    messenger.showSnackBar(
+        SnackBar(content: Text(l.parentBuyDone(c.title, enfant.firstName))));
+    return;
+  }
+  if (!res.needsMobileMoney) {
+    messenger.showSnackBar(SnackBar(content: Text(res.message ?? '')));
+    return;
+  }
+
+  // Solde insuffisant : la commande est créée, il reste à la régler.
+  final prix = res.price ?? c.price.toDouble();
+  final payer = await showDialog<bool>(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      title: Text(l.parentBuyTopUpTitle),
+      content: Text(l.parentBuyTopUpBody(
+          fmtXaf((res.missing ?? prix).round()), fmtXaf(prix.round()))),
+      actions: [
+        TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l.commonCancel)),
+        TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l.parentBuyPayMomo)),
+      ],
+    ),
+  );
+  if (payer != true || !context.mounted) return;
+  final commande = await OrderService.instance.getOrderById(res.orderId!);
+  if (!context.mounted) return;
+  await Navigator.push(
+      context,
+      WinPageRoute(
+          builder: (_) => CheckoutScreen(
+              pending: PendingOrderPayment(
+                  orderId: res.orderId!,
+                  orderNumber: commande?.orderNumber ?? '#${res.orderId}',
+                  amount: commande?.totalAmount ?? prix,
+                  title: c.title))));
+}
+
 class BuyForChildScreen extends StatefulWidget {
   final List<ApiChild> children;
   const BuyForChildScreen({super.key, required this.children});
@@ -50,82 +127,8 @@ class _BuyForChildScreenState extends State<BuyForChildScreen> {
     });
   }
 
-  /// Achat dans l'application (lot 6) : confirmation, paiement par le
-  /// portefeuille, ou par Mobile Money quand le solde ne suffit pas.
   Future<void> _acheter(Content c) async {
-    final l = context.l10n;
-    final enfant = _selected;
-    final messenger = ScaffoldMessenger.of(context);
-    final subjectId = int.tryParse(c.id);
-    if (subjectId == null) return;
-
-    final ok = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l.parentBuyConfirmTitle(enfant.firstName)),
-        content: Text(l.parentBuyConfirmBody(c.title, fmtXaf(c.price), enfant.firstName)),
-        actions: [
-          TextButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              child: Text(l.commonCancel)),
-          TextButton(
-              onPressed: () => Navigator.pop(ctx, true),
-              child: Text(l.parentBuyConfirm)),
-        ],
-      ),
-    );
-    if (ok != true || !mounted) return;
-
-    final ChildPurchaseResult res;
-    try {
-      res = await ParentService.instance.purchaseSubjectForChild(subjectId, enfant.id);
-    } on OfflineActionException catch (e) {
-      messenger.showSnackBar(SnackBar(content: Text(e.message)));
-      return;
-    }
-    if (!mounted) return;
-
-    if (res.done) {
-      messenger.showSnackBar(
-          SnackBar(content: Text(l.parentBuyDone(c.title, enfant.firstName))));
-      _loadWallet();
-      return;
-    }
-    if (!res.needsMobileMoney) {
-      messenger.showSnackBar(SnackBar(content: Text(res.message ?? '')));
-      return;
-    }
-
-    // Solde insuffisant : la commande est créée, il reste à la régler.
-    final prix = res.price ?? c.price.toDouble();
-    final payer = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l.parentBuyTopUpTitle),
-        content: Text(l.parentBuyTopUpBody(
-            fmtXaf((res.missing ?? prix).round()), fmtXaf(prix.round()))),
-        actions: [
-          TextButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              child: Text(l.commonCancel)),
-          TextButton(
-              onPressed: () => Navigator.pop(ctx, true),
-              child: Text(l.parentBuyPayMomo)),
-        ],
-      ),
-    );
-    if (payer != true || !mounted) return;
-    final commande = await OrderService.instance.getOrderById(res.orderId!);
-    if (!mounted) return;
-    await Navigator.push(
-        context,
-        WinPageRoute(
-            builder: (_) => CheckoutScreen(
-                pending: PendingOrderPayment(
-                    orderId: res.orderId!,
-                    orderNumber: commande?.orderNumber ?? '#${res.orderId}',
-                    amount: commande?.totalAmount ?? prix,
-                    title: c.title))));
+    await acheterPourEnfant(context, c, _selected);
     if (mounted) _loadWallet();
   }
 
