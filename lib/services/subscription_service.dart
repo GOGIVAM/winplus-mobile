@@ -322,10 +322,19 @@ class SubscriptionService {
     }
   }
 
-  Future<ApiActiveSubscription?> getCurrent() async {
+  /// Le serveur répond toujours (plan gratuit compris) : une erreur est une
+  /// panne et remonte, au lieu de passer pour « pas d'abonnement ».
+  Future<ApiActiveSubscription> getCurrent() async {
+    final res = await _api.dio.get('/subscriptions/me');
+    return ApiActiveSubscription.fromJson(res.data as Map<String, dynamic>);
+  }
+
+  /// Pour les affichages secondaires (accueil, profil, droits en mémoire) :
+  /// null en cas de panne, l'écran garde alors ce qu'il montrait. Les écrans
+  /// dont l'abonnement est le sujet appellent [getCurrent].
+  Future<ApiActiveSubscription?> getCurrentOrNull() async {
     try {
-      final res = await _api.dio.get('/subscriptions/me');
-      return ApiActiveSubscription.fromJson(res.data as Map<String, dynamic>);
+      return await getCurrent();
     } catch (_) {
       return null;
     }

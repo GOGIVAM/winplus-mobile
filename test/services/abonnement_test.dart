@@ -281,13 +281,14 @@ void main() {
       expect(await SubscriptionService.instance.topUpWinAi(), L10n.current.svcTopUpDone);
     });
 
-    test('getEntitlements et getCurrent rendent null en cas d\'echec', () async {
+    test('en cas d\'echec : getCurrent leve une erreur (pas un faux plan gratuit), getCurrentOrNull et getEntitlements rendent null', () async {
       expect(await SubscriptionService.instance.getEntitlements(), isNull);
-      expect(await SubscriptionService.instance.getCurrent(), isNull);
+      await expectLater(SubscriptionService.instance.getCurrent(), throwsA(isA<DioException>()));
+      expect(await SubscriptionService.instance.getCurrentOrNull(), isNull);
       faux.repond('GET', '/me/entitlements', {'aiMultiplier': 2, 'entitlements': {'catalog.access': true}});
       faux.repond('GET', '/subscriptions/me', _abonnementJson());
       expect((await SubscriptionService.instance.getEntitlements())!.has('catalog.access'), isTrue);
-      expect((await SubscriptionService.instance.getCurrent())!.planName, 'Premium');
+      expect((await SubscriptionService.instance.getCurrent()).planName, 'Premium');
     });
   });
 

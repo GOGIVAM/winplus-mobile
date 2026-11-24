@@ -90,7 +90,7 @@ class _ParentDashTabState extends State<ParentDashTab> {
       final kids = await ParentService.instance.getChildren();
       final alerts = await ParentService.instance
           .getAllPersistedAlerts(kids.map((c) => c.id).toList());
-      final sub = await SubscriptionService.instance.getCurrent();
+      final sub = await SubscriptionService.instance.getCurrentOrNull();
       final wallet = await ParentService.instance.getWalletSummary();
       final events = await ParentService.instance.getUpcomingEvents();
       if (mounted)
@@ -1011,7 +1011,7 @@ class _ParentProfileTabState extends State<ParentProfileTab> {
   Future<void> _load() async {
     try {
       final profile = await ParentService.instance.getProfile();
-      final sub = await SubscriptionService.instance.getCurrent();
+      final sub = await SubscriptionService.instance.getCurrentOrNull();
       final wallet = await ParentService.instance.getWalletSummary();
       final kids = await ParentService.instance.getChildren();
       final alerts = await ParentService.instance

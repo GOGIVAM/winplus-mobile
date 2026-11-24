@@ -552,7 +552,7 @@ class _TabCompteState extends State<_TabCompte> {
   @override
   void initState() {
     super.initState();
-    SubscriptionService.instance.getCurrent().then((sub) {
+    SubscriptionService.instance.getCurrentOrNull().then((sub) {
       if (mounted && sub != null) setState(() => _sub = sub);
     });
   }

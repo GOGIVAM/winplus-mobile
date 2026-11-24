@@ -210,3 +210,10 @@ enum _Refresh {
   /// Serveur injoignable ou en panne : la session reste.
   unavailable,
 }
+
+/// Vrai quand le serveur répond « introuvable » (404) : pour une lecture,
+/// c'est une absence normale (pas de plan, pas encore d'album). Toute autre
+/// erreur (panne, réseau sans copie locale) doit remonter jusqu'à l'écran,
+/// qui affiche « erreur, réessayer » plutôt qu'un faux état vide.
+bool isNotFound(Object e) =>
+    e is DioException && e.response?.statusCode == 404;

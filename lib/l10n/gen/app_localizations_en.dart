@@ -8701,4 +8701,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsTitle => 'Settings';
+
+  @override
+  String get commonLoadError =>
+      'Could not load. Check your connection and try again.';
 }

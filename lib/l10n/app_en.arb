@@ -2480,5 +2480,6 @@
   "settingsAutoSave": "Changes are saved automatically.",
   "settingsLoadError": "Unable to load the settings.",
   "settingsSaveError": "The setting could not be saved.",
-  "settingsTitle": "Settings"
+  "settingsTitle": "Settings",
+  "commonLoadError": "Could not load. Check your connection and try again."
 }

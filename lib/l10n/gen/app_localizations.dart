@@ -14989,6 +14989,12 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Paramètres'**
   String get settingsTitle;
+
+  /// No description provided for @commonLoadError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible de charger. Vérifie ta connexion puis réessaie.'**
+  String get commonLoadError;
 }
 
 class _AppLocalizationsDelegate

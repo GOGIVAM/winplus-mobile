@@ -275,16 +275,14 @@ class ChatbotService {
     }
   }
 
+  /// Lève une erreur si le serveur ne répond pas (la feuille des mémoires
+  /// affiche alors son message d'erreur, pas « aucune mémoire »).
   Future<List<ApiWinAIMemory>> getMemories() async {
-    try {
-      final res = await _api.dio.get('/chatbot/memories');
-      final list = res.data as List? ?? [];
-      return list
-          .map((e) => ApiWinAIMemory.fromJson(e as Map<String, dynamic>))
-          .toList();
-    } catch (_) {
-      return [];
-    }
+    final res = await _api.dio.get('/chatbot/memories');
+    final list = res.data as List? ?? [];
+    return list
+        .map((e) => ApiWinAIMemory.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
   Future<bool> deleteMemory(int id) async {

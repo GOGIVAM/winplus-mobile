@@ -46,6 +46,18 @@ void main() {
       expect(find.text(L10n.current.parentAlbumNotGenerated('Zoe')), findsOneWidget);
     });
 
+    testWidgets('serveur en panne : erreur et Reessayer, pas « album non genere »', (tester) async {
+      faux.repond('GET', '/parent-reports/4/album', {'error': 'panne'}, statut: 500);
+      await monterEcran(tester, const Scaffold(body: AlbumTab(child: _enfant)));
+      final l = L10n.current;
+      expect(find.text(l.commonLoadError), findsOneWidget);
+      expect(find.text(l.parentAlbumNotGenerated('Zoe')), findsNothing);
+      faux.repond('GET', '/parent-reports/4/album', {}, statut: 404);
+      await tester.tap(find.text(l.commonRetry));
+      await reseau(tester);
+      expect(find.text(l.parentAlbumNotGenerated('Zoe')), findsOneWidget);
+    });
+
     testWidgets('album complet : titre, annee, rubriques et listes', (tester) async {
       faux.repond('GET', '/parent-reports/4/album', {
         'schoolYear': '2025-2026',

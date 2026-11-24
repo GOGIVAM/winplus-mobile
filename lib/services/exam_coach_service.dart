@@ -100,9 +100,11 @@ class ExamCoachService {
       );
       final data = result.value;
       return data == null ? null : ApiExamCoachPlan.fromJson(data);
-    } catch (_) {
-      // 404 (pas de plan actif) ou aucune donnée en cache : état vide normal.
-      return null;
+    } catch (e) {
+      // 404 : pas de plan actif, état normal. Panne sans copie locale :
+      // remonte, l'écran affiche son erreur au lieu d'inviter à créer un plan.
+      if (isNotFound(e)) return null;
+      rethrow;
     }
   }
 

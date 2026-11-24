@@ -110,6 +110,18 @@ void main() {
       expect(find.text(L10n.current.parentPortfolioNotYet('Zoe')), findsOneWidget);
     });
 
+    testWidgets('serveur en panne : erreur et Reessayer, pas « pas encore »', (tester) async {
+      faux.repond('GET', '/parent-reports/4/portefeuille', {'error': 'panne'}, statut: 500);
+      await monterEcran(tester, const Scaffold(body: PortfolioTab(child: _enfant)));
+      final l = L10n.current;
+      expect(find.text(l.commonLoadError), findsOneWidget);
+      expect(find.text(l.parentPortfolioNotYet('Zoe')), findsNothing);
+      faux.repond('GET', '/parent-reports/4/portefeuille', {'regularite': 'Travaille chaque soir'});
+      await tester.tap(find.text(l.commonRetry));
+      await reseau(tester);
+      expect(find.text('Travaille chaque soir'), findsOneWidget);
+    });
+
     testWidgets('trois textes descriptifs, date de mise a jour et textes par defaut', (tester) async {
       faux.repond('GET', '/parent-reports/4/portefeuille', {'regularite': 'Travaille chaque soir', 'updatedAt': '2026-03-01T10:00:00'});
       await monterEcran(tester, const Scaffold(body: PortfolioTab(child: _enfant)));

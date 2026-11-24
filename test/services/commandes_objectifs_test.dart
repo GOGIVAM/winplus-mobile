@@ -101,9 +101,9 @@ void main() {
       expect(faux.requetes.single.queryParameters, {'page': 2, 'pageSize': 5});
     });
 
-    test('getOrders rend une liste vide en cas d\'erreur', () async {
+    test('getOrders : une panne remonte (ecran affiche « erreur, reessayer »)', () async {
       faux.repond('GET', '/orders', {'error': 'x'}, statut: 500);
-      expect(await OrderService.instance.getOrders(), isEmpty);
+      await expectLater(OrderService.instance.getOrders(), throwsA(isA<DioException>()));
     });
 
     test('getOrderById : la commande, ou null si introuvable', () async {

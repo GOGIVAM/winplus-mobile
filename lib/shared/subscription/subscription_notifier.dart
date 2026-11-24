@@ -12,7 +12,7 @@ class SubscriptionNotifier extends ChangeNotifier {
   ApiEntitlements _ent = const ApiEntitlements();
 
   Future<void> loadFromApi() async {
-    final apiSub = await SubscriptionService.instance.getCurrent();
+    final apiSub = await SubscriptionService.instance.getCurrentOrNull();
     if (apiSub == null) return;
     _sub = apiSub;
     _ent = apiSub.entitlements;

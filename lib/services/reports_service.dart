@@ -146,8 +146,10 @@ class ReportsService {
       );
       final data = result.value;
       return data == null ? null : ApiPortfolio.fromJson(data);
-    } catch (_) {
-      return null;
+    } catch (e) {
+      // 404 : pas encore calculé. Autre erreur : remonte (écran d'erreur).
+      if (isNotFound(e)) return null;
+      rethrow;
     }
   }
 
@@ -164,8 +166,10 @@ class ReportsService {
       );
       final data = result.value;
       return data == null ? null : ApiAlbum.fromJson(data);
-    } catch (_) {
-      return null;
+    } catch (e) {
+      // 404 : pas encore généré. Autre erreur : remonte (écran d'erreur).
+      if (isNotFound(e)) return null;
+      rethrow;
     }
   }
 }

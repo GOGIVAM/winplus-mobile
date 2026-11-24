@@ -115,6 +115,18 @@ void main() {
       expect(find.text(L10n.current.shopNoOrders), findsOneWidget);
     });
 
+    testWidgets('serveur en panne : erreur et Reessayer, pas « aucune commande »', (tester) async {
+      faux.repond('GET', '/orders', {'error': 'panne'}, statut: 500);
+      await monterEcran(tester, const OrdersScreen());
+      final l = L10n.current;
+      expect(find.text(l.commonLoadError), findsOneWidget);
+      expect(find.text(l.shopNoOrders), findsNothing);
+      faux.repond('GET', '/orders', {'items': []});
+      await tester.tap(find.text(l.commonRetry));
+      await reseau(tester);
+      expect(find.text(l.shopNoOrders), findsOneWidget);
+    });
+
     testWidgets('commandes : numero, date, montant et statut traduit', (tester) async {
       faux.repond('GET', '/orders', {
         'items': [

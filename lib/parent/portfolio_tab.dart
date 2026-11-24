@@ -5,6 +5,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import '../widgets/win_screen.dart';
 import '../l10n/l10n.dart';
 
 /// Portefeuille de compétences  portrait stable de l'apprenant, recalculé
@@ -28,13 +29,28 @@ class _PortfolioTabState extends State<PortfolioTab> {
     _load();
   }
 
+  bool _error = false;
+
   Future<void> _load() async {
-    final p = await ReportsService.instance.getPortfolio(widget.child.id);
-    if (mounted)
-      setState(() {
-        _portfolio = p;
-        _loaded = true;
-      });
+    setState(() {
+      _loaded = false;
+      _error = false;
+    });
+    try {
+      final p = await ReportsService.instance.getPortfolio(widget.child.id);
+      if (mounted)
+        setState(() {
+          _portfolio = p;
+          _loaded = true;
+        });
+    } catch (_) {
+      // Panne : « Réessayer », pas « pas encore généré ».
+      if (mounted)
+        setState(() {
+          _error = true;
+          _loaded = true;
+        });
+    }
   }
 
   String _fmtDate(DateTime d) =>
@@ -44,6 +60,9 @@ class _PortfolioTabState extends State<PortfolioTab> {
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
     if (!_loaded) return const Center(child: CircularProgressIndicator());
+    if (_error) {
+      return WinErrorState(message: context.l10n.commonLoadError, onRetry: _load);
+    }
 
     final p = _portfolio;
     if (p == null) {

@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:winplus/l10n/l10n.dart';
@@ -128,7 +129,8 @@ void main() {
       ]);
       expect((await ChatbotService.instance.getMemories()).single.content, 'BAC en juin');
       faux.repond('GET', '/chatbot/memories', {}, statut: 500);
-      expect(await ChatbotService.instance.getMemories(), isEmpty);
+      await expectLater(ChatbotService.instance.getMemories(), throwsA(isA<DioException>()),
+          reason: 'une panne remonte : la feuille affiche son erreur, pas « aucune memoire »');
       faux.repond('DELETE', '/chatbot/memories/1', {});
       expect(await ChatbotService.instance.deleteMemory(1), isTrue);
       expect(await ChatbotService.instance.deleteMemory(2), isFalse);

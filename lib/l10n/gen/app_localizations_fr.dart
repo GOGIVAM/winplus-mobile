@@ -8779,4 +8779,8 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get settingsTitle => 'Paramètres';
+
+  @override
+  String get commonLoadError =>
+      'Impossible de charger. Vérifie ta connexion puis réessaie.';
 }

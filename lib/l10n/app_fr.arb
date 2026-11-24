@@ -5362,5 +5362,6 @@
   "settingsAutoSave": "Les modifications sont enregistrées automatiquement.",
   "settingsLoadError": "Impossible de charger les paramètres.",
   "settingsSaveError": "Le réglage n’a pas pu être enregistré.",
-  "settingsTitle": "Paramètres"
+  "settingsTitle": "Paramètres",
+  "commonLoadError": "Impossible de charger. Vérifie ta connexion puis réessaie."
 }

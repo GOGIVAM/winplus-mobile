@@ -9,6 +9,7 @@ import '../../theme/win_colors.dart';
 import '../../theme/win_theme.dart';
 import '../../theme/win_typography.dart';
 import '../../widgets/win_widgets.dart';
+import '../../widgets/win_screen.dart';
 
 /// Historique de commandes (E39)  vraies données serveur (GET /api/orders),
 /// statut, facture PDF consultable, remboursement demandable.
@@ -20,6 +21,7 @@ class OrdersScreen extends StatefulWidget {
 
 class _OrdersScreenState extends State<OrdersScreen> {
   List<ApiOrder>? _orders;
+  bool _error = false;
 
   @override
   void initState() {
@@ -28,8 +30,14 @@ class _OrdersScreenState extends State<OrdersScreen> {
   }
 
   Future<void> _load() async {
-    final orders = await OrderService.instance.getOrders();
-    if (mounted) setState(() => _orders = orders);
+    if (_error) setState(() => _error = false);
+    try {
+      final orders = await OrderService.instance.getOrders();
+      if (mounted) setState(() => _orders = orders);
+    } catch (_) {
+      // Panne : un message et « Réessayer », pas « aucune commande ».
+      if (mounted) setState(() => _error = true);
+    }
   }
 
   (BadgeColor, String) _statusInfo(String status) =>
@@ -67,7 +75,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
           ),
         ],
       ),
-      body: orders == null
+      body: _error
+          ? WinErrorState(message: context.l10n.commonLoadError, onRetry: _load)
+          : orders == null
           ? const Center(child: CircularProgressIndicator())
           : orders.isEmpty
               ? Center(

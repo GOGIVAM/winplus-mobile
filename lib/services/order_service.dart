@@ -83,18 +83,16 @@ class OrderService {
     }
   }
 
+  /// Lève une erreur si le serveur ne répond pas : l'écran affiche
+  /// « erreur, réessayer » et non « aucune commande ».
   Future<List<ApiOrder>> getOrders({int page = 1, int pageSize = 20}) async {
-    try {
-      final res = await _api.dio.get('/orders',
-          queryParameters: {'page': page, 'pageSize': pageSize});
-      final data = res.data as Map<String, dynamic>;
-      final items = (data['items'] as List?) ?? [];
-      return items
-          .map((e) => ApiOrder.fromJson(e as Map<String, dynamic>))
-          .toList();
-    } catch (_) {
-      return [];
-    }
+    final res = await _api.dio
+        .get('/orders', queryParameters: {'page': page, 'pageSize': pageSize});
+    final data = res.data as Map<String, dynamic>;
+    final items = (data['items'] as List?) ?? [];
+    return items
+        .map((e) => ApiOrder.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
   Future<ApiOrder?> getOrderById(int id) async {
