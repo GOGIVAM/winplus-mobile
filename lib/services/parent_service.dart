@@ -402,16 +402,13 @@ class ParentService {
   /// Solde de portefeuille réel (dotation mensuelle + recharge), pour
   /// l'écran d'achat pour un enfant. `null` si le parent n'a pas
   /// d'abonnement payant actif (ParentCreditsController renvoie data: null
-  /// dans ce cas, état normal  pas une erreur).
+  /// dans ce cas, état normal, pas une erreur). Une panne lève une erreur :
+  /// elle ne doit pas s'afficher comme « pas d'abonnement ».
   Future<ApiParentWalletSummary?> getWalletSummary() async {
-    try {
-      final res = await _api.dio.get('/parent/credits');
-      final data = (res.data as Map<String, dynamic>)['data']
-          as Map<String, dynamic>?;
-      return data == null ? null : ApiParentWalletSummary.fromJson(data);
-    } catch (_) {
-      return null;
-    }
+    final res = await _api.dio.get('/parent/credits');
+    final data =
+        (res.data as Map<String, dynamic>)['data'] as Map<String, dynamic>?;
+    return data == null ? null : ApiParentWalletSummary.fromJson(data);
   }
 
   /// Évènements à venir publiés sur la plateforme (GET /parent/events/upcoming),

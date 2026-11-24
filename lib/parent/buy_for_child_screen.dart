@@ -118,13 +118,28 @@ class _BuyForChildScreenState extends State<BuyForChildScreen> {
   // Module 24 (lot 8, rattrapage 16.1) : solde réel du portefeuille parent
   // (GET /parent/credits via ParentCreditsController), remplace l'absence
   // totale d'indication de solde sur cet écran.
+  bool _walletError = false;
+
   Future<void> _loadWallet() async {
-    final wallet = await ParentService.instance.getWalletSummary();
-    if (!mounted) return;
     setState(() {
-      _wallet = wallet;
-      _walletLoading = false;
+      _walletLoading = true;
+      _walletError = false;
     });
+    try {
+      final wallet = await ParentService.instance.getWalletSummary();
+      if (!mounted) return;
+      setState(() {
+        _wallet = wallet;
+        _walletLoading = false;
+      });
+    } catch (_) {
+      // Panne : « Impossible de charger », pas « pas d'abonnement ».
+      if (!mounted) return;
+      setState(() {
+        _walletError = true;
+        _walletLoading = false;
+      });
+    }
   }
 
   Future<void> _acheter(Content c) async {
@@ -183,7 +198,11 @@ class _BuyForChildScreenState extends State<BuyForChildScreen> {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
         children: [
-          _WalletBanner(loading: _walletLoading, wallet: _wallet),
+          _WalletBanner(
+              loading: _walletLoading,
+              wallet: _wallet,
+              error: _walletError,
+              onRetry: _loadWallet),
           const SizedBox(height: 20),
           Text(context.l10n.parentBuyWhichChild,
               style: WinType.archivo(size: 18, color: s.onStrong)),
@@ -262,7 +281,13 @@ class _BuyForChildScreenState extends State<BuyForChildScreen> {
 class _WalletBanner extends StatelessWidget {
   final bool loading;
   final ApiParentWalletSummary? wallet;
-  const _WalletBanner({required this.loading, required this.wallet});
+  final bool error;
+  final VoidCallback onRetry;
+  const _WalletBanner(
+      {required this.loading,
+      required this.wallet,
+      required this.error,
+      required this.onRetry});
 
   @override
   Widget build(BuildContext context) {
@@ -278,6 +303,12 @@ class _WalletBanner extends StatelessWidget {
                     height: 18,
                     child: CircularProgressIndicator(strokeWidth: 2)))),
       );
+    }
+    if (error) {
+      return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        WinAlert(context.l10n.commonLoadError, icon: Icons.error_outline),
+        TextButton(onPressed: onRetry, child: Text(context.l10n.commonRetry)),
+      ]);
     }
     final w = wallet;
     if (w == null) {

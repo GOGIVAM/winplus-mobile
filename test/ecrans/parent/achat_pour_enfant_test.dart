@@ -40,6 +40,19 @@ void main() {
     expect(find.text(L10n.current.parentBuyNoSubscription), findsOneWidget);
   });
 
+  testWidgets('serveur en panne : « impossible de charger » et Reessayer, pas « sans abonnement »', (tester) async {
+    faux.repond('GET', '/parent/credits', {'error': 'panne'}, statut: 500);
+    faux.repond('GET', '/subjects', {'items': []});
+    await monterEcran(tester, const BuyForChildScreen(children: [_zoe]));
+    final l = L10n.current;
+    expect(find.text(l.commonLoadError), findsOneWidget);
+    expect(find.text(l.parentBuyNoSubscription), findsNothing);
+    faux.repond('GET', '/parent/credits', {'data': null});
+    await tester.tap(find.text(l.commonRetry));
+    await reseau(tester);
+    expect(find.text(l.parentBuyNoSubscription), findsOneWidget);
+  });
+
   testWidgets('catalogue filtre par le niveau de l\'enfant, titre, prix et bouton « acheter pour »', (tester) async {
     faux.repond('GET', '/parent/credits', {'data': null});
     faux.repond('GET', '/subjects', {
