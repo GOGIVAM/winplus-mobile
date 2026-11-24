@@ -17,6 +17,7 @@ import '../shared/subscription/subscription_notifier.dart';
 import 'forgot_password_screen.dart';
 import 'google_login.dart';
 import 'role_screen.dart';
+import '../widgets/win_logo.dart';
 
 /// Connexion : premier écran de l'application sans session, sur le modèle
 /// de la version téléphone du site (plein écran blanc, barre haute avec
@@ -94,7 +95,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _form(BuildContext context, WinScheme s, AppLocalizations l10n) {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       const SizedBox(height: 8),
-      Image.asset('assets/winplus-logo.png', width: 96, height: 96),
+      const Center(child: WinLogo(size: 96)),
       const SizedBox(height: 14),
       Text(l10n.loginTitle,
           textAlign: TextAlign.center,

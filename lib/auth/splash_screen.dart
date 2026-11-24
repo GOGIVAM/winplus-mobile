@@ -13,7 +13,8 @@ import '../theme/win_colors.dart';
 import '../theme/win_typography.dart';
 import 'app_lock_screen.dart';
 import 'periodic_confirm_screen.dart';
-import 'login_screen.dart';
+import '../widgets/win_logo.dart';
+import 'welcome_screen.dart';
 
 /// Délai après lequel l'identité doit être reprouvée (35 jours, comme le
 /// serveur).
@@ -75,8 +76,9 @@ class _SplashScreenState extends State<SplashScreen>
 
     // Pas de présentation à la manière du site : sans session, on se connecte.
     if (!loggedIn) {
+      // Sans session : la présentation en trois écrans, puis la connexion.
       Navigator.of(context).pushReplacement(
-        WinPageRoute(builder: (_) => const LoginScreen()),
+        WinPageRoute(builder: (_) => const WelcomeScreen()),
       );
       return;
     }
@@ -132,7 +134,7 @@ class _SplashScreenState extends State<SplashScreen>
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           ScaleTransition(
             scale: CurvedAnimation(parent: _c, curve: Curves.elasticOut),
-            child: Image.asset('assets/winplus-logo.png', width: 120),
+            child: const WinLogo(size: 132),
           ),
           const SizedBox(height: 18),
           Text('WinPlus',

@@ -4,9 +4,11 @@ import 'package:winplus/auth/login_screen.dart';
 import 'package:winplus/auth/onboarding_success_screen.dart';
 import 'package:winplus/auth/periodic_confirm_screen.dart';
 import 'package:winplus/auth/splash_screen.dart';
+import 'package:winplus/auth/welcome_screen.dart';
 import 'package:winplus/data/models.dart';
 import 'package:winplus/l10n/l10n.dart';
 import 'package:winplus/shared/legal_screen.dart';
+import 'package:winplus/widgets/win_logo.dart';
 import 'package:winplus/widgets/win_widgets.dart';
 
 import '../../helpers/ecran.dart';
@@ -20,14 +22,52 @@ void main() {
   setUp(() => faux = preparerEnvironnement());
 
   group('SplashScreen', () {
-    testWidgets('affiche la marque puis, sans session, ouvre directement la connexion', (tester) async {
+    testWidgets('affiche la marque (logo dans son disque blanc) puis, sans session, la presentation', (tester) async {
       await monterEcran(tester, const SplashScreen());
       expect(find.text('WinPlus'), findsOneWidget);
       expect(find.text(L10n.current.welcomeTagline), findsOneWidget);
+      expect(find.byType(WinLogo), findsOneWidget);
       await pomper(tester, const Duration(milliseconds: 1300));
       await reseau(tester);
       await pomper(tester, const Duration(milliseconds: 500));
+      expect(find.byType(WelcomeScreen), findsOneWidget);
+      expect(find.byType(LoginScreen), findsNothing);
+    });
+  });
+
+  group('WelcomeScreen', () {
+    testWidgets('trois ecrans avec photo : titre, « Suivant » avance, le dernier propose compte et connexion', (tester) async {
+      await monterEcran(tester, const WelcomeScreen());
+      final l = L10n.current;
+      expect(find.byType(WinLogo), findsOneWidget);
+      // Une photo par ecran (PageView), pas d'icone a la place.
+      expect(find.byWidgetPredicate((w) => w is Image && w.image is AssetImage && (w.image as AssetImage).assetName == 'assets/home/epreuves.webp'), findsOneWidget);
+      expect(find.text(l.authWelcomeSlide1Title), findsOneWidget);
+      await tester.tap(_bouton(l.authNext));
+      await pomper(tester);
+      await pomper(tester, const Duration(milliseconds: 500));
+      expect(find.text(l.authWelcomeSlide2Title), findsOneWidget);
+      await tester.tap(_bouton(l.authNext));
+      await pomper(tester);
+      await pomper(tester, const Duration(milliseconds: 500));
+      expect(find.text(l.authWelcomeSlide3Title), findsOneWidget);
+      expect(_bouton(l.authNext), findsNothing);
+      expect(_bouton(l.createAccount), findsOneWidget);
+      expect(find.text(l.authSkip), findsNothing);
+      await tester.tap(_bouton(l.login));
+      await pomper(tester);
+      await pomper(tester, const Duration(milliseconds: 500));
       expect(find.byType(LoginScreen), findsOneWidget);
+    });
+
+    testWidgets('« Passer » mene au dernier ecran', (tester) async {
+      await monterEcran(tester, const WelcomeScreen());
+      final l = L10n.current;
+      await tester.tap(find.text(l.authSkip));
+      await pomper(tester);
+      await pomper(tester, const Duration(milliseconds: 600));
+      expect(find.text(l.authWelcomeSlide3Title), findsOneWidget);
+      expect(_bouton(l.createAccount), findsOneWidget);
     });
   });
 

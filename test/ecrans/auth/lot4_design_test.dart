@@ -21,6 +21,8 @@ import 'package:winplus/widgets/win_screen.dart';
 import 'package:winplus/widgets/win_mascot.dart';
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:winplus/auth/welcome_screen.dart';
+import 'package:winplus/app_state.dart';
 
 void main() {
   setUpAll(() async {
@@ -40,6 +42,7 @@ void main() {
   });
   setUp(preparerEnvironnement);
   const pages = <String, Widget>{
+    'accueil': WelcomeScreen(),
     'connexion': LoginScreen(),
     'roles': RoleScreen(),
     'inscription': SignupScreen(role: WinRole.student),
@@ -63,7 +66,11 @@ void main() {
             final scheme = dark ? WinScheme.dark_ : WinScheme.light;
             await monter(
                 tester,
-                WinTheme(
+                // Etat global au-dessus de la page, comme dans main.dart (le
+                // choix de langue de l'accueil le lit).
+                WinAppScope(
+                  notifier: WinAppState(),
+                  child: WinTheme(
                     scheme: scheme,
                     child: MaterialApp(
                       theme: winMaterialTheme(scheme),
@@ -77,7 +84,7 @@ void main() {
                               disableAnimations: true),
                           child: child!),
                       home: entry.value,
-                    )));
+                    ))));
             await reseau(tester);
             expect(tester.takeException(), isNull);
             // Building the whole scrollable content checks off-screen overflow too.
