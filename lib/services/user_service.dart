@@ -262,6 +262,30 @@ class UserService {
     }
   }
 
+  /// Préférences de notification ou de confidentialité du compte
+  /// (GET /users/settings/notifications ou /privacy, comme le site).
+  /// Une erreur remonte : l'écran affiche « réessayer ».
+  Future<Map<String, bool>> getAccountSettings(String kind) async {
+    final res = await _api.dio.get('/users/settings/$kind');
+    final body = res.data;
+    final data = body is Map && body['data'] is Map ? body['data'] : body;
+    if (data is! Map) return {};
+    return {
+      for (final e in data.entries)
+        if (e.value is bool) e.key.toString(): e.value as bool,
+    };
+  }
+
+  /// Enregistre l'ensemble des préférences [kind] ; faux en cas d'échec.
+  Future<bool> saveAccountSettings(String kind, Map<String, bool> values) async {
+    try {
+      await _api.dio.put('/users/settings/$kind', data: values);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
   Future<List<ApiDownloadEntry>> getDownloadHistory() async {
     final res = await _api.dio.get('/users/me/downloads');
     final list = res.data as List? ?? [];

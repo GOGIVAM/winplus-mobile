@@ -22,6 +22,8 @@ class SessionManager {
   static const _keyLocale = 'winplus_locale';
   // Même clé que BackgroundNotifications.instantPrefKey.
   static const _keyInstantNotifications = 'notif_instant_enabled';
+  // Même clé que kThemePrefKey (app_state.dart) : « dark » ou « light ».
+  static const _keyTheme = 'winplus_theme';
 
   static const _secure = FlutterSecureStorage(
     aOptions: AndroidOptions(encryptedSharedPreferences: true),
@@ -164,9 +166,12 @@ class SessionManager {
     // Choix « notifications instantanées » (BackgroundNotifications) : un
     // réglage de l'appareil, pas du compte.
     final instant = p.getBool(_keyInstantNotifications);
+    // Thème choisi (clair ou sombre) : réglage du téléphone, comme la langue.
+    final theme = p.getString(_keyTheme);
     await p.clear();
     if (locale != null) await p.setString(_keyLocale, locale);
     if (instant != null) await p.setBool(_keyInstantNotifications, instant);
+    if (theme != null) await p.setString(_keyTheme, theme);
   }
 
   /// Oublie la copie en mémoire : le prochain accès relit le trousseau.

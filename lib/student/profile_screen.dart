@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../l10n/l10n.dart';
+import '../widgets/account_settings_switches.dart';
+import '../shared/legal_screen.dart';
 import '../theme/win_motion.dart';
 import '../services/auth_service.dart';
 import '../services/subscription_service.dart';
@@ -31,12 +33,6 @@ class _ProfileScreenState extends State<ProfileScreen>
   final _newPwdCtrl = TextEditingController();
   final _confPwdCtrl = TextEditingController();
 
-  bool _notifQuiz = true,
-      _notifAI = true,
-      _notifPromo = false,
-      _notifExam = true,
-      _notifCommunity = false;
-  bool _profilePublic = true, _shareStats = false;
   bool _twoFactor = false;
   bool _savingProfile = false;
   bool _savingPwd = false;
@@ -320,114 +316,29 @@ class _ProfileScreenState extends State<ProfileScreen>
         ]),
 
         // ---- NOTIFICATIONS ----
-        Builder(builder: (ctx) {
-          final items = [
-            (
-              'quiz',
-              _notifQuiz,
-              ctx.l10n.studentProfileNotifQuiz,
-              ctx.l10n.studentProfileNotifQuizSub
-            ),
-            (
-              'ai',
-              _notifAI,
-              ctx.l10n.studentProfileNotifAi,
-              ctx.l10n.studentProfileNotifAiSub
-            ),
-            (
-              'promo',
-              _notifPromo,
-              ctx.l10n.studentProfileNotifPromo,
-              ctx.l10n.studentProfileNotifPromoSub
-            ),
-            (
-              'exam',
-              _notifExam,
-              ctx.l10n.studentProfileNotifExam,
-              ctx.l10n.studentProfileNotifExamSub
-            ),
-            (
-              'community',
-              _notifCommunity,
-              ctx.l10n.studentHubCommunity,
-              ctx.l10n.studentProfileNotifCommunitySub
-            ),
-          ];
-          return ListView(padding: const EdgeInsets.all(20), children: [
-            ...items.map((item) => Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: Row(children: [
-                    Expanded(
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                          Text(item.$3, style: WinType.titleM(s.onStrong)),
-                          Text(item.$4, style: WinType.bodyS(s.onMuted)),
-                        ])),
-                    Switch(
-                        value: item.$2,
-                        onChanged: (v) => setState(() {
-                              switch (item.$1) {
-                                case 'quiz':
-                                  _notifQuiz = v;
-                                case 'ai':
-                                  _notifAI = v;
-                                case 'promo':
-                                  _notifPromo = v;
-                                case 'exam':
-                                  _notifExam = v;
-                                case 'community':
-                                  _notifCommunity = v;
-                              }
-                            }),
-                        activeTrackColor: s.primary),
-                  ]),
-                )),
-          ]);
-        }),
+        // Préférences réelles du compte (serveur), enregistrées à chaque
+        // changement. Avant : cinq interrupteurs jamais enregistrés.
+        ListView(padding: const EdgeInsets.all(20), children: const [
+          AccountSettingsSwitches(kind: AccountSettingsKind.notifications),
+        ]),
 
         // ---- CONFIDENTIALITÉ ----
         ListView(padding: const EdgeInsets.all(20), children: [
-          Row(children: [
-            Expanded(
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                  Text(context.l10n.studentProfileVisible, style: WinType.titleM(s.onStrong)),
-                  Text(context.l10n.studentProfileVisibleHint,
-                      style: WinType.bodyS(s.onMuted)),
-                ])),
-            Switch(
-                value: _profilePublic,
-                onChanged: (v) => setState(() => _profilePublic = v),
-                activeTrackColor: s.primary),
-          ]),
-          const SizedBox(height: 16),
-          const WinDivider(),
-          const SizedBox(height: 16),
-          Row(children: [
-            Expanded(
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                  Text(context.l10n.studentProfileAnonStats,
-                      style: WinType.titleM(s.onStrong)),
-                  Text(context.l10n.studentProfileAnonStatsHint,
-                      style: WinType.bodyS(s.onMuted)),
-                ])),
-            Switch(
-                value: _shareStats,
-                onChanged: (v) => setState(() => _shareStats = v),
-                activeTrackColor: s.primary),
-          ]),
+          // Préférences réelles du compte (serveur) ; avant : deux
+          // interrupteurs jamais enregistrés.
+          const AccountSettingsSwitches(kind: AccountSettingsKind.privacy),
           const SizedBox(height: 24),
           const WinDivider(),
           const SizedBox(height: 20),
           WinButton(context.l10n.studentHubPrivacy,
-              variant: WinButtonVariant.ghost, block: true, onTap: () {}),
+              variant: WinButtonVariant.ghost,
+              block: true,
+              onTap: () => LegalScreen.showPrivacy(context)),
           const SizedBox(height: 8),
           WinButton(context.l10n.studentHubTerms,
-              variant: WinButtonVariant.ghost, block: true, onTap: () {}),
+              variant: WinButtonVariant.ghost,
+              block: true,
+              onTap: () => LegalScreen.showCgu(context)),
         ]),
 
         // ---- COMPTE ----

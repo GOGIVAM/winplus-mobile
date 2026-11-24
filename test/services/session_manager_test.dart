@@ -126,4 +126,12 @@ void main() {
       expect(await SessionManager.getRefreshToken(), 'refresh-1');
     });
   });
-}
+  test('la deconnexion garde les reglages du telephone : langue, notifications instantanees, theme', () async {
+    SharedPreferences.setMockInitialValues({'winplus_locale': 'en', 'notif_instant_enabled': false, 'winplus_theme': 'dark', 'user_id': 1});
+    await SessionManager.clear();
+    final p = await SharedPreferences.getInstance();
+    expect(p.getString('winplus_locale'), 'en');
+    expect(p.getBool('notif_instant_enabled'), isFalse);
+    expect(p.getString('winplus_theme'), 'dark');
+    expect(p.getInt('user_id'), isNull);
+  });}

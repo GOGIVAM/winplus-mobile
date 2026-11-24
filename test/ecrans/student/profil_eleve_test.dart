@@ -203,23 +203,39 @@ void main() {
   });
 
   group('Autres onglets', () {
-    testWidgets('notifications : cinq interrupteurs, trois actifs par defaut ; en basculer un', (tester) async {
+    testWidgets('notifications : les six preferences du serveur ; un changement est enregistre', (tester) async {
+      faux.repond('GET', '/users/settings/notifications', {
+        'emailNotifications': true, 'pushNotifications': true, 'courseCommunity': false,
+        'promotions': false, 'newsletters': true, 'learningReminders': true,
+      });
+      faux.repond('PUT', '/users/settings/notifications', {});
       await monterEcran(tester, const ProfileScreen());
       await _versOnglet(tester, L10n.current.studentNotifTitle);
+      await reseau(tester);
       final interrupteurs = find.byType(Switch);
-      expect(interrupteurs, findsNWidgets(5));
-      final actifs = tester.widgetList<Switch>(interrupteurs).where((s) => s.value).length;
-      expect(actifs, 3);
-      await tester.tap(interrupteurs.at(2));
-      await pomper(tester);
+      expect(interrupteurs, findsNWidgets(6));
       expect(tester.widgetList<Switch>(interrupteurs).where((s) => s.value).length, 4);
+      await tester.tap(interrupteurs.at(3));
+      await reseau(tester);
+      final envoi = faux.recues('PUT', '/users/settings/notifications').single.data as Map;
+      expect(envoi['promotions'], isTrue);
+      expect(envoi['emailNotifications'], isTrue, reason: 'les autres reglages sont renvoyes tels quels');
     });
 
-    testWidgets('confidentialite : profil visible par defaut, statistiques anonymes desactivees', (tester) async {
+    testWidgets('confidentialite : les quatre preferences du serveur ; un echec remet la valeur', (tester) async {
+      faux.repond('GET', '/users/settings/privacy', {
+        'profileVisible': true, 'showProgressPublic': false, 'allowMessages': true, 'allowFriends': true,
+      });
+      faux.repond('PUT', '/users/settings/privacy', {'error': 'panne'}, statut: 500);
       await monterEcran(tester, const ProfileScreen());
       await _versOnglet(tester, L10n.current.studentProfileTabPrivacy);
-      final s = tester.widgetList<Switch>(find.byType(Switch)).map((x) => x.value).toList();
-      expect(s, [true, false]);
+      await reseau(tester);
+      List<bool> valeurs() => tester.widgetList<Switch>(find.byType(Switch)).map((x) => x.value).toList();
+      expect(valeurs(), [true, false, true, true]);
+      await tester.tap(find.byType(Switch).at(1));
+      await reseau(tester);
+      expect(valeurs(), [true, false, true, true], reason: 'non enregistre : la valeur revient');
+      expect(find.text(L10n.current.settingsSaveError), findsOneWidget);
     });
 
     testWidgets('compte : plan gratuit charge, zone de danger et suppression avec confirmation', (tester) async {

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../l10n/l10n.dart';
 import '../widgets/winai_markdown.dart';
 import '../widgets/language_selector.dart';
+import '../widgets/account_settings_switches.dart';
 import '../theme/win_motion.dart';
 import '../app_state.dart';
 import '../auth/login_screen.dart';
@@ -1161,9 +1162,15 @@ class _ParentProfileTabState extends State<ParentProfileTab> {
         _Row(Icons.payment_outlined, context.l10n.parentProfilePayments,
             onTap: () => Navigator.push(context,
                 WinPageRoute(builder: (_) => const _PaymentsScreen()))),
+        // Préférences réelles du compte (avant : interrupteur toujours
+        // allumé, sans effet).
         _Row(Icons.notifications_outlined, context.l10n.studentNotifTitle,
-            trailing: Switch(
-                value: true, activeThumbColor: s.primary, onChanged: (_) {})),
+            onTap: () => Navigator.push(
+                context,
+                WinPageRoute(
+                    builder: (_) => AccountSettingsScreen(
+                        kind: AccountSettingsKind.notifications,
+                        title: context.l10n.studentNotifTitle)))),
         _Row(Icons.dark_mode_outlined, context.l10n.commonDarkMode,
             trailing: Switch(
                 value: state.dark,

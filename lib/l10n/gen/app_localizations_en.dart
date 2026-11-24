@@ -8627,4 +8627,78 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shellTabMore => 'More';
+
+  @override
+  String get settingsEmailNotif => 'Email notifications';
+
+  @override
+  String get settingsEmailNotifDesc => 'Important updates by email';
+
+  @override
+  String get settingsPushNotif => 'App notifications';
+
+  @override
+  String get settingsPushNotifDesc => 'Real-time alerts on this phone';
+
+  @override
+  String get settingsCommunity => 'Community & courses';
+
+  @override
+  String get settingsCommunityDesc => 'Activity in your courses and forums';
+
+  @override
+  String get settingsPromotions => 'Promotions';
+
+  @override
+  String get settingsPromotionsDesc => 'Special offers and discounts';
+
+  @override
+  String get settingsNewsletter => 'Newsletter';
+
+  @override
+  String get settingsNewsletterDesc => 'WinPlus news and tips';
+
+  @override
+  String get settingsReminders => 'Learning reminders';
+
+  @override
+  String get settingsRemindersDesc => 'Reminders for your revision sessions';
+
+  @override
+  String get settingsProfileVisible => 'Visible profile';
+
+  @override
+  String get settingsProfileVisibleDesc =>
+      'Your profile is visible to other members';
+
+  @override
+  String get settingsProgressPublic => 'Public progress';
+
+  @override
+  String get settingsProgressPublicDesc =>
+      'Show your progress on your public profile';
+
+  @override
+  String get settingsAllowMessages => 'Private messages';
+
+  @override
+  String get settingsAllowMessagesDesc => 'Allow other members to message you';
+
+  @override
+  String get settingsAllowFriends => 'Friend requests';
+
+  @override
+  String get settingsAllowFriendsDesc => 'Allow connection requests';
+
+  @override
+  String get settingsAutoSave => 'Changes are saved automatically.';
+
+  @override
+  String get settingsLoadError => 'Unable to load the settings.';
+
+  @override
+  String get settingsSaveError => 'The setting could not be saved.';
+
+  @override
+  String get settingsTitle => 'Settings';
 }

@@ -8702,4 +8702,81 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get shellTabMore => 'Plus';
+
+  @override
+  String get settingsEmailNotif => 'Notifications par e-mail';
+
+  @override
+  String get settingsEmailNotifDesc =>
+      'Les mises à jour importantes par e-mail';
+
+  @override
+  String get settingsPushNotif => 'Notifications de l’application';
+
+  @override
+  String get settingsPushNotifDesc => 'Alertes en temps réel sur ce téléphone';
+
+  @override
+  String get settingsCommunity => 'Communauté et cours';
+
+  @override
+  String get settingsCommunityDesc => 'Activité dans tes cours et forums';
+
+  @override
+  String get settingsPromotions => 'Promotions';
+
+  @override
+  String get settingsPromotionsDesc => 'Offres spéciales et réductions';
+
+  @override
+  String get settingsNewsletter => 'Newsletter';
+
+  @override
+  String get settingsNewsletterDesc => 'Actualités et conseils WinPlus';
+
+  @override
+  String get settingsReminders => 'Rappels d’apprentissage';
+
+  @override
+  String get settingsRemindersDesc => 'Rappels pour tes sessions de révision';
+
+  @override
+  String get settingsProfileVisible => 'Profil visible';
+
+  @override
+  String get settingsProfileVisibleDesc =>
+      'Ton profil est visible par les autres membres';
+
+  @override
+  String get settingsProgressPublic => 'Progression publique';
+
+  @override
+  String get settingsProgressPublicDesc =>
+      'Afficher tes progrès sur ton profil public';
+
+  @override
+  String get settingsAllowMessages => 'Messages privés';
+
+  @override
+  String get settingsAllowMessagesDesc =>
+      'Autoriser les autres membres à t’écrire';
+
+  @override
+  String get settingsAllowFriends => 'Demandes d’amis';
+
+  @override
+  String get settingsAllowFriendsDesc => 'Autoriser les demandes de connexion';
+
+  @override
+  String get settingsAutoSave =>
+      'Les modifications sont enregistrées automatiquement.';
+
+  @override
+  String get settingsLoadError => 'Impossible de charger les paramètres.';
+
+  @override
+  String get settingsSaveError => 'Le réglage n’a pas pu être enregistré.';
+
+  @override
+  String get settingsTitle => 'Paramètres';
 }

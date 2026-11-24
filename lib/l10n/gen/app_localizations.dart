@@ -14845,6 +14845,150 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Plus'**
   String get shellTabMore;
+
+  /// No description provided for @settingsEmailNotif.
+  ///
+  /// In fr, this message translates to:
+  /// **'Notifications par e-mail'**
+  String get settingsEmailNotif;
+
+  /// No description provided for @settingsEmailNotifDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les mises à jour importantes par e-mail'**
+  String get settingsEmailNotifDesc;
+
+  /// No description provided for @settingsPushNotif.
+  ///
+  /// In fr, this message translates to:
+  /// **'Notifications de l’application'**
+  String get settingsPushNotif;
+
+  /// No description provided for @settingsPushNotifDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Alertes en temps réel sur ce téléphone'**
+  String get settingsPushNotifDesc;
+
+  /// No description provided for @settingsCommunity.
+  ///
+  /// In fr, this message translates to:
+  /// **'Communauté et cours'**
+  String get settingsCommunity;
+
+  /// No description provided for @settingsCommunityDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Activité dans tes cours et forums'**
+  String get settingsCommunityDesc;
+
+  /// No description provided for @settingsPromotions.
+  ///
+  /// In fr, this message translates to:
+  /// **'Promotions'**
+  String get settingsPromotions;
+
+  /// No description provided for @settingsPromotionsDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Offres spéciales et réductions'**
+  String get settingsPromotionsDesc;
+
+  /// No description provided for @settingsNewsletter.
+  ///
+  /// In fr, this message translates to:
+  /// **'Newsletter'**
+  String get settingsNewsletter;
+
+  /// No description provided for @settingsNewsletterDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Actualités et conseils WinPlus'**
+  String get settingsNewsletterDesc;
+
+  /// No description provided for @settingsReminders.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rappels d’apprentissage'**
+  String get settingsReminders;
+
+  /// No description provided for @settingsRemindersDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rappels pour tes sessions de révision'**
+  String get settingsRemindersDesc;
+
+  /// No description provided for @settingsProfileVisible.
+  ///
+  /// In fr, this message translates to:
+  /// **'Profil visible'**
+  String get settingsProfileVisible;
+
+  /// No description provided for @settingsProfileVisibleDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ton profil est visible par les autres membres'**
+  String get settingsProfileVisibleDesc;
+
+  /// No description provided for @settingsProgressPublic.
+  ///
+  /// In fr, this message translates to:
+  /// **'Progression publique'**
+  String get settingsProgressPublic;
+
+  /// No description provided for @settingsProgressPublicDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Afficher tes progrès sur ton profil public'**
+  String get settingsProgressPublicDesc;
+
+  /// No description provided for @settingsAllowMessages.
+  ///
+  /// In fr, this message translates to:
+  /// **'Messages privés'**
+  String get settingsAllowMessages;
+
+  /// No description provided for @settingsAllowMessagesDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Autoriser les autres membres à t’écrire'**
+  String get settingsAllowMessagesDesc;
+
+  /// No description provided for @settingsAllowFriends.
+  ///
+  /// In fr, this message translates to:
+  /// **'Demandes d’amis'**
+  String get settingsAllowFriends;
+
+  /// No description provided for @settingsAllowFriendsDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Autoriser les demandes de connexion'**
+  String get settingsAllowFriendsDesc;
+
+  /// No description provided for @settingsAutoSave.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les modifications sont enregistrées automatiquement.'**
+  String get settingsAutoSave;
+
+  /// No description provided for @settingsLoadError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible de charger les paramètres.'**
+  String get settingsLoadError;
+
+  /// No description provided for @settingsSaveError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le réglage n’a pas pu être enregistré.'**
+  String get settingsSaveError;
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paramètres'**
+  String get settingsTitle;
 }
 
 class _AppLocalizationsDelegate
