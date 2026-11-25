@@ -15511,6 +15511,198 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Rédige une fiche de révision en {subject}, niveau {level}. Chapitre ou notion : {topic}. Mets l\'essentiel à retenir, les formules ou définitions clés, un exemple corrigé et les erreurs fréquentes.'**
   String winaiPromptSheet(String subject, String topic, String level);
+
+  /// No description provided for @hwTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mes devoirs'**
+  String get hwTitle;
+
+  /// No description provided for @hwSectionTeacher.
+  ///
+  /// In fr, this message translates to:
+  /// **'Devoirs des professeurs'**
+  String get hwSectionTeacher;
+
+  /// No description provided for @hwSectionMock.
+  ///
+  /// In fr, this message translates to:
+  /// **'Examens blancs'**
+  String get hwSectionMock;
+
+  /// No description provided for @hwSectionSchool.
+  ///
+  /// In fr, this message translates to:
+  /// **'Devoirs de l’établissement'**
+  String get hwSectionSchool;
+
+  /// No description provided for @hwEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun devoir pour l’instant.'**
+  String get hwEmpty;
+
+  /// No description provided for @hwEmptyHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les devoirs de tes professeurs et de ton établissement apparaîtront ici.'**
+  String get hwEmptyHint;
+
+  /// No description provided for @hwDue.
+  ///
+  /// In fr, this message translates to:
+  /// **'À rendre le {date}'**
+  String hwDue(String date);
+
+  /// No description provided for @hwStatusTodo.
+  ///
+  /// In fr, this message translates to:
+  /// **'À rendre'**
+  String get hwStatusTodo;
+
+  /// No description provided for @hwStatusLate.
+  ///
+  /// In fr, this message translates to:
+  /// **'En retard'**
+  String get hwStatusLate;
+
+  /// No description provided for @hwStatusDone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rendu'**
+  String get hwStatusDone;
+
+  /// No description provided for @hwScore.
+  ///
+  /// In fr, this message translates to:
+  /// **'{score} / {max}'**
+  String hwScore(String score, String max);
+
+  /// No description provided for @hwQuiz.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quiz'**
+  String get hwQuiz;
+
+  /// No description provided for @hwTakeQuiz.
+  ///
+  /// In fr, this message translates to:
+  /// **'Faire le quiz'**
+  String get hwTakeQuiz;
+
+  /// No description provided for @hwWriteHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Écris ta réponse ici…'**
+  String get hwWriteHint;
+
+  /// No description provided for @hwSubmitCopy.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rendre ma copie'**
+  String get hwSubmitCopy;
+
+  /// No description provided for @hwCopySent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Copie envoyée à ton professeur.'**
+  String get hwCopySent;
+
+  /// No description provided for @hwEmptyCopy.
+  ///
+  /// In fr, this message translates to:
+  /// **'Écris ta réponse avant de l’envoyer.'**
+  String get hwEmptyCopy;
+
+  /// No description provided for @hwAlreadySubmitted.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tu as rendu ce devoir. Ton professeur le corrige.'**
+  String get hwAlreadySubmitted;
+
+  /// No description provided for @hwGrade.
+  ///
+  /// In fr, this message translates to:
+  /// **'Note : {score} / {max}'**
+  String hwGrade(String score, String max);
+
+  /// No description provided for @hwTeacherComment.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commentaire du professeur'**
+  String get hwTeacherComment;
+
+  /// No description provided for @hwSubmitFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'L’envoi n’a pas abouti.'**
+  String get hwSubmitFailed;
+
+  /// No description provided for @hwMockUpcoming.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouvre le {date} · {minutes} min'**
+  String hwMockUpcoming(String date, int minutes);
+
+  /// No description provided for @hwMockOpen.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouvert jusqu’au {date} · {minutes} min'**
+  String hwMockOpen(String date, int minutes);
+
+  /// No description provided for @hwMockSubmitted.
+  ///
+  /// In fr, this message translates to:
+  /// **'Copie rendue, résultats bientôt publiés'**
+  String get hwMockSubmitted;
+
+  /// No description provided for @hwMockMissed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Manqué'**
+  String get hwMockMissed;
+
+  /// No description provided for @hwMockResult.
+  ///
+  /// In fr, this message translates to:
+  /// **'{score} / 100 · {rank}e sur {total} · moyenne {average}'**
+  String hwMockResult(String score, int rank, int total, String average);
+
+  /// No description provided for @hwChipUpcoming.
+  ///
+  /// In fr, this message translates to:
+  /// **'À venir'**
+  String get hwChipUpcoming;
+
+  /// No description provided for @hwChipOpen.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouvert'**
+  String get hwChipOpen;
+
+  /// No description provided for @hwMockStart.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commencer'**
+  String get hwMockStart;
+
+  /// No description provided for @hwMockStartTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commencer l’examen ?'**
+  String get hwMockStartTitle;
+
+  /// No description provided for @hwMockStartBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tu auras {minutes} minutes. Le chrono continue même si tu quittes l’écran.'**
+  String hwMockStartBody(int minutes);
+
+  /// No description provided for @hwSchoolMissing.
+  ///
+  /// In fr, this message translates to:
+  /// **'Non fait'**
+  String get hwSchoolMissing;
 }
 
 class _AppLocalizationsDelegate

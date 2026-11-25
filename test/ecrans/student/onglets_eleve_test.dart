@@ -192,6 +192,7 @@ void main() {
         l.studentTabsFavorites,
         l.studentHubHistory,
         l.spaceGroupPractice,
+        l.hwTitle,
         l.studentHubRevisionQuiz,
         l.studentTabsGuidedSession,
         l.studentTabsExamCoach,

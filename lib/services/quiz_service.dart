@@ -129,6 +129,7 @@ class QuizService {
         quizId: quizId,
         items: items,
         durationSeconds: payload['durationSeconds'] as int? ?? 0,
+        assignmentId: payload['assignmentId'] as int?,
       );
       return true;
     });
@@ -173,14 +174,19 @@ class QuizService {
 
   /// Envoi d'une tentative. Avant le 2026-10-26, le mobile envoyait une liste
   /// de numéros que le serveur refusait (400) : aucune tentative n'arrivait.
+  ///
+  /// [assignmentId] : devoir d'un professeur auquel la tentative répond
+  /// (« Mes devoirs ») ; elle rejoint alors sa file de correction.
   Future<QuizAttemptResult> submitAttempt({
     required int quizId,
     required List<Map<String, String>> items,
     required int durationSeconds,
+    int? assignmentId,
   }) async {
     final res = await _api.dio.post('/quizzes/$quizId/submit', data: {
       'answers': items,
       'timeSpentSeconds': durationSeconds,
+      if (assignmentId != null) 'assignmentId': assignmentId,
     });
     final d = res.data as Map<String, dynamic>;
     return QuizAttemptResult(
@@ -199,11 +205,15 @@ class QuizService {
     required int quizId,
     required List<Map<String, String>> items,
     required int durationSeconds,
+    int? assignmentId,
   }) async {
     if (ConnectivityService.instance.isOnline) {
       try {
         await submitAttempt(
-            quizId: quizId, items: items, durationSeconds: durationSeconds);
+            quizId: quizId,
+            items: items,
+            durationSeconds: durationSeconds,
+            assignmentId: assignmentId);
         return;
       } on DioException catch (e) {
         // Refus du serveur (pause d'examen, quiz déjà répondu…) : le rejouer
@@ -219,6 +229,7 @@ class QuizService {
       'quizId': quizId,
       'items': items,
       'durationSeconds': durationSeconds,
+      if (assignmentId != null) 'assignmentId': assignmentId,
     });
   }
 }

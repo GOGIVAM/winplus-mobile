@@ -24,7 +24,27 @@ class QuizActiveScreen extends StatefulWidget {
   /// la progression et la pause éventuelle ; un refus 423 (pause de révision
   /// de 24 h) ferme l'écran avec le résultat « paused ».
   final bool courseExam;
-  const QuizActiveScreen({super.key, required this.quiz, this.courseExam = false});
+
+  /// « Mes devoirs » : devoir d'un professeur auquel répond la tentative
+  /// (elle rejoint sa file de correction).
+  final int? assignmentId;
+
+  /// Devoir ou examen blanc : la tentative part au serveur avant le
+  /// résultat ; un refus du serveur s'affiche et ferme l'écran.
+  final bool homework;
+
+  /// Examen blanc : temps restant imposé (durée, ou fermeture plus proche),
+  /// à la place de la durée du quiz.
+  final int? timeLimitSeconds;
+
+  const QuizActiveScreen({
+    super.key,
+    required this.quiz,
+    this.courseExam = false,
+    this.assignmentId,
+    this.homework = false,
+    this.timeLimitSeconds,
+  });
   @override
   State<QuizActiveScreen> createState() => _QuizActiveScreenState();
 }
@@ -33,13 +53,15 @@ class _QuizActiveScreenState extends State<QuizActiveScreen> {
   int _current = 0;
   final List<int?> _answers = [];
   late int _seconds;
+  late final int _totalSeconds;
   Timer? _timer;
 
   @override
   void initState() {
     super.initState();
     _answers.addAll(List.filled(widget.quiz.questions.length, null));
-    _seconds = widget.quiz.durationMinutes * 60;
+    _totalSeconds = widget.timeLimitSeconds ?? widget.quiz.durationMinutes * 60;
+    _seconds = _totalSeconds;
     _timer = Timer.periodic(const Duration(seconds: 1), (t) {
       if (_seconds <= 0) {
         t.cancel();
@@ -78,7 +100,7 @@ class _QuizActiveScreenState extends State<QuizActiveScreen> {
     if (_finishing) return;
     _finishing = true;
     _timer?.cancel();
-    final elapsed = widget.quiz.durationMinutes * 60 - _seconds;
+    final elapsed = _totalSeconds - _seconds;
     final correct = _answers.asMap().entries.where((e) {
       final q = widget.quiz.questions[e.key];
       return e.value == q.answer;
@@ -98,16 +120,28 @@ class _QuizActiveScreenState extends State<QuizActiveScreen> {
     // serveur, immédiatement si possible, en file sinon (voir
     // QuizService.submitAttemptQueueable).
     final quizId = int.tryParse(widget.quiz.id);
-    if (quizId != null && widget.courseExam) {
+    if (quizId != null && (widget.courseExam || widget.homework)) {
       try {
         await QuizService.instance.submitAttempt(
           quizId: quizId,
           items: QuizService.answerItems(widget.quiz, List<int?>.from(_answers)),
           durationSeconds: elapsed,
+          assignmentId: widget.assignmentId,
         );
       } on DioException catch (e) {
-        if (e.response?.statusCode == 423) {
+        if (widget.courseExam && e.response?.statusCode == 423) {
           if (mounted) Navigator.pop(context, 'paused');
+          return;
+        }
+        if (widget.homework && e.response != null) {
+          // Refus du serveur (examen fermé, devoir déjà rendu…) : le
+          // message du serveur, puis retour à la liste.
+          final data = e.response?.data;
+          final msg = data is Map ? data['error']?.toString() : null;
+          if (!mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(msg ?? context.l10n.hwSubmitFailed)));
+          Navigator.pop(context, 'refused');
           return;
         }
         // Coupure : la tentative part en file, le résultat local s'affiche.
@@ -115,6 +149,7 @@ class _QuizActiveScreenState extends State<QuizActiveScreen> {
           quizId: quizId,
           items: QuizService.answerItems(widget.quiz, List<int?>.from(_answers)),
           durationSeconds: elapsed,
+          assignmentId: widget.assignmentId,
         );
       }
       if (!mounted) return;

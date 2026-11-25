@@ -9098,4 +9098,116 @@ class AppLocalizationsFr extends AppLocalizations {
   String winaiPromptSheet(String subject, String topic, String level) {
     return 'Rédige une fiche de révision en $subject, niveau $level. Chapitre ou notion : $topic. Mets l\'essentiel à retenir, les formules ou définitions clés, un exemple corrigé et les erreurs fréquentes.';
   }
+
+  @override
+  String get hwTitle => 'Mes devoirs';
+
+  @override
+  String get hwSectionTeacher => 'Devoirs des professeurs';
+
+  @override
+  String get hwSectionMock => 'Examens blancs';
+
+  @override
+  String get hwSectionSchool => 'Devoirs de l’établissement';
+
+  @override
+  String get hwEmpty => 'Aucun devoir pour l’instant.';
+
+  @override
+  String get hwEmptyHint =>
+      'Les devoirs de tes professeurs et de ton établissement apparaîtront ici.';
+
+  @override
+  String hwDue(String date) {
+    return 'À rendre le $date';
+  }
+
+  @override
+  String get hwStatusTodo => 'À rendre';
+
+  @override
+  String get hwStatusLate => 'En retard';
+
+  @override
+  String get hwStatusDone => 'Rendu';
+
+  @override
+  String hwScore(String score, String max) {
+    return '$score / $max';
+  }
+
+  @override
+  String get hwQuiz => 'Quiz';
+
+  @override
+  String get hwTakeQuiz => 'Faire le quiz';
+
+  @override
+  String get hwWriteHint => 'Écris ta réponse ici…';
+
+  @override
+  String get hwSubmitCopy => 'Rendre ma copie';
+
+  @override
+  String get hwCopySent => 'Copie envoyée à ton professeur.';
+
+  @override
+  String get hwEmptyCopy => 'Écris ta réponse avant de l’envoyer.';
+
+  @override
+  String get hwAlreadySubmitted =>
+      'Tu as rendu ce devoir. Ton professeur le corrige.';
+
+  @override
+  String hwGrade(String score, String max) {
+    return 'Note : $score / $max';
+  }
+
+  @override
+  String get hwTeacherComment => 'Commentaire du professeur';
+
+  @override
+  String get hwSubmitFailed => 'L’envoi n’a pas abouti.';
+
+  @override
+  String hwMockUpcoming(String date, int minutes) {
+    return 'Ouvre le $date · $minutes min';
+  }
+
+  @override
+  String hwMockOpen(String date, int minutes) {
+    return 'Ouvert jusqu’au $date · $minutes min';
+  }
+
+  @override
+  String get hwMockSubmitted => 'Copie rendue, résultats bientôt publiés';
+
+  @override
+  String get hwMockMissed => 'Manqué';
+
+  @override
+  String hwMockResult(String score, int rank, int total, String average) {
+    return '$score / 100 · ${rank}e sur $total · moyenne $average';
+  }
+
+  @override
+  String get hwChipUpcoming => 'À venir';
+
+  @override
+  String get hwChipOpen => 'Ouvert';
+
+  @override
+  String get hwMockStart => 'Commencer';
+
+  @override
+  String get hwMockStartTitle => 'Commencer l’examen ?';
+
+  @override
+  String hwMockStartBody(int minutes) {
+    return 'Tu auras $minutes minutes. Le chrono continue même si tu quittes l’écran.';
+  }
+
+  @override
+  String get hwSchoolMissing => 'Non fait';
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'my_homework_screen.dart';
 import '../l10n/l10n.dart';
 import '../theme/win_motion.dart';
 import '../data/models.dart';
@@ -445,6 +446,12 @@ class _StudentSpaceTabState extends State<StudentSpaceTab> {
               const SizedBox(height: 18),
               _SpaceGroupTitle(context.l10n.spaceGroupPractice),
               MoreGroup(children: [
+                // Lot 7 : devoirs des professeurs, examens blancs et devoirs
+                // de l'établissement (comme /mes-devoirs du site).
+                MoreLine(
+                    icon: PhosphorIconsRegular.clipboardText,
+                    label: context.l10n.hwTitle,
+                    onTap: () => _open(const MyHomeworkScreen())),
                 MoreLine(
                     icon: PhosphorIconsRegular.exam,
                     label: context.l10n.studentHubRevisionQuiz,
