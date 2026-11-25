@@ -117,7 +117,7 @@ class _CourseExamPanelState extends State<CourseExamPanel> {
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E293B),
+        color: WinColors.teal850,
         borderRadius: BorderRadius.circular(WinRadii.lg),
         border: Border.all(color: WinColors.teal600.withValues(alpha: 0.4)),
       ),

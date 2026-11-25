@@ -261,7 +261,7 @@ class _RolePill extends StatelessWidget {
       'teacher' => WinColors.teal400,
       'institution' => WinColors.success,
       'parent' => WinColors.warn,
-      _ => const Color(0xFF6C8EBD),
+      _ => WinColors.blue400,
     };
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),

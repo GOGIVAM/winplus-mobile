@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'models.dart';
 import '../theme/win_colors.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -27,7 +26,7 @@ class WinData {
     Subject('info', 'Informatique', 'Info', WinColors.ink600, PhosphorIconsRegular.cpu),
     Subject('philo', 'Philosophie', 'Philo', WinColors.blue400,
         PhosphorIconsRegular.brain),
-    Subject('hg', 'Histoire-Géo', 'Hist-Géo', Color(0xFF8A6D3B), PhosphorIconsRegular.globe),
+    Subject('hg', 'Histoire-Géo', 'Hist-Géo', WinColors.gold, PhosphorIconsRegular.globe),
     // Matière non reconnue (culture générale, spécialités…) : visuel neutre.
     Subject('autre', 'Autre', 'Autre', WinColors.teal600,
         PhosphorIconsRegular.fileText),

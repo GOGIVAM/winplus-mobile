@@ -443,7 +443,7 @@ class _TeacherContentTabState extends State<TeacherContentTab> {
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           decoration: BoxDecoration(
             gradient: const LinearGradient(
-              colors: [Color(0xFF0F172A), Color(0xFF1E293B)],
+              colors: [WinColors.teal900, WinColors.teal850],
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
             ),

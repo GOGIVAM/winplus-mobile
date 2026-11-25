@@ -266,9 +266,9 @@ class _CoursePlayerScreenState extends State<CoursePlayerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0F172A),
+      backgroundColor: WinColors.teal900,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1E293B),
+        backgroundColor: WinColors.teal850,
         foregroundColor: Colors.white,
         elevation: 0,
         title: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -389,7 +389,7 @@ class _CurriculumPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final fe = curriculum.finalExam;
     return Container(
-      color: const Color(0xFF1E293B),
+      color: WinColors.teal850,
       child: ListView.builder(
         itemCount: curriculum.sections.length + (fe != null ? 1 : 0),
         itemBuilder: (_, si) {
@@ -543,7 +543,7 @@ class _LessonView extends StatelessWidget {
             margin: const EdgeInsets.all(16),
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: const Color(0xFF1E293B),
+              color: WinColors.teal850,
               borderRadius: BorderRadius.circular(WinRadii.lg),
             ),
             child: Text(l.articleContent!,
@@ -568,7 +568,7 @@ class _LessonView extends StatelessWidget {
               margin: const EdgeInsets.all(16),
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: const Color(0xFF1E293B),
+                color: WinColors.teal850,
                 borderRadius: BorderRadius.circular(WinRadii.lg),
                 border: Border.all(
                     color: WinColors.teal600.withValues(alpha: 0.4)),
@@ -620,7 +620,7 @@ class _LessonView extends StatelessWidget {
                 margin: const EdgeInsets.all(16),
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1E293B),
+                  color: WinColors.teal850,
                   borderRadius: BorderRadius.circular(WinRadii.lg),
                   border: Border.all(
                       color: WinColors.teal600.withValues(alpha: 0.4)),
@@ -948,7 +948,7 @@ class _BottomNav extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 10, 16, 16),
       decoration: const BoxDecoration(
-        color: Color(0xFF1E293B),
+        color: WinColors.teal850,
         border: Border(top: BorderSide(color: Colors.white12)),
       ),
       child: SafeArea(
