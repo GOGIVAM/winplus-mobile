@@ -16885,6 +16885,36 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Retrouver'**
   String get winaiStudioRetrieve;
+
+  /// No description provided for @winaiListen.
+  ///
+  /// In fr, this message translates to:
+  /// **'Écouter'**
+  String get winaiListen;
+
+  /// No description provided for @winaiListenPause.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lecture en cours'**
+  String get winaiListenPause;
+
+  /// No description provided for @winaiListenResume.
+  ///
+  /// In fr, this message translates to:
+  /// **'En pause'**
+  String get winaiListenResume;
+
+  /// No description provided for @winaiListenStop.
+  ///
+  /// In fr, this message translates to:
+  /// **'Arrêter la lecture'**
+  String get winaiListenStop;
+
+  /// No description provided for @winaiListenUnavailable.
+  ///
+  /// In fr, this message translates to:
+  /// **'La voix du téléphone n\'est pas disponible. Vérifie la synthèse vocale dans les réglages de l\'appareil.'**
+  String get winaiListenUnavailable;
 }
 
 class _AppLocalizationsDelegate

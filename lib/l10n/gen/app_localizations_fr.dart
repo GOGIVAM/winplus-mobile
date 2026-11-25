@@ -9931,4 +9931,20 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get winaiStudioRetrieve => 'Retrouver';
+
+  @override
+  String get winaiListen => 'Écouter';
+
+  @override
+  String get winaiListenPause => 'Lecture en cours';
+
+  @override
+  String get winaiListenResume => 'En pause';
+
+  @override
+  String get winaiListenStop => 'Arrêter la lecture';
+
+  @override
+  String get winaiListenUnavailable =>
+      'La voix du téléphone n\'est pas disponible. Vérifie la synthèse vocale dans les réglages de l\'appareil.';
 }

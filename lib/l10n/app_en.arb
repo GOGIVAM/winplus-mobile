@@ -2850,5 +2850,10 @@
   "winaiCreationsSheets": "My sheets",
   "winaiStudioBusy": "WinAI is preparing your work…",
   "winaiStudioSeePlans": "See plans",
-  "winaiStudioRetrieve": "Find again"
+  "winaiStudioRetrieve": "Find again",
+  "winaiListen": "Listen",
+  "winaiListenPause": "Now reading",
+  "winaiListenResume": "Paused",
+  "winaiListenStop": "Stop reading",
+  "winaiListenUnavailable": "The phone's voice is not available. Check text-to-speech in the device settings."
 }

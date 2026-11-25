@@ -11,6 +11,7 @@ import '../../theme/win_theme.dart';
 import '../../theme/win_typography.dart';
 import '../../widgets/win_screen.dart';
 import '../../widgets/winai_markdown.dart';
+import 'winai_listen_bar.dart';
 
 /// Lecture d'une fiche de révision générée par WinAI (texte mis en forme).
 class WinAISheetScreen extends StatelessWidget {
@@ -27,6 +28,10 @@ class WinAISheetScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: s.bg,
       appBar: AppBar(title: Text(context.l10n.winaiToolSheet)),
+      // Ecoute de la fiche par la voix du telephone.
+      bottomNavigationBar: content.isEmpty
+          ? null
+          : WinAIListenBar(text: content, speechKey: 'sheet:${sheet.id}'),
       body: content.isEmpty
           ? WinEmptyState(
               title: context.l10n.winaiSheetEmpty,

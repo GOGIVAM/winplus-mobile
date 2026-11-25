@@ -5732,5 +5732,10 @@
   "winaiCreationsSheets": "Mes fiches",
   "winaiStudioBusy": "WinAI prépare ton travail…",
   "winaiStudioSeePlans": "Voir les offres",
-  "winaiStudioRetrieve": "Retrouver"
+  "winaiStudioRetrieve": "Retrouver",
+  "winaiListen": "Écouter",
+  "winaiListenPause": "Lecture en cours",
+  "winaiListenResume": "En pause",
+  "winaiListenStop": "Arrêter la lecture",
+  "winaiListenUnavailable": "La voix du téléphone n'est pas disponible. Vérifie la synthèse vocale dans les réglages de l'appareil."
 }

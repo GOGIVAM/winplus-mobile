@@ -9848,4 +9848,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get winaiStudioRetrieve => 'Find again';
+
+  @override
+  String get winaiListen => 'Listen';
+
+  @override
+  String get winaiListenPause => 'Now reading';
+
+  @override
+  String get winaiListenResume => 'Paused';
+
+  @override
+  String get winaiListenStop => 'Stop reading';
+
+  @override
+  String get winaiListenUnavailable =>
+      'The phone\'s voice is not available. Check text-to-speech in the device settings.';
 }
