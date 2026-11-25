@@ -15283,6 +15283,108 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'L’inscription n’a pas abouti.'**
   String get liveSessionEnrollError;
+
+  /// No description provided for @dlTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mes téléchargements'**
+  String get dlTitle;
+
+  /// No description provided for @dlTotal.
+  ///
+  /// In fr, this message translates to:
+  /// **'{size} utilisés sur ce téléphone'**
+  String dlTotal(String size);
+
+  /// No description provided for @dlLessonsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Leçons hors ligne'**
+  String get dlLessonsTitle;
+
+  /// No description provided for @dlLessonsEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune leçon enregistrée. Dans une formation, enregistre une leçon pour la regarder sans réseau.'**
+  String get dlLessonsEmpty;
+
+  /// No description provided for @dlSavedOn.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrée le {date}'**
+  String dlSavedOn(String date);
+
+  /// No description provided for @dlDeleteAll.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tout supprimer'**
+  String get dlDeleteAll;
+
+  /// No description provided for @dlDeleteLessonTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer cette leçon ?'**
+  String get dlDeleteLessonTitle;
+
+  /// No description provided for @dlDeleteLessonBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Elle ne sera plus disponible sans réseau. Tu pourras l’enregistrer à nouveau.'**
+  String get dlDeleteLessonBody;
+
+  /// No description provided for @dlDeleteAllTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer toutes les leçons ?'**
+  String get dlDeleteAllTitle;
+
+  /// No description provided for @dlDeleteAllBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Elles ne seront plus disponibles sans réseau ({size} libérés).'**
+  String dlDeleteAllBody(String size);
+
+  /// No description provided for @dlCacheTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Données pour le mode hors ligne'**
+  String get dlCacheTitle;
+
+  /// No description provided for @dlCacheBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{1 page gardée} other{{count} pages gardées}} pour s’afficher sans réseau ({size}).'**
+  String dlCacheBody(int count, String size);
+
+  /// No description provided for @dlCacheEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune donnée gardée pour l’instant.'**
+  String get dlCacheEmpty;
+
+  /// No description provided for @dlCacheClear.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vider'**
+  String get dlCacheClear;
+
+  /// No description provided for @dlCacheClearTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vider les données hors ligne ?'**
+  String get dlCacheClearTitle;
+
+  /// No description provided for @dlCacheClearBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les écrans se rechargeront depuis le serveur à la prochaine connexion.'**
+  String get dlCacheClearBody;
+
+  /// No description provided for @dlFreed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Place libérée.'**
+  String get dlFreed;
 }
 
 class _AppLocalizationsDelegate

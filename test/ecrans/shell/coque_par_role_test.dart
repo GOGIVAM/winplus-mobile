@@ -142,6 +142,10 @@ void main() {
       expect(find.byType(SettingsScreen), findsOneWidget, reason: '$role');
       expect(find.text(l.language), findsOneWidget);
       expect(find.text(l.commonDarkMode), findsOneWidget);
+      // Lot 3 : place occupée sur le téléphone, pour chaque espace.
+      final telechargements = find.text(l.dlTitle);
+      await tester.scrollUntilVisible(telechargements, 200, scrollable: find.byType(Scrollable).last);
+      expect(telechargements, findsOneWidget, reason: '$role');
       await monter(tester, const SizedBox());
     }
   });

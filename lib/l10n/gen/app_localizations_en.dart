@@ -8883,4 +8883,72 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get liveSessionEnrollError => 'Enrollment failed.';
+
+  @override
+  String get dlTitle => 'My downloads';
+
+  @override
+  String dlTotal(String size) {
+    return '$size used on this phone';
+  }
+
+  @override
+  String get dlLessonsTitle => 'Offline lessons';
+
+  @override
+  String get dlLessonsEmpty =>
+      'No saved lessons. In a course, save a lesson to watch it without a connection.';
+
+  @override
+  String dlSavedOn(String date) {
+    return 'Saved on $date';
+  }
+
+  @override
+  String get dlDeleteAll => 'Delete all';
+
+  @override
+  String get dlDeleteLessonTitle => 'Delete this lesson?';
+
+  @override
+  String get dlDeleteLessonBody =>
+      'It will no longer be available offline. You can save it again.';
+
+  @override
+  String get dlDeleteAllTitle => 'Delete all lessons?';
+
+  @override
+  String dlDeleteAllBody(String size) {
+    return 'They will no longer be available offline ($size freed).';
+  }
+
+  @override
+  String get dlCacheTitle => 'Offline data';
+
+  @override
+  String dlCacheBody(int count, String size) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count pages kept',
+      one: '1 page kept',
+    );
+    return '$_temp0 to display without a connection ($size).';
+  }
+
+  @override
+  String get dlCacheEmpty => 'No data kept yet.';
+
+  @override
+  String get dlCacheClear => 'Clear';
+
+  @override
+  String get dlCacheClearTitle => 'Clear offline data?';
+
+  @override
+  String get dlCacheClearBody =>
+      'Screens will reload from the server next time you are online.';
+
+  @override
+  String get dlFreed => 'Space freed.';
 }

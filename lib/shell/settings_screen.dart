@@ -3,6 +3,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../app_state.dart';
 import '../l10n/l10n.dart';
+import '../shared/downloads/my_downloads_screen.dart';
 import '../shared/legal_screen.dart';
 import '../shared/pending_actions_screen.dart';
 import '../theme/win_motion.dart';
@@ -67,6 +68,14 @@ class SettingsScreen extends StatelessWidget {
           ]),
           const SizedBox(height: 16),
           MoreGroup(children: [
+            // Hors ligne : place occupée sur le téléphone, puis actions en
+            // attente du réseau.
+            MoreLine(
+                icon: PhosphorIconsRegular.downloadSimple,
+                label: l.dlTitle,
+                onTap: () => Navigator.push(
+                    context,
+                    WinPageRoute(builder: (_) => const MyDownloadsScreen()))),
             MoreLine(
                 icon: PhosphorIconsRegular.clockCounterClockwise,
                 label: l.pendingTitle,

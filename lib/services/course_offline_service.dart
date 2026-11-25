@@ -161,6 +161,36 @@ class CourseOfflineService {
     }
   }
 
+  /// Leçons enregistrées par le compte connecté (écran « Mes
+  /// téléchargements »), les plus récentes d'abord.
+  Future<List<OfflineLesson>> lessonsForCurrentUser() async {
+    final userId = await SessionManager.getUserId();
+    if (userId == null) return const [];
+    final marker = '/course_offline/$userId/';
+    final box = await _box();
+    final list = box.values
+        .whereType<Map>()
+        .where((e) => (e['path'] as String? ?? '').replaceAll('\\', '/').contains(marker))
+        .map((e) => OfflineLesson(
+              courseId: (e['courseId'] as num?)?.toInt() ?? 0,
+              lessonId: (e['lessonId'] as num?)?.toInt() ?? 0,
+              title: e['title']?.toString() ?? '',
+              sizeBytes: (e['sizeBytes'] as num?)?.toInt() ?? 0,
+              downloadedAt: DateTime.tryParse(e['downloadedAt']?.toString() ?? ''),
+            ))
+        .toList()
+      ..sort((a, b) => (b.downloadedAt ?? DateTime(0)).compareTo(a.downloadedAt ?? DateTime(0)));
+    return list;
+  }
+
+  /// Supprime toutes les leçons du compte connecté (la clé de chiffrement
+  /// reste : de nouveaux téléchargements restent possibles).
+  Future<void> deleteAllForCurrentUser() async {
+    for (final l in await lessonsForCurrentUser()) {
+      await deleteLesson(l.courseId, l.lessonId);
+    }
+  }
+
   Future<List<Map<String, dynamic>>> listDownloads() async {
     final box = await _box();
     return box.values
@@ -193,4 +223,20 @@ class CourseOfflineService {
       // Ne doit jamais empêcher la déconnexion elle-même.
     }
   }
+}
+
+/// Leçon de formation enregistrée sur le téléphone (chiffrée).
+class OfflineLesson {
+  final int courseId;
+  final int lessonId;
+  final String title;
+  final int sizeBytes;
+  final DateTime? downloadedAt;
+  const OfflineLesson({
+    required this.courseId,
+    required this.lessonId,
+    required this.title,
+    required this.sizeBytes,
+    this.downloadedAt,
+  });
 }

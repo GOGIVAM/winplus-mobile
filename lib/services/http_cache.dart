@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -182,6 +184,25 @@ class HttpCache {
     for (final k in store.keys.where((k) => k.startsWith(prefix)).toList()) {
       await store.delete(k);
     }
+  }
+
+  /// Place prise par les lectures gardées du compte [userId] (écran « Mes
+  /// téléchargements ») : nombre de lectures et taille approximative du
+  /// JSON gardé.
+  Future<({int entries, int bytes})> statsForUser(int? userId) async {
+    final store = await _open();
+    if (store == null || userId == null) return (entries: 0, bytes: 0);
+    final prefix = '$userId|';
+    var entries = 0, bytes = 0;
+    for (final k in store.keys.where((k) => k.startsWith(prefix))) {
+      entries++;
+      try {
+        bytes += utf8.encode(jsonEncode(_deepCopy(store.get(k)))).length;
+      } catch (_) {
+        // Entrée illisible : comptée sans taille.
+      }
+    }
+    return (entries: entries, bytes: bytes);
   }
 
   Future<void> _trim(_Store store) async {

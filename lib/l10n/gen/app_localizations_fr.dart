@@ -8962,4 +8962,72 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get liveSessionEnrollError => 'L’inscription n’a pas abouti.';
+
+  @override
+  String get dlTitle => 'Mes téléchargements';
+
+  @override
+  String dlTotal(String size) {
+    return '$size utilisés sur ce téléphone';
+  }
+
+  @override
+  String get dlLessonsTitle => 'Leçons hors ligne';
+
+  @override
+  String get dlLessonsEmpty =>
+      'Aucune leçon enregistrée. Dans une formation, enregistre une leçon pour la regarder sans réseau.';
+
+  @override
+  String dlSavedOn(String date) {
+    return 'Enregistrée le $date';
+  }
+
+  @override
+  String get dlDeleteAll => 'Tout supprimer';
+
+  @override
+  String get dlDeleteLessonTitle => 'Supprimer cette leçon ?';
+
+  @override
+  String get dlDeleteLessonBody =>
+      'Elle ne sera plus disponible sans réseau. Tu pourras l’enregistrer à nouveau.';
+
+  @override
+  String get dlDeleteAllTitle => 'Supprimer toutes les leçons ?';
+
+  @override
+  String dlDeleteAllBody(String size) {
+    return 'Elles ne seront plus disponibles sans réseau ($size libérés).';
+  }
+
+  @override
+  String get dlCacheTitle => 'Données pour le mode hors ligne';
+
+  @override
+  String dlCacheBody(int count, String size) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count pages gardées',
+      one: '1 page gardée',
+    );
+    return '$_temp0 pour s’afficher sans réseau ($size).';
+  }
+
+  @override
+  String get dlCacheEmpty => 'Aucune donnée gardée pour l’instant.';
+
+  @override
+  String get dlCacheClear => 'Vider';
+
+  @override
+  String get dlCacheClearTitle => 'Vider les données hors ligne ?';
+
+  @override
+  String get dlCacheClearBody =>
+      'Les écrans se rechargeront depuis le serveur à la prochaine connexion.';
+
+  @override
+  String get dlFreed => 'Place libérée.';
 }
