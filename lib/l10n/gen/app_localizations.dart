@@ -16639,6 +16639,72 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'L’étiquette n’a pas pu être enregistrée.'**
   String get studentDetailTagError;
+
+  /// No description provided for @peersTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Parmi les élèves'**
+  String get peersTitle;
+
+  /// No description provided for @peersScope.
+  ///
+  /// In fr, this message translates to:
+  /// **'Comparaison anonyme avec les {count} élèves de WinPlus actifs ces 30 derniers jours (moyenne des scores, sur 20).'**
+  String peersScope(int count);
+
+  /// No description provided for @peersScopeGeneric.
+  ///
+  /// In fr, this message translates to:
+  /// **'Comparaison anonyme avec les élèves de WinPlus actifs ces 30 derniers jours.'**
+  String get peersScopeGeneric;
+
+  /// No description provided for @peersNotEnough.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pas encore assez d’activité pour comparer : fais quelques quiz et reviens ici.'**
+  String get peersNotEnough;
+
+  /// No description provided for @peersYou.
+  ///
+  /// In fr, this message translates to:
+  /// **'Toi'**
+  String get peersYou;
+
+  /// No description provided for @peersAverage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Moyenne des élèves'**
+  String get peersAverage;
+
+  /// No description provided for @peersTop.
+  ///
+  /// In fr, this message translates to:
+  /// **'20 % les plus réguliers : {avg} / 20'**
+  String peersTop(String avg);
+
+  /// No description provided for @peersAbove.
+  ///
+  /// In fr, this message translates to:
+  /// **'Au-dessus de la moyenne'**
+  String get peersAbove;
+
+  /// No description provided for @peersClose.
+  ///
+  /// In fr, this message translates to:
+  /// **'Proche de la moyenne'**
+  String get peersClose;
+
+  /// No description provided for @peersBelow.
+  ///
+  /// In fr, this message translates to:
+  /// **'En dessous de la moyenne'**
+  String get peersBelow;
+
+  /// No description provided for @peersBetterThan.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tu fais mieux que {pct} % des élèves actifs.'**
+  String peersBetterThan(int pct);
 }
 
 class _AppLocalizationsDelegate

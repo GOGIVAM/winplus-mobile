@@ -12,7 +12,11 @@ void main() {
   late FauxReseau faux;
 
   setUpAll(initialiserDates);
-  setUp(() => faux = preparerEnvironnement());
+  setUp(() {
+    faux = preparerEnvironnement();
+    // Section « Parmi les élèves » de Mes rapports (lot 7).
+    faux.repond('GET', '/student/peer-comparison', {'hasData': false});
+  });
 
   group('StudentReportsScreen', () {
     Map<String, dynamic> rapport({int period = 30, bool vide = false}) => {

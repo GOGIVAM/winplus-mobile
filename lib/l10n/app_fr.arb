@@ -5685,5 +5685,19 @@
   "studentDetailNotePending": "En attente d’envoi",
   "studentDetailNoteKeptOffline": "Pas de réseau : la note est gardée sur le téléphone et partira à la prochaine ouverture.",
   "studentDetailNoteError": "La note n’a pas pu être enregistrée.",
-  "studentDetailTagError": "L’étiquette n’a pas pu être enregistrée."
+  "studentDetailTagError": "L’étiquette n’a pas pu être enregistrée.",
+  "peersTitle": "Parmi les élèves",
+  "peersScope": "Comparaison anonyme avec les {count} élèves de WinPlus actifs ces 30 derniers jours (moyenne des scores, sur 20).",
+  "@peersScope": {"placeholders": {"count": {"type": "int"}}},
+  "peersScopeGeneric": "Comparaison anonyme avec les élèves de WinPlus actifs ces 30 derniers jours.",
+  "peersNotEnough": "Pas encore assez d’activité pour comparer : fais quelques quiz et reviens ici.",
+  "peersYou": "Toi",
+  "peersAverage": "Moyenne des élèves",
+  "peersTop": "20 % les plus réguliers : {avg} / 20",
+  "@peersTop": {"placeholders": {"avg": {"type": "String"}}},
+  "peersAbove": "Au-dessus de la moyenne",
+  "peersClose": "Proche de la moyenne",
+  "peersBelow": "En dessous de la moyenne",
+  "peersBetterThan": "Tu fais mieux que {pct} % des élèves actifs.",
+  "@peersBetterThan": {"placeholders": {"pct": {"type": "int"}}}
 }

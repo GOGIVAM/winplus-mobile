@@ -9708,4 +9708,45 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get studentDetailTagError => 'The tag could not be saved.';
+
+  @override
+  String get peersTitle => 'Among students';
+
+  @override
+  String peersScope(int count) {
+    return 'Anonymous comparison with the $count WinPlus students active over the last 30 days (average score, out of 20).';
+  }
+
+  @override
+  String get peersScopeGeneric =>
+      'Anonymous comparison with WinPlus students active over the last 30 days.';
+
+  @override
+  String get peersNotEnough =>
+      'Not enough activity to compare yet: take a few quizzes and come back.';
+
+  @override
+  String get peersYou => 'You';
+
+  @override
+  String get peersAverage => 'Students’ average';
+
+  @override
+  String peersTop(String avg) {
+    return 'Most regular 20%: $avg / 20';
+  }
+
+  @override
+  String get peersAbove => 'Above average';
+
+  @override
+  String get peersClose => 'Close to average';
+
+  @override
+  String get peersBelow => 'Below average';
+
+  @override
+  String peersBetterThan(int pct) {
+    return 'You do better than $pct% of active students.';
+  }
 }

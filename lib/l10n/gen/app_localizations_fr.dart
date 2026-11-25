@@ -9791,4 +9791,45 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get studentDetailTagError =>
       'L’étiquette n’a pas pu être enregistrée.';
+
+  @override
+  String get peersTitle => 'Parmi les élèves';
+
+  @override
+  String peersScope(int count) {
+    return 'Comparaison anonyme avec les $count élèves de WinPlus actifs ces 30 derniers jours (moyenne des scores, sur 20).';
+  }
+
+  @override
+  String get peersScopeGeneric =>
+      'Comparaison anonyme avec les élèves de WinPlus actifs ces 30 derniers jours.';
+
+  @override
+  String get peersNotEnough =>
+      'Pas encore assez d’activité pour comparer : fais quelques quiz et reviens ici.';
+
+  @override
+  String get peersYou => 'Toi';
+
+  @override
+  String get peersAverage => 'Moyenne des élèves';
+
+  @override
+  String peersTop(String avg) {
+    return '20 % les plus réguliers : $avg / 20';
+  }
+
+  @override
+  String get peersAbove => 'Au-dessus de la moyenne';
+
+  @override
+  String get peersClose => 'Proche de la moyenne';
+
+  @override
+  String get peersBelow => 'En dessous de la moyenne';
+
+  @override
+  String peersBetterThan(int pct) {
+    return 'Tu fais mieux que $pct % des élèves actifs.';
+  }
 }

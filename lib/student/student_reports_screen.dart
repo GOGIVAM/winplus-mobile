@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'peer_comparison_section.dart';
 import '../l10n/l10n.dart';
 import '../services/student_service.dart';
 import '../theme/win_colors.dart';
@@ -134,6 +135,10 @@ class _StudentReportsScreenState extends State<StudentReportsScreen> {
               ])
             else if (r != null)
               ..._content(r, s, l),
+            // Lot 7 : comparaison anonyme avec les autres élèves, après les
+            // résultats de l'élève.
+            const SizedBox(height: 24),
+            const PeerComparisonSection(),
           ],
         ),
       ),

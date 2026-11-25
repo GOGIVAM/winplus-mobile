@@ -2803,5 +2803,19 @@
   "studentDetailNotePending": "Waiting to be sent",
   "studentDetailNoteKeptOffline": "No connection: the note is kept on the phone and will be sent next time you open this page.",
   "studentDetailNoteError": "The note could not be saved.",
-  "studentDetailTagError": "The tag could not be saved."
+  "studentDetailTagError": "The tag could not be saved.",
+  "peersTitle": "Among students",
+  "peersScope": "Anonymous comparison with the {count} WinPlus students active over the last 30 days (average score, out of 20).",
+  "@peersScope": {"placeholders": {"count": {"type": "int"}}},
+  "peersScopeGeneric": "Anonymous comparison with WinPlus students active over the last 30 days.",
+  "peersNotEnough": "Not enough activity to compare yet: take a few quizzes and come back.",
+  "peersYou": "You",
+  "peersAverage": "Students’ average",
+  "peersTop": "Most regular 20%: {avg} / 20",
+  "@peersTop": {"placeholders": {"avg": {"type": "String"}}},
+  "peersAbove": "Above average",
+  "peersClose": "Close to average",
+  "peersBelow": "Below average",
+  "peersBetterThan": "You do better than {pct}% of active students.",
+  "@peersBetterThan": {"placeholders": {"pct": {"type": "int"}}}
 }
