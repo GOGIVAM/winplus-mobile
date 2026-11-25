@@ -121,7 +121,7 @@ void main() {
       l.moreGroupTeach, l.mobileHomeSessions, l.shellTabCatalog,
       l.moreGroupFollow, l.dpTitle, l.mobileHomeCorrections,
       l.moreGroupTutoring,
-      l.moreGroupEarnings, l.shellTabEarnings,
+      l.moreGroupEarnings, l.shellTabEarnings, l.affTitle,
       l.settingsTitle,
     ]) {
       await tester.scrollUntilVisible(find.text(t), 200, scrollable: liste);

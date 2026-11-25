@@ -16705,6 +16705,132 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Tu fais mieux que {pct} % des élèves actifs.'**
   String peersBetterThan(int pct);
+
+  /// No description provided for @affTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Affiliation'**
+  String get affTitle;
+
+  /// No description provided for @affIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Partage ton lien : quand une personne venue par toi achète sur WinPlus, tu touches une commission.'**
+  String get affIntro;
+
+  /// No description provided for @affLinkTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ton lien de parrainage'**
+  String get affLinkTitle;
+
+  /// No description provided for @affRate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commission : {rate} %'**
+  String affRate(String rate);
+
+  /// No description provided for @affCode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code : {code}'**
+  String affCode(String code);
+
+  /// No description provided for @affCopy.
+  ///
+  /// In fr, this message translates to:
+  /// **'Copier'**
+  String get affCopy;
+
+  /// No description provided for @affShare.
+  ///
+  /// In fr, this message translates to:
+  /// **'Partager'**
+  String get affShare;
+
+  /// No description provided for @affShareMyLink.
+  ///
+  /// In fr, this message translates to:
+  /// **'Partager mon lien'**
+  String get affShareMyLink;
+
+  /// No description provided for @affLinkCopied.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lien copié.'**
+  String get affLinkCopied;
+
+  /// No description provided for @affShareSubject.
+  ///
+  /// In fr, this message translates to:
+  /// **'WinPlus : prépare tes examens'**
+  String get affShareSubject;
+
+  /// No description provided for @affClicks.
+  ///
+  /// In fr, this message translates to:
+  /// **'Visites du lien'**
+  String get affClicks;
+
+  /// No description provided for @affConversions.
+  ///
+  /// In fr, this message translates to:
+  /// **'Achats amenés'**
+  String get affConversions;
+
+  /// No description provided for @affEarned.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commissions gagnées'**
+  String get affEarned;
+
+  /// No description provided for @affPending.
+  ///
+  /// In fr, this message translates to:
+  /// **'En attente'**
+  String get affPending;
+
+  /// No description provided for @affCommissions.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commissions'**
+  String get affCommissions;
+
+  /// No description provided for @affEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune commission pour l’instant. Partage ton lien à tes élèves et à leurs parents : chaque achat fait après un clic sur ton lien te rapporte une commission.'**
+  String get affEmpty;
+
+  /// No description provided for @affOrder.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commande {number} ({amount})'**
+  String affOrder(String number, String amount);
+
+  /// No description provided for @affStatusPending.
+  ///
+  /// In fr, this message translates to:
+  /// **'En attente'**
+  String get affStatusPending;
+
+  /// No description provided for @affStatusConfirmed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Confirmée'**
+  String get affStatusConfirmed;
+
+  /// No description provided for @affStatusPaid.
+  ///
+  /// In fr, this message translates to:
+  /// **'Payée'**
+  String get affStatusPaid;
+
+  /// No description provided for @affStatusReversed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annulée'**
+  String get affStatusReversed;
 }
 
 class _AppLocalizationsDelegate

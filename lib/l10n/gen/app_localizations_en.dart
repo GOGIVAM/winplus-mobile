@@ -9749,4 +9749,75 @@ class AppLocalizationsEn extends AppLocalizations {
   String peersBetterThan(int pct) {
     return 'You do better than $pct% of active students.';
   }
+
+  @override
+  String get affTitle => 'Affiliate program';
+
+  @override
+  String get affIntro =>
+      'Share your link: when someone you referred buys on WinPlus, you earn a commission.';
+
+  @override
+  String get affLinkTitle => 'Your referral link';
+
+  @override
+  String affRate(String rate) {
+    return 'Commission: $rate%';
+  }
+
+  @override
+  String affCode(String code) {
+    return 'Code: $code';
+  }
+
+  @override
+  String get affCopy => 'Copy';
+
+  @override
+  String get affShare => 'Share';
+
+  @override
+  String get affShareMyLink => 'Share my link';
+
+  @override
+  String get affLinkCopied => 'Link copied.';
+
+  @override
+  String get affShareSubject => 'WinPlus: prepare your exams';
+
+  @override
+  String get affClicks => 'Link visits';
+
+  @override
+  String get affConversions => 'Referred purchases';
+
+  @override
+  String get affEarned => 'Commissions earned';
+
+  @override
+  String get affPending => 'Pending';
+
+  @override
+  String get affCommissions => 'Commissions';
+
+  @override
+  String get affEmpty =>
+      'No commissions yet. Share your link with your students and their parents: every purchase made after clicking your link earns you a commission.';
+
+  @override
+  String affOrder(String number, String amount) {
+    return 'Order $number ($amount)';
+  }
+
+  @override
+  String get affStatusPending => 'Pending';
+
+  @override
+  String get affStatusConfirmed => 'Confirmed';
+
+  @override
+  String get affStatusPaid => 'Paid';
+
+  @override
+  String get affStatusReversed => 'Reversed';
 }

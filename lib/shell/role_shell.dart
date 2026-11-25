@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import '../teacher/affiliate_screen.dart';
 import '../shared/verify_certificate_screen.dart';
 import '../institution/announcements_screen.dart';
 import '../parent/barometer_tab.dart';
@@ -466,6 +467,7 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
               l.teacherProfileTitle: l.moreGroupTutoring,
               l.teacherClassesMyBookings: l.moreGroupTutoring,
               l.shellTabEarnings: l.moreGroupEarnings,
+              l.affTitle: l.moreGroupEarnings,
             }, entries: [
               MoreEntry(
                   l.shellTabCatalog,
@@ -490,6 +492,9 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
                   (_) => MorePage(
                       title: l.shellTabEarnings,
                       child: const TeacherRevenueTab())),
+              // Lot 7 : programme d'affiliation (lien de parrainage, commissions).
+              MoreEntry(l.affTitle, PhosphorIconsRegular.shareNetwork,
+                  (_) => const AffiliateScreen()),
               MoreEntry(l.mobileHomeCorrections,
                   PhosphorIconsRegular.checkSquareOffset,
                   (_) => const CorrectionQueueScreen()),
