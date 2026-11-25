@@ -417,17 +417,7 @@ class _ResultsTab extends StatelessWidget {
     final quiz = scores.lastQuiz;
 
     if (subjects.isEmpty && quiz == null) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Icon(PhosphorIconsRegular.chartBar, size: 48, color: s.onFaint),
-            const SizedBox(height: 12),
-            Text(context.l10n.parentChildNoResults,
-                style: WinType.bodyM(s.onMuted), textAlign: TextAlign.center),
-          ]),
-        ),
-      );
+      return WinEmptyState(title: context.l10n.parentChildNoResults, icon: PhosphorIconsRegular.chartBar);
     }
 
     final best = subjects.isNotEmpty ? subjects.first : null;

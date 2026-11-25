@@ -107,6 +107,7 @@ class _GroupRow extends StatelessWidget {
   void _showAssignSheet(BuildContext context, ApiGroup group) {
     final s = WinTheme.of(context);
     showModalBottomSheet(
+      showDragHandle: false,
       context: context,
       backgroundColor: s.bg,
       shape: const RoundedRectangleBorder(

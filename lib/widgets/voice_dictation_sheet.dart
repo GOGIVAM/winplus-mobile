@@ -17,6 +17,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 /// Renvoie `null` si la dictée est annulée ou indisponible.
 Future<String?> showVoiceDictation(BuildContext context) {
   return showModalBottomSheet<String>(
+      showDragHandle: false,
     context: context,
     isDismissible: true,
     backgroundColor: Colors.transparent,

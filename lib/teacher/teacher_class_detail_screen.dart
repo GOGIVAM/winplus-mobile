@@ -60,6 +60,7 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
   Future<void> _addStudent() async {
     final ctrl = TextEditingController();
     final email = await showModalBottomSheet<String>(
+      showDragHandle: false,
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
@@ -111,6 +112,7 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
     final statementCtrl = TextEditingController();
     final referenceCtrl = TextEditingController();
     final ok = await showModalBottomSheet<bool>(
+      showDragHandle: false,
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
@@ -178,14 +180,7 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
       return WinErrorState(message: _studentsError!, onRetry: _loadStudents);
     }
     if (_students!.isEmpty) {
-      return Center(
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Icon(PhosphorIconsRegular.users, size: 56, color: s.onFaint),
-        const SizedBox(height: 10),
-        Text(context.l10n.teacherClassNoStudents, style: WinType.bodyM(s.onMuted)),
-        const SizedBox(height: 4),
-        Text(context.l10n.teacherClassNoStudentsHint, style: WinType.labelM(s.onFaint)),
-      ]));
+      return WinEmptyState(title: context.l10n.teacherClassNoStudents, icon: PhosphorIconsRegular.users, message: context.l10n.teacherClassNoStudentsHint);
     }
     return ListView.separated(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 90),
@@ -223,12 +218,7 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
       return WinErrorState(message: _assignmentsError!, onRetry: _loadAssignments);
     }
     if (_assignments!.isEmpty) {
-      return Center(
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Icon(PhosphorIconsRegular.clipboardText, size: 56, color: s.onFaint),
-        const SizedBox(height: 10),
-        Text(context.l10n.teacherClassNoAssignments, style: WinType.bodyM(s.onMuted)),
-      ]));
+      return WinEmptyState(title: context.l10n.teacherClassNoAssignments, icon: PhosphorIconsRegular.clipboardText);
     }
     return ListView.separated(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 90),

@@ -543,6 +543,7 @@ class _TeacherStudentsTabState extends State<TeacherStudentsTab> {
     final yearCtrl = TextEditingController();
     bool busy = false;
     showModalBottomSheet(
+      showDragHandle: false,
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,

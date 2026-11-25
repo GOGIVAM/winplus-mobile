@@ -112,6 +112,7 @@ class _MyTutorBookingsScreenState extends State<MyTutorBookingsScreen> {
   Future<String?> _promptReason(BuildContext context) async {
     final ctrl = TextEditingController();
     return showModalBottomSheet<String>(
+      showDragHandle: false,
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,

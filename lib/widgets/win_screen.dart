@@ -295,7 +295,7 @@ Future<T?> showWinBottomSheet<T>(
       showDragHandle: true,
       backgroundColor: WinTheme.of(context).surface,
       shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(14))),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
       builder: (c) => Padding(
           padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(c).bottom),
           child: SingleChildScrollView(

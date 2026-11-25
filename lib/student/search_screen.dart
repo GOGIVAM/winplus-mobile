@@ -9,6 +9,7 @@ import '../widgets/win_motion_widgets.dart';
 import '../widgets/win_widgets.dart';
 import 'student_home.dart' show ContentCard;
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/win_screen.dart';
 
 class SearchScreen extends StatefulWidget {
   /// Recherche déjà saisie (barre de recherche de l'accueil).
@@ -245,13 +246,7 @@ class _SearchScreenState extends State<SearchScreen> {
 class _EmptyIdle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final s = WinTheme.of(context);
-    return Center(
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-      Icon(PhosphorIconsRegular.magnifyingGlass, size: 64, color: s.onFaint),
-      const SizedBox(height: 12),
-      Text(context.l10n.studentSearchIdle, style: WinType.bodyM(s.onMuted)),
-    ]));
+    return WinEmptyState(title: context.l10n.studentSearchIdle, icon: PhosphorIconsRegular.magnifyingGlass);
   }
 }
 
@@ -260,17 +255,7 @@ class _NoResults extends StatelessWidget {
   const _NoResults(this.query);
   @override
   Widget build(BuildContext context) {
-    final s = WinTheme.of(context);
-    return Center(
-        child: Padding(
-      padding: const EdgeInsets.all(32),
-      child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Icon(PhosphorIconsRegular.magnifyingGlassMinus, size: 64, color: s.onFaint),
-        const SizedBox(height: 12),
-        Text(context.l10n.studentSearchNoResults(query),
-            style: WinType.bodyM(s.onMuted), textAlign: TextAlign.center),
-      ]),
-    ));
+    return WinEmptyState(title: context.l10n.studentSearchNoResults(query), icon: PhosphorIconsRegular.magnifyingGlassMinus);
   }
 }
 

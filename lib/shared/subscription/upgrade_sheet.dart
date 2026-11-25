@@ -38,6 +38,7 @@ class UpgradeSheet extends StatelessWidget {
   static void show(BuildContext context,
       {required String featureName, required String requiredPlan}) {
     showModalBottomSheet(
+      showDragHandle: false,
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,

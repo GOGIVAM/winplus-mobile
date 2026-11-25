@@ -50,6 +50,7 @@ String _labelFor(AppLocalizations l10n, String type) => switch (type) {
 
 void showWinAIMemoriesSheet(BuildContext context) {
   showModalBottomSheet(
+      showDragHandle: false,
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,

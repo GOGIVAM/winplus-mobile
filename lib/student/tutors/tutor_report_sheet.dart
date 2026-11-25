@@ -13,6 +13,7 @@ import '../../widgets/win_widgets.dart';
 /// Renvoie true si le signalement est parti.
 Future<bool?> showTutorReportSheet(BuildContext context, {required int bookingId, String? tutorName}) {
   return showModalBottomSheet<bool>(
+      showDragHandle: false,
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,

@@ -34,6 +34,7 @@ class SubscribeSheet extends StatefulWidget {
           List<String> periods = const ['monthly', 'quarterly', 'yearly'],
           String initialPeriod = 'monthly'}) =>
       showModalBottomSheet<bool>(
+      showDragHandle: false,
         context: context,
         isScrollControlled: true,
         backgroundColor: Colors.transparent,

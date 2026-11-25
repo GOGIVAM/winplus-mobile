@@ -126,12 +126,7 @@ class _CorrectionQueueScreenState extends State<CorrectionQueueScreen> {
           });
     }
     if (_items.isEmpty) {
-      return Center(
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Icon(PhosphorIconsRegular.checkCircle, size: 64, color: s.onFaint),
-        const SizedBox(height: 12),
-        Text(context.l10n.teacherCorrectionEmpty, style: WinType.bodyM(s.onMuted)),
-      ]));
+      return WinEmptyState(title: context.l10n.teacherCorrectionEmpty, icon: PhosphorIconsRegular.checkCircle);
     }
     return ListView.separated(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
@@ -141,6 +136,7 @@ class _CorrectionQueueScreenState extends State<CorrectionQueueScreen> {
         sub: _items[i],
         onCorrect: () async {
           await showModalBottomSheet(
+      showDragHandle: false,
             context: context,
             isScrollControlled: true,
             backgroundColor: Colors.transparent,

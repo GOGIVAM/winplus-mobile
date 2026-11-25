@@ -217,6 +217,7 @@ class _TeacherCoursesScreenState extends State<TeacherCoursesScreen> {
 
   void _showCourseOptions(_TeacherCourse course) {
     showModalBottomSheet(
+      showDragHandle: false,
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
@@ -296,25 +297,9 @@ class _TeacherCoursesScreenState extends State<TeacherCoursesScreen> {
     }
     final items = _filteredCourses;
     if (items.isEmpty) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(PhosphorIconsRegular.graduationCap, size: 48, color: s.onFaint),
-              const SizedBox(height: 12),
-              Text(
-                _activeFilter == _filterAll
+      return WinEmptyState(title: _activeFilter == _filterAll
                     ? context.l10n.teacherCoursesEmptyAll
-                    : context.l10n.teacherCoursesEmptyStatus,
-                style: WinType.bodyM(s.onMuted),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
-      );
+                    : context.l10n.teacherCoursesEmptyStatus, icon: PhosphorIconsRegular.graduationCap);
     }
     return RefreshIndicator(
       onRefresh: _load,

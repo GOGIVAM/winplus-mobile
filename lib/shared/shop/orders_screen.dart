@@ -81,13 +81,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
           : orders == null
           ? const WinLoading()
           : orders.isEmpty
-              ? Center(
-                  child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  Icon(PhosphorIconsRegular.receipt, size: 64, color: s.onFaint),
-                  const SizedBox(height: 12),
-                  Text(context.l10n.shopNoOrders,
-                      style: WinType.bodyM(s.onMuted)),
-                ]))
+              ? WinEmptyState(title: context.l10n.shopNoOrders, icon: PhosphorIconsRegular.receipt)
               : RefreshIndicator(
                   onRefresh: _load,
                   child: ListView.separated(
@@ -140,6 +134,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
 
   void _showOrderDetail(BuildContext context, ApiOrder order) {
     showModalBottomSheet(
+      showDragHandle: false,
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,

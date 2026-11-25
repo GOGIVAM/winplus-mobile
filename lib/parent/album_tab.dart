@@ -66,19 +66,7 @@ class _AlbumTabState extends State<AlbumTab> {
 
     final a = _album;
     if (a == null) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Icon(PhosphorIconsRegular.bookOpenText, size: 48, color: s.onFaint),
-            const SizedBox(height: 12),
-            Text(
-                context.l10n.parentAlbumNotGenerated(widget.child.firstName),
-                style: WinType.bodyM(s.onMuted),
-                textAlign: TextAlign.center),
-          ]),
-        ),
-      );
+      return WinEmptyState(title: context.l10n.parentAlbumNotGenerated(widget.child.firstName), icon: PhosphorIconsRegular.bookOpenText);
     }
 
     return ListView(

@@ -16,6 +16,7 @@ class EncouragementSheet extends StatefulWidget {
   static Future<void> show(BuildContext context, ApiChild child,
           {int? childScore}) =>
       showModalBottomSheet(
+      showDragHandle: false,
         context: context,
         isScrollControlled: true,
         backgroundColor: Colors.transparent,

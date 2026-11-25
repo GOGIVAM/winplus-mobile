@@ -22,6 +22,7 @@ class ContentActionsSheet extends StatelessWidget {
     VoidCallback? onChanged,
   }) {
     showModalBottomSheet(
+      showDragHandle: false,
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,

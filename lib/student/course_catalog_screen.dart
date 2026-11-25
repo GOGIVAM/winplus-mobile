@@ -135,6 +135,7 @@ class _CourseCatalogScreenState extends State<CourseCatalogScreen> {
     bool? tmpFree = _free;
 
     showModalBottomSheet(
+      showDragHandle: false,
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,

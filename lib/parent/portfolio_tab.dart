@@ -67,19 +67,7 @@ class _PortfolioTabState extends State<PortfolioTab> {
 
     final p = _portfolio;
     if (p == null) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Icon(PhosphorIconsRegular.user, size: 48, color: s.onFaint),
-            const SizedBox(height: 12),
-            Text(
-                context.l10n.parentPortfolioNotYet(widget.child.firstName),
-                style: WinType.bodyM(s.onMuted),
-                textAlign: TextAlign.center),
-          ]),
-        ),
-      );
+      return WinEmptyState(title: context.l10n.parentPortfolioNotYet(widget.child.firstName), icon: PhosphorIconsRegular.user);
     }
 
     return ListView(

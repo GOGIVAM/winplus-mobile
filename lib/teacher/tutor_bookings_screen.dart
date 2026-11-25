@@ -277,6 +277,7 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
       {required String title, String? hint, String? message}) async {
     final ctrl = TextEditingController();
     return showModalBottomSheet<String>(
+      showDragHandle: false,
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,

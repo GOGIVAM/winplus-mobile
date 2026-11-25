@@ -45,6 +45,7 @@ class _StudyGroupsScreenState extends State<StudyGroupsScreen> {
 
   void _showCreateSheet() {
     showModalBottomSheet(
+      showDragHandle: false,
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
@@ -54,6 +55,7 @@ class _StudyGroupsScreenState extends State<StudyGroupsScreen> {
 
   void _showJoinSheet() {
     showModalBottomSheet(
+      showDragHandle: false,
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
@@ -93,6 +95,7 @@ class _StudyGroupsScreenState extends State<StudyGroupsScreen> {
 
   void _openDetail(ApiStudyGroup group) {
     showModalBottomSheet(
+      showDragHandle: false,
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
