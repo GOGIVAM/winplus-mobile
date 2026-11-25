@@ -30,6 +30,8 @@ import 'shell_nav.dart';
 import 'more_screen.dart';
 import '../institution/student_directory_screen.dart';
 import '../institution/reports_screen.dart';
+import '../institution/regional_comparison_screen.dart';
+import '../teacher/teacher_library_screen.dart';
 import '../institution/license_screen.dart';
 import '../institution/at_risk_screen.dart';
 import '../teacher/tutor_profile_screen.dart';
@@ -461,6 +463,7 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
               l.liveTitle: l.moreGroupTeach,
               l.studentMyCoursesTitle: l.moreGroupTeach,
               l.shellTabCatalog: l.moreGroupTeach,
+              l.libTitle: l.moreGroupTeach,
               l.dpTitle: l.moreGroupFollow,
               l.mobileHomeCorrections: l.moreGroupFollow,
               l.teacherClassesMyLinks: l.moreGroupFollow,
@@ -475,6 +478,9 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
                   (_) => MorePage(
                       title: l.shellTabCatalog,
                       child: const StudentCatalogTab())),
+              // Lot 7 : contenus achetés ou rangés, dossiers, assignation à une classe.
+              MoreEntry(l.libTitle, PhosphorIconsRegular.bookBookmark,
+                  (_) => const TeacherLibraryScreen()),
               MoreEntry(
                   l.mobileHomeSessions,
                   PhosphorIconsRegular.calendarDots,
@@ -523,6 +529,7 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
             ], groups: {
               l.instRiskTitle: l.moreGroupSteer,
               l.instReportsTitle: l.moreGroupSteer,
+              l.regCmpTitle: l.moreGroupSteer,
               l.mobileHomeDirectory: l.moreGroupSteer,
               l.shellTabCatalog: l.moreGroupResources,
               l.liveTitle: l.moreGroupResources,
@@ -545,6 +552,9 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
                   (_) => const AtRiskScreen()),
               MoreEntry(l.instReportsTitle, PhosphorIconsRegular.fileText,
                   (_) => const ReportsScreen()),
+              // Lot 7 : rang anonyme parmi les établissements de la région.
+              MoreEntry(l.regCmpTitle, PhosphorIconsRegular.ranking,
+                  (_) => const RegionalComparisonScreen()),
               // Lot 7 : annonces aux élèves et aux parents, comme le site.
               MoreEntry(l.annTitle, PhosphorIconsRegular.megaphone,
                   (_) => const InstitutionAnnouncementsScreen()),

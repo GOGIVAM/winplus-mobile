@@ -9864,4 +9864,175 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get winaiListenUnavailable =>
       'The phone\'s voice is not available. Check text-to-speech in the device settings.';
+
+  @override
+  String get regCmpTitle => 'Regional comparison';
+
+  @override
+  String regCmpIntro(String scope, int count) {
+    return 'Your school compared with $count comparable schools ($scope) over the last 90 days. No other school is named.';
+  }
+
+  @override
+  String regCmpRank(int rank, int count) {
+    return '#$rank of $count';
+  }
+
+  @override
+  String regCmpBetter(int pct) {
+    return 'Ahead of $pct% of comparable schools';
+  }
+
+  @override
+  String get regCmpYours => 'Your school';
+
+  @override
+  String regCmpAverage(String scope) {
+    return 'Average ($scope)';
+  }
+
+  @override
+  String get regCmpBest => 'Best school';
+
+  @override
+  String regCmpStudents(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count active students counted',
+      one: '1 active student counted',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get regCmpSubjects => 'By subject';
+
+  @override
+  String regCmpSubjectLine(String mine, String region) {
+    return 'You $mine · average $region';
+  }
+
+  @override
+  String get regCmpNoneTitle => 'Comparison not available yet';
+
+  @override
+  String get regCmpNoneText =>
+      'At least 3 comparable schools with 5 active students over 90 days are needed.';
+
+  @override
+  String get libTitle => 'My library';
+
+  @override
+  String get libSearch => 'Search content';
+
+  @override
+  String get libAll => 'All';
+
+  @override
+  String get libAnnotated => 'Annotated';
+
+  @override
+  String get libNewFolder => 'New folder';
+
+  @override
+  String get libFolderName => 'Folder name';
+
+  @override
+  String get libFolderCreated => 'Folder created.';
+
+  @override
+  String get libRenameFolder => 'Rename folder';
+
+  @override
+  String get libDeleteFolder => 'Delete folder';
+
+  @override
+  String libDeleteFolderConfirm(String name) {
+    return 'Delete “$name”? The content stays in your library, without a folder.';
+  }
+
+  @override
+  String get libPurchased => 'Purchased';
+
+  @override
+  String get libOrganized => 'Organized';
+
+  @override
+  String get libOrganize => 'Organize';
+
+  @override
+  String get libOrganizeHint => 'Folder, tags and private note';
+
+  @override
+  String get libAssignClass => 'Assign to a class';
+
+  @override
+  String get libAssignHint =>
+      'Students in the class will get access. Paid content you don\'t own is charged to your wallet.';
+
+  @override
+  String libAssigned(String name) {
+    return 'Content assigned to $name.';
+  }
+
+  @override
+  String libAssignedCharged(String name, String amount) {
+    return 'Content assigned to $name ($amount charged to your wallet).';
+  }
+
+  @override
+  String libAssignNoBalance(String required, String balance) {
+    return 'Insufficient balance: $required needed, your wallet has $balance.';
+  }
+
+  @override
+  String get libNoClass =>
+      'You don\'t have a class yet. Create one in My classes.';
+
+  @override
+  String get libSaved => 'Saved.';
+
+  @override
+  String get libFolder => 'Folder';
+
+  @override
+  String get libNoFolder => 'No folder';
+
+  @override
+  String get libTags => 'Tags';
+
+  @override
+  String get libAddTag => 'Add a tag';
+
+  @override
+  String get libNotes => 'Private note';
+
+  @override
+  String get libNotesHint => 'Only visible to you (300 characters max)';
+
+  @override
+  String get libSave => 'Save';
+
+  @override
+  String get libTagReview => 'To review';
+
+  @override
+  String get libTagHard => 'Hard';
+
+  @override
+  String get libTagMastered => 'Mastered';
+
+  @override
+  String get libTagToBuy => 'To buy';
+
+  @override
+  String get libEmptyTitle => 'Your library is empty';
+
+  @override
+  String get libEmptyText =>
+      'Content you buy or add to favorites shows up here. Sort it into folders and assign it to your classes.';
+
+  @override
+  String get libNoMatch => 'No content matches.';
 }

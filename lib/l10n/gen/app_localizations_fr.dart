@@ -9947,4 +9947,181 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get winaiListenUnavailable =>
       'La voix du téléphone n\'est pas disponible. Vérifie la synthèse vocale dans les réglages de l\'appareil.';
+
+  @override
+  String get regCmpTitle => 'Comparaison régionale';
+
+  @override
+  String regCmpIntro(String scope, int count) {
+    return 'Votre établissement face aux $count établissements comparables ($scope), sur les 90 derniers jours. Aucun autre établissement n’est nommé.';
+  }
+
+  @override
+  String regCmpRank(int rank, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      rank,
+      locale: localeName,
+      other: '${rank}e sur $count',
+      one: '1er sur $count',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String regCmpBetter(int pct) {
+    return 'Devant $pct % des établissements comparables';
+  }
+
+  @override
+  String get regCmpYours => 'Votre établissement';
+
+  @override
+  String regCmpAverage(String scope) {
+    return 'Moyenne ($scope)';
+  }
+
+  @override
+  String get regCmpBest => 'Meilleur établissement';
+
+  @override
+  String regCmpStudents(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count élèves actifs pris en compte',
+      one: '1 élève actif pris en compte',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get regCmpSubjects => 'Par matière';
+
+  @override
+  String regCmpSubjectLine(String mine, String region) {
+    return 'Vous $mine · moyenne $region';
+  }
+
+  @override
+  String get regCmpNoneTitle => 'Comparaison pas encore disponible';
+
+  @override
+  String get regCmpNoneText =>
+      'Il faut au moins 3 établissements comparables avec 5 élèves actifs sur 90 jours.';
+
+  @override
+  String get libTitle => 'Ma bibliothèque';
+
+  @override
+  String get libSearch => 'Rechercher un contenu';
+
+  @override
+  String get libAll => 'Tout';
+
+  @override
+  String get libAnnotated => 'Annotés';
+
+  @override
+  String get libNewFolder => 'Nouveau dossier';
+
+  @override
+  String get libFolderName => 'Nom du dossier';
+
+  @override
+  String get libFolderCreated => 'Dossier créé.';
+
+  @override
+  String get libRenameFolder => 'Renommer le dossier';
+
+  @override
+  String get libDeleteFolder => 'Supprimer le dossier';
+
+  @override
+  String libDeleteFolderConfirm(String name) {
+    return 'Supprimer « $name » ? Les contenus restent dans la bibliothèque, sans dossier.';
+  }
+
+  @override
+  String get libPurchased => 'Acheté';
+
+  @override
+  String get libOrganized => 'Rangé';
+
+  @override
+  String get libOrganize => 'Ranger';
+
+  @override
+  String get libOrganizeHint => 'Dossier, tags et note privée';
+
+  @override
+  String get libAssignClass => 'Assigner à une classe';
+
+  @override
+  String get libAssignHint =>
+      'Les élèves de la classe y auront accès. Un contenu payant que vous ne possédez pas est débité de votre portefeuille.';
+
+  @override
+  String libAssigned(String name) {
+    return 'Contenu assigné à $name.';
+  }
+
+  @override
+  String libAssignedCharged(String name, String amount) {
+    return 'Contenu assigné à $name ($amount débités du portefeuille).';
+  }
+
+  @override
+  String libAssignNoBalance(String required, String balance) {
+    return 'Solde insuffisant : il faut $required, votre portefeuille a $balance.';
+  }
+
+  @override
+  String get libNoClass =>
+      'Vous n’avez pas encore de classe. Créez-en une dans Mes classes.';
+
+  @override
+  String get libSaved => 'Rangement enregistré.';
+
+  @override
+  String get libFolder => 'Dossier';
+
+  @override
+  String get libNoFolder => 'Sans dossier';
+
+  @override
+  String get libTags => 'Tags';
+
+  @override
+  String get libAddTag => 'Ajouter un tag';
+
+  @override
+  String get libNotes => 'Note privée';
+
+  @override
+  String get libNotesHint => 'Visible par vous seul (300 caractères au plus)';
+
+  @override
+  String get libSave => 'Enregistrer';
+
+  @override
+  String get libTagReview => 'À réviser';
+
+  @override
+  String get libTagHard => 'Difficile';
+
+  @override
+  String get libTagMastered => 'Maîtrisé';
+
+  @override
+  String get libTagToBuy => 'À acheter';
+
+  @override
+  String get libEmptyTitle => 'Bibliothèque vide';
+
+  @override
+  String get libEmptyText =>
+      'Les contenus que vous achetez ou ajoutez aux favoris arrivent ici. Rangez-les en dossiers et assignez-les à vos classes.';
+
+  @override
+  String get libNoMatch => 'Aucun contenu ne correspond.';
 }

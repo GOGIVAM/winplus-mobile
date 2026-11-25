@@ -16915,6 +16915,288 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'La voix du téléphone n\'est pas disponible. Vérifie la synthèse vocale dans les réglages de l\'appareil.'**
   String get winaiListenUnavailable;
+
+  /// No description provided for @regCmpTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Comparaison régionale'**
+  String get regCmpTitle;
+
+  /// No description provided for @regCmpIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre établissement face aux {count} établissements comparables ({scope}), sur les 90 derniers jours. Aucun autre établissement n’est nommé.'**
+  String regCmpIntro(String scope, int count);
+
+  /// No description provided for @regCmpRank.
+  ///
+  /// In fr, this message translates to:
+  /// **'{rank, plural, =1{1er sur {count}} other{{rank}e sur {count}}}'**
+  String regCmpRank(int rank, int count);
+
+  /// No description provided for @regCmpBetter.
+  ///
+  /// In fr, this message translates to:
+  /// **'Devant {pct} % des établissements comparables'**
+  String regCmpBetter(int pct);
+
+  /// No description provided for @regCmpYours.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre établissement'**
+  String get regCmpYours;
+
+  /// No description provided for @regCmpAverage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Moyenne ({scope})'**
+  String regCmpAverage(String scope);
+
+  /// No description provided for @regCmpBest.
+  ///
+  /// In fr, this message translates to:
+  /// **'Meilleur établissement'**
+  String get regCmpBest;
+
+  /// No description provided for @regCmpStudents.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{1 élève actif pris en compte} other{{count} élèves actifs pris en compte}}'**
+  String regCmpStudents(int count);
+
+  /// No description provided for @regCmpSubjects.
+  ///
+  /// In fr, this message translates to:
+  /// **'Par matière'**
+  String get regCmpSubjects;
+
+  /// No description provided for @regCmpSubjectLine.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous {mine} · moyenne {region}'**
+  String regCmpSubjectLine(String mine, String region);
+
+  /// No description provided for @regCmpNoneTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Comparaison pas encore disponible'**
+  String get regCmpNoneTitle;
+
+  /// No description provided for @regCmpNoneText.
+  ///
+  /// In fr, this message translates to:
+  /// **'Il faut au moins 3 établissements comparables avec 5 élèves actifs sur 90 jours.'**
+  String get regCmpNoneText;
+
+  /// No description provided for @libTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ma bibliothèque'**
+  String get libTitle;
+
+  /// No description provided for @libSearch.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher un contenu'**
+  String get libSearch;
+
+  /// No description provided for @libAll.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tout'**
+  String get libAll;
+
+  /// No description provided for @libAnnotated.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annotés'**
+  String get libAnnotated;
+
+  /// No description provided for @libNewFolder.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau dossier'**
+  String get libNewFolder;
+
+  /// No description provided for @libFolderName.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom du dossier'**
+  String get libFolderName;
+
+  /// No description provided for @libFolderCreated.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dossier créé.'**
+  String get libFolderCreated;
+
+  /// No description provided for @libRenameFolder.
+  ///
+  /// In fr, this message translates to:
+  /// **'Renommer le dossier'**
+  String get libRenameFolder;
+
+  /// No description provided for @libDeleteFolder.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer le dossier'**
+  String get libDeleteFolder;
+
+  /// No description provided for @libDeleteFolderConfirm.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer « {name} » ? Les contenus restent dans la bibliothèque, sans dossier.'**
+  String libDeleteFolderConfirm(String name);
+
+  /// No description provided for @libPurchased.
+  ///
+  /// In fr, this message translates to:
+  /// **'Acheté'**
+  String get libPurchased;
+
+  /// No description provided for @libOrganized.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rangé'**
+  String get libOrganized;
+
+  /// No description provided for @libOrganize.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ranger'**
+  String get libOrganize;
+
+  /// No description provided for @libOrganizeHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dossier, tags et note privée'**
+  String get libOrganizeHint;
+
+  /// No description provided for @libAssignClass.
+  ///
+  /// In fr, this message translates to:
+  /// **'Assigner à une classe'**
+  String get libAssignClass;
+
+  /// No description provided for @libAssignHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les élèves de la classe y auront accès. Un contenu payant que vous ne possédez pas est débité de votre portefeuille.'**
+  String get libAssignHint;
+
+  /// No description provided for @libAssigned.
+  ///
+  /// In fr, this message translates to:
+  /// **'Contenu assigné à {name}.'**
+  String libAssigned(String name);
+
+  /// No description provided for @libAssignedCharged.
+  ///
+  /// In fr, this message translates to:
+  /// **'Contenu assigné à {name} ({amount} débités du portefeuille).'**
+  String libAssignedCharged(String name, String amount);
+
+  /// No description provided for @libAssignNoBalance.
+  ///
+  /// In fr, this message translates to:
+  /// **'Solde insuffisant : il faut {required}, votre portefeuille a {balance}.'**
+  String libAssignNoBalance(String required, String balance);
+
+  /// No description provided for @libNoClass.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous n’avez pas encore de classe. Créez-en une dans Mes classes.'**
+  String get libNoClass;
+
+  /// No description provided for @libSaved.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rangement enregistré.'**
+  String get libSaved;
+
+  /// No description provided for @libFolder.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dossier'**
+  String get libFolder;
+
+  /// No description provided for @libNoFolder.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sans dossier'**
+  String get libNoFolder;
+
+  /// No description provided for @libTags.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tags'**
+  String get libTags;
+
+  /// No description provided for @libAddTag.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter un tag'**
+  String get libAddTag;
+
+  /// No description provided for @libNotes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Note privée'**
+  String get libNotes;
+
+  /// No description provided for @libNotesHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Visible par vous seul (300 caractères au plus)'**
+  String get libNotesHint;
+
+  /// No description provided for @libSave.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrer'**
+  String get libSave;
+
+  /// No description provided for @libTagReview.
+  ///
+  /// In fr, this message translates to:
+  /// **'À réviser'**
+  String get libTagReview;
+
+  /// No description provided for @libTagHard.
+  ///
+  /// In fr, this message translates to:
+  /// **'Difficile'**
+  String get libTagHard;
+
+  /// No description provided for @libTagMastered.
+  ///
+  /// In fr, this message translates to:
+  /// **'Maîtrisé'**
+  String get libTagMastered;
+
+  /// No description provided for @libTagToBuy.
+  ///
+  /// In fr, this message translates to:
+  /// **'À acheter'**
+  String get libTagToBuy;
+
+  /// No description provided for @libEmptyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bibliothèque vide'**
+  String get libEmptyTitle;
+
+  /// No description provided for @libEmptyText.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les contenus que vous achetez ou ajoutez aux favoris arrivent ici. Rangez-les en dossiers et assignez-les à vos classes.'**
+  String get libEmptyText;
+
+  /// No description provided for @libNoMatch.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun contenu ne correspond.'**
+  String get libNoMatch;
 }
 
 class _AppLocalizationsDelegate
