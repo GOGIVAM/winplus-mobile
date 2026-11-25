@@ -5546,5 +5546,16 @@
   "barometerTypeDrop": "Baisse de performance",
   "barometerTypeInactive": "Inactivité",
   "barometerTypeOverwork": "Surmenage",
-  "barometerTypeAnxiety": "Anxiété liée à un examen"
+  "barometerTypeAnxiety": "Anxiété liée à un examen",
+  "crTitle": "Fiche de révision pour {name}",
+  "@crTitle": {"placeholders": {"name": {"type": "String"}}},
+  "crSub": "WinAI prépare une fiche que {name} retrouvera dans ses révisions.",
+  "@crSub": {"placeholders": {"name": {"type": "String"}}},
+  "crNotify": "Dire à {name} que la fiche vient de moi",
+  "@crNotify": {"placeholders": {"name": {"type": "String"}}},
+  "crDoneNamed": "Fiche prête : {name} est prévenu(e) qu’elle vient de toi.",
+  "@crDoneNamed": {"placeholders": {"name": {"type": "String"}}},
+  "crDoneAnonymous": "Fiche prête : {name} la trouvera dans ses révisions.",
+  "@crDoneAnonymous": {"placeholders": {"name": {"type": "String"}}},
+  "crError": "La fiche n’a pas pu être générée."
 }

@@ -2664,5 +2664,16 @@
   "barometerTypeDrop": "Performance drop",
   "barometerTypeInactive": "Inactivity",
   "barometerTypeOverwork": "Overwork",
-  "barometerTypeAnxiety": "Exam anxiety"
+  "barometerTypeAnxiety": "Exam anxiety",
+  "crTitle": "Revision sheet for {name}",
+  "@crTitle": {"placeholders": {"name": {"type": "String"}}},
+  "crSub": "WinAI prepares a sheet that {name} will find in their revisions.",
+  "@crSub": {"placeholders": {"name": {"type": "String"}}},
+  "crNotify": "Tell {name} the sheet is from me",
+  "@crNotify": {"placeholders": {"name": {"type": "String"}}},
+  "crDoneNamed": "Sheet ready: {name} has been told it is from you.",
+  "@crDoneNamed": {"placeholders": {"name": {"type": "String"}}},
+  "crDoneAnonymous": "Sheet ready: {name} will find it in their revisions.",
+  "@crDoneAnonymous": {"placeholders": {"name": {"type": "String"}}},
+  "crError": "The sheet could not be generated."
 }

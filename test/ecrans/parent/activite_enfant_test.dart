@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:winplus/l10n/l10n.dart';
+import 'package:winplus/parent/buy_for_child_screen.dart';
+import 'package:winplus/parent/child_revision_sheet.dart';
 import 'package:winplus/parent/child_activity_screen.dart';
 import 'package:winplus/parent/encouragement_sheet.dart';
 import 'package:winplus/services/local_cache_service.dart';
@@ -227,20 +229,71 @@ void main() {
       expect(find.byIcon(PhosphorIconsRegular.warningCircle), findsOneWidget);
     });
 
-    testWidgets('bouton « Voir ressources » : message du catalogue filtre pour l enfant', (tester) async {
+    testWidgets('bouton « Voir ressources » : ouvre l\'achat pour l\'enfant (catalogue a son niveau)', (tester) async {
       routes();
+      faux.repond('GET', '/parent/credits', {'data': null});
+      faux.repond('GET', '/subjects', {'items': []});
       await monterEcran(tester, const ChildActivityScreen(child: _enfant));
       await tester.tap(_bouton(L10n.current.parentChildSeeResources));
-      await pomper(tester);
-      expect(find.text(L10n.current.parentChildCatalogFiltered('Zoe')), findsOneWidget);
+      await pomper(tester, const Duration(milliseconds: 400));
+      await reseau(tester);
+      expect(find.byType(BuyForChildScreen), findsOneWidget);
+      expect(faux.recues('GET', '/subjects').first.queryParameters['level'], 'Terminale');
     });
 
-    testWidgets('bouton « Generer un quiz » : message de generation en cours', (tester) async {
+    testWidgets('bouton « Generer » : ouvre la feuille de la fiche de revision pour l\'enfant', (tester) async {
       routes();
       await monterEcran(tester, const ChildActivityScreen(child: _enfant));
-      await tester.tap(_bouton(L10n.current.parentChildGenerateQuiz));
-      await pomper(tester);
-      expect(find.text(L10n.current.parentChildQuizGenerating), findsOneWidget);
+      final l = L10n.current;
+      await tester.tap(_bouton(l.parentChildGenerateQuiz));
+      await pomper(tester, const Duration(milliseconds: 400));
+      expect(find.text(l.crTitle('Zoe')), findsOneWidget);
+      expect(find.byType(ChildRevisionForm), findsOneWidget);
+      expect(find.text(l.parentChildQuizGenerating), findsNothing, reason: 'plus de faux message');
+    });
+
+    group('ChildRevisionForm', () {
+      // Formulaire seul, dans une liste qui défile (la feuille liste toutes
+      // les matières) ; « ouvrir » le pousse, la réussite le referme.
+      Future<void> monterFormulaire(WidgetTester tester) async {
+        await monterEcran(tester, lanceur(Scaffold(body: ListView(children: const [ChildRevisionForm(child: _enfant)]))));
+        await ouvrir(tester);
+      }
+
+      Future<void> generer(WidgetTester tester) async {
+        final bouton = find.text(L10n.current.winaiSettingsGenerate);
+        await tester.scrollUntilVisible(bouton, 200, scrollable: find.byType(Scrollable).last);
+        await tester.tap(bouton);
+        await reseau(tester);
+      }
+
+      testWidgets('la fiche est demandee pour l\'enfant avec chapitre et niveau', (tester) async {
+        faux.repond('POST', '/revisions/for-child/generate', {'id': 3, 'subject': 'Maths'});
+        await monterFormulaire(tester);
+        final l = L10n.current;
+        await tester.enterText(find.byType(TextField), 'Derivees');
+        final difficile = find.text(l.tutoringMatHard);
+        await tester.scrollUntilVisible(difficile, 200, scrollable: find.byType(Scrollable).last);
+        await tester.tap(difficile);
+        await pomper(tester);
+        await generer(tester);
+        final d = faux.recues('POST', '/revisions/for-child/generate').single.data as Map;
+        expect(d['childId'], 4);
+        expect(d['topic'], 'Derivees');
+        expect(d['difficulty'], 'hard');
+        expect(d['notifyWithParentName'], isTrue);
+        expect(d['subject'], isNotEmpty);
+        expect(find.text(l.crDoneNamed('Zoe')), findsOneWidget);
+        expect(find.byType(ChildRevisionForm), findsNothing, reason: 'refermee apres la reussite');
+      });
+
+      testWidgets('refus du serveur : son message, le formulaire reste ouvert', (tester) async {
+        faux.repond('POST', '/revisions/for-child/generate', {'message': 'Quota WinAI atteint.'}, statut: 402);
+        await monterFormulaire(tester);
+        await generer(tester);
+        expect(find.text('Quota WinAI atteint.'), findsOneWidget);
+        expect(find.byType(ChildRevisionForm), findsOneWidget);
+      });
     });
 
     testWidgets('« Encourager » ouvre la feuille d\'encouragement au nom de l\'enfant', (tester) async {

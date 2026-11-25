@@ -8,6 +8,9 @@ import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
 import 'album_tab.dart';
 import 'barometer_tab.dart';
+import 'buy_for_child_screen.dart';
+import 'child_revision_sheet.dart';
+import '../theme/win_motion.dart';
 import 'encouragement_sheet.dart';
 import 'exam_watch_mode_tab.dart';
 import 'goal_proposal_tab.dart';
@@ -113,6 +116,8 @@ class _ChildActivityScreenState extends State<ChildActivityScreen>
         bottom: TabBar(
           controller: _tab,
           isScrollable: true,
+          // Huit onglets : alignés à gauche et défilants, sans libellés écrasés.
+          tabAlignment: TabAlignment.start,
           labelColor: s.primary,
           unselectedLabelColor: s.onFaint,
           indicatorColor: s.primary,
@@ -161,11 +166,10 @@ class _ChildActivityScreenState extends State<ChildActivityScreen>
                 variant: WinButtonVariant.ghost,
                 small: true,
                 icon: PhosphorIconsRegular.books,
-                onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                      content: Text(
-                          context.l10n.parentChildCatalogFiltered(widget.child.firstName))),
-                ),
+                // Catalogue filtré au niveau de l'enfant, achat pour lui
+                // (avant : un simple message, rien ne s'ouvrait).
+                onTap: () => Navigator.of(context).push(WinPageRoute(
+                    builder: (_) => BuyForChildScreen(children: [widget.child]))),
               ),
             ),
             const SizedBox(width: 8),
@@ -175,10 +179,9 @@ class _ChildActivityScreenState extends State<ChildActivityScreen>
                 variant: WinButtonVariant.outline,
                 small: true,
                 icon: PhosphorIconsRegular.exam,
-                onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                      content: Text(context.l10n.parentChildQuizGenerating)),
-                ),
+                // Fiche de révision générée par WinAI pour l'enfant (avant :
+                // « génération en cours » affiché, rien n'était généré).
+                onTap: () => showChildRevisionSheet(context, widget.child),
               ),
             ),
             const SizedBox(width: 8),

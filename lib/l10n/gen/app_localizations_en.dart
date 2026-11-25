@@ -9278,4 +9278,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get barometerTypeAnxiety => 'Exam anxiety';
+
+  @override
+  String crTitle(String name) {
+    return 'Revision sheet for $name';
+  }
+
+  @override
+  String crSub(String name) {
+    return 'WinAI prepares a sheet that $name will find in their revisions.';
+  }
+
+  @override
+  String crNotify(String name) {
+    return 'Tell $name the sheet is from me';
+  }
+
+  @override
+  String crDoneNamed(String name) {
+    return 'Sheet ready: $name has been told it is from you.';
+  }
+
+  @override
+  String crDoneAnonymous(String name) {
+    return 'Sheet ready: $name will find it in their revisions.';
+  }
+
+  @override
+  String get crError => 'The sheet could not be generated.';
 }

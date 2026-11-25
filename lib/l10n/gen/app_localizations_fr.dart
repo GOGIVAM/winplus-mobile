@@ -9357,4 +9357,32 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get barometerTypeAnxiety => 'Anxiété liée à un examen';
+
+  @override
+  String crTitle(String name) {
+    return 'Fiche de révision pour $name';
+  }
+
+  @override
+  String crSub(String name) {
+    return 'WinAI prépare une fiche que $name retrouvera dans ses révisions.';
+  }
+
+  @override
+  String crNotify(String name) {
+    return 'Dire à $name que la fiche vient de moi';
+  }
+
+  @override
+  String crDoneNamed(String name) {
+    return 'Fiche prête : $name est prévenu(e) qu’elle vient de toi.';
+  }
+
+  @override
+  String crDoneAnonymous(String name) {
+    return 'Fiche prête : $name la trouvera dans ses révisions.';
+  }
+
+  @override
+  String get crError => 'La fiche n’a pas pu être générée.';
 }

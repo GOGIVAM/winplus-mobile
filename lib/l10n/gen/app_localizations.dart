@@ -15919,6 +15919,42 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Anxiété liée à un examen'**
   String get barometerTypeAnxiety;
+
+  /// No description provided for @crTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fiche de révision pour {name}'**
+  String crTitle(String name);
+
+  /// No description provided for @crSub.
+  ///
+  /// In fr, this message translates to:
+  /// **'WinAI prépare une fiche que {name} retrouvera dans ses révisions.'**
+  String crSub(String name);
+
+  /// No description provided for @crNotify.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dire à {name} que la fiche vient de moi'**
+  String crNotify(String name);
+
+  /// No description provided for @crDoneNamed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fiche prête : {name} est prévenu(e) qu’elle vient de toi.'**
+  String crDoneNamed(String name);
+
+  /// No description provided for @crDoneAnonymous.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fiche prête : {name} la trouvera dans ses révisions.'**
+  String crDoneAnonymous(String name);
+
+  /// No description provided for @crError.
+  ///
+  /// In fr, this message translates to:
+  /// **'La fiche n’a pas pu être générée.'**
+  String get crError;
 }
 
 class _AppLocalizationsDelegate

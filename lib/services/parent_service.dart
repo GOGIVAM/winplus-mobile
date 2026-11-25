@@ -572,6 +572,35 @@ class ParentService {
     return result.value;
   }
 
+  /// Fiche de révision générée par WinAI pour un enfant lié (POST
+  /// /revisions/for-child/generate) ; elle apparaît dans ses révisions et il
+  /// reçoit une notification. Lève [ChildRevisionException] avec le message
+  /// du serveur (droit WinAI, enfant non lié…) ; les pannes remontent.
+  Future<void> generateRevisionForChild({
+    required int childId,
+    required String subject,
+    String? topic,
+    required String difficulty,
+    required bool notifyWithParentName,
+  }) async {
+    try {
+      await _api.dio.post('/revisions/for-child/generate', data: {
+        'childId': childId,
+        'subject': subject,
+        if (topic != null && topic.isNotEmpty) 'topic': topic,
+        'difficulty': difficulty,
+        'notifyWithParentName': notifyWithParentName,
+      });
+    } on DioException catch (e) {
+      if (e.response != null) {
+        final d = e.response?.data;
+        throw ChildRevisionException(
+            d is Map ? (d['message'] ?? d['error'])?.toString() : null);
+      }
+      rethrow;
+    }
+  }
+
   /// Baromètre de bien-être d'un enfant (signaux des 30 derniers jours).
   /// Comme le site, on demande d'abord le calcul à jour (GET
   /// /parent/ai-alerts/{id}, qui enregistre les nouveaux signaux) ; s'il
@@ -711,4 +740,10 @@ class ApiBarometerSignal {
       );
 
   bool get alerting => severity == 'High' || severity == 'Medium';
+}
+
+/// Génération refusée par le serveur, avec son message.
+class ChildRevisionException implements Exception {
+  final String? message;
+  const ChildRevisionException(this.message);
 }
