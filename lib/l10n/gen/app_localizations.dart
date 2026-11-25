@@ -16111,6 +16111,204 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Adresse copiée.'**
   String get helpCopied;
+
+  /// No description provided for @helpFormIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une question, un problème de paiement ou de compte ? Écris-nous, l’équipe WinPlus te répond par e-mail.'**
+  String get helpFormIntro;
+
+  /// No description provided for @helpFormName.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ton nom'**
+  String get helpFormName;
+
+  /// No description provided for @helpFormEmail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ton e-mail'**
+  String get helpFormEmail;
+
+  /// No description provided for @helpFormSubject.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sujet'**
+  String get helpFormSubject;
+
+  /// No description provided for @helpFormMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ton message'**
+  String get helpFormMessage;
+
+  /// No description provided for @helpErrName.
+  ///
+  /// In fr, this message translates to:
+  /// **'2 caractères au moins.'**
+  String get helpErrName;
+
+  /// No description provided for @helpErrEmail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Adresse e-mail invalide.'**
+  String get helpErrEmail;
+
+  /// No description provided for @helpErrSubject.
+  ///
+  /// In fr, this message translates to:
+  /// **'3 caractères au moins.'**
+  String get helpErrSubject;
+
+  /// No description provided for @helpErrMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'10 caractères au moins.'**
+  String get helpErrMessage;
+
+  /// No description provided for @helpSentTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Message envoyé'**
+  String get helpSentTitle;
+
+  /// No description provided for @helpSentText.
+  ///
+  /// In fr, this message translates to:
+  /// **'L’équipe WinPlus te répondra par e-mail.'**
+  String get helpSentText;
+
+  /// No description provided for @helpTooMany.
+  ///
+  /// In fr, this message translates to:
+  /// **'Trop d’envois, réessaie dans une heure ou écris à support@winplus.cm.'**
+  String get helpTooMany;
+
+  /// No description provided for @helpUnavailable.
+  ///
+  /// In fr, this message translates to:
+  /// **'L’envoi depuis l’application n’est pas encore disponible : écris-nous par e-mail ci-dessous.'**
+  String get helpUnavailable;
+
+  /// No description provided for @helpSendError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le message n’a pas pu être envoyé.'**
+  String get helpSendError;
+
+  /// No description provided for @winaiTabSources.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sources'**
+  String get winaiTabSources;
+
+  /// No description provided for @winaiSourcesHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Coche ce sur quoi WinAI doit s\'appuyer : la discussion et les outils de l\'atelier s\'en tiendront à ces sources.'**
+  String get winaiSourcesHint;
+
+  /// No description provided for @winaiSourcesMine.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mes fichiers'**
+  String get winaiSourcesMine;
+
+  /// No description provided for @winaiSourcesProgress.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mon travail'**
+  String get winaiSourcesProgress;
+
+  /// No description provided for @winaiSourcesExams.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mes épreuves'**
+  String get winaiSourcesExams;
+
+  /// No description provided for @winaiSourcesCourses.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mes formations'**
+  String get winaiSourcesCourses;
+
+  /// No description provided for @winaiSourcesAdd.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter un fichier'**
+  String get winaiSourcesAdd;
+
+  /// No description provided for @winaiSourcesPending.
+  ///
+  /// In fr, this message translates to:
+  /// **'Analyse en cours…'**
+  String get winaiSourcesPending;
+
+  /// No description provided for @winaiSourcesFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'L\'analyse a échoué'**
+  String get winaiSourcesFailed;
+
+  /// No description provided for @winaiSourcesDeleteTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer ce fichier ?'**
+  String get winaiSourcesDeleteTitle;
+
+  /// No description provided for @winaiSourcesDeleteBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'« {title} » ne sera plus utilisable par WinAI.'**
+  String winaiSourcesDeleteBody(String title);
+
+  /// No description provided for @winaiSourcesUsage.
+  ///
+  /// In fr, this message translates to:
+  /// **'{files} sur {max} fichiers'**
+  String winaiSourcesUsage(int files, int max);
+
+  /// No description provided for @winaiSourcesUsageUnlimited.
+  ///
+  /// In fr, this message translates to:
+  /// **'{files} fichiers, sans plafond'**
+  String winaiSourcesUsageUnlimited(int files);
+
+  /// No description provided for @winaiSourcesFormats.
+  ///
+  /// In fr, this message translates to:
+  /// **'PDF, Word, texte ou image, {size} au plus par fichier.'**
+  String winaiSourcesFormats(String size);
+
+  /// No description provided for @winaiSourcesTooBig.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce fichier dépasse {size}.'**
+  String winaiSourcesTooBig(String size);
+
+  /// No description provided for @winaiSourcesMax.
+  ///
+  /// In fr, this message translates to:
+  /// **'{max} sources au plus par discussion.'**
+  String winaiSourcesMax(int max);
+
+  /// No description provided for @winaiSourcesSelected.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} sources cochées'**
+  String winaiSourcesSelected(int count);
+
+  /// No description provided for @winaiSourcesNone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune source cochée'**
+  String get winaiSourcesNone;
+
+  /// No description provided for @winaiCitationPage.
+  ///
+  /// In fr, this message translates to:
+  /// **'{title}, page {page}'**
+  String winaiCitationPage(String title, int page);
 }
 
 class _AppLocalizationsDelegate

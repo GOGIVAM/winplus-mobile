@@ -9395,4 +9395,123 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get helpCopied => 'Address copied.';
+
+  @override
+  String get helpFormIntro =>
+      'A question, a payment or account issue? Write to us, the WinPlus team answers by e-mail.';
+
+  @override
+  String get helpFormName => 'Your name';
+
+  @override
+  String get helpFormEmail => 'Your e-mail';
+
+  @override
+  String get helpFormSubject => 'Subject';
+
+  @override
+  String get helpFormMessage => 'Your message';
+
+  @override
+  String get helpErrName => 'At least 2 characters.';
+
+  @override
+  String get helpErrEmail => 'Invalid e-mail address.';
+
+  @override
+  String get helpErrSubject => 'At least 3 characters.';
+
+  @override
+  String get helpErrMessage => 'At least 10 characters.';
+
+  @override
+  String get helpSentTitle => 'Message sent';
+
+  @override
+  String get helpSentText => 'The WinPlus team will answer you by e-mail.';
+
+  @override
+  String get helpTooMany =>
+      'Too many messages, try again in an hour or write to support@winplus.cm.';
+
+  @override
+  String get helpUnavailable =>
+      'Sending from the app is not available yet: write to us by e-mail below.';
+
+  @override
+  String get helpSendError => 'The message could not be sent.';
+
+  @override
+  String get winaiTabSources => 'Sources';
+
+  @override
+  String get winaiSourcesHint =>
+      'Tick what WinAI should rely on: the chat and the studio tools will stick to these sources.';
+
+  @override
+  String get winaiSourcesMine => 'My files';
+
+  @override
+  String get winaiSourcesProgress => 'My work';
+
+  @override
+  String get winaiSourcesExams => 'My papers';
+
+  @override
+  String get winaiSourcesCourses => 'My courses';
+
+  @override
+  String get winaiSourcesAdd => 'Add a file';
+
+  @override
+  String get winaiSourcesPending => 'Being analysed…';
+
+  @override
+  String get winaiSourcesFailed => 'Analysis failed';
+
+  @override
+  String get winaiSourcesDeleteTitle => 'Delete this file?';
+
+  @override
+  String winaiSourcesDeleteBody(String title) {
+    return '\"$title\" will no longer be usable by WinAI.';
+  }
+
+  @override
+  String winaiSourcesUsage(int files, int max) {
+    return '$files of $max files';
+  }
+
+  @override
+  String winaiSourcesUsageUnlimited(int files) {
+    return '$files files, no limit';
+  }
+
+  @override
+  String winaiSourcesFormats(String size) {
+    return 'PDF, Word, text or image, up to $size per file.';
+  }
+
+  @override
+  String winaiSourcesTooBig(String size) {
+    return 'This file is larger than $size.';
+  }
+
+  @override
+  String winaiSourcesMax(int max) {
+    return 'Up to $max sources per chat.';
+  }
+
+  @override
+  String winaiSourcesSelected(int count) {
+    return '$count sources ticked';
+  }
+
+  @override
+  String get winaiSourcesNone => 'No source ticked';
+
+  @override
+  String winaiCitationPage(String title, int page) {
+    return '$title, page $page';
+  }
 }

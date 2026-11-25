@@ -9475,4 +9475,123 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get helpCopied => 'Adresse copiée.';
+
+  @override
+  String get helpFormIntro =>
+      'Une question, un problème de paiement ou de compte ? Écris-nous, l’équipe WinPlus te répond par e-mail.';
+
+  @override
+  String get helpFormName => 'Ton nom';
+
+  @override
+  String get helpFormEmail => 'Ton e-mail';
+
+  @override
+  String get helpFormSubject => 'Sujet';
+
+  @override
+  String get helpFormMessage => 'Ton message';
+
+  @override
+  String get helpErrName => '2 caractères au moins.';
+
+  @override
+  String get helpErrEmail => 'Adresse e-mail invalide.';
+
+  @override
+  String get helpErrSubject => '3 caractères au moins.';
+
+  @override
+  String get helpErrMessage => '10 caractères au moins.';
+
+  @override
+  String get helpSentTitle => 'Message envoyé';
+
+  @override
+  String get helpSentText => 'L’équipe WinPlus te répondra par e-mail.';
+
+  @override
+  String get helpTooMany =>
+      'Trop d’envois, réessaie dans une heure ou écris à support@winplus.cm.';
+
+  @override
+  String get helpUnavailable =>
+      'L’envoi depuis l’application n’est pas encore disponible : écris-nous par e-mail ci-dessous.';
+
+  @override
+  String get helpSendError => 'Le message n’a pas pu être envoyé.';
+
+  @override
+  String get winaiTabSources => 'Sources';
+
+  @override
+  String get winaiSourcesHint =>
+      'Coche ce sur quoi WinAI doit s\'appuyer : la discussion et les outils de l\'atelier s\'en tiendront à ces sources.';
+
+  @override
+  String get winaiSourcesMine => 'Mes fichiers';
+
+  @override
+  String get winaiSourcesProgress => 'Mon travail';
+
+  @override
+  String get winaiSourcesExams => 'Mes épreuves';
+
+  @override
+  String get winaiSourcesCourses => 'Mes formations';
+
+  @override
+  String get winaiSourcesAdd => 'Ajouter un fichier';
+
+  @override
+  String get winaiSourcesPending => 'Analyse en cours…';
+
+  @override
+  String get winaiSourcesFailed => 'L\'analyse a échoué';
+
+  @override
+  String get winaiSourcesDeleteTitle => 'Supprimer ce fichier ?';
+
+  @override
+  String winaiSourcesDeleteBody(String title) {
+    return '« $title » ne sera plus utilisable par WinAI.';
+  }
+
+  @override
+  String winaiSourcesUsage(int files, int max) {
+    return '$files sur $max fichiers';
+  }
+
+  @override
+  String winaiSourcesUsageUnlimited(int files) {
+    return '$files fichiers, sans plafond';
+  }
+
+  @override
+  String winaiSourcesFormats(String size) {
+    return 'PDF, Word, texte ou image, $size au plus par fichier.';
+  }
+
+  @override
+  String winaiSourcesTooBig(String size) {
+    return 'Ce fichier dépasse $size.';
+  }
+
+  @override
+  String winaiSourcesMax(int max) {
+    return '$max sources au plus par discussion.';
+  }
+
+  @override
+  String winaiSourcesSelected(int count) {
+    return '$count sources cochées';
+  }
+
+  @override
+  String get winaiSourcesNone => 'Aucune source cochée';
+
+  @override
+  String winaiCitationPage(String title, int page) {
+    return '$title, page $page';
+  }
 }
