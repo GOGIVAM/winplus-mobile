@@ -10253,4 +10253,101 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get libNoMatch => 'Aucun contenu ne correspond.';
+
+  @override
+  String get coachTitle => 'Coaching WinAI';
+
+  @override
+  String get coachIntro =>
+      'Chaque mois, WinAI relit vos séances et les avis de vos élèves pour vous proposer des pistes de progression.';
+
+  @override
+  String get coachEmptyTitle => 'Pas encore de rapport';
+
+  @override
+  String get coachEmptyText =>
+      'Le rapport arrive le 1er de chaque mois. Vous pouvez aussi le demander maintenant (consomme du crédit WinAI).';
+
+  @override
+  String get coachGenerateNow => 'Générer le rapport maintenant';
+
+  @override
+  String get coachRegenerate => 'Régénérer';
+
+  @override
+  String get coachGenerated => 'Rapport de coaching généré.';
+
+  @override
+  String coachGeneratedOn(String date) {
+    return 'Généré le $date';
+  }
+
+  @override
+  String get coachStrengths => 'Points forts';
+
+  @override
+  String get coachImproving => 'Matières en progrès';
+
+  @override
+  String get coachStagnation => 'Points de stagnation';
+
+  @override
+  String get coachRecommendations => 'Recommandations';
+
+  @override
+  String get coachSheetsTitle => 'Fiches de révision par élève';
+
+  @override
+  String get coachSheetsIntro =>
+      'WinAI rédige une fiche à partir des comptes-rendus de vos séances ; vous la relisez avant de l’envoyer.';
+
+  @override
+  String get coachNoStudents =>
+      'Aucun élève avec une séance effectuée pour l’instant.';
+
+  @override
+  String coachSessions(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count séances',
+      one: '1 séance',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get coachSheetIntro =>
+      'Relisez et modifiez la fiche, puis enregistrez-la ou envoyez-la à l’élève dans la messagerie.';
+
+  @override
+  String get coachSheetGenerate => 'Générer la fiche avec WinAI';
+
+  @override
+  String get coachSheetSave => 'Enregistrer';
+
+  @override
+  String get coachSheetSaved => 'Fiche enregistrée.';
+
+  @override
+  String get coachSheetSend => 'Envoyer dans la messagerie';
+
+  @override
+  String get coachSheetMessage =>
+      'Voici ta fiche de révision préparée après nos séances :';
+
+  @override
+  String coachSheetSent(String name) {
+    return 'Fiche envoyée à $name.';
+  }
+
+  @override
+  String get coachSheetSendError =>
+      'La fiche n’a pas pu être envoyée. Vérifiez que l’élève fait partie de vos contacts.';
+
+  @override
+  String get coachSheetCopy => 'Copier';
+
+  @override
+  String get coachSheetCopied => 'Fiche copiée.';
 }

@@ -32,6 +32,7 @@ import '../institution/student_directory_screen.dart';
 import '../institution/reports_screen.dart';
 import '../institution/regional_comparison_screen.dart';
 import '../teacher/teacher_library_screen.dart';
+import '../teacher/tutor_coaching_screen.dart';
 import '../institution/license_screen.dart';
 import '../institution/at_risk_screen.dart';
 import '../teacher/tutor_profile_screen.dart';
@@ -469,6 +470,7 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
               l.teacherClassesMyLinks: l.moreGroupFollow,
               l.teacherProfileTitle: l.moreGroupTutoring,
               l.teacherClassesMyBookings: l.moreGroupTutoring,
+              l.coachTitle: l.moreGroupTutoring,
               l.shellTabEarnings: l.moreGroupEarnings,
               l.affTitle: l.moreGroupEarnings,
             }, entries: [
@@ -513,6 +515,9 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
               MoreEntry(l.teacherClassesMyBookings,
                   PhosphorIconsRegular.calendarCheck,
                   (_) => const TutorBookingsScreen()),
+              // Lot 7 : rapport mensuel WinAI et fiches de révision par élève.
+              MoreEntry(l.coachTitle, PhosphorIconsRegular.sparkle,
+                  (_) => const TutorCoachingScreen()),
               MoreEntry(l.teacherClassesMyLinks, PhosphorIconsRegular.link,
                   (_) => const TeacherLinksScreen()),
             ]),

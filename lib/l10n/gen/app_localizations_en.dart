@@ -10164,4 +10164,100 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get libNoMatch => 'No content matches.';
+
+  @override
+  String get coachTitle => 'WinAI coaching';
+
+  @override
+  String get coachIntro =>
+      'Every month, WinAI reviews your sessions and your students\' reviews to suggest ways to improve.';
+
+  @override
+  String get coachEmptyTitle => 'No report yet';
+
+  @override
+  String get coachEmptyText =>
+      'The report arrives on the 1st of each month. You can also request it now (uses WinAI credit).';
+
+  @override
+  String get coachGenerateNow => 'Generate the report now';
+
+  @override
+  String get coachRegenerate => 'Regenerate';
+
+  @override
+  String get coachGenerated => 'Coaching report generated.';
+
+  @override
+  String coachGeneratedOn(String date) {
+    return 'Generated on $date';
+  }
+
+  @override
+  String get coachStrengths => 'Strengths';
+
+  @override
+  String get coachImproving => 'Subjects improving';
+
+  @override
+  String get coachStagnation => 'Stagnation points';
+
+  @override
+  String get coachRecommendations => 'Recommendations';
+
+  @override
+  String get coachSheetsTitle => 'Revision sheets per student';
+
+  @override
+  String get coachSheetsIntro =>
+      'WinAI drafts a sheet from your session summaries; you review it before sending.';
+
+  @override
+  String get coachNoStudents => 'No student with a completed session yet.';
+
+  @override
+  String coachSessions(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count sessions',
+      one: '1 session',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get coachSheetIntro =>
+      'Review and edit the sheet, then save it or send it to the student in messaging.';
+
+  @override
+  String get coachSheetGenerate => 'Generate the sheet with WinAI';
+
+  @override
+  String get coachSheetSave => 'Save';
+
+  @override
+  String get coachSheetSaved => 'Sheet saved.';
+
+  @override
+  String get coachSheetSend => 'Send in messaging';
+
+  @override
+  String get coachSheetMessage =>
+      'Here is your revision sheet, prepared after our sessions:';
+
+  @override
+  String coachSheetSent(String name) {
+    return 'Sheet sent to $name.';
+  }
+
+  @override
+  String get coachSheetSendError =>
+      'The sheet could not be sent. Check that the student is one of your contacts.';
+
+  @override
+  String get coachSheetCopy => 'Copy';
+
+  @override
+  String get coachSheetCopied => 'Sheet copied.';
 }

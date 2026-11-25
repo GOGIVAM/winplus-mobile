@@ -17414,6 +17414,162 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Aucun contenu ne correspond.'**
   String get libNoMatch;
+
+  /// No description provided for @coachTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Coaching WinAI'**
+  String get coachTitle;
+
+  /// No description provided for @coachIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chaque mois, WinAI relit vos séances et les avis de vos élèves pour vous proposer des pistes de progression.'**
+  String get coachIntro;
+
+  /// No description provided for @coachEmptyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pas encore de rapport'**
+  String get coachEmptyTitle;
+
+  /// No description provided for @coachEmptyText.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le rapport arrive le 1er de chaque mois. Vous pouvez aussi le demander maintenant (consomme du crédit WinAI).'**
+  String get coachEmptyText;
+
+  /// No description provided for @coachGenerateNow.
+  ///
+  /// In fr, this message translates to:
+  /// **'Générer le rapport maintenant'**
+  String get coachGenerateNow;
+
+  /// No description provided for @coachRegenerate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Régénérer'**
+  String get coachRegenerate;
+
+  /// No description provided for @coachGenerated.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rapport de coaching généré.'**
+  String get coachGenerated;
+
+  /// No description provided for @coachGeneratedOn.
+  ///
+  /// In fr, this message translates to:
+  /// **'Généré le {date}'**
+  String coachGeneratedOn(String date);
+
+  /// No description provided for @coachStrengths.
+  ///
+  /// In fr, this message translates to:
+  /// **'Points forts'**
+  String get coachStrengths;
+
+  /// No description provided for @coachImproving.
+  ///
+  /// In fr, this message translates to:
+  /// **'Matières en progrès'**
+  String get coachImproving;
+
+  /// No description provided for @coachStagnation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Points de stagnation'**
+  String get coachStagnation;
+
+  /// No description provided for @coachRecommendations.
+  ///
+  /// In fr, this message translates to:
+  /// **'Recommandations'**
+  String get coachRecommendations;
+
+  /// No description provided for @coachSheetsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fiches de révision par élève'**
+  String get coachSheetsTitle;
+
+  /// No description provided for @coachSheetsIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'WinAI rédige une fiche à partir des comptes-rendus de vos séances ; vous la relisez avant de l’envoyer.'**
+  String get coachSheetsIntro;
+
+  /// No description provided for @coachNoStudents.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun élève avec une séance effectuée pour l’instant.'**
+  String get coachNoStudents;
+
+  /// No description provided for @coachSessions.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{1 séance} other{{count} séances}}'**
+  String coachSessions(int count);
+
+  /// No description provided for @coachSheetIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Relisez et modifiez la fiche, puis enregistrez-la ou envoyez-la à l’élève dans la messagerie.'**
+  String get coachSheetIntro;
+
+  /// No description provided for @coachSheetGenerate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Générer la fiche avec WinAI'**
+  String get coachSheetGenerate;
+
+  /// No description provided for @coachSheetSave.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrer'**
+  String get coachSheetSave;
+
+  /// No description provided for @coachSheetSaved.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fiche enregistrée.'**
+  String get coachSheetSaved;
+
+  /// No description provided for @coachSheetSend.
+  ///
+  /// In fr, this message translates to:
+  /// **'Envoyer dans la messagerie'**
+  String get coachSheetSend;
+
+  /// No description provided for @coachSheetMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voici ta fiche de révision préparée après nos séances :'**
+  String get coachSheetMessage;
+
+  /// No description provided for @coachSheetSent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fiche envoyée à {name}.'**
+  String coachSheetSent(String name);
+
+  /// No description provided for @coachSheetSendError.
+  ///
+  /// In fr, this message translates to:
+  /// **'La fiche n’a pas pu être envoyée. Vérifiez que l’élève fait partie de vos contacts.'**
+  String get coachSheetSendError;
+
+  /// No description provided for @coachSheetCopy.
+  ///
+  /// In fr, this message translates to:
+  /// **'Copier'**
+  String get coachSheetCopy;
+
+  /// No description provided for @coachSheetCopied.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fiche copiée.'**
+  String get coachSheetCopied;
 }
 
 class _AppLocalizationsDelegate
