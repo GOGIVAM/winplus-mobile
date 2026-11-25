@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import '../parent/barometer_tab.dart';
 import '../shared/visio/live_classes_screen.dart';
 import '../teacher/dropout_alerts_screen.dart';
 import '../l10n/l10n.dart';
@@ -430,6 +431,9 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
                       title: l.shellTabProfile, child: const ParentProfileTab())),
               MoreEntry(l.liveTitle, PhosphorIconsRegular.videoCamera,
                   (_) => const LiveClassesScreen()),
+              // Lot 7 : baromètre de bien-être, enfant choisi en haut.
+              MoreEntry(l.barometerTitle, PhosphorIconsRegular.gauge,
+                  (_) => const BarometerScreen()),
             ]),
           ],
         WinRole.teacher => [

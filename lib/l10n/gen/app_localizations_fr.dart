@@ -9300,4 +9300,61 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get dpSendError => 'La relance n’a pas abouti.';
+
+  @override
+  String get barometerTitle => 'Baromètre';
+
+  @override
+  String get barometerStateHigh => 'Des signaux méritent ton attention';
+
+  @override
+  String get barometerStateMedium => 'Quelques changements à surveiller';
+
+  @override
+  String get barometerStateNone => 'Rien à signaler pour le moment';
+
+  @override
+  String get barometerHintSignals =>
+      'Ce sont des observations, pas un diagnostic : un moment pour prendre des nouvelles peut suffire.';
+
+  @override
+  String barometerHintNone(String name) {
+    return 'L’activité de $name ne montre pas de changement de rythme notable ces 30 derniers jours.';
+  }
+
+  @override
+  String barometerWriteTo(String name) {
+    return 'Écrire à $name';
+  }
+
+  @override
+  String get barometerRecent => 'Signaux récents';
+
+  @override
+  String get barometerRecentSub => '30 derniers jours';
+
+  @override
+  String get barometerEmpty =>
+      'Aucun signal enregistré. Les changements de rythme, de résultats ou de sommeil apparaîtront ici.';
+
+  @override
+  String get barometerSeverityHigh => 'Prioritaire';
+
+  @override
+  String get barometerSeverityMedium => 'À surveiller';
+
+  @override
+  String get barometerSeverityLow => 'Information';
+
+  @override
+  String get barometerTypeDrop => 'Baisse de performance';
+
+  @override
+  String get barometerTypeInactive => 'Inactivité';
+
+  @override
+  String get barometerTypeOverwork => 'Surmenage';
+
+  @override
+  String get barometerTypeAnxiety => 'Anxiété liée à un examen';
 }

@@ -7,6 +7,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
 import 'album_tab.dart';
+import 'barometer_tab.dart';
 import 'encouragement_sheet.dart';
 import 'exam_watch_mode_tab.dart';
 import 'goal_proposal_tab.dart';
@@ -32,7 +33,7 @@ class _ChildActivityScreenState extends State<ChildActivityScreen>
   @override
   void initState() {
     super.initState();
-    _tab = TabController(length: 7, vsync: this);
+    _tab = TabController(length: 8, vsync: this);
     _load();
   }
 
@@ -123,6 +124,7 @@ class _ChildActivityScreenState extends State<ChildActivityScreen>
             Tab(text: context.l10n.parentChildTabExamWatch),
             Tab(text: context.l10n.parentChildTabPortrait),
             Tab(text: context.l10n.parentChildTabAlbum),
+            Tab(text: context.l10n.barometerTitle),
             Tab(text: context.l10n.commonWinaiAlerts),
           ],
         ),
@@ -143,6 +145,8 @@ class _ChildActivityScreenState extends State<ChildActivityScreen>
                 ExamWatchModeTab(child: widget.child),
                 PortfolioTab(child: widget.child),
                 AlbumTab(child: widget.child),
+                // Lot 7 : baromètre de bien-être, comme sur le site.
+                BarometerView(childId: widget.child.id, childName: widget.child.firstName),
                 _AlertsTab(
                     alerts: _childAlerts, childName: widget.child.firstName),
               ],

@@ -15817,6 +15817,108 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'La relance n’a pas abouti.'**
   String get dpSendError;
+
+  /// No description provided for @barometerTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Baromètre'**
+  String get barometerTitle;
+
+  /// No description provided for @barometerStateHigh.
+  ///
+  /// In fr, this message translates to:
+  /// **'Des signaux méritent ton attention'**
+  String get barometerStateHigh;
+
+  /// No description provided for @barometerStateMedium.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quelques changements à surveiller'**
+  String get barometerStateMedium;
+
+  /// No description provided for @barometerStateNone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rien à signaler pour le moment'**
+  String get barometerStateNone;
+
+  /// No description provided for @barometerHintSignals.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce sont des observations, pas un diagnostic : un moment pour prendre des nouvelles peut suffire.'**
+  String get barometerHintSignals;
+
+  /// No description provided for @barometerHintNone.
+  ///
+  /// In fr, this message translates to:
+  /// **'L’activité de {name} ne montre pas de changement de rythme notable ces 30 derniers jours.'**
+  String barometerHintNone(String name);
+
+  /// No description provided for @barometerWriteTo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Écrire à {name}'**
+  String barometerWriteTo(String name);
+
+  /// No description provided for @barometerRecent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Signaux récents'**
+  String get barometerRecent;
+
+  /// No description provided for @barometerRecentSub.
+  ///
+  /// In fr, this message translates to:
+  /// **'30 derniers jours'**
+  String get barometerRecentSub;
+
+  /// No description provided for @barometerEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun signal enregistré. Les changements de rythme, de résultats ou de sommeil apparaîtront ici.'**
+  String get barometerEmpty;
+
+  /// No description provided for @barometerSeverityHigh.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prioritaire'**
+  String get barometerSeverityHigh;
+
+  /// No description provided for @barometerSeverityMedium.
+  ///
+  /// In fr, this message translates to:
+  /// **'À surveiller'**
+  String get barometerSeverityMedium;
+
+  /// No description provided for @barometerSeverityLow.
+  ///
+  /// In fr, this message translates to:
+  /// **'Information'**
+  String get barometerSeverityLow;
+
+  /// No description provided for @barometerTypeDrop.
+  ///
+  /// In fr, this message translates to:
+  /// **'Baisse de performance'**
+  String get barometerTypeDrop;
+
+  /// No description provided for @barometerTypeInactive.
+  ///
+  /// In fr, this message translates to:
+  /// **'Inactivité'**
+  String get barometerTypeInactive;
+
+  /// No description provided for @barometerTypeOverwork.
+  ///
+  /// In fr, this message translates to:
+  /// **'Surmenage'**
+  String get barometerTypeOverwork;
+
+  /// No description provided for @barometerTypeAnxiety.
+  ///
+  /// In fr, this message translates to:
+  /// **'Anxiété liée à un examen'**
+  String get barometerTypeAnxiety;
 }
 
 class _AppLocalizationsDelegate

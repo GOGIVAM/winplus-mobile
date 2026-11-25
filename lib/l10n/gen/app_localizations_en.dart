@@ -9221,4 +9221,61 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dpSendError => 'The follow-up failed.';
+
+  @override
+  String get barometerTitle => 'Barometer';
+
+  @override
+  String get barometerStateHigh => 'Some signals deserve your attention';
+
+  @override
+  String get barometerStateMedium => 'A few changes to watch';
+
+  @override
+  String get barometerStateNone => 'Nothing to report for now';
+
+  @override
+  String get barometerHintSignals =>
+      'These are observations, not a diagnosis: checking in may be enough.';
+
+  @override
+  String barometerHintNone(String name) {
+    return '$name’s activity shows no notable change of pace over the last 30 days.';
+  }
+
+  @override
+  String barometerWriteTo(String name) {
+    return 'Write to $name';
+  }
+
+  @override
+  String get barometerRecent => 'Recent signals';
+
+  @override
+  String get barometerRecentSub => 'Last 30 days';
+
+  @override
+  String get barometerEmpty =>
+      'No signals recorded. Changes in pace, results or sleep will appear here.';
+
+  @override
+  String get barometerSeverityHigh => 'Priority';
+
+  @override
+  String get barometerSeverityMedium => 'To watch';
+
+  @override
+  String get barometerSeverityLow => 'Information';
+
+  @override
+  String get barometerTypeDrop => 'Performance drop';
+
+  @override
+  String get barometerTypeInactive => 'Inactivity';
+
+  @override
+  String get barometerTypeOverwork => 'Overwork';
+
+  @override
+  String get barometerTypeAnxiety => 'Exam anxiety';
 }

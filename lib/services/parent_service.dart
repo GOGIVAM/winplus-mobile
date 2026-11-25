@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
 import '../l10n/l10n.dart';
 import 'api_client.dart';
@@ -571,6 +572,25 @@ class ParentService {
     return result.value;
   }
 
+  /// Baromètre de bien-être d'un enfant (signaux des 30 derniers jours).
+  /// Comme le site, on demande d'abord le calcul à jour (GET
+  /// /parent/ai-alerts/{id}, qui enregistre les nouveaux signaux) ; s'il
+  /// échoue, le baromètre montre les signaux déjà enregistrés. Lève une
+  /// erreur si le baromètre lui-même ne répond pas.
+  Future<List<ApiBarometerSignal>> getBarometer(int childId) async {
+    try {
+      await _api.dio.get('/parent/ai-alerts/$childId');
+    } catch (e) {
+      debugPrint('Barometre : calcul a jour indisponible ($e)');
+    }
+    final res = await _api.dio.get('/parent-alerts/$childId/barometre');
+    final raw = res.data is Map ? (res.data as Map)['signals'] : null;
+    return (raw is List ? raw : const [])
+        .whereType<Map<String, dynamic>>()
+        .map(ApiBarometerSignal.fromJson)
+        .toList();
+  }
+
   /// Alertes de tous les enfants liés, agrégées (pour un écran/bannière qui
   /// n'est pas déjà scopé à un enfant précis).
   Future<List<ApiPersistedAlert>> getAllPersistedAlerts(
@@ -660,4 +680,35 @@ class ChildPurchaseResult {
       this.message});
 
   bool get needsMobileMoney => orderId != null;
+}
+
+/// Signal de bien-être d'un enfant (GET /parent-alerts/{childId}/barometre).
+class ApiBarometerSignal {
+  final int id;
+
+  /// BaissePerformance, Inactivite, Surmenage ou AnxieteExamen.
+  final String type;
+
+  /// Low, Medium ou High.
+  final String severity;
+  final String message;
+  final DateTime? detectedAt;
+
+  const ApiBarometerSignal({
+    required this.id,
+    required this.type,
+    required this.severity,
+    required this.message,
+    this.detectedAt,
+  });
+
+  factory ApiBarometerSignal.fromJson(Map<String, dynamic> j) => ApiBarometerSignal(
+        id: (j['id'] as num?)?.toInt() ?? 0,
+        type: j['type']?.toString() ?? '',
+        severity: j['severity']?.toString() ?? 'Low',
+        message: j['message']?.toString() ?? '',
+        detectedAt: DateTime.tryParse(j['detectedAt']?.toString() ?? '')?.toLocal(),
+      );
+
+  bool get alerting => severity == 'High' || severity == 'Medium';
 }
