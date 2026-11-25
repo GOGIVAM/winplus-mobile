@@ -107,7 +107,7 @@ class _LicenseScreenState extends State<LicenseScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(icon: Icon(Icons.arrow_back, color: s.onStrong), onPressed: () => Navigator.pop(context)),
-        title: Text(context.l10n.instLicenseTitle, style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.instLicenseTitle),
       ),
       body: _error != null
           ? Center(child: Padding(padding: const EdgeInsets.all(24), child: Text(_error!, style: WinType.bodyM(s.onMuted))))

@@ -64,7 +64,7 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(context.l10n.studentAchTitle, style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.studentAchTitle),
       ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())

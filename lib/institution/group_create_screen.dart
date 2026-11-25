@@ -127,7 +127,7 @@ class _GroupCreateScreenState extends State<GroupCreateScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(context.l10n.studentGroupsCreate, style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.studentGroupsCreate),
       ),
       body: _done
           ? Center(

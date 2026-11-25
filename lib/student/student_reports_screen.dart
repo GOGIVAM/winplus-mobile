@@ -89,7 +89,7 @@ class _StudentReportsScreenState extends State<StudentReportsScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(l.studentReportsTitle, style: WinType.headlineS(s.onStrong)),
+        title: Text(l.studentReportsTitle),
       ),
       body: RefreshIndicator(
         onRefresh: _load,

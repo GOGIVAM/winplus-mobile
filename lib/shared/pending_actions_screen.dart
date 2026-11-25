@@ -52,7 +52,7 @@ class _PendingActionsScreenState extends State<PendingActionsScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         iconTheme: IconThemeData(color: s.onStrong),
-        title: Text(l.pendingTitle, style: WinType.headlineS(s.onStrong)),
+        title: Text(l.pendingTitle),
       ),
       body: ValueListenableBuilder<int>(
         valueListenable: OutboxService.instance.pending,

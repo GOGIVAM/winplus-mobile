@@ -138,7 +138,7 @@ class _TutorPolicyScreenState extends State<TutorPolicyScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         iconTheme: IconThemeData(color: s.onStrong),
-        title: Text(context.l10n.studentHubTutorPolicy, style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.studentHubTutorPolicy),
       ),
       body: SafeArea(
         child: _error

@@ -149,7 +149,7 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(icon: Icon(Icons.arrow_back, color: s.onStrong), onPressed: () => Navigator.pop(context)),
-        title: Text(_klass.name, style: WinType.headlineS(s.onStrong)),
+        title: Text(_klass.name),
       ),
       body: Column(children: [
         Padding(

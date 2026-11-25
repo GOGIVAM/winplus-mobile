@@ -90,7 +90,7 @@ class _ForumScreenState extends State<ForumScreen> {
       appBar: AppBar(
         backgroundColor: s.bg,
         elevation: 0,
-        title: Text(l10n.forumTitle, style: WinType.headlineS(s.onStrong)),
+        title: Text(l10n.forumTitle),
         actions: [
           IconButton(
             icon: Icon(Icons.add, color: s.primary),

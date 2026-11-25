@@ -163,7 +163,7 @@ class _MyTutorBookingsScreenState extends State<MyTutorBookingsScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(context.l10n.tutoringBookingsTitle, style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.tutoringBookingsTitle),
         actions: [
           IconButton(
               tooltip: context.l10n.studentHubTutorPolicy,

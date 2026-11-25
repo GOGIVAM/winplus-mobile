@@ -230,7 +230,7 @@ class _TutoringForStudentsScreenState extends State<TutoringForStudentsScreen> w
       appBar: AppBar(
         backgroundColor: s.bg,
         elevation: 0,
-        title: Text(isInstitution ? context.l10n.tutoringForStudentsTitle : context.l10n.tutoringPrivateLessons, style: WinType.headlineS(s.onStrong)),
+        title: Text(isInstitution ? context.l10n.tutoringForStudentsTitle : context.l10n.tutoringPrivateLessons),
         actions: [IconButton(icon: Icon(Icons.refresh_outlined, color: s.onMuted), onPressed: _load)],
       ),
       floatingActionButton: ctx != null && (ctx.isParent || ctx.isInstitution)
@@ -434,7 +434,7 @@ class _AssignTutorScreenState extends State<_AssignTutorScreen> {
     final classes = ctx.institutionStudents.map((e) => e.groupName).whereType<String>().toSet().toList()..sort();
     return Scaffold(
       backgroundColor: s.bg,
-      appBar: AppBar(backgroundColor: s.bg, elevation: 0, title: Text(context.l10n.tutoringAssignTutor, style: WinType.headlineS(s.onStrong))),
+      appBar: AppBar(backgroundColor: s.bg, elevation: 0, title: Text(context.l10n.tutoringAssignTutor)),
       body: ListView(padding: const EdgeInsets.all(16), children: [
         Text(context.l10n.tutoringAssignIntro,
             style: WinType.labelS(s.onFaint)),

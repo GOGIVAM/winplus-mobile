@@ -152,7 +152,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(context.l10n.studentNotifTitle, style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.studentNotifTitle),
         actions: [
           TextButton(
             onPressed: _markAllRead,

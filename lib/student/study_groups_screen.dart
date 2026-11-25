@@ -111,7 +111,7 @@ class _StudyGroupsScreenState extends State<StudyGroupsScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(context.l10n.studentLinksStudyGroups, style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.studentLinksStudyGroups),
       ),
       body: groups == null
           ? const Center(child: CircularProgressIndicator())

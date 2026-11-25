@@ -64,7 +64,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(context.l10n.shopMyOrders, style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.shopMyOrders),
         actions: [
           IconButton(
             icon: Icon(Icons.refresh_outlined, color: s.onStrong),

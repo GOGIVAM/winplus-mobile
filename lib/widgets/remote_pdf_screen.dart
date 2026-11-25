@@ -52,7 +52,7 @@ class _RemotePdfScreenState extends State<RemotePdfScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         foregroundColor: s.onStrong,
-        title: Text(widget.title, style: WinType.titleM(s.onStrong)),
+        title: Text(widget.title),
       ),
       body: _error != null
           ? Center(

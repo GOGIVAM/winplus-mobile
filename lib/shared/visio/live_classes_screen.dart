@@ -53,7 +53,7 @@ class _LiveClassesScreenState extends State<LiveClassesScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         iconTheme: IconThemeData(color: s.onStrong),
-        title: Text(l.liveTitle, style: WinType.headlineS(s.onStrong)),
+        title: Text(l.liveTitle),
       ),
       body: SafeArea(child: _body(s, l)),
     );
@@ -273,7 +273,7 @@ class _VisioRecordingsScreenState extends State<VisioRecordingsScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         iconTheme: IconThemeData(color: s.onStrong),
-        title: Text(l.liveRecordingsTitle, style: WinType.headlineS(s.onStrong)),
+        title: Text(l.liveRecordingsTitle),
       ),
       body: SafeArea(child: body),
     );

@@ -106,7 +106,7 @@ class _CartScreenState extends State<CartScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(context.l10n.shopCartTitle, style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.shopCartTitle),
       ),
       body: cart == null
           ? _error

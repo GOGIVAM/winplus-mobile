@@ -147,7 +147,7 @@ class _QuizActiveScreenState extends State<QuizActiveScreen> {
           icon: Icon(Icons.close, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(widget.quiz.title, style: WinType.titleM(s.onStrong)),
+        title: Text(widget.quiz.title),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16),
@@ -271,7 +271,7 @@ class QuizResultScreen extends StatelessWidget {
         backgroundColor: s.bg,
         elevation: 0,
         automaticallyImplyLeading: false,
-        title: Text(context.l10n.studentQuizResults, style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.studentQuizResults),
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 24, 16, 32),
@@ -375,7 +375,7 @@ class QuizReviewScreen extends StatelessWidget {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(context.l10n.studentQuizReview, style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.studentQuizReview),
       ),
       body: ListView.builder(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
@@ -482,7 +482,7 @@ class _QuizHubScreenState extends State<QuizHubScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(context.l10n.studentQuizMyQuizzes, style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.studentQuizMyQuizzes),
         actions: [
           IconButton(
             icon: Icon(Icons.refresh_outlined, color: s.onStrong),

@@ -193,7 +193,7 @@ class _BuyForChildScreenState extends State<BuyForChildScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(context.l10n.parentBuyTitle, style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.parentBuyTitle),
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),

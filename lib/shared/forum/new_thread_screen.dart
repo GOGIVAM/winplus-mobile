@@ -72,7 +72,7 @@ class _NewThreadScreenState extends State<NewThreadScreen> {
         leading: IconButton(
             icon: Icon(Icons.close, color: s.onStrong),
             onPressed: () => Navigator.pop(context)),
-        title: Text(l10n.forumNewThread, style: WinType.headlineS(s.onStrong)),
+        title: Text(l10n.forumNewThread),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),

@@ -191,7 +191,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(titles[_step], style: WinType.headlineS(s.onStrong)),
+        title: Text(titles[_step]),
       ),
       body: SafeArea(
         child: Column(children: [

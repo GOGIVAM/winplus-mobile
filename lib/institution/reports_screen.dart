@@ -61,7 +61,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(l.instReportsTitle, style: WinType.headlineS(s.onStrong)),
+        title: Text(l.instReportsTitle),
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),

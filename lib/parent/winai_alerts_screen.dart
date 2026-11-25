@@ -67,7 +67,7 @@ class _WinAIAlertsScreenState extends State<WinAIAlertsScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(context.l10n.commonWinaiAlerts, style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.commonWinaiAlerts),
         actions: [
           IconButton(
             icon: Icon(Icons.refresh_outlined, color: s.onStrong),

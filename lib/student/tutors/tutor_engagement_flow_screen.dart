@@ -291,7 +291,7 @@ class _TutorEngagementFlowScreenState extends State<TutorEngagementFlowScreen> {
             }
           },
         ),
-        title: Text(_created != null ? context.l10n.tutoringEngStageSuccess : titles[_step], style: WinType.headlineS(s.onStrong)),
+        title: Text(_created != null ? context.l10n.tutoringEngStageSuccess : titles[_step]),
       ),
       body: SafeArea(
         child: _created != null

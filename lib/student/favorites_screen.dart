@@ -60,7 +60,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(context.l10n.studentFavTitle, style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.studentFavTitle),
         actions: [
           IconButton(
             icon: Icon(Icons.refresh_outlined, color: s.onStrong),

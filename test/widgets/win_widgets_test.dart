@@ -66,11 +66,11 @@ void main() {
     testWidgets('couleur de fond selon la variante', (tester) async {
       await monter(tester, appli(WinButton('A', onTap: () {}, variant: WinButtonVariant.primary)));
       // Boutons sarcelle a texte blanc, comme sur le site (palette dd8d7b9).
-      expect(_fondDuBouton(tester), WinColors.teal600);
+      expect(_fondDuBouton(tester), WinColors.teal700);
       await monter(tester, appli(WinButton('A', onTap: () {}, variant: WinButtonVariant.danger)));
       expect(_fondDuBouton(tester), WinColors.error);
       await monter(tester, appli(WinButton('A', onTap: () {}, variant: WinButtonVariant.accent)));
-      expect(_fondDuBouton(tester), WinColors.teal600);
+      expect(_fondDuBouton(tester), WinColors.teal700);
       await monter(tester, appli(WinButton('A', onTap: () {}, variant: WinButtonVariant.outline)));
       expect(_fondDuBouton(tester), Colors.transparent);
     });

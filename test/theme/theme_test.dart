@@ -63,7 +63,7 @@ void main() {
     test('le schema clair n\'est pas sombre, fond blanc et sarcelle', () {
       expect(WinScheme.light.dark, isFalse);
       expect(WinScheme.light.bg, Colors.white);
-      expect(WinScheme.light.primary, WinColors.teal600);
+      expect(WinScheme.light.primary, WinColors.teal700);
     });
 
     test('le schema sombre est sombre, avec un teal plus clair', () {

@@ -23,7 +23,7 @@ class AccountSettingsScreen extends StatelessWidget {
         backgroundColor: s.bg,
         elevation: 0,
         iconTheme: IconThemeData(color: s.onStrong),
-        title: Text(title, style: WinType.headlineS(s.onStrong)),
+        title: Text(title),
       ),
       body: ListView(
         padding: const EdgeInsets.all(20),

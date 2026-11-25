@@ -188,7 +188,7 @@ class _VisioScreenState extends State<VisioScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         iconTheme: IconThemeData(color: s.onStrong),
-        title: Text(l.visioTitle, style: WinType.headlineS(s.onStrong)),
+        title: Text(l.visioTitle),
       ),
       body: SafeArea(child: _corps(s, l)),
     );

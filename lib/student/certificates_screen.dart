@@ -69,7 +69,7 @@ class _CertificatesScreenState extends State<CertificatesScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(context.l10n.studentCertTitle, style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.studentCertTitle),
         actions: [
           IconButton(
             icon: Icon(Icons.refresh_outlined, color: s.onStrong),

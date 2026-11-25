@@ -86,7 +86,7 @@ class _CoveredChildrenScreenState extends State<CoveredChildrenScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         iconTheme: IconThemeData(color: s.onStrong),
-        title: Text(context.l10n.parentCoveredTitle, style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.parentCoveredTitle),
       ),
       body: SafeArea(child: _body(s)),
     );

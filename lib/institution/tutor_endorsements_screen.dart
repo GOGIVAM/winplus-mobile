@@ -145,7 +145,7 @@ class _TutorEndorsementsScreenState extends State<TutorEndorsementsScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(icon: Icon(Icons.arrow_back, color: s.onStrong), onPressed: () => Navigator.pop(context)),
-        title: Text(context.l10n.instEndorseScreenTitle, style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.instEndorseScreenTitle),
       ),
       body: tutors == null
           ? Center(

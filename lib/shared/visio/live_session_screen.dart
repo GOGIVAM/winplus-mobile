@@ -142,7 +142,7 @@ class _LiveSessionScreenState extends State<LiveSessionScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         iconTheme: IconThemeData(color: s.onStrong),
-        title: Text(l.liveSessionTitle, style: WinType.headlineS(s.onStrong)),
+        title: Text(l.liveSessionTitle),
       ),
       body: SafeArea(child: body),
     );

@@ -56,7 +56,7 @@ class _SessionCreateScreenState extends State<SessionCreateScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(context.l10n.teacherSessionCreateTitle, style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.teacherSessionCreateTitle),
       ),
       body: _done
           ? Center(

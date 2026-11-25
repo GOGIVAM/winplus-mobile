@@ -100,7 +100,7 @@ class _PricingScreenState extends State<PricingScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(icon: Icon(Icons.arrow_back, color: s.onStrong), onPressed: () => Navigator.pop(context)),
-        title: Text(context.l10n.subOurPlans, style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.subOurPlans),
         actions: [IconButton(icon: Icon(Icons.refresh_outlined, color: s.onStrong), onPressed: _load)],
       ),
       body: _hasError

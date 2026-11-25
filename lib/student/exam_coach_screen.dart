@@ -227,7 +227,7 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
         leading: IconButton(
             icon: Icon(Icons.arrow_back, color: s.onStrong),
             onPressed: () => Navigator.pop(context)),
-        title: Text('Exam Coach', style: WinType.headlineS(s.onStrong)),
+        title: Text('Exam Coach'),
       ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())

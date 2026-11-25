@@ -71,7 +71,7 @@ class _AtRiskScreenState extends State<AtRiskScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(context.l10n.instRiskTitle, style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.instRiskTitle),
         actions: [
           if (_students != null && critCount > 0)
             Padding(

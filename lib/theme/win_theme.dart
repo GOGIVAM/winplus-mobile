@@ -62,10 +62,14 @@ class WinScheme {
     onStrong: WinColors.ink900,
     onMuted: WinColors.ink500,
     onFaint: WinColors.ink400,
-    primary: WinColors.teal600,
-    primaryStrong: WinColors.teal700,
+    // Sarcelle fonce : texte blanc lisible dessus (5,6:1) et lisible en
+    // texte ou lien sur blanc. Le sarcelle de marque (teal600, 3,4:1) reste
+    // pour les aplats sans texte : progression, pastilles, illustrations.
+    primary: WinColors.teal700,
+    primaryStrong: WinColors.teal800,
     onPrimary: Colors.white,
-    primaryContainer: WinColors.teal100,
+    // Fond teinte unique des pastilles d'icone, tuiles et selections.
+    primaryContainer: Color(0xFFE3F5F2),
     secondary: WinColors.blue500,
     outline: Color(0xFFE6EBED),
     outline2: WinColors.ink200,
@@ -154,8 +158,123 @@ ThemeData winMaterialTheme(WinScheme s) => ThemeData(
         backgroundColor: s.surface,
         surfaceTintColor: Colors.transparent,
         showDragHandle: true,
+        dragHandleColor: s.outline2,
         shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(14))),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      ),
+      // Message ephemere : flottant, arrondi, meme dessin partout (une
+      // centaine d'ecrans en affichent sans style propre).
+      snackBarTheme: SnackBarThemeData(
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: s.dark ? s.surface3 : WinColors.ink900,
+        contentTextStyle: WinType.bodyM(Colors.white),
+        actionTextColor: WinColors.teal300,
+        elevation: 2,
+        insetPadding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(WinRadii.md)),
+      ),
+      progressIndicatorTheme: ProgressIndicatorThemeData(
+        color: s.dark ? s.primary : WinColors.teal600,
+        linearTrackColor: s.outline,
+        circularTrackColor: Colors.transparent,
+      ),
+      dividerTheme: DividerThemeData(color: s.outline, thickness: 1, space: 1),
+      // Boutons Material encore presents dans certains ecrans : memes
+      // hauteur, rayon et couleurs que WinButton.
+      filledButtonTheme: FilledButtonThemeData(
+          style: FilledButton.styleFrom(
+        backgroundColor: s.dark ? s.primary : WinColors.teal700,
+        foregroundColor: s.onPrimary,
+        minimumSize: const Size(64, 48),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        textStyle: WinType.titleM(s.onPrimary),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(WinRadii.sm)),
+      )),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+        backgroundColor: s.dark ? s.primary : WinColors.teal700,
+        foregroundColor: s.onPrimary,
+        elevation: 0,
+        minimumSize: const Size(64, 48),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        textStyle: WinType.titleM(s.onPrimary),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(WinRadii.sm)),
+      )),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+          style: OutlinedButton.styleFrom(
+        foregroundColor: s.onSurface,
+        minimumSize: const Size(64, 48),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        side: BorderSide(color: s.outline2),
+        textStyle: WinType.titleM(s.onSurface),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(WinRadii.sm)),
+      )),
+      textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+        foregroundColor: s.primaryStrong,
+        minimumSize: const Size(48, 44),
+        textStyle: WinType.titleM(s.primaryStrong),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(WinRadii.sm)),
+      )),
+      // Champs Material bruts : meme dessin que WinTextField.
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: s.surface,
+        hintStyle: WinType.bodyM(s.onFaint),
+        labelStyle: WinType.bodyM(s.onMuted),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+        border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(WinRadii.sm),
+            borderSide: BorderSide(color: s.outline2)),
+        enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(WinRadii.sm),
+            borderSide: BorderSide(color: s.outline2)),
+        focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(WinRadii.sm),
+            borderSide: BorderSide(color: s.primary, width: 1.6)),
+        errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(WinRadii.sm),
+            borderSide: const BorderSide(color: WinColors.error)),
+      ),
+      dialogTheme: DialogThemeData(
+        backgroundColor: s.surface,
+        surfaceTintColor: Colors.transparent,
+        titleTextStyle: WinType.headlineM(s.onStrong),
+        contentTextStyle: WinType.bodyM(s.onSurface),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(WinRadii.xl)),
+      ),
+      tabBarTheme: TabBarThemeData(
+        labelColor: s.onStrong,
+        unselectedLabelColor: s.onMuted,
+        labelStyle: WinType.titleM(s.onStrong),
+        unselectedLabelStyle: WinType.bodyM(s.onMuted),
+        indicatorColor: s.dark ? s.primary : WinColors.teal600,
+        indicatorSize: TabBarIndicatorSize.label,
+        dividerColor: s.outline,
+      ),
+      switchTheme: SwitchThemeData(
+        thumbColor: WidgetStateProperty.resolveWith((st) =>
+            st.contains(WidgetState.selected) ? Colors.white : s.onFaint),
+        trackColor: WidgetStateProperty.resolveWith((st) =>
+            st.contains(WidgetState.selected)
+                ? (s.dark ? s.primary : WinColors.teal600)
+                : s.surface2),
+        trackOutlineColor: WidgetStateProperty.resolveWith((st) =>
+            st.contains(WidgetState.selected) ? Colors.transparent : s.outline2),
+      ),
+      listTileTheme: ListTileThemeData(
+        iconColor: s.onMuted,
+        titleTextStyle: WinType.bodyL(s.onStrong).copyWith(height: 1.3),
+        subtitleTextStyle: WinType.bodyS(s.onMuted),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+        minVerticalPadding: 10,
       ),
       iconButtonTheme: IconButtonThemeData(
           style: IconButton.styleFrom(

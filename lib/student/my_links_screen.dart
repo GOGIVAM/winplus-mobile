@@ -106,7 +106,7 @@ class _MyLinksScreenState extends State<MyLinksScreen> {
         leading: IconButton(
             icon: Icon(Icons.arrow_back, color: s.onStrong),
             onPressed: () => Navigator.pop(context)),
-        title: Text(context.l10n.studentLinksTitle, style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.studentLinksTitle),
       ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())

@@ -167,7 +167,7 @@ class _ProfileScreenState extends State<ProfileScreen>
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(context.l10n.studentProfileTitle, style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.studentProfileTitle),
         bottom: TabBar(
           controller: _tab,
           isScrollable: true,

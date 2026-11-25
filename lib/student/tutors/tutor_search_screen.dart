@@ -155,7 +155,7 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(context.l10n.studentTabsFindTutor, style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.studentTabsFindTutor),
       ),
       body: Column(children: [
         Padding(

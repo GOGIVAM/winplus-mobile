@@ -429,7 +429,7 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
             }
           },
         ),
-        title: Text(titles[_step], style: WinType.headlineS(s.onStrong)),
+        title: Text(titles[_step]),
       ),
       body: SafeArea(
         child: Column(children: [

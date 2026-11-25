@@ -86,7 +86,7 @@ class _QuizRevisionScreenState extends State<QuizRevisionScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(context.l10n.studentHubRevisionQuiz, style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.studentHubRevisionQuiz),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

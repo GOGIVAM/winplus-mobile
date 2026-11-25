@@ -158,7 +158,7 @@ class _TutorVerificationScreenState extends State<TutorVerificationScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(icon: Icon(Icons.arrow_back, color: s.onStrong), onPressed: () => Navigator.pop(context)),
-        title: Text(context.l10n.teacherVerifTitle, style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.teacherVerifTitle),
       ),
       body: st == null
           ? Center(

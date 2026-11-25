@@ -144,7 +144,7 @@ class _LearningStyleQuizScreenState extends State<LearningStyleQuizScreen> {
         appBar: AppBar(
           backgroundColor: s.bg,
           elevation: 0,
-          title: Text(context.l10n.studentVarkTitle, style: WinType.headlineS(s.onStrong)),
+          title: Text(context.l10n.studentVarkTitle),
         ),
         body: Padding(
           padding: const EdgeInsets.all(24),
@@ -177,7 +177,7 @@ class _LearningStyleQuizScreenState extends State<LearningStyleQuizScreen> {
       appBar: AppBar(
         backgroundColor: s.bg,
         elevation: 0,
-        title: Text(context.l10n.studentVarkTitle, style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.studentVarkTitle),
       ),
       body: Padding(
         padding: const EdgeInsets.all(24),

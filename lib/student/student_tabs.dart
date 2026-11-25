@@ -786,7 +786,7 @@ class _StudentWinAITabState extends State<StudentWinAITab> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('WinAI', style: WinType.headlineS(s.onStrong)),
+        title: Text('WinAI'),
       ),
       body: Column(children: [
         Expanded(

@@ -83,7 +83,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
           icon: Icon(Icons.arrow_back, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(context.l10n.parentAddChildTitle, style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.parentAddChildTitle),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),

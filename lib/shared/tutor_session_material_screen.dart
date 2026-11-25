@@ -120,7 +120,7 @@ class _TutorSessionMaterialScreenState extends State<TutorSessionMaterialScreen>
         backgroundColor: s.bg,
         elevation: 0,
         iconTheme: IconThemeData(color: s.onStrong),
-        title: Text(context.l10n.tutoringMaterial, style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.tutoringMaterial),
       ),
       body: SafeArea(
         child: _loading
