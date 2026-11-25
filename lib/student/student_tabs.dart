@@ -410,11 +410,10 @@ class _StudentSpaceTabState extends State<StudentSpaceTab> {
             children: [
               Row(children: [
                 Expanded(
-                    child: _MiniStat(avg, context.l10n.studentReportsAvgScore, PhosphorIconsRegular.trendUp)),
+                    child: WinStatCard(avg, context.l10n.studentReportsAvgScore, icon: PhosphorIconsRegular.trendUp)),
                 const SizedBox(width: 10),
                 Expanded(
-                    child: _MiniStat(week, context.l10n.studentTabsStudyThisWeek,
-                        PhosphorIconsRegular.clock)),
+                    child: WinStatCard(week, context.l10n.studentTabsStudyThisWeek, icon: PhosphorIconsRegular.clock)),
               ]),
               const SizedBox(height: 16),
               // Rangement par usage, le même que le menu de l'élève sur le
@@ -533,26 +532,6 @@ class _SpaceGroupTitle extends StatelessWidget {
   }
 }
 
-class _MiniStat extends StatelessWidget {
-  final String value, label;
-  final IconData icon;
-  const _MiniStat(this.value, this.label, this.icon);
-  @override
-  Widget build(BuildContext context) {
-    final s = WinTheme.of(context);
-    return WinCard(
-        padding: const EdgeInsets.all(14),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          winIcon(icon, size: 20, color: s.primary),
-          const SizedBox(height: 8),
-          Text(value, style: WinType.archivo(size: 22, color: s.onStrong)),
-          Text(label, style: WinType.labelM(s.onMuted)),
-        ]));
-  }
-}
-
-/// WinAI de cet espace : l'écran est commun aux quatre espaces
-/// (shared/winai/winai_screen.dart), seuls les textes et les outils changent.
 class StudentWinAITab extends StatelessWidget {
   final String? initialMessage;
   const StudentWinAITab({super.key, this.initialMessage});
