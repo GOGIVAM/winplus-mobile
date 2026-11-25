@@ -332,6 +332,61 @@ void main() {
       expect(find.text(L10n.current.voiceUnavailable), findsOneWidget);
     });
 
+    testWidgets('onglet « Sources » : fichiers, plafond et contenus ; une source cochee est envoyee avec le message et citee', (tester) async {
+      faux.repond('GET', '/winai/sources', {
+        'data': {
+          'usage': {'files': 1, 'bytes': 2048, 'maxFiles': 30, 'maxBytes': 104857600, 'maxFileBytes': 5242880, 'maxSourcesPerMessage': 10},
+          'sources': [
+            {'id': 12, 'type': 'document', 'title': 'Ma fiche Pythagore', 'fileName': 'fiche.txt', 'sizeBytes': 2048, 'status': 'ready'},
+          ],
+        },
+      });
+      faux.repond('GET', '/winai/sources/disponibles', {
+        'data': {
+          'documents': [],
+          'epreuves': [
+            {'type': 'epreuve', 'id': 34, 'title': 'Bac C 2024 Maths', 'detail': 'Epreuve'},
+          ],
+          'formations': [],
+          'erreursQuiz': {'type': 'erreurs-quiz', 'id': 0, 'title': 'Mes erreurs de quiz', 'detail': '3 question(s) a revoir'},
+        },
+      });
+      faux.repond('POST', '/chatbot/message', {
+        'assistantMessage': {'content': 'Voici le corrige'},
+        'sources': [
+          {'type': 'epreuve', 'id': 34, 'title': 'Bac C 2024 Maths', 'page': 2},
+        ],
+      });
+      await monterEcran(tester, const StudentWinAITab());
+      final l = L10n.current;
+      // Rien n est demande tant que l onglet n est pas ouvert.
+      expect(faux.requetes, isEmpty);
+      await tester.tap(find.text(l.winaiTabSources));
+      await pomper(tester);
+      await pomper(tester, const Duration(milliseconds: 400));
+      await reseau(tester);
+      expect(find.text(l.winaiSourcesUsage(1, 30)), findsOneWidget);
+      expect(find.text('Ma fiche Pythagore'), findsOneWidget);
+      expect(find.text('Mes erreurs de quiz'), findsOneWidget);
+      await tester.ensureVisible(find.text('Bac C 2024 Maths'));
+      await pomper(tester);
+      await tester.tap(find.text('Bac C 2024 Maths'));
+      await pomper(tester);
+      await tester.tap(find.text(l.winaiTabChat));
+      await pomper(tester);
+      await pomper(tester, const Duration(milliseconds: 400));
+      expect(find.text(l.winaiSourcesSelected(1)), findsOneWidget);
+      await tester.enterText(champ(), 'Corrige l exercice 2');
+      await tester.tap(find.byIcon(PhosphorIconsFill.paperPlaneRight));
+      await reseau(tester);
+      final envoi = faux.recues('POST', '/chatbot/message').single.data as Map;
+      expect(envoi['sources'], [
+        {'type': 'epreuve', 'id': 34},
+      ]);
+      expect(find.text('Voici le corrige'), findsOneWidget);
+      expect(find.text(l.winaiCitationPage('Bac C 2024 Maths', 2)), findsOneWidget);
+    });
+
     testWidgets('onglet « Atelier » : outils de cet espace ; un outil de generation ouvre ses reglages puis envoie la demande', (tester) async {
       faux.repond('POST', '/chatbot/message', {
         'assistantMessage': {'content': 'Voici ton quiz'},

@@ -23,6 +23,8 @@ import '../../widgets/win_screen.dart';
 import '../../widgets/win_widgets.dart';
 import '../../widgets/winai_markdown.dart';
 import '../../widgets/winai_memories_sheet.dart';
+import '../../services/winai_sources_service.dart';
+import 'winai_sources_tab.dart';
 
 /// WinAI, un seul écran pour les quatre espaces (il était recopié quatre
 /// fois). Deux onglets :
@@ -42,11 +44,17 @@ class WinAIScreen extends StatefulWidget {
   State<WinAIScreen> createState() => _WinAIScreenState();
 }
 
-typedef _Msg = ({bool me, String text});
+typedef _Msg = ({bool me, String text, List<WinAICitation> cites});
 
 class _WinAIScreenState extends State<WinAIScreen>
     with SingleTickerProviderStateMixin {
-  late final TabController _tabs = TabController(length: 2, vsync: this);
+  // Sources, Discussion, Atelier : on ouvre sur la discussion.
+  late final TabController _tabs =
+      TabController(length: 3, vsync: this, initialIndex: 1);
+
+  /// Sources cochées (clé « type:id ») : la discussion et l'atelier s'y
+  /// limitent. Vide : WinAI répond comme d'habitude.
+  Map<String, WinAISourceRef> _sources = const {};
   final _ctrl = TextEditingController();
   final List<_Msg> _msgs = [];
   bool _thinking = false;
@@ -128,20 +136,21 @@ class _WinAIScreenState extends State<WinAIScreen>
     final t = (preset ?? _ctrl.text).trim();
     if (t.isEmpty) return;
     setState(() {
-      _msgs.add((me: true, text: t));
+      _msgs.add((me: true, text: t, cites: const []));
       _ctrl.clear();
       _thinking = true;
     });
     // Réponse écrite en direct, dans la même conversation que les messages
     // précédents : WinAI garde le contexte.
     var started = false;
+    var cites = const <WinAICitation>[];
     void show(String text) {
       if (!started) {
         started = true;
         _thinking = false;
-        _msgs.add((me: false, text: text));
+        _msgs.add((me: false, text: text, cites: cites));
       } else {
-        _msgs[_msgs.length - 1] = (me: false, text: text);
+        _msgs[_msgs.length - 1] = (me: false, text: text, cites: cites);
       }
     }
 
@@ -149,6 +158,8 @@ class _WinAIScreenState extends State<WinAIScreen>
       message: t,
       conversationId: _conversationId,
       onConversation: (id) => _conversationId = id,
+      sources: _sources.values.toList(),
+      onCitations: (c) => cites = c,
       onText: (text) {
         if (mounted) setState(() => show(text));
       },
@@ -188,7 +199,7 @@ class _WinAIScreenState extends State<WinAIScreen>
       _conversationId = picked.id;
       _thinking = true;
     });
-    _tabs.animateTo(0);
+    _tabs.animateTo(1);
     try {
       final history = await ChatbotService.instance.getHistory(picked.id);
       if (!mounted) return;
@@ -196,7 +207,8 @@ class _WinAIScreenState extends State<WinAIScreen>
         _thinking = false;
         _msgs.addAll(history
             .where((m) => m.content.trim().isNotEmpty)
-            .map((m) => (me: m.role == 'user', text: m.content)));
+            .map((m) =>
+                (me: m.role == 'user', text: m.content, cites: const <WinAICitation>[])));
       });
     } catch (_) {
       if (!mounted) return;
@@ -209,7 +221,7 @@ class _WinAIScreenState extends State<WinAIScreen>
   /// Lance une génération depuis l'atelier : la demande part dans la
   /// discussion, où la réponse s'écrit en direct.
   void _generate(String prompt) {
-    _tabs.animateTo(0);
+    _tabs.animateTo(1);
     _send(prompt);
   }
 
@@ -234,13 +246,20 @@ class _WinAIScreenState extends State<WinAIScreen>
         bottom: TabBar(
           controller: _tabs,
           indicatorSize: TabBarIndicatorSize.tab,
-          tabs: [Tab(text: l.winaiTabChat), Tab(text: l.winaiTabStudio)],
+          tabs: [
+            Tab(text: l.winaiTabSources),
+            Tab(text: l.winaiTabChat),
+            Tab(text: l.winaiTabStudio)
+          ],
         ),
       ),
       body: TabBarView(
         controller: _tabs,
         physics: const NeverScrollableScrollPhysics(),
         children: [
+          WinAISourcesTab(
+              selected: _sources,
+              onChanged: (next) => setState(() => _sources = next)),
           _chat(s),
           _Studio(role: widget.role, onGenerate: _generate),
         ],
@@ -251,6 +270,18 @@ class _WinAIScreenState extends State<WinAIScreen>
   Widget _chat(WinScheme s) {
     return Column(children: [
       Expanded(child: _msgs.isEmpty && !_thinking ? _welcome(s) : _thread(s)),
+      // Rappel des sources cochées, avec un accès direct à leur onglet.
+      if (_sources.isNotEmpty)
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 6, 16, 0),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: WinChip(context.l10n.winaiSourcesSelected(_sources.length),
+                active: true,
+                icon: PhosphorIconsRegular.files,
+                onTap: () => _tabs.animateTo(0)),
+          ),
+        ),
       const KnowledgeBaseToggle(),
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 14),
@@ -351,8 +382,35 @@ class _WinAIScreenState extends State<WinAIScreen>
             ),
             child: m.me
                 ? Text(m.text, style: WinType.bodyM(s.onStrong))
-                // Réponse de WinAI : Markdown et formules compilées.
-                : WinAIMarkdown(m.text, color: s.onSurface),
+                // Réponse de WinAI : Markdown et formules compilées, puis
+                // les sources sur lesquelles elle s'appuie.
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                        WinAIMarkdown(m.text, color: s.onSurface),
+                        if (m.cites.isNotEmpty) ...[
+                          const SizedBox(height: 8),
+                          for (final c in m.cites)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 2),
+                              child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Icon(PhosphorIconsRegular.fileText,
+                                        size: 14, color: s.onMuted),
+                                    const SizedBox(width: 6),
+                                    Expanded(
+                                        child: Text(
+                                            c.page == null
+                                                ? c.title
+                                                : context.l10n.winaiCitationPage(
+                                                    c.title, c.page!),
+                                            style: WinType.labelM(s.onMuted))),
+                                  ]),
+                            ),
+                        ],
+                      ]),
           ),
         );
       },

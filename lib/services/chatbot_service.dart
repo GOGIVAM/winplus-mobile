@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'api_client.dart';
 import 'connectivity_service.dart';
 import '../l10n/l10n.dart';
+import 'winai_sources_service.dart';
 
 class ApiWinAIMemory {
   final int id;
@@ -122,6 +123,8 @@ class ChatbotService {
     required String message,
     int? sessionId,
     String? context,
+    List<WinAISourceRef> sources = const [],
+    void Function(List<WinAICitation> citations)? onCitations,
   }) async {
     if (!ConnectivityService.instance.isOnline) {
       return OfflineActionException().message;
@@ -133,17 +136,46 @@ class ChatbotService {
         if (context != null) 'context': context,
         'clientMessageId': _newClientMessageId(),
         'knowledgeBase': knowledgeBase.value,
+        // Sources cochées : la réponse s'en tient à ces documents.
+        if (sources.isNotEmpty)
+          'sources': sources.map((r) => r.toJson()).toList(),
       });
       final d = res.data as Map<String, dynamic>?;
+      _emitCitations(d?['sources'], onCitations);
       final assistant = d?['assistantMessage'] as Map<String, dynamic>?;
       return assistant?['content'] as String? ??
           d?['reply'] as String? ??
           d?['message'] as String?;
     } on DioException catch (e) {
-      return quotaRefusalMessage(e.response?.statusCode, e.response?.data);
+      return quotaRefusalMessage(e.response?.statusCode, e.response?.data) ??
+          sourceRefusalMessage(e.response?.statusCode, e.response?.data);
     } catch (_) {
       return null;
     }
+  }
+
+  /// Refus lié aux sources cochées (trop nombreuses, inconnue, inaccessible,
+  /// pas encore analysée) : le message du serveur, prêt à afficher.
+  static String? sourceRefusalMessage(int? status, Object? body) {
+    if (body is! Map) return null;
+    const codes = {
+      'trop_de_sources',
+      'source_inconnue',
+      'source_inaccessible',
+      'source_pas_prete'
+    };
+    if (!codes.contains(body['code'])) return null;
+    final msg = body['message'];
+    return msg is String && msg.isNotEmpty ? msg : null;
+  }
+
+  static void _emitCitations(
+      Object? raw, void Function(List<WinAICitation>)? onCitations) {
+    if (onCitations == null || raw is! List || raw.isEmpty) return;
+    onCitations(raw
+        .whereType<Map>()
+        .map((m) => WinAICitation.fromJson(Map<String, dynamic>.from(m)))
+        .toList());
   }
 
   /// Réponse WinAI écrite en direct (POST /chatbot/stream, comme le site).
@@ -157,6 +189,8 @@ class ChatbotService {
     int? conversationId,
     required void Function(String text) onText,
     void Function(int conversationId)? onConversation,
+    List<WinAISourceRef> sources = const [],
+    void Function(List<WinAICitation> citations)? onCitations,
   }) async {
     if (!ConnectivityService.instance.isOnline) {
       return OfflineActionException().message;
@@ -164,7 +198,11 @@ class ChatbotService {
     final clientMessageId = _newClientMessageId();
     final full = StringBuffer();
     var gotToken = false;
-    Future<String?> fallback() => sendMessage(message: message, sessionId: conversationId);
+    Future<String?> fallback() => sendMessage(
+        message: message,
+        sessionId: conversationId,
+        sources: sources,
+        onCitations: onCitations);
     try {
       final res = await _api.dio.post<ResponseBody>(
         '/chatbot/stream',
@@ -174,6 +212,8 @@ class ChatbotService {
           'forceLanguage': L10n.isEn ? 'english' : 'french',
           'clientMessageId': clientMessageId,
           'knowledgeBase': knowledgeBase.value,
+          if (sources.isNotEmpty)
+            'sources': sources.map((r) => r.toJson()).toList(),
         },
         options: Options(
           responseType: ResponseType.stream,
@@ -200,6 +240,8 @@ class ChatbotService {
           if (parsed is Map) {
             final id = parsed['conversationId'];
             if (id is num) onConversation?.call(id.toInt());
+            // Citations envoyées juste avant la fin du flux.
+            _emitCitations(parsed['sources'], onCitations);
             if (parsed['error'] != null && !gotToken) return fallback();
             token = (parsed['delta'] ?? parsed['content'] ?? parsed['token'] ?? '')
                 .toString();
@@ -226,6 +268,7 @@ class ChatbotService {
         }
       }
       final refusal = quotaRefusalMessage(status, data) ??
+          sourceRefusalMessage(status, data) ??
           (status == 403 && data is Map ? data['message'] as String? : null);
       if (refusal != null) return refusal;
       if (gotToken) return full.toString();
