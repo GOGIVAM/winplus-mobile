@@ -9541,4 +9541,122 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get moreGroupSchool => 'My school';
+
+  @override
+  String get annTitle => 'Announcements';
+
+  @override
+  String get annSeeAll => 'See all';
+
+  @override
+  String get annFeedEmpty => 'No announcements yet.';
+
+  @override
+  String get annFeedEmptyHint =>
+      'Announcements from your school will appear here.';
+
+  @override
+  String get annTypeInfo => 'Info';
+
+  @override
+  String get annTypeImportant => 'Important';
+
+  @override
+  String get annTypeUrgent => 'Urgent';
+
+  @override
+  String get annAudienceAll => 'Students and parents';
+
+  @override
+  String get annAudienceStudents => 'Students';
+
+  @override
+  String get annAudienceParents => 'Parents';
+
+  @override
+  String get annNew => 'New announcement';
+
+  @override
+  String get annSentEmpty =>
+      'No announcements sent. Students and parents get a notification for each one.';
+
+  @override
+  String annRecipients(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count recipients',
+      one: '1 recipient',
+      zero: 'no recipients',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String annSent(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Announcement sent to $count people.',
+      one: 'Announcement sent to 1 person.',
+      zero: 'Announcement published (no recipients yet).',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get annNoEnd => 'No end date';
+
+  @override
+  String get annExpired => 'Ended';
+
+  @override
+  String annUntil(String date) {
+    return 'Until $date';
+  }
+
+  @override
+  String get annDeleteTitle => 'Delete this announcement?';
+
+  @override
+  String get annDeleteBody => 'It will disappear for students and parents.';
+
+  @override
+  String get annDeleteError => 'The announcement could not be deleted.';
+
+  @override
+  String get annFormTitle => 'Title';
+
+  @override
+  String get annFormContent => 'Message';
+
+  @override
+  String get annFormAudience => 'Recipients';
+
+  @override
+  String get annFormType => 'Type';
+
+  @override
+  String get annFormClass => 'Class';
+
+  @override
+  String get annFormUntil => 'Display until';
+
+  @override
+  String get annAllClasses => 'Whole school';
+
+  @override
+  String get annChooseDate => 'Choose';
+
+  @override
+  String get annRemoveEnd => 'Remove the end date';
+
+  @override
+  String get annRequired => 'Title and message are required.';
+
+  @override
+  String get annSendError => 'The announcement could not be published.';
+
+  @override
+  String get annPublish => 'Publish';
 }

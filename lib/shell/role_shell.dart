@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import '../institution/announcements_screen.dart';
 import '../parent/barometer_tab.dart';
 import '../shared/visio/live_classes_screen.dart';
 import '../teacher/dropout_alerts_screen.dart';
@@ -519,6 +520,7 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
               l.mobileHomeDirectory: l.moreGroupSteer,
               l.shellTabCatalog: l.moreGroupResources,
               l.liveTitle: l.moreGroupResources,
+              l.annTitle: l.moreGroupSchool,
               l.mobileHomeLicense: l.moreGroupSchool,
               l.shellTabAccount: l.moreGroupSchool,
             }, entries: [
@@ -536,6 +538,9 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
                   (_) => const AtRiskScreen()),
               MoreEntry(l.instReportsTitle, PhosphorIconsRegular.fileText,
                   (_) => const ReportsScreen()),
+              // Lot 7 : annonces aux élèves et aux parents, comme le site.
+              MoreEntry(l.annTitle, PhosphorIconsRegular.megaphone,
+                  (_) => const InstitutionAnnouncementsScreen()),
               MoreEntry(l.mobileHomeLicense,
                   PhosphorIconsRegular.identificationCard,
                   (_) => const LicenseScreen()),

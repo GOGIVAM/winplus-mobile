@@ -1,5 +1,6 @@
 import '../l10n/class_levels.dart';
 import 'package:flutter/material.dart';
+import '../shared/announcements_feed.dart';
 import '../l10n/l10n.dart';
 import '../theme/win_motion.dart';
 import '../data/reference_data.dart';
@@ -113,7 +114,8 @@ class _StudentHomeTabState extends State<StudentHomeTab> {
         onSubmit: (q) => _push(SearchScreen(initialQuery: q)),
         onFilters: () => ShellNav.go(context, 1),
       ),
-      forYou: MobileForYou(slides: [
+      forYou: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+MobileForYou(slides: [
         MobileSlide(
             tag: l.mobileHomeEyebrow,
             title: l.mobileHomeStudentTitle,
@@ -144,6 +146,10 @@ class _StudentHomeTabState extends State<StudentHomeTab> {
             cta: l.mobileHomePapersCta,
             onCta: () => ShellNav.go(context, 1),
             image: 'assets/home/hero-bibliotheque.webp'),
+      ]),
+        // Lot 7 : annonces de l'établissement, sous « Pour toi » ; rien
+        // tant qu'il n'y en a pas.
+        const AnnouncementsFeedCard(),
       ]),
       quick: MobileQuickAccess(
         title: l.mobileHomeQuick,

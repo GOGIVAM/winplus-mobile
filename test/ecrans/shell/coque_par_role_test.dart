@@ -92,6 +92,21 @@ void main() {
     expect(find.byIcon(PhosphorIconsRegular.buildings), findsWidgets);
   });
 
+  testWidgets('etablissement, « Plus » : « Annonces » dans le groupe « Mon etablissement »', (tester) async {
+    await monterCoque(tester, WinRole.institution);
+    final l = L10n.current;
+    await tester.tap(_onglet(l.shellTabMore));
+    await pomper(tester, const Duration(milliseconds: 400));
+    await reseau(tester);
+    final annonces = find.text(l.annTitle);
+    await tester.scrollUntilVisible(annonces, 200, scrollable: find.byType(Scrollable).last);
+    expect(annonces, findsOneWidget);
+    final groupe = find.text(l.moreGroupSchool);
+    expect(groupe, findsOneWidget);
+    expect(tester.getTopLeft(groupe).dy, lessThan(tester.getTopLeft(annonces).dy),
+        reason: 'titre du groupe au-dessus de sa premiere ligne');
+  });
+
   testWidgets('professeur, « Plus » : seances, revenus, corrections, reglages et deconnexion', (tester) async {
     faux.repond('POST', '/auth/logout', {});
     await monterCoque(tester, WinRole.teacher);
@@ -150,7 +165,10 @@ void main() {
       await tester.scrollUntilVisible(aide, 200, scrollable: find.byType(Scrollable).last);
       expect(aide, findsOneWidget, reason: '$role');
       final ligne = find.text(l.settingsTitle);
-      await tester.scrollUntilVisible(ligne, 200, scrollable: find.byType(Scrollable).last);
+      // « Paramètres » est juste au-dessus de l'aide : déjà construit, on le
+      // ramène à l'écran quel que soit le sens.
+      await tester.ensureVisible(ligne);
+      await pomper(tester);
       await tester.tap(ligne);
       await pomper(tester);
       await pomper(tester, const Duration(milliseconds: 400));

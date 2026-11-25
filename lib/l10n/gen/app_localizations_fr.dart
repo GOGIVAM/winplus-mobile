@@ -9621,4 +9621,123 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get moreGroupSchool => 'Mon établissement';
+
+  @override
+  String get annTitle => 'Annonces';
+
+  @override
+  String get annSeeAll => 'Tout voir';
+
+  @override
+  String get annFeedEmpty => 'Aucune annonce pour l’instant.';
+
+  @override
+  String get annFeedEmptyHint =>
+      'Les annonces de ton établissement apparaîtront ici.';
+
+  @override
+  String get annTypeInfo => 'Info';
+
+  @override
+  String get annTypeImportant => 'Important';
+
+  @override
+  String get annTypeUrgent => 'Urgent';
+
+  @override
+  String get annAudienceAll => 'Élèves et parents';
+
+  @override
+  String get annAudienceStudents => 'Élèves';
+
+  @override
+  String get annAudienceParents => 'Parents';
+
+  @override
+  String get annNew => 'Nouvelle annonce';
+
+  @override
+  String get annSentEmpty =>
+      'Aucune annonce envoyée. Les élèves et les parents reçoivent une notification à chaque annonce.';
+
+  @override
+  String annRecipients(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count destinataires',
+      one: '1 destinataire',
+      zero: 'aucun destinataire',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String annSent(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Annonce envoyée à $count personnes.',
+      one: 'Annonce envoyée à 1 personne.',
+      zero: 'Annonce publiée (aucun destinataire pour l’instant).',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get annNoEnd => 'Sans date de fin';
+
+  @override
+  String get annExpired => 'Terminée';
+
+  @override
+  String annUntil(String date) {
+    return 'Jusqu’au $date';
+  }
+
+  @override
+  String get annDeleteTitle => 'Supprimer cette annonce ?';
+
+  @override
+  String get annDeleteBody =>
+      'Elle disparaîtra pour les élèves et les parents.';
+
+  @override
+  String get annDeleteError => 'L’annonce n’a pas pu être supprimée.';
+
+  @override
+  String get annFormTitle => 'Titre';
+
+  @override
+  String get annFormContent => 'Message';
+
+  @override
+  String get annFormAudience => 'Destinataires';
+
+  @override
+  String get annFormType => 'Type';
+
+  @override
+  String get annFormClass => 'Classe';
+
+  @override
+  String get annFormUntil => 'Fin d’affichage';
+
+  @override
+  String get annAllClasses => 'Tout l’établissement';
+
+  @override
+  String get annChooseDate => 'Choisir';
+
+  @override
+  String get annRemoveEnd => 'Retirer la date de fin';
+
+  @override
+  String get annRequired => 'Le titre et le message sont obligatoires.';
+
+  @override
+  String get annSendError => 'L’annonce n’a pas pu être publiée.';
+
+  @override
+  String get annPublish => 'Publier';
 }

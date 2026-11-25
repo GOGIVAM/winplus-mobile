@@ -1,6 +1,7 @@
 import '../l10n/class_levels.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
+import '../shared/announcements_feed.dart';
 import '../l10n/l10n.dart';
 import '../widgets/language_selector.dart';
 import '../widgets/account_settings_switches.dart';
@@ -202,7 +203,8 @@ class _ParentDashTabState extends State<ParentDashTab> {
         onSubmit: (q) => _push(SearchScreen(initialQuery: q)),
         onFilters: () => ShellNav.go(context, 2),
       ),
-      forYou: MobileForYou(slides: [
+      forYou: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+MobileForYou(slides: [
         if (firstChild == null)
           MobileSlide(
               tag: l.mobileHomeEyebrow,
@@ -236,6 +238,10 @@ class _ParentDashTabState extends State<ParentDashTab> {
             onCta: () => _push(
                 ParentWinAITab(initialMessage: l.mobileHomeSheetPrompt)),
             image: 'assets/home/cahier.webp'),
+      ]),
+        // Lot 7 : annonces de l'établissement, sous « Pour toi » ; rien
+        // tant qu'il n'y en a pas.
+        const AnnouncementsFeedCard(),
       ]),
       quick: MobileQuickAccess(
         title: l.mobileHomeQuick,

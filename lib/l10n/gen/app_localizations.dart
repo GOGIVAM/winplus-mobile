@@ -16363,6 +16363,198 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Mon établissement'**
   String get moreGroupSchool;
+
+  /// No description provided for @annTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annonces'**
+  String get annTitle;
+
+  /// No description provided for @annSeeAll.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tout voir'**
+  String get annSeeAll;
+
+  /// No description provided for @annFeedEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune annonce pour l’instant.'**
+  String get annFeedEmpty;
+
+  /// No description provided for @annFeedEmptyHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les annonces de ton établissement apparaîtront ici.'**
+  String get annFeedEmptyHint;
+
+  /// No description provided for @annTypeInfo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Info'**
+  String get annTypeInfo;
+
+  /// No description provided for @annTypeImportant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Important'**
+  String get annTypeImportant;
+
+  /// No description provided for @annTypeUrgent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Urgent'**
+  String get annTypeUrgent;
+
+  /// No description provided for @annAudienceAll.
+  ///
+  /// In fr, this message translates to:
+  /// **'Élèves et parents'**
+  String get annAudienceAll;
+
+  /// No description provided for @annAudienceStudents.
+  ///
+  /// In fr, this message translates to:
+  /// **'Élèves'**
+  String get annAudienceStudents;
+
+  /// No description provided for @annAudienceParents.
+  ///
+  /// In fr, this message translates to:
+  /// **'Parents'**
+  String get annAudienceParents;
+
+  /// No description provided for @annNew.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouvelle annonce'**
+  String get annNew;
+
+  /// No description provided for @annSentEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune annonce envoyée. Les élèves et les parents reçoivent une notification à chaque annonce.'**
+  String get annSentEmpty;
+
+  /// No description provided for @annRecipients.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =0{aucun destinataire} =1{1 destinataire} other{{count} destinataires}}'**
+  String annRecipients(int count);
+
+  /// No description provided for @annSent.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =0{Annonce publiée (aucun destinataire pour l’instant).} =1{Annonce envoyée à 1 personne.} other{Annonce envoyée à {count} personnes.}}'**
+  String annSent(int count);
+
+  /// No description provided for @annNoEnd.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sans date de fin'**
+  String get annNoEnd;
+
+  /// No description provided for @annExpired.
+  ///
+  /// In fr, this message translates to:
+  /// **'Terminée'**
+  String get annExpired;
+
+  /// No description provided for @annUntil.
+  ///
+  /// In fr, this message translates to:
+  /// **'Jusqu’au {date}'**
+  String annUntil(String date);
+
+  /// No description provided for @annDeleteTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer cette annonce ?'**
+  String get annDeleteTitle;
+
+  /// No description provided for @annDeleteBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Elle disparaîtra pour les élèves et les parents.'**
+  String get annDeleteBody;
+
+  /// No description provided for @annDeleteError.
+  ///
+  /// In fr, this message translates to:
+  /// **'L’annonce n’a pas pu être supprimée.'**
+  String get annDeleteError;
+
+  /// No description provided for @annFormTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Titre'**
+  String get annFormTitle;
+
+  /// No description provided for @annFormContent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Message'**
+  String get annFormContent;
+
+  /// No description provided for @annFormAudience.
+  ///
+  /// In fr, this message translates to:
+  /// **'Destinataires'**
+  String get annFormAudience;
+
+  /// No description provided for @annFormType.
+  ///
+  /// In fr, this message translates to:
+  /// **'Type'**
+  String get annFormType;
+
+  /// No description provided for @annFormClass.
+  ///
+  /// In fr, this message translates to:
+  /// **'Classe'**
+  String get annFormClass;
+
+  /// No description provided for @annFormUntil.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fin d’affichage'**
+  String get annFormUntil;
+
+  /// No description provided for @annAllClasses.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tout l’établissement'**
+  String get annAllClasses;
+
+  /// No description provided for @annChooseDate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir'**
+  String get annChooseDate;
+
+  /// No description provided for @annRemoveEnd.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retirer la date de fin'**
+  String get annRemoveEnd;
+
+  /// No description provided for @annRequired.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le titre et le message sont obligatoires.'**
+  String get annRequired;
+
+  /// No description provided for @annSendError.
+  ///
+  /// In fr, this message translates to:
+  /// **'L’annonce n’a pas pu être publiée.'**
+  String get annSendError;
+
+  /// No description provided for @annPublish.
+  ///
+  /// In fr, this message translates to:
+  /// **'Publier'**
+  String get annPublish;
 }
 
 class _AppLocalizationsDelegate
