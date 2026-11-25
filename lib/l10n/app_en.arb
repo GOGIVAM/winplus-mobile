@@ -2787,5 +2787,16 @@
   "annRemoveEnd": "Remove the end date",
   "annRequired": "Title and message are required.",
   "annSendError": "The announcement could not be published.",
-  "annPublish": "Publish"
+  "annPublish": "Publish",
+  "certVerifyTitle": "Verify a certificate",
+  "certVerifyIntro": "Enter the code printed on the WinPlus certificate to check that it is genuine.",
+  "certVerifyCode": "Certificate code",
+  "certVerifyButton": "Verify",
+  "certVerifyCodeRequired": "Enter the certificate code.",
+  "certVerifyAuthentic": "Genuine certificate",
+  "certVerifyInvalid": "No WinPlus certificate matches this code.",
+  "certVerifyIssued": "Issued on {date}",
+  "@certVerifyIssued": {"placeholders": {"date": {"type": "String"}}},
+  "certVerifyGrade": "Grade: {grade}",
+  "@certVerifyGrade": {"placeholders": {"grade": {"type": "String"}}}
 }

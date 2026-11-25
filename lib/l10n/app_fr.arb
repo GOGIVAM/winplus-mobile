@@ -5669,5 +5669,16 @@
   "annRemoveEnd": "Retirer la date de fin",
   "annRequired": "Le titre et le message sont obligatoires.",
   "annSendError": "L’annonce n’a pas pu être publiée.",
-  "annPublish": "Publier"
+  "annPublish": "Publier",
+  "certVerifyTitle": "Vérifier un certificat",
+  "certVerifyIntro": "Saisis le code imprimé sur le certificat WinPlus pour vérifier qu’il est authentique.",
+  "certVerifyCode": "Code du certificat",
+  "certVerifyButton": "Vérifier",
+  "certVerifyCodeRequired": "Saisis le code du certificat.",
+  "certVerifyAuthentic": "Certificat authentique",
+  "certVerifyInvalid": "Aucun certificat WinPlus ne correspond à ce code.",
+  "certVerifyIssued": "Délivré le {date}",
+  "@certVerifyIssued": {"placeholders": {"date": {"type": "String"}}},
+  "certVerifyGrade": "Note : {grade}",
+  "@certVerifyGrade": {"placeholders": {"grade": {"type": "String"}}}
 }

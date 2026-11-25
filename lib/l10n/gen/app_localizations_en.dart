@@ -9659,4 +9659,36 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get annPublish => 'Publish';
+
+  @override
+  String get certVerifyTitle => 'Verify a certificate';
+
+  @override
+  String get certVerifyIntro =>
+      'Enter the code printed on the WinPlus certificate to check that it is genuine.';
+
+  @override
+  String get certVerifyCode => 'Certificate code';
+
+  @override
+  String get certVerifyButton => 'Verify';
+
+  @override
+  String get certVerifyCodeRequired => 'Enter the certificate code.';
+
+  @override
+  String get certVerifyAuthentic => 'Genuine certificate';
+
+  @override
+  String get certVerifyInvalid => 'No WinPlus certificate matches this code.';
+
+  @override
+  String certVerifyIssued(String date) {
+    return 'Issued on $date';
+  }
+
+  @override
+  String certVerifyGrade(String grade) {
+    return 'Grade: $grade';
+  }
 }

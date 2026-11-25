@@ -1,5 +1,6 @@
 import '../l10n/l10n.dart';
 import 'package:flutter/material.dart';
+import '../shared/verify_certificate_screen.dart';
 import 'package:flutter/services.dart';
 import '../widgets/remote_pdf_screen.dart';
 import '../services/certificate_service.dart';
@@ -73,6 +74,13 @@ class _CertificatesScreenState extends State<CertificatesScreen> {
         ),
         title: Text(context.l10n.studentCertTitle),
         actions: [
+          // Lot 7 : vérifier un certificat par son code (comme /verify du site).
+          IconButton(
+            tooltip: context.l10n.certVerifyTitle,
+            icon: Icon(PhosphorIconsRegular.sealCheck, color: s.onStrong),
+            onPressed: () => Navigator.of(context).push(
+                WinPageRoute(builder: (_) => const VerifyCertificateScreen())),
+          ),
           IconButton(
             icon: Icon(PhosphorIconsRegular.arrowClockwise, color: s.onStrong),
             onPressed: () {

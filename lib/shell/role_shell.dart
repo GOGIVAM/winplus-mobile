@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import '../shared/verify_certificate_screen.dart';
 import '../institution/announcements_screen.dart';
 import '../parent/barometer_tab.dart';
 import '../shared/visio/live_classes_screen.dart';
@@ -521,6 +522,7 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
               l.shellTabCatalog: l.moreGroupResources,
               l.liveTitle: l.moreGroupResources,
               l.annTitle: l.moreGroupSchool,
+              l.certVerifyTitle: l.moreGroupSchool,
               l.mobileHomeLicense: l.moreGroupSchool,
               l.shellTabAccount: l.moreGroupSchool,
             }, entries: [
@@ -541,6 +543,9 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
               // Lot 7 : annonces aux élèves et aux parents, comme le site.
               MoreEntry(l.annTitle, PhosphorIconsRegular.megaphone,
                   (_) => const InstitutionAnnouncementsScreen()),
+              // Lot 7 : vérifier un certificat présenté par un élève.
+              MoreEntry(l.certVerifyTitle, PhosphorIconsRegular.sealCheck,
+                  (_) => const VerifyCertificateScreen()),
               MoreEntry(l.mobileHomeLicense,
                   PhosphorIconsRegular.identificationCard,
                   (_) => const LicenseScreen()),

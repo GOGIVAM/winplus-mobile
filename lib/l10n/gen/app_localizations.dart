@@ -16555,6 +16555,60 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Publier'**
   String get annPublish;
+
+  /// No description provided for @certVerifyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vérifier un certificat'**
+  String get certVerifyTitle;
+
+  /// No description provided for @certVerifyIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Saisis le code imprimé sur le certificat WinPlus pour vérifier qu’il est authentique.'**
+  String get certVerifyIntro;
+
+  /// No description provided for @certVerifyCode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code du certificat'**
+  String get certVerifyCode;
+
+  /// No description provided for @certVerifyButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vérifier'**
+  String get certVerifyButton;
+
+  /// No description provided for @certVerifyCodeRequired.
+  ///
+  /// In fr, this message translates to:
+  /// **'Saisis le code du certificat.'**
+  String get certVerifyCodeRequired;
+
+  /// No description provided for @certVerifyAuthentic.
+  ///
+  /// In fr, this message translates to:
+  /// **'Certificat authentique'**
+  String get certVerifyAuthentic;
+
+  /// No description provided for @certVerifyInvalid.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun certificat WinPlus ne correspond à ce code.'**
+  String get certVerifyInvalid;
+
+  /// No description provided for @certVerifyIssued.
+  ///
+  /// In fr, this message translates to:
+  /// **'Délivré le {date}'**
+  String certVerifyIssued(String date);
+
+  /// No description provided for @certVerifyGrade.
+  ///
+  /// In fr, this message translates to:
+  /// **'Note : {grade}'**
+  String certVerifyGrade(String grade);
 }
 
 class _AppLocalizationsDelegate
