@@ -8966,4 +8966,57 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get spaceGroupPurchases => 'My purchases';
+
+  @override
+  String get winaiTabChat => 'Chat';
+
+  @override
+  String get winaiTabStudio => 'Studio';
+
+  @override
+  String get winaiNewChat => 'New chat';
+
+  @override
+  String get winaiHistoryTitle => 'My conversations';
+
+  @override
+  String get winaiHistoryEmpty => 'No conversation yet';
+
+  @override
+  String get winaiStudioHint =>
+      'Pick a tool: WinAI prepares the work, you only have to review it.';
+
+  @override
+  String get winaiStudioGenerate => 'Generate';
+
+  @override
+  String get winaiStudioFollow => 'Follow up';
+
+  @override
+  String get winaiToolQuiz => 'Quiz on a chapter';
+
+  @override
+  String get winaiToolSheet => 'Revision sheet';
+
+  @override
+  String get winaiSettingsTopic => 'Chapter or topic';
+
+  @override
+  String get winaiSettingsTopicHint => 'E.g. numerical sequences';
+
+  @override
+  String get winaiSettingsGenerate => 'Generate now';
+
+  @override
+  String get winaiTopicAny => 'your choice, following the syllabus';
+
+  @override
+  String winaiPromptQuiz(String subject, String topic, String level) {
+    return 'Prepare a 10-question multiple-choice quiz in $subject, $level level. Chapter or topic: $topic. Then give the answers with a short explanation for each.';
+  }
+
+  @override
+  String winaiPromptSheet(String subject, String topic, String level) {
+    return 'Write a revision sheet in $subject, $level level. Chapter or topic: $topic. Include the key points, the main formulas or definitions, a worked example and common mistakes.';
+  }
 }

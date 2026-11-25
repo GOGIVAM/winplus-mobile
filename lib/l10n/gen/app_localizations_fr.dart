@@ -9045,4 +9045,57 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get spaceGroupPurchases => 'Mes achats';
+
+  @override
+  String get winaiTabChat => 'Discussion';
+
+  @override
+  String get winaiTabStudio => 'Atelier';
+
+  @override
+  String get winaiNewChat => 'Nouvelle discussion';
+
+  @override
+  String get winaiHistoryTitle => 'Mes conversations';
+
+  @override
+  String get winaiHistoryEmpty => 'Aucune conversation pour le moment';
+
+  @override
+  String get winaiStudioHint =>
+      'Choisis un outil : WinAI prépare le travail, tu n\'as plus qu\'à le relire.';
+
+  @override
+  String get winaiStudioGenerate => 'Générer';
+
+  @override
+  String get winaiStudioFollow => 'Suivre';
+
+  @override
+  String get winaiToolQuiz => 'Quiz sur un chapitre';
+
+  @override
+  String get winaiToolSheet => 'Fiche de révision';
+
+  @override
+  String get winaiSettingsTopic => 'Chapitre ou notion';
+
+  @override
+  String get winaiSettingsTopicHint => 'Ex. : les suites numériques';
+
+  @override
+  String get winaiSettingsGenerate => 'Générer maintenant';
+
+  @override
+  String get winaiTopicAny => 'au choix, selon le programme';
+
+  @override
+  String winaiPromptQuiz(String subject, String topic, String level) {
+    return 'Prépare un quiz de 10 questions à choix multiples en $subject, niveau $level. Chapitre ou notion : $topic. Donne ensuite les réponses avec une courte explication pour chacune.';
+  }
+
+  @override
+  String winaiPromptSheet(String subject, String topic, String level) {
+    return 'Rédige une fiche de révision en $subject, niveau $level. Chapitre ou notion : $topic. Mets l\'essentiel à retenir, les formules ou définitions clés, un exemple corrigé et les erreurs fréquentes.';
+  }
 }

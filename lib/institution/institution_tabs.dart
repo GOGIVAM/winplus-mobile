@@ -1,16 +1,14 @@
 import '../l10n/class_levels.dart';
 import 'package:flutter/material.dart';
 import '../l10n/l10n.dart';
-import '../widgets/winai_markdown.dart';
 import '../widgets/language_selector.dart';
 import '../theme/win_motion.dart';
 import '../app_state.dart';
 import '../auth/login_screen.dart';
+import '../data/models.dart';
 import '../data/reference_data.dart';
 import '../services/auth_service.dart';
-import '../services/chatbot_service.dart';
 import '../services/institution_service.dart';
-import '../widgets/winai_memories_sheet.dart';
 import '../services/subject_service.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
@@ -25,11 +23,11 @@ import 'reports_screen.dart';
 import 'tutor_endorsements_screen.dart';
 import 'license_screen.dart';
 import '../shared/tutoring_for_students_screen.dart';
-import '../widgets/knowledge_base_toggle.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../shell/shell_nav.dart';
 import '../widgets/mobile_home.dart';
 import '../widgets/win_screen.dart';
+import '../shared/winai/winai_screen.dart';
 
 Widget _statCard(BuildContext c, IconData icon, String value, String label) {
   final s = WinTheme.of(c);
@@ -754,236 +752,12 @@ class _Row extends StatelessWidget {
   }
 }
 
-/// ===================== WINAI =====================
-class InstitutionWinAITab extends StatefulWidget {
+/// WinAI de cet espace : l'écran est commun aux quatre espaces
+/// (shared/winai/winai_screen.dart), seuls les textes et les outils changent.
+class InstitutionWinAITab extends StatelessWidget {
   final String? initialMessage;
   const InstitutionWinAITab({super.key, this.initialMessage});
   @override
-  State<InstitutionWinAITab> createState() => _InstitutionWinAITabState();
-}
-
-class _InstitutionWinAITabState extends State<InstitutionWinAITab> {
-  final _ctrl = TextEditingController();
-  final List<({bool me, String text})> _msgs = [];
-  bool _thinking = false;
-  /// Conversation en cours (créée par le serveur au premier message).
-  int? _conversationId;
-
-  List<String> get _suggestions => [
-    context.l10n.instAiSuggestion1,
-    context.l10n.instRiskTitle,
-    context.l10n.instAiSuggestion3,
-    context.l10n.instAiSuggestion4,
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-    if (widget.initialMessage != null) {
-      WidgetsBinding.instance
-          .addPostFrameCallback((_) => _send(widget.initialMessage));
-    }
-  }
-
-  Future<void> _send([String? preset]) async {
-    final t = (preset ?? _ctrl.text).trim();
-    if (t.isEmpty) return;
-    setState(() {
-      _msgs.add((me: true, text: t));
-      _ctrl.clear();
-      _thinking = true;
-    });
-    // Réponse écrite en direct (comme le site), dans la même conversation
-    // que les messages précédents : WinAI garde le contexte.
-    var started = false;
-    void show(String text) {
-      if (!started) {
-        started = true;
-        _thinking = false;
-        _msgs.add((me: false, text: text));
-      } else {
-        _msgs[_msgs.length - 1] = (me: false, text: text);
-      }
-    }
-
-    final reply = await ChatbotService.instance.streamMessage(
-      message: t,
-      conversationId: _conversationId,
-      onConversation: (id) => _conversationId = id,
-      onText: (text) {
-        if (mounted) setState(() => show(text));
-      },
-    );
-    if (!mounted) return;
-    setState(() {
-      _thinking = false;
-      show(reply ?? L10n.current.studentTabsAiNoReply);
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final s = WinTheme.of(context);
-    return Scaffold(
-      backgroundColor: s.bg,
-      appBar: AppBar(
-        backgroundColor: s.bg,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text('WinAI'),
-      ),
-      body: Column(children: [
-        Expanded(
-          child: _msgs.isEmpty
-              ? Padding(
-                  padding: const EdgeInsets.all(24),
-                  child: Column(children: [
-                    const Spacer(),
-                    const WinAIOrb(size: 80),
-                    const SizedBox(height: 20),
-                    Text('WinAI',
-                        style: WinType.archivo(size: 28, color: s.onStrong)),
-                    const SizedBox(height: 6),
-                    Text(context.l10n.instAiTagline,
-                        style: WinType.bodyM(s.onMuted),
-                        textAlign: TextAlign.center),
-                    const SizedBox(height: 24),
-                    GridView.count(
-                      shrinkWrap: true,
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 10,
-                      crossAxisSpacing: 10,
-                      childAspectRatio: 2.6,
-                      children: _suggestions
-                          .map((q) => GestureDetector(
-                                onTap: () => _send(q),
-                                child: Container(
-                                  padding: const EdgeInsets.all(12),
-                                  decoration: BoxDecoration(
-                                      color: WinColors.teal500
-                                          .withValues(alpha: 0.08),
-                                      borderRadius:
-                                          BorderRadius.circular(WinRadii.md),
-                                      border: Border.all(
-                                          color: WinColors.teal500
-                                              .withValues(alpha: 0.25))),
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(q,
-                                      style: WinType.manrope(
-                                          size: 13,
-                                          weight: FontWeight.w600,
-                                          color: WinColors.teal600),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis),
-                                ),
-                              ))
-                          .toList(),
-                    ),
-                    const SizedBox(height: 16),
-                    GestureDetector(
-                      onTap: () => showWinAIMemoriesSheet(context),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 10),
-                        decoration: BoxDecoration(
-                          color: WinColors.teal50,
-                          borderRadius: BorderRadius.circular(WinRadii.full),
-                          border: Border.all(
-                              color: WinColors.teal700
-                                  .withValues(alpha: 0.3)),
-                        ),
-                        child: Row(mainAxisSize: MainAxisSize.min, children: [
-                          WinAIIcon(size: 18),
-                          const SizedBox(width: 8),
-                          Text(context.l10n.commonWinaiMemory,
-                              style: WinType.manrope(
-                                  size: 13,
-                                  weight: FontWeight.w600,
-                                  color: WinColors.teal700)),
-                          const SizedBox(width: 6),
-                          const Icon(PhosphorIconsRegular.caretRight,
-                              size: 11, color: WinColors.teal700),
-                        ]),
-                      ),
-                    ),
-                    const Spacer(),
-                  ]),
-                )
-              : ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: _msgs.length + (_thinking ? 1 : 0),
-                  itemBuilder: (_, i) {
-                    if (_thinking && i == _msgs.length) {
-                      return Align(
-                        alignment: Alignment.centerLeft,
-                        child: Container(
-                          margin: const EdgeInsets.only(bottom: 12),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 14, vertical: 12),
-                          decoration: BoxDecoration(
-                              color: s.cardBg,
-                              border: Border.all(color: s.cardBorder),
-                              borderRadius: BorderRadius.circular(WinRadii.lg)),
-                          child: Row(mainAxisSize: MainAxisSize.min, children: [
-                            SizedBox(
-                                width: 16,
-                                height: 16,
-                                child: CircularProgressIndicator(
-                                    strokeWidth: 2, color: s.primary)),
-                            const SizedBox(width: 8),
-                            Text(context.l10n.commonWinaiThinking,
-                                style: WinType.bodyS(s.onMuted)),
-                          ]),
-                        ),
-                      );
-                    }
-                    final m = _msgs[i];
-                    return Align(
-                      alignment:
-                          m.me ? Alignment.centerRight : Alignment.centerLeft,
-                      child: Container(
-                        margin: const EdgeInsets.only(bottom: 12),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 14, vertical: 10),
-                        constraints: const BoxConstraints(maxWidth: 280),
-                        decoration: BoxDecoration(
-                          color: m.me ? WinColors.ink800 : s.cardBg,
-                          border: m.me ? null : Border.all(color: s.cardBorder),
-                          borderRadius: BorderRadius.circular(WinRadii.lg),
-                        ),
-                        child: (m.me
-    ? Text(m.text, style: WinType.bodyM(WinColors.cream50))
-    // Réponse de WinAI : Markdown et formules compilées.
-    : WinAIMarkdown(m.text, color: s.onSurface)),
-                      ),
-                    );
-                  },
-                ),
-        ),
-        const KnowledgeBaseToggle(),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 14),
-          child: Row(children: [
-            Expanded(
-                child: WinTextField(
-                    hint: context.l10n.instAiHint,
-                    controller: _ctrl)),
-            const SizedBox(width: 8),
-            GestureDetector(
-              onTap: _send,
-              child: Container(
-                  width: 48,
-                  height: 48,
-                  decoration:
-                      BoxDecoration(color: s.primary, shape: BoxShape.circle),
-                  child: Icon(PhosphorIconsFill.paperPlaneRight, size: 20, color: s.onPrimary)),
-            ),
-          ]),
-        ),
-      ]),
-    );
-  }
+  Widget build(BuildContext context) =>
+      WinAIScreen(role: WinRole.institution, initialMessage: initialMessage);
 }

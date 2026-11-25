@@ -312,28 +312,53 @@ void main() {
       expect(find.text('Limite atteinte pour aujourd\'hui'), findsOneWidget);
     });
 
-    testWidgets('feuille « Joindre » : trois options ; la voix ouvre la dictee (indisponible sans reconnaissance vocale)', (tester) async {
+    testWidgets('bouton de dictee : ouvre la dictee (indisponible sans reconnaissance vocale) ; pas de piece jointe factice', (tester) async {
       // Telephone sans reconnaissance vocale : le service refuse de demarrer.
       tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
           const MethodChannel('plugin.csdcorp.com/speech_to_text'), (call) async => false);
       addTearDown(() => tester.binding.defaultBinaryMessenger
           .setMockMethodCallHandler(const MethodChannel('plugin.csdcorp.com/speech_to_text'), null));
       await monterEcran(tester, const StudentWinAITab());
-      await tester.tap(find.byIcon(PhosphorIconsRegular.paperclip));
+      // L'ancien trombone n'envoyait que le nom du fichier : il a disparu en
+      // attendant le vrai televersement de sources.
+      expect(find.byIcon(PhosphorIconsRegular.paperclip), findsNothing);
+      await tester.tap(find.byIcon(PhosphorIconsRegular.microphone));
       await pomper(tester);
       await pomper(tester, const Duration(milliseconds: 400));
-      final l = L10n.current;
-      expect(find.text(l.studentTabsAttachFile), findsOneWidget);
-      expect(find.text(l.studentTabsAttachImage), findsOneWidget);
-      expect(find.text(l.studentTabsAttachDocument), findsOneWidget);
-      await tester.tap(find.text(l.studentTabsAttachVoice));
-      await pomper(tester);
-      await pomper(tester, const Duration(milliseconds: 400));
-      expect(find.text(l.studentTabsAttachFile), findsNothing);
       await pomper(tester);
       await pomper(tester, const Duration(milliseconds: 400));
       // Pas de service de reconnaissance dans les tests : message explicite.
-      expect(find.text(l.voiceUnavailable), findsOneWidget);
+      expect(find.text(L10n.current.voiceUnavailable), findsOneWidget);
+    });
+
+    testWidgets('onglet « Atelier » : outils de cet espace ; un outil de generation ouvre ses reglages puis envoie la demande', (tester) async {
+      faux.repond('POST', '/chatbot/message', {
+        'assistantMessage': {'content': 'Voici ton quiz'},
+      });
+      await monterEcran(tester, const StudentWinAITab());
+      final l = L10n.current;
+      await tester.tap(find.text(l.winaiTabStudio));
+      await pomper(tester);
+      await pomper(tester, const Duration(milliseconds: 400));
+      for (final t in [l.winaiToolQuiz, l.winaiToolSheet, l.studentTabsExamCoach, l.studentTabsGuidedSession, l.studentHubRevisionQuiz]) {
+        expect(find.text(t), findsOneWidget, reason: t);
+      }
+      expect(faux.requetes, isEmpty);
+      await tester.tap(find.text(l.winaiToolQuiz));
+      await pomper(tester);
+      await pomper(tester, const Duration(milliseconds: 400));
+      expect(find.text(l.winaiSettingsTopic), findsOneWidget);
+      await tester.enterText(find.byType(TextField).last, 'les suites');
+      await tester.ensureVisible(find.text(l.winaiSettingsGenerate));
+      await pomper(tester);
+      await tester.tap(find.text(l.winaiSettingsGenerate));
+      await pomper(tester);
+      await pomper(tester, const Duration(milliseconds: 400));
+      await reseau(tester);
+      final envoi = (faux.recues('POST', '/chatbot/message').single.data as Map)['content'] as String;
+      expect(envoi, contains('les suites'));
+      expect(envoi, contains(l.tutoringMatMedium));
+      expect(find.text('Voici ton quiz'), findsOneWidget);
     });
 
     testWidgets('« Memoire de WinAI » ouvre la feuille des memoires', (tester) async {

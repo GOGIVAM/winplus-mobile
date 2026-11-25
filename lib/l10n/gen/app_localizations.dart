@@ -15415,6 +15415,102 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Mes achats'**
   String get spaceGroupPurchases;
+
+  /// No description provided for @winaiTabChat.
+  ///
+  /// In fr, this message translates to:
+  /// **'Discussion'**
+  String get winaiTabChat;
+
+  /// No description provided for @winaiTabStudio.
+  ///
+  /// In fr, this message translates to:
+  /// **'Atelier'**
+  String get winaiTabStudio;
+
+  /// No description provided for @winaiNewChat.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouvelle discussion'**
+  String get winaiNewChat;
+
+  /// No description provided for @winaiHistoryTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mes conversations'**
+  String get winaiHistoryTitle;
+
+  /// No description provided for @winaiHistoryEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune conversation pour le moment'**
+  String get winaiHistoryEmpty;
+
+  /// No description provided for @winaiStudioHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisis un outil : WinAI prépare le travail, tu n\'as plus qu\'à le relire.'**
+  String get winaiStudioHint;
+
+  /// No description provided for @winaiStudioGenerate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Générer'**
+  String get winaiStudioGenerate;
+
+  /// No description provided for @winaiStudioFollow.
+  ///
+  /// In fr, this message translates to:
+  /// **'Suivre'**
+  String get winaiStudioFollow;
+
+  /// No description provided for @winaiToolQuiz.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quiz sur un chapitre'**
+  String get winaiToolQuiz;
+
+  /// No description provided for @winaiToolSheet.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fiche de révision'**
+  String get winaiToolSheet;
+
+  /// No description provided for @winaiSettingsTopic.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chapitre ou notion'**
+  String get winaiSettingsTopic;
+
+  /// No description provided for @winaiSettingsTopicHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex. : les suites numériques'**
+  String get winaiSettingsTopicHint;
+
+  /// No description provided for @winaiSettingsGenerate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Générer maintenant'**
+  String get winaiSettingsGenerate;
+
+  /// No description provided for @winaiTopicAny.
+  ///
+  /// In fr, this message translates to:
+  /// **'au choix, selon le programme'**
+  String get winaiTopicAny;
+
+  /// No description provided for @winaiPromptQuiz.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prépare un quiz de 10 questions à choix multiples en {subject}, niveau {level}. Chapitre ou notion : {topic}. Donne ensuite les réponses avec une courte explication pour chacune.'**
+  String winaiPromptQuiz(String subject, String topic, String level);
+
+  /// No description provided for @winaiPromptSheet.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rédige une fiche de révision en {subject}, niveau {level}. Chapitre ou notion : {topic}. Mets l\'essentiel à retenir, les formules ou définitions clés, un exemple corrigé et les erreurs fréquentes.'**
+  String winaiPromptSheet(String subject, String topic, String level);
 }
 
 class _AppLocalizationsDelegate
