@@ -16988,6 +16988,223 @@ abstract class AppLocalizations {
   /// **'Il faut au moins 3 établissements comparables avec 5 élèves actifs sur 90 jours.'**
   String get regCmpNoneText;
 
+  /// No description provided for @winaiStudioRevise.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réviser'**
+  String get winaiStudioRevise;
+
+  /// No description provided for @winaiStudioTrain.
+  ///
+  /// In fr, this message translates to:
+  /// **'S\'entraîner'**
+  String get winaiStudioTrain;
+
+  /// No description provided for @winaiStudioCoach.
+  ///
+  /// In fr, this message translates to:
+  /// **'Être guidé'**
+  String get winaiStudioCoach;
+
+  /// No description provided for @winaiStudioPrepare.
+  ///
+  /// In fr, this message translates to:
+  /// **'Préparer'**
+  String get winaiStudioPrepare;
+
+  /// No description provided for @winaiStudioAssess.
+  ///
+  /// In fr, this message translates to:
+  /// **'Évaluer'**
+  String get winaiStudioAssess;
+
+  /// No description provided for @winaiStudioHelp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aider mon enfant'**
+  String get winaiStudioHelp;
+
+  /// No description provided for @winaiToolCards.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fiches recto verso'**
+  String get winaiToolCards;
+
+  /// No description provided for @winaiToolAudio.
+  ///
+  /// In fr, this message translates to:
+  /// **'Résumé à écouter'**
+  String get winaiToolAudio;
+
+  /// No description provided for @winaiToolExercises.
+  ///
+  /// In fr, this message translates to:
+  /// **'Exercices corrigés'**
+  String get winaiToolExercises;
+
+  /// No description provided for @winaiToolPlan.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plan de révision sur 7 jours'**
+  String get winaiToolPlan;
+
+  /// No description provided for @winaiToolLesson.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plan de cours'**
+  String get winaiToolLesson;
+
+  /// No description provided for @winaiToolRubric.
+  ///
+  /// In fr, this message translates to:
+  /// **'Barème de correction'**
+  String get winaiToolRubric;
+
+  /// No description provided for @winaiToolHelpChild.
+  ///
+  /// In fr, this message translates to:
+  /// **'Comprendre un chapitre pour l\'aider'**
+  String get winaiToolHelpChild;
+
+  /// No description provided for @winaiToolAskChild.
+  ///
+  /// In fr, this message translates to:
+  /// **'Questions pour le faire réviser'**
+  String get winaiToolAskChild;
+
+  /// No description provided for @winaiToolRemediation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plan de remédiation'**
+  String get winaiToolRemediation;
+
+  /// No description provided for @winaiToolSupport.
+  ///
+  /// In fr, this message translates to:
+  /// **'Séance de soutien'**
+  String get winaiToolSupport;
+
+  /// No description provided for @winaiToolParentsNote.
+  ///
+  /// In fr, this message translates to:
+  /// **'Note aux parents'**
+  String get winaiToolParentsNote;
+
+  /// No description provided for @winaiSettingsLength.
+  ///
+  /// In fr, this message translates to:
+  /// **'Durée'**
+  String get winaiSettingsLength;
+
+  /// No description provided for @winaiLengthShort.
+  ///
+  /// In fr, this message translates to:
+  /// **'Courte, 1 min'**
+  String get winaiLengthShort;
+
+  /// No description provided for @winaiLengthLong.
+  ///
+  /// In fr, this message translates to:
+  /// **'Longue, 3 min'**
+  String get winaiLengthLong;
+
+  /// No description provided for @winaiCardsQuestion.
+  ///
+  /// In fr, this message translates to:
+  /// **'Question'**
+  String get winaiCardsQuestion;
+
+  /// No description provided for @winaiCardsAnswer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réponse'**
+  String get winaiCardsAnswer;
+
+  /// No description provided for @winaiCardsFlip.
+  ///
+  /// In fr, this message translates to:
+  /// **'Appuie pour retourner la fiche'**
+  String get winaiCardsFlip;
+
+  /// No description provided for @winaiCardsPrevious.
+  ///
+  /// In fr, this message translates to:
+  /// **'Précédente'**
+  String get winaiCardsPrevious;
+
+  /// No description provided for @winaiCardsNext.
+  ///
+  /// In fr, this message translates to:
+  /// **'Suivante'**
+  String get winaiCardsNext;
+
+  /// No description provided for @winaiCardsEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune fiche à afficher'**
+  String get winaiCardsEmpty;
+
+  /// No description provided for @winaiCardsCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'{index} sur {total}'**
+  String winaiCardsCount(int index, int total);
+
+  /// No description provided for @winaiPromptCards.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prépare 10 fiches recto verso pour réviser en {subject}, niveau {level}. Chapitre ou notion : {topic}. Écris chaque fiche sur deux lignes, sans rien d\'autre : une ligne qui commence par « Q: » avec la question, puis une ligne qui commence par « R: » avec la réponse, courte.'**
+  String winaiPromptCards(String subject, String level, String topic);
+
+  /// No description provided for @winaiPromptAudio.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rédige un résumé à écouter en {subject}, niveau {level}. Chapitre ou notion : {topic}. Longueur : environ {words} mots. Le texte sera lu à voix haute : phrases courtes, pas de titres, pas de listes, pas de symboles, et les formules dites en mots.'**
+  String winaiPromptAudio(
+      String subject, String level, String topic, int words);
+
+  /// No description provided for @winaiPromptExercises.
+  ///
+  /// In fr, this message translates to:
+  /// **'Propose 3 exercices corrigés en {subject}, niveau {level}. Chapitre ou notion : {topic}. Pour chacun : l\'énoncé, puis la correction détaillée, étape par étape.'**
+  String winaiPromptExercises(String subject, String level, String topic);
+
+  /// No description provided for @winaiPromptPlan.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prépare un plan de révision sur 7 jours en {subject}, niveau {level}. Chapitre ou notion : {topic}. Pour chaque jour : ce qu\'il faut revoir, un exercice à faire et la durée conseillée.'**
+  String winaiPromptPlan(String subject, String level, String topic);
+
+  /// No description provided for @winaiPromptLesson.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prépare le plan d\'une séance de cours en {subject}, niveau {level}. Chapitre ou notion : {topic}. Donne les objectifs, le déroulé minuté, les activités, les erreurs fréquentes des élèves et un exercice de fin de séance.'**
+  String winaiPromptLesson(String subject, String level, String topic);
+
+  /// No description provided for @winaiPromptRubric.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prépare un barème de correction pour un devoir en {subject}, niveau {level}. Chapitre ou notion : {topic}. Donne les critères, les points de chacun et ce qui est attendu pour les obtenir.'**
+  String winaiPromptRubric(String subject, String level, String topic);
+
+  /// No description provided for @winaiPromptHelpChild.
+  ///
+  /// In fr, this message translates to:
+  /// **'Je suis parent. Explique-moi simplement ce chapitre de {subject} (niveau {level}) pour que je puisse aider mon enfant. Chapitre ou notion : {topic}. Donne l\'idée à retenir, un exemple de tous les jours, trois questions à lui poser et les erreurs à surveiller.'**
+  String winaiPromptHelpChild(String subject, String level, String topic);
+
+  /// No description provided for @winaiPromptRemediation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prépare un plan de remédiation pour une classe en difficulté en {subject}, niveau {level}. Chapitre ou notion : {topic}. Donne ce qu\'il faut vérifier d\'abord, quatre séances de soutien avec leur objectif, et la façon de mesurer les progrès.'**
+  String winaiPromptRemediation(String subject, String level, String topic);
+
+  /// No description provided for @winaiPromptParentsNote.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rédige une note aux parents sur le travail à faire à la maison en {subject}, niveau {level}. Chapitre ou notion : {topic}. Ton clair et bienveillant, dix lignes au plus.'**
+  String winaiPromptParentsNote(String subject, String level, String topic);
+
   /// No description provided for @libTitle.
   ///
   /// In fr, this message translates to:

@@ -10010,6 +10010,135 @@ class AppLocalizationsFr extends AppLocalizations {
       'Il faut au moins 3 établissements comparables avec 5 élèves actifs sur 90 jours.';
 
   @override
+  String get winaiStudioRevise => 'Réviser';
+
+  @override
+  String get winaiStudioTrain => 'S\'entraîner';
+
+  @override
+  String get winaiStudioCoach => 'Être guidé';
+
+  @override
+  String get winaiStudioPrepare => 'Préparer';
+
+  @override
+  String get winaiStudioAssess => 'Évaluer';
+
+  @override
+  String get winaiStudioHelp => 'Aider mon enfant';
+
+  @override
+  String get winaiToolCards => 'Fiches recto verso';
+
+  @override
+  String get winaiToolAudio => 'Résumé à écouter';
+
+  @override
+  String get winaiToolExercises => 'Exercices corrigés';
+
+  @override
+  String get winaiToolPlan => 'Plan de révision sur 7 jours';
+
+  @override
+  String get winaiToolLesson => 'Plan de cours';
+
+  @override
+  String get winaiToolRubric => 'Barème de correction';
+
+  @override
+  String get winaiToolHelpChild => 'Comprendre un chapitre pour l\'aider';
+
+  @override
+  String get winaiToolAskChild => 'Questions pour le faire réviser';
+
+  @override
+  String get winaiToolRemediation => 'Plan de remédiation';
+
+  @override
+  String get winaiToolSupport => 'Séance de soutien';
+
+  @override
+  String get winaiToolParentsNote => 'Note aux parents';
+
+  @override
+  String get winaiSettingsLength => 'Durée';
+
+  @override
+  String get winaiLengthShort => 'Courte, 1 min';
+
+  @override
+  String get winaiLengthLong => 'Longue, 3 min';
+
+  @override
+  String get winaiCardsQuestion => 'Question';
+
+  @override
+  String get winaiCardsAnswer => 'Réponse';
+
+  @override
+  String get winaiCardsFlip => 'Appuie pour retourner la fiche';
+
+  @override
+  String get winaiCardsPrevious => 'Précédente';
+
+  @override
+  String get winaiCardsNext => 'Suivante';
+
+  @override
+  String get winaiCardsEmpty => 'Aucune fiche à afficher';
+
+  @override
+  String winaiCardsCount(int index, int total) {
+    return '$index sur $total';
+  }
+
+  @override
+  String winaiPromptCards(String subject, String level, String topic) {
+    return 'Prépare 10 fiches recto verso pour réviser en $subject, niveau $level. Chapitre ou notion : $topic. Écris chaque fiche sur deux lignes, sans rien d\'autre : une ligne qui commence par « Q: » avec la question, puis une ligne qui commence par « R: » avec la réponse, courte.';
+  }
+
+  @override
+  String winaiPromptAudio(
+      String subject, String level, String topic, int words) {
+    return 'Rédige un résumé à écouter en $subject, niveau $level. Chapitre ou notion : $topic. Longueur : environ $words mots. Le texte sera lu à voix haute : phrases courtes, pas de titres, pas de listes, pas de symboles, et les formules dites en mots.';
+  }
+
+  @override
+  String winaiPromptExercises(String subject, String level, String topic) {
+    return 'Propose 3 exercices corrigés en $subject, niveau $level. Chapitre ou notion : $topic. Pour chacun : l\'énoncé, puis la correction détaillée, étape par étape.';
+  }
+
+  @override
+  String winaiPromptPlan(String subject, String level, String topic) {
+    return 'Prépare un plan de révision sur 7 jours en $subject, niveau $level. Chapitre ou notion : $topic. Pour chaque jour : ce qu\'il faut revoir, un exercice à faire et la durée conseillée.';
+  }
+
+  @override
+  String winaiPromptLesson(String subject, String level, String topic) {
+    return 'Prépare le plan d\'une séance de cours en $subject, niveau $level. Chapitre ou notion : $topic. Donne les objectifs, le déroulé minuté, les activités, les erreurs fréquentes des élèves et un exercice de fin de séance.';
+  }
+
+  @override
+  String winaiPromptRubric(String subject, String level, String topic) {
+    return 'Prépare un barème de correction pour un devoir en $subject, niveau $level. Chapitre ou notion : $topic. Donne les critères, les points de chacun et ce qui est attendu pour les obtenir.';
+  }
+
+  @override
+  String winaiPromptHelpChild(String subject, String level, String topic) {
+    return 'Je suis parent. Explique-moi simplement ce chapitre de $subject (niveau $level) pour que je puisse aider mon enfant. Chapitre ou notion : $topic. Donne l\'idée à retenir, un exemple de tous les jours, trois questions à lui poser et les erreurs à surveiller.';
+  }
+
+  @override
+  String winaiPromptRemediation(String subject, String level, String topic) {
+    return 'Prépare un plan de remédiation pour une classe en difficulté en $subject, niveau $level. Chapitre ou notion : $topic. Donne ce qu\'il faut vérifier d\'abord, quatre séances de soutien avec leur objectif, et la façon de mesurer les progrès.';
+  }
+
+  @override
+  String winaiPromptParentsNote(String subject, String level, String topic) {
+    return 'Rédige une note aux parents sur le travail à faire à la maison en $subject, niveau $level. Chapitre ou notion : $topic. Ton clair et bienveillant, dix lignes au plus.';
+  }
+
+  @override
   String get libTitle => 'Ma bibliothèque';
 
   @override

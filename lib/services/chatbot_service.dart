@@ -8,6 +8,7 @@ import 'api_client.dart';
 import 'connectivity_service.dart';
 import '../l10n/l10n.dart';
 import 'winai_sources_service.dart';
+import 'winai_studio_service.dart';
 
 class ApiWinAIMemory {
   final int id;
@@ -151,6 +152,45 @@ class ChatbotService {
           sourceRefusalMessage(e.response?.statusCode, e.response?.data);
     } catch (_) {
       return null;
+    }
+  }
+
+  /// Outil de l'atelier : une demande, un texte en retour. Contrairement à
+  /// [sendMessage], un refus n'est pas rendu comme une réponse : il est levé,
+  /// pour que l'atelier n'ouvre pas un écran de résultat sur un message
+  /// d'erreur. La demande reste visible dans l'historique des conversations.
+  Future<String> generate({
+    required String prompt,
+    List<WinAISourceRef> sources = const [],
+  }) async {
+    if (!ConnectivityService.instance.isOnline) {
+      throw WinAiStudioException(OfflineActionException().message);
+    }
+    try {
+      final res = await _api.dio.post('/chatbot/message', data: {
+        'content': prompt,
+        'clientMessageId': _newClientMessageId(),
+        'knowledgeBase': knowledgeBase.value,
+        if (sources.isNotEmpty)
+          'sources': sources.map((r) => r.toJson()).toList(),
+      });
+      final d = res.data is Map ? res.data as Map : null;
+      final assistant = d?['assistantMessage'];
+      final text = (assistant is Map ? assistant['content'] : null) ??
+          d?['reply'] ??
+          d?['message'];
+      if (text is! String || text.trim().isEmpty) {
+        throw WinAiStudioException(L10n.current.studentTabsAiNoReply);
+      }
+      return text.trim();
+    } on DioException catch (e) {
+      final status = e.response?.statusCode;
+      final quota = quotaRefusalMessage(status, e.response?.data);
+      throw WinAiStudioException(
+          quota ??
+              sourceRefusalMessage(status, e.response?.data) ??
+              L10n.current.studentTabsAiNoReply,
+          status: status == 402 ? 402 : null);
     }
   }
 

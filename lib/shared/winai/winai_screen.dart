@@ -30,6 +30,7 @@ import '../../services/quiz_service.dart';
 import '../../services/winai_studio_service.dart';
 import '../../student/quiz_screen.dart';
 import 'winai_creations.dart';
+import 'winai_tools.dart';
 
 /// WinAI, un seul écran pour les quatre espaces (il était recopié quatre
 /// fois). Deux onglets :
@@ -550,7 +551,25 @@ class _HistoryListState extends State<_HistoryList> {
 // ── Atelier ─────────────────────────────────────────────────────────────
 
 /// Réglages choisis dans la feuille d'un outil de génération.
-typedef _Settings = ({String subject, String topic, int level});
+typedef _Settings = ({String subject, String topic, int level, bool long});
+
+/// Forme du résultat d'un outil : un texte à lire (et à écouter), ou des
+/// fiches recto verso.
+enum _ToolKind { text, cards }
+
+/// Un outil de génération de l'atelier.
+class _Tool {
+  final IconData icon;
+  final String label;
+  final _ToolKind kind;
+
+  /// L'outil propose de choisir la durée (résumé à écouter).
+  final bool withLength;
+  final String Function(String subject, String topic, String level, bool long)
+      prompt;
+  const _Tool(this.icon, this.label, this.prompt,
+      {this.kind = _ToolKind.text, this.withLength = false});
+}
 
 const _difficulties = ['easy', 'medium', 'hard'];
 
@@ -576,9 +595,49 @@ class _StudioState extends State<_Studio> {
   void _open(Widget page) =>
       Navigator.push(context, WinPageRoute(builder: (_) => page));
 
-  Future<_Settings?> _settings(String title) =>
+  Future<_Settings?> _settings(String title, {bool withLength = false}) =>
       showWinBottomSheet<_Settings>(
-          context: context, title: title, child: const _GenerateSettings());
+          context: context,
+          title: title,
+          child: _GenerateSettings(withLength: withLength));
+
+  /// Outil sans générateur dédié : réglages, demande à WinAI, puis écran de
+  /// résultat (texte avec écoute, ou fiches recto verso).
+  Future<void> _run(_Tool t) async {
+    final l = context.l10n;
+    final set = await _settings(t.label, withLength: t.withLength);
+    if (set == null || !mounted) return;
+    final topic = set.topic.isEmpty ? l.winaiTopicAny : set.topic;
+    final subtitle =
+        [set.subject, set.topic].where((x) => x.isNotEmpty).join(' · ');
+    setState(() => _busy = true);
+    try {
+      final text = await ChatbotService.instance.generate(
+          prompt: t.prompt(set.subject, topic, _levels()[set.level], set.long),
+          sources: widget.sources);
+      if (!mounted) return;
+      final cards = t.kind == _ToolKind.cards
+          ? parseFlashcards(text)
+          : const <WinAIFlashcard>[];
+      // Réponse qui ne suit pas la forme des fiches : on la montre en texte
+      // plutôt que de la perdre.
+      _open(cards.length >= 2
+          ? WinAIFlashcardsScreen(
+              title: t.label, subtitle: subtitle, cards: cards)
+          : WinAITextScreen(
+              title: t.label,
+              subtitle: subtitle,
+              text: text,
+              speechKey: 'tool:${t.label}:${text.hashCode}'));
+    } on WinAiStudioException catch (e) {
+      _refused(e);
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  MoreLine _line(_Tool t) => MoreLine(
+      icon: t.icon, label: t.label, onTap: _busy ? null : () => _run(t));
 
   List<String> _levels() {
     final l = context.l10n;
@@ -666,21 +725,49 @@ class _StudioState extends State<_Studio> {
         padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
         child: Text(t, style: WinType.titleL(s.onStrong)));
 
-    final generate = MoreGroup(children: [
-      MoreLine(
-          icon: PhosphorIconsRegular.exam,
-          label: l.winaiToolQuiz,
-          onTap: _busy ? null : _quiz),
-      MoreLine(
-          icon: PhosphorIconsRegular.fileText,
-          label: l.winaiToolSheet,
-          onTap: _busy ? null : _sheet),
-    ]);
+    final quiz = MoreLine(
+        icon: PhosphorIconsRegular.exam,
+        label: l.winaiToolQuiz,
+        onTap: _busy ? null : _quiz);
+    final sheet = MoreLine(
+        icon: PhosphorIconsRegular.fileText,
+        label: l.winaiToolSheet,
+        onTap: _busy ? null : _sheet);
+    final cards = _Tool(PhosphorIconsRegular.cards, l.winaiToolCards,
+        (a, b, c, _) => l.winaiPromptCards(a, c, b),
+        kind: _ToolKind.cards);
+    final audio = _Tool(PhosphorIconsRegular.headphones, l.winaiToolAudio,
+        (a, b, c, long) => l.winaiPromptAudio(a, c, b, long ? 450 : 150),
+        withLength: true);
+    final exercises = _Tool(PhosphorIconsRegular.pencilLine,
+        l.winaiToolExercises, (a, b, c, _) => l.winaiPromptExercises(a, c, b));
+    final plan = _Tool(PhosphorIconsRegular.calendarCheck, l.winaiToolPlan,
+        (a, b, c, _) => l.winaiPromptPlan(a, c, b));
+    final lesson = _Tool(PhosphorIconsRegular.chalkboardTeacher,
+        l.winaiToolLesson, (a, b, c, _) => l.winaiPromptLesson(a, c, b));
+    final rubric = _Tool(PhosphorIconsRegular.listChecks, l.winaiToolRubric,
+        (a, b, c, _) => l.winaiPromptRubric(a, c, b));
+    final helpChild = _Tool(PhosphorIconsRegular.handHeart,
+        l.winaiToolHelpChild, (a, b, c, _) => l.winaiPromptHelpChild(a, c, b));
+    final askChild = _Tool(PhosphorIconsRegular.cards, l.winaiToolAskChild,
+        (a, b, c, _) => l.winaiPromptCards(a, c, b),
+        kind: _ToolKind.cards);
+    final remediation = _Tool(PhosphorIconsRegular.lifebuoy,
+        l.winaiToolRemediation,
+        (a, b, c, _) => l.winaiPromptRemediation(a, c, b));
+    final parentsNote = _Tool(PhosphorIconsRegular.envelopeSimple,
+        l.winaiToolParentsNote,
+        (a, b, c, _) => l.winaiPromptParentsNote(a, c, b));
+    final support = _Tool(PhosphorIconsRegular.usersThree, l.winaiToolSupport,
+        (a, b, c, _) => l.winaiPromptLesson(a, c, b));
 
     final List<Widget> blocks = switch (widget.role) {
       WinRole.student => [
-          title(l.winaiStudioGenerate),
-          generate,
+          title(l.winaiStudioRevise),
+          MoreGroup(children: [sheet, _line(cards), _line(audio), _line(plan)]),
+          const SizedBox(height: 18),
+          title(l.winaiStudioTrain),
+          MoreGroup(children: [quiz, _line(exercises)]),
           const SizedBox(height: 18),
           title(l.winaiStudioRetrieve),
           MoreGroup(children: [
@@ -690,7 +777,7 @@ class _StudioState extends State<_Studio> {
                 onTap: () => _open(const WinAICreationsScreen())),
           ]),
           const SizedBox(height: 18),
-          title(l.spaceGroupPractice),
+          title(l.winaiStudioCoach),
           MoreGroup(children: [
             MoreLine(
                 icon: PhosphorIconsRegular.graduationCap,
@@ -707,8 +794,11 @@ class _StudioState extends State<_Studio> {
           ]),
         ],
       WinRole.teacher => [
-          title(l.winaiStudioGenerate),
-          generate,
+          title(l.winaiStudioPrepare),
+          MoreGroup(children: [_line(lesson), sheet, _line(audio)]),
+          const SizedBox(height: 18),
+          title(l.winaiStudioAssess),
+          MoreGroup(children: [quiz, _line(exercises), _line(rubric)]),
           const SizedBox(height: 18),
           title(l.winaiStudioFollow),
           MoreGroup(children: [
@@ -719,6 +809,14 @@ class _StudioState extends State<_Studio> {
           ]),
         ],
       WinRole.parent => [
+          title(l.winaiStudioHelp),
+          MoreGroup(children: [
+            _line(helpChild),
+            _line(askChild),
+            _line(audio),
+            _line(plan)
+          ]),
+          const SizedBox(height: 18),
           title(l.winaiStudioFollow),
           MoreGroup(children: [
             MoreLine(
@@ -728,6 +826,13 @@ class _StudioState extends State<_Studio> {
           ]),
         ],
       WinRole.institution => [
+          title(l.winaiStudioPrepare),
+          MoreGroup(children: [
+            _line(remediation),
+            _line(support),
+            _line(parentsNote)
+          ]),
+          const SizedBox(height: 18),
           title(l.winaiStudioFollow),
           MoreGroup(children: [
             MoreLine(
@@ -770,7 +875,9 @@ class _StudioState extends State<_Studio> {
 
 /// Réglages d'une génération : matière, chapitre, niveau, puis « Générer ».
 class _GenerateSettings extends StatefulWidget {
-  const _GenerateSettings();
+  /// Propose aussi la durée (résumé à écouter).
+  final bool withLength;
+  const _GenerateSettings({this.withLength = false});
   @override
   State<_GenerateSettings> createState() => _GenerateSettingsState();
 }
@@ -778,6 +885,7 @@ class _GenerateSettings extends StatefulWidget {
 class _GenerateSettingsState extends State<_GenerateSettings> {
   String _subject = WinData.subjects.first.id;
   int _level = 1;
+  bool _long = false;
   final _topic = TextEditingController();
 
   @override
@@ -816,6 +924,16 @@ class _GenerateSettingsState extends State<_GenerateSettings> {
                   active: _level == i,
                   onTap: () => setState(() => _level = i)),
           ]),
+          if (widget.withLength) ...[
+            const SizedBox(height: 18),
+            label(l.winaiSettingsLength),
+            Wrap(spacing: 8, children: [
+              WinChip(l.winaiLengthShort,
+                  active: !_long, onTap: () => setState(() => _long = false)),
+              WinChip(l.winaiLengthLong,
+                  active: _long, onTap: () => setState(() => _long = true)),
+            ]),
+          ],
           const SizedBox(height: 24),
           WinButton(l.winaiSettingsGenerate,
               block: true,
@@ -823,7 +941,8 @@ class _GenerateSettingsState extends State<_GenerateSettings> {
               onTap: () => Navigator.pop<_Settings>(context, (
                     subject: WinData.subjectById(_subject).name,
                     topic: _topic.text.trim(),
-                    level: _level
+                    level: _level,
+                    long: _long
                   ))),
           const SizedBox(height: 8),
         ]);

@@ -9921,6 +9921,135 @@ class AppLocalizationsEn extends AppLocalizations {
       'At least 3 comparable schools with 5 active students over 90 days are needed.';
 
   @override
+  String get winaiStudioRevise => 'Revise';
+
+  @override
+  String get winaiStudioTrain => 'Practise';
+
+  @override
+  String get winaiStudioCoach => 'Get guided';
+
+  @override
+  String get winaiStudioPrepare => 'Prepare';
+
+  @override
+  String get winaiStudioAssess => 'Assess';
+
+  @override
+  String get winaiStudioHelp => 'Help my child';
+
+  @override
+  String get winaiToolCards => 'Flashcards';
+
+  @override
+  String get winaiToolAudio => 'Summary to listen to';
+
+  @override
+  String get winaiToolExercises => 'Worked exercises';
+
+  @override
+  String get winaiToolPlan => '7-day revision plan';
+
+  @override
+  String get winaiToolLesson => 'Lesson plan';
+
+  @override
+  String get winaiToolRubric => 'Marking scheme';
+
+  @override
+  String get winaiToolHelpChild => 'Understand a chapter to help them';
+
+  @override
+  String get winaiToolAskChild => 'Questions to help them revise';
+
+  @override
+  String get winaiToolRemediation => 'Remediation plan';
+
+  @override
+  String get winaiToolSupport => 'Support session';
+
+  @override
+  String get winaiToolParentsNote => 'Note to parents';
+
+  @override
+  String get winaiSettingsLength => 'Length';
+
+  @override
+  String get winaiLengthShort => 'Short, 1 min';
+
+  @override
+  String get winaiLengthLong => 'Long, 3 min';
+
+  @override
+  String get winaiCardsQuestion => 'Question';
+
+  @override
+  String get winaiCardsAnswer => 'Answer';
+
+  @override
+  String get winaiCardsFlip => 'Tap to flip the card';
+
+  @override
+  String get winaiCardsPrevious => 'Previous';
+
+  @override
+  String get winaiCardsNext => 'Next';
+
+  @override
+  String get winaiCardsEmpty => 'No card to show';
+
+  @override
+  String winaiCardsCount(int index, int total) {
+    return '$index of $total';
+  }
+
+  @override
+  String winaiPromptCards(String subject, String level, String topic) {
+    return 'Prepare 10 flashcards to revise $subject, level $level. Chapter or topic: $topic. Write each card on two lines and nothing else: one line starting with \"Q:\" with the question, then one line starting with \"A:\" with a short answer.';
+  }
+
+  @override
+  String winaiPromptAudio(
+      String subject, String level, String topic, int words) {
+    return 'Write a summary to listen to in $subject, level $level. Chapter or topic: $topic. Length: about $words words. The text will be read aloud: short sentences, no headings, no lists, no symbols, and formulas spoken in words.';
+  }
+
+  @override
+  String winaiPromptExercises(String subject, String level, String topic) {
+    return 'Give 3 worked exercises in $subject, level $level. Chapter or topic: $topic. For each: the question, then the detailed solution, step by step.';
+  }
+
+  @override
+  String winaiPromptPlan(String subject, String level, String topic) {
+    return 'Prepare a 7-day revision plan in $subject, level $level. Chapter or topic: $topic. For each day: what to review, one exercise to do and the suggested duration.';
+  }
+
+  @override
+  String winaiPromptLesson(String subject, String level, String topic) {
+    return 'Prepare a plan for one lesson in $subject, level $level. Chapter or topic: $topic. Give the objectives, a timed outline, the activities, common student mistakes and a closing exercise.';
+  }
+
+  @override
+  String winaiPromptRubric(String subject, String level, String topic) {
+    return 'Prepare a marking scheme for an assignment in $subject, level $level. Chapter or topic: $topic. Give the criteria, the marks for each and what is expected to earn them.';
+  }
+
+  @override
+  String winaiPromptHelpChild(String subject, String level, String topic) {
+    return 'I am a parent. Explain this $subject chapter simply (level $level) so that I can help my child. Chapter or topic: $topic. Give the key idea, an everyday example, three questions to ask them and the mistakes to watch for.';
+  }
+
+  @override
+  String winaiPromptRemediation(String subject, String level, String topic) {
+    return 'Prepare a remediation plan for a class struggling in $subject, level $level. Chapter or topic: $topic. Give what to check first, four support sessions with their objective, and how to measure progress.';
+  }
+
+  @override
+  String winaiPromptParentsNote(String subject, String level, String topic) {
+    return 'Write a note to parents about the work to do at home in $subject, level $level. Chapter or topic: $topic. Clear and kind tone, ten lines at most.';
+  }
+
+  @override
   String get libTitle => 'My library';
 
   @override

@@ -15,6 +15,10 @@ import 'package:winplus/student/quiz_screen.dart';
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:winplus/data/models.dart';
+import 'package:winplus/shared/winai/winai_screen.dart';
+import 'package:winplus/shared/winai/winai_listen_bar.dart';
+import 'package:winplus/shared/winai/winai_tools.dart';
 
 /// Les onglets sont des colonnes sans Scaffold : on les pose dans un Scaffold.
 Widget _page(Widget onglet) => Scaffold(body: onglet);
@@ -401,9 +405,16 @@ void main() {
       await tester.tap(find.text(l.winaiTabStudio));
       await pomper(tester);
       await pomper(tester, const Duration(milliseconds: 400));
-      for (final t in [l.winaiToolQuiz, l.winaiToolSheet, l.winaiCreationsTitle, l.studentTabsExamCoach]) {
+      for (final t in [l.winaiStudioRevise, l.winaiToolSheet, l.winaiToolCards, l.winaiToolAudio, l.winaiToolPlan,
+          l.winaiStudioTrain, l.winaiToolQuiz, l.winaiToolExercises]) {
         expect(find.text(t), findsOneWidget, reason: t);
       }
+      for (final t in [l.winaiCreationsTitle, l.studentTabsExamCoach]) {
+        await tester.scrollUntilVisible(find.text(t), 200, scrollable: find.byType(Scrollable).last);
+        expect(find.text(t), findsOneWidget, reason: t);
+      }
+      await tester.scrollUntilVisible(find.text(l.winaiToolQuiz), -200, scrollable: find.byType(Scrollable).last);
+      await pomper(tester);
       expect(faux.requetes, isEmpty);
       await tester.tap(find.text(l.winaiToolQuiz));
       await pomper(tester);
@@ -445,6 +456,121 @@ void main() {
       await pomper(tester, const Duration(milliseconds: 400));
       expect(find.text('Limite de la semaine atteinte.'), findsOneWidget);
       expect(find.text(l.winaiStudioSeePlans), findsOneWidget);
+    });
+
+    Future<void> lancerOutil(WidgetTester tester, String outil, {String? chapitre, String? option}) async {
+      final l = L10n.current;
+      await tester.tap(find.text(l.winaiTabStudio));
+      await pomper(tester);
+      await pomper(tester, const Duration(milliseconds: 400));
+      await tester.tap(find.text(outil));
+      await pomper(tester);
+      await pomper(tester, const Duration(milliseconds: 400));
+      if (chapitre != null) await tester.enterText(find.byType(TextField).last, chapitre);
+      if (option != null) {
+        await tester.ensureVisible(find.text(option));
+        await pomper(tester);
+        await tester.tap(find.text(option));
+        await pomper(tester);
+      }
+      await tester.ensureVisible(find.text(l.winaiSettingsGenerate));
+      await pomper(tester);
+      await tester.tap(find.text(l.winaiSettingsGenerate));
+      await pomper(tester);
+      await pomper(tester, const Duration(milliseconds: 400));
+      await reseau(tester);
+      await pomper(tester);
+      await pomper(tester, const Duration(milliseconds: 400));
+    }
+
+    testWidgets('atelier : « Fiches recto verso » demande les fiches a WinAI, les affiche une a une et les retourne', (tester) async {
+      faux.repond('POST', '/chatbot/message', {
+        'assistantMessage': {
+          'content': 'Voici tes fiches.\n\n1. **Q:** Derivee de x au carre ?\n**R:** 2x\n\n2. Q: Derivee d une constante ?\nR: Zero\ncar elle ne varie pas.\n'
+        }
+      });
+      await monterEcran(tester, const StudentWinAITab());
+      final l = L10n.current;
+      await lancerOutil(tester, l.winaiToolCards, chapitre: 'les derivees');
+      final envoi = faux.recues('POST', '/chatbot/message').single.data as Map;
+      expect(envoi['content'], contains('les derivees'));
+      expect(envoi['content'], contains('Q:'));
+      expect(find.byType(WinAIFlashcardsScreen, skipOffstage: false), findsOneWidget);
+      expect(find.text('Derivee de x au carre ?'), findsOneWidget);
+      expect(find.text(l.winaiCardsCount(1, 2)), findsOneWidget);
+      expect(find.text('2x'), findsNothing);
+      await tester.tap(find.text('Derivee de x au carre ?'));
+      await pomper(tester, const Duration(milliseconds: 400));
+      expect(find.text('2x'), findsOneWidget);
+      expect(find.text(l.winaiCardsAnswer), findsOneWidget);
+      await tester.tap(find.text(l.winaiCardsNext));
+      await pomper(tester, const Duration(milliseconds: 400));
+      expect(find.text('Derivee d une constante ?'), findsOneWidget);
+      expect(find.text(l.winaiCardsCount(2, 2)), findsOneWidget);
+      await tester.tap(find.text('Derivee d une constante ?'));
+      await pomper(tester, const Duration(milliseconds: 400));
+      expect(find.text('Zero\ncar elle ne varie pas.'), findsOneWidget);
+    });
+
+    testWidgets('atelier : « Resume a ecouter » propose la duree et ouvre le texte avec la barre d ecoute', (tester) async {
+      faux.repond('POST', '/chatbot/message', {
+        'assistantMessage': {'content': 'La derivee mesure une variation. Elle sert partout.'}
+      });
+      await monterEcran(tester, const StudentWinAITab());
+      final l = L10n.current;
+      await lancerOutil(tester, l.winaiToolAudio, chapitre: 'les derivees', option: l.winaiLengthLong);
+      final envoi = faux.recues('POST', '/chatbot/message').single.data as Map;
+      expect(envoi['content'], contains('450'));
+      expect(find.byType(WinAITextScreen, skipOffstage: false), findsOneWidget);
+      expect(find.text('La derivee mesure une variation. Elle sert partout.', findRichText: true), findsWidgets);
+      expect(find.byType(WinAIListenBar), findsOneWidget);
+    });
+
+    testWidgets('atelier : fiches dont la reponse ne suit pas la forme attendue, le texte est montre tel quel', (tester) async {
+      faux.repond('POST', '/chatbot/message', {
+        'assistantMessage': {'content': 'Je te propose plutot un rappel de cours.'}
+      });
+      await monterEcran(tester, const StudentWinAITab());
+      await lancerOutil(tester, L10n.current.winaiToolCards);
+      expect(find.byType(WinAIFlashcardsScreen, skipOffstage: false), findsNothing);
+      expect(find.byType(WinAITextScreen, skipOffstage: false), findsOneWidget);
+    });
+
+    testWidgets('atelier : limite WinAI atteinte sur un outil, pas d ecran de resultat mais le message et les offres', (tester) async {
+      faux.repond('POST', '/chatbot/message', {'message': 'Limite atteinte pour aujourd\'hui'}, statut: 402);
+      await monterEcran(tester, const StudentWinAITab());
+      final l = L10n.current;
+      await lancerOutil(tester, l.winaiToolExercises);
+      expect(find.byType(WinAITextScreen, skipOffstage: false), findsNothing);
+      expect(find.text('Limite atteinte pour aujourd\'hui'), findsOneWidget);
+      expect(find.text(l.winaiStudioSeePlans), findsOneWidget);
+    });
+
+    testWidgets('atelier des autres espaces : outils propres au parent, au professeur et a l etablissement', (tester) async {
+      final l = L10n.current;
+      final attendus = {
+        WinRole.parent: [l.winaiStudioHelp, l.winaiToolHelpChild, l.winaiToolAskChild, l.winaiToolAudio],
+        WinRole.teacher: [l.winaiStudioPrepare, l.winaiToolLesson, l.winaiStudioAssess, l.winaiToolRubric, l.winaiToolExercises],
+        WinRole.institution: [l.winaiToolRemediation, l.winaiToolSupport, l.winaiToolParentsNote],
+      };
+      for (final e in attendus.entries) {
+        await monterEcran(tester, WinAIScreen(key: ValueKey(e.key), role: e.key));
+        await tester.tap(find.text(l.winaiTabStudio));
+        await pomper(tester);
+        await pomper(tester, const Duration(milliseconds: 400));
+        for (final t in e.value) {
+          expect(find.text(t), findsOneWidget, reason: '${e.key} : $t');
+        }
+      }
+    });
+
+    test('lecture des fiches : formes francaise et anglaise, numeros et gras ignores, fiche sans reponse ecartee', () {
+      final fiches = parseFlashcards('Intro\n- Q1 : Capitale du Cameroun ?\n- R1 : Yaounde\n\nQuestion: 2 + 2 ?\nAnswer: 4\n\nQ: sans reponse');
+      expect(fiches, hasLength(2));
+      expect(fiches[0].question, 'Capitale du Cameroun ?');
+      expect(fiches[0].answer, 'Yaounde');
+      expect(fiches[1].answer, '4');
+      expect(parseFlashcards('Un simple texte.'), isEmpty);
     });
 
     testWidgets('« Memoire de WinAI » ouvre la feuille des memoires', (tester) async {
