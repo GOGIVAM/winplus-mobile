@@ -15,6 +15,7 @@ import 'student_home.dart';
 import 'search_screen.dart';
 import 'download_history_screen.dart';
 import 'favorites_screen.dart';
+import '../shared/concours_screen.dart';
 import 'achievements_screen.dart';
 import 'certificates_screen.dart';
 import 'exam_coach_screen.dart';
@@ -429,6 +430,11 @@ class _StudentSpaceTabState extends State<StudentSpaceTab> {
                     icon: PhosphorIconsRegular.compass,
                     label: context.l10n.studentTabsCourseCatalog,
                     onTap: () => _open(const CourseCatalogScreen())),
+                // Lot 7 : calendrier, épreuves et conseils de chaque concours.
+                MoreLine(
+                    icon: PhosphorIconsRegular.graduationCap,
+                    label: context.l10n.concTitle,
+                    onTap: () => _open(const ConcoursHubScreen())),
                 MoreLine(
                     icon: PhosphorIconsRegular.videoCamera,
                     label: context.l10n.liveTitle,

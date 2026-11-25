@@ -17570,6 +17570,180 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Fiche copiée.'**
   String get coachSheetCopied;
+
+  /// No description provided for @concTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Concours et examens'**
+  String get concTitle;
+
+  /// No description provided for @concIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Calendrier officiel, épreuves des années passées et conseils pour chaque concours et examen.'**
+  String get concIntro;
+
+  /// No description provided for @concExams.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =0{Aucune épreuve} =1{1 épreuve} other{{count} épreuves}}'**
+  String concExams(int count);
+
+  /// No description provided for @concNextDate.
+  ///
+  /// In fr, this message translates to:
+  /// **'prochaine date : {date}'**
+  String concNextDate(String date);
+
+  /// No description provided for @concRegOpen.
+  ///
+  /// In fr, this message translates to:
+  /// **'Inscriptions ouvertes'**
+  String get concRegOpen;
+
+  /// No description provided for @concRegUpcoming.
+  ///
+  /// In fr, this message translates to:
+  /// **'Inscriptions à venir'**
+  String get concRegUpcoming;
+
+  /// No description provided for @concRegClosed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Inscriptions closes'**
+  String get concRegClosed;
+
+  /// No description provided for @concCalendar.
+  ///
+  /// In fr, this message translates to:
+  /// **'Calendrier {year}'**
+  String concCalendar(int year);
+
+  /// No description provided for @concRegistration.
+  ///
+  /// In fr, this message translates to:
+  /// **'Inscriptions'**
+  String get concRegistration;
+
+  /// No description provided for @concExamDate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Épreuves'**
+  String get concExamDate;
+
+  /// No description provided for @concResults.
+  ///
+  /// In fr, this message translates to:
+  /// **'Résultats'**
+  String get concResults;
+
+  /// No description provided for @concLocation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lieu'**
+  String get concLocation;
+
+  /// No description provided for @concFee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Frais d’inscription'**
+  String get concFee;
+
+  /// No description provided for @concOfficialSite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Site officiel d’inscription'**
+  String get concOfficialSite;
+
+  /// No description provided for @concChecked.
+  ///
+  /// In fr, this message translates to:
+  /// **'Informations vérifiées le {date}'**
+  String concChecked(String date);
+
+  /// No description provided for @concNoCalendar.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le calendrier officiel n’est pas encore publié.'**
+  String get concNoCalendar;
+
+  /// No description provided for @concExamsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Épreuves des années passées'**
+  String get concExamsTitle;
+
+  /// No description provided for @concStats.
+  ///
+  /// In fr, this message translates to:
+  /// **'{total} épreuves, {corrected} avec corrigé, {free} gratuites'**
+  String concStats(int total, int corrected, int free);
+
+  /// No description provided for @concAllSubjects.
+  ///
+  /// In fr, this message translates to:
+  /// **'Toutes les matières'**
+  String get concAllSubjects;
+
+  /// No description provided for @concAllYears.
+  ///
+  /// In fr, this message translates to:
+  /// **'Toutes les années'**
+  String get concAllYears;
+
+  /// No description provided for @concNoExam.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune épreuve publiée pour l’instant.'**
+  String get concNoExam;
+
+  /// No description provided for @concWithCorrection.
+  ///
+  /// In fr, this message translates to:
+  /// **'avec corrigé'**
+  String get concWithCorrection;
+
+  /// No description provided for @concFree.
+  ///
+  /// In fr, this message translates to:
+  /// **'Gratuit'**
+  String get concFree;
+
+  /// No description provided for @concTips.
+  ///
+  /// In fr, this message translates to:
+  /// **'Conseils de réussite'**
+  String get concTips;
+
+  /// No description provided for @concConditions.
+  ///
+  /// In fr, this message translates to:
+  /// **'Conditions d’admission'**
+  String get concConditions;
+
+  /// No description provided for @concTracks.
+  ///
+  /// In fr, this message translates to:
+  /// **'Filières'**
+  String get concTracks;
+
+  /// No description provided for @concCoefficients.
+  ///
+  /// In fr, this message translates to:
+  /// **'Épreuves et coefficients'**
+  String get concCoefficients;
+
+  /// No description provided for @concProgramme.
+  ///
+  /// In fr, this message translates to:
+  /// **'Programme'**
+  String get concProgramme;
+
+  /// No description provided for @concFaq.
+  ///
+  /// In fr, this message translates to:
+  /// **'Questions fréquentes'**
+  String get concFaq;
 }
 
 class _AppLocalizationsDelegate

@@ -33,6 +33,7 @@ import '../institution/reports_screen.dart';
 import '../institution/regional_comparison_screen.dart';
 import '../teacher/teacher_library_screen.dart';
 import '../teacher/tutor_coaching_screen.dart';
+import '../shared/concours_screen.dart';
 import '../institution/license_screen.dart';
 import '../institution/at_risk_screen.dart';
 import '../teacher/tutor_profile_screen.dart';
@@ -435,6 +436,7 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
             ], groups: {
               l.barometerTitle: l.moreGroupChildren,
               l.liveTitle: l.moreGroupChildren,
+              l.concTitle: l.moreGroupChildren,
               l.shellTabProfile: l.moreGroupAccount,
             }, entries: [
               MoreEntry(
@@ -447,6 +449,9 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
               // Lot 7 : baromètre de bien-être, enfant choisi en haut.
               MoreEntry(l.barometerTitle, PhosphorIconsRegular.gauge,
                   (_) => const BarometerScreen()),
+              // Lot 7 : concours et examens de l'enfant (calendrier, épreuves).
+              MoreEntry(l.concTitle, PhosphorIconsRegular.graduationCap,
+                  (_) => const ConcoursHubScreen()),
             ]),
           ],
         WinRole.teacher => [

@@ -10260,4 +10260,110 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get coachSheetCopied => 'Sheet copied.';
+
+  @override
+  String get concTitle => 'Competitive exams';
+
+  @override
+  String get concIntro =>
+      'Official calendar, past papers and tips for each competitive and national exam.';
+
+  @override
+  String concExams(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count papers',
+      one: '1 paper',
+      zero: 'No paper',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String concNextDate(String date) {
+    return 'next date: $date';
+  }
+
+  @override
+  String get concRegOpen => 'Registration open';
+
+  @override
+  String get concRegUpcoming => 'Registration upcoming';
+
+  @override
+  String get concRegClosed => 'Registration closed';
+
+  @override
+  String concCalendar(int year) {
+    return '$year calendar';
+  }
+
+  @override
+  String get concRegistration => 'Registration';
+
+  @override
+  String get concExamDate => 'Exams';
+
+  @override
+  String get concResults => 'Results';
+
+  @override
+  String get concLocation => 'Location';
+
+  @override
+  String get concFee => 'Registration fee';
+
+  @override
+  String get concOfficialSite => 'Official registration website';
+
+  @override
+  String concChecked(String date) {
+    return 'Information checked on $date';
+  }
+
+  @override
+  String get concNoCalendar =>
+      'The official calendar has not been published yet.';
+
+  @override
+  String get concExamsTitle => 'Past papers';
+
+  @override
+  String concStats(int total, int corrected, int free) {
+    return '$total papers, $corrected with answers, $free free';
+  }
+
+  @override
+  String get concAllSubjects => 'All subjects';
+
+  @override
+  String get concAllYears => 'All years';
+
+  @override
+  String get concNoExam => 'No paper published yet.';
+
+  @override
+  String get concWithCorrection => 'with answers';
+
+  @override
+  String get concFree => 'Free';
+
+  @override
+  String get concTips => 'Tips for success';
+
+  @override
+  String get concConditions => 'Admission requirements';
+
+  @override
+  String get concTracks => 'Tracks';
+
+  @override
+  String get concCoefficients => 'Papers and coefficients';
+
+  @override
+  String get concProgramme => 'Syllabus';
+
+  @override
+  String get concFaq => 'Frequently asked questions';
 }
