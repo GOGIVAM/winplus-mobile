@@ -186,9 +186,8 @@ class CourseOfflineService {
   /// Supprime toutes les leçons du compte connecté (la clé de chiffrement
   /// reste : de nouveaux téléchargements restent possibles).
   Future<void> deleteAllForCurrentUser() async {
-    for (final l in await lessonsForCurrentUser()) {
-      await deleteLesson(l.courseId, l.lessonId);
-    }
+    final lessons = await lessonsForCurrentUser();
+    await Future.wait(lessons.map((l) => deleteLesson(l.courseId, l.lessonId)));
   }
 
   Future<List<Map<String, dynamic>>> listDownloads() async {

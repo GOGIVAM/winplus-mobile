@@ -43,12 +43,15 @@ void main() {
       });
 
   /// Laisse finir les accès réels au disque (suppression de fichier).
-  Future<void> disque(WidgetTester tester) async {
-    // Une suppression par tour : plusieurs tours pour « Tout supprimer ».
-    for (var i = 0; i < 5; i++) {
-      await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 30)));
+  /// [jusqua] : nombre de leçons attendu dans la boîte. Sous charge (suite
+  /// complète), un tour peut ne pas suffire : on attend l'état voulu.
+  Future<void> disque(WidgetTester tester, {required int jusqua}) async {
+    for (var i = 0; i < 40 && box.length != jusqua; i++) {
+      await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 25)));
       await reseau(tester);
     }
+    await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 25)));
+    await reseau(tester);
   }
 
   Future<void> garderPage(String path) => HttpCache.instance.save(Response(
@@ -82,7 +85,7 @@ void main() {
     await reseau(tester);
     expect(find.text(l.dlDeleteLessonTitle), findsOneWidget);
     await tester.tap(find.text(l.commonDelete).last);
-    await disque(tester);
+    await disque(tester, jusqua: 1);
     expect(find.text('Integrales'), findsNothing);
     expect(find.text('Derivees'), findsOneWidget);
     expect(box.length, 1);
@@ -103,7 +106,7 @@ void main() {
     await reseau(tester);
     expect(find.text(l.dlDeleteAllTitle), findsOneWidget);
     await tester.tap(find.text(l.dlDeleteAll).last);
-    await disque(tester);
+    await disque(tester, jusqua: 0);
     expect(box.length, 0);
     expect(find.text(l.dlLessonsEmpty), findsOneWidget);
   });
