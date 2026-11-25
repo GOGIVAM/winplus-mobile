@@ -42,10 +42,11 @@ void main() {
       expect(find.text(L10n.current.msgEmptyHint), findsOneWidget);
     });
 
-    testWidgets('erreur serveur : etat vide', (tester) async {
+    testWidgets('erreur serveur : message et Reessayer, pas « aucune conversation »', (tester) async {
       faux.repond('GET', '/messages/conversations', {}, statut: 500);
       await monterEcran(tester, const MessagingScreen());
-      expect(find.text(L10n.current.msgEmpty), findsOneWidget);
+      expect(find.text(L10n.current.commonLoadError), findsOneWidget);
+      expect(find.text(L10n.current.msgEmpty), findsNothing);
     });
 
     testWidgets('toucher une conversation l\'ouvre et la marque lue', (tester) async {

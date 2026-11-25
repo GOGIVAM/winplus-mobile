@@ -17,6 +17,7 @@ class MessagingScreen extends StatefulWidget {
 
 class _MessagingScreenState extends State<MessagingScreen> {
   List<ApiConversation>? _convos;
+  bool _error = false;
 
   @override
   void initState() {
@@ -27,10 +28,25 @@ class _MessagingScreenState extends State<MessagingScreen> {
   Future<void> _load() async {
     try {
       final data = await MessagingService.instance.getConversations();
-      if (mounted) setState(() => _convos = data);
+      if (mounted) {
+        setState(() {
+          _convos = data;
+          _error = false;
+        });
+      }
     } catch (_) {
-      if (mounted) setState(() => _convos = []);
+      // Panne au premier chargement : erreur et Réessayer, pas « aucune
+      // conversation ». Un rechargement raté garde la liste affichée.
+      if (mounted && _convos == null) setState(() => _error = true);
     }
+  }
+
+  void _retry() {
+    setState(() {
+      _error = false;
+      _convos = null;
+    });
+    _load();
   }
 
   String _roleLabel(String role) => switch (role) {
@@ -73,19 +89,15 @@ class _MessagingScreenState extends State<MessagingScreen> {
           ),
         ],
       ),
-      body: _convos == null
+      body: _error
+          ? WinErrorState(message: context.l10n.commonLoadError, onRetry: _retry)
+          : _convos == null
           ? const WinLoading()
           : _convos!.isEmpty
-              ? Center(
-                  child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  Icon(PhosphorIconsRegular.chatCircle, size: 64, color: s.onFaint),
-                  const SizedBox(height: 12),
-                  Text(context.l10n.msgEmpty, style: WinType.bodyM(s.onMuted)),
-                  const SizedBox(height: 8),
-                  Text(context.l10n.msgEmptyHint,
-                      style: WinType.bodyS(s.onFaint),
-                      textAlign: TextAlign.center),
-                ]))
+              ? WinEmptyState(
+                  icon: PhosphorIconsRegular.chatCircle,
+                  title: context.l10n.msgEmpty,
+                  message: context.l10n.msgEmptyHint)
               : ListView.separated(
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                   itemCount: _convos!.length,
@@ -160,6 +172,7 @@ class ConversationScreen extends StatefulWidget {
 
 class _ConversationScreenState extends State<ConversationScreen> {
   List<ApiMessage>? _messages;
+  bool _error = false;
   final _ctrl = TextEditingController();
   bool _sending = false;
   final _scrollCtrl = ScrollController();
@@ -191,8 +204,17 @@ class _ConversationScreenState extends State<ConversationScreen> {
         });
       }
     } catch (_) {
-      if (mounted) setState(() => _messages = []);
+      // Même règle que la liste : erreur au premier chargement seulement.
+      if (mounted && _messages == null) setState(() => _error = true);
     }
+  }
+
+  void _retry() {
+    setState(() {
+      _error = false;
+      _messages = null;
+    });
+    _load();
   }
 
   Future<void> _send() async {
@@ -245,12 +267,14 @@ class _ConversationScreenState extends State<ConversationScreen> {
       ),
       body: Column(children: [
         Expanded(
-          child: _messages == null
+          child: _error
+              ? WinErrorState(message: context.l10n.commonLoadError, onRetry: _retry)
+              : _messages == null
               ? const WinLoading()
               : _messages!.isEmpty
-                  ? Center(
-                      child: Text(context.l10n.msgStartConversation,
-                          style: WinType.bodyM(s.onMuted)))
+                  ? WinEmptyState(
+                      icon: PhosphorIconsRegular.chatCircleDots,
+                      title: context.l10n.msgStartConversation)
                   : ListView.builder(
                       controller: _scrollCtrl,
                       padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),

@@ -53,8 +53,16 @@ class _GoalProposalTabState extends State<GoalProposalTab> {
       final goals = await ParentService.instance.getGoals(widget.child.id);
       if (mounted) setState(() => _goals = goals);
     } catch (_) {
-      if (mounted) setState(() => _goals = []);
+      // Panne : erreur et Réessayer, pas « aucun objectif ».
+      if (mounted && _goals == null) setState(() => _loadError = true);
     }
+  }
+
+  bool _loadError = false;
+
+  void _retry() {
+    setState(() => _loadError = false);
+    _load();
   }
 
   Future<void> _pickDeadline() async {
@@ -108,6 +116,9 @@ class _GoalProposalTabState extends State<GoalProposalTab> {
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
     final goals = _goals;
+    if (_loadError) {
+      return WinErrorState(message: context.l10n.commonLoadError, onRetry: _retry);
+    }
     if (goals == null) return const WinLoading();
 
     final pending = goals.where((g) => g.status == 'Pending').toList();

@@ -40,8 +40,17 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         });
       }
     } catch (_) {
-      if (mounted) setState(() => _notifs = []);
+      // Panne au premier chargement : erreur et Réessayer, pas « tout est à
+      // jour ». Un rechargement raté garde la liste affichée.
+      if (mounted && _notifs == null) setState(() => _error = true);
     }
+  }
+
+  bool _error = false;
+
+  void _retry() {
+    setState(() => _error = false);
+    _load();
   }
 
   /// Suite de la liste depuis le serveur (avant, seules les 20 premières
@@ -177,18 +186,18 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   }
 
   Widget _buildBody(WinScheme s) {
+    if (_error) {
+      return WinErrorState(message: context.l10n.commonLoadError, onRetry: _retry);
+    }
     if (_notifs == null)
       return const WinLoading();
 
     // Les notifications lues restent listées (avant, une liste entièrement
     // lue disparaissait derrière « Tout est à jour ! »).
     if (_notifs!.isEmpty) {
-      return Center(
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Icon(PhosphorIconsRegular.checkCircle, size: 64, color: s.onFaint),
-        const SizedBox(height: 12),
-        Text(context.l10n.studentNotifAllCaughtUp, style: WinType.bodyM(s.onMuted)),
-      ]));
+      return WinEmptyState(
+          icon: PhosphorIconsRegular.checkCircle,
+          title: context.l10n.studentNotifAllCaughtUp);
     }
 
     final groups = <String, List<ApiNotification>>{};

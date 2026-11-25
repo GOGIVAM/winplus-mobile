@@ -53,10 +53,11 @@ void main() {
     expect(find.text(L10n.current.studentNotifAllCaughtUp), findsOneWidget);
   });
 
-  testWidgets('erreur serveur : traitee comme une liste vide', (tester) async {
+  testWidgets('erreur serveur : message et Reessayer, pas « tout est a jour »', (tester) async {
     faux.repond('GET', '/notifications', {}, statut: 500);
     await monterEcran(tester, const NotificationsScreen());
-    expect(find.text(L10n.current.studentNotifAllCaughtUp), findsOneWidget);
+    expect(find.text(L10n.current.commonLoadError), findsOneWidget);
+    expect(find.text(L10n.current.studentNotifAllCaughtUp), findsNothing);
   });
 
   testWidgets('toucher une notification non lue la marque lue et decremente le badge', (tester) async {

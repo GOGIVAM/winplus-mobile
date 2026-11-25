@@ -46,8 +46,19 @@ class _AtRiskScreenState extends State<AtRiskScreen> {
       });
       if (mounted) setState(() => _students = list);
     } catch (_) {
-      if (mounted) setState(() => _students = []);
+      // Panne : erreur et Réessayer, pas « aucun élève à risque ».
+      if (mounted) setState(() => _error = true);
     }
+  }
+
+  bool _error = false;
+
+  void _retry() {
+    setState(() {
+      _error = false;
+      _students = null;
+    });
+    _load();
   }
 
   List<ApiAtRiskStudent> get _items {
@@ -84,10 +95,7 @@ class _AtRiskScreenState extends State<AtRiskScreen> {
             ),
           IconButton(
             icon: Icon(PhosphorIconsRegular.arrowClockwise, color: s.onStrong),
-            onPressed: () {
-              setState(() => _students = null);
-              _load();
-            },
+            onPressed: _retry,
           ),
         ],
       ),
@@ -111,17 +119,14 @@ class _AtRiskScreenState extends State<AtRiskScreen> {
   }
 
   Widget _buildList(WinScheme s) {
+    if (_error) {
+      return WinErrorState(message: context.l10n.commonLoadError, onRetry: _retry);
+    }
     if (_students == null)
       return const WinLoading();
     if (_items.isEmpty) {
-      return Center(
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-        const Icon(PhosphorIconsRegular.checkCircle,
-            size: 64, color: WinColors.success),
-        const SizedBox(height: 12),
-        Text(context.l10n.instRiskEmpty,
-            style: WinType.bodyM(s.onMuted)),
-      ]));
+      return WinEmptyState(
+          icon: PhosphorIconsRegular.checkCircle, title: context.l10n.instRiskEmpty);
     }
     return ListView.separated(
       padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),

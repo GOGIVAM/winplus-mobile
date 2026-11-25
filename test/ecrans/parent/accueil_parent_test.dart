@@ -171,11 +171,12 @@ void main() {
     expect(find.byType(SubscriptionStatusScreen), findsOneWidget);
   });
 
-  testWidgets('serveur en erreur : plus d\'indicateur, liste d\'enfants vide', (tester) async {
+  testWidgets('serveur en erreur : plus d\'indicateur, message et Reessayer (pas « aucun enfant »)', (tester) async {
     faux.repond('GET', '/parent/children', {}, statut: 500);
     await monterHaut(tester);
     expect(chargement, findsNothing);
-    expect(find.text(L10n.current.parentDashNoChild), findsOneWidget);
+    expect(find.text(L10n.current.commonLoadError), findsOneWidget);
+    expect(find.text(L10n.current.parentDashNoChild), findsNothing);
   });
 
   testWidgets('acces rapide « Acheter » ouvre l\'achat pour un enfant', (tester) async {

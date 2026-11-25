@@ -73,10 +73,11 @@ void main() {
       expect(find.text(L10n.current.instRiskEmpty), findsOneWidget);
     });
 
-    testWidgets('erreur serveur : meme etat vide, sans plantage', (tester) async {
+    testWidgets('erreur serveur : message et Reessayer, pas « aucun eleve a risque »', (tester) async {
       faux.repond('GET', '/institution/at-risk', {}, statut: 500);
       await monterEcran(tester, const AtRiskScreen());
-      expect(find.text(L10n.current.instRiskEmpty), findsOneWidget);
+      expect(find.text(L10n.current.commonLoadError), findsOneWidget);
+      expect(find.text(L10n.current.instRiskEmpty), findsNothing);
     });
 
     testWidgets('tri : critiques d\'abord (score de risque decroissant), puis moderes ; compteur de critiques', (tester) async {

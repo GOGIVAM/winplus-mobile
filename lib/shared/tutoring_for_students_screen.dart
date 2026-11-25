@@ -365,6 +365,7 @@ class _AssignTutorScreenState extends State<_AssignTutorScreen> {
   final _subjectCtrl = TextEditingController();
   final _noteCtrl = TextEditingController();
   List<TutorSearchResult> _results = [];
+  bool _searchError = false;
   bool _searching = false;
   TutorSearchResult? _tutor;
   final Set<int> _students = {};
@@ -390,9 +391,20 @@ class _AssignTutorScreenState extends State<_AssignTutorScreen> {
     try {
       final r = await TutorProfileService.instance.search(
           subject: _subjectCtrl.text.trim().isEmpty ? null : _subjectCtrl.text.trim(), pageSize: 10);
-      if (mounted) setState(() => _results = r);
+      if (mounted) {
+        setState(() {
+          _results = r;
+          _searchError = false;
+        });
+      }
     } catch (_) {
-      if (mounted) setState(() => _results = []);
+      // Panne : message et nouvel essai, pas « aucun répétiteur ».
+      if (mounted) {
+        setState(() {
+          _results = [];
+          _searchError = true;
+        });
+      }
     } finally {
       if (mounted) setState(() => _searching = false);
     }
@@ -448,6 +460,11 @@ class _AssignTutorScreenState extends State<_AssignTutorScreen> {
         const SizedBox(height: 8),
         if (_searching)
           const Center(child: Padding(padding: EdgeInsets.all(8), child: CircularProgressIndicator()))
+        else if (_searchError)
+          Row(children: [
+            Expanded(child: Text(context.l10n.commonLoadError, style: WinType.bodyS(s.onMuted))),
+            TextButton(onPressed: _search, child: Text(context.l10n.commonRetry)),
+          ])
         else if (_results.isEmpty)
           Text(context.l10n.tutoringAssignNoTutor, style: WinType.bodyS(s.onMuted))
         else

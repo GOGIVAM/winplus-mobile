@@ -119,12 +119,16 @@ class _ParentDashTabState extends State<ParentDashTab> {
         }).catchError((_) {});
       }
     } catch (_) {
-      if (mounted)
-        setState(() {
-          _children = [];
-          _alerts = [];
-        });
+      // Panne sans copie locale : erreur et Réessayer, pas « aucun enfant ».
+      if (mounted && _children == null) setState(() => _loadError = true);
     }
+  }
+
+  bool _loadError = false;
+
+  void _retryLoad() {
+    setState(() => _loadError = false);
+    _load();
   }
 
   void _push(Widget screen) =>
@@ -181,6 +185,10 @@ class _ParentDashTabState extends State<ParentDashTab> {
         ? null
         : (scores.reduce((a, b) => a + b) / scores.length).round();
     final firstChild = kids.isEmpty ? null : kids.first;
+
+    if (_loadError) {
+      return WinErrorState(message: l.commonLoadError, onRetry: _retryLoad);
+    }
 
     return MobileHomeView(
       onRefresh: _load,
