@@ -5625,5 +5625,14 @@
   "@winaiSourcesSelected": {"placeholders": {"count": {"type": "int"}}},
   "winaiSourcesNone": "Aucune source cochée",
   "winaiCitationPage": "{title}, page {page}",
-  "@winaiCitationPage": {"placeholders": {"title": {"type": "String"}, "page": {"type": "int"}}}
+  "@winaiCitationPage": {"placeholders": {"title": {"type": "String"}, "page": {"type": "int"}}},
+  "moreGroupTeach": "Enseigner",
+  "moreGroupFollow": "Suivre mes élèves",
+  "moreGroupTutoring": "Tutorat",
+  "moreGroupEarnings": "Mes revenus",
+  "moreGroupChildren": "Suivre mes enfants",
+  "moreGroupAccount": "Mon compte",
+  "moreGroupSteer": "Piloter",
+  "moreGroupResources": "Ressources",
+  "moreGroupSchool": "Mon établissement"
 }

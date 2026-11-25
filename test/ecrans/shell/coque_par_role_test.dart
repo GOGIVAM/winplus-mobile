@@ -100,7 +100,16 @@ void main() {
     await pomper(tester, const Duration(milliseconds: 400));
     await reseau(tester);
     expect(find.byType(MoreScreen), findsOneWidget);
-    for (final t in [l.shellTabCatalog, l.mobileHomeSessions, l.dpTitle, l.shellTabEarnings, l.mobileHomeCorrections, l.settingsTitle]) {
+    // Dans l'ordre de l'ecran : quatre groupes d'usage, puis les reglages.
+    final liste = find.byType(Scrollable).last;
+    for (final t in [
+      l.moreGroupTeach, l.mobileHomeSessions, l.shellTabCatalog,
+      l.moreGroupFollow, l.dpTitle, l.mobileHomeCorrections,
+      l.moreGroupTutoring,
+      l.moreGroupEarnings, l.shellTabEarnings,
+      l.settingsTitle,
+    ]) {
+      await tester.scrollUntilVisible(find.text(t), 200, scrollable: liste);
       expect(find.text(t), findsWidgets, reason: t);
     }
     final sortie = find.text(l.commonLogout);
@@ -114,6 +123,8 @@ void main() {
     await tester.tap(_onglet(l.shellTabMore));
     await pomper(tester, const Duration(milliseconds: 400));
     await reseau(tester);
+    await tester.scrollUntilVisible(find.text(l.shellTabEarnings), 200, scrollable: find.byType(Scrollable).last);
+    await pomper(tester);
     await tester.tap(find.text(l.shellTabEarnings));
     await pomper(tester);
     await pomper(tester, const Duration(milliseconds: 400));

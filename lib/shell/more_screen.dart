@@ -57,7 +57,17 @@ class MorePage extends StatelessWidget {
 /// puis « Paramètres » et la déconnexion. Commun aux quatre espaces.
 class MoreScreen extends StatefulWidget {
   final List<MoreEntry> entries;
-  const MoreScreen({super.key, required this.entries});
+
+  /// Groupe d'usage de chaque entrée (libellé de l'entrée vers titre du
+  /// groupe). Les groupes s'affichent dans l'ordre de [groupOrder] ; une
+  /// entrée sans groupe reste dans un premier bloc sans titre.
+  final Map<String, String> groups;
+  final List<String> groupOrder;
+  const MoreScreen(
+      {super.key,
+      required this.entries,
+      this.groups = const {},
+      this.groupOrder = const []});
 
   @override
   State<MoreScreen> createState() => _MoreScreenState();
@@ -87,6 +97,20 @@ class _MoreScreenState extends State<MoreScreen> {
     if (!mounted) return;
     Navigator.of(context).pushAndRemoveUntil(
         WinPageRoute(builder: (_) => const LoginScreen()), (r) => false);
+  }
+
+  /// Entrées rangées par groupe d'usage, dans l'ordre demandé.
+  List<({String? title, List<MoreEntry> entries})> _grouped() {
+    final by = <String?, List<MoreEntry>>{};
+    for (final e in widget.entries) {
+      by.putIfAbsent(widget.groups[e.label], () => []).add(e);
+    }
+    final order = <String?>[
+      if (by.containsKey(null)) null,
+      ...widget.groupOrder.where(by.containsKey),
+      ...by.keys.where((k) => k != null && !widget.groupOrder.contains(k)),
+    ];
+    return [for (final k in order) (title: k, entries: by[k]!)];
   }
 
   @override
@@ -123,9 +147,14 @@ class _MoreScreenState extends State<MoreScreen> {
         const SizedBox(height: 16),
 
         // Fonctions de l'espace.
-        if (widget.entries.isNotEmpty) ...[
+        for (final g in _grouped()) ...[
+          if (g.title != null)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
+              child: Text(g.title!, style: WinType.titleL(s.onStrong)),
+            ),
           MoreGroup(children: [
-            for (final e in widget.entries)
+            for (final e in g.entries)
               MoreLine(icon: e.icon, label: e.label, onTap: () => _open(e.page)),
           ]),
           const SizedBox(height: 16),

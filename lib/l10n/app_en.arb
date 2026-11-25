@@ -2743,5 +2743,14 @@
   "@winaiSourcesSelected": {"placeholders": {"count": {"type": "int"}}},
   "winaiSourcesNone": "No source ticked",
   "winaiCitationPage": "{title}, page {page}",
-  "@winaiCitationPage": {"placeholders": {"title": {"type": "String"}, "page": {"type": "int"}}}
+  "@winaiCitationPage": {"placeholders": {"title": {"type": "String"}, "page": {"type": "int"}}},
+  "moreGroupTeach": "Teach",
+  "moreGroupFollow": "Follow my students",
+  "moreGroupTutoring": "Tutoring",
+  "moreGroupEarnings": "My earnings",
+  "moreGroupChildren": "Follow my children",
+  "moreGroupAccount": "My account",
+  "moreGroupSteer": "Steer",
+  "moreGroupResources": "Resources",
+  "moreGroupSchool": "My school"
 }

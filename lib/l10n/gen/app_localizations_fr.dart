@@ -9594,4 +9594,31 @@ class AppLocalizationsFr extends AppLocalizations {
   String winaiCitationPage(String title, int page) {
     return '$title, page $page';
   }
+
+  @override
+  String get moreGroupTeach => 'Enseigner';
+
+  @override
+  String get moreGroupFollow => 'Suivre mes élèves';
+
+  @override
+  String get moreGroupTutoring => 'Tutorat';
+
+  @override
+  String get moreGroupEarnings => 'Mes revenus';
+
+  @override
+  String get moreGroupChildren => 'Suivre mes enfants';
+
+  @override
+  String get moreGroupAccount => 'Mon compte';
+
+  @override
+  String get moreGroupSteer => 'Piloter';
+
+  @override
+  String get moreGroupResources => 'Ressources';
+
+  @override
+  String get moreGroupSchool => 'Mon établissement';
 }

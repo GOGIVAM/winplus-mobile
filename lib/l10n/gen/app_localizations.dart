@@ -16309,6 +16309,60 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'{title}, page {page}'**
   String winaiCitationPage(String title, int page);
+
+  /// No description provided for @moreGroupTeach.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enseigner'**
+  String get moreGroupTeach;
+
+  /// No description provided for @moreGroupFollow.
+  ///
+  /// In fr, this message translates to:
+  /// **'Suivre mes élèves'**
+  String get moreGroupFollow;
+
+  /// No description provided for @moreGroupTutoring.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tutorat'**
+  String get moreGroupTutoring;
+
+  /// No description provided for @moreGroupEarnings.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mes revenus'**
+  String get moreGroupEarnings;
+
+  /// No description provided for @moreGroupChildren.
+  ///
+  /// In fr, this message translates to:
+  /// **'Suivre mes enfants'**
+  String get moreGroupChildren;
+
+  /// No description provided for @moreGroupAccount.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mon compte'**
+  String get moreGroupAccount;
+
+  /// No description provided for @moreGroupSteer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Piloter'**
+  String get moreGroupSteer;
+
+  /// No description provided for @moreGroupResources.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ressources'**
+  String get moreGroupResources;
+
+  /// No description provided for @moreGroupSchool.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mon établissement'**
+  String get moreGroupSchool;
 }
 
 class _AppLocalizationsDelegate

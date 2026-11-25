@@ -423,7 +423,14 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
             const ParentResourcesTab(),
             const MessagingScreen(),
             // Compte et abonnement du parent (sa page existante), puis Paramètres.
-            MoreScreen(entries: [
+            MoreScreen(groupOrder: [
+              l.moreGroupChildren,
+              l.moreGroupAccount
+            ], groups: {
+              l.barometerTitle: l.moreGroupChildren,
+              l.liveTitle: l.moreGroupChildren,
+              l.shellTabProfile: l.moreGroupAccount,
+            }, entries: [
               MoreEntry(
                   l.shellTabProfile,
                   PhosphorIconsRegular.userCircle,
@@ -441,7 +448,23 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
             const TeacherContentTab(),
             const TeacherStudentsTab(),
             const MessagingScreen(),
-            MoreScreen(entries: [
+            MoreScreen(groupOrder: [
+              l.moreGroupTeach,
+              l.moreGroupFollow,
+              l.moreGroupTutoring,
+              l.moreGroupEarnings
+            ], groups: {
+              l.mobileHomeSessions: l.moreGroupTeach,
+              l.liveTitle: l.moreGroupTeach,
+              l.studentMyCoursesTitle: l.moreGroupTeach,
+              l.shellTabCatalog: l.moreGroupTeach,
+              l.dpTitle: l.moreGroupFollow,
+              l.mobileHomeCorrections: l.moreGroupFollow,
+              l.teacherClassesMyLinks: l.moreGroupFollow,
+              l.teacherProfileTitle: l.moreGroupTutoring,
+              l.teacherClassesMyBookings: l.moreGroupTutoring,
+              l.shellTabEarnings: l.moreGroupEarnings,
+            }, entries: [
               MoreEntry(
                   l.shellTabCatalog,
                   PhosphorIconsRegular.books,
@@ -486,7 +509,19 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
             const InstitutionGroupsTab(),
             const InstitutionAnalyticsTab(),
             const MessagingScreen(),
-            MoreScreen(entries: [
+            MoreScreen(groupOrder: [
+              l.moreGroupSteer,
+              l.moreGroupResources,
+              l.moreGroupSchool
+            ], groups: {
+              l.instRiskTitle: l.moreGroupSteer,
+              l.instReportsTitle: l.moreGroupSteer,
+              l.mobileHomeDirectory: l.moreGroupSteer,
+              l.shellTabCatalog: l.moreGroupResources,
+              l.liveTitle: l.moreGroupResources,
+              l.mobileHomeLicense: l.moreGroupSchool,
+              l.shellTabAccount: l.moreGroupSchool,
+            }, entries: [
               MoreEntry(
                   l.shellTabCatalog,
                   PhosphorIconsRegular.books,
