@@ -238,9 +238,7 @@ class _StudentCatalogTabState extends State<StudentCatalogTab> {
           else if (items.isEmpty)
             SliverFillRemaining(
               hasScrollBody: false,
-              child: Center(
-                  child: Text(l.studentTabsNoContent,
-                      style: WinType.bodyM(s.onMuted))),
+              child: WinEmptyState(title: l.studentTabsNoContent),
             )
           else
             SliverPadding(

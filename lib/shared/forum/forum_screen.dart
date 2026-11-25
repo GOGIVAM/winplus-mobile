@@ -133,9 +133,7 @@ class _ForumScreenState extends State<ForumScreen> {
                       child:
                           Text(_error!, style: WinType.bodyM(WinColors.error)))
                   : _threads.isEmpty
-                      ? Center(
-                          child: Text(l10n.forumEmptyCategory,
-                              style: WinType.bodyM(s.onMuted)))
+                      ? WinEmptyState(title: l10n.forumEmptyCategory)
                       : NotificationListener<ScrollNotification>(
                           onNotification: (n) {
                             if (n.metrics.pixels >=

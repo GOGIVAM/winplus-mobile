@@ -196,9 +196,7 @@ class _TeacherLinksScreenState extends State<TeacherLinksScreen>
               : TabBarView(controller: _tabs, children: [
                   // Onglet "En attente"
                   _pending.isEmpty
-                      ? Center(
-                          child: Text(context.l10n.teacherLinksNoPending,
-                              style: WinType.bodyM(s.onMuted)))
+                      ? WinEmptyState(title: context.l10n.teacherLinksNoPending)
                       : ListView.separated(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           itemCount: _pending.length,
@@ -238,9 +236,7 @@ class _TeacherLinksScreenState extends State<TeacherLinksScreen>
                         ),
                   // Onglet "Liés"
                   _linked.isEmpty
-                      ? Center(
-                          child: Text(context.l10n.teacherLinksNoLinked,
-                              style: WinType.bodyM(s.onMuted)))
+                      ? WinEmptyState(title: context.l10n.teacherLinksNoLinked)
                       : ListView.separated(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           itemCount: _linked.length,

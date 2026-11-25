@@ -592,9 +592,7 @@ class _StudySessionScreenState extends State<StudySessionScreen> {
     }
     final items = _history ?? [];
     if (items.isEmpty) {
-      return Center(
-          child: Text(context.l10n.studentSessionNoHistory,
-              style: WinType.bodyM(s.onMuted)));
+      return WinEmptyState(title: context.l10n.studentSessionNoHistory);
     }
     return ListView.builder(
       padding: const EdgeInsets.all(20),

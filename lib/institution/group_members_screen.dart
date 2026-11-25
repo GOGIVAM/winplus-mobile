@@ -56,9 +56,7 @@ class _GroupMembersScreenState extends State<GroupMembersScreen> {
       body: members == null
           ? const WinLoading()
           : members.isEmpty
-              ? Center(
-                  child: Text(context.l10n.instGroupNoMembers,
-                      style: WinType.bodyM(s.onMuted)))
+              ? WinEmptyState(title: context.l10n.instGroupNoMembers)
               : ListView.separated(
                   padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
                   itemCount: members.length,

@@ -278,9 +278,7 @@ class _CourseCatalogScreenState extends State<CourseCatalogScreen> {
           child: _loading
               ? const WinLoading()
               : (_items == null || _items!.isEmpty)
-                  ? Center(
-                      child: Text(context.l10n.studentCatalogEmpty,
-                          style: WinType.bodyM(s.onMuted)))
+                  ? WinEmptyState(title: context.l10n.studentCatalogEmpty)
                   : RefreshIndicator(
                       onRefresh: () => _load(page: _page),
                       child: GridView.builder(

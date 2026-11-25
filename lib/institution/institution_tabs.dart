@@ -478,9 +478,7 @@ class _InstitutionCatalogTabState extends State<InstitutionCatalogTab> {
                         _load();
                       })
                   : items.isEmpty
-                  ? Center(
-                      child: Text(context.l10n.studentTabsNoContent,
-                          style: WinType.bodyM(s.onMuted)))
+                  ? WinEmptyState(title: context.l10n.studentTabsNoContent)
                   : ListView.separated(
                       padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
                       itemCount: items.length,

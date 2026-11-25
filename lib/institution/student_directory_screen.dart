@@ -259,9 +259,7 @@ class _StudentDirectoryScreenState extends State<StudentDirectoryScreen> {
                   ),
                   Expanded(
                     child: _students.isEmpty
-                        ? Center(
-                            child: Text(context.l10n.instDirNoStudent,
-                                style: WinType.bodyM(s.onMuted)))
+                        ? WinEmptyState(title: context.l10n.instDirNoStudent)
                         : ListView.separated(
                             padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
                             itemCount: _students.length,

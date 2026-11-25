@@ -127,13 +127,7 @@ class _QuizRevisionScreenState extends State<QuizRevisionScreen> {
                         child: Text(context.l10n.studentRevisionLoadError,
                             style: WinType.bodyM(s.onMuted)))
                     : items.isEmpty
-                        ? Center(
-                            child: Text(
-                              context.l10n.studentRevisionEmpty,
-                              style: WinType.bodyM(s.onMuted),
-                              textAlign: TextAlign.center,
-                            ),
-                          )
+                        ? WinEmptyState(title: context.l10n.studentRevisionEmpty)
                         : ListView.separated(
                             padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
                             itemCount: items.length,

@@ -215,9 +215,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     final cart = _cart;
     final pending = widget.pending;
     if (pending == null && (cart == null || cart.items.isEmpty)) {
-      return Center(
-          child:
-              Text(context.l10n.shopCartEmpty, style: WinType.bodyM(s.onMuted)));
+      return WinEmptyState(title: context.l10n.shopCartEmpty);
     }
     // Lignes et total : celles du panier, ou la commande à régler.
     final lignes = pending != null
