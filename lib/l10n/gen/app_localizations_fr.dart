@@ -9903,4 +9903,32 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get affStatusReversed => 'Annulée';
+
+  @override
+  String get winaiSheetEmpty => 'Cette fiche n\'a pas de texte à afficher';
+
+  @override
+  String get winaiCreationsTitle => 'Mes créations';
+
+  @override
+  String get winaiCreationsEmpty => 'Aucune création pour le moment';
+
+  @override
+  String get winaiCreationsEmptyHint =>
+      'Génère un quiz ou une fiche depuis l\'atelier : tu les retrouveras ici.';
+
+  @override
+  String get winaiCreationsQuizzes => 'Mes quiz';
+
+  @override
+  String get winaiCreationsSheets => 'Mes fiches';
+
+  @override
+  String get winaiStudioBusy => 'WinAI prépare ton travail…';
+
+  @override
+  String get winaiStudioSeePlans => 'Voir les offres';
+
+  @override
+  String get winaiStudioRetrieve => 'Retrouver';
 }

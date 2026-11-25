@@ -25,6 +25,11 @@ import '../../widgets/winai_markdown.dart';
 import '../../widgets/winai_memories_sheet.dart';
 import '../../services/winai_sources_service.dart';
 import 'winai_sources_tab.dart';
+import '../subscription/pricing_screen.dart';
+import '../../services/quiz_service.dart';
+import '../../services/winai_studio_service.dart';
+import '../../student/quiz_screen.dart';
+import 'winai_creations.dart';
 
 /// WinAI, un seul écran pour les quatre espaces (il était recopié quatre
 /// fois). Deux onglets :
@@ -261,7 +266,10 @@ class _WinAIScreenState extends State<WinAIScreen>
               selected: _sources,
               onChanged: (next) => setState(() => _sources = next)),
           _chat(s),
-          _Studio(role: widget.role, onGenerate: _generate),
+          _Studio(
+              role: widget.role,
+              sources: _sources.values.toList(),
+              onGenerate: _generate),
         ],
       ),
     );
@@ -541,24 +549,113 @@ class _HistoryListState extends State<_HistoryList> {
 
 // ── Atelier ─────────────────────────────────────────────────────────────
 
-/// Les outils de WinAI pour un type de compte, rangés par usage.
-class _Studio extends StatelessWidget {
-  final WinRole role;
-  final ValueChanged<String> onGenerate;
-  const _Studio({required this.role, required this.onGenerate});
+/// Réglages choisis dans la feuille d'un outil de génération.
+typedef _Settings = ({String subject, String topic, int level});
 
-  void _open(BuildContext context, Widget page) =>
+const _difficulties = ['easy', 'medium', 'hard'];
+
+/// Les outils de WinAI pour un type de compte, rangés par usage.
+class _Studio extends StatefulWidget {
+  final WinRole role;
+
+  /// Sources cochées dans l'onglet « Sources ».
+  final List<WinAISourceRef> sources;
+
+  /// Envoie une demande dans la discussion (outils sans générateur dédié).
+  final ValueChanged<String> onGenerate;
+  const _Studio(
+      {required this.role, required this.sources, required this.onGenerate});
+
+  @override
+  State<_Studio> createState() => _StudioState();
+}
+
+class _StudioState extends State<_Studio> {
+  bool _busy = false;
+
+  void _open(Widget page) =>
       Navigator.push(context, WinPageRoute(builder: (_) => page));
 
-  /// Feuille de réglages d'un outil de génération, puis envoi de la demande.
-  Future<void> _settings(BuildContext context, String title,
-      String Function(String subject, String topic, String level) prompt) async {
-    final text = await showWinBottomSheet<String>(
-      context: context,
-      title: title,
-      child: _GenerateSettings(prompt: prompt),
-    );
-    if (text != null) onGenerate(text);
+  Future<_Settings?> _settings(String title) =>
+      showWinBottomSheet<_Settings>(
+          context: context, title: title, child: const _GenerateSettings());
+
+  List<String> _levels() {
+    final l = context.l10n;
+    return [l.tutoringMatEasy, l.tutoringMatMedium, l.tutoringMatHard];
+  }
+
+  /// Refus du serveur : son message, et l'accès aux offres quand c'est la
+  /// limite de l'abonnement.
+  void _refused(WinAiStudioException e) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(e.message),
+      action: e.isQuota
+          ? SnackBarAction(
+              label: context.l10n.winaiStudioSeePlans,
+              onPressed: () => _open(const PricingScreen()))
+          : null,
+    ));
+  }
+
+  List<Object>? get _sourcesJson => widget.sources.isEmpty
+      ? null
+      : widget.sources.map<Object>((r) => r.toJson()).toList();
+
+  /// Quiz : l'élève a un générateur dédié (quiz enregistré, rejouable, ouvert
+  /// tout de suite dans le lecteur) ; les autres comptes passent par la
+  /// discussion.
+  Future<void> _quiz() async {
+    final l = context.l10n;
+    final set = await _settings(l.winaiToolQuiz);
+    if (set == null || !mounted) return;
+    final topic = set.topic.isEmpty ? l.winaiTopicAny : set.topic;
+    if (widget.role != WinRole.student) {
+      widget.onGenerate(
+          l.winaiPromptQuiz(set.subject, topic, _levels()[set.level]));
+      return;
+    }
+    setState(() => _busy = true);
+    try {
+      final g = await WinAiStudioService.instance.generateQuiz(
+          subject: set.subject,
+          topic: set.topic,
+          difficulty: _difficulties[set.level],
+          sources: _sourcesJson);
+      if (!mounted) return;
+      _open(QuizActiveScreen(quiz: g.quiz.toQuiz()));
+    } on WinAiStudioException catch (e) {
+      _refused(e);
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<void> _sheet() async {
+    final l = context.l10n;
+    final set = await _settings(l.winaiToolSheet);
+    if (set == null || !mounted) return;
+    final topic = set.topic.isEmpty ? l.winaiTopicAny : set.topic;
+    if (widget.role != WinRole.student) {
+      widget.onGenerate(
+          l.winaiPromptSheet(set.subject, topic, _levels()[set.level]));
+      return;
+    }
+    setState(() => _busy = true);
+    try {
+      final f = await WinAiStudioService.instance.generateRevisionSheet(
+          subject: set.subject,
+          topic: set.topic,
+          difficulty: _difficulties[set.level],
+          sources: _sourcesJson);
+      if (!mounted) return;
+      _open(WinAISheetScreen(sheet: f));
+    } on WinAiStudioException catch (e) {
+      _refused(e);
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
   }
 
   @override
@@ -573,33 +670,40 @@ class _Studio extends StatelessWidget {
       MoreLine(
           icon: PhosphorIconsRegular.exam,
           label: l.winaiToolQuiz,
-          onTap: () => _settings(context, l.winaiToolQuiz, l.winaiPromptQuiz)),
+          onTap: _busy ? null : _quiz),
       MoreLine(
           icon: PhosphorIconsRegular.fileText,
           label: l.winaiToolSheet,
-          onTap: () =>
-              _settings(context, l.winaiToolSheet, l.winaiPromptSheet)),
+          onTap: _busy ? null : _sheet),
     ]);
 
-    final List<Widget> blocks = switch (role) {
+    final List<Widget> blocks = switch (widget.role) {
       WinRole.student => [
           title(l.winaiStudioGenerate),
           generate,
+          const SizedBox(height: 18),
+          title(l.winaiStudioRetrieve),
+          MoreGroup(children: [
+            MoreLine(
+                icon: PhosphorIconsRegular.sparkle,
+                label: l.winaiCreationsTitle,
+                onTap: () => _open(const WinAICreationsScreen())),
+          ]),
           const SizedBox(height: 18),
           title(l.spaceGroupPractice),
           MoreGroup(children: [
             MoreLine(
                 icon: PhosphorIconsRegular.graduationCap,
                 label: l.studentTabsExamCoach,
-                onTap: () => _open(context, const ExamCoachScreen())),
+                onTap: () => _open(const ExamCoachScreen())),
             MoreLine(
                 icon: PhosphorIconsRegular.playCircle,
                 label: l.studentTabsGuidedSession,
-                onTap: () => _open(context, const StudySessionScreen())),
+                onTap: () => _open(const StudySessionScreen())),
             MoreLine(
                 icon: PhosphorIconsRegular.arrowCounterClockwise,
                 label: l.studentHubRevisionQuiz,
-                onTap: () => _open(context, const QuizRevisionScreen())),
+                onTap: () => _open(const QuizRevisionScreen())),
           ]),
         ],
       WinRole.teacher => [
@@ -611,7 +715,7 @@ class _Studio extends StatelessWidget {
             MoreLine(
                 icon: PhosphorIconsRegular.chatText,
                 label: l.mobileHomeCorrections,
-                onTap: () => _open(context, const CorrectionQueueScreen())),
+                onTap: () => _open(const CorrectionQueueScreen())),
           ]),
         ],
       WinRole.parent => [
@@ -620,7 +724,7 @@ class _Studio extends StatelessWidget {
             MoreLine(
                 icon: PhosphorIconsRegular.bell,
                 label: l.commonWinaiAlerts,
-                onTap: () => _open(context, const WinAIAlertsScreen())),
+                onTap: () => _open(const WinAIAlertsScreen())),
           ]),
         ],
       WinRole.institution => [
@@ -629,30 +733,44 @@ class _Studio extends StatelessWidget {
             MoreLine(
                 icon: PhosphorIconsRegular.warning,
                 label: l.instRiskTitle,
-                onTap: () => _open(context, const AtRiskScreen())),
+                onTap: () => _open(const AtRiskScreen())),
             MoreLine(
                 icon: PhosphorIconsRegular.listChecks,
                 label: l.instRiskActionPlan,
-                onTap: () => _open(context, const ActionPlanScreen())),
+                onTap: () => _open(const ActionPlanScreen())),
           ]),
         ],
     };
 
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
-      children: [
-        Text(l.winaiStudioHint, style: WinType.bodyM(s.onMuted)),
-        const SizedBox(height: 18),
-        ...blocks,
+    return Column(children: [
+      // Génération en cours : bandeau discret, les outils restent visibles.
+      if (_busy) ...[
+        const LinearProgressIndicator(minHeight: 3),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+          child: Align(
+              alignment: Alignment.centerLeft,
+              child:
+                  Text(l.winaiStudioBusy, style: WinType.bodyS(s.onMuted))),
+        ),
       ],
-    );
+      Expanded(
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
+          children: [
+            Text(l.winaiStudioHint, style: WinType.bodyM(s.onMuted)),
+            const SizedBox(height: 18),
+            ...blocks,
+          ],
+        ),
+      ),
+    ]);
   }
 }
 
 /// Réglages d'une génération : matière, chapitre, niveau, puis « Générer ».
 class _GenerateSettings extends StatefulWidget {
-  final String Function(String subject, String topic, String level) prompt;
-  const _GenerateSettings({required this.prompt});
+  const _GenerateSettings();
   @override
   State<_GenerateSettings> createState() => _GenerateSettingsState();
 }
@@ -702,13 +820,11 @@ class _GenerateSettingsState extends State<_GenerateSettings> {
           WinButton(l.winaiSettingsGenerate,
               block: true,
               icon: PhosphorIconsRegular.sparkle,
-              onTap: () => Navigator.pop(
-                  context,
-                  widget.prompt(WinData.subjectById(_subject).name,
-                      _topic.text.trim().isEmpty
-                          ? l.winaiTopicAny
-                          : _topic.text.trim(),
-                      levels[_level]))),
+              onTap: () => Navigator.pop<_Settings>(context, (
+                    subject: WinData.subjectById(_subject).name,
+                    topic: _topic.text.trim(),
+                    level: _level
+                  ))),
           const SizedBox(height: 8),
         ]);
   }

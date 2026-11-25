@@ -5723,5 +5723,14 @@
   "affStatusPending": "En attente",
   "affStatusConfirmed": "Confirmée",
   "affStatusPaid": "Payée",
-  "affStatusReversed": "Annulée"
+  "affStatusReversed": "Annulée",
+  "winaiSheetEmpty": "Cette fiche n'a pas de texte à afficher",
+  "winaiCreationsTitle": "Mes créations",
+  "winaiCreationsEmpty": "Aucune création pour le moment",
+  "winaiCreationsEmptyHint": "Génère un quiz ou une fiche depuis l'atelier : tu les retrouveras ici.",
+  "winaiCreationsQuizzes": "Mes quiz",
+  "winaiCreationsSheets": "Mes fiches",
+  "winaiStudioBusy": "WinAI prépare ton travail…",
+  "winaiStudioSeePlans": "Voir les offres",
+  "winaiStudioRetrieve": "Retrouver"
 }

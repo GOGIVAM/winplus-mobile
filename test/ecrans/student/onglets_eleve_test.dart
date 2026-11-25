@@ -10,6 +10,7 @@ import 'package:winplus/student/student_reports_screen.dart';
 import 'package:winplus/student/student_tabs.dart';
 import 'package:winplus/student/tutors/tutor_search_screen.dart';
 import 'package:winplus/widgets/win_widgets.dart';
+import 'package:winplus/student/quiz_screen.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
@@ -387,16 +388,20 @@ void main() {
       expect(find.text(l.winaiCitationPage('Bac C 2024 Maths', 2)), findsOneWidget);
     });
 
-    testWidgets('onglet « Atelier » : outils de cet espace ; un outil de generation ouvre ses reglages puis envoie la demande', (tester) async {
-      faux.repond('POST', '/chatbot/message', {
-        'assistantMessage': {'content': 'Voici ton quiz'},
+    testWidgets('onglet « Atelier » : outils de cet espace ; le quiz ouvre ses reglages, est genere par le serveur puis s ouvre dans le lecteur', (tester) async {
+      faux.repond('POST', '/quizzes/me/generate', {
+        'id': 91, 'title': 'Quiz : les suites', 'subject': 'Maths', 'difficulty': 'medium',
+        'questionsCount': 1, 'durationMinutes': 5,
+        'questions': [
+          {'id': 'q1', 'question': '2 + 2 ?', 'options': ['3', '4']},
+        ],
       });
       await monterEcran(tester, const StudentWinAITab());
       final l = L10n.current;
       await tester.tap(find.text(l.winaiTabStudio));
       await pomper(tester);
       await pomper(tester, const Duration(milliseconds: 400));
-      for (final t in [l.winaiToolQuiz, l.winaiToolSheet, l.studentTabsExamCoach, l.studentTabsGuidedSession, l.studentHubRevisionQuiz]) {
+      for (final t in [l.winaiToolQuiz, l.winaiToolSheet, l.winaiCreationsTitle, l.studentTabsExamCoach]) {
         expect(find.text(t), findsOneWidget, reason: t);
       }
       expect(faux.requetes, isEmpty);
@@ -411,10 +416,35 @@ void main() {
       await pomper(tester);
       await pomper(tester, const Duration(milliseconds: 400));
       await reseau(tester);
-      final envoi = (faux.recues('POST', '/chatbot/message').single.data as Map)['content'] as String;
-      expect(envoi, contains('les suites'));
-      expect(envoi, contains(l.tutoringMatMedium));
-      expect(find.text('Voici ton quiz'), findsOneWidget);
+      await pomper(tester);
+      await pomper(tester, const Duration(milliseconds: 400));
+      final envoi = faux.recues('POST', '/quizzes/me/generate').single.data as Map;
+      expect(envoi['topic'], 'les suites');
+      expect(envoi['difficulty'], 'medium');
+      // Rien ne passe plus par la discussion : le quiz est enregistre et joue.
+      expect(faux.recues('POST', '/chatbot/message'), isEmpty);
+      expect(find.byType(QuizActiveScreen, skipOffstage: false), findsOneWidget);
+    });
+
+    testWidgets('atelier : limite de l abonnement atteinte, message du serveur et acces aux offres', (tester) async {
+      faux.repond('POST', '/revisions/me/generate', {'error': 'Limite de la semaine atteinte.', 'code': 'ai_quota_exceeded'}, statut: 402);
+      await monterEcran(tester, const StudentWinAITab());
+      final l = L10n.current;
+      await tester.tap(find.text(l.winaiTabStudio));
+      await pomper(tester);
+      await pomper(tester, const Duration(milliseconds: 400));
+      await tester.tap(find.text(l.winaiToolSheet));
+      await pomper(tester);
+      await pomper(tester, const Duration(milliseconds: 400));
+      await tester.ensureVisible(find.text(l.winaiSettingsGenerate));
+      await pomper(tester);
+      await tester.tap(find.text(l.winaiSettingsGenerate));
+      await pomper(tester);
+      await pomper(tester, const Duration(milliseconds: 400));
+      await reseau(tester);
+      await pomper(tester, const Duration(milliseconds: 400));
+      expect(find.text('Limite de la semaine atteinte.'), findsOneWidget);
+      expect(find.text(l.winaiStudioSeePlans), findsOneWidget);
     });
 
     testWidgets('« Memoire de WinAI » ouvre la feuille des memoires', (tester) async {

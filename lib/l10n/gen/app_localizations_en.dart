@@ -9820,4 +9820,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get affStatusReversed => 'Reversed';
+
+  @override
+  String get winaiSheetEmpty => 'This sheet has no text to show';
+
+  @override
+  String get winaiCreationsTitle => 'My creations';
+
+  @override
+  String get winaiCreationsEmpty => 'Nothing created yet';
+
+  @override
+  String get winaiCreationsEmptyHint =>
+      'Generate a quiz or a sheet from the studio: you will find them here.';
+
+  @override
+  String get winaiCreationsQuizzes => 'My quizzes';
+
+  @override
+  String get winaiCreationsSheets => 'My sheets';
+
+  @override
+  String get winaiStudioBusy => 'WinAI is preparing your work…';
+
+  @override
+  String get winaiStudioSeePlans => 'See plans';
+
+  @override
+  String get winaiStudioRetrieve => 'Find again';
 }

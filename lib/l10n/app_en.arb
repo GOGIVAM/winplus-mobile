@@ -2841,5 +2841,14 @@
   "affStatusPending": "Pending",
   "affStatusConfirmed": "Confirmed",
   "affStatusPaid": "Paid",
-  "affStatusReversed": "Reversed"
+  "affStatusReversed": "Reversed",
+  "winaiSheetEmpty": "This sheet has no text to show",
+  "winaiCreationsTitle": "My creations",
+  "winaiCreationsEmpty": "Nothing created yet",
+  "winaiCreationsEmptyHint": "Generate a quiz or a sheet from the studio: you will find them here.",
+  "winaiCreationsQuizzes": "My quizzes",
+  "winaiCreationsSheets": "My sheets",
+  "winaiStudioBusy": "WinAI is preparing your work…",
+  "winaiStudioSeePlans": "See plans",
+  "winaiStudioRetrieve": "Find again"
 }

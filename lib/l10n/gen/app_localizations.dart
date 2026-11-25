@@ -16831,6 +16831,60 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Annulée'**
   String get affStatusReversed;
+
+  /// No description provided for @winaiSheetEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette fiche n\'a pas de texte à afficher'**
+  String get winaiSheetEmpty;
+
+  /// No description provided for @winaiCreationsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mes créations'**
+  String get winaiCreationsTitle;
+
+  /// No description provided for @winaiCreationsEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune création pour le moment'**
+  String get winaiCreationsEmpty;
+
+  /// No description provided for @winaiCreationsEmptyHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Génère un quiz ou une fiche depuis l\'atelier : tu les retrouveras ici.'**
+  String get winaiCreationsEmptyHint;
+
+  /// No description provided for @winaiCreationsQuizzes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mes quiz'**
+  String get winaiCreationsQuizzes;
+
+  /// No description provided for @winaiCreationsSheets.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mes fiches'**
+  String get winaiCreationsSheets;
+
+  /// No description provided for @winaiStudioBusy.
+  ///
+  /// In fr, this message translates to:
+  /// **'WinAI prépare ton travail…'**
+  String get winaiStudioBusy;
+
+  /// No description provided for @winaiStudioSeePlans.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir les offres'**
+  String get winaiStudioSeePlans;
+
+  /// No description provided for @winaiStudioRetrieve.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retrouver'**
+  String get winaiStudioRetrieve;
 }
 
 class _AppLocalizationsDelegate
