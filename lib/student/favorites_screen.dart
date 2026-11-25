@@ -7,6 +7,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_motion_widgets.dart';
 import '../widgets/win_widgets.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class FavoritesScreen extends StatefulWidget {
   const FavoritesScreen({super.key});
@@ -57,13 +58,13 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(context.l10n.studentFavTitle),
         actions: [
           IconButton(
-            icon: Icon(Icons.refresh_outlined, color: s.onStrong),
+            icon: Icon(PhosphorIconsRegular.arrowClockwise, color: s.onStrong),
             onPressed: () {
               setState(() {
                 _favs = null;
@@ -82,7 +83,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     if (_error != null) {
       return Center(
           child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Icon(Icons.cloud_off_outlined, size: 56, color: s.onFaint),
+        Icon(PhosphorIconsRegular.cloudSlash, size: 56, color: s.onFaint),
         const SizedBox(height: 12),
         Text(_error!, style: WinType.bodyM(s.onMuted)),
         const SizedBox(height: 16),
@@ -103,12 +104,12 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
           child: Padding(
         padding: const EdgeInsets.all(32),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-          Icon(Icons.favorite_border, size: 64, color: s.onFaint),
+          Icon(PhosphorIconsRegular.heart, size: 64, color: s.onFaint),
           const SizedBox(height: 12),
           Text(context.l10n.studentFavEmpty, style: WinType.bodyM(s.onMuted)),
           const SizedBox(height: 20),
           WinButton(context.l10n.studentFavExplore,
-              icon: Icons.explore_outlined,
+              icon: PhosphorIconsRegular.compass,
               onTap: () => Navigator.pop(context)),
         ]),
       ));
@@ -168,7 +169,7 @@ class _FavoriteCard extends StatelessWidget {
           child: Stack(fit: StackFit.expand, children: [
             Container(
               color: s.primaryContainer,
-              child: Icon(Icons.bookmark_rounded, size: 40, color: s.primary),
+              child: Icon(PhosphorIconsFill.bookmarkSimple, size: 40, color: s.primary),
             ),
             Positioned(
               top: 4,
@@ -182,7 +183,7 @@ class _FavoriteCard extends StatelessWidget {
                     color: Colors.white.withValues(alpha: 0.9),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.favorite,
+                  child: const Icon(PhosphorIconsFill.heart,
                       size: 16, color: WinColors.error),
                 ),
               ),

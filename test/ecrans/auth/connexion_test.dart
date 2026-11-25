@@ -9,6 +9,7 @@ import 'package:winplus/widgets/win_widgets.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 Finder _bouton(String libelle) => find.widgetWithText(WinButton, libelle);
 
@@ -56,10 +57,10 @@ void main() {
       await monterEcran(tester, const LoginScreen());
       final champ = find.byType(TextField).at(1);
       expect(tester.widget<TextField>(champ).obscureText, isTrue);
-      await tester.tap(find.byIcon(Icons.visibility_outlined));
+      await tester.tap(find.byIcon(PhosphorIconsRegular.eye));
       await pomper(tester);
       expect(tester.widget<TextField>(champ).obscureText, isFalse);
-      expect(find.byIcon(Icons.visibility_off_outlined), findsOneWidget);
+      expect(find.byIcon(PhosphorIconsRegular.eyeSlash), findsOneWidget);
     });
 
     testWidgets('« mot de passe oublie » ouvre l\'ecran de recuperation', (tester) async {
@@ -79,7 +80,7 @@ void main() {
 
     testWidgets('premier ecran sans session : pas de retour, ni connexion par telephone', (tester) async {
       await monterEcran(tester, const LoginScreen());
-      expect(find.byIcon(Icons.chevron_left_rounded), findsNothing);
+      expect(find.byIcon(PhosphorIconsRegular.caretLeft), findsNothing);
       expect(find.text(L10n.current.continueWithPhone), findsNothing);
     });
 
@@ -129,15 +130,15 @@ void main() {
 
     testWidgets('les six regles passent au vert avec un mot de passe conforme', (tester) async {
       await monterEcran(tester, const ResetPasswordScreen(token: 't'));
-      expect(find.byIcon(Icons.check_circle), findsNothing);
+      expect(find.byIcon(PhosphorIconsFill.checkCircle), findsNothing);
       await saisir(tester, 'Abcdef1!', 'Abcdef1!');
-      expect(find.byIcon(Icons.check_circle), findsNWidgets(6));
+      expect(find.byIcon(PhosphorIconsFill.checkCircle), findsNWidgets(6));
     });
 
     testWidgets('mot de passe « abc » : seules minuscule et confirmation sont validees', (tester) async {
       await monterEcran(tester, const ResetPasswordScreen(token: 't'));
       await saisir(tester, 'abc', 'abc');
-      expect(find.byIcon(Icons.check_circle), findsNWidgets(2));
+      expect(find.byIcon(PhosphorIconsFill.checkCircle), findsNWidgets(2));
     });
 
     testWidgets('mot de passe invalide : aucun envoi', (tester) async {

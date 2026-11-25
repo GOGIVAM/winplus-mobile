@@ -12,6 +12,7 @@ import '../../theme/win_typography.dart';
 import '../../widgets/win_motion_widgets.dart';
 import '../../widgets/win_widgets.dart';
 import 'orders_screen.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Checkout (E36 récapitulatif + E37 paiement + E38 succès), en 2 étapes avec
 /// stepper numéroté (même langage que le flow de réservation tuteur) :
@@ -188,7 +189,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(titles[_step]),
@@ -261,7 +262,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           Expanded(
               child: _PaymentMethodTile(
                   label: 'MTN MoMo',
-                  icon: Icons.phone_android,
+                  icon: PhosphorIconsRegular.deviceMobile,
                   color: WinColors.warn,
                   selected: _method == 'mtn',
                   onTap: () => setState(() => _method = 'mtn'))),
@@ -269,7 +270,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           Expanded(
               child: _PaymentMethodTile(
                   label: 'Orange Money',
-                  icon: Icons.phone_android,
+                  icon: PhosphorIconsRegular.deviceMobile,
                   color: WinColors.error,
                   selected: _method == 'orange',
                   onTap: () => setState(() => _method = 'orange'))),
@@ -278,7 +279,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         WinTextField(
             label: context.l10n.shopPhoneNumber,
             hint: '6XX XXX XXX',
-            icon: Icons.phone_outlined,
+            icon: PhosphorIconsRegular.phone,
             controller: _phoneCtrl,
             keyboardType: TextInputType.phone),
         if (_submitError != null) ...[
@@ -334,7 +335,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       child: Padding(
         padding: const EdgeInsets.all(32),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-          Icon(Icons.hourglass_bottom_outlined, size: 48, color: s.onFaint),
+          Icon(PhosphorIconsRegular.hourglassLow, size: 48, color: s.onFaint),
           const SizedBox(height: 16),
           Text(context.l10n.shopStillPending,
               style: WinType.titleM(s.onStrong), textAlign: TextAlign.center),
@@ -362,7 +363,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         padding: const EdgeInsets.all(32),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           const WinErrorShake(
-              child: Icon(Icons.cancel_outlined,
+              child: Icon(PhosphorIconsRegular.xCircle,
                   size: 48, color: WinColors.error)),
           const SizedBox(height: 16),
           Text(context.l10n.shopPaymentFailed,
@@ -415,12 +416,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                   _RecapRow(
-                      icon: Icons.receipt_long_outlined,
+                      icon: PhosphorIconsRegular.receipt,
                       label: context.l10n.shopOrder,
                       value: _order!.orderNumber),
                   const SizedBox(height: 10),
                   Row(children: [
-                    Icon(Icons.payments_outlined, size: 18, color: s.onFaint),
+                    Icon(PhosphorIconsRegular.money, size: 18, color: s.onFaint),
                     const SizedBox(width: 10),
                     Text(context.l10n.shopAmount, style: WinType.bodyS(s.onMuted)),
                     const Spacer(),
@@ -541,7 +542,7 @@ class _CheckoutStepper extends StatelessWidget {
               Border.all(color: active || done ? WinColors.teal400 : s.outline),
         ),
         child: done
-            ? const Icon(Icons.check, size: 14, color: WinColors.teal700)
+            ? const Icon(PhosphorIconsBold.check, size: 14, color: WinColors.teal700)
             : Text('${idx + 1}',
                 style: TextStyle(
                     fontSize: 11,

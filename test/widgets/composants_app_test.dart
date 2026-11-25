@@ -11,6 +11,7 @@ import 'package:winplus/widgets/win_widgets.dart';
 
 import '../helpers/appli.dart';
 import '../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 void main() {
   setUpAll(initialiserDates);
@@ -29,7 +30,7 @@ void main() {
       final attendu = L10n.current.widgetOfflineBanner(L10n.current.widgetOfflineUnknown);
       expect(find.text(attendu), findsOneWidget);
       expect(attendu, contains('inconnue'));
-      expect(find.byIcon(Icons.wifi_off_outlined), findsOneWidget);
+      expect(find.byIcon(PhosphorIconsRegular.wifiSlash), findsOneWidget);
     });
 
     testWidgets('avec une date, affiche le jour et l\'heure de la derniere mise a jour', (tester) async {

@@ -20,6 +20,7 @@ import 'package:winplus/widgets/win_widgets.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 Finder _bouton(String libelle) => find.widgetWithText(WinButton, libelle);
 
@@ -257,10 +258,10 @@ void main() {
       expect(find.textContaining(' · Mobile Money · ${l.parentPayStatusRefunded}'), findsOneWidget);
       expect(find.textContaining(' · Mobile Money · ${l.parentPayStatusRefundRequested}'), findsOneWidget);
       // Paiement abouti : coche, credit : plus, en attente : horloge, echec : croix.
-      expect(find.byIcon(Icons.check), findsOneWidget);
-      expect(find.byIcon(Icons.add), findsOneWidget);
-      expect(find.byIcon(Icons.schedule), findsOneWidget);
-      expect(find.byIcon(Icons.close), findsNWidgets(3));
+      expect(find.byIcon(PhosphorIconsBold.check), findsOneWidget);
+      expect(find.byIcon(PhosphorIconsRegular.plus), findsOneWidget);
+      expect(find.byIcon(PhosphorIconsRegular.clock), findsOneWidget);
+      expect(find.byIcon(PhosphorIconsRegular.x), findsNWidgets(3));
     });
 
     testWidgets('aucun paiement : message dedie', (tester) async {
@@ -458,11 +459,11 @@ void main() {
       faux.repond('POST', '/chatbot/message', {'reply': 'D\'accord'});
       await monterEcran(tester, const ParentWinAITab());
       await tester.enterText(find.byType(TextField), '   ');
-      await tester.tap(find.byIcon(Icons.send));
+      await tester.tap(find.byIcon(PhosphorIconsFill.paperPlaneRight));
       await reseau(tester);
       expect(faux.requetes, isEmpty);
       await tester.enterText(find.byType(TextField), '  Comment le motiver ? ');
-      await tester.tap(find.byIcon(Icons.send));
+      await tester.tap(find.byIcon(PhosphorIconsFill.paperPlaneRight));
       await reseau(tester);
       expect((faux.recues('POST', '/chatbot/message').single.data as Map)['content'], 'Comment le motiver ?');
       expect(find.text('D\'accord'), findsOneWidget);

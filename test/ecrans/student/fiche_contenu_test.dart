@@ -18,6 +18,7 @@ import 'package:winplus/widgets/win_widgets.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 Finder _bouton(String libelle) => find.widgetWithText(WinButton, libelle);
 
@@ -271,7 +272,7 @@ void main() {
       await tester.enterText(find.byType(TextField), '   ');
       await tester.tap(_bouton(l.commonSave));
       await pomper(tester);
-      expect(find.byIcon(Icons.notes_outlined), findsNothing);
+      expect(find.byIcon(PhosphorIconsRegular.note), findsNothing);
       await tester.tap(find.text(l.studentDetailAddNote));
       await pomper(tester);
       await tester.tap(_bouton(l.commonCancel));
@@ -288,7 +289,7 @@ void main() {
       await _monterHaut(tester, ContentDetailScreen(content: _contenu()));
       await tester.scrollUntilVisible(find.text('Ancienne note'), 300, scrollable: find.byType(Scrollable).first);
       expect(find.text('Ancienne note'), findsOneWidget);
-      await tester.tap(find.byIcon(Icons.close).last);
+      await tester.tap(find.byIcon(PhosphorIconsRegular.x).last);
       await pomper(tester);
       expect(find.text('Ancienne note'), findsNothing);
     });
@@ -296,10 +297,10 @@ void main() {
     testWidgets('le coeur de la barre bascule le favori du contenu', (tester) async {
       final c = _contenu();
       await _monterHaut(tester, ContentDetailScreen(content: c));
-      await tester.tap(find.byIcon(Icons.favorite_border));
+      await tester.tap(find.byIcon(PhosphorIconsRegular.heart));
       await pomper(tester);
       expect(c.fav, isTrue);
-      expect(find.byIcon(Icons.favorite), findsOneWidget);
+      expect(find.byIcon(PhosphorIconsFill.heart), findsOneWidget);
     });
   });
 }

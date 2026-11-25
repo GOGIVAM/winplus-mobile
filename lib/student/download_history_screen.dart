@@ -6,6 +6,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import 'document_viewer_screen.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class DownloadHistoryScreen extends StatefulWidget {
   const DownloadHistoryScreen({super.key});
@@ -70,14 +71,14 @@ class _DownloadHistoryScreenState extends State<DownloadHistoryScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title:
             Text(context.l10n.studentHistTitle, style: WinType.headlineS(s.onStrong)),
         actions: [
           IconButton(
-            icon: Icon(Icons.refresh_outlined, color: s.onStrong),
+            icon: Icon(PhosphorIconsRegular.arrowClockwise, color: s.onStrong),
             onPressed: () {
               setState(() {
                 _entries = null;
@@ -126,7 +127,7 @@ class _DownloadHistoryScreenState extends State<DownloadHistoryScreen> {
     if (_error != null) {
       return Center(
           child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Icon(Icons.cloud_off_outlined, size: 56, color: s.onFaint),
+        Icon(PhosphorIconsRegular.cloudSlash, size: 56, color: s.onFaint),
         const SizedBox(height: 12),
         Text(_error!, style: WinType.bodyM(s.onMuted)),
         const SizedBox(height: 16),
@@ -149,7 +150,7 @@ class _DownloadHistoryScreenState extends State<DownloadHistoryScreen> {
     if (visible.isEmpty) {
       return Center(
           child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Icon(Icons.download_outlined, size: 56, color: s.onFaint),
+        Icon(PhosphorIconsRegular.downloadSimple, size: 56, color: s.onFaint),
         const SizedBox(height: 12),
         Text(
             _entries!.isEmpty
@@ -204,7 +205,7 @@ class _DownloadHistoryScreenState extends State<DownloadHistoryScreen> {
                                 color: s.primaryContainer,
                                 borderRadius:
                                     BorderRadius.circular(WinRadii.sm)),
-                            child: Icon(Icons.picture_as_pdf_outlined,
+                            child: Icon(PhosphorIconsRegular.filePdf,
                                 size: 26, color: s.primary),
                           ),
                           const SizedBox(width: 14),
@@ -227,7 +228,7 @@ class _DownloadHistoryScreenState extends State<DownloadHistoryScreen> {
                               ]),
                             ],
                           )),
-                          Icon(Icons.chevron_right, size: 20, color: s.onFaint),
+                          Icon(PhosphorIconsRegular.caretRight, size: 20, color: s.onFaint),
                         ]),
                       ),
                     ),

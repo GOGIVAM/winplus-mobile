@@ -5,6 +5,7 @@ import '../services/chatbot_service.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 // ── Méta par type ────────────────────────────────────────────────────────────
 
@@ -20,19 +21,19 @@ class _TypeMeta {
 
 const _meta = <String, _TypeMeta>{
   'struggling_topics': _TypeMeta(
-      Icons.warning_amber_rounded, WinColors.error, WinColors.errorBg),
+      PhosphorIconsRegular.warning, WinColors.error, WinColors.errorBg),
   'understood_topics': _TypeMeta(
-      Icons.check_circle_rounded, WinColors.success, WinColors.successBg),
-  'exam_context': _TypeMeta(Icons.track_changes_rounded, _violet, _violetBg),
+      PhosphorIconsFill.checkCircle, WinColors.success, WinColors.successBg),
+  'exam_context': _TypeMeta(PhosphorIconsRegular.target, _violet, _violetBg),
   'learning_preference': _TypeMeta(
-      Icons.psychology_rounded, WinColors.blue500, WinColors.blue50),
+      PhosphorIconsRegular.brain, WinColors.blue500, WinColors.blue50),
   'motivation_style': _TypeMeta(
-      Icons.local_fire_department_rounded, WinColors.warn, WinColors.warnBg),
+      PhosphorIconsFill.fire, WinColors.warn, WinColors.warnBg),
 };
 
 _TypeMeta _metaFor(String type) =>
     _meta[type] ??
-    const _TypeMeta(Icons.note_alt_outlined, WinColors.ink400, WinColors.ink50);
+    const _TypeMeta(PhosphorIconsRegular.notePencil, WinColors.ink400, WinColors.ink50);
 
 /// Libellé affiché d'un type de mémoire (lot 10.11).
 String _labelFor(AppLocalizations l10n, String type) => switch (type) {
@@ -170,7 +171,7 @@ class _WinAIMemoriesSheetState extends State<_WinAIMemoriesSheet> {
                   ]),
             ),
             IconButton(
-              icon: Icon(Icons.refresh_rounded, size: 20, color: s.onMuted),
+              icon: Icon(PhosphorIconsRegular.arrowClockwise, size: 20, color: s.onMuted),
               onPressed: _load,
               tooltip: l10n.widgetMemRefresh,
             ),
@@ -198,7 +199,7 @@ class _WinAIMemoriesSheetState extends State<_WinAIMemoriesSheet> {
                           padding: const EdgeInsets.fromLTRB(24, 32, 24, 32),
                           child:
                               Column(mainAxisSize: MainAxisSize.min, children: [
-                            const Icon(Icons.eco_outlined,
+                            const Icon(PhosphorIconsRegular.leaf,
                                 size: 40, color: WinColors.success),
                             const SizedBox(height: 12),
                             Text(
@@ -290,7 +291,7 @@ class _MemoryRow extends StatelessWidget {
               )
             : GestureDetector(
                 onTap: onDelete,
-                child: const Icon(Icons.delete_outline_rounded,
+                child: const Icon(PhosphorIconsRegular.trash,
                     size: 18, color: WinColors.error),
               ),
       ]),

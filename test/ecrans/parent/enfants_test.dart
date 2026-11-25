@@ -8,6 +8,7 @@ import 'package:winplus/widgets/win_widgets.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 Finder _bouton(String libelle) => find.widgetWithText(WinButton, libelle);
 
@@ -138,7 +139,7 @@ void main() {
       await monterEcran(tester, const CoveredChildrenScreen());
       await tester.tap(find.text('Bob'));
       await pomper(tester);
-      expect(find.byIcon(Icons.check_circle), findsOneWidget);
+      expect(find.byIcon(PhosphorIconsFill.checkCircle), findsOneWidget);
       final enregistrer = _bouton(L10n.current.parentCoveredSave);
       await tester.ensureVisible(enregistrer);
       await pomper(tester);
@@ -154,7 +155,7 @@ void main() {
       await monterEcran(tester, const CoveredChildrenScreen());
       await tester.tap(find.text('Bob'));
       await pomper(tester);
-      expect(find.byIcon(Icons.check_circle), findsOneWidget, reason: 'le choix ne bouge pas');
+      expect(find.byIcon(PhosphorIconsFill.checkCircle), findsOneWidget, reason: 'le choix ne bouge pas');
       final attendu = L10n.current.parentCoveredNextChange(WinFormat.date(DateTime.utc(2026, 7, 1, 12).toLocal()));
       expect(find.textContaining(attendu, findRichText: true), findsOneWidget);
     });

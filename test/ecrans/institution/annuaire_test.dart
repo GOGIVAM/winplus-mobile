@@ -5,6 +5,7 @@ import 'package:winplus/l10n/l10n.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 void main() {
   late FauxReseau faux;
@@ -43,8 +44,8 @@ void main() {
     expect(find.text('M-001'), findsOneWidget);
     expect(find.text('sans-nom@x.cm'), findsWidgets);
     expect(find.text(l.instDirCount(2)), findsOneWidget);
-    expect(find.byIcon(Icons.circle), findsOneWidget);
-    expect(find.byIcon(Icons.circle_outlined), findsOneWidget);
+    expect(find.byIcon(PhosphorIconsFill.circle), findsOneWidget);
+    expect(find.byIcon(PhosphorIconsRegular.circle), findsOneWidget);
   });
 
   testWidgets('annuaire vide : message « aucun eleve »', (tester) async {
@@ -64,7 +65,7 @@ void main() {
   testWidgets('ajout sans e-mail : message et aucun envoi', (tester) async {
     routes();
     await monterEcran(tester, const StudentDirectoryScreen());
-    await tester.tap(find.byIcon(Icons.add));
+    await tester.tap(find.byIcon(PhosphorIconsRegular.plus));
     await reseau(tester);
     expect(find.text(L10n.current.instDirEmailRequired), findsOneWidget);
     expect(faux.recues('POST', '/institution/4/students/import'), isEmpty);
@@ -76,7 +77,7 @@ void main() {
     await monterEcran(tester, const StudentDirectoryScreen());
     await tester.enterText(find.byType(TextField).at(0), ' ada@x.cm ');
     await tester.enterText(find.byType(TextField).at(1), '3eme');
-    await tester.tap(find.byIcon(Icons.add));
+    await tester.tap(find.byIcon(PhosphorIconsRegular.plus));
     await reseau(tester);
     expect(faux.recues('POST', '/institution/4/students/import').single.data, {
       'rows': [
@@ -93,7 +94,7 @@ void main() {
     faux.repond('POST', '/institution/4/students/import', {}, statut: 400);
     await monterEcran(tester, const StudentDirectoryScreen());
     await tester.enterText(find.byType(TextField).at(0), 'ada@x.cm');
-    await tester.tap(find.byIcon(Icons.add));
+    await tester.tap(find.byIcon(PhosphorIconsRegular.plus));
     await reseau(tester);
     expect(find.text(L10n.current.instDirAddError), findsOneWidget);
   });

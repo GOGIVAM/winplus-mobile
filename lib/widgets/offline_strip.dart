@@ -10,6 +10,7 @@ import '../shared/pending_actions_screen.dart';
 import '../theme/win_motion.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_typography.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Bandeau des quatre espaces (lot 3), sous la barre du haut, donc sur tous
 /// les écrans de la coquille :
@@ -80,8 +81,8 @@ class _OfflineStripState extends State<OfflineStrip> {
                       child: Row(children: [
                         Icon(
                             _online
-                                ? Icons.cloud_off_outlined
-                                : Icons.wifi_off_outlined,
+                                ? PhosphorIconsRegular.cloudSlash
+                                : PhosphorIconsRegular.wifiSlash,
                             size: 16,
                             color: WinColors.cream50),
                         const SizedBox(width: 8),
@@ -92,7 +93,7 @@ class _OfflineStripState extends State<OfflineStrip> {
                               style: WinType.labelM(WinColors.cream50)),
                         ),
                         if (pending > 0)
-                          const Icon(Icons.chevron_right,
+                          const Icon(PhosphorIconsRegular.caretRight,
                               size: 18, color: WinColors.cream50),
                       ]),
                     ),

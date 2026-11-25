@@ -11,6 +11,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_motion_widgets.dart';
 import '../widgets/win_widgets.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 // ===================== QUIZ ACTIF =====================
 
@@ -144,7 +145,7 @@ class _QuizActiveScreenState extends State<QuizActiveScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.close, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.x, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(widget.quiz.title),
@@ -306,7 +307,7 @@ class QuizResultScreen extends StatelessWidget {
           const SizedBox(height: 28),
           WinButton(context.l10n.studentQuizReviewAnswers,
               block: true,
-              icon: Icons.rate_review_outlined,
+              icon: PhosphorIconsRegular.chatText,
               onTap: () => Navigator.push(
                     context,
                     WinPageRoute(
@@ -317,7 +318,7 @@ class QuizResultScreen extends StatelessWidget {
           WinButton(context.l10n.studentQuizRetake,
               variant: WinButtonVariant.outline,
               block: true,
-              icon: Icons.refresh,
+              icon: PhosphorIconsRegular.arrowClockwise,
               onTap: () => Navigator.pushReplacement(
                     context,
                     WinPageRoute(builder: (_) => QuizActiveScreen(quiz: quiz)),
@@ -372,7 +373,7 @@ class QuizReviewScreen extends StatelessWidget {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(context.l10n.studentQuizReview),
@@ -414,10 +415,10 @@ class QuizReviewScreen extends StatelessWidget {
                     child: Row(children: [
                       Icon(
                         isCorrect
-                            ? Icons.check_circle
+                            ? PhosphorIconsFill.checkCircle
                             : isSelected
-                                ? Icons.cancel
-                                : Icons.radio_button_unchecked,
+                                ? PhosphorIconsFill.xCircle
+                                : PhosphorIconsRegular.circle,
                         size: 16,
                         color: isCorrect
                             ? WinColors.success
@@ -435,7 +436,7 @@ class QuizReviewScreen extends StatelessWidget {
               }),
               const SizedBox(height: 8),
               WinAlert(q.explain,
-                  type: BadgeColor.teal, icon: Icons.lightbulb_outline),
+                  type: BadgeColor.teal, icon: PhosphorIconsRegular.lightbulb),
             ]),
           );
         },
@@ -479,13 +480,13 @@ class _QuizHubScreenState extends State<QuizHubScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(context.l10n.studentQuizMyQuizzes),
         actions: [
           IconButton(
-            icon: Icon(Icons.refresh_outlined, color: s.onStrong),
+            icon: Icon(PhosphorIconsRegular.arrowClockwise, color: s.onStrong),
             onPressed: () {
               setState(() {
                 _quizzes = null;
@@ -583,7 +584,7 @@ class _QuizCard extends StatelessWidget {
                   shape: BoxShape.circle,
                   boxShadow: WinShadows.sm,
                 ),
-                child: Icon(Icons.play_arrow_rounded,
+                child: Icon(PhosphorIconsFill.play,
                     size: 20, color: s.onPrimary),
               ),
             ),

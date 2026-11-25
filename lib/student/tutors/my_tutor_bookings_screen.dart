@@ -16,6 +16,7 @@ import 'tutor_report_sheet.dart';
 import '../../services/tutor_engagement_service.dart';
 import '../../shared/tutor_engagement_screen.dart';
 import '../../shared/tutor_session_material_screen.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 String? _modeLabel(String mode) => switch (mode) {
       'online' => L10n.current.commonOnline,
@@ -160,17 +161,17 @@ class _MyTutorBookingsScreenState extends State<MyTutorBookingsScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(context.l10n.tutoringBookingsTitle),
         actions: [
           IconButton(
               tooltip: context.l10n.studentHubTutorPolicy,
-              icon: Icon(Icons.policy_outlined, color: s.onMuted),
+              icon: Icon(PhosphorIconsRegular.scales, color: s.onMuted),
               onPressed: () => openTutorPolicy(context)),
           IconButton(
-              icon: Icon(Icons.refresh_outlined, color: s.onMuted),
+              icon: Icon(PhosphorIconsRegular.arrowClockwise, color: s.onMuted),
               onPressed: _load),
         ],
       ),
@@ -179,7 +180,7 @@ class _MyTutorBookingsScreenState extends State<MyTutorBookingsScreen> {
           : _error
               ? Center(
                   child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  Icon(Icons.wifi_off_outlined, size: 48, color: s.onFaint),
+                  Icon(PhosphorIconsRegular.wifiSlash, size: 48, color: s.onFaint),
                   const SizedBox(height: 12),
                   Text(context.l10n.tutoringBookingsLoadError,
                       style: WinType.bodyM(s.onMuted)),
@@ -344,11 +345,11 @@ class _BookingCardState extends State<_BookingCard> {
         ]),
         const SizedBox(height: 10),
         Row(children: [
-          Icon(Icons.place_outlined, size: 14, color: s.onFaint),
+          Icon(PhosphorIconsRegular.mapPin, size: 14, color: s.onFaint),
           const SizedBox(width: 4),
           Text(_modeLabel(b.mode) ?? b.mode, style: WinType.labelM(s.onMuted)),
           const SizedBox(width: 12),
-          Icon(Icons.payments_outlined, size: 14, color: s.onFaint),
+          Icon(PhosphorIconsRegular.money, size: 14, color: s.onFaint),
           const SizedBox(width: 4),
           Text('${fmtXaf(b.priceXaf)} XAF', style: WinType.labelM(s.onMuted)),
         ]),
@@ -366,7 +367,7 @@ class _BookingCardState extends State<_BookingCard> {
         if (b.partiesSummary != null) ...[
           const SizedBox(height: 8),
           Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Icon(Icons.groups_outlined, size: 14, color: s.onFaint),
+            Icon(PhosphorIconsRegular.usersThree, size: 14, color: s.onFaint),
             const SizedBox(width: 4),
             Expanded(child: Text(b.partiesSummary!, style: WinType.labelM(s.onMuted))),
           ]),
@@ -396,7 +397,7 @@ class _BookingCardState extends State<_BookingCard> {
           WinButton(context.l10n.visioJoin,
               block: true,
               small: true,
-              icon: Icons.videocam_outlined,
+              icon: PhosphorIconsRegular.videoCamera,
               onTap: () => VisioScreen.open(context, VisioType.tutorat, b.id)),
         ],
         // Lot 9.6 : support de séance WinAI partagé par le tuteur.
@@ -405,7 +406,7 @@ class _BookingCardState extends State<_BookingCard> {
           WinButton(b.viewerIsParticipant == true ? context.l10n.tutoringMaterialFull : context.l10n.tutoringMaterial,
               block: true,
               small: true,
-              icon: Icons.menu_book_outlined,
+              icon: PhosphorIconsRegular.bookOpen,
               variant: WinButtonVariant.outline,
               onTap: () => Navigator.of(context)
                   .push(MaterialPageRoute(builder: (_) => TutorSessionMaterialScreen(bookingId: b.id)))),
@@ -424,7 +425,7 @@ class _BookingCardState extends State<_BookingCard> {
           WinButton(context.l10n.tutoringReportTutor,
               block: true,
               small: true,
-              icon: Icons.flag_outlined,
+              icon: PhosphorIconsRegular.flag,
               variant: WinButtonVariant.ghost,
               onTap: widget.onReport),
         ],
@@ -441,7 +442,7 @@ class _BookingCardState extends State<_BookingCard> {
               onTap: () => setState(() => _rating = i + 1),
               child: Padding(
                 padding: const EdgeInsets.only(right: 4),
-                child: Icon(filled ? Icons.star : Icons.star_border,
+                child: Icon(filled ? PhosphorIconsFill.star : PhosphorIconsRegular.star,
                     size: 28, color: filled ? WinColors.gold : s.onFaint),
               ),
             );

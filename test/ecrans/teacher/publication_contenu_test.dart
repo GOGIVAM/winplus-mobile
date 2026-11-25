@@ -7,6 +7,7 @@ import 'package:winplus/widgets/win_widgets.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 Finder _bouton(String libelle) => find.widgetWithText(WinButton, libelle);
 
@@ -115,7 +116,7 @@ void main() {
     expect(selecteur.extensionsDemandees, ['pdf', 'epub', 'zip']);
     expect(find.text('bac.pdf · ${l.teacherPublishSizeKb('2.0')}'), findsOneWidget);
     expect(_bouton(l.teacherPublishChooseFile), findsNothing);
-    await tester.tap(find.byIcon(Icons.close));
+    await tester.tap(find.byIcon(PhosphorIconsRegular.x));
     await pomper(tester);
     expect(_bouton(l.teacherPublishChooseFile), findsOneWidget);
   });
@@ -125,11 +126,11 @@ void main() {
     final l = L10n.current;
     await choisirFichier(tester, taille: 500);
     expect(find.text('bac.pdf · ${l.teacherPublishSizeBytes(500)}'), findsOneWidget);
-    await tester.tap(find.byIcon(Icons.close));
+    await tester.tap(find.byIcon(PhosphorIconsRegular.x));
     await pomper(tester);
     await choisirFichier(tester, taille: 3 * 1024 * 1024);
     expect(find.text('bac.pdf · ${l.teacherPublishSizeMb('3.0')}'), findsOneWidget);
-    await tester.tap(find.byIcon(Icons.close));
+    await tester.tap(find.byIcon(PhosphorIconsRegular.x));
     await pomper(tester);
     await choisirFichier(tester, taille: 0);
     expect(find.text('bac.pdf'), findsOneWidget);

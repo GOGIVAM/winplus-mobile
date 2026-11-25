@@ -10,6 +10,7 @@ import '../../theme/win_typography.dart';
 import '../../widgets/win_widgets.dart';
 import 'tutor_public_profile_screen.dart';
 import 'tutor_pricing_widgets.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 const _tutorSubjects = [
   'Mathématiques',
@@ -152,7 +153,7 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(context.l10n.studentTabsFindTutor),
@@ -211,7 +212,7 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
               if (i == 1) {
                 return WinChip(context.l10n.tutoringDiplomaVerified,
                     active: _verifiedOnly,
-                    icon: Icons.verified_outlined, onTap: () {
+                    icon: PhosphorIconsRegular.sealCheck, onTap: () {
                   setState(() => _verifiedOnly = !_verifiedOnly);
                   _search();
                 });
@@ -236,7 +237,7 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
               if (i == 0) {
                 return WinChip(context.l10n.tutoringAvailableSoon,
                     active: _availableSoon,
-                    icon: Icons.bolt_outlined, onTap: () {
+                    icon: PhosphorIconsRegular.lightning, onTap: () {
                   setState(() => _availableSoon = !_availableSoon);
                   _search();
                 });
@@ -250,7 +251,7 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
               }
               final city = _tutorCities[i - 1 - _tutorModes.length];
               return WinChip(city,
-                  active: _city == city, icon: Icons.place_outlined, onTap: () {
+                  active: _city == city, icon: PhosphorIconsRegular.mapPin, onTap: () {
                 setState(() => _city = _city == city ? null : city);
                 _search();
               });
@@ -272,7 +273,7 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
                 final a = _assigned[i - 1];
                 return WinChip(a.tutorName ?? context.l10n.roleTutor,
                     active: false,
-                    icon: Icons.star_outline,
+                    icon: PhosphorIconsRegular.star,
                     onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -287,7 +288,7 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
               : _error
                   ? Center(
                       child: Column(mainAxisSize: MainAxisSize.min, children: [
-                      Icon(Icons.wifi_off_outlined, size: 48, color: s.onFaint),
+                      Icon(PhosphorIconsRegular.wifiSlash, size: 48, color: s.onFaint),
                       const SizedBox(height: 12),
                       Text(context.l10n.tutoringSearchLoadError,
                           style: WinType.bodyM(s.onMuted)),
@@ -300,7 +301,7 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
                           padding: const EdgeInsets.all(32),
                           child:
                               Column(mainAxisSize: MainAxisSize.min, children: [
-                            Icon(Icons.person_search_outlined,
+                            Icon(PhosphorIconsRegular.userFocus,
                                 size: 64, color: s.onFaint),
                             const SizedBox(height: 12),
                             Text(context.l10n.tutoringSearchEmpty,
@@ -363,7 +364,7 @@ class _TutorResultCard extends StatelessWidget {
                   shape: BoxShape.circle,
                   border: Border.all(color: s.surface, width: 2),
                 ),
-                child: const Icon(Icons.check_rounded,
+                child: const Icon(PhosphorIconsBold.check,
                     size: 12, color: Colors.white),
               ),
             ),

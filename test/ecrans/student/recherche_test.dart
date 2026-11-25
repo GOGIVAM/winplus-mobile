@@ -6,6 +6,7 @@ import 'package:winplus/widgets/win_widgets.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 void main() {
   late FauxReseau faux;
@@ -98,7 +99,7 @@ void main() {
     await monterEcran(tester, const SearchScreen());
     await saisir(tester, 'a');
     expect(find.text('Epreuve A'), findsOneWidget);
-    await tester.tap(find.byIcon(Icons.close));
+    await tester.tap(find.byIcon(PhosphorIconsRegular.x));
     await pomper(tester);
     expect(find.text('Epreuve A'), findsNothing);
     expect(find.text(L10n.current.studentSearchIdle), findsOneWidget);

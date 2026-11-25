@@ -7,6 +7,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Lot 9.7b (étude 1.4) : choix des enfants couverts par le plan du parent
 /// (catalogue, bonus WinAI, alertes) quand il a plus d'enfants liés que son
@@ -103,7 +104,7 @@ class _CoveredChildrenScreenState extends State<CoveredChildrenScreen> {
                 Text(context.l10n.parentCoveredLoadError,
                     style: WinType.bodyM(s.onMuted), textAlign: TextAlign.center),
                 const SizedBox(height: 12),
-                WinButton(context.l10n.commonRetry, icon: Icons.refresh, onTap: _load),
+                WinButton(context.l10n.commonRetry, icon: PhosphorIconsRegular.arrowClockwise, onTap: _load),
               ])));
     }
     if (!st.selectionNeeded) {
@@ -142,8 +143,8 @@ class _CoveredChildrenScreenState extends State<CoveredChildrenScreen> {
               child: Row(children: [
                 Icon(
                     _selected.contains(c.studentId)
-                        ? Icons.check_circle
-                        : Icons.radio_button_unchecked,
+                        ? PhosphorIconsFill.checkCircle
+                        : PhosphorIconsRegular.circle,
                     color: _selected.contains(c.studentId) ? s.primary : s.onFaint),
                 const SizedBox(width: 12),
                 Expanded(

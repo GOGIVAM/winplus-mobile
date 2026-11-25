@@ -10,6 +10,7 @@ import '../../theme/win_theme.dart';
 import '../../theme/win_typography.dart';
 import '../../widgets/win_widgets.dart';
 import '../../widgets/win_screen.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Historique de commandes (E39)  vraies données serveur (GET /api/orders),
 /// statut, facture PDF consultable, remboursement demandable.
@@ -61,13 +62,13 @@ class _OrdersScreenState extends State<OrdersScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(context.l10n.shopMyOrders),
         actions: [
           IconButton(
-            icon: Icon(Icons.refresh_outlined, color: s.onStrong),
+            icon: Icon(PhosphorIconsRegular.arrowClockwise, color: s.onStrong),
             onPressed: () {
               setState(() => _orders = null);
               _load();
@@ -82,7 +83,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
           : orders.isEmpty
               ? Center(
                   child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  Icon(Icons.receipt_long_outlined, size: 64, color: s.onFaint),
+                  Icon(PhosphorIconsRegular.receipt, size: 64, color: s.onFaint),
                   const SizedBox(height: 12),
                   Text(context.l10n.shopNoOrders,
                       style: WinType.bodyM(s.onMuted)),
@@ -106,7 +107,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                               color: s.primaryContainer,
                               borderRadius: BorderRadius.circular(WinRadii.sm),
                             ),
-                            child: Icon(Icons.receipt_long_outlined,
+                            child: Icon(PhosphorIconsRegular.receipt,
                                 size: 22, color: s.primary),
                           ),
                           const SizedBox(width: 12),
@@ -226,7 +227,7 @@ class _OrderDetailSheetState extends State<_OrderDetailSheet> {
             ],
             WinButton(context.l10n.shopViewInvoice,
                 block: true,
-                icon: Icons.picture_as_pdf_outlined,
+                icon: PhosphorIconsRegular.filePdf,
                 onTap: _viewInvoice),
             if (o.isCompleted) ...[
               const SizedBox(height: 10),
@@ -299,12 +300,12 @@ class _InvoiceViewerScreenState extends State<_InvoiceViewerScreen> {
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Icon(Icons.picture_as_pdf_outlined, size: 56, color: s.onFaint),
+            Icon(PhosphorIconsRegular.filePdf, size: 56, color: s.onFaint),
             const SizedBox(height: 16),
             Text(context.l10n.shopInvoiceLoadFailed,
                 style: WinType.bodyM(s.onMuted)),
             const SizedBox(height: 16),
-            WinButton(context.l10n.commonRetry, icon: Icons.refresh, onTap: _load),
+            WinButton(context.l10n.commonRetry, icon: PhosphorIconsRegular.arrowClockwise, onTap: _load),
           ]),
         ),
       );

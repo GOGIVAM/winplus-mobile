@@ -6,6 +6,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Mode veille d'examen : le parent active un suivi rapproché sur le plan
 /// ExamCoachPlan actif de l'enfant (ou en crée un). N'ajoute pas de nouvelle
@@ -199,7 +200,7 @@ class _ExamWatchModeTabState extends State<ExamWatchModeTab> {
               WinTextField(
                 label: context.l10n.parentWatchExamType,
                 hint: context.l10n.parentWatchExamTypeHint,
-                icon: Icons.school_outlined,
+                icon: PhosphorIconsRegular.graduationCap,
                 controller: _examTypeCtrl,
               ),
               const SizedBox(height: 14),
@@ -218,7 +219,7 @@ class _ExamWatchModeTabState extends State<ExamWatchModeTab> {
                     border: Border.all(color: s.outline, width: 1.5),
                   ),
                   child: Row(children: [
-                    Icon(Icons.calendar_today_outlined,
+                    Icon(PhosphorIconsRegular.calendarBlank,
                         size: 16, color: s.onFaint),
                     const SizedBox(width: 10),
                     Text(

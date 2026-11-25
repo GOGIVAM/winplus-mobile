@@ -5,6 +5,7 @@ import '../services/auth_service.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   final String token;
@@ -59,7 +60,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     return WinAuthFrame(children: [
       WinAuthHeading(l10n.authNewPassword,
           subtitle: l10n.authChooseSecure,
-          icon: _done ? Icons.check_rounded : Icons.lock_reset_outlined),
+          icon: _done ? PhosphorIconsBold.check : PhosphorIconsRegular.lockKeyOpen),
       if (_done) ...[
         WinAlert(
           l10n.authPwdUpdated,
@@ -72,12 +73,12 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         WinTextField(
           label: l10n.authNewPassword,
           hint: '••••••••',
-          icon: Icons.lock_outline,
+          icon: PhosphorIconsRegular.lock,
           obscure: !_showPw,
           controller: _pwCtrl,
           suffixIcon: _showPw
-              ? Icons.visibility_off_outlined
-              : Icons.visibility_outlined,
+              ? PhosphorIconsRegular.eyeSlash
+              : PhosphorIconsRegular.eye,
           onSuffixTap: () => setState(() => _showPw = !_showPw),
           onChanged: (_) => setState(() {}),
         ),
@@ -85,12 +86,12 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         WinTextField(
           label: l10n.authConfirmPassword,
           hint: '••••••••',
-          icon: Icons.lock_outline,
+          icon: PhosphorIconsRegular.lock,
           obscure: !_showConfirm,
           controller: _confirmCtrl,
           suffixIcon: _showConfirm
-              ? Icons.visibility_off_outlined
-              : Icons.visibility_outlined,
+              ? PhosphorIconsRegular.eyeSlash
+              : PhosphorIconsRegular.eye,
           onSuffixTap: () => setState(() => _showConfirm = !_showConfirm),
           onChanged: (_) => setState(() {}),
         ),
@@ -126,7 +127,7 @@ class _Constraint extends StatelessWidget {
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
     return Row(children: [
-      Icon(ok ? Icons.check_circle : Icons.radio_button_unchecked,
+      Icon(ok ? PhosphorIconsFill.checkCircle : PhosphorIconsRegular.circle,
           size: 16, color: ok ? s.primary : s.onFaint),
       const SizedBox(width: 8),
       // Sur écran étroit, la règle passe à la ligne au lieu de déborder.

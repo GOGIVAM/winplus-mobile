@@ -5,6 +5,7 @@ import 'package:winplus/widgets/winai_memories_sheet.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 Widget _ouvreur() => Builder(
       builder: (c) => Scaffold(
@@ -48,8 +49,8 @@ void main() {
     expect(find.text(l.widgetMemDifficulty.toUpperCase()), findsOneWidget);
     expect(find.text(l.widgetMemMastered.toUpperCase()), findsOneWidget);
     expect(find.text(l.widgetMemMemory.toUpperCase()), findsOneWidget);
-    expect(find.byIcon(Icons.warning_amber_rounded), findsOneWidget);
-    expect(find.byIcon(Icons.delete_outline_rounded), findsNWidgets(3));
+    expect(find.byIcon(PhosphorIconsRegular.warning), findsOneWidget);
+    expect(find.byIcon(PhosphorIconsRegular.trash), findsNWidgets(3));
   });
 
   testWidgets('supprimer une memoire : appel serveur puis disparition de la ligne', (tester) async {
@@ -60,7 +61,7 @@ void main() {
     faux.repond('DELETE', '/chatbot/memories/1', {});
     await monterEcran(tester, _ouvreur());
     await _ouvrir(tester);
-    await tester.tap(find.byIcon(Icons.delete_outline_rounded).first);
+    await tester.tap(find.byIcon(PhosphorIconsRegular.trash).first);
     await reseau(tester);
     expect(faux.recues('DELETE', '/chatbot/memories/1'), hasLength(1));
     expect(find.text('BAC en juin'), findsNothing);
@@ -73,7 +74,7 @@ void main() {
     ]);
     await monterEcran(tester, _ouvreur());
     await _ouvrir(tester);
-    await tester.tap(find.byIcon(Icons.delete_outline_rounded));
+    await tester.tap(find.byIcon(PhosphorIconsRegular.trash));
     await reseau(tester);
     expect(find.text(L10n.current.widgetMemDeleteFailed), findsOneWidget);
     expect(find.text('BAC en juin'), findsOneWidget);
@@ -83,7 +84,7 @@ void main() {
     faux.repond('GET', '/chatbot/memories', []);
     await monterEcran(tester, _ouvreur());
     await _ouvrir(tester);
-    await tester.tap(find.byIcon(Icons.refresh_rounded));
+    await tester.tap(find.byIcon(PhosphorIconsRegular.arrowClockwise));
     await reseau(tester);
     expect(faux.recues('GET', '/chatbot/memories'), hasLength(2));
   });

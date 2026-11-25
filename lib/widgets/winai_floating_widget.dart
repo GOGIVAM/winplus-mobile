@@ -11,6 +11,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import 'win_widgets.dart';
 import 'winai_memories_sheet.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class _WinAIRoleConfig {
   final String subtitle;
@@ -270,12 +271,12 @@ class _MiniCard extends StatelessWidget {
                           style: WinType.archivo(size: 17, color: s.onStrong))),
                   GestureDetector(
                     onTap: onOpenFull,
-                    child: Icon(Icons.open_in_full, size: 18, color: s.onMuted),
+                    child: Icon(PhosphorIconsRegular.arrowsOut, size: 18, color: s.onMuted),
                   ),
                   const SizedBox(width: 12),
                   GestureDetector(
                     onTap: onClose,
-                    child: Icon(Icons.close, size: 20, color: s.onMuted),
+                    child: Icon(PhosphorIconsRegular.x, size: 20, color: s.onMuted),
                   ),
                 ]),
                 const SizedBox(height: 4),
@@ -361,7 +362,7 @@ class _MiniCard extends StatelessWidget {
                       decoration:
                           BoxDecoration(color: accent, shape: BoxShape.circle),
                       child:
-                          const Icon(Icons.send, size: 18, color: Colors.white),
+                          const Icon(PhosphorIconsFill.paperPlaneRight, size: 18, color: Colors.white),
                     ),
                   ),
                 ]),

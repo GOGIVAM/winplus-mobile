@@ -15,6 +15,7 @@ import 'package:winplus/widgets/mobile_home.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 String _dans(Duration d) => DateTime.now().add(d).toUtc().toIso8601String();
 
@@ -205,6 +206,6 @@ void main() {
     expect(find.text(l.commonActive), findsOneWidget, reason: 'seule Zoe a ete active aujourd\'hui');
     expect(find.text(l.commonYesterday), findsOneWidget);
     expect(find.text(l.parentChildInactive), findsOneWidget, reason: 'Ivy n''a jamais ete active');
-    expect(find.byIcon(Icons.trending_flat_rounded), findsNothing, reason: 'le serveur ne calcule aucune tendance');
+    expect(find.byIcon(PhosphorIconsRegular.arrowRight), findsNothing, reason: 'le serveur ne calcule aucune tendance');
   });
 }

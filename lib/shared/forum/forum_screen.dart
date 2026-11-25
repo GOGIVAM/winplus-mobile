@@ -8,6 +8,7 @@ import '../../theme/win_typography.dart';
 import '../../widgets/win_widgets.dart';
 import 'thread_detail_screen.dart';
 import 'new_thread_screen.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class ForumScreen extends StatefulWidget {
   const ForumScreen({super.key});
@@ -93,7 +94,7 @@ class _ForumScreenState extends State<ForumScreen> {
         title: Text(l10n.forumTitle),
         actions: [
           IconButton(
-            icon: Icon(Icons.add, color: s.primary),
+            icon: Icon(PhosphorIconsRegular.plus, color: s.primary),
             onPressed: () => Navigator.push(context,
                     WinPageRoute(builder: (_) => const NewThreadScreen()))
                 .then((_) => _load(reset: true)),
@@ -198,12 +199,12 @@ class _ThreadCard extends StatelessWidget {
             const SizedBox(width: 8),
             Text(thread['authorName'] ?? '', style: WinType.labelM(s.onMuted)),
             const Spacer(),
-            Icon(Icons.chat_bubble_outline, size: 13, color: s.onFaint),
+            Icon(PhosphorIconsRegular.chatCircle, size: 13, color: s.onFaint),
             const SizedBox(width: 4),
             Text('${thread['repliesCount'] ?? 0}',
                 style: WinType.labelM(s.onFaint)),
             const SizedBox(width: 12),
-            Icon(Icons.thumb_up_outlined, size: 13, color: s.onFaint),
+            Icon(PhosphorIconsRegular.thumbsUp, size: 13, color: s.onFaint),
             const SizedBox(width: 4),
             Text('${thread['upvotes'] ?? 0}', style: WinType.labelM(s.onFaint)),
           ]),
@@ -237,7 +238,7 @@ class _RoleBadge extends StatelessWidget {
       return Row(mainAxisSize: MainAxisSize.min, children: [
         WinBadge(label, color: color),
         const SizedBox(width: 4),
-        const Icon(Icons.verified_rounded, size: 12, color: WinColors.success),
+        const Icon(PhosphorIconsFill.sealCheck, size: 12, color: WinColors.success),
       ]);
     }
     return WinBadge(label, color: color);

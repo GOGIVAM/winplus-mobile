@@ -7,6 +7,7 @@ import 'package:winplus/widgets/win_widgets.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 Finder _bouton(String libelle) => find.widgetWithText(WinButton, libelle);
 
@@ -111,7 +112,7 @@ void main() {
     await tester.tap(envoyer);
     await reseau(tester);
     expect(find.text(l.tutoringReviewChooseRating), findsOneWidget);
-    await tester.tap(find.byIcon(Icons.star_border).at(3));
+    await tester.tap(find.byIcon(PhosphorIconsRegular.star).at(3));
     await pomper(tester);
     await tester.enterText(find.byType(TextField), 'Tres claire');
     await tester.tap(envoyer);
@@ -125,8 +126,8 @@ void main() {
     routes([_seance({'status': 'completed', 'canReview': true})]);
     faux.repond('POST', '/tutor-reviews', {'error': 'Deja note'}, statut: 400);
     await monterEcran(tester, const MyTutorBookingsScreen());
-    await tester.ensureVisible(find.byIcon(Icons.star_border).first);
-    await tester.tap(find.byIcon(Icons.star_border).first);
+    await tester.ensureVisible(find.byIcon(PhosphorIconsRegular.star).first);
+    await tester.tap(find.byIcon(PhosphorIconsRegular.star).first);
     await pomper(tester);
     final envoyer = _bouton(L10n.current.tutoringReviewSubmit);
     await tester.tap(envoyer);

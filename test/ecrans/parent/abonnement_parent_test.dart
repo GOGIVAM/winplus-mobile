@@ -11,6 +11,7 @@ import 'package:winplus/widgets/win_widgets.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 Finder _bouton(String libelle) => find.widgetWithText(WinButton, libelle);
 
@@ -165,7 +166,7 @@ void main() {
   testWidgets('actualiser relit l\'abonnement', (tester) async {
     faux.repond('GET', '/subscriptions/me', _abo());
     await monterEcran(tester, const SubscriptionStatusScreen());
-    await tester.tap(find.byIcon(Icons.refresh_outlined));
+    await tester.tap(find.widgetWithIcon(IconButton, PhosphorIconsRegular.arrowClockwise));
     await reseau(tester);
     expect(faux.recues('GET', '/subscriptions/me'), hasLength(2));
   });

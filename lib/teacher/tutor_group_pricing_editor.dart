@@ -5,6 +5,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Lot 9.3 (suivi 17.3) : séances de groupe. Le tuteur choisit sa méthode :
 /// prix par élève dégressif selon la taille du groupe (paliers), ou prix fixe
@@ -122,9 +123,9 @@ class _TutorGroupPricingEditorState extends State<TutorGroupPricingEditor> {
     final sizes = List.generate(19, (i) => i + 2);
     Widget stepper(String label, int v, int min, int max, ValueChanged<int> on, {int step = 1}) => Row(children: [
           Expanded(child: Text(label, style: WinType.bodyS(s.onSurface))),
-          IconButton(icon: const Icon(Icons.remove_circle_outline), onPressed: v - step >= min ? () => on(v - step) : null),
+          IconButton(icon: const Icon(PhosphorIconsRegular.minusCircle), onPressed: v - step >= min ? () => on(v - step) : null),
           Text('$v', style: WinType.titleM(s.onStrong)),
-          IconButton(icon: const Icon(Icons.add_circle_outline), onPressed: v + step <= max ? () => on(v + step) : null),
+          IconButton(icon: const Icon(PhosphorIconsRegular.plusCircle), onPressed: v + step <= max ? () => on(v + step) : null),
         ]);
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -206,14 +207,14 @@ class _TutorGroupPricingEditorState extends State<TutorGroupPricingEditor> {
             ),
             IconButton(
               tooltip: context.l10n.teacherPricingRemoveTier,
-              icon: Icon(Icons.delete_outline, color: s.onMuted),
+              icon: Icon(PhosphorIconsRegular.trash, color: s.onMuted),
               onPressed: () => onChanged(value.copyWith(discounts: [...value.discounts]..removeAt(i))),
             ),
           ]);
         }),
         if (value.discounts.length < 5)
           TextButton.icon(
-            icon: const Icon(Icons.add),
+            icon: const Icon(PhosphorIconsRegular.plus),
             label: Text(context.l10n.teacherPricingAddTier),
             onPressed: () => onChanged(value.copyWith(discounts: [
               ...value.discounts,

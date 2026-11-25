@@ -11,6 +11,7 @@ import '../../theme/win_colors.dart';
 import '../../theme/win_theme.dart';
 import '../../theme/win_typography.dart';
 import '../../widgets/win_widgets.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Écran « Acheter » d'un contenu payant.
 ///
@@ -73,7 +74,7 @@ class _AccountRequiredPurchaseScreenState
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(context.l10n.shopBuy),
@@ -93,7 +94,7 @@ class _AccountRequiredPurchaseScreenState
                       left: Radius.circular(WinRadii.lg)),
                 ),
                 child: Center(
-                    child: Icon(Icons.description_outlined,
+                    child: Icon(PhosphorIconsRegular.fileText,
                         size: 32, color: s.primary)),
               ),
               const SizedBox(width: 14),
@@ -137,14 +138,14 @@ class _AccountRequiredPurchaseScreenState
             const SizedBox(height: 20),
             WinButton(context.l10n.login,
                 block: true,
-                icon: Icons.login,
+                icon: PhosphorIconsRegular.signIn,
                 onTap: () => Navigator.push(context,
                     WinPageRoute(builder: (_) => const LoginScreen()))),
             const SizedBox(height: 10),
             WinButton(context.l10n.createAccount,
                 block: true,
                 variant: WinButtonVariant.outline,
-                icon: Icons.person_add_alt_1_outlined,
+                icon: PhosphorIconsRegular.userPlus,
                 onTap: () => Navigator.push(
                     context, WinPageRoute(builder: (_) => const RoleScreen()))),
           ] else ...[
@@ -159,7 +160,7 @@ class _AccountRequiredPurchaseScreenState
             WinButton(context.l10n.studentViewerAddToCart,
                 block: true,
                 loading: _adding,
-                icon: Icons.shopping_cart_outlined,
+                icon: PhosphorIconsRegular.shoppingCart,
                 onTap: _adding ? null : _ajouterAuPanier),
           ],
         ],

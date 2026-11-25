@@ -9,6 +9,7 @@ import 'package:winplus/widgets/win_widgets.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 Finder _bouton(String libelle) => find.widgetWithText(WinButton, libelle);
 
@@ -74,7 +75,7 @@ void main() {
       expect(find.text(l.subBadgePopular), findsOneWidget);
       expect(find.text(l.subBadgeCurrent), findsOneWidget, reason: 'le plan gratuit est le plan courant sans abonnement');
       expect(find.text('Favoris : 50'), findsOneWidget);
-      expect(find.byIcon(Icons.close), findsOneWidget);
+      expect(find.byIcon(PhosphorIconsRegular.x), findsOneWidget);
       expect(faux.requetes.single.queryParameters, {'audience': 'student'});
     });
 

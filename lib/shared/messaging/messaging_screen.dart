@@ -6,6 +6,7 @@ import '../../theme/win_colors.dart';
 import '../../theme/win_theme.dart';
 import '../../theme/win_typography.dart';
 import '../../widgets/win_widgets.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class MessagingScreen extends StatefulWidget {
   const MessagingScreen({super.key});
@@ -57,13 +58,13 @@ class _MessagingScreenState extends State<MessagingScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(context.l10n.msgTitle),
         actions: [
           IconButton(
-            icon: Icon(Icons.refresh_outlined, color: s.onStrong),
+            icon: Icon(PhosphorIconsRegular.arrowClockwise, color: s.onStrong),
             onPressed: () {
               setState(() => _convos = null);
               _load();
@@ -76,7 +77,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
           : _convos!.isEmpty
               ? Center(
                   child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  Icon(Icons.chat_bubble_outline, size: 64, color: s.onFaint),
+                  Icon(PhosphorIconsRegular.chatCircle, size: 64, color: s.onFaint),
                   const SizedBox(height: 12),
                   Text(context.l10n.msgEmpty, style: WinType.bodyM(s.onMuted)),
                   const SizedBox(height: 8),
@@ -224,7 +225,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title: Row(children: [
@@ -335,7 +336,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                             height: 20,
                             child: CircularProgressIndicator(
                                 strokeWidth: 2, color: Colors.white)))
-                    : Icon(Icons.send, size: 20, color: s.onPrimary),
+                    : Icon(PhosphorIconsFill.paperPlaneRight, size: 20, color: s.onPrimary),
               ),
             ),
           ]),

@@ -23,6 +23,7 @@ import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
 import 'package:winplus/auth/welcome_screen.dart';
 import 'package:winplus/app_state.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 void main() {
   setUpAll(() async {
@@ -106,14 +107,14 @@ void main() {
         WinAuthFrame(children: [
           WinTextField(
             label: 'Mot de passe',
-            icon: Icons.lock_outline,
+            icon: PhosphorIconsRegular.lock,
             controller: ctrl,
-            suffixIcon: Icons.visibility_outlined,
+            suffixIcon: PhosphorIconsRegular.eye,
             onSuffixTap: () => suffix = true,
           )
         ]));
-    expect(find.byIcon(Icons.lock_outline), findsNothing);
-    final action = find.widgetWithIcon(IconButton, Icons.visibility_outlined);
+    expect(find.byIcon(PhosphorIconsRegular.lock), findsNothing);
+    final action = find.widgetWithIcon(IconButton, PhosphorIconsRegular.eye);
     expect(tester.getSize(action).width, greaterThanOrEqualTo(44));
     expect(tester.getSize(action).height, greaterThanOrEqualTo(44));
     final fieldBox = find.ancestor(

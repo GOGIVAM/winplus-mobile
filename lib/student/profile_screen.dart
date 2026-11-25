@@ -15,6 +15,7 @@ import 'learning_style_quiz_screen.dart';
 import 'package:image_picker/image_picker.dart';
 import '../app_config.dart';
 import '../shared/subscription/pricing_screen.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -164,7 +165,7 @@ class _ProfileScreenState extends State<ProfileScreen>
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(context.l10n.studentProfileTitle),
@@ -226,24 +227,24 @@ class _ProfileScreenState extends State<ProfileScreen>
             WinTextField(
                 label: context.l10n.studentProfileFullName,
                 controller: _nameCtrl,
-                icon: Icons.person_outline),
+                icon: PhosphorIconsRegular.user),
             const SizedBox(height: 14),
             WinTextField(
                 label: context.l10n.email,
                 controller: _emailCtrl,
-                icon: Icons.email_outlined,
+                icon: PhosphorIconsRegular.envelopeSimple,
                 keyboardType: TextInputType.emailAddress),
             const SizedBox(height: 14),
             WinTextField(
                 label: context.l10n.studentProfilePhone,
                 controller: _phoneCtrl,
-                icon: Icons.phone_outlined,
+                icon: PhosphorIconsRegular.phone,
                 keyboardType: TextInputType.phone),
             const SizedBox(height: 14),
             WinTextField(
                 label: context.l10n.commonLevel,
                 controller: _levelCtrl,
-                icon: Icons.school_outlined),
+                icon: PhosphorIconsRegular.graduationCap),
             const SizedBox(height: 28),
             WinButton(context.l10n.studentProfileSaveChanges,
                 block: true, loading: _savingProfile, onTap: _saveProfile),
@@ -296,21 +297,21 @@ class _ProfileScreenState extends State<ProfileScreen>
           WinTextField(
               label: context.l10n.studentProfileCurrentPwd,
               hint: '••••••••',
-              icon: Icons.lock_outline,
+              icon: PhosphorIconsRegular.lock,
               obscure: true,
               controller: _curPwdCtrl),
           const SizedBox(height: 12),
           WinTextField(
               label: context.l10n.authNewPassword,
               hint: '••••••••',
-              icon: Icons.lock_outline,
+              icon: PhosphorIconsRegular.lock,
               obscure: true,
               controller: _newPwdCtrl),
           const SizedBox(height: 12),
           WinTextField(
               label: context.l10n.commonConfirm,
               hint: '••••••••',
-              icon: Icons.lock_outline,
+              icon: PhosphorIconsRegular.lock,
               obscure: true,
               controller: _confPwdCtrl),
           if (_pwdError != null) ...[
@@ -361,7 +362,7 @@ class _ProfileScreenState extends State<ProfileScreen>
           const SizedBox(height: 12),
           WinCard(
               child: Row(children: [
-            Icon(Icons.phone_android, size: 24, color: s.onFaint),
+            Icon(PhosphorIconsRegular.deviceMobile, size: 24, color: s.onFaint),
             const SizedBox(width: 12),
             Expanded(
                 child: Column(
@@ -543,7 +544,7 @@ class _EmailChangeCardState extends State<_EmailChangeCard> {
         const SizedBox(height: 12),
         WinTextField(
           label: context.l10n.studentProfileNewEmail,
-          icon: Icons.email_outlined,
+          icon: PhosphorIconsRegular.envelopeSimple,
           controller: _newEmailCtrl,
           keyboardType: TextInputType.emailAddress,
         ),
@@ -575,7 +576,7 @@ class _EmailChangeCardState extends State<_EmailChangeCard> {
       const SizedBox(height: 12),
       WinTextField(
         label: context.l10n.studentProfileCodeReceived,
-        icon: Icons.pin_outlined,
+        icon: PhosphorIconsRegular.password,
         controller: _codeCtrl,
         keyboardType: TextInputType.number,
       ),
@@ -653,7 +654,7 @@ class _TabCompteState extends State<_TabCompte> {
         WinButton(context.l10n.studentProfileManageSub,
             block: true,
             variant: WinButtonVariant.outline,
-            icon: Icons.credit_card_outlined,
+            icon: PhosphorIconsRegular.creditCard,
             onTap: () => Navigator.push(context,
                 WinPageRoute(builder: (_) => const PricingScreen()))),
       ])),
@@ -666,7 +667,7 @@ class _TabCompteState extends State<_TabCompte> {
       WinButton(context.l10n.studentProfileDeleteAccount,
           block: true,
           variant: WinButtonVariant.danger,
-          icon: Icons.delete_outline,
+          icon: PhosphorIconsRegular.trash,
           onTap: () => showDialog(
                 context: context,
                 builder: (_) => AlertDialog(

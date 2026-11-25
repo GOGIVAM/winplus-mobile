@@ -5,6 +5,7 @@ import 'package:winplus/teacher/teacher_links_screen.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 void main() {
   late FauxReseau faux;
@@ -43,10 +44,10 @@ void main() {
     faux.repond('PUT', '/teacher-links/1/accept', {});
     faux.repond('PUT', '/teacher-links/1/reject', {});
     await monterEcran(tester, const TeacherLinksScreen());
-    await tester.tap(find.byIcon(Icons.check));
+    await tester.tap(find.byIcon(PhosphorIconsBold.check));
     await reseau(tester);
     expect(faux.recues('PUT', '/teacher-links/1/accept'), hasLength(1));
-    await tester.tap(find.byIcon(Icons.close));
+    await tester.tap(find.byIcon(PhosphorIconsRegular.x));
     await reseau(tester);
     expect(faux.recues('PUT', '/teacher-links/1/reject'), hasLength(1));
     expect(faux.recues('GET', '/teacher-links/pending'), hasLength(3));
@@ -62,7 +63,7 @@ void main() {
     await pomper(tester);
     await pomper(tester, const Duration(milliseconds: 400));
     expect(find.text('Paul Nkoa'), findsOneWidget);
-    await tester.tap(find.byIcon(Icons.link_off));
+    await tester.tap(find.byIcon(PhosphorIconsRegular.linkBreak));
     await reseau(tester);
     expect(faux.recues('DELETE', '/teacher-links/7'), hasLength(1));
   });
@@ -91,7 +92,7 @@ void main() {
     expect(faux.recues('GET', '/teacher-links/search').single.queryParameters, {'q': 'zo'});
     expect(find.text('Zoe Mba'), findsOneWidget);
     expect(find.text('zoe@x.cm'), findsOneWidget);
-    await tester.tap(find.byIcon(Icons.person_add));
+    await tester.tap(find.byIcon(PhosphorIconsFill.userPlus));
     await reseau(tester);
     expect(faux.recues('POST', '/teacher-links/invite').single.data, {'targetUserId': 9});
     expect(find.text(L10n.current.teacherLinksInviteSent), findsOneWidget);

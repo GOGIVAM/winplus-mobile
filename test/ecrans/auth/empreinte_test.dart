@@ -11,6 +11,7 @@ import 'package:winplus/shell/role_shell.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Reconfirmation d'identite et deverrouillage par empreinte : plus de code
 /// par e-mail juste apres une connexion ; l'empreinte, si elle est choisie,
@@ -108,7 +109,7 @@ void main() {
     BiometricService.instance.debugAuthenticate = () async => ++essais > 1;
     await lancer(tester);
     expect(find.byType(AppLockScreen), findsOneWidget);
-    await tester.tap(find.byIcon(Icons.fingerprint).last);
+    await tester.tap(find.byIcon(PhosphorIconsRegular.fingerprint).last);
     await reseau(tester);
     await pomper(tester);
     await pomper(tester, const Duration(milliseconds: 500));

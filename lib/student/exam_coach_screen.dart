@@ -8,6 +8,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../shared/subscription/upgrade_sheet.dart';
 import '../shared/subscription/subscription_notifier.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Module 24 (lot 8, rattrapage 16.3) : Exam Coach porté sur les vrais
 /// endpoints déjà utilisés par le web (ExamCoach.tsx/examCoachService.ts) —
@@ -185,7 +186,7 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
           backgroundColor: s.bg,
           elevation: 0,
           leading: IconButton(
-              icon: Icon(Icons.arrow_back, color: s.onStrong),
+              icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
               onPressed: () => Navigator.pop(context)),
         ),
         body: Center(
@@ -197,7 +198,7 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
                   height: 80,
                   decoration: const BoxDecoration(
                       color: WinColors.warnBg, shape: BoxShape.circle),
-                  child: const Icon(Icons.lock_outline,
+                  child: const Icon(PhosphorIconsRegular.lock,
                       size: 40, color: WinColors.warn)),
               const SizedBox(height: 20),
               Text('Exam Coach',
@@ -225,7 +226,7 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: s.onStrong),
+            icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
             onPressed: () => Navigator.pop(context)),
         title: Text('Exam Coach'),
       ),
@@ -280,7 +281,7 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
               ? context.l10n.studentCoachPickDate
               : '${_examDate!.day}/${_examDate!.month}/${_examDate!.year}',
           variant: WinButtonVariant.outline,
-          icon: Icons.calendar_today_outlined,
+          icon: PhosphorIconsRegular.calendarBlank,
           block: true,
           onTap: () async {
             final picked = await showDatePicker(
@@ -350,7 +351,7 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
           bg: WinColors.ink800,
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(children: [
-              const Icon(Icons.school_outlined, size: 20, color: WinColors.teal400),
+              const Icon(PhosphorIconsRegular.graduationCap, size: 20, color: WinColors.teal400),
               const SizedBox(width: 8),
               Expanded(
                   child: Text(plan.examType,
@@ -378,10 +379,10 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
             const SizedBox(height: 8),
             if (!isTodayDone)
               WinButton(context.l10n.studentCoachMarkToday,
-                  icon: Icons.check, block: true, onTap: _completeToday)
+                  icon: PhosphorIconsBold.check, block: true, onTap: _completeToday)
             else
               Row(children: [
-                const Icon(Icons.check_circle, color: WinColors.success, size: 18),
+                const Icon(PhosphorIconsFill.checkCircle, color: WinColors.success, size: 18),
                 const SizedBox(width: 8),
                 Text(context.l10n.studentCoachTodayDone),
               ]),
@@ -417,7 +418,7 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
                     ),
                     child: Center(
                       child: isDone
-                          ? const Icon(Icons.check, size: 14, color: Colors.white)
+                          ? const Icon(PhosphorIconsBold.check, size: 14, color: Colors.white)
                           : Text('$dayNum',
                               style: WinType.labelS(s.onMuted)),
                     ),
@@ -441,7 +442,7 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
         WinButton(context.l10n.studentCoachDeletePlan,
             variant: WinButtonVariant.outline,
             block: true,
-            icon: Icons.delete_outline,
+            icon: PhosphorIconsRegular.trash,
             onTap: _deletePlan),
       ],
     );

@@ -5,6 +5,7 @@ import '../../services/tutor_booking_service.dart';
 import '../../theme/win_theme.dart';
 import '../../theme/win_typography.dart';
 import '../../widgets/win_widgets.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Lot 9.3 (suivi 17.4) : « Pour qui ? » dans la réservation mobile. Le
 /// parent choisit ses enfants liés, l'institution ses élèves (par classe),
@@ -130,7 +131,7 @@ class _TutorBookingForWhomState extends State<TutorBookingForWhom> {
       }
       children.addAll([
         TextField(
-          decoration: InputDecoration(hintText: context.l10n.tutoringSearchStudent, isDense: true, prefixIcon: const Icon(Icons.search)),
+          decoration: InputDecoration(hintText: context.l10n.tutoringSearchStudent, isDense: true, prefixIcon: const Icon(PhosphorIconsRegular.magnifyingGlass)),
           onChanged: (t) => setState(() => _search = t.trim()),
         ),
         const SizedBox(height: 8),

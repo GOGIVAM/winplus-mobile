@@ -5,6 +5,7 @@ import 'package:winplus/shared/forum/thread_detail_screen.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 const _sujet = {'id': 7, 'title': 'Comment factoriser ?', 'content': 'Je bloque sur x2 - 4', 'category': 'Questions'};
 
@@ -40,7 +41,7 @@ void main() {
     expect(find.text(l.forumRoleTeacher), findsOneWidget);
     expect(find.text('Utilise (a-b)(a+b)'), findsOneWidget);
     expect(find.text('4'), findsOneWidget);
-    expect(find.byIcon(Icons.check_circle), findsOneWidget);
+    expect(find.byIcon(PhosphorIconsFill.checkCircle), findsOneWidget);
     expect(find.text(l.forumAnonymous), findsOneWidget);
     expect(find.text(l.roleParent), findsOneWidget);
   });
@@ -56,7 +57,7 @@ void main() {
     faux.repond('GET', '/forums/threads/7/posts', []);
     await monterEcran(tester, const ThreadDetailScreen(thread: _sujet));
     await tester.enterText(find.byType(TextField), '   ');
-    await tester.tap(find.byIcon(Icons.send));
+    await tester.tap(find.byIcon(PhosphorIconsFill.paperPlaneRight));
     await reseau(tester);
     expect(faux.recues('POST', '/forums/threads/7/posts'), isEmpty);
   });
@@ -66,7 +67,7 @@ void main() {
     faux.repond('POST', '/forums/threads/7/posts', {});
     await monterEcran(tester, const ThreadDetailScreen(thread: _sujet));
     await tester.enterText(find.byType(TextField), '  Ma reponse ');
-    await tester.tap(find.byIcon(Icons.send));
+    await tester.tap(find.byIcon(PhosphorIconsFill.paperPlaneRight));
     await reseau(tester);
     expect(faux.recues('POST', '/forums/threads/7/posts').single.data, {'content': 'Ma reponse'});
     expect(tester.widget<TextField>(find.byType(TextField)).controller!.text, isEmpty);
@@ -79,9 +80,9 @@ void main() {
     ]);
     faux.repond('POST', '/forums/posts/1/vote', {});
     await monterEcran(tester, const ThreadDetailScreen(thread: _sujet));
-    await tester.tap(find.byIcon(Icons.thumb_up_outlined));
+    await tester.tap(find.byIcon(PhosphorIconsRegular.thumbsUp));
     await reseau(tester);
-    await tester.tap(find.byIcon(Icons.thumb_down_outlined));
+    await tester.tap(find.byIcon(PhosphorIconsRegular.thumbsDown));
     await reseau(tester);
     final votes = faux.recues('POST', '/forums/posts/1/vote').map((r) => r.data).toList();
     expect(votes, [

@@ -5,6 +5,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class MyLinksScreen extends StatefulWidget {
   const MyLinksScreen({super.key});
@@ -104,7 +105,7 @@ class _MyLinksScreenState extends State<MyLinksScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: s.onStrong),
+            icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
             onPressed: () => Navigator.pop(context)),
         title: Text(context.l10n.studentLinksTitle),
       ),
@@ -160,7 +161,7 @@ class _MyLinksScreenState extends State<MyLinksScreen> {
                                                 : null,
                                         backgroundColor: s.surface2,
                                         child: inv['avatarUrl'] == null
-                                            ? Icon(Icons.person,
+                                            ? Icon(PhosphorIconsFill.user,
                                                 color: s.onFaint, size: 18)
                                             : null,
                                       ),
@@ -228,7 +229,7 @@ class _MyLinksScreenState extends State<MyLinksScreen> {
                               child: WinCard(
                                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                                 Row(children: [
-                                  Icon(Icons.apartment_outlined, color: s.primary),
+                                  Icon(PhosphorIconsRegular.buildings, color: s.primary),
                                   const SizedBox(width: 10),
                                   Expanded(
                                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -307,7 +308,7 @@ class _MyLinksScreenState extends State<MyLinksScreen> {
                                         color: s.primaryContainer,
                                         borderRadius:
                                             BorderRadius.circular(WinRadii.sm)),
-                                    child: Icon(Icons.groups_outlined,
+                                    child: Icon(PhosphorIconsRegular.usersThree,
                                         size: 20, color: s.primary),
                                   ),
                                   const SizedBox(width: 12),
@@ -317,7 +318,7 @@ class _MyLinksScreenState extends State<MyLinksScreen> {
                                               .copyWith(
                                                   fontWeight:
                                                       FontWeight.w600))),
-                                  Icon(Icons.chevron_right,
+                                  Icon(PhosphorIconsRegular.caretRight,
                                       size: 18, color: s.onFaint),
                                 ])),
                               )),
@@ -376,7 +377,7 @@ class _PersonCard extends StatelessWidget {
               : null,
           backgroundColor: s.surface2,
           child: person['avatarUrl'] == null
-              ? Icon(Icons.person, color: s.onFaint)
+              ? Icon(PhosphorIconsFill.user, color: s.onFaint)
               : null,
         ),
         const SizedBox(width: 12),

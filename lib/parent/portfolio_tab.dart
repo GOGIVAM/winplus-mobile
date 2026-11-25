@@ -7,6 +7,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../widgets/win_screen.dart';
 import '../l10n/l10n.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Portefeuille de compétences  portrait stable de l'apprenant, recalculé
 /// une fois par mois. Trois textes descriptifs uniquement (Régularité /
@@ -70,7 +71,7 @@ class _PortfolioTabState extends State<PortfolioTab> {
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Icon(Icons.person_outline, size: 48, color: s.onFaint),
+            Icon(PhosphorIconsRegular.user, size: 48, color: s.onFaint),
             const SizedBox(height: 12),
             Text(
                 context.l10n.parentPortfolioNotYet(widget.child.firstName),
@@ -91,19 +92,19 @@ class _PortfolioTabState extends State<PortfolioTab> {
             style: WinType.labelS(s.onFaint)),
         const SizedBox(height: 16),
         _PortfolioCard(
-            icon: Icons.calendar_today_outlined,
+            icon: PhosphorIconsRegular.calendarBlank,
             title: context.l10n.parentPortfolioRegularity,
             text: p.regularite ??
                 context.l10n.parentPortfolioNoRegularity(widget.child.firstName)),
         const SizedBox(height: 10),
         _PortfolioCard(
-            icon: Icons.rocket_launch_outlined,
+            icon: PhosphorIconsRegular.rocketLaunch,
             title: context.l10n.parentPortfolioAutonomy,
             text: p.autonomie ??
                 context.l10n.parentPortfolioNoAutonomy(widget.child.firstName)),
         const SizedBox(height: 10),
         _PortfolioCard(
-            icon: Icons.explore_outlined,
+            icon: PhosphorIconsRegular.compass,
             title: context.l10n.parentPortfolioCuriosity,
             text: p.curiosite ??
                 context.l10n.parentPortfolioNoCuriosity(widget.child.firstName)),

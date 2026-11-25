@@ -7,6 +7,7 @@ import 'package:winplus/widgets/win_widgets.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 Finder _bouton(String libelle) => find.widgetWithText(WinButton, libelle);
 Finder _puce(String libelle) => find.widgetWithText(WinChip, libelle);
@@ -126,7 +127,7 @@ void main() {
   testWidgets('bouton d\'actualisation : relit la liste et la limite', (tester) async {
     routes([_formation()]);
     await monterEcran(tester, const TeacherCoursesScreen());
-    await tester.tap(find.byIcon(Icons.refresh_outlined));
+    await tester.tap(find.byIcon(PhosphorIconsRegular.arrowClockwise));
     await reseau(tester);
     expect(faux.recues('GET', '/teacher/courses'), hasLength(2));
     expect(faux.recues('GET', '/teacher/courses/publication-limit'), hasLength(2));

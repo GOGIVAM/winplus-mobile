@@ -5,6 +5,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import 'win_widgets.dart';
 import 'win_logo.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Barre commune : retour rond de 44 px, titre ou marque, action à droite.
 class WinScreenHeader extends StatelessWidget implements PreferredSizeWidget {
@@ -42,7 +43,7 @@ class WinScreenHeader extends StatelessWidget implements PreferredSizeWidget {
                         MaterialLocalizations.of(context).backButtonTooltip,
                     constraints:
                         const BoxConstraints.tightFor(width: 44, height: 44),
-                    icon: Icon(Icons.chevron_left_rounded, color: s.onStrong),
+                    icon: Icon(PhosphorIconsRegular.caretLeft, color: s.onStrong),
                     onPressed: onBack ?? () => Navigator.maybePop(context),
                   ),
                 )
@@ -183,7 +184,7 @@ class WinEmptyState extends StatelessWidget {
       {super.key,
       required this.title,
       this.message,
-      this.icon = Icons.inbox_outlined,
+      this.icon = PhosphorIconsRegular.tray,
       this.actionLabel,
       this.onAction});
   @override
@@ -232,7 +233,7 @@ class WinErrorState extends StatelessWidget {
   @override
   Widget build(BuildContext context) => WinEmptyState(
       title: message,
-      icon: Icons.error_outline,
+      icon: PhosphorIconsRegular.warningCircle,
       actionLabel: context.l10n.commonRetry,
       onAction: onRetry);
 }

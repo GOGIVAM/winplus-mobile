@@ -9,6 +9,7 @@ import 'package:winplus/widgets/winai_floating_widget.dart';
 
 import '../helpers/ecran.dart';
 import '../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Page factice : un texte sous le bouton flottant, pour verifier que le
 /// contenu de la coque reste affiche.
@@ -71,7 +72,7 @@ void main() {
     await tester.tap(_bouton());
     await pomper(tester);
     expect(find.text('WinAI'), findsOneWidget);
-    await tester.tap(find.byIcon(Icons.close));
+    await tester.tap(find.byIcon(PhosphorIconsRegular.x));
     await pomper(tester);
     expect(find.text('WinAI'), findsNothing);
     // Voile : un appui en haut de l'ecran, hors carte.
@@ -121,7 +122,7 @@ void main() {
     await tester.tap(_bouton());
     await pomper(tester);
     await tester.enterText(find.byType(TextField), '  Explique les limites ');
-    await tester.tap(find.byIcon(Icons.send));
+    await tester.tap(find.byIcon(PhosphorIconsFill.paperPlaneRight));
     await pomper(tester, const Duration(milliseconds: 400));
     await reseau(tester);
     expect(tester.widget<StudentWinAITab>(find.byType(StudentWinAITab)).initialMessage, 'Explique les limites');
@@ -144,7 +145,7 @@ void main() {
     await monterEcran(tester, _coque(WinRole.student));
     await tester.tap(_bouton());
     await pomper(tester);
-    await tester.tap(find.byIcon(Icons.send));
+    await tester.tap(find.byIcon(PhosphorIconsFill.paperPlaneRight));
     await pomper(tester, const Duration(milliseconds: 400));
     await reseau(tester);
     expect(find.byType(StudentWinAITab), findsOneWidget);
@@ -155,7 +156,7 @@ void main() {
     await monterEcran(tester, _coque(WinRole.student));
     await tester.tap(_bouton());
     await pomper(tester);
-    await tester.tap(find.byIcon(Icons.open_in_full));
+    await tester.tap(find.byIcon(PhosphorIconsRegular.arrowsOut));
     // Premiere image de la page poussee : hors scene ; la suivante l'affiche.
     await pomper(tester);
     await pomper(tester, const Duration(milliseconds: 400));

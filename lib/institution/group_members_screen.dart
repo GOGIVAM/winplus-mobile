@@ -5,6 +5,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class GroupMembersScreen extends StatefulWidget {
   final int groupId;
@@ -41,7 +42,7 @@ class _GroupMembersScreenState extends State<GroupMembersScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [

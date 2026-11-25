@@ -5,6 +5,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class SessionCreateScreen extends StatefulWidget {
   const SessionCreateScreen({super.key});
@@ -53,7 +54,7 @@ class _SessionCreateScreenState extends State<SessionCreateScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(context.l10n.teacherSessionCreateTitle),
@@ -63,7 +64,7 @@ class _SessionCreateScreenState extends State<SessionCreateScreen> {
               child: Padding(
               padding: const EdgeInsets.all(32),
               child: Column(mainAxisSize: MainAxisSize.min, children: [
-                const Icon(Icons.video_call_outlined,
+                const Icon(PhosphorIconsRegular.videoCamera,
                     size: 64, color: WinColors.success),
                 const SizedBox(height: 16),
                 Text(context.l10n.teacherSessionCreated, style: WinType.displayS(s.onStrong)),
@@ -86,19 +87,19 @@ class _SessionCreateScreenState extends State<SessionCreateScreen> {
                     WinTextField(
                         label: context.l10n.teacherSessionTitleLabel,
                         hint: context.l10n.teacherSessionTitleHint,
-                        icon: Icons.title,
+                        icon: PhosphorIconsRegular.textT,
                         controller: _titleCtrl),
                     const SizedBox(height: 16),
                     WinTextField(
                         label: context.l10n.teacherSessionDateLabel,
                         hint: context.l10n.teacherSessionDateHint,
-                        icon: Icons.calendar_today_outlined,
+                        icon: PhosphorIconsRegular.calendarBlank,
                         controller: _dateCtrl),
                     const SizedBox(height: 16),
                     WinTextField(
                         label: context.l10n.teacherSessionLinkLabel,
                         hint: 'https://meet.google.com/…',
-                        icon: Icons.link,
+                        icon: PhosphorIconsRegular.link,
                         controller: _linkCtrl),
                     const SizedBox(height: 24),
                     Text(context.l10n.teacherSessionDuration(_duration),
@@ -135,7 +136,7 @@ class _SessionCreateScreenState extends State<SessionCreateScreen> {
                     WinButton(context.l10n.teacherSessionCreateButton,
                         block: true,
                         loading: _loading,
-                        icon: Icons.video_call_outlined,
+                        icon: PhosphorIconsRegular.videoCamera,
                         onTap: _submit),
                   ]),
             ),

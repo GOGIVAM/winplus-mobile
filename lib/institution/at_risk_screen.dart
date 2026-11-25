@@ -9,6 +9,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import 'action_plan_screen.dart';
 import '../l10n/l10n.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class AtRiskScreen extends StatefulWidget {
   const AtRiskScreen({super.key});
@@ -68,7 +69,7 @@ class _AtRiskScreenState extends State<AtRiskScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(context.l10n.instRiskTitle),
@@ -81,7 +82,7 @@ class _AtRiskScreenState extends State<AtRiskScreen> {
                       color: BadgeColor.error)),
             ),
           IconButton(
-            icon: Icon(Icons.refresh_outlined, color: s.onStrong),
+            icon: Icon(PhosphorIconsRegular.arrowClockwise, color: s.onStrong),
             onPressed: () {
               setState(() => _students = null);
               _load();
@@ -114,7 +115,7 @@ class _AtRiskScreenState extends State<AtRiskScreen> {
     if (_items.isEmpty) {
       return Center(
           child: Column(mainAxisSize: MainAxisSize.min, children: [
-        const Icon(Icons.check_circle_outline,
+        const Icon(PhosphorIconsRegular.checkCircle,
             size: 64, color: WinColors.success),
         const SizedBox(height: 12),
         Text(context.l10n.instRiskEmpty,
@@ -193,15 +194,15 @@ class _AtRiskCard extends StatelessWidget {
         // Stats row
         Wrap(spacing: 8, runSpacing: 8, children: [
           _InfoChip(
-              Icons.subject_outlined,
+              PhosphorIconsRegular.textAlignLeft,
               student.weakSubject.isNotEmpty
                   ? '${student.weakSubject}  ${student.weakScore}%'
                   : context.l10n.instRiskWeakSubject,
               WinColors.error),
-          _InfoChip(Icons.bar_chart_outlined, context.l10n.instRiskScore(student.globalScore),
+          _InfoChip(PhosphorIconsRegular.chartBar, context.l10n.instRiskScore(student.globalScore),
               scoreColor),
           _InfoChip(
-              Icons.schedule_outlined,
+              PhosphorIconsRegular.clock,
               student.inactiveDays > 0
                   ? context.l10n.instRiskInactiveFor(student.inactiveDays)
                   : context.l10n.commonActive,
@@ -223,13 +224,13 @@ class _AtRiskCard extends StatelessWidget {
         Wrap(spacing: 8, runSpacing: 8, children: [
           WinButton(context.l10n.instRiskContact,
               small: true,
-              icon: Icons.message_outlined,
+              icon: PhosphorIconsRegular.chatText,
               onTap: () => Navigator.push(context,
                   WinPageRoute(builder: (_) => const MessagingScreen()))),
           WinButton(context.l10n.instRiskActionPlan,
               small: true,
               variant: WinButtonVariant.outline,
-              icon: Icons.checklist_outlined,
+              icon: PhosphorIconsRegular.listChecks,
               onTap: () => Navigator.push(context,
                   WinPageRoute(builder: (_) => const ActionPlanScreen()))),
         ]),

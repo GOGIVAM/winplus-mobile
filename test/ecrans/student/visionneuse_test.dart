@@ -6,6 +6,7 @@ import 'package:winplus/widgets/win_widgets.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 Finder _reessayer() => find.widgetWithText(WinButton, L10n.current.commonRetry);
 
@@ -78,9 +79,9 @@ void main() {
   testWidgets('aucune action de telechargement ou de partage n\'est proposee', (tester) async {
     faux.repond('GET', '/subjects/5/view', {}, statut: 500);
     await monterEcran(tester, const DocumentViewerScreen(subjectId: 5, title: 'T'));
-    expect(find.byIcon(Icons.download), findsNothing);
-    expect(find.byIcon(Icons.share), findsNothing);
-    expect(find.byIcon(Icons.print), findsNothing);
+    expect(find.byIcon(PhosphorIconsRegular.downloadSimple), findsNothing);
+    expect(find.byIcon(PhosphorIconsRegular.shareNetwork), findsNothing);
+    expect(find.byIcon(PhosphorIconsRegular.printer), findsNothing);
   });
 
   testWidgets('openDocumentViewer pousse la visionneuse', (tester) async {

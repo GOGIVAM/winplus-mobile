@@ -12,6 +12,7 @@ import 'tutor_policy_widgets.dart';
 import 'tutor_booking_flow_screen.dart';
 import 'tutor_engagement_flow_screen.dart';
 import 'tutor_pricing_widgets.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Fiche répétiteur publique (vue élève)  professeur_complete.md, section
 /// "Fiche répétiteur (vue publique)".
@@ -126,14 +127,14 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
                     padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
                     child: Row(children: [
                       WinCircleIconButton(
-                          icon: Icons.arrow_back,
+                          icon: PhosphorIconsRegular.arrowLeft,
                           onTap: () => Navigator.pop(context)),
                     ]),
                   ),
                   Expanded(
                     child: Center(
                       child: Column(mainAxisSize: MainAxisSize.min, children: [
-                        Icon(Icons.wifi_off_outlined,
+                        Icon(PhosphorIconsRegular.wifiSlash,
                             size: 48, color: s.onFaint),
                         const SizedBox(height: 12),
                         Text(context.l10n.tutoringProfileLoadError,
@@ -158,7 +159,7 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
                       top: false,
                       child: WinButton(context.l10n.tutoringBookSession,
                           block: true,
-                          icon: Icons.calendar_month_outlined,
+                          icon: PhosphorIconsRegular.calendarDots,
                           onTap: () => _openBooking()),
                     ),
                   ),
@@ -180,7 +181,7 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
           const SizedBox(height: 8),
           WinCard(
             child: Row(children: [
-              Icon(Icons.play_circle_outline, color: s.primary, size: 22),
+              Icon(PhosphorIconsRegular.playCircle, color: s.primary, size: 22),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(p.videoUrl!,
@@ -249,7 +250,7 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
               WinButton(context.l10n.tutoringBookMonthly,
                   small: true,
                   variant: WinButtonVariant.outline,
-                  icon: Icons.event_repeat_outlined,
+                  icon: PhosphorIconsRegular.repeat,
                   onTap: _openEngagement),
             ],
           ]),
@@ -329,7 +330,7 @@ class _HeroHeader extends StatelessWidget {
       child: SafeArea(
         bottom: false,
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          WinCircleIconButton(icon: Icons.arrow_back, onTap: onBack),
+          WinCircleIconButton(icon: PhosphorIconsRegular.arrowLeft, onTap: onBack),
           const SizedBox(height: 12),
           Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Stack(clipBehavior: Clip.none, children: [
@@ -347,7 +348,7 @@ class _HeroHeader extends StatelessWidget {
                       shape: BoxShape.circle,
                       border: Border.all(color: s.heroTo, width: 2),
                     ),
-                    child: const Icon(Icons.check_rounded,
+                    child: const Icon(PhosphorIconsBold.check,
                         size: 13, color: Colors.white),
                   ),
                 ),

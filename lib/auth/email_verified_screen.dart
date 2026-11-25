@@ -8,6 +8,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import 'complete_profile_screen.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class EmailVerifiedScreen extends StatefulWidget {
   const EmailVerifiedScreen({super.key});
@@ -22,7 +23,7 @@ class _EmailVerifiedScreenState extends State<EmailVerifiedScreen> {
     return WinAuthFrame(showBack: false, children: [
       WinAuthHeading(context.l10n.authEmailVerified,
           subtitle: context.l10n.authAccountActive,
-          icon: Icons.verified_outlined),
+          icon: PhosphorIconsRegular.sealCheck),
       Text(context.l10n.authXpUnlocked,
           textAlign: TextAlign.center, style: WinType.bodyM(s.onStrong)),
       const SizedBox(height: 24),

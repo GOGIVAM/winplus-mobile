@@ -9,6 +9,7 @@ import '../../app_state.dart';
 import '../../data/models.dart';
 import '../../l10n/l10n.dart';
 import '../../services/subscription_service.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 Future<double?> _minMonthlyPrice(BuildContext context) async {
   final audience = switch (WinAppScope.of(context).role) {
@@ -69,7 +70,7 @@ class UpgradeSheet extends StatelessWidget {
           decoration: const BoxDecoration(
               color: WinColors.warnBg, shape: BoxShape.circle),
           child:
-              const Icon(Icons.lock_outline, size: 36, color: WinColors.warn),
+              const Icon(PhosphorIconsRegular.lock, size: 36, color: WinColors.warn),
         ),
         const SizedBox(height: 20),
         Text(context.l10n.subFeatureOfPlan(requiredPlan),

@@ -7,6 +7,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class ContentPublishScreen extends StatefulWidget {
   const ContentPublishScreen({super.key});
@@ -173,7 +174,7 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
         value: value,
         isExpanded: true,
         underline: const SizedBox(),
-        icon: Icon(Icons.keyboard_arrow_down, color: s.onMuted, size: 20),
+        icon: Icon(PhosphorIconsRegular.caretDown, color: s.onMuted, size: 20),
         style: WinType.bodyM(s.onStrong),
         dropdownColor: s.surface,
         items: items
@@ -200,7 +201,7 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(context.l10n.teacherPublishTitle),
@@ -398,7 +399,7 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
               context.l10n.teacherPublishChooseFile,
               variant: WinButtonVariant.outline,
               block: true,
-              icon: Icons.attach_file,
+              icon: PhosphorIconsRegular.paperclip,
               onTap: _pickFile,
             )
           else
@@ -411,7 +412,7 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
                 borderRadius: BorderRadius.circular(WinRadii.md),
               ),
               child: Row(children: [
-                const Icon(Icons.picture_as_pdf_outlined,
+                const Icon(PhosphorIconsRegular.filePdf,
                     size: 20, color: WinColors.success),
                 const SizedBox(width: 10),
                 Expanded(
@@ -424,7 +425,7 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
                 ),
                 GestureDetector(
                   onTap: () => setState(() => _pickedFile = null),
-                  child: const Icon(Icons.close,
+                  child: const Icon(PhosphorIconsRegular.x,
                       size: 18, color: WinColors.success),
                 ),
               ]),
@@ -444,7 +445,7 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
             context.l10n.teacherPublishSubmit,
             block: true,
             loading: _loading,
-            icon: Icons.send_outlined,
+            icon: PhosphorIconsRegular.paperPlaneRight,
             onTap: _submit,
           ),
           const SizedBox(height: 12),

@@ -5,6 +5,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Objectifs proposés par un parent, en attente de réponse de l'élève
 /// (Status Pending). Se cache tout seul quand la liste est vide : c'est son
@@ -165,7 +166,7 @@ class _PendingGoalsPanelState extends State<PendingGoalsPanel> {
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          Icon(Icons.flag_outlined, size: 16, color: WinColors.teal600),
+          Icon(PhosphorIconsRegular.flag, size: 16, color: WinColors.teal600),
           const SizedBox(width: 8),
           Expanded(
               child: Text(context.l10n.studentGoalsTitle,
@@ -237,18 +238,18 @@ class _PendingGoalsPanelState extends State<PendingGoalsPanel> {
           Wrap(spacing: 8, runSpacing: 8, children: [
             WinButton(context.l10n.commonAccept,
                 small: true,
-                icon: Icons.check,
+                icon: PhosphorIconsBold.check,
                 loading: busy,
                 onTap: () => _accept(g.id)),
             WinButton(context.l10n.commonEdit,
                 small: true,
                 variant: WinButtonVariant.outline,
-                icon: Icons.edit_outlined,
+                icon: PhosphorIconsRegular.pencilSimple,
                 onTap: busy ? null : () => _startEdit(g)),
             WinButton(context.l10n.commonDecline,
                 small: true,
                 variant: WinButtonVariant.ghost,
-                icon: Icons.close,
+                icon: PhosphorIconsRegular.x,
                 onTap: busy
                     ? null
                     : () => setState(() {
@@ -301,7 +302,7 @@ class _PendingGoalsPanelState extends State<PendingGoalsPanel> {
                 border: Border.all(color: s.outline),
                 borderRadius: BorderRadius.circular(WinRadii.md)),
             child: Row(children: [
-              Icon(Icons.calendar_today_outlined, size: 14, color: s.onFaint),
+              Icon(PhosphorIconsRegular.calendarBlank, size: 14, color: s.onFaint),
               const SizedBox(width: 8),
               Text(
                   _editDeadline != null

@@ -5,6 +5,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 enum _TimerMode { pomodoro, shortBreak, longBreak }
 
@@ -147,7 +148,7 @@ class _StudyTimerScreenState extends State<StudyTimerScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(context.l10n.timerTitle,
@@ -216,7 +217,7 @@ class _StudyTimerScreenState extends State<StudyTimerScreen> {
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           IconButton(
             onPressed: _reset,
-            icon: Icon(Icons.refresh_rounded, size: 28, color: s.onMuted),
+            icon: Icon(PhosphorIconsRegular.arrowClockwise, size: 28, color: s.onMuted),
             tooltip: context.l10n.timerReset,
           ),
           const SizedBox(width: 20),
@@ -228,7 +229,7 @@ class _StudyTimerScreenState extends State<StudyTimerScreen> {
               height: 72,
               decoration: BoxDecoration(color: color, shape: BoxShape.circle),
               child: Icon(
-                _running ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                _running ? PhosphorIconsFill.pause : PhosphorIconsFill.play,
                 size: 36,
                 color: Colors.white,
               ),
@@ -244,7 +245,7 @@ class _StudyTimerScreenState extends State<StudyTimerScreen> {
         WinCard(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
           child: Row(mainAxisSize: MainAxisSize.min, children: [
-            const Icon(Icons.local_fire_department_outlined,
+            const Icon(PhosphorIconsRegular.fire,
                 size: 20, color: WinColors.gold),
             const SizedBox(width: 8),
             Text(

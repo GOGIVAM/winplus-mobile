@@ -7,6 +7,7 @@ import '../../theme/win_colors.dart';
 import '../../theme/win_theme.dart';
 import '../../theme/win_typography.dart';
 import '../../widgets/win_widgets.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Briques du lot 9.1 (tarifs modulables, sujets de séance) partagées entre
 /// la réservation côté élève, les demandes côté tuteur et la fiche publique.
@@ -167,7 +168,7 @@ class _TopicsFieldState extends State<TopicsField> {
           ),
           IconButton(
             tooltip: context.l10n.tutoringAddTopic,
-            icon: Icon(Icons.add_circle_outline, color: s.primary),
+            icon: Icon(PhosphorIconsRegular.plusCircle, color: s.primary),
             onPressed: _commit,
           ),
         ]),

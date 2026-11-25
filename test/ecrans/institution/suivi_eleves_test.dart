@@ -11,6 +11,7 @@ import 'package:winplus/widgets/win_widgets.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 Finder _bouton(String libelle) => find.widgetWithText(WinButton, libelle);
 
@@ -123,7 +124,7 @@ void main() {
     testWidgets('actualiser relit la liste', (tester) async {
       faux.repond('GET', '/institution/at-risk', []);
       await monterEcran(tester, const AtRiskScreen());
-      await tester.tap(find.byIcon(Icons.refresh_outlined));
+      await tester.tap(find.byIcon(PhosphorIconsRegular.arrowClockwise));
       await reseau(tester);
       expect(faux.recues('GET', '/institution/at-risk'), hasLength(2));
     });

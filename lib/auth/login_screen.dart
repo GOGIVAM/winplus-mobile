@@ -18,6 +18,7 @@ import 'forgot_password_screen.dart';
 import 'google_login.dart';
 import 'role_screen.dart';
 import '../widgets/win_logo.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Connexion : premier écran de l'application sans session, sur le modèle
 /// de la version téléphone du site (plein écran blanc, barre haute avec
@@ -122,8 +123,8 @@ class _LoginScreenState extends State<LoginScreen> {
           controller: _pwd,
           obscure: _obscure,
           suffixIcon: _obscure
-              ? Icons.visibility_outlined
-              : Icons.visibility_off_outlined,
+              ? PhosphorIconsRegular.eye
+              : PhosphorIconsRegular.eyeSlash,
           onSuffixTap: () => setState(() => _obscure = !_obscure)),
       Align(
         alignment: Alignment.centerRight,

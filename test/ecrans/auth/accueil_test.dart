@@ -13,6 +13,7 @@ import 'package:winplus/widgets/win_widgets.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 Finder _bouton(String libelle) => find.widgetWithText(WinButton, libelle);
 
@@ -123,7 +124,7 @@ void main() {
       final l = L10n.current;
       expect(find.text(l.authWelcomeName('Ada')), findsOneWidget);
       expect(find.text(l.authSuccessStudent), findsOneWidget);
-      expect(find.byIcon(Icons.check), findsNWidgets(3));
+      expect(find.byIcon(PhosphorIconsBold.check), findsNWidgets(3));
       expect(find.text(l.authFeatStudent1), findsOneWidget);
       expect(_bouton(l.authStart), findsOneWidget);
     });
@@ -163,7 +164,7 @@ void main() {
       await pomper(tester);
       await pomper(tester, const Duration(milliseconds: 500));
       expect(find.byType(LegalScreen), findsOneWidget);
-      await tester.tap(find.byIcon(Icons.arrow_back));
+      await tester.tap(find.byIcon(PhosphorIconsRegular.arrowLeft));
       await pomper(tester);
       await pomper(tester, const Duration(milliseconds: 500));
       expect(find.byType(LegalScreen), findsNothing);

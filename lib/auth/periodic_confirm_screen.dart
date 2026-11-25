@@ -13,6 +13,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import 'login_screen.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Reconfirmation périodique d'identité, affichée au démarrage quand le
 /// serveur la demande (GET /auth/reconfirmation-status, tous les 35 jours).
@@ -145,7 +146,7 @@ class _PeriodicConfirmScreenState extends State<PeriodicConfirmScreen> {
                   color: s.primary.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(Icons.shield_outlined, size: 40, color: s.primary),
+                child: Icon(PhosphorIconsRegular.shield, size: 40, color: s.primary),
               ),
               const SizedBox(height: 24),
               Text(
@@ -173,14 +174,14 @@ class _PeriodicConfirmScreenState extends State<PeriodicConfirmScreen> {
                 // demandes, réseau) doit se voir ici, avant les cases.
                 if (_error != null) ...[
                   WinAlert(_error!,
-                      type: BadgeColor.error, icon: Icons.error_outline),
+                      type: BadgeColor.error, icon: PhosphorIconsRegular.warningCircle),
                   const SizedBox(height: 16),
                 ],
                 WinButton(
                   l10n.authSendCode,
                   block: true,
                   loading: _sending,
-                  icon: Icons.send_outlined,
+                  icon: PhosphorIconsRegular.paperPlaneRight,
                   onTap: _sending ? null : _sendCode,
                 ),
               ] else ...[
@@ -188,7 +189,7 @@ class _PeriodicConfirmScreenState extends State<PeriodicConfirmScreen> {
                 WinAlert(
                   l10n.authCodeSentEmail,
                   type: BadgeColor.success,
-                  icon: Icons.mark_email_read_outlined,
+                  icon: PhosphorIconsRegular.envelopeOpen,
                 ),
                 const SizedBox(height: 24),
                 Row(
@@ -240,7 +241,7 @@ class _PeriodicConfirmScreenState extends State<PeriodicConfirmScreen> {
                 if (_error != null) ...[
                   const SizedBox(height: 12),
                   WinAlert(_error!,
-                      type: BadgeColor.error, icon: Icons.error_outline),
+                      type: BadgeColor.error, icon: PhosphorIconsRegular.warningCircle),
                 ],
                 const SizedBox(height: 24),
                 WinButton(

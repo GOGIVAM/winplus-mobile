@@ -6,6 +6,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// « En attente d'envoi » (lot 3) : les actions faites sans réseau, en
 /// attente ou en échec, avec relance et suppression. Ouvert depuis le
@@ -83,8 +84,8 @@ class _PendingActionsScreenState extends State<PendingActionsScreen> {
                           Row(children: [
                             Icon(
                                 e.failed
-                                    ? Icons.error_outline
-                                    : Icons.schedule_outlined,
+                                    ? PhosphorIconsRegular.warningCircle
+                                    : PhosphorIconsRegular.clock,
                                 size: 18,
                                 color: e.failed ? WinColors.error : s.onMuted),
                             const SizedBox(width: 8),

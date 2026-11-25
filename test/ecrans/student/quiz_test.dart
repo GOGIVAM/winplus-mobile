@@ -12,6 +12,7 @@ import 'package:winplus/widgets/win_widgets.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 Finder _bouton(String libelle) => find.widgetWithText(WinButton, libelle);
 
@@ -139,7 +140,7 @@ void main() {
     testWidgets('la croix ferme le quiz sans envoyer de tentative', (tester) async {
       await monterEcran(tester, lanceur(const QuizActiveScreen(quiz: _quiz)));
       await ouvrir(tester);
-      await tester.tap(find.byIcon(Icons.close));
+      await tester.tap(find.byIcon(PhosphorIconsRegular.x));
       await pomper(tester);
       await pomper(tester, const Duration(milliseconds: 500));
       expect(find.byType(QuizActiveScreen), findsNothing);
@@ -175,8 +176,8 @@ void main() {
       expect(find.byType(QuizReviewScreen), findsOneWidget);
       expect(find.text('1. 2 + 2 ?'), findsOneWidget);
       expect(find.text('Parce que 2 + 2 = 4'), findsOneWidget);
-      expect(find.byIcon(Icons.check_circle), findsWidgets);
-      expect(find.byIcon(Icons.cancel), findsOneWidget, reason: 'seule la reponse « 6 » a la question 2 est fausse');
+      expect(find.byIcon(PhosphorIconsFill.checkCircle), findsWidgets);
+      expect(find.byIcon(PhosphorIconsFill.xCircle), findsOneWidget, reason: 'seule la reponse « 6 » a la question 2 est fausse');
     });
 
     testWidgets('« Refaire » relance le quiz', (tester) async {
@@ -215,7 +216,7 @@ void main() {
         {'id': 1, 'title': 'Quiz algebre', 'questions': [{'id': 'a', 'questionText': 'Quelle est la reponse ?', 'options': ['x', 'y']}]},
       ]);
       await monterEcran(tester, const QuizHubScreen());
-      await tester.tap(find.byIcon(Icons.refresh_outlined));
+      await tester.tap(find.byIcon(PhosphorIconsRegular.arrowClockwise));
       await reseau(tester);
       expect(faux.recues('GET', '/quizzes'), hasLength(2));
       await tester.tap(find.text('Quiz algebre'));

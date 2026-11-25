@@ -5,6 +5,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// « Mes rapports » : progression réelle de l'élève, calculée par le serveur
 /// (GET /student/reports) à partir de ses quiz, sessions d'étude et
@@ -86,7 +87,7 @@ class _StudentReportsScreenState extends State<StudentReportsScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(l.studentReportsTitle),
@@ -274,7 +275,7 @@ class _StudentReportsScreenState extends State<StudentReportsScreen> {
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             if (r.bestSubject != null)
               Row(children: [
-                const Icon(Icons.emoji_events, size: 16, color: WinColors.gold),
+                const Icon(PhosphorIconsFill.trophy, size: 16, color: WinColors.gold),
                 const SizedBox(width: 6),
                 Expanded(
                   child: Text(l.studentReportsBest(r.bestSubject!),
@@ -288,7 +289,7 @@ class _StudentReportsScreenState extends State<StudentReportsScreen> {
                 r.weakestSubject != r.bestSubject) ...[
               const SizedBox(height: 6),
               Row(children: [
-                const Icon(Icons.warning_amber_rounded,
+                const Icon(PhosphorIconsRegular.warning,
                     size: 16, color: WinColors.warn),
                 const SizedBox(width: 6),
                 Expanded(

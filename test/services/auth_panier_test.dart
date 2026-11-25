@@ -13,6 +13,7 @@ import 'package:winplus/services/user_service.dart';
 import 'package:winplus/theme/win_colors.dart';
 
 import '../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 void main() {
   late FauxReseau faux;
@@ -421,12 +422,12 @@ void main() {
       expect(b.name, 'Une semaine');
       expect(b.unlocked, isTrue);
       expect(b.unlockedAt, '2026-01-05');
-      expect(b.icon, Icons.local_fire_department_outlined);
+      expect(b.icon, PhosphorIconsRegular.fire);
       expect(b.color, WinColors.warn);
       final autre = r.badges.last;
       expect(autre.unlocked, isFalse);
       expect(autre.unlockedAt, isNull);
-      expect(autre.icon, Icons.emoji_events_outlined);
+      expect(autre.icon, PhosphorIconsRegular.trophy);
       expect(autre.color, WinColors.teal500);
     });
 

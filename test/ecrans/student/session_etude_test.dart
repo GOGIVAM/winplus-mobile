@@ -6,6 +6,7 @@ import 'package:winplus/widgets/win_widgets.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 Finder _bouton(String libelle) => find.widgetWithText(WinButton, libelle);
 
@@ -215,7 +216,7 @@ void main() {
       final l = L10n.current;
       expect(find.text(l.studentSessionHistoryLine(25, '80%', '05/01/2026')), findsOneWidget);
       expect(find.text(l.studentSessionHistoryLine(15, l.studentSessionNoScore, '')), findsOneWidget);
-      await tester.tap(find.byIcon(Icons.close));
+      await tester.tap(find.byIcon(PhosphorIconsRegular.x));
       await pomper(tester);
       expect(_bouton(l.studentSessionStart), findsOneWidget);
     });

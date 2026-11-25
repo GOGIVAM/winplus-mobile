@@ -9,6 +9,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import 'tutor_session_material_screen.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Lot 9.4 (suivi 17.7) : vue d'un engagement mensuel côté payeur,
 /// participant et tuteur (parité web). Séances et état de chacune, argent
@@ -323,7 +324,7 @@ class _TutorEngagementScreenState extends State<TutorEngagementScreen> {
             WinButton(context.l10n.tutoringMaterial,
                 small: true,
                 variant: WinButtonVariant.ghost,
-                icon: Icons.menu_book_outlined,
+                icon: PhosphorIconsRegular.bookOpen,
                 onTap: () => Navigator.of(context)
                     .push(MaterialPageRoute(builder: (_) => TutorSessionMaterialScreen(bookingId: x.id)))),
           ],

@@ -6,6 +6,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 List<(String, String)> get _goalTypes => [
   ('academic', L10n.current.parentGoalTypeAcademic),
@@ -130,7 +131,7 @@ class _GoalProposalTabState extends State<GoalProposalTab> {
             WinTextField(
                 label: context.l10n.studentGoalsFieldTitle,
                 controller: _titleCtrl,
-                icon: Icons.flag_outlined),
+                icon: PhosphorIconsRegular.flag),
             const SizedBox(height: 12),
             WinTextField(
                 label: context.l10n.parentGoalFieldDescription, controller: _descCtrl),
@@ -163,7 +164,7 @@ class _GoalProposalTabState extends State<GoalProposalTab> {
                   border: Border.all(color: s.outline, width: 1.5),
                 ),
                 child: Row(children: [
-                  Icon(Icons.calendar_today_outlined,
+                  Icon(PhosphorIconsRegular.calendarBlank,
                       size: 16, color: s.onFaint),
                   const SizedBox(width: 10),
                   Text(

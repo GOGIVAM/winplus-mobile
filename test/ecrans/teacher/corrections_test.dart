@@ -6,6 +6,7 @@ import 'package:winplus/widgets/win_widgets.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 Finder _bouton(String libelle) => find.widgetWithText(WinButton, libelle);
 
@@ -46,7 +47,7 @@ void main() {
     await monterEcran(tester, const CorrectionQueueScreen());
     expect(find.text(L10n.current.teacherCorrectionEmpty), findsOneWidget);
     faux.repond('GET', '/teacher/corrections/pending', {}, statut: 500);
-    await tester.tap(find.byIcon(Icons.refresh_outlined));
+    await tester.tap(find.byIcon(PhosphorIconsRegular.arrowClockwise));
     await reseau(tester);
     expect(find.text(L10n.current.teacherCorrectionEmpty), findsNothing);
     expect(find.text(L10n.current.commonLoadError), findsOneWidget);

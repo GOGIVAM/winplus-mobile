@@ -16,6 +16,7 @@ import 'package:winplus/widgets/win_widgets.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 Finder _bouton(String libelle) => find.widgetWithText(WinButton, libelle);
 
@@ -269,11 +270,11 @@ void main() {
       faux.repond('POST', '/chatbot/message', {'reply': 'D\'accord'});
       await monterEcran(tester, const InstitutionWinAITab());
       await tester.enterText(find.byType(TextField), '   ');
-      await tester.tap(find.byIcon(Icons.send));
+      await tester.tap(find.byIcon(PhosphorIconsFill.paperPlaneRight));
       await reseau(tester);
       expect(faux.requetes, isEmpty);
       await tester.enterText(find.byType(TextField), '  Quels groupes decrochent ? ');
-      await tester.tap(find.byIcon(Icons.send));
+      await tester.tap(find.byIcon(PhosphorIconsFill.paperPlaneRight));
       await reseau(tester);
       expect((faux.recues('POST', '/chatbot/message').single.data as Map)['content'], 'Quels groupes decrochent ?');
     });

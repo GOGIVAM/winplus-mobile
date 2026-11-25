@@ -5,6 +5,7 @@ import '../../theme/win_colors.dart';
 import '../../theme/win_theme.dart';
 import '../../theme/win_typography.dart';
 import 'new_thread_screen.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class ThreadDetailScreen extends StatefulWidget {
   final Map<String, dynamic> thread;
@@ -82,7 +83,7 @@ class _ThreadDetailScreenState extends State<ThreadDetailScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
@@ -154,7 +155,7 @@ class _ThreadDetailScreenState extends State<ThreadDetailScreen> {
                         height: 18,
                         child: CircularProgressIndicator(
                             strokeWidth: 2, color: s.onPrimary))
-                    : Icon(Icons.send, size: 18, color: s.onPrimary),
+                    : Icon(PhosphorIconsFill.paperPlaneRight, size: 18, color: s.onPrimary),
               ),
             ),
           ]),
@@ -216,7 +217,7 @@ class _PostCard extends StatelessWidget {
           _RolePill(role: role, isVerified: isVerified),
           if (isAccepted) ...[
             const Spacer(),
-            const Icon(Icons.check_circle, color: WinColors.success, size: 18)
+            const Icon(PhosphorIconsFill.checkCircle, color: WinColors.success, size: 18)
           ],
         ]),
         const SizedBox(height: 8),
@@ -226,7 +227,7 @@ class _PostCard extends StatelessWidget {
           GestureDetector(
             onTap: () => onVote(postId, 'up'),
             child: Row(children: [
-              Icon(Icons.thumb_up_outlined, size: 16, color: s.primary),
+              Icon(PhosphorIconsRegular.thumbsUp, size: 16, color: s.primary),
               const SizedBox(width: 4),
               Text('${post['upvotes'] ?? 0}', style: WinType.labelM(s.primary)),
             ]),
@@ -234,7 +235,7 @@ class _PostCard extends StatelessWidget {
           const SizedBox(width: 16),
           GestureDetector(
             onTap: () => onVote(postId, 'down'),
-            child: Icon(Icons.thumb_down_outlined, size: 16, color: s.onFaint),
+            child: Icon(PhosphorIconsRegular.thumbsDown, size: 16, color: s.onFaint),
           ),
         ]),
       ]),
@@ -272,7 +273,7 @@ class _RolePill extends StatelessWidget {
                 fontSize: 11, color: color, fontWeight: FontWeight.w600)),
         if (role == 'institution' && isVerified) ...[
           const SizedBox(width: 3),
-          Icon(Icons.verified_rounded, size: 11, color: color),
+          Icon(PhosphorIconsFill.sealCheck, size: 11, color: color),
         ],
       ]),
     );

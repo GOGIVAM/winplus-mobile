@@ -7,6 +7,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import 'win_widgets.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Dictée vocale (lot 6) : la reconnaissance vocale du téléphone transcrit la
 /// question, comme la dictée du site (Web Speech API). Le texte reconnu est
@@ -118,7 +119,7 @@ class _VoiceDictationSheetState extends State<_VoiceDictationSheet> {
             decoration: BoxDecoration(
                 color: s.outline2,
                 borderRadius: BorderRadius.circular(WinRadii.full))),
-        Icon(_ecoute ? Icons.mic : Icons.mic_none_outlined,
+        Icon(_ecoute ? PhosphorIconsFill.microphone : PhosphorIconsRegular.microphone,
             size: 44, color: _ecoute ? WinColors.teal600 : s.onFaint),
         const SizedBox(height: 12),
         Text(
@@ -138,13 +139,13 @@ class _VoiceDictationSheetState extends State<_VoiceDictationSheet> {
         const SizedBox(height: 22),
         if (_ecoute)
           WinButton(l.voiceStop,
-              block: true, icon: Icons.stop_rounded, onTap: _arreter)
+              block: true, icon: PhosphorIconsFill.stop, onTap: _arreter)
         else if (!_indisponible && texte.isNotEmpty)
           WinButton(l.voiceUseText,
               block: true, onTap: () => Navigator.pop(context, texte))
         else if (!_indisponible)
           WinButton(l.voiceRetry,
-              block: true, icon: Icons.mic_outlined, onTap: _demarrer),
+              block: true, icon: PhosphorIconsRegular.microphone, onTap: _demarrer),
         const SizedBox(height: 8),
         WinButton(l.commonCancel,
             block: true,

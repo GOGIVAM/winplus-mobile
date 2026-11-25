@@ -5,6 +5,7 @@ import '../../theme/win_colors.dart';
 import '../../theme/win_theme.dart';
 import '../../theme/win_typography.dart';
 import '../../widgets/win_widgets.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Libellé affiché d'une catégorie du forum ; la valeur envoyée à l'API
 /// reste le nom français (lot 10.11).
@@ -70,7 +71,7 @@ class _NewThreadScreenState extends State<NewThreadScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-            icon: Icon(Icons.close, color: s.onStrong),
+            icon: Icon(PhosphorIconsRegular.x, color: s.onStrong),
             onPressed: () => Navigator.pop(context)),
         title: Text(l10n.forumNewThread),
       ),
@@ -94,7 +95,7 @@ class _NewThreadScreenState extends State<NewThreadScreen> {
           WinTextField(
               label: l10n.forumTitleField,
               hint: l10n.forumTitleHint,
-              icon: Icons.title,
+              icon: PhosphorIconsRegular.textT,
               controller: _titleCtrl),
           const SizedBox(height: 16),
           // Contenu multilignes  TextField natif car WinTextField ne supporte pas maxLines
@@ -116,7 +117,7 @@ class _NewThreadScreenState extends State<NewThreadScreen> {
                   Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Padding(
                   padding: const EdgeInsets.only(top: 2, right: 8),
-                  child: Icon(Icons.edit_outlined, size: 18, color: s.onFaint),
+                  child: Icon(PhosphorIconsRegular.pencilSimple, size: 18, color: s.onFaint),
                 ),
                 Expanded(
                   child: TextField(

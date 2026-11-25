@@ -10,6 +10,7 @@ import 'package:winplus/widgets/win_widgets.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 Finder _bouton(String libelle) => find.widgetWithText(WinButton, libelle);
 
@@ -47,7 +48,7 @@ void main() {
       expect(find.text('5'), findsOneWidget);
       expect(find.text(l.forumSolved), findsOneWidget);
       expect(find.text(l.roleStudent), findsOneWidget);
-      expect(find.byIcon(Icons.verified_rounded), findsOneWidget);
+      expect(find.byIcon(PhosphorIconsFill.sealCheck), findsOneWidget);
       expect(faux.requetes.single.queryParameters, {'page': 1, 'pageSize': 20});
     });
 
@@ -89,7 +90,7 @@ void main() {
     testWidgets('le bouton « + » ouvre la creation de sujet', (tester) async {
       faux.repond('GET', '/forums/threads', {'threads': [], 'total': 0});
       await monterEcran(tester, const ForumScreen());
-      await tester.tap(find.byIcon(Icons.add));
+      await tester.tap(find.byIcon(PhosphorIconsRegular.plus));
       await pomper(tester);
       await pomper(tester, const Duration(milliseconds: 400));
       expect(find.byType(NewThreadScreen), findsOneWidget);

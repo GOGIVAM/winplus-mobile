@@ -6,6 +6,7 @@ import 'package:winplus/widgets/win_widgets.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 Finder _bouton(String libelle) => find.widgetWithText(WinButton, libelle);
 
@@ -148,7 +149,7 @@ void main() {
       expect(find.textContaining('· en attente'), findsOneWidget);
       expect(find.textContaining('· annulée'), findsOneWidget);
       expect(find.text('Versé'), findsOneWidget);
-      expect(find.byIcon(Icons.trending_up), findsOneWidget);
+      expect(find.byIcon(PhosphorIconsRegular.trendUp), findsOneWidget);
     });
 
     testWidgets('« Voir plus » charge la page suivante et affiche le nombre restant', (tester) async {

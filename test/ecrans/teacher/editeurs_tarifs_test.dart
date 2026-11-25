@@ -8,6 +8,7 @@ import 'package:winplus/widgets/win_widgets.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 Finder _bouton(String libelle) => find.widgetWithText(WinButton, libelle);
 Finder _puce(String libelle) => find.widgetWithText(WinChip, libelle);
@@ -131,7 +132,7 @@ void main() {
       await pomper(tester);
       expect(valeur.discounts.map((d) => (d.minGroupSize, d.percentDiscount)), [(2, 10), (3, 15)]);
       // Pourcentage du premier palier : pas de 5.
-      await tester.tap(find.byIcon(Icons.add_circle_outline).at(1));
+      await tester.tap(find.byIcon(PhosphorIconsRegular.plusCircle).at(1));
       await pomper(tester);
       expect(valeur.discounts.first.percentDiscount, 15);
       // Suppression du premier palier.
@@ -156,8 +157,8 @@ void main() {
       await monterEditeur(tester, depart: const GroupPricingValue(method: 'flat', maxGroupSize: 2));
       IconButton bouton(Finder icone) => tester.widget<IconButton>(find.ancestor(of: icone, matching: find.byType(IconButton)));
       // Premiere ligne = taille maximale.
-      expect(bouton(find.byIcon(Icons.remove_circle_outline).first).onPressed, isNull);
-      await tester.tap(find.byIcon(Icons.add_circle_outline).first);
+      expect(bouton(find.byIcon(PhosphorIconsRegular.minusCircle).first).onPressed, isNull);
+      await tester.tap(find.byIcon(PhosphorIconsRegular.plusCircle).first);
       await pomper(tester);
       expect(valeur.maxGroupSize, 3);
     });
@@ -165,11 +166,11 @@ void main() {
     testWidgets('prix fixe : pourcentage par pas de 10, minimum 100 %', (tester) async {
       await monterEditeur(tester, depart: const GroupPricingValue(method: 'flat', flatPercent: 110));
       IconButton bouton(Finder icone) => tester.widget<IconButton>(find.ancestor(of: icone, matching: find.byType(IconButton)));
-      final moins = find.byIcon(Icons.remove_circle_outline).at(1);
+      final moins = find.byIcon(PhosphorIconsRegular.minusCircle).at(1);
       await tester.tap(moins);
       await pomper(tester);
       expect(valeur.flatPercent, 100);
-      expect(bouton(find.byIcon(Icons.remove_circle_outline).at(1)).onPressed, isNull);
+      expect(bouton(find.byIcon(PhosphorIconsRegular.minusCircle).at(1)).onPressed, isNull);
       expect(find.text(L10n.current.teacherGroupFlatExample), findsOneWidget);
     });
 

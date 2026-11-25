@@ -8,6 +8,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import 'verify_code_screen.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Formulaire de création de compte (A05). Appelé depuis [RoleScreen] une
 /// fois le rôle choisi ; branche réellement AuthService.signUp() puis envoie
@@ -123,7 +124,7 @@ class _SignupScreenState extends State<SignupScreen> {
         Expanded(
             child: WinTextField(
                 label: l10n.authFirstName,
-                icon: Icons.person_outline,
+                icon: PhosphorIconsRegular.user,
                 controller: _firstNameCtrl)),
         const SizedBox(width: 12),
         Expanded(
@@ -134,38 +135,38 @@ class _SignupScreenState extends State<SignupScreen> {
       WinTextField(
           label: l10n.authEmailAddress,
           hint: l10n.authEmailHint,
-          icon: Icons.mail_outline,
+          icon: PhosphorIconsRegular.envelopeSimple,
           controller: _emailCtrl,
           keyboardType: TextInputType.emailAddress),
       const SizedBox(height: 14),
       WinTextField(
           label: l10n.authPhoneOptional,
           hint: '+237 6XX XXX XXX',
-          icon: Icons.phone_outlined,
+          icon: PhosphorIconsRegular.phone,
           controller: _phoneCtrl,
           keyboardType: TextInputType.phone),
       const SizedBox(height: 14),
       WinTextField(
           label: l10n.password,
           hint: '••••••••',
-          icon: Icons.lock_outline,
+          icon: PhosphorIconsRegular.lock,
           obscure: _obscurePwd,
           controller: _pwdCtrl,
           suffixIcon: _obscurePwd
-              ? Icons.visibility_outlined
-              : Icons.visibility_off_outlined,
+              ? PhosphorIconsRegular.eye
+              : PhosphorIconsRegular.eyeSlash,
           onSuffixTap: () => setState(() => _obscurePwd = !_obscurePwd),
           onChanged: (_) => setState(() {})),
       const SizedBox(height: 14),
       WinTextField(
           label: l10n.authConfirmPassword,
           hint: '••••••••',
-          icon: Icons.lock_outline,
+          icon: PhosphorIconsRegular.lock,
           obscure: _obscureConfirm,
           controller: _confirmCtrl,
           suffixIcon: _obscureConfirm
-              ? Icons.visibility_outlined
-              : Icons.visibility_off_outlined,
+              ? PhosphorIconsRegular.eye
+              : PhosphorIconsRegular.eyeSlash,
           onSuffixTap: () => setState(() => _obscureConfirm = !_obscureConfirm),
           onChanged: (_) => setState(() {})),
       const SizedBox(height: 16),
@@ -218,7 +219,7 @@ class _Constraint extends StatelessWidget {
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
     return Row(children: [
-      Icon(ok ? Icons.check_circle : Icons.radio_button_unchecked,
+      Icon(ok ? PhosphorIconsFill.checkCircle : PhosphorIconsRegular.circle,
           size: 16, color: ok ? s.primary : s.onFaint),
       const SizedBox(width: 8),
       // Sur écran étroit, la règle passe à la ligne au lieu de déborder.

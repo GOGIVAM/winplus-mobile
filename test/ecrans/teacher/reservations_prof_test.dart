@@ -7,6 +7,7 @@ import 'package:winplus/widgets/win_widgets.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 Finder _bouton(String libelle) => find.widgetWithText(WinButton, libelle);
 
@@ -384,7 +385,7 @@ void main() {
   testWidgets('bouton d\'actualisation : relit toutes les listes', (tester) async {
     routes();
     await monterEcran(tester, const TutorBookingsScreen());
-    await tester.tap(find.byIcon(Icons.refresh_outlined));
+    await tester.tap(find.byIcon(PhosphorIconsRegular.arrowClockwise));
     await reseau(tester);
     expect(faux.recues('GET', '/tutor-bookings/tutor/pending'), hasLength(2));
     expect(faux.recues('GET', '/tutor-bookings/tutor/mine'), hasLength(2));

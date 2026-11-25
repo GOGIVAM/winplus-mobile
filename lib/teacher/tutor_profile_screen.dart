@@ -10,6 +10,7 @@ import '../l10n/l10n.dart';
 import 'tutor_group_pricing_editor.dart';
 import 'tutor_pricing_grid_editor.dart';
 import 'tutor_verification_screen.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Module 1  Onboarding et profil répétiteur (professeur_complete.md).
 /// Écran unique en 5 étapes (Workflow 1) : matières/niveaux, intervention,
@@ -431,8 +432,8 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
             IconButton(
               icon: Icon(
                   _showPreview
-                      ? Icons.edit_outlined
-                      : Icons.visibility_outlined,
+                      ? PhosphorIconsRegular.pencilSimple
+                      : PhosphorIconsRegular.eye,
                   color: s.onMuted),
               tooltip: _showPreview
                   ? context.l10n.teacherProfileBackToEdit
@@ -443,8 +444,8 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
             IconButton(
               icon: Icon(
                   _profile!.isOnVacation
-                      ? Icons.flight_takeoff
-                      : Icons.flight_takeoff_outlined,
+                      ? PhosphorIconsRegular.airplaneTakeoff
+                      : PhosphorIconsRegular.airplaneTakeoff,
                   color: _profile!.isOnVacation ? WinColors.warn : s.onMuted),
               tooltip: context.l10n.teacherProfileOnHoliday,
               onPressed: () async {
@@ -606,7 +607,7 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
               Border.all(color: active || done ? WinColors.teal400 : s.outline),
         ),
         child: done
-            ? const Icon(Icons.check, size: 14, color: WinColors.teal700)
+            ? const Icon(PhosphorIconsBold.check, size: 14, color: WinColors.teal700)
             : Text('${idx + 1}',
                 style: TextStyle(
                     fontSize: 11,
@@ -686,7 +687,7 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
             WinButton(context.l10n.teacherProfileGetVerified,
                 small: true,
                 variant: WinButtonVariant.outline,
-                icon: Icons.verified_user_outlined,
+                icon: PhosphorIconsRegular.shieldCheck,
                 onTap: _openVerification),
             const SizedBox(height: 6),
           ],
@@ -957,7 +958,7 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
           WinCard(
             onTap: _openVerification,
             child: Row(children: [
-              Icon(Icons.verified_user_outlined, color: s.primary),
+              Icon(PhosphorIconsRegular.shieldCheck, color: s.primary),
               const SizedBox(width: 10),
               Expanded(
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -971,7 +972,7 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
                       style: WinType.labelS(s.onMuted)),
                 ]),
               ),
-              Icon(Icons.chevron_right, color: s.onFaint),
+              Icon(PhosphorIconsRegular.caretRight, color: s.onFaint),
             ]),
           ),
           const SizedBox(height: 16),
@@ -1019,7 +1020,7 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
       child: Row(children: [
         Expanded(child: Text(label, style: WinType.bodyS(s.onStrong))),
         IconButton(
-          icon: const Icon(Icons.remove_circle_outline),
+          icon: const Icon(PhosphorIconsRegular.minusCircle),
           onPressed: v > min ? () => onChanged((v - step).clamp(min, max)) : null,
         ),
         SizedBox(
@@ -1028,7 +1029,7 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
               textAlign: TextAlign.center, style: WinType.labelM(s.onStrong)),
         ),
         IconButton(
-          icon: const Icon(Icons.add_circle_outline),
+          icon: const Icon(PhosphorIconsRegular.plusCircle),
           onPressed: v < max ? () => onChanged((v + step).clamp(min, max)) : null,
         ),
       ]),

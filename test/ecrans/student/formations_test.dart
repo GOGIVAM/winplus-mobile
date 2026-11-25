@@ -8,6 +8,7 @@ import 'package:winplus/widgets/win_widgets.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 Finder _bouton(String libelle) => find.widgetWithText(WinButton, libelle);
 
@@ -47,7 +48,7 @@ void main() {
       expect(_bouton(l.commonContinue), findsOneWidget);
       await tester.scrollUntilVisible(find.text('Chimie'), 300, scrollable: find.byType(Scrollable).first);
       expect(_bouton(l.studentMyCoursesReplay), findsOneWidget);
-      expect(find.byIcon(Icons.workspace_premium), findsOneWidget);
+      expect(find.byIcon(PhosphorIconsFill.medal), findsOneWidget);
     });
 
     testWidgets('aucune formation : etat vide avec bouton d\'exploration', (tester) async {
@@ -132,7 +133,7 @@ void main() {
     testWidgets('filtres : « Gratuit » puis « Appliquer » envoie free=true', (tester) async {
       faux.repond('GET', '/courses', {'data': [_cours()]});
       await monterEcran(tester, const CourseCatalogScreen());
-      await tester.tap(find.byIcon(Icons.tune_outlined));
+      await tester.tap(find.byIcon(PhosphorIconsRegular.slidersHorizontal));
       await reseau(tester);
       expect(find.text(L10n.current.studentCatalogFilters), findsOneWidget);
       await tester.tap(find.widgetWithText(WinChip, L10n.current.commonFree));

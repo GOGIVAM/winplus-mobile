@@ -6,6 +6,7 @@ import 'package:winplus/widgets/win_widgets.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 Finder _bouton(String libelle) => find.widgetWithText(WinButton, libelle);
 Finder _puce(String libelle) => find.widgetWithText(WinChip, libelle);
@@ -332,8 +333,8 @@ void main() {
       expect(find.text('50 %'), findsOneWidget);
       expect(find.text('2 ${l.teacherProfileHoursBefore}'), findsOneWidget);
       expect(find.text(l.teacherProfilePolicyBounds(12, 48, 0, 100, 0, 12)), findsOneWidget);
-      final moins = find.byIcon(Icons.remove_circle_outline);
-      final plus = find.byIcon(Icons.add_circle_outline);
+      final moins = find.byIcon(PhosphorIconsRegular.minusCircle);
+      final plus = find.byIcon(PhosphorIconsRegular.plusCircle);
       // Remboursement partiel : pas de 10 points.
       await tester.tap(moins.at(1));
       await pomper(tester);
@@ -352,8 +353,8 @@ void main() {
     testWidgets('bornes atteintes : le bouton correspondant est inactif', (tester) async {
       routes(_profil({'onboardingStep': 4, 'fullRefundHours': 12, 'partialRefundPercent': 100, 'noRefundHours': 12}));
       await monterProfil(tester);
-      final moins = find.byIcon(Icons.remove_circle_outline);
-      final plus = find.byIcon(Icons.add_circle_outline);
+      final moins = find.byIcon(PhosphorIconsRegular.minusCircle);
+      final plus = find.byIcon(PhosphorIconsRegular.plusCircle);
       IconButton bouton(Finder icone) => tester.widget<IconButton>(find.ancestor(of: icone, matching: find.byType(IconButton)));
       expect(bouton(moins.at(0)).onPressed, isNull);
       expect(bouton(plus.at(1)).onPressed, isNull);
@@ -486,7 +487,7 @@ void main() {
       await tester.tap(find.byTooltip(l.teacherProfileOnHoliday));
       await reseau(tester);
       expect(faux.recues('POST', '/tutor-profile/me/vacation').single.data, true);
-      expect(find.byIcon(Icons.flight_takeoff), findsOneWidget);
+      expect(find.byIcon(PhosphorIconsRegular.airplaneTakeoff), findsOneWidget);
 
       await monter(tester, const SizedBox());
       routes(_profil());

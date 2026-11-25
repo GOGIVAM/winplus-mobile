@@ -11,6 +11,7 @@ import 'encouragement_sheet.dart';
 import 'exam_watch_mode_tab.dart';
 import 'goal_proposal_tab.dart';
 import 'portfolio_tab.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class ChildActivityScreen extends StatefulWidget {
   final ApiChild child;
@@ -83,7 +84,7 @@ class _ChildActivityScreenState extends State<ChildActivityScreen>
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title: Row(children: [
@@ -97,7 +98,7 @@ class _ChildActivityScreenState extends State<ChildActivityScreen>
         ]),
         actions: [
           IconButton(
-            icon: Icon(Icons.refresh_outlined, color: s.onStrong),
+            icon: Icon(PhosphorIconsRegular.arrowClockwise, color: s.onStrong),
             onPressed: () {
               setState(() {
                 _stats = null;
@@ -154,7 +155,7 @@ class _ChildActivityScreenState extends State<ChildActivityScreen>
                 context.l10n.parentChildSeeResources,
                 variant: WinButtonVariant.ghost,
                 small: true,
-                icon: Icons.library_books_outlined,
+                icon: PhosphorIconsRegular.books,
                 onTap: () => ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                       content: Text(
@@ -168,7 +169,7 @@ class _ChildActivityScreenState extends State<ChildActivityScreen>
                 context.l10n.parentChildGenerateQuiz,
                 variant: WinButtonVariant.outline,
                 small: true,
-                icon: Icons.quiz_outlined,
+                icon: PhosphorIconsRegular.exam,
                 onTap: () => ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                       content: Text(context.l10n.parentChildQuizGenerating)),
@@ -262,21 +263,21 @@ class _ActivityTab extends StatelessWidget {
         Row(children: [
           Expanded(
               child: _StatBox(
-                  icon: Icons.download_outlined,
+                  icon: PhosphorIconsRegular.downloadSimple,
                   value: '${stats.downloadsThisWeek}',
                   label: context.l10n.parentChildDownloadsWeek,
                   color: WinColors.blue500)),
           const SizedBox(width: 8),
           Expanded(
               child: _StatBox(
-                  icon: Icons.trending_up,
+                  icon: PhosphorIconsRegular.trendUp,
                   value: '${stats.averageScore.round()}%',
                   label: context.l10n.parentChildAvgScoreShort,
                   color: s.primary)),
           const SizedBox(width: 8),
           Expanded(
               child: _StatBox(
-                  icon: Icons.quiz_outlined,
+                  icon: PhosphorIconsRegular.exam,
                   value: '${stats.quizzesThisWeek}',
                   label: context.l10n.parentChildQuizWeek,
                   color: WinColors.success)),
@@ -334,10 +335,10 @@ class _ActivityTab extends StatelessWidget {
               _ => s.onFaint,
             };
             final IconData icon = switch (ev.type) {
-              'quiz' => Icons.quiz_outlined,
-              'download' => Icons.download_outlined,
+              'quiz' => PhosphorIconsRegular.exam,
+              'download' => PhosphorIconsRegular.downloadSimple,
               'ai_chat' => winAIIconData,
-              _ => Icons.circle_outlined,
+              _ => PhosphorIconsRegular.circle,
             };
             return IntrinsicHeight(
               child:
@@ -412,7 +413,7 @@ class _ResultsTab extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Icon(Icons.bar_chart_outlined, size: 48, color: s.onFaint),
+            Icon(PhosphorIconsRegular.chartBar, size: 48, color: s.onFaint),
             const SizedBox(height: 12),
             Text(context.l10n.parentChildNoResults,
                 style: WinType.bodyM(s.onMuted), textAlign: TextAlign.center),
@@ -447,7 +448,7 @@ class _ResultsTab extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(children: [
-                          Icon(Icons.menu_book_outlined,
+                          Icon(PhosphorIconsRegular.bookOpen,
                               size: 15, color: color),
                           const SizedBox(width: 6),
                           Expanded(
@@ -482,7 +483,7 @@ class _ResultsTab extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(children: [
-                        const Icon(Icons.emoji_events,
+                        const Icon(PhosphorIconsFill.trophy,
                             size: 14, color: WinColors.gold),
                         const SizedBox(width: 4),
                         Flexible(
@@ -507,7 +508,7 @@ class _ResultsTab extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(children: [
-                        const Icon(Icons.warning_amber_rounded,
+                        const Icon(PhosphorIconsRegular.warning,
                             size: 14, color: WinColors.warn),
                         const SizedBox(width: 4),
                         Flexible(
@@ -534,7 +535,7 @@ class _ResultsTab extends StatelessWidget {
                   color: WinColors.successBg,
                   borderRadius: BorderRadius.circular(WinRadii.sm),
                 ),
-                child: const Icon(Icons.quiz_outlined,
+                child: const Icon(PhosphorIconsRegular.exam,
                     size: 20, color: WinColors.success),
               ),
               const SizedBox(width: 12),
@@ -580,7 +581,7 @@ class _AlertsTab extends StatelessWidget {
     if (alerts.isEmpty) {
       return Center(
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-          const Icon(Icons.check_circle_outline,
+          const Icon(PhosphorIconsRegular.checkCircle,
               size: 48, color: WinColors.success),
           const SizedBox(height: 12),
           Text(
@@ -615,9 +616,9 @@ class _AlertsTab extends StatelessWidget {
             _ => WinColors.blue500,
           };
           final IconData icon = switch (a.severity) {
-            'High' => Icons.error_outline,
-            'Medium' => Icons.warning_amber_outlined,
-            _ => Icons.info_outline,
+            'High' => PhosphorIconsRegular.warningCircle,
+            'Medium' => PhosphorIconsRegular.warning,
+            _ => PhosphorIconsRegular.info,
           };
           final String badgeLabel = switch (a.severity) {
             'High' => context.l10n.parentAlertBadgeHigh,

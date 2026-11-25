@@ -7,6 +7,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Lot 9.6 (suivi 17.5) : support de séance généré par WinAI, parité web.
 /// - Tuteur : générer (décompté de son usage WinAI), relancer avec une
@@ -238,13 +239,13 @@ class _TutorSessionMaterialScreenState extends State<TutorSessionMaterialScreen>
                 }),
       if (v.canEdit) ...[
         const SizedBox(height: 8),
-        WinButton(context.l10n.commonEdit, block: true, variant: WinButtonVariant.outline, icon: Icons.edit, onTap: _busy ? null : () => setState(() => _editing = true)),
+        WinButton(context.l10n.commonEdit, block: true, variant: WinButtonVariant.outline, icon: PhosphorIconsFill.pencilSimple, onTap: _busy ? null : () => setState(() => _editing = true)),
       ],
       if (v.canShare) ...[
         const SizedBox(height: 8),
         WinButton(v.sharedVersion != null ? context.l10n.tutoringMatShareNew : context.l10n.tutoringMatShare,
             block: true,
-            icon: Icons.send,
+            icon: PhosphorIconsFill.paperPlaneRight,
             onTap: _busy ? null : () => _run(() => _svc.share(widget.bookingId), context.l10n.tutoringMatSharedToast)),
       ],
       const SizedBox(height: 14),
@@ -342,9 +343,9 @@ class _TutorSessionMaterialScreenState extends State<TutorSessionMaterialScreen>
                     enabled: answering,
                     title: Text(o.text, style: WinType.bodyS(s.onStrong)),
                     secondary: correct
-                        ? const Icon(Icons.check_circle, color: WinColors.success, size: 18)
+                        ? const Icon(PhosphorIconsFill.checkCircle, color: WinColors.success, size: 18)
                         : wrong
-                            ? const Icon(Icons.cancel, color: WinColors.error, size: 18)
+                            ? const Icon(PhosphorIconsFill.xCircle, color: WinColors.error, size: 18)
                             : null,
                   ),
                 );
@@ -488,7 +489,7 @@ class _MaterialEditorState extends State<_MaterialEditor> {
       for (var i = 0; i < _c.sections.length; i++) ...[
         Row(children: [
           Expanded(child: Text(context.l10n.tutoringMatPart(i + 1), style: WinType.labelM(s.onStrong))),
-          IconButton(icon: const Icon(Icons.delete_outline), onPressed: () => setState(() => _c.sections = [..._c.sections]..removeAt(i))),
+          IconButton(icon: const Icon(PhosphorIconsRegular.trash), onPressed: () => setState(() => _c.sections = [..._c.sections]..removeAt(i))),
         ]),
         _field(context.l10n.tutoringMatFieldPartTitle, _c.sections[i].title, (v) => _c.sections[i].title = v),
         _field(context.l10n.tutoringMatFieldContent, _c.sections[i].content, (v) => _c.sections[i].content = v, maxLines: 8),
@@ -496,7 +497,7 @@ class _MaterialEditorState extends State<_MaterialEditor> {
       ],
       TextButton.icon(
         onPressed: () => setState(() => _c.sections = [..._c.sections, MaterialSection(title: '', content: '')]),
-        icon: const Icon(Icons.add),
+        icon: const Icon(PhosphorIconsRegular.plus),
         label: Text(context.l10n.tutoringMatAddPart),
       ),
       _field(context.l10n.tutoringMatSummary, _c.summary, (v) => _c.summary = v, maxLines: 4),
@@ -506,7 +507,7 @@ class _MaterialEditorState extends State<_MaterialEditor> {
       for (var i = 0; i < _c.quiz.length; i++) ...[
         Row(children: [
           Expanded(child: Text('Question ${i + 1}', style: WinType.labelM(s.onStrong))),
-          IconButton(icon: const Icon(Icons.delete_outline), onPressed: () => setState(() => _c.quiz = [..._c.quiz]..removeAt(i))),
+          IconButton(icon: const Icon(PhosphorIconsRegular.trash), onPressed: () => setState(() => _c.quiz = [..._c.quiz]..removeAt(i))),
         ]),
         _field(context.l10n.tutoringMatFieldStatement, _c.quiz[i].text, (v) => _c.quiz[i].text = v, maxLines: 3),
         RadioGroup<String>(
@@ -533,7 +534,7 @@ class _MaterialEditorState extends State<_MaterialEditor> {
                 explanation: '',
               ),
             ]),
-        icon: const Icon(Icons.add),
+        icon: const Icon(PhosphorIconsRegular.plus),
         label: Text(context.l10n.tutoringMatAddQuestion),
       ),
       const SizedBox(height: 8),
@@ -546,7 +547,7 @@ class _MaterialEditorState extends State<_MaterialEditor> {
             items: [for (final e in _difficultyLabels.entries) DropdownMenuItem(value: e.key, child: Text(e.value))],
             onChanged: (v) => setState(() => _c.exercises[i].difficulty = v ?? 'moyen'),
           ),
-          IconButton(icon: const Icon(Icons.delete_outline), onPressed: () => setState(() => _c.exercises = [..._c.exercises]..removeAt(i))),
+          IconButton(icon: const Icon(PhosphorIconsRegular.trash), onPressed: () => setState(() => _c.exercises = [..._c.exercises]..removeAt(i))),
         ]),
         _field(context.l10n.tutoringMatFieldTitle, _c.exercises[i].title, (v) => _c.exercises[i].title = v),
         _field(context.l10n.tutoringMatFieldStatement, _c.exercises[i].statement, (v) => _c.exercises[i].statement = v, maxLines: 5),
@@ -558,7 +559,7 @@ class _MaterialEditorState extends State<_MaterialEditor> {
               ..._c.exercises,
               MaterialExercise(id: 'e${_c.exercises.length + 1}', title: context.l10n.tutoringMatExerciseN(_c.exercises.length + 1), statement: ''),
             ]),
-        icon: const Icon(Icons.add),
+        icon: const Icon(PhosphorIconsRegular.plus),
         label: Text(context.l10n.tutoringMatAddExercise),
       ),
       const SizedBox(height: 12),

@@ -7,6 +7,7 @@ import 'package:winplus/widgets/winai_markdown.dart';
 
 import '../helpers/ecran.dart';
 import '../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// WinAI en direct (POST /chatbot/stream, comme le site) : la reponse
 /// s'ecrit au fil des fragments, reste dans la meme conversation, et passe
@@ -66,7 +67,7 @@ void main() {
     expect(find.byType(WinAIMarkdown), findsOneWidget);
     expect(find.byType(GptMarkdown), findsOneWidget);
     await tester.enterText(find.byType(TextField), 'Et la reciproque ?');
-    await tester.tap(find.byIcon(Icons.send));
+    await tester.tap(find.byIcon(PhosphorIconsFill.paperPlaneRight));
     await reseau(tester);
     final envois = faux.recues('POST', '/chatbot/stream');
     expect(envois, hasLength(2));

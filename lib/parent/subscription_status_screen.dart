@@ -11,6 +11,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class SubscriptionStatusScreen extends StatefulWidget {
   const SubscriptionStatusScreen({super.key});
@@ -68,13 +69,13 @@ class _SubscriptionStatusScreenState extends State<SubscriptionStatusScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(context.l10n.parentSubTitle),
         actions: [
           IconButton(
-            icon: Icon(Icons.refresh_outlined, color: s.onStrong),
+            icon: Icon(PhosphorIconsRegular.arrowClockwise, color: s.onStrong),
             onPressed: () {
               setState(() {
                 _sub = null;
@@ -88,7 +89,7 @@ class _SubscriptionStatusScreenState extends State<SubscriptionStatusScreen> {
       body: _loadError
           ? Center(
               child: Column(mainAxisSize: MainAxisSize.min, children: [
-              Icon(Icons.wifi_off_outlined, size: 48, color: s.onFaint),
+              Icon(PhosphorIconsRegular.wifiSlash, size: 48, color: s.onFaint),
               const SizedBox(height: 12),
               Text(context.l10n.parentSubLoadError,
                   style: WinType.bodyM(s.onMuted)),
@@ -152,7 +153,7 @@ class _SubscriptionStatusScreenState extends State<SubscriptionStatusScreen> {
                                   style: WinType.bodyS(s.onMuted)),
                             const SizedBox(height: 4),
                             Row(children: [
-                              Icon(Icons.refresh, size: 14, color: s.onFaint),
+                              Icon(PhosphorIconsRegular.arrowClockwise, size: 14, color: s.onFaint),
                               const SizedBox(width: 4),
                               Expanded(
                                 child: Text(
@@ -173,7 +174,7 @@ class _SubscriptionStatusScreenState extends State<SubscriptionStatusScreen> {
                         style: WinType.headlineS(s.onStrong)),
                     const SizedBox(height: 12),
                     _UsageRow(
-                        icon: Icons.family_restroom_outlined,
+                        icon: PhosphorIconsRegular.usersThree,
                         label: context.l10n.parentSubChildrenFollowed,
                         used: children.length,
                         limit: sub.entitlements.limit('children.max'),
@@ -245,7 +246,7 @@ class _SubscriptionStatusScreenState extends State<SubscriptionStatusScreen> {
                           child: WinCard(
                             padding: const EdgeInsets.all(12),
                             child: Row(children: [
-                              Icon(Icons.receipt_long_outlined,
+                              Icon(PhosphorIconsRegular.receipt,
                                   size: 18, color: s.onFaint),
                               const SizedBox(width: 10),
                               Expanded(
@@ -289,7 +290,7 @@ class _SubscriptionStatusScreenState extends State<SubscriptionStatusScreen> {
                     if (sub.hasPlan)
                       WinButton(context.l10n.parentSubRenewNow,
                           block: true,
-                          icon: Icons.refresh,
+                          icon: PhosphorIconsRegular.arrowClockwise,
                           onTap: () async {
                             await SubscribeSheet.show(context,
                                 planId: sub.pricingPlanId, planName: sub.planName, initialPeriod: sub.billingPeriod ?? 'monthly');

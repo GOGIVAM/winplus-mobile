@@ -9,6 +9,7 @@ import '../../widgets/external_links.dart';
 import '../../widgets/win_screen.dart';
 import '../../widgets/win_widgets.dart';
 import 'visio_screen.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Fiche d'une séance en direct (lot 9.4), ouverte par le lien partagé
 /// winplus.cm/sessions/{id}, comme sur le site : titre, professeur, horaire,
@@ -97,7 +98,7 @@ class _LiveSessionScreenState extends State<LiveSessionScreen> {
     final se = _session;
     Widget body;
     if (_notFound) {
-      body = WinEmptyState(icon: Icons.videocam_off_outlined, title: l.visioNotFound);
+      body = WinEmptyState(icon: PhosphorIconsRegular.videoCameraSlash, title: l.visioNotFound);
     } else if (_error) {
       body = WinErrorState(message: l.commonLoadError, onRetry: _load);
     } else if (se == null) {
@@ -158,23 +159,23 @@ class _LiveSessionScreenState extends State<LiveSessionScreen> {
       case 'inscrit':
         return [
           if (se.myRole == 'inscrit') ...[
-            WinAlert(l.liveSessionEnrolled, type: BadgeColor.success, icon: Icons.check_circle_outline),
+            WinAlert(l.liveSessionEnrolled, type: BadgeColor.success, icon: PhosphorIconsRegular.checkCircle),
             const SizedBox(height: 12),
           ],
           if (se.externalLink != null)
             WinButton(l.liveSessionExternal,
                 block: true,
-                icon: Icons.open_in_new,
+                icon: PhosphorIconsRegular.arrowSquareOut,
                 onTap: () => ExternalLinks.open(se.externalLink!))
           else
             WinButton(se.myRole == 'animateur' ? l.visioStart : l.visioJoin,
                 block: true,
-                icon: Icons.videocam_outlined,
+                icon: PhosphorIconsRegular.videoCamera,
                 onTap: () => VisioScreen.open(context, VisioType.seance, se.id, title: se.title)),
         ];
       case 'paiement_en_attente':
         return [
-          WinAlert(l.liveSessionPendingPayment, icon: Icons.schedule),
+          WinAlert(l.liveSessionPendingPayment, icon: PhosphorIconsRegular.clock),
           const SizedBox(height: 12),
           WinButton(l.liveSessionCheckPayment,
               block: true, variant: WinButtonVariant.outline, onTap: _load),
@@ -186,7 +187,7 @@ class _LiveSessionScreenState extends State<LiveSessionScreen> {
             WinTextField(
               label: l.liveSessionPhone,
               hint: '6XXXXXXXX',
-              icon: Icons.phone_outlined,
+              icon: PhosphorIconsRegular.phone,
               keyboardType: TextInputType.phone,
               controller: _phone,
             ),

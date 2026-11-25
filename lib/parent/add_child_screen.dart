@@ -8,6 +8,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class AddChildScreen extends StatefulWidget {
   const AddChildScreen({super.key});
@@ -80,7 +81,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(context.l10n.parentAddChildTitle),
@@ -110,7 +111,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
             WinTextField(
               label: context.l10n.parentAddChildEmailLabel,
               hint: 'ahmed@example.com',
-              icon: Icons.email_outlined,
+              icon: PhosphorIconsRegular.envelopeSimple,
               controller: _emailCtrl,
               onChanged: (_) => setState(() => _error = false),
             ),

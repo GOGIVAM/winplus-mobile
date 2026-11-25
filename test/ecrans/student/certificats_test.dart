@@ -5,6 +5,7 @@ import 'package:winplus/student/certificates_screen.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 void main() {
   late FauxReseau faux;
@@ -83,7 +84,7 @@ void main() {
   testWidgets('actualiser relit les deux listes', (tester) async {
     routes();
     await monterEcran(tester, const CertificatesScreen());
-    await tester.tap(find.byIcon(Icons.refresh_outlined));
+    await tester.tap(find.byIcon(PhosphorIconsRegular.arrowClockwise));
     await reseau(tester);
     expect(faux.recues('GET', '/certificates/user/my-certificates'), hasLength(2));
     expect(faux.recues('GET', '/my-course-certificates'), hasLength(2));

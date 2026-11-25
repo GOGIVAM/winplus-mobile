@@ -7,6 +7,7 @@ import 'package:winplus/widgets/win_widgets.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 Finder _bouton(String libelle) => find.widgetWithText(WinButton, libelle);
 
@@ -108,14 +109,14 @@ void main() {
     faux.repond('DELETE', '/teacher/classes/5/students/1', {});
     await monterEcran(tester, const TeacherClassDetailScreen(initialClass: _classe));
     final l = L10n.current;
-    await tester.tap(find.byIcon(Icons.person_remove_outlined));
+    await tester.tap(find.byIcon(PhosphorIconsRegular.userMinus));
     await pomper(tester);
     await pomper(tester, const Duration(milliseconds: 400));
     expect(find.text(l.teacherClassRemoveStudentBody('Ada Eto', '3eA')), findsOneWidget);
     await tester.tap(find.text(l.commonCancel));
     await reseau(tester);
     expect(faux.recues('DELETE', '/teacher/classes/5/students/1'), isEmpty);
-    await tester.tap(find.byIcon(Icons.person_remove_outlined));
+    await tester.tap(find.byIcon(PhosphorIconsRegular.userMinus));
     await pomper(tester);
     await pomper(tester, const Duration(milliseconds: 400));
     await tester.tap(find.text(l.teacherClassRemove));

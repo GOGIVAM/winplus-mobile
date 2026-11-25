@@ -8,6 +8,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_motion_widgets.dart';
 import '../widgets/win_widgets.dart';
 import 'course_detail_screen.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Catalogue de formations  composition en grille 2 colonnes (image en
 /// tête de carte, tag catégorie incrusté, titre + prix dessous) et rangée
@@ -231,7 +232,7 @@ class _CourseCatalogScreenState extends State<CourseCatalogScreen> {
             icon: Badge(
               isLabelVisible: hasFilter,
               backgroundColor: s.primary,
-              child: Icon(Icons.tune_outlined,
+              child: Icon(PhosphorIconsRegular.slidersHorizontal,
                   color: hasFilter ? s.primary : s.onMuted),
             ),
             onPressed: _showFilters,
@@ -245,8 +246,8 @@ class _CourseCatalogScreenState extends State<CourseCatalogScreen> {
           child: WinTextField(
             controller: _searchCtrl,
             hint: context.l10n.studentCatalogSearchHint,
-            icon: Icons.search,
-            suffixIcon: _searchCtrl.text.isNotEmpty ? Icons.close : null,
+            icon: PhosphorIconsRegular.magnifyingGlass,
+            suffixIcon: _searchCtrl.text.isNotEmpty ? PhosphorIconsRegular.x : null,
             onSuffixTap: () {
               _searchCtrl.clear();
               _load();
@@ -350,11 +351,11 @@ class _CourseCard extends StatelessWidget {
                     fit: BoxFit.cover,
                     errorBuilder: (_, __, ___) => Container(
                         color: s.outline2,
-                        child: Icon(Icons.play_lesson_outlined,
+                        child: Icon(PhosphorIconsRegular.monitorPlay,
                             size: 32, color: s.onFaint)))
                 : Container(
                     color: s.outline2,
-                    child: Icon(Icons.play_lesson_outlined,
+                    child: Icon(PhosphorIconsRegular.monitorPlay,
                         size: 32, color: s.onFaint)),
             if (c.category != null)
               Positioned(
@@ -391,7 +392,7 @@ class _CourseCard extends StatelessWidget {
                   overflow: TextOverflow.ellipsis),
               const Spacer(),
               Row(children: [
-                Icon(Icons.schedule_outlined, size: 12, color: s.onMuted),
+                Icon(PhosphorIconsRegular.clock, size: 12, color: s.onMuted),
                 const SizedBox(width: 3),
                 Expanded(
                     child: Text(c.durationStr,

@@ -8,6 +8,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Grille tarifaire du tuteur (lot 9.1, suivi 17.3), parité avec le web :
 /// tarif de base par matière et par mode, modulation par créneau,
@@ -237,7 +238,7 @@ class _TutorPricingGridEditorState extends State<TutorPricingGridEditor> {
               ),
             ),
             IconButton(
-                icon: const Icon(Icons.close),
+                icon: const Icon(PhosphorIconsRegular.x),
                 tooltip: context.l10n.teacherPricingRemoveRate,
                 onPressed: () {
                   setState(() => _gen++);
@@ -318,7 +319,7 @@ class _TutorPricingGridEditorState extends State<TutorPricingGridEditor> {
                 ),
               ),
               IconButton(
-                  icon: const Icon(Icons.close),
+                  icon: const Icon(PhosphorIconsRegular.x),
                   tooltip: context.l10n.teacherPricingRemoveMod,
                   onPressed: () {
                     setState(() => _gen++);
@@ -455,7 +456,7 @@ class _TutorPricingGridEditorState extends State<TutorPricingGridEditor> {
             ),
             Text(' %', style: WinType.bodyS(s.onMuted)),
             IconButton(
-                icon: const Icon(Icons.close),
+                icon: const Icon(PhosphorIconsRegular.x),
                 tooltip: context.l10n.teacherPricingRemoveTier,
                 onPressed: () {
                   setState(() => _gen++);

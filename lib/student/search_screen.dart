@@ -8,6 +8,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_motion_widgets.dart';
 import '../widgets/win_widgets.dart';
 import 'student_home.dart' show ContentCard;
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class SearchScreen extends StatefulWidget {
   /// Recherche déjà saisie (barre de recherche de l'accueil).
@@ -127,7 +128,7 @@ class _SearchScreenState extends State<SearchScreen> {
         elevation: 0,
         titleSpacing: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title: TextField(
@@ -141,7 +142,7 @@ class _SearchScreenState extends State<SearchScreen> {
             border: InputBorder.none,
             suffixIcon: _query.isNotEmpty
                 ? IconButton(
-                    icon: Icon(Icons.close, size: 18, color: s.onFaint),
+                    icon: Icon(PhosphorIconsRegular.x, size: 18, color: s.onFaint),
                     onPressed: () {
                       _ctrl.clear();
                       setState(() {
@@ -247,7 +248,7 @@ class _EmptyIdle extends StatelessWidget {
     final s = WinTheme.of(context);
     return Center(
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-      Icon(Icons.search, size: 64, color: s.onFaint),
+      Icon(PhosphorIconsRegular.magnifyingGlass, size: 64, color: s.onFaint),
       const SizedBox(height: 12),
       Text(context.l10n.studentSearchIdle, style: WinType.bodyM(s.onMuted)),
     ]));
@@ -264,7 +265,7 @@ class _NoResults extends StatelessWidget {
         child: Padding(
       padding: const EdgeInsets.all(32),
       child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Icon(Icons.search_off, size: 64, color: s.onFaint),
+        Icon(PhosphorIconsRegular.magnifyingGlassMinus, size: 64, color: s.onFaint),
         const SizedBox(height: 12),
         Text(context.l10n.studentSearchNoResults(query),
             style: WinType.bodyM(s.onMuted), textAlign: TextAlign.center),

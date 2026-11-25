@@ -8,6 +8,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Lot 9.5 (suivi 17.11, 17.16) : vérification du tuteur pour le présentiel.
 /// Trois voies, une seule suffit :
@@ -157,7 +158,7 @@ class _TutorVerificationScreenState extends State<TutorVerificationScreen> {
       appBar: AppBar(
         backgroundColor: s.bg,
         elevation: 0,
-        leading: IconButton(icon: Icon(Icons.arrow_back, color: s.onStrong), onPressed: () => Navigator.pop(context)),
+        leading: IconButton(icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong), onPressed: () => Navigator.pop(context)),
         title: Text(context.l10n.teacherVerifTitle),
       ),
       body: st == null
@@ -206,7 +207,7 @@ class _TutorVerificationScreenState extends State<TutorVerificationScreen> {
     return WinCard(
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          Icon(Icons.verified_user_outlined, color: s.primary),
+          Icon(PhosphorIconsRegular.shieldCheck, color: s.primary),
           const SizedBox(width: 8),
           Expanded(child: Text(context.l10n.teacherPricingInPerson, style: WinType.titleM(s.onStrong))),
           WinBadge(label, color: color),
@@ -241,7 +242,7 @@ class _TutorVerificationScreenState extends State<TutorVerificationScreen> {
           if (camera) ...[
             WinButton(file == null ? context.l10n.teacherVerifTake : context.l10n.teacherVerifRetake,
                 small: true,
-                icon: Icons.photo_camera_outlined,
+                icon: PhosphorIconsRegular.camera,
                 onTap: _busy
                     ? null
                     : () async {
@@ -253,7 +254,7 @@ class _TutorVerificationScreenState extends State<TutorVerificationScreen> {
           WinButton(file == null ? (camera ? context.l10n.teacherVerifFile : context.l10n.teacherVerifChoose) : context.l10n.studentProfileChange,
               small: true,
               variant: WinButtonVariant.outline,
-              icon: Icons.upload_file_outlined,
+              icon: PhosphorIconsRegular.fileArrowUp,
               onTap: _busy ? null : () async => set(await _pick(imageOnly: imageOnly))),
         ]),
       );
@@ -277,7 +278,7 @@ class _TutorVerificationScreenState extends State<TutorVerificationScreen> {
             block: true,
             small: true,
             loading: _busy,
-            icon: Icons.badge_outlined,
+            icon: PhosphorIconsRegular.identificationBadge,
             onTap: _busy || _front == null || _selfie == null ? null : () => _submitIdentity(interviewId: interviewId)),
         const SizedBox(height: 6),
         Text(
@@ -290,7 +291,7 @@ class _TutorVerificationScreenState extends State<TutorVerificationScreen> {
     return WinCard(
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          Icon(Icons.badge_outlined, size: 18, color: s.onMuted),
+          Icon(PhosphorIconsRegular.identificationBadge, size: 18, color: s.onMuted),
           const SizedBox(width: 6),
           Expanded(child: Text(context.l10n.teacherVerifIdentityTitle, style: WinType.titleM(s.onStrong))),
           if (st.hasApprovedIdentity) WinBadge(context.l10n.teacherVerifValidated, color: BadgeColor.success),
@@ -319,7 +320,7 @@ class _TutorVerificationScreenState extends State<TutorVerificationScreen> {
     return WinCard(
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          Icon(Icons.video_call_outlined, size: 18, color: s.onMuted),
+          Icon(PhosphorIconsRegular.videoCamera, size: 18, color: s.onMuted),
           const SizedBox(width: 6),
           Expanded(child: Text(context.l10n.teacherVerifInterviewTitle, style: WinType.titleM(s.onStrong))),
           if (it != null)
@@ -378,7 +379,7 @@ class _TutorVerificationScreenState extends State<TutorVerificationScreen> {
           WinTextField(label: context.l10n.teacherVerifMessage, controller: _messageCtrl),
           const SizedBox(height: 10),
           WinButton(context.l10n.teacherVerifRequestInterview,
-              block: true, small: true, loading: _busy, icon: Icons.event_available_outlined, onTap: _busy ? null : _requestInterview),
+              block: true, small: true, loading: _busy, icon: PhosphorIconsRegular.calendarCheck, onTap: _busy ? null : _requestInterview),
         ],
       ]),
     );
@@ -390,7 +391,7 @@ class _TutorVerificationScreenState extends State<TutorVerificationScreen> {
     return WinCard(
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          Icon(Icons.apartment_outlined, size: 18, color: s.onMuted),
+          Icon(PhosphorIconsRegular.buildings, size: 18, color: s.onMuted),
           const SizedBox(width: 6),
           Expanded(child: Text(context.l10n.teacherVerifInstitutionTitle, style: WinType.titleM(s.onStrong))),
           if (active.any((e) => e.isValid)) WinBadge(context.l10n.teacherVerifActive, color: BadgeColor.success),

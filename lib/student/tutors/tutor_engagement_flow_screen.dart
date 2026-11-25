@@ -15,6 +15,7 @@ import '../../widgets/win_widgets.dart';
 import 'tutor_booking_for_whom.dart';
 import 'tutor_policy_widgets.dart';
 import 'tutor_pricing_widgets.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Lot 9.4 (suivi 17.7) : création d'un engagement mensuel, parité web.
 /// Étapes : créneaux hebdomadaires et pour qui, devis serveur du mois
@@ -282,7 +283,7 @@ class _TutorEngagementFlowScreenState extends State<TutorEngagementFlowScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () {
             if (_step > 0 && _created == null) {
               setState(() => _step -= 1);
@@ -319,7 +320,7 @@ class _TutorEngagementFlowScreenState extends State<TutorEngagementFlowScreen> {
       WinButton(
         '${_shortDate(_startDate)} ${_startDate.year}',
         variant: WinButtonVariant.outline,
-        icon: Icons.event_outlined,
+        icon: PhosphorIconsRegular.calendar,
         onTap: () async {
           final now = DateTime.now();
           final picked = await showDatePicker(
@@ -339,7 +340,7 @@ class _TutorEngagementFlowScreenState extends State<TutorEngagementFlowScreen> {
           alignment: Alignment.centerLeft,
           child: TextButton.icon(
             onPressed: () => setState(() => _slots = [..._slots, _defaultSlot()]),
-            icon: const Icon(Icons.add, size: 18),
+            icon: const Icon(PhosphorIconsRegular.plus, size: 18),
             label: Text(context.l10n.tutoringEngAddSlot),
           ),
         ),
@@ -431,7 +432,7 @@ class _TutorEngagementFlowScreenState extends State<TutorEngagementFlowScreen> {
         ),
         IconButton(
           tooltip: context.l10n.tutoringEngRemoveSlot,
-          icon: Icon(Icons.delete_outline, color: s.onMuted),
+          icon: Icon(PhosphorIconsRegular.trash, color: s.onMuted),
           onPressed: _slots.length == 1 ? null : () => setState(() => _slots = [..._slots]..removeAt(i)),
         ),
       ]),
@@ -533,12 +534,12 @@ class _TutorEngagementFlowScreenState extends State<TutorEngagementFlowScreen> {
       Text(context.l10n.tutoringPayMethod, style: WinType.labelM(s.onStrong)),
       const SizedBox(height: 8),
       WinChip('$walletTitle${_walletLoading ? '' : _walletAvailable == null ? ' ${context.l10n.tutoringUnavailableParen}' : ' · ${fmtXaf(_walletAvailable!)} XAF'}',
-          icon: Icons.account_balance_wallet_outlined,
+          icon: PhosphorIconsRegular.wallet,
           active: byWallet,
           onTap: _walletAvailable == null ? null : () => setState(() => _payMethod = 'wallet')),
       const SizedBox(height: 8),
       WinChip(context.l10n.tutoringEngMomoChip,
-          icon: Icons.phone_android_outlined,
+          icon: PhosphorIconsRegular.deviceMobile,
           active: !byWallet,
           onTap: () => setState(() {
                 _payMethod = 'mobile_money';
@@ -562,7 +563,7 @@ class _TutorEngagementFlowScreenState extends State<TutorEngagementFlowScreen> {
       else ...[
         Text(context.l10n.tutoringMomoNumber, style: WinType.labelM(s.onStrong)),
         const SizedBox(height: 8),
-        WinTextField(hint: '6XX XXX XXX', icon: Icons.phone_android_outlined, controller: _phoneCtrl, keyboardType: TextInputType.phone),
+        WinTextField(hint: '6XX XXX XXX', icon: PhosphorIconsRegular.deviceMobile, controller: _phoneCtrl, keyboardType: TextInputType.phone),
         const SizedBox(height: 6),
         Text(context.l10n.tutoringEngAutoRenewWalletOnly, style: WinType.labelS(s.onFaint)),
       ],
@@ -581,7 +582,7 @@ class _TutorEngagementFlowScreenState extends State<TutorEngagementFlowScreen> {
     final failed = e.status == 'cancelled';
     return ListView(padding: const EdgeInsets.all(16), children: [
       const SizedBox(height: 12),
-      Icon(failed ? Icons.cancel_outlined : Icons.check_circle_outline, size: 56, color: failed ? WinColors.error : WinColors.success),
+      Icon(failed ? PhosphorIconsRegular.xCircle : PhosphorIconsRegular.checkCircle, size: 56, color: failed ? WinColors.error : WinColors.success),
       const SizedBox(height: 12),
       Center(
         child: Text(

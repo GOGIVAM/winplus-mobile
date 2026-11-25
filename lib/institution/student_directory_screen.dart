@@ -6,6 +6,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class StudentDirectoryScreen extends StatefulWidget {
   const StudentDirectoryScreen({super.key});
@@ -124,7 +125,7 @@ class _StudentDirectoryScreenState extends State<StudentDirectoryScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title:
@@ -202,7 +203,7 @@ class _StudentDirectoryScreenState extends State<StudentDirectoryScreen> {
                                         child: CircularProgressIndicator(
                                             strokeWidth: 2,
                                             color: Colors.white))
-                                    : Icon(Icons.add,
+                                    : Icon(PhosphorIconsRegular.plus,
                                         size: 20, color: s.onPrimary),
                               ),
                             ),
@@ -229,7 +230,7 @@ class _StudentDirectoryScreenState extends State<StudentDirectoryScreen> {
                         hintText: context.l10n.instDirSearchHint,
                         hintStyle: WinType.bodyS(s.onFaint),
                         prefixIcon:
-                            Icon(Icons.search, size: 20, color: s.onFaint),
+                            Icon(PhosphorIconsRegular.magnifyingGlass, size: 20, color: s.onFaint),
                         filled: true,
                         fillColor: s.surface2,
                         contentPadding: const EdgeInsets.symmetric(
@@ -385,7 +386,7 @@ class _StudentRow extends StatelessWidget {
           const SizedBox(width: 10),
         ],
         Icon(
-          student.isActive ? Icons.circle : Icons.circle_outlined,
+          student.isActive ? PhosphorIconsFill.circle : PhosphorIconsRegular.circle,
           size: 10,
           color: student.isActive ? WinColors.success : s.onFaint,
         ),

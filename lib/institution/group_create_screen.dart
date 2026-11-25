@@ -5,6 +5,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class GroupCreateScreen extends StatefulWidget {
   const GroupCreateScreen({super.key});
@@ -124,7 +125,7 @@ class _GroupCreateScreenState extends State<GroupCreateScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(context.l10n.studentGroupsCreate),
@@ -134,7 +135,7 @@ class _GroupCreateScreenState extends State<GroupCreateScreen> {
               child: Padding(
               padding: const EdgeInsets.all(32),
               child: Column(mainAxisSize: MainAxisSize.min, children: [
-                const Icon(Icons.group_add, size: 64, color: WinColors.success),
+                const Icon(PhosphorIconsFill.userPlus, size: 64, color: WinColors.success),
                 const SizedBox(height: 16),
                 Text(context.l10n.instGroupCreated, style: WinType.displayS(s.onStrong)),
                 const SizedBox(height: 8),
@@ -158,7 +159,7 @@ class _GroupCreateScreenState extends State<GroupCreateScreen> {
                     WinTextField(
                       label: context.l10n.instGroupNameLabel,
                       hint: 'TLE C 2027, BTS Info 2…',
-                      icon: Icons.group_outlined,
+                      icon: PhosphorIconsRegular.users,
                       controller: _nameCtrl,
                     ),
                     const SizedBox(height: 20),
@@ -206,7 +207,7 @@ class _GroupCreateScreenState extends State<GroupCreateScreen> {
                     const SizedBox(height: 8),
                     WinTextField(
                       hint: context.l10n.instGroupSearchStudent,
-                      icon: Icons.search,
+                      icon: PhosphorIconsRegular.magnifyingGlass,
                       onChanged: (v) => setState(() => _query = v),
                     ),
                     const SizedBox(height: 12),
@@ -267,10 +268,10 @@ class _GroupCreateScreenState extends State<GroupCreateScreen> {
                                     ]),
                               ),
                               if (sel)
-                                Icon(Icons.check_circle,
+                                Icon(PhosphorIconsFill.checkCircle,
                                     size: 20, color: s.primary)
                               else
-                                Icon(Icons.radio_button_unchecked,
+                                Icon(PhosphorIconsRegular.circle,
                                     size: 20, color: s.onFaint),
                             ]),
                           ),
@@ -280,7 +281,7 @@ class _GroupCreateScreenState extends State<GroupCreateScreen> {
                     WinButton(context.l10n.instGroupCreateSubmit,
                         block: true,
                         loading: _loading,
-                        icon: Icons.group_add,
+                        icon: PhosphorIconsFill.userPlus,
                         onTap: _submit),
                   ]),
             ),

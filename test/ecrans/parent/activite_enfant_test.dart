@@ -13,6 +13,7 @@ import 'package:winplus/widgets/win_widgets.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 Finder _bouton(String libelle) => find.widgetWithText(WinButton, libelle);
 
@@ -149,7 +150,7 @@ void main() {
       routes();
       await monterEcran(tester, const ChildActivityScreen(child: _enfant));
       routes(stats: {'averageScore': 40, 'downloadsThisWeek': 9});
-      await tester.tap(find.byIcon(Icons.refresh_outlined));
+      await tester.tap(find.byIcon(PhosphorIconsRegular.arrowClockwise));
       await pomper(tester);
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
       await reseau(tester);
@@ -223,7 +224,7 @@ void main() {
       expect(find.text('Aucune connexion depuis 10 jours'), findsOneWidget);
       expect(find.text(l.parentDaysAgo(2)), findsOneWidget);
       expect(find.text(l.studentNotifHoursAgo(5)), findsOneWidget);
-      expect(find.byIcon(Icons.error_outline), findsOneWidget);
+      expect(find.byIcon(PhosphorIconsRegular.warningCircle), findsOneWidget);
     });
 
     testWidgets('bouton « Voir ressources » : message du catalogue filtre pour l enfant', (tester) async {
@@ -285,7 +286,7 @@ void main() {
       await tester.tap(find.text(l.parentEncourageTpl1('Zoe')));
       await pomper(tester);
       expect(tester.widget<WinButton>(_bouton(l.commonSend)).onTap, isNotNull);
-      expect(find.byIcon(Icons.check_circle), findsOneWidget);
+      expect(find.byIcon(PhosphorIconsFill.checkCircle), findsOneWidget);
       await tester.tap(find.text(l.parentEncourageTpl1('Zoe')));
       await pomper(tester);
       expect(tester.widget<WinButton>(_bouton(l.commonSend)).onTap, isNull);
@@ -299,7 +300,7 @@ void main() {
       await tester.enterText(find.byType(TextField), 'Bravo !');
       await pomper(tester);
       expect(find.text('7/200'), findsOneWidget);
-      expect(find.byIcon(Icons.check_circle), findsNothing);
+      expect(find.byIcon(PhosphorIconsFill.checkCircle), findsNothing);
       await tester.enterText(find.byType(TextField), 'a' * 250);
       await pomper(tester);
       expect(find.text('200/200'), findsOneWidget);

@@ -10,6 +10,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import 'email_verified_screen.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class VerifyCodeScreen extends StatefulWidget {
   final String email;
@@ -92,7 +93,7 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
     return WinAuthFrame(children: [
       WinAuthHeading(l10n.authVerifyEmailTitle,
           subtitle: l10n.authCodeSentAddress,
-          icon: Icons.mark_email_read_outlined),
+          icon: PhosphorIconsRegular.envelopeOpen),
       Text(widget.email,
           textAlign: TextAlign.center,
           style:

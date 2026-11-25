@@ -9,6 +9,7 @@ import '../../theme/win_typography.dart';
 import '../../widgets/win_motion_widgets.dart';
 import '../../widgets/win_widgets.dart';
 import 'checkout_screen.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Panier (E35)  vraies données serveur (GET/POST/DELETE /api/cart), pas de
 /// simulation. Composition carte produit (vignette + prix) cohérente avec le
@@ -103,7 +104,7 @@ class _CartScreenState extends State<CartScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(context.l10n.shopCartTitle),
@@ -112,7 +113,7 @@ class _CartScreenState extends State<CartScreen> {
           ? _error
               ? Center(
                   child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  Icon(Icons.wifi_off_outlined, size: 48, color: s.onFaint),
+                  Icon(PhosphorIconsRegular.wifiSlash, size: 48, color: s.onFaint),
                   const SizedBox(height: 12),
                   Text(context.l10n.shopCartLoadFailed,
                       style: WinType.bodyM(s.onMuted)),
@@ -123,14 +124,14 @@ class _CartScreenState extends State<CartScreen> {
           : cart.items.isEmpty
               ? Center(
                   child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  Icon(Icons.shopping_cart_outlined,
+                  Icon(PhosphorIconsRegular.shoppingCart,
                       size: 64, color: s.onFaint),
                   const SizedBox(height: 12),
                   Text(context.l10n.shopCartEmpty,
                       style: WinType.bodyM(s.onMuted)),
                   const SizedBox(height: 20),
                   WinButton(context.l10n.shopExploreCatalog,
-                      icon: Icons.explore_outlined,
+                      icon: PhosphorIconsRegular.compass,
                       onTap: () => Navigator.pop(context)),
                 ]))
               : Column(children: [
@@ -208,7 +209,7 @@ class _CartItemCard extends StatelessWidget {
                     BorderRadius.horizontal(left: Radius.circular(WinRadii.lg)),
               ),
               child:
-                  Icon(Icons.description_outlined, size: 34, color: s.primary),
+                  Icon(PhosphorIconsRegular.fileText, size: 34, color: s.primary),
             ),
             Positioned(
               top: 6,
@@ -227,7 +228,7 @@ class _CartItemCard extends StatelessWidget {
                           color: Colors.white.withValues(alpha: 0.9),
                           shape: BoxShape.circle,
                         ),
-                        child: Icon(Icons.close,
+                        child: Icon(PhosphorIconsRegular.x,
                             size: 15, color: WinColors.ink600),
                       ),
                     ),
@@ -307,7 +308,7 @@ class _CartSummary extends StatelessWidget {
             Expanded(
               child: WinTextField(
                 hint: context.l10n.shopPromoCode,
-                icon: Icons.local_offer_outlined,
+                icon: PhosphorIconsRegular.tag,
                 controller: promoCtrl,
               ),
             ),
@@ -350,7 +351,7 @@ class _CartSummary extends StatelessWidget {
           ]),
           const SizedBox(height: 16),
           WinButton(context.l10n.shopPlaceOrder,
-              block: true, icon: Icons.arrow_forward, onTap: onCheckout),
+              block: true, icon: PhosphorIconsRegular.arrowRight, onTap: onCheckout),
         ]),
       ),
     );

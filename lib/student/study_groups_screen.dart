@@ -6,6 +6,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import 'package:flutter/services.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Module 24 (lot 8, rattrapage 16.3) : groupes d'étude réels
 /// (StudyGroupsController.cs, mêmes endpoints que le web
@@ -108,7 +109,7 @@ class _StudyGroupsScreenState extends State<StudyGroupsScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(context.l10n.studentLinksStudyGroups),
@@ -128,7 +129,7 @@ class _StudyGroupsScreenState extends State<StudyGroupsScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 24),
                     child: Column(children: [
-                      Icon(Icons.groups_outlined, size: 28, color: s.onFaint),
+                      Icon(PhosphorIconsRegular.usersThree, size: 28, color: s.onFaint),
                       const SizedBox(height: 8),
                       Text(context.l10n.studentGroupsEmpty,
                           style: WinType.bodyM(s.onMuted), textAlign: TextAlign.center),
@@ -258,9 +259,9 @@ class _CreateGroupSheetState extends State<_CreateGroupSheet> {
             Text(context.l10n.studentGroupsCreate, style: WinType.archivo(size: 20, color: s.onStrong)),
             const SizedBox(height: 20),
             if (_error != null) ...[WinAlert(_error!, type: BadgeColor.error), const SizedBox(height: 12)],
-            WinTextField(icon: Icons.group, hint: context.l10n.studentGroupsNameHint, controller: _nameCtrl),
+            WinTextField(icon: PhosphorIconsFill.users, hint: context.l10n.studentGroupsNameHint, controller: _nameCtrl),
             const SizedBox(height: 12),
-            WinTextField(icon: Icons.menu_book_outlined, hint: context.l10n.studentGroupsSubjectHint, controller: _subjectCtrl),
+            WinTextField(icon: PhosphorIconsRegular.bookOpen, hint: context.l10n.studentGroupsSubjectHint, controller: _subjectCtrl),
             const SizedBox(height: 24),
             WinButton(_busy ? context.l10n.studentGroupsCreating : context.l10n.studentGroupsCreateBtn, block: true, onTap: _busy ? null : _submit),
           ]),
@@ -329,7 +330,7 @@ class _JoinGroupSheetState extends State<_JoinGroupSheet> {
             Text(context.l10n.studentGroupsJoinByCode, style: WinType.archivo(size: 20, color: s.onStrong)),
             const SizedBox(height: 20),
             WinTextField(
-                icon: Icons.vpn_key,
+                icon: PhosphorIconsFill.key,
                 hint: context.l10n.studentGroupsInviteCode,
                 controller: _codeCtrl),
             const SizedBox(height: 24),
@@ -413,7 +414,7 @@ class _GroupDetailSheetState extends State<_GroupDetailSheet> {
                   WinButton(detail.joinCode,
                       small: true,
                       variant: WinButtonVariant.outline,
-                      icon: Icons.copy_outlined,
+                      icon: PhosphorIconsRegular.copy,
                       onTap: () async {
                         final messenger = ScaffoldMessenger.of(context);
                         final msg = context.l10n.studentGroupsCodeCopied;

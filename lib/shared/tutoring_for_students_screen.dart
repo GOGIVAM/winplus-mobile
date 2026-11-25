@@ -12,6 +12,7 @@ import '../student/tutors/tutor_public_profile_screen.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Lot 9.3 (suivi 17.4) : cours particuliers réservés et payés par un parent
 /// pour ses enfants, ou par une institution pour ses élèves (parité web
@@ -231,10 +232,10 @@ class _TutoringForStudentsScreenState extends State<TutoringForStudentsScreen> w
         backgroundColor: s.bg,
         elevation: 0,
         title: Text(isInstitution ? context.l10n.tutoringForStudentsTitle : context.l10n.tutoringPrivateLessons),
-        actions: [IconButton(icon: Icon(Icons.refresh_outlined, color: s.onMuted), onPressed: _load)],
+        actions: [IconButton(icon: Icon(PhosphorIconsRegular.arrowClockwise, color: s.onMuted), onPressed: _load)],
       ),
       floatingActionButton: ctx != null && (ctx.isParent || ctx.isInstitution)
-          ? FloatingActionButton.extended(onPressed: _create, icon: const Icon(Icons.add), label: Text(context.l10n.tutoringAssignTutor))
+          ? FloatingActionButton.extended(onPressed: _create, icon: const Icon(PhosphorIconsRegular.plus), label: Text(context.l10n.tutoringAssignTutor))
           : null,
       body: _loading
           ? const Center(child: CircularProgressIndicator())
@@ -246,7 +247,7 @@ class _TutoringForStudentsScreenState extends State<TutoringForStudentsScreen> w
                     WinButton(context.l10n.tutoringBookedSessions,
                         block: true,
                         variant: WinButtonVariant.outline,
-                        icon: Icons.event_available_outlined,
+                        icon: PhosphorIconsRegular.calendarCheck,
                         onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const MyTutorBookingsScreen()))),
                     if (isInstitution) ...[
                       const SizedBox(height: 16),
@@ -441,7 +442,7 @@ class _AssignTutorScreenState extends State<_AssignTutorScreen> {
         const SizedBox(height: 12),
         Row(children: [
           Expanded(child: WinTextField(hint: context.l10n.tutoringAssignSubjectHint, controller: _subjectCtrl)),
-          IconButton(icon: const Icon(Icons.search), onPressed: _searching ? null : _search),
+          IconButton(icon: const Icon(PhosphorIconsRegular.magnifyingGlass), onPressed: _searching ? null : _search),
         ]),
         const SizedBox(height: 8),
         if (_searching)
@@ -451,7 +452,7 @@ class _AssignTutorScreenState extends State<_AssignTutorScreen> {
         else
           ..._results.map((t) => ListTile(
                 onTap: () => setState(() => _tutor = t),
-                leading: Icon(_tutor?.userId == t.userId ? Icons.radio_button_checked : Icons.radio_button_unchecked,
+                leading: Icon(_tutor?.userId == t.userId ? PhosphorIconsFill.radioButton : PhosphorIconsRegular.circle,
                     color: _tutor?.userId == t.userId ? s.primary : s.onFaint),
                 title: Text(t.fullName),
                 subtitle: Text(t.subjects.take(3).join(', ')),

@@ -13,6 +13,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Achat d'un contenu pour un enfant (lot 6), partagé par l'écran « Acheter
 /// pour un enfant » et le catalogue du parent : confirmation, paiement par le
@@ -190,7 +191,7 @@ class _BuyForChildScreenState extends State<BuyForChildScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(context.l10n.parentBuyTitle),
@@ -306,7 +307,7 @@ class _WalletBanner extends StatelessWidget {
     }
     if (error) {
       return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        WinAlert(context.l10n.commonLoadError, icon: Icons.error_outline),
+        WinAlert(context.l10n.commonLoadError, icon: PhosphorIconsRegular.warningCircle),
         TextButton(onPressed: onRetry, child: Text(context.l10n.commonRetry)),
       ]);
     }
@@ -315,13 +316,13 @@ class _WalletBanner extends StatelessWidget {
       return WinAlert(
         context.l10n.parentBuyNoSubscription,
         type: BadgeColor.neutral,
-        icon: Icons.info_outline,
+        icon: PhosphorIconsRegular.info,
       );
     }
     return WinCard(
       padding: const EdgeInsets.all(16),
       child: Row(children: [
-        Icon(Icons.account_balance_wallet_outlined,
+        Icon(PhosphorIconsRegular.wallet,
             size: 22, color: s.primary),
         const SizedBox(width: 12),
         Expanded(

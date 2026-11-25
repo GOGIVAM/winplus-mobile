@@ -351,7 +351,7 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
             decoration: BoxDecoration(
                 color: WinColors.goldBg,
                 borderRadius: BorderRadius.circular(10)),
-            child: const Icon(Icons.apartment_outlined,
+            child: const Icon(PhosphorIconsRegular.buildings,
                 size: 18, color: WinColors.gold),
           ),
         },

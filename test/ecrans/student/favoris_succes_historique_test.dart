@@ -8,6 +8,7 @@ import 'package:winplus/widgets/win_widgets.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Date relative a l'horloge de la machine : la regle d'affichage testee
 /// (« aujourd'hui », « il y a N jours ») ne depend que de l'ecart, jamais de la
@@ -82,7 +83,7 @@ void main() {
       faux.repond('DELETE', '/favorites/7', {});
       final abo = await abonnementAvecDroits(tester, faux, {'favorites.max': -1});
       await monterEcran(tester, const FavoritesScreen(), abonnement: abo);
-      await tester.tap(find.byIcon(Icons.favorite));
+      await tester.tap(find.byIcon(PhosphorIconsFill.heart));
       await reseau(tester);
       expect(faux.recues('DELETE', '/favorites/7'), hasLength(1));
       expect(find.text('Maths BAC'), findsNothing);
@@ -92,7 +93,7 @@ void main() {
       faux.repond('GET', '/favorites', []);
       await monterEcran(tester, const FavoritesScreen());
       expect(faux.recues('GET', '/favorites'), hasLength(1));
-      await tester.tap(find.byIcon(Icons.refresh_outlined));
+      await tester.tap(find.byIcon(PhosphorIconsRegular.arrowClockwise));
       await reseau(tester);
       expect(faux.recues('GET', '/favorites'), hasLength(2));
     });
@@ -120,7 +121,7 @@ void main() {
       expect(find.text('Serie de 30'), findsOneWidget);
       expect(find.text(l.studentAchUnlocked), findsOneWidget);
       expect(find.text(l.studentAchLocked), findsOneWidget);
-      expect(find.byIcon(Icons.lock), findsOneWidget);
+      expect(find.byIcon(PhosphorIconsFill.lock), findsOneWidget);
       expect(find.text('5 janvier'), findsOneWidget);
     });
 

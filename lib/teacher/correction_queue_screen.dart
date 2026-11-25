@@ -6,6 +6,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
 import '../widgets/win_screen.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class CorrectionQueueScreen extends StatefulWidget {
   const CorrectionQueueScreen({super.key});
@@ -71,7 +72,7 @@ class _CorrectionQueueScreenState extends State<CorrectionQueueScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title:
@@ -85,7 +86,7 @@ class _CorrectionQueueScreenState extends State<CorrectionQueueScreen> {
                       WinBadge(context.l10n.teacherCorrectionPendingCount(pending), color: BadgeColor.warn)),
             ),
           IconButton(
-            icon: Icon(Icons.refresh_outlined, color: s.onStrong),
+            icon: Icon(PhosphorIconsRegular.arrowClockwise, color: s.onStrong),
             onPressed: () {
               setState(() => _subs = null);
               _load();
@@ -127,7 +128,7 @@ class _CorrectionQueueScreenState extends State<CorrectionQueueScreen> {
     if (_items.isEmpty) {
       return Center(
           child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Icon(Icons.check_circle_outline, size: 64, color: s.onFaint),
+        Icon(PhosphorIconsRegular.checkCircle, size: 64, color: s.onFaint),
         const SizedBox(height: 12),
         Text(context.l10n.teacherCorrectionEmpty, style: WinType.bodyM(s.onMuted)),
       ]));
@@ -190,7 +191,7 @@ class _SubmissionCard extends StatelessWidget {
         const SizedBox(height: 12),
         if (!sub.corrected)
           WinButton(context.l10n.teacherCorrectionCorrect,
-              small: true, icon: Icons.rate_review_outlined, onTap: onCorrect)
+              small: true, icon: PhosphorIconsRegular.chatText, onTap: onCorrect)
         else
           // La feuille de correction montre la note et le commentaire déjà
           // donnés : un seul bouton suffit pour les revoir et les modifier.
@@ -297,7 +298,7 @@ class _CorrectionSheetState extends State<_CorrectionSheet> {
           WinButton(context.l10n.teacherCorrectionSend,
               block: true,
               loading: _loading,
-              icon: Icons.send_outlined,
+              icon: PhosphorIconsRegular.paperPlaneRight,
               onTap: _submit),
         ],
       ]),

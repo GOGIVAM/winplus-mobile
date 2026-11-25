@@ -5,6 +5,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class TeacherLinksScreen extends StatefulWidget {
   const TeacherLinksScreen({super.key});
@@ -120,7 +121,7 @@ class _TeacherLinksScreenState extends State<TeacherLinksScreen>
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: s.onStrong),
+            icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
             onPressed: () => Navigator.pop(context)),
         title:
             Text(context.l10n.teacherLinksTitle, style: WinType.headlineS(s.onStrong)),
@@ -145,7 +146,7 @@ class _TeacherLinksScreenState extends State<TeacherLinksScreen>
             WinTextField(
               label: context.l10n.teacherLinksInvite,
               hint: context.l10n.teacherLinksSearchHint,
-              icon: Icons.person_search_outlined,
+              icon: PhosphorIconsRegular.userFocus,
               controller: _searchCtrl,
               onChanged: _search,
             ),
@@ -166,7 +167,7 @@ class _TeacherLinksScreenState extends State<TeacherLinksScreen>
                     return ListTile(
                       leading: CircleAvatar(
                           backgroundColor: s.surface2,
-                          child: Icon(Icons.person, color: s.onFaint)),
+                          child: Icon(PhosphorIconsFill.user, color: s.onFaint)),
                       title: Text(name, style: WinType.bodyM(s.onStrong)),
                       subtitle: Text(user['email'] ?? '',
                           style: WinType.labelM(s.onMuted)),
@@ -177,7 +178,7 @@ class _TeacherLinksScreenState extends State<TeacherLinksScreen>
                                 height: 20,
                                 child:
                                     CircularProgressIndicator(strokeWidth: 2))
-                            : Icon(Icons.person_add, color: s.primary),
+                            : Icon(PhosphorIconsFill.userPlus, color: s.primary),
                         onPressed:
                             _inviting ? null : () => _invite(user['id'] as int),
                       ),
@@ -213,20 +214,20 @@ class _TeacherLinksScreenState extends State<TeacherLinksScreen>
                                 child: Row(children: [
                               CircleAvatar(
                                   backgroundColor: s.surface2,
-                                  child: Icon(Icons.person, color: s.onFaint)),
+                                  child: Icon(PhosphorIconsFill.user, color: s.onFaint)),
                               const SizedBox(width: 12),
                               Expanded(
                                   child: Text(
                                       name.isEmpty ? context.l10n.msgRoleUser : name,
                                       style: WinType.bodyM(s.onStrong))),
                               IconButton(
-                                icon: const Icon(Icons.check,
+                                icon: const Icon(PhosphorIconsBold.check,
                                     color: WinColors.success),
                                 onPressed: () =>
                                     _respond(inv['id'] as int, true),
                               ),
                               IconButton(
-                                icon: const Icon(Icons.close,
+                                icon: const Icon(PhosphorIconsRegular.x,
                                     color: WinColors.error),
                                 onPressed: () =>
                                     _respond(inv['id'] as int, false),
@@ -255,14 +256,14 @@ class _TeacherLinksScreenState extends State<TeacherLinksScreen>
                                 child: Row(children: [
                               CircleAvatar(
                                   backgroundColor: s.surface2,
-                                  child: Icon(Icons.person, color: s.onFaint)),
+                                  child: Icon(PhosphorIconsFill.user, color: s.onFaint)),
                               const SizedBox(width: 12),
                               Expanded(
                                   child: Text(
                                       name.isEmpty ? context.l10n.msgRoleUser : name,
                                       style: WinType.bodyM(s.onStrong))),
                               IconButton(
-                                icon: Icon(Icons.link_off, color: s.onFaint),
+                                icon: Icon(PhosphorIconsRegular.linkBreak, color: s.onFaint),
                                 onPressed: () => _delete(link['id'] as int),
                               ),
                             ]));

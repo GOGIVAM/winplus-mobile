@@ -323,7 +323,7 @@ class _ParentDashTabState extends State<ParentDashTab> {
             onTap: () => _push(const WinAIAlertsScreen()),
             borderRadius: BorderRadius.circular(WinRadii.sm),
             child: WinAlert(_alerts.first.content,
-                type: BadgeColor.warn, icon: Icons.warning_amber_rounded),
+                type: BadgeColor.warn, icon: PhosphorIconsRegular.warning),
           ),
         // Mes enfants (cartes horizontales)
         MobileSection(
@@ -390,7 +390,7 @@ class ChildCard extends StatelessWidget {
           Text(child.level != null ? ClassLevels.label(child.level) : child.schoolName ?? context.l10n.roleStudent,
               style: WinType.labelM(s.onMuted)),
         ])),
-        const Icon(Icons.chevron_right, color: WinColors.ink300),
+        const Icon(PhosphorIconsRegular.caretRight, color: WinColors.ink300),
       ]),
     );
   }
@@ -431,10 +431,10 @@ class _TrackedChildCard extends StatelessWidget {
             : WinColors.error;
 
     final IconData trendIcon = child.trend == Trend.up
-        ? Icons.trending_up_rounded
+        ? PhosphorIconsRegular.trendUp
         : child.trend == Trend.down
-            ? Icons.trending_down_rounded
-            : Icons.trending_flat_rounded;
+            ? PhosphorIconsRegular.trendDown
+            : PhosphorIconsRegular.arrowRight;
     final Color trendColor = child.trend == Trend.up
         ? WinColors.success
         : child.trend == Trend.down
@@ -509,7 +509,7 @@ class _EventTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
     final isRenewal = event.type == 'renewal';
-    final icon = isRenewal ? Icons.autorenew : Icons.event_available_outlined;
+    final icon = isRenewal ? PhosphorIconsRegular.arrowsClockwise : PhosphorIconsRegular.calendarCheck;
     final color = isRenewal ? WinColors.warn : s.primary;
     final days = event.date.difference(DateTime.now()).inDays;
     final daysLabel =
@@ -540,7 +540,7 @@ class _EventTile extends StatelessWidget {
                     overflow: TextOverflow.ellipsis),
                 Text(daysLabel, style: WinType.labelM(s.onMuted)),
               ])),
-          if (isRenewal) Icon(Icons.chevron_right, size: 16, color: s.onFaint),
+          if (isRenewal) Icon(PhosphorIconsRegular.caretRight, size: 16, color: s.onFaint),
         ]),
       ),
     );
@@ -591,7 +591,7 @@ class _ParentChildrenTabState extends State<ParentChildrenTab> {
                         WinButton(context.l10n.parentChildrenLimit(childLimit),
                             variant: WinButtonVariant.outline,
                             block: true,
-                            icon: Icons.lock_outline,
+                            icon: PhosphorIconsRegular.lock,
                             onTap: () => Navigator.push(
                                 context,
                                 WinPageRoute(
@@ -600,7 +600,7 @@ class _ParentChildrenTabState extends State<ParentChildrenTab> {
                         WinButton(context.l10n.parentAddChildTitle,
                             variant: WinButtonVariant.outline,
                             block: true,
-                            icon: Icons.add, onTap: () async {
+                            icon: PhosphorIconsRegular.plus, onTap: () async {
                           await Navigator.push(
                               context,
                               WinPageRoute(
@@ -874,10 +874,10 @@ class _ParentPaymentsTabState extends State<ParentPaymentsTab> {
   Widget _row(WinScheme s, ApiParentPayment p, bool last) {
     final paid = p.status == 'paid';
     final icon = paid
-        ? (p.isDebit ? Icons.check : Icons.add)
+        ? (p.isDebit ? PhosphorIconsBold.check : PhosphorIconsRegular.plus)
         : p.status == 'pending'
-            ? Icons.schedule
-            : Icons.close;
+            ? PhosphorIconsRegular.clock
+            : PhosphorIconsRegular.x;
     final sign = p.isDebit ? '−' : '+';
     return Container(
       padding: const EdgeInsets.all(12),
@@ -966,7 +966,7 @@ class _ParentPaymentsTabState extends State<ParentPaymentsTab> {
                   Text(context.l10n.parentPaymentsLoadError,
                       style: WinType.bodyM(s.onMuted)),
                   const SizedBox(height: 10),
-                  WinButton(context.l10n.commonRetry, icon: Icons.refresh, onTap: _load),
+                  WinButton(context.l10n.commonRetry, icon: PhosphorIconsRegular.arrowClockwise, onTap: _load),
                 ]))
               else if (items.isEmpty)
                 WinCard(
@@ -1083,7 +1083,7 @@ class _ParentProfileTabState extends State<ParentProfileTab> {
         Row(children: [
           Expanded(
               child: _StatBox(_loaded ? '${_children.length}' : '…', context.l10n.shellTabChildren,
-                  Icons.child_care_outlined, WinColors.blue500)),
+                  PhosphorIconsRegular.baby, WinColors.blue500)),
           const SizedBox(width: 10),
           Expanded(
               child: _StatBox(
@@ -1091,12 +1091,12 @@ class _ParentProfileTabState extends State<ParentProfileTab> {
                       ? '—'
                       : '${fmtXaf(_wallet!.creditsLeft.round())} XAF',
                   context.l10n.parentProfileCredits,
-                  Icons.account_balance_wallet_outlined,
+                  PhosphorIconsRegular.wallet,
                   WinColors.teal500)),
           const SizedBox(width: 10),
           Expanded(
               child: _StatBox(_loaded ? '$_unreadAlerts' : '…', context.l10n.commonWinaiAlerts,
-                  Icons.notifications_outlined, WinColors.warn)),
+                  PhosphorIconsRegular.bell, WinColors.warn)),
         ]),
         const SizedBox(height: 20),
 
@@ -1135,7 +1135,7 @@ class _ParentProfileTabState extends State<ParentProfileTab> {
                         Text('${_scores[c.id]!.round()}%',
                             style: WinType.labelM(s.onMuted)),
                       const SizedBox(width: 4),
-                      const Icon(Icons.chevron_right,
+                      const Icon(PhosphorIconsRegular.caretRight,
                           size: 16, color: WinColors.ink300),
                     ]),
                   ),
@@ -1146,46 +1146,46 @@ class _ParentProfileTabState extends State<ParentProfileTab> {
 
         // ── Paramètres ───────────────────────────────────────────
         const SizedBox(height: 4),
-        _Row(Icons.account_balance_wallet_outlined, context.l10n.studentHubSubscription,
+        _Row(PhosphorIconsRegular.wallet, context.l10n.studentHubSubscription,
             onTap: () => Navigator.push(
                 context,
                 WinPageRoute(
                     builder: (_) => const SubscriptionStatusScreen()))),
-        _Row(Icons.autorenew, context.l10n.parentProfileManageSub,
+        _Row(PhosphorIconsRegular.arrowsClockwise, context.l10n.parentProfileManageSub,
             onTap: () => Navigator.push(
                 context,
                 WinPageRoute(
                     builder: (_) => const SubscriptionStatusScreen()))),
         // Lot 9.3 : attribuer un tuteur, réserver pour ses enfants.
-        _Row(Icons.school_outlined, context.l10n.parentProfileTutoring,
+        _Row(PhosphorIconsRegular.graduationCap, context.l10n.parentProfileTutoring,
             onTap: () => Navigator.push(context,
                 WinPageRoute(builder: (_) => const TutoringForStudentsScreen()))),
         // Lot 9.7b : choix des enfants couverts par le plan (catalogue, bonus WinAI, alertes).
-        _Row(Icons.verified_user_outlined, context.l10n.parentProfileCovered,
+        _Row(PhosphorIconsRegular.shieldCheck, context.l10n.parentProfileCovered,
             onTap: () => Navigator.push(context,
                 WinPageRoute(builder: (_) => const CoveredChildrenScreen()))),
-        _Row(Icons.payment_outlined, context.l10n.parentProfilePayments,
+        _Row(PhosphorIconsRegular.creditCard, context.l10n.parentProfilePayments,
             onTap: () => Navigator.push(context,
                 WinPageRoute(builder: (_) => const _PaymentsScreen()))),
         // Préférences réelles du compte (avant : interrupteur toujours
         // allumé, sans effet).
-        _Row(Icons.notifications_outlined, context.l10n.studentNotifTitle,
+        _Row(PhosphorIconsRegular.bell, context.l10n.studentNotifTitle,
             onTap: () => Navigator.push(
                 context,
                 WinPageRoute(
                     builder: (_) => AccountSettingsScreen(
                         kind: AccountSettingsKind.notifications,
                         title: context.l10n.studentNotifTitle)))),
-        _Row(Icons.dark_mode_outlined, context.l10n.commonDarkMode,
+        _Row(PhosphorIconsRegular.moon, context.l10n.commonDarkMode,
             trailing: Switch(
                 value: state.dark,
                 activeThumbColor: s.primary,
                 onChanged: (_) => state.toggleTheme())),
-        _Row(Icons.language, context.l10n.language,
+        _Row(PhosphorIconsRegular.globe, context.l10n.language,
             trailing: const LanguageToggle()),
-        _Row(Icons.shield_outlined, context.l10n.studentHubPrivacy,
+        _Row(PhosphorIconsRegular.shield, context.l10n.studentHubPrivacy,
             onTap: () => LegalScreen.showPrivacy(context)),
-        _Row(Icons.article_outlined, context.l10n.studentHubTerms,
+        _Row(PhosphorIconsRegular.article, context.l10n.studentHubTerms,
             onTap: () => LegalScreen.showCgu(context)),
         const SizedBox(height: 16),
         TextButton(
@@ -1260,7 +1260,7 @@ class _Row extends StatelessWidget {
                   style: WinType.bodyM(s.onStrong)
                       .copyWith(fontWeight: FontWeight.w500))),
           trailing ??
-              const Icon(Icons.chevron_right,
+              const Icon(PhosphorIconsRegular.caretRight,
                   size: 18, color: WinColors.ink300),
         ]),
       ),
@@ -1279,7 +1279,7 @@ class _PaymentsScreen extends StatelessWidget {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(context.l10n.parentPaymentsTitle),
@@ -1365,7 +1365,7 @@ class _ParentWinAITabState extends State<ParentWinAITab> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text('WinAI'),
@@ -1439,7 +1439,7 @@ class _ParentWinAITabState extends State<ParentWinAITab> {
                                   weight: FontWeight.w600,
                                   color: WinColors.teal700)),
                           const SizedBox(width: 6),
-                          const Icon(Icons.arrow_forward_ios_rounded,
+                          const Icon(PhosphorIconsRegular.caretRight,
                               size: 11, color: WinColors.teal700),
                         ]),
                       ),
@@ -1514,7 +1514,7 @@ class _ParentWinAITabState extends State<ParentWinAITab> {
                   height: 48,
                   decoration:
                       BoxDecoration(color: s.primary, shape: BoxShape.circle),
-                  child: Icon(Icons.send, size: 20, color: s.onPrimary)),
+                  child: Icon(PhosphorIconsFill.paperPlaneRight, size: 20, color: s.onPrimary)),
             ),
           ]),
         ),

@@ -11,6 +11,7 @@ import '../../theme/win_typography.dart';
 import '../../widgets/external_links.dart';
 import '../../widgets/win_screen.dart';
 import '../../widgets/win_widgets.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Cours en direct sur la visio WinPlus (lot 9.4), comme la page
 /// /visio/:type/:id du site : le serveur donne un jeton valable pour la
@@ -224,7 +225,7 @@ class _VisioScreenState extends State<VisioScreen> {
       case VisioRefusal.notYet:
         final h = e.opensAt;
         return WinEmptyState(
-          icon: Icons.schedule,
+          icon: PhosphorIconsRegular.clock,
           title: h == null
               ? l.visioError
               : l.visioNotYet(WinFormat.dateShort(h), WinFormat.time(h)),
@@ -233,9 +234,9 @@ class _VisioScreenState extends State<VisioScreen> {
           onAction: _charger,
         );
       case VisioRefusal.ended:
-        return WinEmptyState(icon: Icons.event_busy_outlined, title: l.visioEnded);
+        return WinEmptyState(icon: PhosphorIconsRegular.calendarX, title: l.visioEnded);
       case VisioRefusal.notFound:
-        return WinEmptyState(icon: Icons.videocam_off_outlined, title: l.visioNotFound);
+        return WinEmptyState(icon: PhosphorIconsRegular.videoCameraSlash, title: l.visioNotFound);
       case VisioRefusal.unavailable:
         return WinErrorState(message: l.visioUnavailable, onRetry: _charger);
     }
@@ -247,7 +248,7 @@ class _VisioScreenState extends State<VisioScreen> {
       WinCard(
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(children: [
-            Icon(Icons.videocam_outlined, color: s.primary),
+            Icon(PhosphorIconsRegular.videoCamera, color: s.primary),
             const SizedBox(width: 10),
             Expanded(child: Text(a.title, style: WinType.titleL(s.onStrong))),
           ]),
@@ -268,7 +269,7 @@ class _VisioScreenState extends State<VisioScreen> {
           style: WinType.bodyM(_ouvertureRatee ? s.onStrong : s.onMuted)),
       const SizedBox(height: 16),
       WinButton(l.visioReopen,
-          block: true, icon: Icons.videocam_outlined, onTap: _ouvrir),
+          block: true, icon: PhosphorIconsRegular.videoCamera, onTap: _ouvrir),
       const SizedBox(height: 10),
       WinButton(l.visioLeave,
           block: true,

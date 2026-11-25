@@ -5,6 +5,7 @@ import '../../theme/win_colors.dart';
 import '../../theme/win_theme.dart';
 import '../../theme/win_typography.dart';
 import '../../widgets/win_widgets.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Ouvre la politique de tutorat publique (lot 9.2, 17.10). L'écran ne
 /// demande aucune connexion : l'endpoint est anonyme.
@@ -72,7 +73,7 @@ class _TutorCancellationPolicyCardState
     return WinCard(
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          const Icon(Icons.verified_user_outlined,
+          const Icon(PhosphorIconsRegular.shieldCheck,
               size: 18, color: WinColors.teal700),
           const SizedBox(width: 8),
           Expanded(

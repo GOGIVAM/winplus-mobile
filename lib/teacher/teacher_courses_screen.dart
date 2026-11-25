@@ -9,6 +9,7 @@ import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
 import '../app_config.dart';
 import '../widgets/external_links.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 // ---------------------------------------------------------------------------
 // Model
@@ -235,7 +236,7 @@ class _TeacherCoursesScreenState extends State<TeacherCoursesScreen> {
         elevation: 0,
         surfaceTintColor: Colors.transparent,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
@@ -244,7 +245,7 @@ class _TeacherCoursesScreenState extends State<TeacherCoursesScreen> {
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.refresh_outlined, color: s.onMuted),
+            icon: Icon(PhosphorIconsRegular.arrowClockwise, color: s.onMuted),
             onPressed: _load,
           ),
         ],
@@ -280,7 +281,7 @@ class _TeacherCoursesScreenState extends State<TeacherCoursesScreen> {
         backgroundColor: s.primary,
         foregroundColor: s.onPrimary,
         onPressed: _showCourseFab,
-        child: const Icon(Icons.add),
+        child: const Icon(PhosphorIconsRegular.plus),
       ),
     );
   }
@@ -296,14 +297,14 @@ class _TeacherCoursesScreenState extends State<TeacherCoursesScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.wifi_off_outlined, size: 48, color: s.onFaint),
+              Icon(PhosphorIconsRegular.wifiSlash, size: 48, color: s.onFaint),
               const SizedBox(height: 12),
               Text(_error!,
                   style: WinType.bodyM(s.onMuted), textAlign: TextAlign.center),
               const SizedBox(height: 16),
               WinButton(context.l10n.commonRetry,
                   variant: WinButtonVariant.outline,
-                  icon: Icons.refresh,
+                  icon: PhosphorIconsRegular.arrowClockwise,
                   onTap: _load),
             ],
           ),
@@ -318,7 +319,7 @@ class _TeacherCoursesScreenState extends State<TeacherCoursesScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.school_outlined, size: 48, color: s.onFaint),
+              Icon(PhosphorIconsRegular.graduationCap, size: 48, color: s.onFaint),
               const SizedBox(height: 12),
               Text(
                 _activeFilter == _filterAll
@@ -379,7 +380,7 @@ class _CourseCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(WinRadii.md),
                 ),
                 child: Icon(
-                  Icons.play_circle_outline_rounded,
+                  PhosphorIconsRegular.playCircle,
                   size: 36,
                   color: _statusThumbnailColor(course.status),
                 ),
@@ -422,13 +423,13 @@ class _CourseCard extends StatelessWidget {
                     runSpacing: 4,
                     children: [
                       _StatPill(
-                        icon: Icons.menu_book_outlined,
+                        icon: PhosphorIconsRegular.bookOpen,
                         label:
                             context.l10n.teacherCoursesLessons(course.lessonsCount),
                         color: s.onMuted,
                       ),
                       _StatPill(
-                        icon: Icons.people_outline,
+                        icon: PhosphorIconsRegular.users,
                         label:
                             context.l10n.teacherCoursesEnrolled(course.enrolledCount),
                         color: s.onMuted,
@@ -441,7 +442,7 @@ class _CourseCard extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.only(top: 8, right: 4),
-            child: Icon(Icons.more_vert, size: 18, color: s.onFaint),
+            child: Icon(PhosphorIconsBold.dotsThreeVertical, size: 18, color: s.onFaint),
           ),
         ],
       ),
@@ -539,18 +540,18 @@ class _CourseOptionsSheetState extends State<_CourseOptionsSheet> {
                 ],
                 const SizedBox(height: 12),
                 Wrap(crossAxisAlignment: WrapCrossAlignment.center, runSpacing: 6, children: [
-                  Icon(Icons.menu_book_outlined, size: 14, color: s.onMuted),
+                  Icon(PhosphorIconsRegular.bookOpen, size: 14, color: s.onMuted),
                   const SizedBox(width: 4),
                   Text(ctx.l10n.teacherCoursesLessons(lessonsCount),
                       style: WinType.labelM(s.onMuted)),
                   const SizedBox(width: 14),
-                  Icon(Icons.people_outline, size: 14, color: s.onMuted),
+                  Icon(PhosphorIconsRegular.users, size: 14, color: s.onMuted),
                   const SizedBox(width: 4),
                   Text(ctx.l10n.teacherCoursesEnrolledMany(enrolledCount),
                       style: WinType.labelM(s.onMuted)),
                   if (avgRating > 0) ...[
                     const SizedBox(width: 14),
-                    const Icon(Icons.star_outline,
+                    const Icon(PhosphorIconsRegular.star,
                         size: 14, color: WinColors.gold),
                     const SizedBox(width: 4),
                     Text(avgRating.toStringAsFixed(1),
@@ -713,7 +714,7 @@ class _CourseOptionsSheetState extends State<_CourseOptionsSheet> {
           const SizedBox(height: 20),
           // Options
           _OptionTile(
-            icon: Icons.visibility_outlined,
+            icon: PhosphorIconsRegular.eye,
             label: context.l10n.teacherCoursesViewDetails,
             loading: _loadingDetail,
             onTap: _loadingDetail ? null : _viewDetail,
@@ -721,14 +722,14 @@ class _CourseOptionsSheetState extends State<_CourseOptionsSheet> {
           ),
           if (widget.course.status == 'draft' || widget.course.status == 'archived')
             _OptionTile(
-              icon: Icons.send_outlined,
+              icon: PhosphorIconsRegular.paperPlaneRight,
               label: context.l10n.teacherCoursesSubmit,
               loading: _submitting,
               onTap: _submitting ? null : _submit,
               s: s,
             ),
           _OptionTile(
-            icon: Icons.delete_outline,
+            icon: PhosphorIconsRegular.trash,
             label: context.l10n.commonDelete,
             color: WinColors.error,
             loading: _deletePending,
@@ -785,7 +786,7 @@ class _OptionTile extends StatelessWidget {
                     size: 15, weight: FontWeight.w500, color: fg),
               ),
             ),
-            Icon(Icons.chevron_right, size: 18, color: s.onFaint),
+            Icon(PhosphorIconsRegular.caretRight, size: 18, color: s.onFaint),
           ],
         ),
       ),

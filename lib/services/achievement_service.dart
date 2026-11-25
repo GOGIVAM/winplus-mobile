@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'api_client.dart';
 import '../data/models.dart';
 import '../theme/win_colors.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class AchievementResult {
   final List<AchievementBadge> badges;
@@ -16,12 +17,12 @@ class AchievementResult {
 // seulement dans BadgeDefinition.Icon) : mappées localement par code.
 
 const _iconByCode = <String, IconData>{
-  'first_quiz_passed': Icons.quiz_outlined,
-  'ten_quizzes_passed': Icons.library_books_outlined,
-  'perfect_quiz_score': Icons.star_outlined,
-  'first_course_completed': Icons.workspace_premium_outlined,
-  'streak_7': Icons.local_fire_department_outlined,
-  'streak_30': Icons.whatshot_outlined,
+  'first_quiz_passed': PhosphorIconsRegular.exam,
+  'ten_quizzes_passed': PhosphorIconsRegular.books,
+  'perfect_quiz_score': PhosphorIconsRegular.star,
+  'first_course_completed': PhosphorIconsRegular.medal,
+  'streak_7': PhosphorIconsRegular.fire,
+  'streak_30': PhosphorIconsRegular.fire,
 };
 
 const _colorByCode = <String, Color>{
@@ -61,7 +62,7 @@ class AchievementService {
         code,
         j['title'] as String? ?? '',
         j['description'] as String? ?? '',
-        _iconByCode[code] ?? Icons.emoji_events_outlined,
+        _iconByCode[code] ?? PhosphorIconsRegular.trophy,
         _colorByCode[code] ?? WinColors.teal500,
         unlocked: j['unlocked'] as bool? ?? false,
         unlockedAt: j['unlockedAt'] as String?,

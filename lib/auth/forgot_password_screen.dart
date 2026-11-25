@@ -5,6 +5,7 @@ import '../services/auth_service.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -48,8 +49,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       WinAuthHeading(l10n.authForgotTitle,
           subtitle: l10n.authForgotIntro,
           icon: _sent
-              ? Icons.mark_email_read_outlined
-              : Icons.lock_reset_outlined),
+              ? PhosphorIconsRegular.envelopeOpen
+              : PhosphorIconsRegular.lockKeyOpen),
       if (_sent) ...[
         WinAlert(
           l10n.authForgotSent(_ctrl.text.trim()),
@@ -66,7 +67,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         WinTextField(
           label: l10n.authEmailAddress,
           hint: l10n.authEmailHint,
-          icon: Icons.email_outlined,
+          icon: PhosphorIconsRegular.envelopeSimple,
           controller: _ctrl,
           keyboardType: TextInputType.emailAddress,
         ),

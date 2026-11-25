@@ -9,6 +9,7 @@ import '../../theme/win_typography.dart';
 import '../../widgets/win_widgets.dart';
 import 'subscribe_sheet.dart';
 import 'subscription_notifier.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Lot 9.7b (étapes 3 et 5) : tarifs servis par l'API (GET /pricing/catalog,
 /// grille versionnée, prix TTC par période, droits réellement appliqués).
@@ -99,14 +100,14 @@ class _PricingScreenState extends State<PricingScreen> {
       appBar: AppBar(
         backgroundColor: s.bg,
         elevation: 0,
-        leading: IconButton(icon: Icon(Icons.arrow_back, color: s.onStrong), onPressed: () => Navigator.pop(context)),
+        leading: IconButton(icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong), onPressed: () => Navigator.pop(context)),
         title: Text(context.l10n.subOurPlans),
-        actions: [IconButton(icon: Icon(Icons.refresh_outlined, color: s.onStrong), onPressed: _load)],
+        actions: [IconButton(icon: Icon(PhosphorIconsRegular.arrowClockwise, color: s.onStrong), onPressed: _load)],
       ),
       body: _hasError
           ? Center(
               child: Column(mainAxisSize: MainAxisSize.min, children: [
-              Icon(Icons.wifi_off_outlined, size: 48, color: s.onFaint),
+              Icon(PhosphorIconsRegular.wifiSlash, size: 48, color: s.onFaint),
               const SizedBox(height: 12),
               Text(context.l10n.subLoadError, style: WinType.bodyM(s.onMuted)),
               const SizedBox(height: 12),
@@ -147,7 +148,7 @@ class _PricingScreenState extends State<PricingScreen> {
                           border: Border.all(color: s.outline),
                         ),
                         child: Row(children: [
-                          Icon(Icons.lock_outline, size: 16, color: s.onFaint),
+                          Icon(PhosphorIconsRegular.lock, size: 16, color: s.onFaint),
                           const SizedBox(width: 10),
                           Expanded(
                             child: Text(context.l10n.subPricingFootnote,
@@ -242,7 +243,7 @@ class _FeatureRow extends StatelessWidget {
       child: Opacity(
         opacity: feature.included ? 1 : 0.45,
         child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Icon(feature.included ? Icons.check : Icons.close, size: 16, color: feature.included ? WinColors.success : s.onFaint),
+          Icon(feature.included ? PhosphorIconsBold.check : PhosphorIconsRegular.x, size: 16, color: feature.included ? WinColors.success : s.onFaint),
           const SizedBox(width: 10),
           Expanded(child: Text('${feature.label}$detail', style: WinType.bodyS(s.onSurface))),
         ]),

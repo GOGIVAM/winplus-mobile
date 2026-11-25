@@ -6,6 +6,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class EncouragementSheet extends StatefulWidget {
   final ApiChild child;
@@ -38,18 +39,18 @@ class _EncouragementSheetState extends State<EncouragementSheet> {
         widget.childScore != null ? '${widget.childScore}%' : l.parentEncourageYourScore;
     return [
       (
-        Icons.fitness_center_outlined,
+        PhosphorIconsRegular.barbell,
         l.parentEncourageTpl1(name)
       ),
       (
-        Icons.menu_book_outlined,
+        PhosphorIconsRegular.bookOpen,
         l.parentEncourageTpl2(name)
       ),
       (
-        Icons.track_changes_outlined,
+        PhosphorIconsRegular.target,
         l.parentEncourageTpl3(name)
       ),
-      (Icons.star_outline, l.parentEncourageTpl4(name, score)),
+      (PhosphorIconsRegular.star, l.parentEncourageTpl4(name, score)),
     ];
   }
 
@@ -157,7 +158,7 @@ class _EncouragementSheetState extends State<EncouragementSheet> {
                                   : FontWeight.w400)),
                     ),
                     if (selected)
-                      Icon(Icons.check_circle, size: 18, color: s.primary),
+                      Icon(PhosphorIconsFill.checkCircle, size: 18, color: s.primary),
                   ]),
                 ),
               );
@@ -215,7 +216,7 @@ class _EncouragementSheetState extends State<EncouragementSheet> {
             WinButton(
               context.l10n.commonSend,
               block: true,
-              icon: Icons.send_outlined,
+              icon: PhosphorIconsRegular.paperPlaneRight,
               loading: _sending,
               onTap: _message.isEmpty || _sending ? null : _send,
             ),

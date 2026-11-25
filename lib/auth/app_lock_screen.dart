@@ -13,6 +13,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import 'login_screen.dart';
 import '../widgets/win_logo.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Application verrouillée : l'empreinte a été annulée ou refusée au
 /// lancement. On peut réessayer ou se déconnecter (puis se reconnecter avec
@@ -59,7 +60,7 @@ class _AppLockScreenState extends State<AppLockScreen> {
             child: Column(mainAxisSize: MainAxisSize.min, children: [
               const WinLogo(size: 104),
               const SizedBox(height: 24),
-              const Icon(Icons.fingerprint, size: 56, color: WinColors.cream50),
+              const Icon(PhosphorIconsRegular.fingerprint, size: 56, color: WinColors.cream50),
               const SizedBox(height: 16),
               Text(l.biometricLockedTitle,
                   textAlign: TextAlign.center,
@@ -72,7 +73,7 @@ class _AppLockScreenState extends State<AppLockScreen> {
               const SizedBox(height: 28),
               WinButton(l.biometricUnlock,
                   block: true,
-                  icon: Icons.fingerprint,
+                  icon: PhosphorIconsRegular.fingerprint,
                   loading: _busy,
                   onTap: _busy ? null : _unlock),
               const SizedBox(height: 12),

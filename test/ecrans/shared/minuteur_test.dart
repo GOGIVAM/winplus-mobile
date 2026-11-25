@@ -5,6 +5,7 @@ import 'package:winplus/shared/study_timer_screen.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 void main() {
   setUp(() => preparerEnvironnement());
@@ -17,31 +18,31 @@ void main() {
     // Puce de mode et libelle sous le chronometre.
     expect(find.text(l.timerModePomodoro), findsNWidgets(2));
     expect(find.text(l.timerTodayCount(0)), findsOneWidget);
-    expect(find.byIcon(Icons.play_arrow_rounded), findsOneWidget);
+    expect(find.byIcon(PhosphorIconsFill.play), findsOneWidget);
   });
 
   testWidgets('demarrer : le temps s\'ecoule seconde par seconde, pause l\'arrete', (tester) async {
     await monterEcran(tester, const StudyTimerScreen());
-    await tester.tap(find.byIcon(Icons.play_arrow_rounded));
+    await tester.tap(find.byIcon(PhosphorIconsFill.play));
     await pomper(tester, const Duration(seconds: 3));
     expect(find.text('24:57'), findsOneWidget);
-    expect(find.byIcon(Icons.pause_rounded), findsOneWidget);
-    await tester.tap(find.byIcon(Icons.pause_rounded));
+    expect(find.byIcon(PhosphorIconsFill.pause), findsOneWidget);
+    await tester.tap(find.byIcon(PhosphorIconsFill.pause));
     await pomper(tester);
     await pomper(tester, const Duration(seconds: 5));
     expect(find.text('24:57'), findsOneWidget);
-    expect(find.byIcon(Icons.play_arrow_rounded), findsOneWidget);
+    expect(find.byIcon(PhosphorIconsFill.play), findsOneWidget);
     await monter(tester, const SizedBox());
   });
 
   testWidgets('reinitialiser remet la duree du mode et arrete le minuteur', (tester) async {
     await monterEcran(tester, const StudyTimerScreen());
-    await tester.tap(find.byIcon(Icons.play_arrow_rounded));
+    await tester.tap(find.byIcon(PhosphorIconsFill.play));
     await pomper(tester, const Duration(seconds: 2));
-    await tester.tap(find.byIcon(Icons.refresh_rounded));
+    await tester.tap(find.byIcon(PhosphorIconsRegular.arrowClockwise));
     await pomper(tester);
     expect(find.text('25:00'), findsOneWidget);
-    expect(find.byIcon(Icons.play_arrow_rounded), findsOneWidget);
+    expect(find.byIcon(PhosphorIconsFill.play), findsOneWidget);
     await monter(tester, const SizedBox());
   });
 
@@ -60,11 +61,11 @@ void main() {
 
   testWidgets('changer de mode en cours de minuteur l\'arrete', (tester) async {
     await monterEcran(tester, const StudyTimerScreen());
-    await tester.tap(find.byIcon(Icons.play_arrow_rounded));
+    await tester.tap(find.byIcon(PhosphorIconsFill.play));
     await pomper(tester, const Duration(seconds: 2));
     await tester.tap(find.text(L10n.current.timerModeShortBreak));
     await pomper(tester);
-    expect(find.byIcon(Icons.play_arrow_rounded), findsOneWidget);
+    expect(find.byIcon(PhosphorIconsFill.play), findsOneWidget);
     expect(find.text('05:00'), findsOneWidget);
   });
 
@@ -72,7 +73,7 @@ void main() {
     await monterEcran(tester, const StudyTimerScreen());
     await tester.tap(find.text(L10n.current.timerModeShortBreak));
     await pomper(tester);
-    await tester.tap(find.byIcon(Icons.play_arrow_rounded));
+    await tester.tap(find.byIcon(PhosphorIconsFill.play));
     await pomper(tester, const Duration(seconds: 301));
     final l = L10n.current;
     expect(find.text(l.timerBreakDone), findsOneWidget);

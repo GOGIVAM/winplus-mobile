@@ -8,6 +8,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import 'content_publish_screen.dart';
 import '../l10n/l10n.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class ContentActionsSheet extends StatelessWidget {
   final ApiPublishedContent content;
@@ -240,20 +241,20 @@ class ContentActionsSheet extends StatelessWidget {
             // Mini-stats : téléchargements · note · revenus
             Row(children: [
               _MiniStat(
-                  icon: Icons.download_outlined,
+                  icon: PhosphorIconsRegular.downloadSimple,
                   value: '${c.downloads}',
                   label: context.l10n.teacherContentDownloadsShort,
                   color: WinColors.blue500),
               const SizedBox(width: 12),
               _MiniStat(
-                icon: Icons.star_outline,
+                icon: PhosphorIconsRegular.star,
                 value: c.rating > 0 ? c.rating.toStringAsFixed(1) : '',
                 label: context.l10n.teacherContentRating,
                 color: WinColors.gold,
               ),
               const SizedBox(width: 12),
               _MiniStat(
-                icon: Icons.account_balance_wallet_outlined,
+                icon: PhosphorIconsRegular.wallet,
                 value: c.revenue > 0 ? '${fmtXaf(c.revenue)} XAF' : '',
                 label: context.l10n.shellTabEarnings,
                 color: WinColors.success,
@@ -266,12 +267,12 @@ class ContentActionsSheet extends StatelessWidget {
 
             // 4 actions liste
             _ActionRow(
-              icon: Icons.bar_chart_outlined,
+              icon: PhosphorIconsRegular.chartBar,
               label: context.l10n.teacherContentStats,
               onTap: () => _showStats(context),
             ),
             _ActionRow(
-              icon: Icons.edit_outlined,
+              icon: PhosphorIconsRegular.pencilSimple,
               label: context.l10n.teacherContentEditInfo,
               onTap: () {
                 Navigator.pop(context);
@@ -280,12 +281,12 @@ class ContentActionsSheet extends StatelessWidget {
               },
             ),
             _ActionRow(
-              icon: Icons.swap_horiz_outlined,
+              icon: PhosphorIconsRegular.arrowsLeftRight,
               label: context.l10n.teacherContentChangeStatus,
               onTap: () => _showStatusDialog(context),
             ),
             _ActionRow(
-              icon: Icons.delete_outline,
+              icon: PhosphorIconsRegular.trash,
               label: context.l10n.commonDelete,
               color: WinColors.error,
               onTap: () => _showDeleteDialog(context),
@@ -347,7 +348,7 @@ class _ActionRow extends StatelessWidget {
           Text(label,
               style: WinType.bodyM(fg).copyWith(fontWeight: FontWeight.w500)),
           const Spacer(),
-          Icon(Icons.chevron_right, size: 18, color: s.onFaint),
+          Icon(PhosphorIconsRegular.caretRight, size: 18, color: s.onFaint),
         ]),
       ),
     );

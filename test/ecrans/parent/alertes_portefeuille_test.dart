@@ -12,6 +12,7 @@ import 'package:winplus/services/parent_service.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 String _ilYa(Duration d) => DateTime.now().subtract(d).toUtc().toIso8601String();
 
@@ -75,8 +76,8 @@ void main() {
       expect(find.text('Leo Eto'), findsOneWidget);
       expect(find.text(l.studentNotifMinutesAgo(10)), findsOneWidget);
       expect(find.text(l.studentNotifHoursAgo(5)), findsOneWidget);
-      expect(find.byIcon(Icons.error_outline), findsOneWidget);
-      expect(find.byIcon(Icons.check_circle_outline), findsOneWidget);
+      expect(find.byIcon(PhosphorIconsRegular.warningCircle), findsOneWidget);
+      expect(find.byIcon(PhosphorIconsRegular.checkCircle), findsOneWidget);
       expect(find.text(l.parentAlertsSeeActivity), findsNWidgets(2));
     });
 
@@ -91,13 +92,13 @@ void main() {
       ]);
       await monterEcran(tester, const WinAIAlertsScreen());
       expect(find.text('Notes en baisse'), findsOneWidget);
-      expect(find.byIcon(Icons.warning_amber_outlined), findsOneWidget);
+      expect(find.byIcon(PhosphorIconsRegular.warning), findsOneWidget);
     });
 
     testWidgets('actualiser relit les enfants et les alertes', (tester) async {
       faux.repond('GET', '/parent/children', []);
       await monterEcran(tester, const WinAIAlertsScreen());
-      await tester.tap(find.byIcon(Icons.refresh_outlined));
+      await tester.tap(find.byIcon(PhosphorIconsRegular.arrowClockwise));
       await reseau(tester);
       expect(faux.recues('GET', '/parent/children'), hasLength(2));
     });

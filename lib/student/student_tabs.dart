@@ -234,7 +234,7 @@ class _StudentCatalogTabState extends State<StudentCatalogTab> {
               hasScrollBody: false,
               child: Center(
                   child: Column(mainAxisSize: MainAxisSize.min, children: [
-                Icon(Icons.wifi_off_outlined, size: 48, color: s.onFaint),
+                Icon(PhosphorIconsRegular.wifiSlash, size: 48, color: s.onFaint),
                 const SizedBox(height: 12),
                 Text(l.studentTabsCatalogLoadError,
                     style: WinType.bodyM(s.onMuted)),
@@ -419,24 +419,24 @@ class _StudentSpaceTabState extends State<StudentSpaceTab> {
             children: [
               Row(children: [
                 Expanded(
-                    child: _MiniStat(avg, context.l10n.studentReportsAvgScore, Icons.trending_up)),
+                    child: _MiniStat(avg, context.l10n.studentReportsAvgScore, PhosphorIconsRegular.trendUp)),
                 const SizedBox(width: 10),
                 Expanded(
                     child: _MiniStat(week, context.l10n.studentTabsStudyThisWeek,
-                        Icons.schedule)),
+                        PhosphorIconsRegular.clock)),
               ]),
               const SizedBox(height: 16),
               // Formations
               _QuickLink(
                   context.l10n.studentMyCoursesTitle,
-                  Icons.play_lesson_outlined,
+                  PhosphorIconsRegular.monitorPlay,
                   WinColors.teal600,
                   () => Navigator.push(context,
                       WinPageRoute(builder: (_) => const MyCoursesScreen()))),
               const SizedBox(height: 10),
               _QuickLink(
                   context.l10n.studentTabsCourseCatalog,
-                  Icons.explore_outlined,
+                  PhosphorIconsRegular.compass,
                   WinColors.teal400,
                   () => Navigator.push(
                       context,
@@ -445,14 +445,14 @@ class _StudentSpaceTabState extends State<StudentSpaceTab> {
               const SizedBox(height: 10),
               _QuickLink(
                   context.l10n.studentTabsFindTutor,
-                  Icons.person_search_outlined,
+                  PhosphorIconsRegular.userFocus,
                   WinColors.blue500,
                   () => Navigator.push(context,
                       WinPageRoute(builder: (_) => const TutorSearchScreen()))),
               const SizedBox(height: 10),
               _QuickLink(
                   context.l10n.studentTabsMyBookings,
-                  Icons.event_available_outlined,
+                  PhosphorIconsRegular.calendarCheck,
                   WinColors.teal500,
                   () => Navigator.push(
                       context,
@@ -463,7 +463,7 @@ class _StudentSpaceTabState extends State<StudentSpaceTab> {
                 Expanded(
                     child: _QuickLink(
                         context.l10n.studentTabsFavorites,
-                        Icons.favorite_border,
+                        PhosphorIconsRegular.heart,
                         WinColors.error,
                         () => Navigator.push(
                             context,
@@ -473,7 +473,7 @@ class _StudentSpaceTabState extends State<StudentSpaceTab> {
                 Expanded(
                     child: _QuickLink(
                         context.l10n.studentHomeBadges,
-                        Icons.emoji_events_outlined,
+                        PhosphorIconsRegular.trophy,
                         WinColors.gold,
                         () => Navigator.push(
                             context,
@@ -485,7 +485,7 @@ class _StudentSpaceTabState extends State<StudentSpaceTab> {
                 Expanded(
                     child: _QuickLink(
                         context.l10n.studentTabsCertificates,
-                        Icons.workspace_premium_outlined,
+                        PhosphorIconsRegular.medal,
                         WinColors.teal400,
                         () => Navigator.push(
                             context,
@@ -495,7 +495,7 @@ class _StudentSpaceTabState extends State<StudentSpaceTab> {
                 Expanded(
                     child: _QuickLink(
                         context.l10n.studentTabsExamCoach,
-                        Icons.school_outlined,
+                        PhosphorIconsRegular.graduationCap,
                         WinColors.ink600,
                         () => Navigator.push(
                             context,
@@ -508,7 +508,7 @@ class _StudentSpaceTabState extends State<StudentSpaceTab> {
               // point d'entrée équivalent à StudySessionLauncher côté web.
               _QuickLink(
                   context.l10n.studentTabsGuidedSession,
-                  Icons.play_circle_outline,
+                  PhosphorIconsRegular.playCircle,
                   WinColors.teal500,
                   () => Navigator.push(
                       context,
@@ -519,7 +519,7 @@ class _StudentSpaceTabState extends State<StudentSpaceTab> {
                 Expanded(
                     child: _QuickLink(
                         context.l10n.studentTabsMyCart,
-                        Icons.shopping_cart_outlined,
+                        PhosphorIconsRegular.shoppingCart,
                         WinColors.teal600,
                         () => Navigator.push(context,
                             WinPageRoute(builder: (_) => const CartScreen())))),
@@ -527,7 +527,7 @@ class _StudentSpaceTabState extends State<StudentSpaceTab> {
                 Expanded(
                     child: _QuickLink(
                         context.l10n.studentTabsMyOrders,
-                        Icons.receipt_long_outlined,
+                        PhosphorIconsRegular.receipt,
                         WinColors.blue500,
                         () => Navigator.push(
                             context,
@@ -537,7 +537,7 @@ class _StudentSpaceTabState extends State<StudentSpaceTab> {
               const SizedBox(height: 10),
               _QuickLink(
                   context.l10n.studentHubHistory,
-                  Icons.download_outlined,
+                  PhosphorIconsRegular.downloadSimple,
                   WinColors.ink400,
                   () => Navigator.push(
                       context,
@@ -548,7 +548,7 @@ class _StudentSpaceTabState extends State<StudentSpaceTab> {
                 Expanded(
                     child: _QuickLink(
                         context.l10n.studentLinksStudyGroups,
-                        Icons.groups_outlined,
+                        PhosphorIconsRegular.usersThree,
                         WinColors.teal600,
                         () => Navigator.push(
                             context,
@@ -558,7 +558,7 @@ class _StudentSpaceTabState extends State<StudentSpaceTab> {
                 Expanded(
                     child: _QuickLink(
                         context.l10n.studentReportsTitle,
-                        Icons.bar_chart_outlined,
+                        PhosphorIconsRegular.chartBar,
                         WinColors.blue500,
                         () => Navigator.push(
                             context,
@@ -569,7 +569,7 @@ class _StudentSpaceTabState extends State<StudentSpaceTab> {
               const SizedBox(height: 10),
               _QuickLink(
                   context.l10n.studentHubRevisionQuiz,
-                  Icons.quiz_outlined,
+                  PhosphorIconsRegular.exam,
                   WinColors.warn,
                   () => Navigator.push(
                       context,
@@ -600,7 +600,7 @@ class _QuickLink extends StatelessWidget {
         winIcon(icon, size: 20, color: color),
         const SizedBox(width: 10),
         Expanded(child: Text(label, style: WinType.titleM(s.onStrong))),
-        Icon(Icons.chevron_right, size: 18, color: s.onFaint),
+        Icon(PhosphorIconsRegular.caretRight, size: 18, color: s.onFaint),
       ]),
     );
   }
@@ -747,18 +747,18 @@ class _StudentWinAITabState extends State<StudentWinAITab> {
           Text(context.l10n.studentTabsAttachFile, style: WinType.headlineS(s.onStrong)),
           const SizedBox(height: 20),
           _AttachOption(
-              Icons.image_outlined, context.l10n.studentTabsAttachImage, WinColors.blue500, () {
+              PhosphorIconsRegular.image, context.l10n.studentTabsAttachImage, WinColors.blue500, () {
             Navigator.pop(context);
             _pickFile();
           }),
           const SizedBox(height: 12),
-          _AttachOption(Icons.description_outlined, context.l10n.studentTabsAttachDocument,
+          _AttachOption(PhosphorIconsRegular.fileText, context.l10n.studentTabsAttachDocument,
               WinColors.teal500, () {
             Navigator.pop(context);
             _pickFile();
           }),
           const SizedBox(height: 12),
-          _AttachOption(Icons.mic_outlined, context.l10n.studentTabsAttachVoice, WinColors.warn,
+          _AttachOption(PhosphorIconsRegular.microphone, context.l10n.studentTabsAttachVoice, WinColors.warn,
               () {
             Navigator.pop(context);
             _dicter();
@@ -783,7 +783,7 @@ class _StudentWinAITabState extends State<StudentWinAITab> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text('WinAI'),
@@ -852,7 +852,7 @@ class _StudentWinAITabState extends State<StudentWinAITab> {
                                   weight: FontWeight.w600,
                                   color: WinColors.teal700)),
                           const SizedBox(width: 6),
-                          const Icon(Icons.arrow_forward_ios_rounded,
+                          const Icon(PhosphorIconsRegular.caretRight,
                               size: 11, color: WinColors.teal700),
                         ]),
                       ),
@@ -914,8 +914,8 @@ class _StudentWinAITabState extends State<StudentWinAITab> {
                                       children: [
                                         Icon(
                                             m.attachment == 'image'
-                                                ? Icons.image_outlined
-                                                : Icons.attach_file,
+                                                ? PhosphorIconsRegular.image
+                                                : PhosphorIconsRegular.paperclip,
                                             size: 14,
                                             color: m.me
                                                 ? WinColors.teal300
@@ -950,7 +950,7 @@ class _StudentWinAITabState extends State<StudentWinAITab> {
                     color: s.surface2,
                     borderRadius: BorderRadius.circular(WinRadii.sm),
                     border: Border.all(color: s.outline)),
-                child: Icon(Icons.attach_file, size: 20, color: s.onMuted),
+                child: Icon(PhosphorIconsRegular.paperclip, size: 20, color: s.onMuted),
               ),
             ),
             const SizedBox(width: 8),
@@ -966,7 +966,7 @@ class _StudentWinAITabState extends State<StudentWinAITab> {
                   decoration: BoxDecoration(
                       color: s.primary,
                       borderRadius: BorderRadius.circular(WinRadii.sm)),
-                  child: Icon(Icons.send, size: 20, color: s.onPrimary)),
+                  child: Icon(PhosphorIconsFill.paperPlaneRight, size: 20, color: s.onPrimary)),
             ),
           ]),
         ),

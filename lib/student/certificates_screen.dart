@@ -11,6 +11,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../app_config.dart';
 import '../widgets/external_links.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class CertificatesScreen extends StatefulWidget {
   const CertificatesScreen({super.key});
@@ -66,13 +67,13 @@ class _CertificatesScreenState extends State<CertificatesScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(context.l10n.studentCertTitle),
         actions: [
           IconButton(
-            icon: Icon(Icons.refresh_outlined, color: s.onStrong),
+            icon: Icon(PhosphorIconsRegular.arrowClockwise, color: s.onStrong),
             onPressed: () {
               setState(() => _certs = null);
               _load();
@@ -101,7 +102,7 @@ class _CertificatesScreenState extends State<CertificatesScreen> {
                             padding: const EdgeInsets.only(bottom: 12),
                             child: WinCard(
                               child: Row(children: [
-                                const Icon(Icons.workspace_premium,
+                                const Icon(PhosphorIconsFill.medal,
                                     color: WinColors.gold),
                                 const SizedBox(width: 10),
                                 Expanded(
@@ -118,7 +119,7 @@ class _CertificatesScreenState extends State<CertificatesScreen> {
           : certs.isEmpty
               ? Center(
                   child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  Icon(Icons.workspace_premium_outlined,
+                  Icon(PhosphorIconsRegular.medal,
                       size: 64, color: s.onFaint),
                   const SizedBox(height: 12),
                   Text(
@@ -161,7 +162,7 @@ class _CertificatesScreenState extends State<CertificatesScreen> {
                                     color: WinColors.gold,
                                     shape: BoxShape.circle,
                                   ),
-                                  child: const Icon(Icons.workspace_premium,
+                                  child: const Icon(PhosphorIconsFill.medal,
                                       size: 30, color: Colors.white),
                                 ),
                                 const SizedBox(width: 14),
@@ -213,7 +214,7 @@ class _CertificatesScreenState extends State<CertificatesScreen> {
                                           child: WinButton(context.l10n.studentCertSeePdf,
                                               variant: WinButtonVariant.outline,
                                               small: true,
-                                              icon: Icons.picture_as_pdf_outlined,
+                                              icon: PhosphorIconsRegular.filePdf,
                                               onTap: () => Navigator.push(
                                                   context,
                                                   WinPageRoute(
@@ -233,7 +234,7 @@ class _CertificatesScreenState extends State<CertificatesScreen> {
                                           child: WinButton(context.l10n.studentCertShare,
                                               variant: WinButtonVariant.ghost,
                                               small: true,
-                                              icon: Icons.share_outlined,
+                                              icon: PhosphorIconsRegular.shareNetwork,
                                               onTap: () => ExternalLinks.share(
                                                   '${AppConfig.siteUrl}/verify/${cert.verificationCode}',
                                                   subject: cert.title)),
@@ -246,7 +247,7 @@ class _CertificatesScreenState extends State<CertificatesScreen> {
                                         cert.subjectName != cert.title) ...[
                                       const SizedBox(height: 10),
                                       Row(children: [
-                                        Icon(Icons.verified_outlined,
+                                        Icon(PhosphorIconsRegular.sealCheck,
                                             size: 14, color: s.primary),
                                         const SizedBox(width: 6),
                                         Expanded(
@@ -284,7 +285,7 @@ class _CourseCertificateCard extends StatelessWidget {
     return WinCard(
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          const Icon(Icons.workspace_premium, color: WinColors.gold, size: 28),
+          const Icon(PhosphorIconsFill.medal, color: WinColors.gold, size: 28),
           const SizedBox(width: 10),
           Expanded(
               child: Text(cert.courseTitle,
@@ -307,7 +308,7 @@ class _CourseCertificateCard extends StatelessWidget {
         WinButton(context.l10n.studentCertSeePdf,
             variant: WinButtonVariant.outline,
             small: true,
-            icon: Icons.picture_as_pdf_outlined,
+            icon: PhosphorIconsRegular.filePdf,
             onTap: cert.fileUrl == null
                 ? null
                 : () => Navigator.push(

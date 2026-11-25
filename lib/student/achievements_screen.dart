@@ -6,6 +6,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class AchievementsScreen extends StatefulWidget {
   const AchievementsScreen({super.key});
@@ -61,7 +62,7 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(context.l10n.studentAchTitle),
@@ -156,7 +157,7 @@ class _BadgeCard extends StatelessWidget {
                     size: 32, color: badge.unlocked ? badge.color : s.onFaint),
               ),
             ),
-            if (!badge.unlocked) Icon(Icons.lock, size: 18, color: s.onFaint),
+            if (!badge.unlocked) Icon(PhosphorIconsFill.lock, size: 18, color: s.onFaint),
           ]),
           const SizedBox(height: 10),
           Flexible(

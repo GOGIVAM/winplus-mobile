@@ -5,6 +5,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import 'biometric_toggle.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Bascule FR/EN (accueil, réglages de chaque espace). Persistée par
 /// WinAppState.setLocale : SharedPreferences, et User.Locale si connecté.
@@ -64,7 +65,7 @@ Future<void> showLanguageSheet(BuildContext context) {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(children: [
-                Icon(Icons.language, color: s.onMuted),
+                Icon(PhosphorIconsRegular.globe, color: s.onMuted),
                 const SizedBox(width: 10),
                 Expanded(
                     child: Text(ctx.l10n.language,

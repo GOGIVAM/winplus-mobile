@@ -5,6 +5,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import 'win_motion_widgets.dart';
 import 'win_mascot.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Widgets communs alignés sur la version téléphone du site.
 
@@ -500,7 +501,7 @@ class WinStreakFlame extends StatelessWidget {
     final s = WinTheme.of(context);
     final on = days > 0;
     return Row(mainAxisSize: MainAxisSize.min, children: [
-      Icon(Icons.local_fire_department,
+      Icon(PhosphorIconsFill.fire,
           size: size,
           color:
               on ? (light ? WinColors.teal400 : s.primary) : WinColors.ink300),
@@ -555,10 +556,10 @@ class WinAlert extends StatelessWidget {
     };
     final ic = icon ??
         switch (type) {
-          BadgeColor.success => Icons.check_circle_outline,
-          BadgeColor.warn => Icons.warning_amber_outlined,
-          BadgeColor.error => Icons.error_outline,
-          _ => Icons.info_outline,
+          BadgeColor.success => PhosphorIconsRegular.checkCircle,
+          BadgeColor.warn => PhosphorIconsRegular.warning,
+          BadgeColor.error => PhosphorIconsRegular.warningCircle,
+          _ => PhosphorIconsRegular.info,
         };
     return Container(
       padding: const EdgeInsets.all(12),

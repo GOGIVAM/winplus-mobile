@@ -8,6 +8,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Module 32 (lot 8, décision 14.3) : portage mobile de la session d'étude
 /// guidée, déjà entièrement reconstruite côté web au lot 6
@@ -280,8 +281,8 @@ class _StudySessionScreenState extends State<StudySessionScreen> {
         leading: IconButton(
           icon: Icon(
               _phase == _Phase.launcher || _phase == _Phase.done
-                  ? Icons.arrow_back
-                  : Icons.close,
+                  ? PhosphorIconsRegular.arrowLeft
+                  : PhosphorIconsRegular.x,
               color: s.onStrong),
           onPressed: () {
             if (_phase == _Phase.history) {
@@ -361,7 +362,7 @@ class _StudySessionScreenState extends State<StudySessionScreen> {
         Center(
           child: TextButton.icon(
             onPressed: _openHistory,
-            icon: Icon(Icons.history, size: 18, color: s.primary),
+            icon: Icon(PhosphorIconsRegular.clockCounterClockwise, size: 18, color: s.primary),
             label: Text(context.l10n.studentSessionHistory,
                 style: WinType.labelM(s.primary)
                     .copyWith(fontWeight: FontWeight.w600)),
@@ -396,7 +397,7 @@ class _StudySessionScreenState extends State<StudySessionScreen> {
           Expanded(
               child: Text(session.subject.name,
                   style: WinType.titleL(s.onStrong))),
-          Icon(Icons.timer_outlined, size: 16, color: s.onMuted),
+          Icon(PhosphorIconsRegular.timer, size: 16, color: s.onMuted),
           const SizedBox(width: 4),
           Text('$mm:$ss', style: WinType.labelM(s.onMuted)),
         ]),
@@ -543,7 +544,7 @@ class _StudySessionScreenState extends State<StudySessionScreen> {
           ...summary.keypoints.map((k) => Padding(
                 padding: const EdgeInsets.only(bottom: 8),
                 child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Icon(Icons.check_circle_outline, size: 18, color: s.primary),
+                  Icon(PhosphorIconsRegular.checkCircle, size: 18, color: s.primary),
                   const SizedBox(width: 8),
                   Expanded(child: Text(k, style: WinType.bodyM(s.onSurface))),
                 ]),
@@ -561,7 +562,7 @@ class _StudySessionScreenState extends State<StudySessionScreen> {
       child: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-          Icon(Icons.check_circle, size: 72, color: WinColors.teal500),
+          Icon(PhosphorIconsFill.checkCircle, size: 72, color: WinColors.teal500),
           const SizedBox(height: 16),
           Text(context.l10n.studentSessionDone, style: WinType.headlineS(s.onStrong)),
           const SizedBox(height: 8),

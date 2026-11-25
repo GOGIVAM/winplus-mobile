@@ -6,6 +6,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Module 12 : écran d'une classe (élèves + devoirs), en miroir strict des
 /// opérations exposées par TeacherClassesController côté serveur. Remplace
@@ -63,7 +64,7 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
       backgroundColor: Colors.transparent,
       builder: (ctx) => _FormSheet(
         title: context.l10n.teacherClassAddStudent,
-        child: WinTextField(label: context.l10n.teacherClassStudentEmailLabel, hint: context.l10n.teacherClassStudentEmailHint, icon: Icons.email_outlined, controller: ctrl),
+        child: WinTextField(label: context.l10n.teacherClassStudentEmailLabel, hint: context.l10n.teacherClassStudentEmailHint, icon: PhosphorIconsRegular.envelopeSimple, controller: ctrl),
         submitLabel: context.l10n.teacherClassAdd,
         onSubmit: () => Navigator.pop(ctx, ctrl.text.trim()),
       ),
@@ -117,7 +118,7 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
         submitLabel: context.l10n.teacherClassCreateAssignment,
         onSubmit: () => Navigator.pop(ctx, true),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-          WinTextField(label: context.l10n.teacherClassAssignmentTitle, hint: context.l10n.teacherClassAssignmentTitleHint, icon: Icons.assignment_outlined, controller: titleCtrl),
+          WinTextField(label: context.l10n.teacherClassAssignmentTitle, hint: context.l10n.teacherClassAssignmentTitleHint, icon: PhosphorIconsRegular.clipboardText, controller: titleCtrl),
           const SizedBox(height: 12),
           _MultilineField(label: context.l10n.teacherClassStatementLabel, hint: context.l10n.teacherClassStatementHint, controller: statementCtrl),
           const SizedBox(height: 12),
@@ -148,7 +149,7 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
       appBar: AppBar(
         backgroundColor: s.bg,
         elevation: 0,
-        leading: IconButton(icon: Icon(Icons.arrow_back, color: s.onStrong), onPressed: () => Navigator.pop(context)),
+        leading: IconButton(icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong), onPressed: () => Navigator.pop(context)),
         title: Text(_klass.name),
       ),
       body: Column(children: [
@@ -164,7 +165,7 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
       ]),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _tabStudents ? _addStudent : _createAssignment,
-        icon: Icon(_tabStudents ? Icons.person_add_outlined : Icons.add),
+        icon: Icon(_tabStudents ? PhosphorIconsRegular.userPlus : PhosphorIconsRegular.plus),
         label: Text(_tabStudents ? context.l10n.teacherClassAddStudent : context.l10n.teacherClassNewAssignment),
       ),
     );
@@ -178,7 +179,7 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
     if (_students!.isEmpty) {
       return Center(
           child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Icon(Icons.group_outlined, size: 56, color: s.onFaint),
+        Icon(PhosphorIconsRegular.users, size: 56, color: s.onFaint),
         const SizedBox(height: 10),
         Text(context.l10n.teacherClassNoStudents, style: WinType.bodyM(s.onMuted)),
         const SizedBox(height: 4),
@@ -205,7 +206,7 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
             Text(hasScore ? '${st.avgScore!.round()}%' : '—', style: WinType.archivo(size: 15, color: col)),
             const SizedBox(width: 6),
             IconButton(
-              icon: Icon(Icons.person_remove_outlined, size: 19, color: s.onFaint),
+              icon: Icon(PhosphorIconsRegular.userMinus, size: 19, color: s.onFaint),
               onPressed: () => _removeStudent(st),
               tooltip: context.l10n.teacherClassRemoveFromClass,
             ),
@@ -223,7 +224,7 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
     if (_assignments!.isEmpty) {
       return Center(
           child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Icon(Icons.assignment_outlined, size: 56, color: s.onFaint),
+        Icon(PhosphorIconsRegular.clipboardText, size: 56, color: s.onFaint),
         const SizedBox(height: 10),
         Text(context.l10n.teacherClassNoAssignments, style: WinType.bodyM(s.onMuted)),
       ]));
@@ -259,11 +260,11 @@ class _ErrorState extends StatelessWidget {
     final s = WinTheme.of(context);
     return Center(
       child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Icon(Icons.wifi_off_outlined, size: 48, color: WinColors.error),
+        Icon(PhosphorIconsRegular.wifiSlash, size: 48, color: WinColors.error),
         const SizedBox(height: 10),
         Text(message, style: WinType.bodyM(s.onMuted), textAlign: TextAlign.center),
         const SizedBox(height: 12),
-        WinButton(context.l10n.commonRetry, icon: Icons.refresh, onTap: onRetry),
+        WinButton(context.l10n.commonRetry, icon: PhosphorIconsRegular.arrowClockwise, onTap: onRetry),
       ]),
     );
   }
@@ -322,7 +323,7 @@ class _FormSheet extends StatelessWidget {
             const SizedBox(height: 16),
             child,
             const SizedBox(height: 20),
-            WinButton(submitLabel, block: true, icon: Icons.check, onTap: onSubmit),
+            WinButton(submitLabel, block: true, icon: PhosphorIconsBold.check, onTap: onSubmit),
           ]),
         ),
       ),

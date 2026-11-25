@@ -7,6 +7,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../widgets/win_screen.dart';
 import '../l10n/l10n.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Album de fin d'année  récit narratif généré une fois par an
 /// (YearlyAlbumService), consulté uniquement dans l'app : aucun bouton
@@ -69,7 +70,7 @@ class _AlbumTabState extends State<AlbumTab> {
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Icon(Icons.auto_stories_outlined, size: 48, color: s.onFaint),
+            Icon(PhosphorIconsRegular.bookOpenText, size: 48, color: s.onFaint),
             const SizedBox(height: 12),
             Text(
                 context.l10n.parentAlbumNotGenerated(widget.child.firstName),
@@ -92,41 +93,41 @@ class _AlbumTabState extends State<AlbumTab> {
         const SizedBox(height: 16),
         if (a.subjectsWorked != null)
           _AlbumSection(
-              icon: Icons.menu_book_outlined,
+              icon: PhosphorIconsRegular.bookOpen,
               title: context.l10n.parentAlbumSubjects,
               text: a.subjectsWorked!),
         if (a.progression != null) ...[
           const SizedBox(height: 10),
           _AlbumSection(
-              icon: Icons.trending_up,
+              icon: PhosphorIconsRegular.trendUp,
               title: context.l10n.parentAlbumProgress,
               text: a.progression!),
         ],
         if (a.topContents.isNotEmpty) ...[
           const SizedBox(height: 10),
           _AlbumListSection(
-              icon: Icons.star_outline,
+              icon: PhosphorIconsRegular.star,
               title: context.l10n.parentAlbumTopContents,
               items: a.topContents),
         ],
         if (a.goalsSummary != null) ...[
           const SizedBox(height: 10),
           _AlbumSection(
-              icon: Icons.flag_outlined,
+              icon: PhosphorIconsRegular.flag,
               title: context.l10n.parentAlbumGoals,
               text: a.goalsSummary!),
         ],
         if (a.intensityWeeks.isNotEmpty) ...[
           const SizedBox(height: 10),
           _AlbumListSection(
-              icon: Icons.bolt_outlined,
+              icon: PhosphorIconsRegular.lightning,
               title: context.l10n.parentAlbumIntensity,
               items: a.intensityWeeks),
         ],
         if (a.bulletin != null) ...[
           const SizedBox(height: 10),
           _AlbumSection(
-              icon: Icons.school_outlined,
+              icon: PhosphorIconsRegular.graduationCap,
               title: context.l10n.parentAlbumReportCard,
               text: a.bulletin!),
         ],

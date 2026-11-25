@@ -10,6 +10,7 @@ import '../../widgets/external_links.dart';
 import '../../widgets/win_screen.dart';
 import '../../widgets/win_widgets.dart';
 import 'visio_screen.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// « Cours en direct » (lot 9.4), comme la page /cours-en-direct du site :
 /// une seule liste pour tous les rôles (GET /visio/mes-cours), triée par le
@@ -65,7 +66,7 @@ class _LiveClassesScreenState extends State<LiveClassesScreen> {
     if (list == null) return const Center(child: CircularProgressIndicator());
     if (list.isEmpty) {
       return WinEmptyState(
-          icon: Icons.videocam_outlined, title: l.liveEmpty, message: l.liveEmptyHint);
+          icon: PhosphorIconsRegular.videoCamera, title: l.liveEmpty, message: l.liveEmptyHint);
     }
     final sections = [
       (l.liveSectionOpen, list.where((c) => c.state == 'ouverte').toList()),
@@ -119,7 +120,7 @@ class _LiveClassCard extends StatelessWidget {
               decoration: BoxDecoration(
                   color: c.state == 'ouverte' ? WinColors.successBg : s.surface2,
                   borderRadius: BorderRadius.circular(12)),
-              child: Icon(Icons.videocam_outlined,
+              child: Icon(PhosphorIconsRegular.videoCamera,
                   color: c.state == 'ouverte' ? WinColors.success : s.onMuted),
             ),
             const SizedBox(width: 12),
@@ -139,7 +140,7 @@ class _LiveClassCard extends StatelessWidget {
           ]),
           if (c.pendingPayment) ...[
             const SizedBox(height: 10),
-            WinAlert(l.livePendingPayment, icon: Icons.schedule),
+            WinAlert(l.livePendingPayment, icon: PhosphorIconsRegular.clock),
           ],
           if (c.isChildView) ...[
             const SizedBox(height: 10),
@@ -153,7 +154,7 @@ class _LiveClassCard extends StatelessWidget {
                 variant: c.state == 'ouverte'
                     ? WinButtonVariant.accent
                     : WinButtonVariant.outline,
-                icon: Icons.videocam_outlined,
+                icon: PhosphorIconsRegular.videoCamera,
                 onTap: () => VisioScreen.open(context, c.type, c.id, title: c.title)),
           ],
           if (c.recordings > 0) ...[
@@ -162,7 +163,7 @@ class _LiveClassCard extends StatelessWidget {
                 block: true,
                 small: true,
                 variant: WinButtonVariant.ghost,
-                icon: Icons.play_circle_outline,
+                icon: PhosphorIconsRegular.playCircle,
                 onTap: () => Navigator.of(context).push(WinPageRoute(
                     builder: (_) =>
                         VisioRecordingsScreen(type: c.type, id: c.id, title: c.title)))),
@@ -226,13 +227,13 @@ class _VisioRecordingsScreenState extends State<VisioRecordingsScreen> {
     final items = _items;
     Widget body;
     if (_notFound) {
-      body = WinEmptyState(icon: Icons.videocam_off_outlined, title: l.visioNotFound);
+      body = WinEmptyState(icon: PhosphorIconsRegular.videoCameraSlash, title: l.visioNotFound);
     } else if (_error) {
       body = WinErrorState(message: l.commonLoadError, onRetry: _load);
     } else if (items == null) {
       body = const Center(child: CircularProgressIndicator());
     } else if (items.isEmpty) {
-      body = WinEmptyState(icon: Icons.video_library_outlined, title: l.liveRecordingsEmpty);
+      body = WinEmptyState(icon: PhosphorIconsRegular.filmStrip, title: l.liveRecordingsEmpty);
     } else {
       body = ListView(padding: const EdgeInsets.all(16), children: [
         Text(widget.title, style: WinType.titleL(s.onStrong)),
@@ -245,7 +246,7 @@ class _VisioRecordingsScreenState extends State<VisioRecordingsScreen> {
             child: WinCard(
               onTap: () => ExternalLinks.open(r.url),
               child: Row(children: [
-                Icon(Icons.play_circle_outline, color: s.primary),
+                Icon(PhosphorIconsRegular.playCircle, color: s.primary),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -261,7 +262,7 @@ class _VisioRecordingsScreenState extends State<VisioRecordingsScreen> {
                         style: WinType.labelS(s.onMuted)),
                   ]),
                 ),
-                Icon(Icons.open_in_new, size: 18, color: s.onMuted),
+                Icon(PhosphorIconsRegular.arrowSquareOut, size: 18, color: s.onMuted),
               ]),
             ),
           ),

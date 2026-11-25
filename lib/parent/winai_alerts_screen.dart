@@ -7,6 +7,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
 import 'child_activity_screen.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class WinAIAlertsScreen extends StatefulWidget {
   const WinAIAlertsScreen({super.key});
@@ -49,9 +50,9 @@ class _WinAIAlertsScreenState extends State<WinAIAlertsScreen> {
       };
 
   IconData _alertIcon(String severity) => switch (severity) {
-        'High' => Icons.error_outline,
-        'Medium' => Icons.warning_amber_outlined,
-        _ => Icons.check_circle_outline,
+        'High' => PhosphorIconsRegular.warningCircle,
+        'Medium' => PhosphorIconsRegular.warning,
+        _ => PhosphorIconsRegular.checkCircle,
       };
 
   @override
@@ -64,13 +65,13 @@ class _WinAIAlertsScreenState extends State<WinAIAlertsScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(context.l10n.commonWinaiAlerts),
         actions: [
           IconButton(
-            icon: Icon(Icons.refresh_outlined, color: s.onStrong),
+            icon: Icon(PhosphorIconsRegular.arrowClockwise, color: s.onStrong),
             onPressed: () {
               setState(() {
                 _alerts = null;
@@ -103,7 +104,7 @@ class _WinAIAlertsScreenState extends State<WinAIAlertsScreen> {
         if (alerts.isEmpty) ...[
           Center(
               child: Column(mainAxisSize: MainAxisSize.min, children: [
-            const Icon(Icons.check_circle_outline,
+            const Icon(PhosphorIconsRegular.checkCircle,
                 size: 56, color: WinColors.success),
             const SizedBox(height: 12),
             Text(context.l10n.parentAlertsNone, style: WinType.bodyM(s.onMuted)),
@@ -167,7 +168,7 @@ class _WinAIAlertsScreenState extends State<WinAIAlertsScreen> {
                       WinButton(context.l10n.parentAlertsSeeActivity,
                           small: true,
                           variant: WinButtonVariant.ghost,
-                          icon: Icons.timeline_outlined,
+                          icon: PhosphorIconsRegular.chartLine,
                           onTap: () => Navigator.push(
                               context,
                               WinPageRoute(
@@ -185,17 +186,17 @@ class _WinAIAlertsScreenState extends State<WinAIAlertsScreen> {
         const SizedBox(height: 12),
         ...[
           (
-            Icons.timer_outlined,
+            PhosphorIconsRegular.timer,
             context.l10n.parentAlertsTip1Title,
             context.l10n.parentAlertsTip1Text
           ),
           (
-            Icons.quiz_outlined,
+            PhosphorIconsRegular.exam,
             context.l10n.parentAlertsTip2Title,
             context.l10n.parentAlertsTip2Text
           ),
           (
-            Icons.flag_outlined,
+            PhosphorIconsRegular.flag,
             context.l10n.parentAlertsTip3Title,
             context.l10n.parentAlertsTip3Text
           ),

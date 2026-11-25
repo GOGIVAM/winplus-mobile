@@ -7,6 +7,7 @@ import 'package:winplus/widgets/win_mascot.dart';
 
 import '../helpers/appli.dart';
 import '../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 Color? _fondDuBouton(WidgetTester tester) =>
     tester.widget<Material>(find.descendant(of: find.byType(WinButton), matching: find.byType(Material)).first).color;
@@ -59,8 +60,8 @@ void main() {
     });
 
     testWidgets('affiche son icone avant le libelle', (tester) async {
-      await monter(tester, appli(const WinButton('Aimer', icon: Icons.favorite)));
-      expect(find.byIcon(Icons.favorite), findsOneWidget);
+      await monter(tester, appli(const WinButton('Aimer', icon: PhosphorIconsFill.heart)));
+      expect(find.byIcon(PhosphorIconsFill.heart), findsOneWidget);
     });
 
     testWidgets('couleur de fond selon la variante', (tester) async {
@@ -100,9 +101,9 @@ void main() {
   group('WinChip', () {
     testWidgets('affiche son libelle et son icone, et transmet le toucher', (tester) async {
       var appels = 0;
-      await monter(tester, appli(WinChip('Maths', icon: Icons.functions, onTap: () => appels++)));
+      await monter(tester, appli(WinChip('Maths', icon: PhosphorIconsRegular.function, onTap: () => appels++)));
       expect(find.text('Maths'), findsOneWidget);
-      expect(find.byIcon(Icons.functions), findsOneWidget);
+      expect(find.byIcon(PhosphorIconsRegular.function), findsOneWidget);
       await tester.tap(find.text('Maths'));
       await pomper(tester);
       expect(appels, 1);
@@ -183,18 +184,18 @@ void main() {
     testWidgets('affiche le message avec l\'icone du type', (tester) async {
       await monter(tester, appli(const WinAlert('Attention')));
       expect(find.text('Attention'), findsOneWidget);
-      expect(icone(tester), Icons.warning_amber_outlined);
+      expect(icone(tester), PhosphorIconsRegular.warning);
       await monter(tester, appli(const WinAlert('Ok', type: BadgeColor.success)));
-      expect(icone(tester), Icons.check_circle_outline);
+      expect(icone(tester), PhosphorIconsRegular.checkCircle);
       await monter(tester, appli(const WinAlert('Ko', type: BadgeColor.error)));
-      expect(icone(tester), Icons.error_outline);
+      expect(icone(tester), PhosphorIconsRegular.warningCircle);
       await monter(tester, appli(const WinAlert('Info', type: BadgeColor.neutral)));
-      expect(icone(tester), Icons.info_outline);
+      expect(icone(tester), PhosphorIconsRegular.info);
     });
 
     testWidgets('une icone donnee remplace celle du type', (tester) async {
-      await monter(tester, appli(const WinAlert('Hors ligne', type: BadgeColor.neutral, icon: Icons.wifi_off_outlined)));
-      expect(icone(tester), Icons.wifi_off_outlined);
+      await monter(tester, appli(const WinAlert('Hors ligne', type: BadgeColor.neutral, icon: PhosphorIconsRegular.wifiSlash)));
+      expect(icone(tester), PhosphorIconsRegular.wifiSlash);
     });
   });
 
@@ -246,18 +247,18 @@ void main() {
     });
 
     testWidgets('la carte de statistique affiche valeur, libelle et icone facultative', (tester) async {
-      await monter(tester, appli(const WinStatCard('14,5', 'Moyenne', icon: Icons.school)));
+      await monter(tester, appli(const WinStatCard('14,5', 'Moyenne', icon: PhosphorIconsFill.graduationCap)));
       expect(find.text('14,5'), findsOneWidget);
       expect(find.text('Moyenne'), findsOneWidget);
-      expect(find.byIcon(Icons.school), findsOneWidget);
+      expect(find.byIcon(PhosphorIconsFill.graduationCap), findsOneWidget);
       await monter(tester, appli(const WinStatCard('3', 'Quiz')));
       expect(find.byType(Icon), findsNothing);
     });
 
     testWidgets('le bouton rond transmet le toucher', (tester) async {
       var appels = 0;
-      await monter(tester, appli(WinCircleIconButton(icon: Icons.share, onTap: () => appels++)));
-      await tester.tap(find.byIcon(Icons.share));
+      await monter(tester, appli(WinCircleIconButton(icon: PhosphorIconsRegular.shareNetwork, onTap: () => appels++)));
+      await tester.tap(find.byIcon(PhosphorIconsRegular.shareNetwork));
       await pomper(tester);
       expect(appels, 1);
     });
@@ -265,11 +266,11 @@ void main() {
 
   group('WinTextField', () {
     testWidgets('affiche libelle, indication et prefixe, sans icone a gauche', (tester) async {
-      await monter(tester, appli(const WinTextField(label: 'Telephone', hint: '6XX XXX XXX', prefix: '+237', icon: Icons.phone)));
+      await monter(tester, appli(const WinTextField(label: 'Telephone', hint: '6XX XXX XXX', prefix: '+237', icon: PhosphorIconsFill.phone)));
       expect(find.text('Telephone'), findsOneWidget);
       expect(find.text('6XX XXX XXX'), findsOneWidget);
       expect(find.text('+237'), findsOneWidget);
-      expect(find.byIcon(Icons.phone), findsNothing);
+      expect(find.byIcon(PhosphorIconsFill.phone), findsNothing);
     });
 
     testWidgets('la saisie alimente le controleur et onChanged', (tester) async {
@@ -285,9 +286,9 @@ void main() {
 
     testWidgets('mode mot de passe : texte masque, et l\'icone de fin est tactile', (tester) async {
       var appels = 0;
-      await monter(tester, appli(WinTextField(obscure: true, suffixIcon: Icons.visibility, onSuffixTap: () => appels++)));
+      await monter(tester, appli(WinTextField(obscure: true, suffixIcon: PhosphorIconsFill.eye, onSuffixTap: () => appels++)));
       expect(tester.widget<TextField>(find.byType(TextField)).obscureText, isTrue);
-      await tester.tap(find.byIcon(Icons.visibility));
+      await tester.tap(find.byIcon(PhosphorIconsFill.eye));
       await pomper(tester);
       expect(appels, 1);
     });

@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_motion.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Retour tactile commun (léger effet d'enfoncement) pour tout élément
 /// tapable utilisé par [WinButton]/[WinCard]/[WinChip] eux-mêmes, donc
@@ -378,7 +379,7 @@ class _WinFavoriteHeartState extends State<WinFavoriteHeart>
               Transform.scale(
                 scale: t == 0 ? 1.0 : scale,
                 child: Icon(
-                  widget.active ? Icons.favorite : Icons.favorite_border,
+                  widget.active ? PhosphorIconsFill.heart : PhosphorIconsRegular.heart,
                   size: widget.size,
                   color:
                       widget.active ? widget.activeColor : widget.inactiveColor,

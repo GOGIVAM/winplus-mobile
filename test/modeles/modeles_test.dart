@@ -4,6 +4,7 @@ import 'package:winplus/data/models.dart';
 import 'package:winplus/l10n/l10n.dart';
 
 import '../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 Content _contenu({int rating100 = 45}) => Content(
       id: 'c1',
@@ -51,7 +52,7 @@ void main() {
   });
 
   group('Subject', () {
-    const maths = Subject('math', 'Mathématiques', 'Maths', Colors.red, Icons.add);
+    const maths = Subject('math', 'Mathématiques', 'Maths', Colors.red, PhosphorIconsRegular.plus);
 
     test('en francais, le nom affiche est le nom francais', () {
       expect(maths.name, 'Mathématiques');
@@ -65,7 +66,7 @@ void main() {
     });
 
     test('une matiere inconnue est rendue telle quelle dans les deux langues', () {
-      const zoo = Subject('zoo', 'Zoologie', 'Zoo', Colors.blue, Icons.pets);
+      const zoo = Subject('zoo', 'Zoologie', 'Zoo', Colors.blue, PhosphorIconsRegular.pawPrint);
       expect(zoo.name, 'Zoologie');
       L10n.locale = const Locale('en');
       expect(zoo.name, 'Zoologie');
@@ -200,7 +201,7 @@ void main() {
     });
 
     test('un badge est verrouille par defaut', () {
-      const b = AchievementBadge('b', 'Nom', 'Desc', Icons.star, Colors.amber);
+      const b = AchievementBadge('b', 'Nom', 'Desc', PhosphorIconsFill.star, Colors.amber);
       expect(b.unlocked, isFalse);
       expect(b.unlockedAt, isNull);
     });

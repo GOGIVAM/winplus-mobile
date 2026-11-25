@@ -10,6 +10,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../widgets/protected_content.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Énoncé (épreuve ou livre) ou corrigé d'une épreuve.
 enum ViewerDocumentKind { document, correction }
@@ -162,7 +163,7 @@ class _DocumentViewerScreenState extends State<DocumentViewerScreen> {
                 context.l10n.studentViewerReadOnly,
             child: Padding(
               padding: const EdgeInsets.only(right: 14),
-              child: Icon(Icons.lock_outline, size: 20, color: s.onMuted),
+              child: Icon(PhosphorIconsRegular.lock, size: 20, color: s.onMuted),
             ),
           ),
         ],
@@ -181,13 +182,13 @@ class _DocumentViewerScreenState extends State<DocumentViewerScreen> {
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Icon(Icons.picture_as_pdf_outlined, size: 56, color: s.onFaint),
+            Icon(PhosphorIconsRegular.filePdf, size: 56, color: s.onFaint),
             const SizedBox(height: 16),
             Text(_error ?? context.l10n.studentViewerLoadFailed,
                 style: WinType.bodyM(s.onMuted), textAlign: TextAlign.center),
             if (_canRetry) ...[
               const SizedBox(height: 16),
-              WinButton(context.l10n.commonRetry, icon: Icons.refresh, onTap: _load),
+              WinButton(context.l10n.commonRetry, icon: PhosphorIconsRegular.arrowClockwise, onTap: _load),
             ],
           ]),
         ),
@@ -253,7 +254,7 @@ class _PreviewBanner extends StatelessWidget {
           color: s.surface2, border: Border(bottom: BorderSide(color: s.outline))),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          Icon(Icons.lock_outline, size: 16, color: s.onStrong),
+          Icon(PhosphorIconsRegular.lock, size: 16, color: s.onStrong),
           const SizedBox(width: 8),
           Expanded(child: Text(label, style: WinType.titleS(s.onStrong))),
         ]),
@@ -265,7 +266,7 @@ class _PreviewBanner extends StatelessWidget {
           if (onPurchase != null) ...[
             Expanded(
                 child: WinButton(context.l10n.studentViewerAddToCart,
-                    icon: Icons.shopping_cart_outlined, onTap: onPurchase)),
+                    icon: PhosphorIconsRegular.shoppingCart, onTap: onPurchase)),
             const SizedBox(width: 8),
           ],
           Expanded(

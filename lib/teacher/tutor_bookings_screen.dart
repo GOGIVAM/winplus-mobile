@@ -13,6 +13,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 String? _modeLabel(BuildContext context, String mode) => switch (mode) {
       'online' => context.l10n.commonOnline,
@@ -341,13 +342,13 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(context.l10n.tutoringPrivateLessons),
         actions: [
           IconButton(
-              icon: Icon(Icons.refresh_outlined, color: s.onMuted),
+              icon: Icon(PhosphorIconsRegular.arrowClockwise, color: s.onMuted),
               onPressed: _load),
         ],
       ),
@@ -356,7 +357,7 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
           : _error
               ? Center(
                   child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  Icon(Icons.wifi_off_outlined, size: 48, color: s.onFaint),
+                  Icon(PhosphorIconsRegular.wifiSlash, size: 48, color: s.onFaint),
                   const SizedBox(height: 12),
                   Text(context.l10n.tutoringBookingsLoadError,
                       style: WinType.bodyM(s.onMuted)),
@@ -562,11 +563,11 @@ class _PendingCard extends StatelessWidget {
         ]),
         const SizedBox(height: 10),
         Row(children: [
-          Icon(Icons.place_outlined, size: 14, color: s.onFaint),
+          Icon(PhosphorIconsRegular.mapPin, size: 14, color: s.onFaint),
           const SizedBox(width: 4),
           Text(_modeLabel(context, b.mode) ?? b.mode, style: WinType.labelM(s.onMuted)),
           const SizedBox(width: 12),
-          Icon(Icons.payments_outlined, size: 14, color: s.onFaint),
+          Icon(PhosphorIconsRegular.money, size: 14, color: s.onFaint),
           const SizedBox(width: 4),
           Text('${fmtXaf(b.priceXaf)} XAF', style: WinType.labelM(s.onMuted)),
         ]),
@@ -640,7 +641,7 @@ class _UpcomingCard extends StatelessWidget {
           WinButton(context.l10n.visioStart,
               block: true,
               small: true,
-              icon: Icons.videocam_outlined,
+              icon: PhosphorIconsRegular.videoCamera,
               onTap: () => VisioScreen.open(context, VisioType.tutorat, b.id)),
         ],
         if (b.isDisputed && (b.disputeReason ?? '').isNotEmpty) ...[
@@ -654,7 +655,7 @@ class _UpcomingCard extends StatelessWidget {
               block: true,
               small: true,
               loading: busy,
-              icon: Icons.check_circle_outline,
+              icon: PhosphorIconsRegular.checkCircle,
               onTap: busy ? null : onComplete),
         ],
       ]),

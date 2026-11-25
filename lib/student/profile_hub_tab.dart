@@ -27,6 +27,7 @@ import 'my_links_screen.dart';
 import 'tutors/tutor_policy_widgets.dart';
 import '../shared/forum/forum_screen.dart';
 import 'student_tabs.dart' show StudentWinAITab;
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class ProfileHubTab extends StatefulWidget {
   const ProfileHubTab({super.key});
@@ -121,7 +122,7 @@ class _ProfileHubTabState extends State<ProfileHubTab> {
                     borderRadius: BorderRadius.circular(WinRadii.full),
                   ),
                   child: Row(mainAxisSize: MainAxisSize.min, children: [
-                    const Icon(Icons.workspace_premium_outlined,
+                    const Icon(PhosphorIconsRegular.medal,
                         size: 13, color: WinColors.gold),
                     const SizedBox(width: 4),
                     Text(context.l10n.studentHubPlan(planName),
@@ -135,7 +136,7 @@ class _ProfileHubTabState extends State<ProfileHubTab> {
             ]),
           ),
           IconButton(
-            icon: Icon(Icons.settings_outlined, size: 22, color: s.onMuted),
+            icon: Icon(PhosphorIconsRegular.gearSix, size: 22, color: s.onMuted),
             onPressed: () => _go(const ProfileScreen()),
           ),
         ]),
@@ -149,54 +150,54 @@ class _ProfileHubTabState extends State<ProfileHubTab> {
             _SectionLabel(context.l10n.studentHubLearning),
             const SizedBox(height: 8),
             _HubTile(
-              icon: Icons.emoji_events_outlined,
+              icon: PhosphorIconsRegular.trophy,
               color: WinColors.gold,
               label: context.l10n.studentAchMyBadges,
               subtitle: context.l10n.studentHubBadgesSub,
               onTap: () => _go(const AchievementsScreen()),
             ),
             _HubTile(
-              icon: Icons.workspace_premium_outlined,
+              icon: PhosphorIconsRegular.medal,
               color: WinColors.teal400,
               label: context.l10n.studentHubCertificates,
               subtitle: context.l10n.studentHubCertificatesSub,
               onTap: () => _go(const CertificatesScreen()),
             ),
             _HubTile(
-              icon: Icons.favorite_border,
+              icon: PhosphorIconsRegular.heart,
               color: WinColors.error,
               label: context.l10n.studentHubFavorites,
               subtitle: context.l10n.studentHubFavoritesSub,
               onTap: () => _go(const FavoritesScreen()),
             ),
             _HubTile(
-              icon: Icons.download_outlined,
+              icon: PhosphorIconsRegular.downloadSimple,
               color: WinColors.ink600,
               label: context.l10n.studentHubHistory,
               onTap: () => _go(const DownloadHistoryScreen()),
             ),
             _HubTile(
-              icon: Icons.groups_outlined,
+              icon: PhosphorIconsRegular.usersThree,
               color: s.primary,
               label: context.l10n.studentHubGroups,
               subtitle: context.l10n.studentHubGroupsSub,
               onTap: () => _go(const StudyGroupsScreen()),
             ),
             _HubTile(
-              icon: Icons.bar_chart_outlined,
+              icon: PhosphorIconsRegular.chartBar,
               color: s.secondary,
               label: context.l10n.studentHubReports,
               onTap: () => _go(const StudentReportsScreen()),
             ),
             _HubTile(
-              icon: Icons.quiz_outlined,
+              icon: PhosphorIconsRegular.exam,
               color: WinColors.warn,
               label: context.l10n.studentHubRevisionQuiz,
               subtitle: context.l10n.studentHubRevisionQuizSub,
               onTap: () => _go(const QuizRevisionScreen()),
             ),
             _HubTile(
-              icon: Icons.timer_outlined,
+              icon: PhosphorIconsRegular.timer,
               color: WinColors.teal500,
               label: context.l10n.timerTitle,
               subtitle: context.l10n.studentHubPomodoroSub,
@@ -207,14 +208,14 @@ class _ProfileHubTabState extends State<ProfileHubTab> {
             _SectionLabel(context.l10n.studentHubCommunity),
             const SizedBox(height: 8),
             _HubTile(
-              icon: Icons.forum_outlined,
+              icon: PhosphorIconsRegular.chatsCircle,
               color: WinColors.teal600,
               label: context.l10n.studentHubForum,
               subtitle: context.l10n.studentHubForumSub,
               onTap: () => _go(const ForumScreen()),
             ),
             _HubTile(
-              icon: Icons.link_outlined,
+              icon: PhosphorIconsRegular.link,
               color: WinColors.blue700,
               label: context.l10n.studentLinksTitle,
               subtitle: context.l10n.studentHubNetworkSub,
@@ -234,7 +235,7 @@ class _ProfileHubTabState extends State<ProfileHubTab> {
             ValueListenableBuilder<int>(
               valueListenable: UserService.instance.unreadNotifications,
               builder: (_, count, __) => _HubTile(
-                icon: Icons.notifications_outlined,
+                icon: PhosphorIconsRegular.bell,
                 color: WinColors.warn,
                 label: context.l10n.studentNotifTitle,
                 badge: count > 0 ? (count > 99 ? '99+' : '$count') : null,
@@ -242,32 +243,32 @@ class _ProfileHubTabState extends State<ProfileHubTab> {
               ),
             ),
             _HubTile(
-              icon: Icons.credit_card_outlined,
+              icon: PhosphorIconsRegular.creditCard,
               color: s.primary,
               label: context.l10n.studentHubSubscription,
               subtitle: context.l10n.studentHubSubscriptionSub(planName),
               onTap: () => _go(const PricingScreen()),
             ),
             _HubTile(
-              icon: Icons.tune_outlined,
+              icon: PhosphorIconsRegular.slidersHorizontal,
               color: s.onMuted,
               label: context.l10n.studentHubProfileSettings,
               onTap: () => _go(const ProfileScreen()),
             ),
             _HubTile(
-              icon: Icons.description_outlined,
+              icon: PhosphorIconsRegular.fileText,
               color: s.onFaint,
               label: context.l10n.studentHubTerms,
               onTap: () => LegalScreen.showCgu(context),
             ),
             _HubTile(
-              icon: Icons.privacy_tip_outlined,
+              icon: PhosphorIconsRegular.shieldWarning,
               color: s.onFaint,
               label: context.l10n.studentHubPrivacy,
               onTap: () => LegalScreen.showPrivacy(context),
             ),
             _HubTile(
-              icon: Icons.policy_outlined,
+              icon: PhosphorIconsRegular.scales,
               color: s.onFaint,
               label: context.l10n.studentHubTutorPolicy,
               onTap: () => openTutorPolicy(context),
@@ -285,7 +286,7 @@ class _ProfileHubTabState extends State<ProfileHubTab> {
                     color: s.onMuted.withValues(alpha: 0.10),
                     borderRadius: BorderRadius.circular(WinRadii.sm),
                   ),
-                  child: Icon(Icons.dark_mode_outlined,
+                  child: Icon(PhosphorIconsRegular.moon,
                       size: 20, color: s.onMuted),
                 ),
                 const SizedBox(width: 12),
@@ -311,7 +312,7 @@ class _ProfileHubTabState extends State<ProfileHubTab> {
                     color: s.onMuted.withValues(alpha: 0.10),
                     borderRadius: BorderRadius.circular(WinRadii.sm),
                   ),
-                  child: Icon(Icons.language, size: 20, color: s.onMuted),
+                  child: Icon(PhosphorIconsRegular.globe, size: 20, color: s.onMuted),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -333,7 +334,7 @@ class _ProfileHubTabState extends State<ProfileHubTab> {
                     color: WinColors.error.withValues(alpha: 0.10),
                     borderRadius: BorderRadius.circular(WinRadii.sm),
                   ),
-                  child: const Icon(Icons.logout,
+                  child: const Icon(PhosphorIconsRegular.signOut,
                       size: 20, color: WinColors.error),
                 ),
                 const SizedBox(width: 12),
@@ -417,7 +418,7 @@ class _HubTile extends StatelessWidget {
                       size: 11, weight: FontWeight.w700, color: Colors.white)),
             )
           else
-            Icon(Icons.chevron_right, size: 18, color: s.onFaint),
+            Icon(PhosphorIconsRegular.caretRight, size: 18, color: s.onFaint),
         ]),
       ),
     );

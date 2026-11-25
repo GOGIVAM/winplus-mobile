@@ -84,7 +84,7 @@ class _GroupRow extends StatelessWidget {
                 child: WinButton(
               context.l10n.instGroupSeeStudents,
               small: true,
-              icon: Icons.people_outline,
+              icon: PhosphorIconsRegular.users,
               onTap: () => Navigator.push(
                   context,
                   WinPageRoute(
@@ -97,7 +97,7 @@ class _GroupRow extends StatelessWidget {
               context.l10n.instGroupAssignResources,
               small: true,
               variant: WinButtonVariant.outline,
-              icon: Icons.library_add_outlined,
+              icon: PhosphorIconsRegular.folderPlus,
               onTap: () => _showAssignSheet(context, g),
             )),
           ]),
@@ -137,7 +137,7 @@ class _GroupRow extends StatelessWidget {
               const SizedBox(height: 20),
               WinButton(context.l10n.instGroupBrowseCatalog,
                   block: true,
-                  icon: Icons.layers_outlined,
+                  icon: PhosphorIconsRegular.stack,
                   onTap: () => Navigator.pop(context)),
               const SizedBox(height: 10),
               WinButton(context.l10n.commonCancel,
@@ -376,7 +376,7 @@ class _InstitutionGroupsTabState extends State<InstitutionGroupsTab> {
       Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: WinTextField(
-              icon: Icons.search,
+              icon: PhosphorIconsRegular.magnifyingGlass,
               hint: context.l10n.instGroupSearch,
               onChanged: (v) => setState(() => _query = v.trim().toLowerCase()))),
       const SizedBox(height: 12),
@@ -398,7 +398,7 @@ class _InstitutionGroupsTabState extends State<InstitutionGroupsTab> {
                       WinButton(context.l10n.studentGroupsCreate,
                           variant: WinButtonVariant.outline,
                           block: true,
-                          icon: Icons.add, onTap: () async {
+                          icon: PhosphorIconsRegular.plus, onTap: () async {
                         await Navigator.push(
                             context,
                             WinPageRoute(
@@ -457,7 +457,7 @@ class _InstitutionCatalogTabState extends State<InstitutionCatalogTab> {
           child: WinCard(
               bg: WinColors.teal50,
               child: Row(children: [
-                const Icon(Icons.info_outline,
+                const Icon(PhosphorIconsRegular.info,
                     size: 18, color: WinColors.teal700),
                 const SizedBox(width: 10),
                 Expanded(
@@ -563,7 +563,7 @@ class _InstitutionAnalyticsTabState extends State<InstitutionAnalyticsTab> {
               Expanded(
                   child: _statCard(
                       context,
-                      Icons.schedule,
+                      PhosphorIconsRegular.clock,
                       _analytics != null
                           ? '${_analytics!.downloadsThisMonth}'
                           : '',
@@ -572,7 +572,7 @@ class _InstitutionAnalyticsTabState extends State<InstitutionAnalyticsTab> {
               Expanded(
                   child: _statCard(
                       context,
-                      Icons.check_circle_outline,
+                      PhosphorIconsRegular.checkCircle,
                       _analytics != null
                           ? '${_analytics!.quizzesThisMonth}'
                           : '',
@@ -582,7 +582,7 @@ class _InstitutionAnalyticsTabState extends State<InstitutionAnalyticsTab> {
             WinButton(context.l10n.instRiskTitle,
                 variant: WinButtonVariant.outline,
                 block: true,
-                icon: Icons.warning_amber_outlined,
+                icon: PhosphorIconsRegular.warning,
                 onTap: () => Navigator.push(context,
                     WinPageRoute(builder: (_) => const AtRiskScreen()))),
             const SizedBox(height: 10),
@@ -656,7 +656,7 @@ class _InstitutionAccountTabState extends State<InstitutionAccountTab> {
                   decoration: BoxDecoration(
                       color: WinColors.goldBg,
                       borderRadius: BorderRadius.circular(WinRadii.lg)),
-                  child: const Icon(Icons.apartment_outlined,
+                  child: const Icon(PhosphorIconsRegular.buildings,
                       size: 40, color: WinColors.gold)),
               const SizedBox(height: 12),
               FutureBuilder<String?>(
@@ -679,31 +679,31 @@ class _InstitutionAccountTabState extends State<InstitutionAccountTab> {
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(color: s.inkCard, borderRadius: BorderRadius.circular(WinRadii.lg)),
                 child: Row(children: [
-                  const Icon(Icons.shield_outlined, size: 20, color: WinColors.teal400),
+                  const Icon(PhosphorIconsRegular.shield, size: 20, color: WinColors.teal400),
                   const SizedBox(width: 8),
                   Expanded(child: Text(context.l10n.instAccountLicense, style: WinType.titleL(WinColors.cream50))),
-                  const Icon(Icons.chevron_right, color: WinColors.cream50),
+                  const Icon(PhosphorIconsRegular.caretRight, color: WinColors.cream50),
                 ]),
               ),
             ),
             const SizedBox(height: 20),
             // Lot 9.3 : attribution de tuteurs, réservations et portefeuille institution.
-            _Row(Icons.school_outlined, context.l10n.instAccountTutoring,
+            _Row(PhosphorIconsRegular.graduationCap, context.l10n.instAccountTutoring,
                 onTap: () => Navigator.push(context,
                     WinPageRoute(builder: (_) => const TutoringForStudentsScreen()))),
             // Lot 9.5 (17.11) : caution des répétiteurs rattachés pour le présentiel.
-            _Row(Icons.verified_user_outlined, context.l10n.instEndorseScreenTitle,
+            _Row(PhosphorIconsRegular.shieldCheck, context.l10n.instEndorseScreenTitle,
                 onTap: () => Navigator.push(context,
                     WinPageRoute(builder: (_) => const TutorEndorsementsScreen()))),
-            _Row(Icons.bar_chart_outlined, context.l10n.instAccountReports,
+            _Row(PhosphorIconsRegular.chartBar, context.l10n.instAccountReports,
                 onTap: () => Navigator.push(context,
                     WinPageRoute(builder: (_) => const ReportsScreen()))),
-            _Row(Icons.dark_mode_outlined, context.l10n.commonDarkMode,
+            _Row(PhosphorIconsRegular.moon, context.l10n.commonDarkMode,
                 trailing: Switch(
                     value: state.dark,
                     activeThumbColor: s.primary,
                     onChanged: (_) => state.toggleTheme())),
-            _Row(Icons.language, context.l10n.language,
+            _Row(PhosphorIconsRegular.globe, context.l10n.language,
             trailing: const LanguageToggle()),
             const SizedBox(height: 8),
             TextButton(
@@ -748,7 +748,7 @@ class _Row extends StatelessWidget {
                   style: WinType.bodyM(s.onStrong)
                       .copyWith(fontWeight: FontWeight.w500))),
           trailing ??
-              const Icon(Icons.chevron_right,
+              const Icon(PhosphorIconsRegular.caretRight,
                   size: 18, color: WinColors.ink300),
         ]),
       ),
@@ -832,7 +832,7 @@ class _InstitutionWinAITabState extends State<InstitutionWinAITab> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text('WinAI'),
@@ -906,7 +906,7 @@ class _InstitutionWinAITabState extends State<InstitutionWinAITab> {
                                   weight: FontWeight.w600,
                                   color: WinColors.teal700)),
                           const SizedBox(width: 6),
-                          const Icon(Icons.arrow_forward_ios_rounded,
+                          const Icon(PhosphorIconsRegular.caretRight,
                               size: 11, color: WinColors.teal700),
                         ]),
                       ),
@@ -981,7 +981,7 @@ class _InstitutionWinAITabState extends State<InstitutionWinAITab> {
                   height: 48,
                   decoration:
                       BoxDecoration(color: s.primary, shape: BoxShape.circle),
-                  child: Icon(Icons.send, size: 20, color: s.onPrimary)),
+                  child: Icon(PhosphorIconsFill.paperPlaneRight, size: 20, color: s.onPrimary)),
             ),
           ]),
         ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../l10n/l10n.dart';
 import 'win_widgets.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Bannière discrète affichée quand un écran sert des données en cache
 /// (Hive) plutôt qu'en temps réel  remplace le pattern "écran vide + bouton
@@ -28,7 +29,7 @@ class OfflineBanner extends StatelessWidget {
       child: WinAlert(
         context.l10n.widgetOfflineBanner(when),
         type: BadgeColor.neutral,
-        icon: Icons.wifi_off_outlined,
+        icon: PhosphorIconsRegular.wifiSlash,
       ),
     );
   }

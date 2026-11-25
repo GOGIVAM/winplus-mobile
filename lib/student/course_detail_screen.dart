@@ -12,6 +12,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import 'course_player_screen.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class CourseDetailScreen extends StatefulWidget {
   final int courseId;
@@ -201,7 +202,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                 style: WinType.titleM(s.onStrong)),
           ),
           ...children.map((ch) => ListTile(
-                leading: const Icon(Icons.child_care),
+                leading: const Icon(PhosphorIconsFill.baby),
                 title: Text(ch.firstName, style: WinType.bodyM(s.onStrong)),
                 onTap: () => Navigator.pop(ctx, ch),
               )),
@@ -248,7 +249,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                 WinButton(
                   context.l10n.studentCoursePayMomo,
                   block: true,
-                  icon: Icons.phone_android,
+                  icon: PhosphorIconsRegular.deviceMobile,
                   onTap: () {
                     Navigator.pop(ctx);
                     _buy(withBalance: false);
@@ -260,7 +261,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                     context.l10n.studentCoursePayBalance,
                     block: true,
                     variant: WinButtonVariant.secondary,
-                    icon: Icons.account_balance_wallet_outlined,
+                    icon: PhosphorIconsRegular.wallet,
                     onTap: () {
                       Navigator.pop(ctx);
                       _buy(withBalance: true);
@@ -304,7 +305,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
           backgroundColor: WinColors.ink900,
           foregroundColor: Colors.white,
           leading: WinCircleIconButton(
-            icon: Icons.arrow_back,
+            icon: PhosphorIconsRegular.arrowLeft,
             onTap: () => Navigator.pop(context),
           ),
           flexibleSpace: FlexibleSpaceBar(
@@ -347,7 +348,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
             // Formateur, comme sur la fiche du site.
             if (c.instructorName.isNotEmpty) ...[
               Row(children: [
-                Icon(Icons.person_outline, size: 15, color: s.onMuted),
+                Icon(PhosphorIconsRegular.user, size: 15, color: s.onMuted),
                 const SizedBox(width: 4),
                 Expanded(
                   child: Text(c.instructorName,
@@ -361,9 +362,9 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
             // Chiffres : passent à la ligne sur écran étroit.
             Wrap(spacing: 12, runSpacing: 6, children: [
               for (final (icon, label) in [
-                (Icons.people_outline, context.l10n.studentCourseEnrolled(c.enrolledCount)),
-                (Icons.schedule_outlined, c.durationStr),
-                (Icons.play_circle_outline, context.l10n.studentCourseLessons(totalLessons)),
+                (PhosphorIconsRegular.users, context.l10n.studentCourseEnrolled(c.enrolledCount)),
+                (PhosphorIconsRegular.clock, c.durationStr),
+                (PhosphorIconsRegular.playCircle, context.l10n.studentCourseLessons(totalLessons)),
               ])
                 Row(mainAxisSize: MainAxisSize.min, children: [
                   Icon(icon, size: 15, color: s.onMuted),
@@ -379,8 +380,8 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                     5,
                     (i) => Icon(
                           i < c.avgRating.round()
-                              ? Icons.star_rounded
-                              : Icons.star_outline_rounded,
+                              ? PhosphorIconsFill.star
+                              : PhosphorIconsRegular.star,
                           size: 16,
                           color: WinColors.gold,
                         )),
@@ -426,7 +427,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                     WinButton(
                       context.l10n.studentCourseContinue,
                       block: true,
-                      icon: Icons.play_arrow,
+                      icon: PhosphorIconsFill.play,
                       onTap: () => Navigator.push(
                           context,
                           WinPageRoute(
@@ -444,7 +445,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                       context.l10n.studentCoursePurchasedStart,
                       block: true,
                       loading: _enrolling,
-                      icon: Icons.check_circle_outline,
+                      icon: PhosphorIconsRegular.checkCircle,
                       onTap: _enrolling ? null : _enroll,
                     )
                   else if (c.isPaid && _isParent)
@@ -452,7 +453,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                       context.l10n.studentCourseOfferChild,
                       block: true,
                       loading: _buying,
-                      icon: Icons.card_giftcard_outlined,
+                      icon: PhosphorIconsRegular.gift,
                       onTap: _buying ? null : () => _offerToChild(c),
                     )
                   else if (c.isPaid)
@@ -460,7 +461,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                       context.l10n.studentCourseBuy,
                       block: true,
                       loading: _buying,
-                      icon: Icons.shopping_bag_outlined,
+                      icon: PhosphorIconsRegular.bag,
                       onTap: _buying ? null : () => _openPurchaseSheet(c),
                     )
                   else
@@ -468,13 +469,13 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                       context.l10n.studentCourseStartFree,
                       block: true,
                       loading: _enrolling,
-                      icon: Icons.school_outlined,
+                      icon: PhosphorIconsRegular.graduationCap,
                       onTap: _enrolling ? null : _enroll,
                     ),
                   if (c.certificateEnabled) ...[
                     const SizedBox(height: 10),
                     Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                      Icon(Icons.workspace_premium_outlined,
+                      Icon(PhosphorIconsRegular.medal,
                           size: 14, color: s.onMuted),
                       const SizedBox(width: 6),
                       Flexible(
@@ -500,7 +501,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Icon(Icons.check_circle_outline,
+                                      Icon(PhosphorIconsRegular.checkCircle,
                                           size: 16, color: s.primary),
                                       const SizedBox(width: 10),
                                       Expanded(
@@ -526,7 +527,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Icon(Icons.arrow_right,
+                                      Icon(PhosphorIconsFill.caretRight,
                                           size: 18, color: s.onMuted),
                                       const SizedBox(width: 6),
                                       Expanded(
@@ -590,8 +591,8 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                         const SizedBox(width: 4),
                         Icon(
                             open
-                                ? Icons.keyboard_arrow_up
-                                : Icons.keyboard_arrow_down,
+                                ? PhosphorIconsRegular.caretUp
+                                : PhosphorIconsRegular.caretDown,
                             size: 20,
                             color: s.onMuted),
                       ]),
@@ -605,7 +606,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
             // Reviews
             const SizedBox(height: 20),
             Row(children: [
-              const Icon(Icons.star_rounded, size: 18, color: WinColors.gold),
+              const Icon(PhosphorIconsFill.star, size: 18, color: WinColors.gold),
               const SizedBox(width: 6),
               Text(c.reviewsCount > 0 ? context.l10n.studentDetailReviewsHeader(c.reviewsCount) : context.l10n.studentCourseReviews,
                   style: WinType.headlineS(s.onStrong)),
@@ -629,8 +630,8 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                                       setState(() => _reviewRating = i + 1),
                                   child: Icon(
                                     i < _reviewRating
-                                        ? Icons.star_rounded
-                                        : Icons.star_outline_rounded,
+                                        ? PhosphorIconsFill.star
+                                        : PhosphorIconsRegular.star,
                                     size: 30,
                                     color: WinColors.gold,
                                   ),
@@ -675,7 +676,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 12),
                 child: Row(children: [
-                  Icon(Icons.check_circle, size: 16, color: WinColors.success),
+                  Icon(PhosphorIconsFill.checkCircle, size: 16, color: WinColors.success),
                   const SizedBox(width: 6),
                   Text(context.l10n.studentCourseReviewThanks,
                       style: WinType.bodyM(WinColors.success)),
@@ -720,7 +721,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                                                   fontWeight:
                                                       FontWeight.w600))),
                                   if (r.isVerified) ...[
-                                    Icon(Icons.verified,
+                                    Icon(PhosphorIconsFill.sealCheck,
                                         size: 13, color: WinColors.success),
                                     const SizedBox(width: 2),
                                   ],
@@ -728,8 +729,8 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                                       5,
                                       (i) => Icon(
                                             i < r.rating
-                                                ? Icons.star_rounded
-                                                : Icons.star_outline_rounded,
+                                                ? PhosphorIconsFill.star
+                                                : PhosphorIconsRegular.star,
                                             size: 13,
                                             color: WinColors.gold,
                                           )),
@@ -766,7 +767,7 @@ class _LessonRow extends StatelessWidget {
       ),
       child: Row(children: [
         Icon(
-          lesson.isPreview ? Icons.play_circle_outline : Icons.lock_outline,
+          lesson.isPreview ? PhosphorIconsRegular.playCircle : PhosphorIconsRegular.lock,
           size: 16,
           color: lesson.isPreview ? s.primary : s.onFaint,
         ),

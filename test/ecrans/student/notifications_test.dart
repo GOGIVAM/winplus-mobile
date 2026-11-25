@@ -6,6 +6,7 @@ import 'package:winplus/student/notifications_screen.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 String _ilYa(Duration d) => DateTime.now().subtract(d).toUtc().toIso8601String();
 
@@ -39,8 +40,8 @@ void main() {
     // « Hier » : titre du groupe et heure de la notification d'hier.
     expect(find.text(l.commonYesterday), findsWidgets);
     expect(find.text(l.studentNotifMinutesAgo(5)), findsOneWidget);
-    expect(find.byIcon(Icons.emoji_events_outlined), findsOneWidget);
-    expect(find.byIcon(Icons.warning_amber_outlined), findsOneWidget);
+    expect(find.byIcon(PhosphorIconsRegular.trophy), findsOneWidget);
+    expect(find.byIcon(PhosphorIconsRegular.warning), findsOneWidget);
     expect(UserService.instance.unreadNotifications.value, 1);
     expect(find.text(l.studentNotifSeeMore), findsNothing);
     expect(faux.requetes.single.queryParameters, {'page': 1, 'limit': 20});

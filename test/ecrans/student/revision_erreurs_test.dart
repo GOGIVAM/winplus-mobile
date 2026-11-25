@@ -6,6 +6,7 @@ import 'package:winplus/widgets/win_widgets.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 String _ilYa(Duration d) => DateTime.now().subtract(d).toUtc().toIso8601String();
 
@@ -30,8 +31,8 @@ void main() {
     expect(find.text('Capitale du Cameroun ?'), findsOneWidget);
     expect(find.text('Douala'), findsOneWidget);
     expect(find.text('Yaounde'), findsOneWidget);
-    expect(find.byIcon(Icons.close), findsOneWidget);
-    expect(find.byIcon(Icons.check), findsOneWidget);
+    expect(find.byIcon(PhosphorIconsRegular.x), findsOneWidget);
+    expect(find.byIcon(PhosphorIconsBold.check), findsOneWidget);
     expect(find.text(L10n.current.studentRevisionMinutesAgo(20)), findsOneWidget);
   });
 

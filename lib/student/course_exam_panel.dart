@@ -10,6 +10,7 @@ import '../widgets/win_widgets.dart';
 import 'quiz_screen.dart';
 import 'student_tabs.dart' show StudentWinAITab;
 import 'study_session_screen.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Examen de formation dans le lecteur mobile : quiz de fin de module ou
 /// examen final (parité web, décision du 2026-10-26).
@@ -122,7 +123,7 @@ class _CourseExamPanelState extends State<CourseExamPanel> {
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          Icon(widget.isFinal ? Icons.workspace_premium : Icons.quiz_outlined,
+          Icon(widget.isFinal ? PhosphorIconsFill.medal : PhosphorIconsRegular.exam,
               color: WinColors.teal400),
           const SizedBox(width: 10),
           Expanded(
@@ -178,9 +179,9 @@ class _CourseExamPanelState extends State<CourseExamPanel> {
           const SizedBox(height: 8),
           Wrap(spacing: 8, runSpacing: 8, children: [
             _Action(icon: winAIIconData, label: l.studentExamAskWinAI, onTap: () => _askWinAI()),
-            _Action(icon: Icons.checklist, label: l.studentExamPractice, onTap: () => _askWinAI(practice: true)),
+            _Action(icon: PhosphorIconsRegular.listChecks, label: l.studentExamPractice, onTap: () => _askWinAI(practice: true)),
             _Action(
-              icon: Icons.timer_outlined,
+              icon: PhosphorIconsRegular.timer,
               label: l.studentExamStudySession,
               onTap: () => Navigator.push(
                   context, WinPageRoute(builder: (_) => const StudySessionScreen())),
@@ -195,7 +196,7 @@ class _CourseExamPanelState extends State<CourseExamPanel> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 6),
                     child: Row(children: [
-                      const Icon(Icons.menu_book_outlined, size: 16, color: WinColors.teal400),
+                      const Icon(PhosphorIconsRegular.bookOpen, size: 16, color: WinColors.teal400),
                       const SizedBox(width: 8),
                       Expanded(child: Text(lesson.title, style: WinType.bodyM(Colors.white70))),
                     ]),

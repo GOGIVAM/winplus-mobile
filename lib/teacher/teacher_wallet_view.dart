@@ -13,6 +13,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Portefeuille professeur (lot 2, Module 5) : parité avec le web
 /// (RevenueOverview + WithdrawalFlow + WalletRecharge).
@@ -230,7 +231,7 @@ class _TeacherWalletViewState extends State<TeacherWalletView>
     final error = _error;
     if (error != null && _summary == null) {
       return _StateMessage(
-        icon: error.sessionExpired ? Icons.lock_clock_outlined : Icons.wifi_off,
+        icon: error.sessionExpired ? PhosphorIconsRegular.lockKey : PhosphorIconsRegular.wifiSlash,
         title: error.sessionExpired ? context.l10n.walletSessionExpired : context.l10n.walletUnavailable,
         message: error.message,
         actionLabel: error.sessionExpired ? context.l10n.walletSignInAgain : context.l10n.walletRetry,
@@ -278,12 +279,12 @@ class _TeacherWalletViewState extends State<TeacherWalletView>
                 WinButton(context.l10n.walletWithdraw,
                     variant: WinButtonVariant.accent,
                     small: true,
-                    icon: Icons.account_balance_wallet_outlined,
+                    icon: PhosphorIconsRegular.wallet,
                     onTap: canWithdraw ? _openWithdraw : null),
                 WinButton(context.l10n.walletRecharge,
                     variant: WinButtonVariant.outline,
                     small: true,
-                    icon: Icons.add,
+                    icon: PhosphorIconsRegular.plus,
                     onTap: _openRecharge),
               ]),
             ]),
@@ -309,7 +310,7 @@ class _TeacherWalletViewState extends State<TeacherWalletView>
                   width: 40,
                   height: 40,
                   decoration: const BoxDecoration(color: WinColors.successBg, shape: BoxShape.circle),
-                  child: const Icon(Icons.percent, size: 18, color: WinColors.success),
+                  child: const Icon(PhosphorIconsRegular.percent, size: 18, color: WinColors.success),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -394,7 +395,7 @@ class _TeacherWalletViewState extends State<TeacherWalletView>
           WinButton(context.l10n.walletRetry,
               variant: WinButtonVariant.outline,
               small: true,
-              icon: Icons.refresh,
+              icon: PhosphorIconsRegular.arrowClockwise,
               onTap: () => _loadEntries(reset: true)),
         ]),
       );
@@ -447,7 +448,7 @@ class _TeacherWalletViewState extends State<TeacherWalletView>
             height: 36,
             decoration: BoxDecoration(
                 color: credit ? WinColors.successBg : s.surface2, shape: BoxShape.circle),
-            child: Icon(credit ? Icons.trending_up : Icons.account_balance_wallet_outlined,
+            child: Icon(credit ? PhosphorIconsRegular.trendUp : PhosphorIconsRegular.wallet,
                 size: 16, color: credit ? WinColors.success : s.onMuted)),
         const SizedBox(width: 12),
         Expanded(
@@ -506,10 +507,10 @@ class _WithdrawalStatusCard extends StatelessWidget {
     final s = WinTheme.of(context);
     final w = withdrawal;
     final (title, color, icon) = w.isCompleted
-        ? (context.l10n.walletWithdrawalDone, WinColors.success, Icons.check_circle)
+        ? (context.l10n.walletWithdrawalDone, WinColors.success, PhosphorIconsFill.checkCircle)
         : w.isFailed
-            ? (context.l10n.walletWithdrawalFailed, WinColors.error, Icons.error_outline)
-            : (context.l10n.walletWithdrawalInProgress, WinColors.warn, Icons.hourglass_top);
+            ? (context.l10n.walletWithdrawalFailed, WinColors.error, PhosphorIconsRegular.warningCircle)
+            : (context.l10n.walletWithdrawalInProgress, WinColors.warn, PhosphorIconsRegular.hourglassHigh);
     final detail = w.isCompleted
         ? context.l10n.walletWithdrawalDoneDetail(_xaf(w.amountXaf), w.operatorLabel, w.phoneMasked,
             w.processedAt != null ? context.l10n.walletOnDate(_date(w.processedAt)) : '')
@@ -529,7 +530,7 @@ class _WithdrawalStatusCard extends StatelessWidget {
         ])),
         if (onDismiss != null)
           IconButton(
-              tooltip: context.l10n.walletClose, icon: const Icon(Icons.close, size: 18), onPressed: onDismiss),
+              tooltip: context.l10n.walletClose, icon: const Icon(PhosphorIconsRegular.x, size: 18), onPressed: onDismiss),
       ]),
     );
   }
@@ -818,7 +819,7 @@ class _RechargeSheetState extends State<_RechargeSheet> {
       return Padding(
         padding: const EdgeInsets.all(24),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-          if (_waiting) const CircularProgressIndicator() else Icon(ok ? Icons.check_circle : Icons.error_outline, size: 40, color: ok ? WinColors.success : WinColors.error),
+          if (_waiting) const CircularProgressIndicator() else Icon(ok ? PhosphorIconsFill.checkCircle : PhosphorIconsRegular.warningCircle, size: 40, color: ok ? WinColors.success : WinColors.error),
           const SizedBox(height: 12),
           Text(_waiting ? context.l10n.walletConfirmOnPhone : ok ? context.l10n.walletRechargeDone : context.l10n.walletRechargeFailed,
               style: WinType.titleM(s.onStrong), textAlign: TextAlign.center),

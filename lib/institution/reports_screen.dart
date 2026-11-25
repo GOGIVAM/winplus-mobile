@@ -6,6 +6,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Rapports de l'établissement.
 ///
@@ -58,7 +59,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(l.instReportsTitle),
@@ -77,7 +78,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                     color: WinColors.teal500.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(WinRadii.sm),
                   ),
-                  child: const Icon(Icons.mail_outline, size: 22, color: WinColors.teal500),
+                  child: const Icon(PhosphorIconsRegular.envelopeSimple, size: 22, color: WinColors.teal500),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -93,7 +94,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
               WinButton(
                 sending ? l.instMonthlyReportSending : l.instMonthlyReportSendNow,
                 block: true,
-                icon: Icons.send_outlined,
+                icon: PhosphorIconsRegular.paperPlaneRight,
                 onTap: sending ? null : _sendNow,
               ),
             ]),

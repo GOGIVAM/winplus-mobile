@@ -8,6 +8,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import 'course_catalog_screen.dart';
 import 'course_player_screen.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class MyCoursesScreen extends StatefulWidget {
   const MyCoursesScreen({super.key});
@@ -58,7 +59,7 @@ class _MyCoursesScreenState extends State<MyCoursesScreen> {
         elevation: 0,
         actions: [
           TextButton.icon(
-            icon: Icon(Icons.explore_outlined, size: 18, color: s.primary),
+            icon: Icon(PhosphorIconsRegular.compass, size: 18, color: s.primary),
             label: Text(context.l10n.shellTabCatalog, style: WinType.labelM(s.primary)),
             onPressed: _goToCatalog,
           ),
@@ -69,7 +70,7 @@ class _MyCoursesScreenState extends State<MyCoursesScreen> {
           : _error
               ? Center(
                   child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  Icon(Icons.wifi_off_outlined, size: 48, color: s.onFaint),
+                  Icon(PhosphorIconsRegular.wifiSlash, size: 48, color: s.onFaint),
                   const SizedBox(height: 12),
                   Text(context.l10n.studentMyCoursesLoadError,
                       style: WinType.bodyM(s.onMuted)),
@@ -137,7 +138,7 @@ class _CourseCard extends StatelessWidget {
                   child: Container(
                     alignment: Alignment.center,
                     color: WinColors.teal600.withValues(alpha: 0.75),
-                    child: const Icon(Icons.workspace_premium,
+                    child: const Icon(PhosphorIconsFill.medal,
                         size: 40, color: Colors.white),
                   ),
                 ),
@@ -181,12 +182,12 @@ class _CourseCard extends StatelessWidget {
               const SizedBox(height: 10),
 
               Row(children: [
-                Icon(Icons.play_circle_outline, size: 14, color: s.onMuted),
+                Icon(PhosphorIconsRegular.playCircle, size: 14, color: s.onMuted),
                 const SizedBox(width: 4),
                 Text(context.l10n.studentCourseLessons(e.lessonsCount),
                     style: WinType.labelM(s.onMuted)),
                 const SizedBox(width: 12),
-                Icon(Icons.schedule_outlined, size: 14, color: s.onMuted),
+                Icon(PhosphorIconsRegular.clock, size: 14, color: s.onMuted),
                 const SizedBox(width: 4),
                 Text(e.durationStr, style: WinType.labelM(s.onMuted)),
               ]),
@@ -202,7 +203,7 @@ class _CourseCard extends StatelessWidget {
                 variant: e.isCompleted
                     ? WinButtonVariant.outline
                     : WinButtonVariant.accent,
-                icon: e.isCompleted ? Icons.replay : Icons.play_arrow,
+                icon: e.isCompleted ? PhosphorIconsRegular.arrowCounterClockwise : PhosphorIconsFill.play,
                 onTap: onTap,
               ),
             ]),
@@ -219,7 +220,7 @@ class _ThumbPlaceholder extends StatelessWidget {
     final s = WinTheme.of(context);
     return Container(
       color: s.outline2,
-      child: Icon(Icons.play_lesson_outlined, size: 40, color: s.onFaint),
+      child: Icon(PhosphorIconsRegular.monitorPlay, size: 40, color: s.onFaint),
     );
   }
 }
@@ -235,7 +236,7 @@ class _EmptyState extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(32),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-          Icon(Icons.school_outlined, size: 72, color: s.onFaint),
+          Icon(PhosphorIconsRegular.graduationCap, size: 72, color: s.onFaint),
           const SizedBox(height: 20),
           Text(context.l10n.studentMyCoursesEmpty,
               style: WinType.headlineS(s.onStrong)),

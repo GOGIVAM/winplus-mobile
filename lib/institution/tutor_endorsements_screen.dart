@@ -5,6 +5,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Lot 9.5 (17.11) : l'institution cautionne un répétiteur qui lui est
 /// rattaché, après l'avoir vérifié par ses propres moyens (comment, par qui,
@@ -144,7 +145,7 @@ class _TutorEndorsementsScreenState extends State<TutorEndorsementsScreen> {
       appBar: AppBar(
         backgroundColor: s.bg,
         elevation: 0,
-        leading: IconButton(icon: Icon(Icons.arrow_back, color: s.onStrong), onPressed: () => Navigator.pop(context)),
+        leading: IconButton(icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong), onPressed: () => Navigator.pop(context)),
         title: Text(context.l10n.instEndorseScreenTitle),
       ),
       body: tutors == null

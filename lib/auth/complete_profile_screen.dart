@@ -13,6 +13,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../widgets/win_mascot.dart';
 import 'onboarding_success_screen.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Complétion de profil après vérification d'email. Le contenu s'adapte au
 /// rôle du compte (student/teacher/parent/institution)  un professeur n'a
@@ -226,7 +227,7 @@ class _StudentProfileWizardState extends State<_StudentProfileWizard> {
                 border: Border.all(color: s.outline, width: 1),
               ),
               child: Row(children: [
-                Icon(Icons.calendar_today_outlined, size: 16, color: s.onMuted),
+                Icon(PhosphorIconsRegular.calendarBlank, size: 16, color: s.onMuted),
                 const SizedBox(width: 10),
                 Expanded(
                     child: Text(label,

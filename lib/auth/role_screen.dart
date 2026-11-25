@@ -10,6 +10,7 @@ import '../widgets/win_widgets.dart';
 import '../services/auth_service.dart';
 import 'google_login.dart';
 import 'signup_screen.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Sélection du rôle à l'inscription.
 ///
@@ -123,8 +124,8 @@ class _RoleCard extends StatelessWidget {
                         const Spacer(),
                         Icon(
                             selected
-                                ? Icons.radio_button_checked
-                                : Icons.radio_button_unchecked,
+                                ? PhosphorIconsFill.radioButton
+                                : PhosphorIconsRegular.circle,
                             color: selected ? s.primary : s.outline2,
                             size: 20),
                       ]),

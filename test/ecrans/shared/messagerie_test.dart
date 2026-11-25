@@ -6,6 +6,7 @@ import 'package:winplus/shared/messaging/messaging_screen.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 String _ilYa(Duration d) => DateTime.now().subtract(d).toUtc().toIso8601String();
 
@@ -64,7 +65,7 @@ void main() {
     testWidgets('actualiser relit les conversations', (tester) async {
       faux.repond('GET', '/messages/conversations', []);
       await monterEcran(tester, const MessagingScreen());
-      await tester.tap(find.byIcon(Icons.refresh_outlined));
+      await tester.tap(find.byIcon(PhosphorIconsRegular.arrowClockwise));
       await reseau(tester);
       expect(faux.recues('GET', '/messages/conversations'), hasLength(2));
     });
@@ -94,7 +95,7 @@ void main() {
     testWidgets('message vide : rien n\'est envoye', (tester) async {
       faux.repond('GET', '/messages/conversations/1/messages', []);
       await monterEcran(tester, const ConversationScreen(conversation: conv));
-      await tester.tap(find.byIcon(Icons.send));
+      await tester.tap(find.byIcon(PhosphorIconsFill.paperPlaneRight));
       await reseau(tester);
       expect(faux.recues('POST', '/messages/conversations/1/messages'), isEmpty);
     });
@@ -104,7 +105,7 @@ void main() {
       faux.repond('POST', '/messages/conversations/1/messages', {});
       await monterEcran(tester, const ConversationScreen(conversation: conv));
       await tester.enterText(find.byType(TextField), '  Bonsoir ');
-      await tester.tap(find.byIcon(Icons.send));
+      await tester.tap(find.byIcon(PhosphorIconsFill.paperPlaneRight));
       await reseau(tester);
       expect(faux.recues('POST', '/messages/conversations/1/messages').single.data, {'content': 'Bonsoir'});
       expect(tester.widget<TextField>(find.byType(TextField)).controller!.text, isEmpty);

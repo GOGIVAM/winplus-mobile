@@ -21,6 +21,7 @@ import 'quiz_screen.dart';
 import 'student_home.dart' show ContentCard;
 import '../widgets/external_links.dart';
 import '../app_config.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class ContentDetailScreen extends StatefulWidget {
   final Content content;
@@ -121,12 +122,12 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
             pinned: true,
             backgroundColor: s.surface,
             leading: WinCircleIconButton(
-              icon: Icons.arrow_back,
+              icon: PhosphorIconsRegular.arrowLeft,
               onTap: () => Navigator.pop(context),
             ),
             actions: [
               WinCircleIconButton(
-                icon: _fav ? Icons.favorite : Icons.favorite_border,
+                icon: _fav ? PhosphorIconsFill.heart : PhosphorIconsRegular.heart,
                 iconColor: _fav ? WinColors.error : null,
                 onTap: () => setState(() {
                   _fav = !_fav;
@@ -135,7 +136,7 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
               ),
               const SizedBox(width: 8),
               WinCircleIconButton(
-                  icon: Icons.share_outlined,
+                  icon: PhosphorIconsRegular.shareNetwork,
                   // Le lien du site : il ouvre le contenu, dans l'application
                   // si elle est installée.
                   onTap: () => ExternalLinks.share(
@@ -186,7 +187,7 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                             children: List.generate(
                                 5,
                                 (i) => Icon(
-                                      Icons.circle,
+                                      PhosphorIconsFill.circle,
                                       size: 7,
                                       color: i < c.difficulty
                                           ? s.primary
@@ -210,8 +211,8 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                             5,
                             (i) => Icon(
                                   i < c.rating.floor()
-                                      ? Icons.star
-                                      : Icons.star_border,
+                                      ? PhosphorIconsFill.star
+                                      : PhosphorIconsRegular.star,
                                   size: 16,
                                   color: WinColors.warn,
                                 )),
@@ -222,13 +223,13 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                       ]),
                       const SizedBox(height: 12),
                       Row(children: [
-                        Icon(Icons.visibility_outlined,
+                        Icon(PhosphorIconsRegular.eye,
                             size: 16, color: s.onFaint),
                         const SizedBox(width: 4),
                         Text(context.l10n.studentDetailViews(c.downloads),
                             style: WinType.labelM(s.onMuted)),
                         const SizedBox(width: 16),
-                        Icon(Icons.calendar_today_outlined,
+                        Icon(PhosphorIconsRegular.calendarBlank,
                             size: 16, color: s.onFaint),
                         const SizedBox(width: 4),
                         Text('${c.year}', style: WinType.labelM(s.onMuted)),
@@ -288,7 +289,7 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                                                                   (r.rating100 /
                                                                           10)
                                                                       .floor()
-                                                              ? Icons.star
+                                                              ? PhosphorIconsFill.star
                                                               : Icons
                                                                   .star_border,
                                                           size: 13,
@@ -375,7 +376,7 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                               child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const Icon(Icons.notes_outlined,
+                                    const Icon(PhosphorIconsRegular.note,
                                         size: 16, color: WinColors.teal500),
                                     const SizedBox(width: 8),
                                     Expanded(
@@ -386,7 +387,7 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                                         setState(() => _notes.remove(note));
                                         _savePrefs();
                                       },
-                                      child: Icon(Icons.close,
+                                      child: Icon(PhosphorIconsRegular.x,
                                           size: 16, color: s.onFaint),
                                     ),
                                   ]),
@@ -425,7 +426,7 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                         Row(children: [
                           Expanded(
                             child: WinButton(context.l10n.commonSave,
-                                icon: Icons.check,
+                                icon: PhosphorIconsBold.check,
                                 block: true,
                                 small: true, onTap: () {
                               final t = _noteCtrl.text.trim();
@@ -452,7 +453,7 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                         GestureDetector(
                           onTap: () => setState(() => _showNoteInput = true),
                           child: Row(children: [
-                            Icon(Icons.add_circle_outline,
+                            Icon(PhosphorIconsRegular.plusCircle,
                                 size: 18, color: s.primary),
                             const SizedBox(width: 6),
                             Text(context.l10n.studentDetailAddNote,
@@ -592,7 +593,7 @@ class _BottomBarState extends State<_BottomBar> {
     if (content.type == ContentType.quiz) {
       btn = WinButton(context.l10n.studentDetailStartQuiz,
           block: true,
-          icon: Icons.play_arrow_rounded,
+          icon: PhosphorIconsFill.play,
           onTap: () => Navigator.push(
               context, WinPageRoute(builder: (_) => const QuizHubScreen())));
     } else if (content.free || isPremium) {
@@ -604,14 +605,14 @@ class _BottomBarState extends State<_BottomBar> {
                 ? context.l10n.studentDetailReadBook
                 : context.l10n.studentDetailReadInApp,
             block: true,
-            icon: Icons.menu_book_outlined,
+            icon: PhosphorIconsRegular.bookOpen,
             onTap: onOpen),
         if (content.hasCorrection && canReadCorrection) ...[
           const SizedBox(height: 8),
           WinButton(context.l10n.studentDetailViewAnswers,
               block: true,
               variant: WinButtonVariant.outline,
-              icon: Icons.fact_check_outlined,
+              icon: PhosphorIconsRegular.listChecks,
               onTap: onOpenCorrection),
         ],
       ]);
@@ -621,14 +622,14 @@ class _BottomBarState extends State<_BottomBar> {
           WinButton(context.l10n.studentDetailReadPreview(previewPages),
               block: true,
               variant: WinButtonVariant.outline,
-              icon: Icons.visibility_outlined,
+              icon: PhosphorIconsRegular.eye,
               onTap: () => _openPreview(context)),
           const SizedBox(height: 8),
         ],
         WinButton(context.l10n.studentDetailAddToCartPrice(fmtXaf(content.price)),
             block: true,
             loading: _adding,
-            icon: Icons.shopping_cart_outlined,
+            icon: PhosphorIconsRegular.shoppingCart,
             onTap: _adding ? null : () => _addToCart(context)),
         const SizedBox(height: 8),
         // Lot 9.7b : plus de prix écrit en dur ; les plans et leurs prix TTC

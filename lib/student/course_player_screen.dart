@@ -15,6 +15,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../widgets/protected_content.dart';
 import '../widgets/external_links.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class CoursePlayerScreen extends StatefulWidget {
   final int courseId;
@@ -230,7 +231,7 @@ class _CoursePlayerScreenState extends State<CoursePlayerScreen> {
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(WinRadii.xl)),
         title: Column(children: [
-          const Icon(Icons.workspace_premium, size: 56, color: WinColors.gold),
+          const Icon(PhosphorIconsFill.medal, size: 56, color: WinColors.gold),
           const SizedBox(height: 12),
           Text(context.l10n.studentPlayerCourseDone,
               style: WinType.headlineS(s.onStrong),
@@ -305,7 +306,7 @@ class _CoursePlayerScreenState extends State<CoursePlayerScreen> {
           ),
           // Curriculum toggle
           IconButton(
-            icon: const Icon(Icons.menu_book_outlined),
+            icon: const Icon(PhosphorIconsRegular.bookOpen),
             tooltip: context.l10n.studentPlayerCurriculum,
             onPressed: () => setState(() => _sidebarOpen = !_sidebarOpen),
           ),
@@ -404,8 +405,8 @@ class _CurriculumPanel extends StatelessWidget {
                 child: Row(children: [
                   Icon(
                     fe.passed
-                        ? Icons.check_circle
-                        : (fe.available ? Icons.workspace_premium : Icons.lock_outline),
+                        ? PhosphorIconsFill.checkCircle
+                        : (fe.available ? PhosphorIconsFill.medal : PhosphorIconsRegular.lock),
                     size: 18,
                     color: fe.passed ? WinColors.teal400 : (fe.available ? WinColors.gold : Colors.white38),
                   ),
@@ -444,10 +445,10 @@ class _CurriculumPanel extends StatelessWidget {
                       child: Row(children: [
                         Icon(
                           l.isCompleted
-                              ? Icons.check_circle
+                              ? PhosphorIconsFill.checkCircle
                               : (active
-                                  ? Icons.play_circle
-                                  : Icons.radio_button_unchecked),
+                                  ? PhosphorIconsFill.playCircle
+                                  : PhosphorIconsRegular.circle),
                           size: 18,
                           color: l.isCompleted
                               ? WinColors.teal400
@@ -573,7 +574,7 @@ class _LessonView extends StatelessWidget {
                     color: WinColors.teal600.withValues(alpha: 0.4)),
               ),
               child: Row(children: [
-                const Icon(Icons.menu_book_outlined,
+                const Icon(PhosphorIconsRegular.bookOpen,
                     color: WinColors.teal400, size: 24),
                 const SizedBox(width: 12),
                 Expanded(
@@ -584,7 +585,7 @@ class _LessonView extends StatelessWidget {
                       Text(context.l10n.studentPlayerOpenViewer,
                           style: WinType.labelS(Colors.white54)),
                     ])),
-                const Icon(Icons.visibility_outlined, color: WinColors.teal400),
+                const Icon(PhosphorIconsRegular.eye, color: WinColors.teal400),
               ]),
             ),
           ),
@@ -625,7 +626,7 @@ class _LessonView extends StatelessWidget {
                       color: WinColors.teal600.withValues(alpha: 0.4)),
                 ),
                 child: Row(children: [
-                  const Icon(Icons.attach_file,
+                  const Icon(PhosphorIconsRegular.paperclip,
                       color: WinColors.teal400, size: 24),
                   const SizedBox(width: 12),
                   Expanded(
@@ -641,7 +642,7 @@ class _LessonView extends StatelessWidget {
                             style: WinType.labelS(Colors.white54)),
                       ])),
                   if (isPdf)
-                    const Icon(Icons.picture_as_pdf_outlined,
+                    const Icon(PhosphorIconsRegular.filePdf,
                         color: WinColors.teal400),
                 ]),
               ),
@@ -658,7 +659,7 @@ class _LessonView extends StatelessWidget {
                   child: Text(l.title, style: WinType.headlineS(Colors.white))),
               if (l.isCompleted)
                 Row(mainAxisSize: MainAxisSize.min, children: [
-                  Icon(Icons.check_circle, size: 16, color: WinColors.teal400),
+                  Icon(PhosphorIconsFill.checkCircle, size: 16, color: WinColors.teal400),
                   const SizedBox(width: 4),
                   Text(context.l10n.studentPlayerDone, style: WinType.labelM(WinColors.teal400)),
                 ]),
@@ -678,7 +679,7 @@ class _LessonView extends StatelessWidget {
                   borderRadius: BorderRadius.circular(WinRadii.lg),
                 ),
                 child: Row(children: [
-                  const Icon(Icons.workspace_premium,
+                  const Icon(PhosphorIconsFill.medal,
                       color: Colors.white, size: 28),
                   const SizedBox(width: 12),
                   Expanded(
@@ -850,7 +851,7 @@ class _LessonVideoPlayerState extends State<_LessonVideoPlayer> {
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
         child: Row(children: [
           if (_isOffline)
-            const Icon(Icons.offline_pin, size: 16, color: WinColors.teal400),
+            const Icon(PhosphorIconsFill.downloadSimple, size: 16, color: WinColors.teal400),
           if (_isOffline) const SizedBox(width: 4),
           if (_isOffline)
             Text(context.l10n.studentPlayerOfflinePlayback,
@@ -868,7 +869,7 @@ class _LessonVideoPlayerState extends State<_LessonVideoPlayer> {
           else if (_downloaded)
             TextButton.icon(
               onPressed: _deleteOffline,
-              icon: const Icon(Icons.delete_outline,
+              icon: const Icon(PhosphorIconsRegular.trash,
                   size: 16, color: Colors.white70),
               label: Text(context.l10n.studentPlayerRemoveOffline,
                   style: WinType.labelS(Colors.white70)),
@@ -876,7 +877,7 @@ class _LessonVideoPlayerState extends State<_LessonVideoPlayer> {
           else
             TextButton.icon(
               onPressed: _download,
-              icon: const Icon(Icons.download_outlined,
+              icon: const Icon(PhosphorIconsRegular.downloadSimple,
                   size: 16, color: WinColors.teal400),
               label: Text(context.l10n.studentPlayerDownloadOffline,
                   style: WinType.labelS(WinColors.teal400)),
@@ -905,7 +906,7 @@ class _LessonVideoPlayerState extends State<_LessonVideoPlayer> {
           Container(
             decoration: const BoxDecoration(
                 color: Colors.black26, shape: BoxShape.circle),
-            child: const Icon(Icons.play_arrow, size: 56, color: Colors.white),
+            child: const Icon(PhosphorIconsFill.play, size: 56, color: Colors.white),
           ),
         Positioned(
           left: 0,
@@ -956,7 +957,7 @@ class _BottomNav extends StatelessWidget {
           // Prev
           IconButton(
             onPressed: prev != null ? onPrev : null,
-            icon: Icon(Icons.skip_previous_rounded,
+            icon: Icon(PhosphorIconsFill.skipBack,
                 color: prev != null ? Colors.white70 : Colors.white24,
                 size: 28),
           ),
@@ -964,7 +965,7 @@ class _BottomNav extends StatelessWidget {
           Expanded(
             child: isCompleted
                 ? Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    const Icon(Icons.check_circle,
+                    const Icon(PhosphorIconsFill.checkCircle,
                         size: 16, color: WinColors.teal400),
                     const SizedBox(width: 6),
                     Text(context.l10n.studentPlayerLessonDone,
@@ -977,7 +978,7 @@ class _BottomNav extends StatelessWidget {
                           borderRadius: BorderRadius.circular(WinRadii.full)),
                       padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
-                    icon: const Icon(Icons.check, size: 18),
+                    icon: const Icon(PhosphorIconsBold.check, size: 18),
                     label: Text(context.l10n.studentPlayerMarkDone,
                         style: WinType.labelM(Colors.white)),
                     onPressed: onComplete,
@@ -986,7 +987,7 @@ class _BottomNav extends StatelessWidget {
           // Next
           IconButton(
             onPressed: next != null ? onNext : null,
-            icon: Icon(Icons.skip_next_rounded,
+            icon: Icon(PhosphorIconsFill.skipForward,
                 color: next != null ? Colors.white70 : Colors.white24,
                 size: 28),
           ),

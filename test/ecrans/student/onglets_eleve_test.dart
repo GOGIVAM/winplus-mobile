@@ -12,6 +12,7 @@ import 'package:winplus/widgets/win_widgets.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Les onglets sont des colonnes sans Scaffold : on les pose dans un Scaffold.
 Widget _page(Widget onglet) => Scaffold(body: onglet);
@@ -102,7 +103,7 @@ void main() {
       await monterEcran(tester, _page(const StudentCatalogTab()));
       final l = L10n.current;
       expect(find.text(l.studentTabsCatalogLoadError), findsOneWidget);
-      expect(find.byIcon(Icons.wifi_off_outlined), findsOneWidget);
+      expect(find.byIcon(PhosphorIconsRegular.wifiSlash), findsOneWidget);
       faux.repond('GET', '/subjects', {
         'items': [
           {'id': 1, 'title': 'Epreuve de maths', 'category': 'epreuve'},
@@ -246,7 +247,7 @@ void main() {
       });
       await monterEcran(tester, const StudentWinAITab());
       await tester.enterText(champ(), '  Explique les limites ');
-      await tester.tap(find.byIcon(Icons.send));
+      await tester.tap(find.byIcon(PhosphorIconsFill.paperPlaneRight));
       await reseau(tester);
       expect(find.text('Explique les limites'), findsOneWidget);
       expect(find.text('Voici la methode'), findsOneWidget);
@@ -261,7 +262,7 @@ void main() {
     testWidgets('message vide : rien n\'est envoye', (tester) async {
       await monterEcran(tester, const StudentWinAITab());
       await tester.enterText(champ(), '   ');
-      await tester.tap(find.byIcon(Icons.send));
+      await tester.tap(find.byIcon(PhosphorIconsFill.paperPlaneRight));
       await reseau(tester);
       expect(faux.requetes, isEmpty);
       expect(find.text(L10n.current.studentTabsAiSuggest1), findsOneWidget);
@@ -289,7 +290,7 @@ void main() {
       faux.repond('POST', '/chatbot/message', {}, statut: 500);
       await monterEcran(tester, const StudentWinAITab());
       await tester.enterText(champ(), 'Bonjour');
-      await tester.tap(find.byIcon(Icons.send));
+      await tester.tap(find.byIcon(PhosphorIconsFill.paperPlaneRight));
       await reseau(tester);
       expect(find.text(L10n.current.studentTabsAiNoReply), findsOneWidget);
     });
@@ -298,7 +299,7 @@ void main() {
       faux.repond('POST', '/chatbot/message', {'message': 'Limite atteinte pour aujourd\'hui'}, statut: 402);
       await monterEcran(tester, const StudentWinAITab());
       await tester.enterText(champ(), 'Bonjour');
-      await tester.tap(find.byIcon(Icons.send));
+      await tester.tap(find.byIcon(PhosphorIconsFill.paperPlaneRight));
       await reseau(tester);
       expect(find.text('Limite atteinte pour aujourd\'hui'), findsOneWidget);
     });
@@ -310,7 +311,7 @@ void main() {
       addTearDown(() => tester.binding.defaultBinaryMessenger
           .setMockMethodCallHandler(const MethodChannel('plugin.csdcorp.com/speech_to_text'), null));
       await monterEcran(tester, const StudentWinAITab());
-      await tester.tap(find.byIcon(Icons.attach_file));
+      await tester.tap(find.byIcon(PhosphorIconsRegular.paperclip));
       await pomper(tester);
       await pomper(tester, const Duration(milliseconds: 400));
       final l = L10n.current;

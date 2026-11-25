@@ -6,6 +6,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Plan d'action hebdomadaire WinAI de l'établissement.
 ///
@@ -68,11 +69,11 @@ class _ActionPlanScreenState extends State<ActionPlanScreen> {
   static (IconData, Color) _styleFor(int priority) {
     switch (priority) {
       case 1:
-        return (Icons.priority_high, WinColors.error);
+        return (PhosphorIconsBold.exclamationMark, WinColors.error);
       case 2:
-        return (Icons.trending_up, WinColors.warn);
+        return (PhosphorIconsRegular.trendUp, WinColors.warn);
       default:
-        return (Icons.insights_outlined, WinColors.blue500);
+        return (PhosphorIconsRegular.chartLineUp, WinColors.blue500);
     }
   }
 
@@ -86,7 +87,7 @@ class _ActionPlanScreenState extends State<ActionPlanScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title:
@@ -117,10 +118,10 @@ class _ActionPlanScreenState extends State<ActionPlanScreen> {
 
     if (_error != null) {
       return [
-        WinAlert(_error!, type: BadgeColor.error, icon: Icons.error_outline),
+        WinAlert(_error!, type: BadgeColor.error, icon: PhosphorIconsRegular.warningCircle),
         const SizedBox(height: 16),
         WinButton(context.l10n.commonRetry,
-            icon: Icons.refresh,
+            icon: PhosphorIconsRegular.arrowClockwise,
             variant: WinButtonVariant.outline,
             onTap: _load),
       ];
@@ -134,7 +135,7 @@ class _ActionPlanScreenState extends State<ActionPlanScreen> {
           plan.message ??
               context.l10n.instPlanEmpty,
           type: BadgeColor.neutral,
-          icon: Icons.info_outline,
+          icon: PhosphorIconsRegular.info,
         ),
       ];
     }
@@ -219,11 +220,11 @@ class _ActionPlanScreenState extends State<ActionPlanScreen> {
                       WinButton(context.l10n.instPlanMarkDone,
                           small: true,
                           variant: WinButtonVariant.outline,
-                          icon: Icons.check,
+                          icon: PhosphorIconsBold.check,
                           onTap: () => setState(() => _done.add(i)))
                     else
                       Row(children: [
-                        const Icon(Icons.check_circle,
+                        const Icon(PhosphorIconsFill.checkCircle,
                             size: 16, color: WinColors.success),
                         const SizedBox(width: 6),
                         Text(context.l10n.instPlanDone,

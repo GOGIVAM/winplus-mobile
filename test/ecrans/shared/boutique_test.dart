@@ -8,6 +8,7 @@ import 'package:winplus/widgets/win_widgets.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 Map<String, dynamic> _panier({List<Map<String, dynamic>>? articles}) {
   final items = articles ??
@@ -61,7 +62,7 @@ void main() {
       faux.repond('GET', '/cart', _panier(articles: [
         {'id': 12, 'subjectId': 5, 'title': 'Physique BEPC', 'price': 2000},
       ]));
-      await tester.tap(find.byIcon(Icons.close).first);
+      await tester.tap(find.byIcon(PhosphorIconsRegular.x).first);
       await reseau(tester);
       await pomper(tester, const Duration(milliseconds: 500));
       expect(faux.recues('DELETE', '/cart/items/11'), hasLength(1));
@@ -72,7 +73,7 @@ void main() {
     testWidgets('retrait refuse : message dans la barre d\'information, l\'article reste', (tester) async {
       faux.repond('GET', '/cart', _panier());
       await monterEcran(tester, const CartScreen());
-      await tester.tap(find.byIcon(Icons.close).first);
+      await tester.tap(find.byIcon(PhosphorIconsRegular.x).first);
       await reseau(tester);
       expect(find.text(L10n.current.shopCartRemoveFailed), findsOneWidget);
       expect(find.text('Maths BAC 2024'), findsOneWidget);
@@ -189,7 +190,7 @@ void main() {
     testWidgets('actualiser relit les commandes', (tester) async {
       faux.repond('GET', '/orders', {'items': []});
       await monterEcran(tester, const OrdersScreen());
-      await tester.tap(find.byIcon(Icons.refresh_outlined));
+      await tester.tap(find.byIcon(PhosphorIconsRegular.arrowClockwise));
       await reseau(tester);
       expect(faux.recues('GET', '/orders'), hasLength(2));
     });

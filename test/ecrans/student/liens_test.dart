@@ -6,6 +6,7 @@ import 'package:winplus/widgets/win_widgets.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 void main() {
   late FauxReseau faux;
@@ -131,6 +132,6 @@ void main() {
   testWidgets('la fleche retour est presente dans la barre', (tester) async {
     routes();
     await monterEcran(tester, const MyLinksScreen());
-    expect(find.byIcon(Icons.arrow_back), findsOneWidget);
+    expect(find.byIcon(PhosphorIconsRegular.arrowLeft), findsOneWidget);
   });
 }

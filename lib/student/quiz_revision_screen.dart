@@ -7,6 +7,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import 'course_catalog_screen.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Module 24 (lot 8, rattrapage 16.3) : révision des erreurs de quiz
 /// branchée sur les vraies questions ratées (QuizMistakesController.cs,
@@ -83,7 +84,7 @@ class _QuizRevisionScreenState extends State<QuizRevisionScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(context.l10n.studentHubRevisionQuiz),
@@ -147,7 +148,7 @@ class _QuizRevisionScreenState extends State<QuizRevisionScreen> {
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
             child: WinButton(
               context.l10n.studentRevisionBackToCatalog,
-              icon: Icons.play_arrow_rounded,
+              icon: PhosphorIconsFill.play,
               block: true,
               onTap: () => Navigator.push(
                   context, WinPageRoute(builder: (_) => const CourseCatalogScreen())),
@@ -196,7 +197,7 @@ class _MistakeCard extends StatelessWidget {
         if (mistake.givenAnswer != null) ...[
           const SizedBox(height: 10),
           Row(children: [
-            const Icon(Icons.close, size: 14, color: WinColors.error),
+            const Icon(PhosphorIconsRegular.x, size: 14, color: WinColors.error),
             const SizedBox(width: 4),
             Expanded(
               child: Text(mistake.givenAnswer!, style: WinType.labelM(WinColors.error)),
@@ -206,7 +207,7 @@ class _MistakeCard extends StatelessWidget {
         if (mistake.correctAnswer != null) ...[
           const SizedBox(height: 4),
           Row(children: [
-            const Icon(Icons.check, size: 14, color: WinColors.success),
+            const Icon(PhosphorIconsBold.check, size: 14, color: WinColors.success),
             const SizedBox(width: 4),
             Expanded(
               child: Text(mistake.correctAnswer!,

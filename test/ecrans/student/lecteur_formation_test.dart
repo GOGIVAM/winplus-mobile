@@ -5,6 +5,7 @@ import 'package:winplus/student/course_player_screen.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Lecon du sommaire (GET /courses/{id}/play).
 Map<String, dynamic> _lecon(int id, String titre, {String type = 'article', bool faite = false, int duree = 0}) => {
@@ -185,8 +186,8 @@ void main() {
   testWidgets('barre du bas : « Suivant » ouvre la lecon suivante, « Precedent » revient', (tester) async {
     routesBase();
     await ouvrirLecteur(tester);
-    final precedent = find.byIcon(Icons.skip_previous_rounded);
-    final suivant = find.byIcon(Icons.skip_next_rounded);
+    final precedent = find.byIcon(PhosphorIconsFill.skipBack);
+    final suivant = find.byIcon(PhosphorIconsFill.skipForward);
     // Premiere lecon : pas de precedent.
     expect(tester.widget<IconButton>(find.ancestor(of: precedent, matching: find.byType(IconButton))).onPressed, isNull);
     await tester.tap(suivant);
@@ -208,7 +209,7 @@ void main() {
     await tester.tap(find.byTooltip(L10n.current.studentPlayerCurriculum));
     await pomper(tester);
     expect(find.text('Module 1'), findsOneWidget);
-    expect(find.byIcon(Icons.check_circle), findsOneWidget);
+    expect(find.byIcon(PhosphorIconsFill.checkCircle), findsOneWidget);
     expect(find.text('2:05'), findsOneWidget);
     await tester.tap(find.text('Les ensembles'));
     await reseau(tester);
@@ -224,7 +225,7 @@ void main() {
     final l = L10n.current;
     expect(find.text(l.studentExamFinalTitle), findsOneWidget);
     expect(find.text(l.studentExamFinalLocked), findsOneWidget);
-    expect(find.byIcon(Icons.lock_outline), findsOneWidget);
+    expect(find.byIcon(PhosphorIconsRegular.lock), findsOneWidget);
     await tester.tap(find.text(l.studentExamFinalTitle));
     await pomper(tester);
     // Toujours dans le curriculum : l'examen n'est pas ouvert.
@@ -242,7 +243,7 @@ void main() {
     await ouvrirLecteur(tester);
     expect(find.text('tableau.xlsx'), findsOneWidget);
     expect(find.text(L10n.current.studentPlayerOpenWithApp), findsOneWidget);
-    expect(find.byIcon(Icons.picture_as_pdf_outlined), findsNothing);
+    expect(find.byIcon(PhosphorIconsRegular.filePdf), findsNothing);
   });
 
   testWidgets('piece jointe PDF (reconnue par le chemin du lien) : invite a ouvrir le document', (tester) async {
@@ -255,7 +256,7 @@ void main() {
     await ouvrirLecteur(tester);
     expect(find.text(L10n.current.studentPlayerAttachedFile), findsOneWidget);
     expect(find.text(L10n.current.studentPlayerTapToOpen), findsOneWidget);
-    expect(find.byIcon(Icons.picture_as_pdf_outlined), findsOneWidget);
+    expect(find.byIcon(PhosphorIconsRegular.filePdf), findsOneWidget);
   });
 
   testWidgets('fichier du catalogue (sourceSubjectId) : carte « Ouvrir dans la visionneuse »', (tester) async {
@@ -263,8 +264,8 @@ void main() {
     faux.repond('GET', '/courses/7/play/1', _contenu(1, 'Epreuve 2024', en: {'lessonType': 'file', 'articleContent': null, 'sourceSubjectId': 55, 'viewerOnly': true}));
     await ouvrirLecteur(tester);
     expect(find.text(L10n.current.studentPlayerOpenViewer), findsOneWidget);
-    expect(find.byIcon(Icons.visibility_outlined), findsOneWidget);
+    expect(find.byIcon(PhosphorIconsRegular.eye), findsOneWidget);
     // Jamais proposee comme piece jointe a telecharger.
-    expect(find.byIcon(Icons.attach_file), findsNothing);
+    expect(find.byIcon(PhosphorIconsRegular.paperclip), findsNothing);
   });
 }

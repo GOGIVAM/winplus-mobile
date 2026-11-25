@@ -9,6 +9,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../shell/role_shell.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class OnboardingSuccessScreen extends StatefulWidget {
   final String? firstName;
@@ -85,7 +86,7 @@ class _OnboardingSuccessScreenState extends State<OnboardingSuccessScreen> {
                           color: WinColors.successBg,
                           borderRadius: BorderRadius.circular(WinRadii.sm),
                         ),
-                        child: const Icon(Icons.check,
+                        child: const Icon(PhosphorIconsBold.check,
                             size: 16, color: WinColors.success),
                       ),
                       const SizedBox(width: 12),

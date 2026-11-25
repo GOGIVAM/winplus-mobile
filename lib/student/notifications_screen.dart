@@ -7,6 +7,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
@@ -123,11 +124,11 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
   IconData _icon(String type) => switch (type) {
         'ai' => winAIIconData,
-        'achievement' => Icons.emoji_events_outlined,
-        'success' => Icons.check_circle_outline,
-        'warning' || 'warn' => Icons.warning_amber_outlined,
-        'error' => Icons.error_outline,
-        _ => Icons.notifications_outlined,
+        'achievement' => PhosphorIconsRegular.trophy,
+        'success' => PhosphorIconsRegular.checkCircle,
+        'warning' || 'warn' => PhosphorIconsRegular.warning,
+        'error' => PhosphorIconsRegular.warningCircle,
+        _ => PhosphorIconsRegular.bell,
       };
 
   String _relativeTime(DateTime dt) {
@@ -149,7 +150,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(context.l10n.studentNotifTitle),
@@ -183,7 +184,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     if (_notifs!.isEmpty) {
       return Center(
           child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Icon(Icons.check_circle_outline, size: 64, color: s.onFaint),
+        Icon(PhosphorIconsRegular.checkCircle, size: 64, color: s.onFaint),
         const SizedBox(height: 12),
         Text(context.l10n.studentNotifAllCaughtUp, style: WinType.bodyM(s.onMuted)),
       ]));

@@ -16,6 +16,7 @@ import 'package:winplus/shell/settings_screen.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Libelle dans la barre d'onglets du bas seulement : les accueils reprennent
 /// certains libelles (Messages, Revenus) dans leurs raccourcis.
@@ -88,7 +89,7 @@ void main() {
     for (final t in [l.shellTabHome, l.shellTabGroups, l.shellTabAnalytics, l.shellTabMessages, l.shellTabMore]) {
       expect(_onglet(t), findsOneWidget, reason: t);
     }
-    expect(find.byIcon(Icons.apartment_outlined), findsWidgets);
+    expect(find.byIcon(PhosphorIconsRegular.buildings), findsWidgets);
   });
 
   testWidgets('professeur, « Plus » : seances, revenus, corrections, reglages et deconnexion', (tester) async {
@@ -118,7 +119,7 @@ void main() {
     await pomper(tester, const Duration(milliseconds: 400));
     await reseau(tester);
     expect(find.byType(MorePage), findsOneWidget);
-    expect(find.byIcon(Icons.arrow_back), findsOneWidget);
+    expect(find.byIcon(PhosphorIconsRegular.arrowLeft), findsOneWidget);
   });
 
   testWidgets('« Plus » puis « Parametres », pour chaque espace : langue et mode sombre', (tester) async {

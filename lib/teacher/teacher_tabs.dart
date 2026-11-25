@@ -354,7 +354,7 @@ class _ContentRow extends StatelessWidget {
                   color: s.primaryContainer,
                   borderRadius: BorderRadius.circular(WinRadii.sm)),
               child:
-                  Icon(Icons.description_outlined, size: 20, color: s.primary)),
+                  Icon(PhosphorIconsRegular.fileText, size: 20, color: s.primary)),
           const SizedBox(width: 12),
           Expanded(
               child: Column(
@@ -381,7 +381,7 @@ class _ContentRow extends StatelessWidget {
           GestureDetector(
             onTap: () =>
                 ContentActionsSheet.show(context, c, onChanged: onChanged),
-            child: Icon(Icons.more_vert, size: 20, color: s.onFaint),
+            child: Icon(PhosphorIconsBold.dotsThreeVertical, size: 20, color: s.onFaint),
           ),
         ]));
   }
@@ -452,7 +452,7 @@ class _TeacherContentTabState extends State<TeacherContentTab> {
             borderRadius: BorderRadius.circular(WinRadii.lg),
           ),
           child: Row(children: [
-            const Icon(Icons.play_lesson_outlined,
+            const Icon(PhosphorIconsRegular.monitorPlay,
                 color: WinColors.teal400, size: 22),
             const SizedBox(width: 12),
             Expanded(
@@ -596,13 +596,13 @@ class _TeacherStudentsTabState extends State<TeacherStudentsTab> {
                             decoration: BoxDecoration(color: s.outline, borderRadius: BorderRadius.circular(WinRadii.full)))),
                     Text(ctx.l10n.teacherClassesCreate, style: WinType.archivo(size: 18, color: s.onStrong)),
                     const SizedBox(height: 16),
-                    WinTextField(label: ctx.l10n.teacherClassesName, hint: ctx.l10n.teacherClassesNameHint, icon: Icons.class_outlined, controller: nameCtrl),
+                    WinTextField(label: ctx.l10n.teacherClassesName, hint: ctx.l10n.teacherClassesNameHint, icon: PhosphorIconsRegular.chalkboardTeacher, controller: nameCtrl),
                     const SizedBox(height: 12),
-                    WinTextField(label: ctx.l10n.commonLevel, hint: ctx.l10n.teacherClassesLevelHint, icon: Icons.school_outlined, controller: levelCtrl),
+                    WinTextField(label: ctx.l10n.commonLevel, hint: ctx.l10n.teacherClassesLevelHint, icon: PhosphorIconsRegular.graduationCap, controller: levelCtrl),
                     const SizedBox(height: 12),
-                    WinTextField(label: ctx.l10n.teacherClassesYear, hint: ctx.l10n.teacherClassesYearHint, icon: Icons.calendar_today_outlined, controller: yearCtrl),
+                    WinTextField(label: ctx.l10n.teacherClassesYear, hint: ctx.l10n.teacherClassesYearHint, icon: PhosphorIconsRegular.calendarBlank, controller: yearCtrl),
                     const SizedBox(height: 20),
-                    WinButton(busy ? ctx.l10n.studentGroupsCreating : ctx.l10n.studentGroupsCreateBtn, block: true, icon: Icons.add, loading: busy, onTap: submit),
+                    WinButton(busy ? ctx.l10n.studentGroupsCreating : ctx.l10n.studentGroupsCreateBtn, block: true, icon: PhosphorIconsRegular.plus, loading: busy, onTap: submit),
                   ]),
             ),
           );
@@ -675,14 +675,14 @@ class _TeacherStudentsTabState extends State<TeacherStudentsTab> {
             child: Column(children: [
               Text(_error!, style: WinType.bodyM(s.onMuted), textAlign: TextAlign.center),
               const SizedBox(height: 8),
-              WinButton(context.l10n.commonRetry, icon: Icons.refresh, onTap: _load),
+              WinButton(context.l10n.commonRetry, icon: PhosphorIconsRegular.arrowClockwise, onTap: _load),
             ]),
           )
         else if (_classes!.isEmpty)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 24),
             child: Column(children: [
-              Icon(Icons.class_outlined, size: 48, color: s.onFaint),
+              Icon(PhosphorIconsRegular.chalkboardTeacher, size: 48, color: s.onFaint),
               const SizedBox(height: 8),
               Text(_showArchived ? context.l10n.teacherClassesNone : context.l10n.teacherClassesNoneYet, style: WinType.bodyM(s.onMuted)),
             ]),
@@ -701,7 +701,7 @@ class _TeacherStudentsTabState extends State<TeacherStudentsTab> {
                           width: 42,
                           height: 42,
                           decoration: BoxDecoration(color: s.primaryContainer, borderRadius: BorderRadius.circular(WinRadii.sm)),
-                          child: Icon(Icons.class_outlined, size: 20, color: s.primary),
+                          child: Icon(PhosphorIconsRegular.chalkboardTeacher, size: 20, color: s.primary),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
@@ -713,7 +713,7 @@ class _TeacherStudentsTabState extends State<TeacherStudentsTab> {
                                 Text(context.l10n.teacherClassesStudents(cl.studentCount), style: WinType.labelM(s.onMuted)),
                                 if (cl.classAverage != null) ...[
                                   const SizedBox(width: 8),
-                                  Icon(Icons.bar_chart_outlined, size: 12, color: cl.classAverage! >= 70 ? WinColors.success : WinColors.warn),
+                                  Icon(PhosphorIconsRegular.chartBar, size: 12, color: cl.classAverage! >= 70 ? WinColors.success : WinColors.warn),
                                   const SizedBox(width: 2),
                                   Text(context.l10n.teacherClassesAverage(cl.classAverage!), style: WinType.labelM(cl.classAverage! >= 70 ? WinColors.success : WinColors.warn)),
                                 ],
@@ -729,35 +729,35 @@ class _TeacherStudentsTabState extends State<TeacherStudentsTab> {
                             ])),
                         if (cl.isActive)
                           IconButton(
-                            icon: Icon(Icons.delete_outline, size: 19, color: s.onFaint),
+                            icon: Icon(PhosphorIconsRegular.trash, size: 19, color: s.onFaint),
                             onPressed: () => _deleteOrDeactivate(cl),
                           )
                         else
-                          Icon(Icons.restore, size: 18, color: s.primary),
+                          Icon(PhosphorIconsRegular.clockCounterClockwise, size: 18, color: s.primary),
                       ]),
                     ),
                   ),
                 ),
               )),
         WinButton(context.l10n.teacherClassesCreate,
-            variant: WinButtonVariant.outline, block: true, icon: Icons.add, onTap: _showCreateClassSheet),
+            variant: WinButtonVariant.outline, block: true, icon: PhosphorIconsRegular.plus, onTap: _showCreateClassSheet),
         const SizedBox(height: 10),
         WinButton(context.l10n.teacherClassesMyLinks,
             variant: WinButtonVariant.outline,
             block: true,
-            icon: Icons.link_outlined,
+            icon: PhosphorIconsRegular.link,
             onTap: () => Navigator.push(context, WinPageRoute(builder: (_) => const TeacherLinksScreen()))),
         const SizedBox(height: 10),
         WinButton(context.l10n.teacherProfileTitle,
             variant: WinButtonVariant.outline,
             block: true,
-            icon: Icons.school_outlined,
+            icon: PhosphorIconsRegular.graduationCap,
             onTap: () => Navigator.push(context, WinPageRoute(builder: (_) => const TutorProfileScreen()))),
         const SizedBox(height: 10),
         WinButton(context.l10n.teacherClassesMyBookings,
             variant: WinButtonVariant.outline,
             block: true,
-            icon: Icons.event_available_outlined,
+            icon: PhosphorIconsRegular.calendarCheck,
             onTap: () => Navigator.push(context, WinPageRoute(builder: (_) => const TutorBookingsScreen()))),
       ],
     );
@@ -873,7 +873,7 @@ class _TeacherSessionsTabState extends State<TeacherSessionsTab> {
           WinButton(l.teacherSessionsPlan,
               variant: WinButtonVariant.outline,
               block: true,
-              icon: Icons.add,
+              icon: PhosphorIconsRegular.plus,
               onTap: _plan),
         ],
       ),
@@ -924,7 +924,7 @@ class _SessionCard extends StatelessWidget {
                 variant: soon ? WinButtonVariant.accent : WinButtonVariant.outline,
                 block: true,
                 small: true,
-                icon: Icons.videocam_outlined,
+                icon: PhosphorIconsRegular.videoCamera,
                 onTap: () => VisioScreen.open(context, VisioType.seance, se.id,
                     title: se.title)),
           ],
@@ -935,7 +935,7 @@ class _SessionCard extends StatelessWidget {
                 variant: soon ? WinButtonVariant.accent : WinButtonVariant.outline,
                 block: true,
                 small: true,
-                icon: Icons.videocam_outlined,
+                icon: PhosphorIconsRegular.videoCamera,
                 onTap: () => ExternalLinks.open(se.externalLink!)),
           ],
         ]),
@@ -1032,7 +1032,7 @@ class _TeacherWinAITabState extends State<TeacherWinAITab> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text('WinAI'),
@@ -1106,7 +1106,7 @@ class _TeacherWinAITabState extends State<TeacherWinAITab> {
                                   weight: FontWeight.w600,
                                   color: WinColors.teal700)),
                           const SizedBox(width: 6),
-                          const Icon(Icons.arrow_forward_ios_rounded,
+                          const Icon(PhosphorIconsRegular.caretRight,
                               size: 11, color: WinColors.teal700),
                         ]),
                       ),
@@ -1181,7 +1181,7 @@ class _TeacherWinAITabState extends State<TeacherWinAITab> {
                   height: 48,
                   decoration:
                       BoxDecoration(color: s.primary, shape: BoxShape.circle),
-                  child: Icon(Icons.send, size: 20, color: s.onPrimary)),
+                  child: Icon(PhosphorIconsFill.paperPlaneRight, size: 20, color: s.onPrimary)),
             ),
           ]),
         ),

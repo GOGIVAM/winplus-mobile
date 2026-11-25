@@ -7,6 +7,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Lot 9.7b, étape 4 (étude 9.7b section 2.3, décision 18.21) : licence de
 /// l'établissement sur mobile (parité web). Licence en cours et sièges
@@ -106,7 +107,7 @@ class _LicenseScreenState extends State<LicenseScreen> {
       appBar: AppBar(
         backgroundColor: s.bg,
         elevation: 0,
-        leading: IconButton(icon: Icon(Icons.arrow_back, color: s.onStrong), onPressed: () => Navigator.pop(context)),
+        leading: IconButton(icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong), onPressed: () => Navigator.pop(context)),
         title: Text(context.l10n.instLicenseTitle),
       ),
       body: _error != null
@@ -168,7 +169,7 @@ class _LicenseScreenState extends State<LicenseScreen> {
             child: WinCard(
               padding: const EdgeInsets.all(12),
               child: Row(children: [
-                Icon(seat['kind'] == 'teacher' ? Icons.school_outlined : Icons.person_outline, size: 18, color: s.primary),
+                Icon(seat['kind'] == 'teacher' ? PhosphorIconsRegular.graduationCap : PhosphorIconsRegular.user, size: 18, color: s.primary),
                 const SizedBox(width: 10),
                 Expanded(child: Text('${seat['name'] ?? l.instLicenseAccount('${seat['userId']}')}', style: WinType.titleM(s.onStrong))),
                 TextButton(

@@ -4,6 +4,7 @@ import '../l10n/l10n.dart';
 import '../services/biometric_service.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Interrupteur « Déverrouillage par empreinte » (feuille de l'avatar).
 /// Invisible si le téléphone n'a ni empreinte ni visage enregistré.
@@ -50,7 +51,7 @@ class _BiometricToggleState extends State<BiometricToggle> {
     return Padding(
       padding: const EdgeInsets.only(top: 16),
       child: Row(children: [
-        Icon(Icons.fingerprint, color: s.onMuted),
+        Icon(PhosphorIconsRegular.fingerprint, color: s.onMuted),
         const SizedBox(width: 10),
         Expanded(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -75,7 +76,7 @@ Future<void> offerBiometricIfUseful(BuildContext context) async {
   final yes = await showDialog<bool>(
     context: context,
     builder: (ctx) => AlertDialog(
-      icon: const Icon(Icons.fingerprint, size: 36),
+      icon: const Icon(PhosphorIconsRegular.fingerprint, size: 36),
       title: Text(l.biometricOfferTitle),
       content: Text(l.biometricOfferBody),
       actions: [

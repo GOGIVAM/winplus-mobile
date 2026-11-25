@@ -12,6 +12,7 @@ import '../../widgets/win_widgets.dart';
 import 'tutor_booking_for_whom.dart';
 import 'tutor_policy_widgets.dart';
 import 'tutor_pricing_widgets.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 String? _modeLabel(String mode) => switch (mode) {
       'online' => L10n.current.commonOnline,
@@ -21,10 +22,10 @@ String? _modeLabel(String mode) => switch (mode) {
       _ => null,
     };
 const _modeIcons = {
-  'online': Icons.videocam_outlined,
-  'student_home': Icons.home_outlined,
-  'tutor_home': Icons.school_outlined,
-  'neutral_place': Icons.place_outlined,
+  'online': PhosphorIconsRegular.videoCamera,
+  'student_home': PhosphorIconsRegular.house,
+  'tutor_home': PhosphorIconsRegular.graduationCap,
+  'neutral_place': PhosphorIconsRegular.mapPin,
 };
 
 /// Flow de réservation en 3 écrans (professeur_complete.md  "Flow de
@@ -420,7 +421,7 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: s.onStrong),
+          icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () {
             if (_step > 0 && _booking == null) {
               setState(() => _step -= 1);
@@ -636,31 +637,31 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             _RecapRow(
-                icon: Icons.person_outline,
+                icon: PhosphorIconsRegular.user,
                 label: context.l10n.tutoringTutor,
                 value: widget.profile.fullName ?? widget.profile.title ?? ''),
             const SizedBox(height: 10),
             _RecapRow(
-                icon: Icons.event_outlined,
+                icon: PhosphorIconsRegular.calendar,
                 label: context.l10n.tutoringDate,
                 value: WinFormat.dateNumeric(occ.date)),
             const SizedBox(height: 10),
             _RecapRow(
-                icon: Icons.schedule_outlined,
+                icon: PhosphorIconsRegular.clock,
                 label: context.l10n.tutoringTime,
                 value:
                     '${occ.startTime} – ${addMinutesToHhmm(occ.startTime, duration)} (${formatDurationMinutes(duration)})'),
             if (_forWhom.payerType != 'student') ...[
               const SizedBox(height: 10),
               _RecapRow(
-                  icon: Icons.groups_outlined,
+                  icon: PhosphorIconsRegular.usersThree,
                   label: _participantCount > 1 ? context.l10n.tutoringStudentsN(_participantCount) : context.l10n.roleStudent,
                   value: _participantNames),
             ],
             if (_subject != null) ...[
               const SizedBox(height: 10),
               _RecapRow(
-                  icon: Icons.menu_book_outlined,
+                  icon: PhosphorIconsRegular.bookOpen,
                   label: context.l10n.commonSubject,
                   value: _subject!),
             ],
@@ -768,7 +769,7 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
           Text(context.l10n.tutoringPayMethod, style: WinType.labelM(s.onStrong)),
           const SizedBox(height: 8),
           _PayOption(
-            icon: Icons.phone_android_outlined,
+            icon: PhosphorIconsRegular.deviceMobile,
             title: 'Mobile Money',
             hint: context.l10n.tutoringMomoHint,
             selected: !byWallet,
@@ -779,7 +780,7 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
           ),
           const SizedBox(height: 8),
           _PayOption(
-            icon: Icons.account_balance_wallet_outlined,
+            icon: PhosphorIconsRegular.wallet,
             title: _walletTitle,
             hint: walletHint,
             selected: byWallet,
@@ -805,7 +806,7 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
             const SizedBox(height: 8),
             WinTextField(
               hint: '6XX XXX XXX',
-              icon: Icons.phone_android_outlined,
+              icon: PhosphorIconsRegular.deviceMobile,
               controller: _phoneCtrl,
               keyboardType: TextInputType.phone,
             ),
@@ -874,7 +875,7 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
       child: Padding(
         padding: const EdgeInsets.all(32),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-          Icon(Icons.hourglass_bottom_outlined, size: 48, color: s.onFaint),
+          Icon(PhosphorIconsRegular.hourglassLow, size: 48, color: s.onFaint),
           const SizedBox(height: 16),
           Text(context.l10n.tutoringStillWaiting,
               style: WinType.titleM(s.onStrong), textAlign: TextAlign.center),
@@ -901,7 +902,7 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
       child: Padding(
         padding: const EdgeInsets.all(32),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-          const Icon(Icons.cancel_outlined, size: 48, color: WinColors.error),
+          const Icon(PhosphorIconsRegular.xCircle, size: 48, color: WinColors.error),
           const SizedBox(height: 16),
           Text(context.l10n.tutoringBookingCancelled,
               style: WinType.titleM(s.onStrong), textAlign: TextAlign.center),
@@ -928,7 +929,7 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
       padding: const EdgeInsets.all(16),
       children: [
         const SizedBox(height: 12),
-        const Icon(Icons.check_circle_outline,
+        const Icon(PhosphorIconsRegular.checkCircle,
             size: 56, color: WinColors.success),
         const SizedBox(height: 12),
         Center(
@@ -955,27 +956,27 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             _RecapRow(
-                icon: Icons.person_outline,
+                icon: PhosphorIconsRegular.user,
                 label: context.l10n.tutoringTutor,
                 value: booking.tutorName ?? ''),
             const SizedBox(height: 10),
             _RecapRow(
-                icon: Icons.event_outlined,
+                icon: PhosphorIconsRegular.calendar,
                 label: context.l10n.tutoringDate,
                 value: WinFormat.dateNumeric(booking.sessionDate)),
             const SizedBox(height: 10),
             _RecapRow(
-                icon: Icons.schedule_outlined,
+                icon: PhosphorIconsRegular.clock,
                 label: context.l10n.tutoringTime,
                 value: '${booking.startTime} – ${booking.endTime}'),
             const SizedBox(height: 10),
             _RecapRow(
-                icon: Icons.payments_outlined,
+                icon: PhosphorIconsRegular.money,
                 label: context.l10n.tutoringPrice,
                 value: '${fmtXaf(booking.priceXaf)} XAF'),
             const SizedBox(height: 10),
             _RecapRow(
-                icon: _modeIcons[booking.mode] ?? Icons.info_outline,
+                icon: _modeIcons[booking.mode] ?? PhosphorIconsRegular.info,
                 label: context.l10n.tutoringMode,
                 value: _modeLabel(booking.mode) ?? booking.mode),
           ]),
@@ -1025,7 +1026,7 @@ class _BookingStepper extends StatelessWidget {
                 color: active || done ? WinColors.teal400 : s.outline),
           ),
           child: done
-              ? const Icon(Icons.check, size: 14, color: WinColors.teal700)
+              ? const Icon(PhosphorIconsBold.check, size: 14, color: WinColors.teal700)
               : Text('${idx + 1}',
                   style: TextStyle(
                       fontSize: 11,
@@ -1078,7 +1079,7 @@ class _PayOption extends StatelessWidget {
               ]),
             ),
             if (selected)
-              const Icon(Icons.check_circle, size: 20, color: WinColors.teal700),
+              const Icon(PhosphorIconsFill.checkCircle, size: 20, color: WinColors.teal700),
           ]),
         ),
       ),
