@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:winplus/widgets/win_screen.dart';
 import 'package:winplus/l10n/l10n.dart';
 import 'package:winplus/student/course_catalog_screen.dart';
 import 'package:winplus/student/my_courses_screen.dart';
@@ -103,7 +104,7 @@ void main() {
       await monterEcran(tester, _page(const StudentCatalogTab()));
       final l = L10n.current;
       expect(find.text(l.studentTabsCatalogLoadError), findsOneWidget);
-      expect(find.byIcon(PhosphorIconsRegular.wifiSlash), findsOneWidget);
+      expect(find.byType(WinErrorState), findsOneWidget);
       faux.repond('GET', '/subjects', {
         'items': [
           {'id': 1, 'title': 'Epreuve de maths', 'category': 'epreuve'},

@@ -175,7 +175,7 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
   Widget _buildStudents(WinScheme s) {
     if (_students == null) return const WinLoading();
     if (_studentsError != null) {
-      return _ErrorState(message: _studentsError!, onRetry: _loadStudents);
+      return WinErrorState(message: _studentsError!, onRetry: _loadStudents);
     }
     if (_students!.isEmpty) {
       return Center(
@@ -220,7 +220,7 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
   Widget _buildAssignments(WinScheme s) {
     if (_assignments == null) return const WinLoading();
     if (_assignmentsError != null) {
-      return _ErrorState(message: _assignmentsError!, onRetry: _loadAssignments);
+      return WinErrorState(message: _assignmentsError!, onRetry: _loadAssignments);
     }
     if (_assignments!.isEmpty) {
       return Center(
@@ -248,25 +248,6 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
           ]),
         );
       },
-    );
-  }
-}
-
-class _ErrorState extends StatelessWidget {
-  final String message;
-  final VoidCallback onRetry;
-  const _ErrorState({required this.message, required this.onRetry});
-  @override
-  Widget build(BuildContext context) {
-    final s = WinTheme.of(context);
-    return Center(
-      child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Icon(PhosphorIconsRegular.wifiSlash, size: 48, color: WinColors.error),
-        const SizedBox(height: 10),
-        Text(message, style: WinType.bodyM(s.onMuted), textAlign: TextAlign.center),
-        const SizedBox(height: 12),
-        WinButton(context.l10n.commonRetry, icon: PhosphorIconsRegular.arrowClockwise, onTap: onRetry),
-      ]),
     );
   }
 }

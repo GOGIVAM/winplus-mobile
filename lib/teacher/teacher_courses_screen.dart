@@ -292,25 +292,7 @@ class _TeacherCoursesScreenState extends State<TeacherCoursesScreen> {
       return const WinLoading();
     }
     if (_error != null) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(PhosphorIconsRegular.wifiSlash, size: 48, color: s.onFaint),
-              const SizedBox(height: 12),
-              Text(_error!,
-                  style: WinType.bodyM(s.onMuted), textAlign: TextAlign.center),
-              const SizedBox(height: 16),
-              WinButton(context.l10n.commonRetry,
-                  variant: WinButtonVariant.outline,
-                  icon: PhosphorIconsRegular.arrowClockwise,
-                  onTap: _load),
-            ],
-          ),
-        ),
-      );
+      return WinErrorState(message: _error!, onRetry: _load);
     }
     final items = _filteredCourses;
     if (items.isEmpty) {

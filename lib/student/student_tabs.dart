@@ -228,21 +228,12 @@ class _StudentCatalogTabState extends State<StudentCatalogTab> {
           ),
           if (!loaded)
             const SliverFillRemaining(
-                hasScrollBody: false,
-                child: const WinLoading())
+                hasScrollBody: false, child: WinLoading())
           else if (_error)
             SliverFillRemaining(
               hasScrollBody: false,
-              child: Center(
-                  child: Column(mainAxisSize: MainAxisSize.min, children: [
-                Icon(PhosphorIconsRegular.wifiSlash, size: 48, color: s.onFaint),
-                const SizedBox(height: 12),
-                Text(l.studentTabsCatalogLoadError,
-                    style: WinType.bodyM(s.onMuted)),
-                const SizedBox(height: 12),
-                IntrinsicWidth(
-                    child: WinButton(l.commonRetry, onTap: _load)),
-              ])),
+              child: WinErrorState(
+                  message: l.studentTabsCatalogLoadError, onRetry: _load),
             )
           else if (items.isEmpty)
             SliverFillRemaining(
