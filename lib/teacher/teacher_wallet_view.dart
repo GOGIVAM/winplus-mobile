@@ -14,6 +14,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/win_screen.dart';
 
 /// Portefeuille professeur (lot 2, Module 5) : parité avec le web
 /// (RevenueOverview + WithdrawalFlow + WalletRecharge).
@@ -226,7 +227,7 @@ class _TeacherWalletViewState extends State<TeacherWalletView>
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
 
-    if (_loading) return const Center(child: CircularProgressIndicator());
+    if (_loading) return const WinLoading();
 
     final error = _error;
     if (error != null && _summary == null) {
@@ -385,7 +386,7 @@ class _TeacherWalletViewState extends State<TeacherWalletView>
   Widget _buildEntries(WinScheme s) {
     if (_entriesLoading && _entries.isEmpty) {
       return const Padding(
-          padding: EdgeInsets.all(24), child: Center(child: CircularProgressIndicator()));
+          padding: EdgeInsets.all(24), child: const WinLoading());
     }
     if (_entriesError != null && _entries.isEmpty) {
       return WinCard(

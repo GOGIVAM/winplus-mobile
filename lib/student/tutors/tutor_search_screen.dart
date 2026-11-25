@@ -11,6 +11,7 @@ import '../../widgets/win_widgets.dart';
 import 'tutor_public_profile_screen.dart';
 import 'tutor_pricing_widgets.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../../widgets/win_screen.dart';
 
 const _tutorSubjects = [
   'Mathématiques',
@@ -284,7 +285,7 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
         const SizedBox(height: 8),
         Expanded(
           child: _loading
-              ? const Center(child: CircularProgressIndicator())
+              ? const WinLoading()
               : _error
                   ? Center(
                       child: Column(mainAxisSize: MainAxisSize.min, children: [

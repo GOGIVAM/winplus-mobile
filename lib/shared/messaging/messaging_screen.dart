@@ -7,6 +7,7 @@ import '../../theme/win_theme.dart';
 import '../../theme/win_typography.dart';
 import '../../widgets/win_widgets.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../../widgets/win_screen.dart';
 
 class MessagingScreen extends StatefulWidget {
   const MessagingScreen({super.key});
@@ -73,7 +74,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
         ],
       ),
       body: _convos == null
-          ? const Center(child: CircularProgressIndicator())
+          ? const WinLoading()
           : _convos!.isEmpty
               ? Center(
                   child: Column(mainAxisSize: MainAxisSize.min, children: [
@@ -245,7 +246,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
       body: Column(children: [
         Expanded(
           child: _messages == null
-              ? const Center(child: CircularProgressIndicator())
+              ? const WinLoading()
               : _messages!.isEmpty
                   ? Center(
                       child: Text(context.l10n.msgStartConversation,

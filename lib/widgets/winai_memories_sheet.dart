@@ -6,6 +6,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'win_screen.dart';
 
 // ── Méta par type ────────────────────────────────────────────────────────────
 
@@ -185,7 +186,7 @@ class _WinAIMemoriesSheetState extends State<_WinAIMemoriesSheet> {
           child: _loading
               ? const Padding(
                   padding: EdgeInsets.all(32),
-                  child: Center(child: CircularProgressIndicator()),
+                  child: const WinLoading(),
                 )
               : _error != null
                   ? Padding(

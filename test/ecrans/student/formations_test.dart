@@ -37,7 +37,7 @@ void main() {
       ]);
       telephone(tester);
       await monter(tester, ecran(const MyCoursesScreen()));
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(chargement, findsOneWidget);
       await reseau(tester);
       final l = L10n.current;
       expect(find.text('Algebre'), findsOneWidget);

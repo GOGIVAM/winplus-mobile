@@ -10,6 +10,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import 'tutor_session_material_screen.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/win_screen.dart';
 
 /// Lot 9.4 (suivi 17.7) : vue d'un engagement mensuel côté payeur,
 /// participant et tuteur (parité web). Séances et état de chacune, argent
@@ -165,7 +166,7 @@ class _TutorEngagementScreenState extends State<TutorEngagementScreen> {
       ),
       body: SafeArea(
         child: _loading
-            ? const Center(child: CircularProgressIndicator())
+            ? const WinLoading()
             : _e == null
                 ? Center(child: Text(_error ?? context.l10n.tutoringEngNotFound, style: WinType.bodyS(s.onMuted)))
                 : RefreshIndicator(onRefresh: _load, child: _content(s, _e!)),

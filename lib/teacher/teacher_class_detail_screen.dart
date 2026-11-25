@@ -7,6 +7,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/win_screen.dart';
 
 /// Module 12 : écran d'une classe (élèves + devoirs), en miroir strict des
 /// opérations exposées par TeacherClassesController côté serveur. Remplace
@@ -172,7 +173,7 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
   }
 
   Widget _buildStudents(WinScheme s) {
-    if (_students == null) return const Center(child: CircularProgressIndicator());
+    if (_students == null) return const WinLoading();
     if (_studentsError != null) {
       return _ErrorState(message: _studentsError!, onRetry: _loadStudents);
     }
@@ -217,7 +218,7 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
   }
 
   Widget _buildAssignments(WinScheme s) {
-    if (_assignments == null) return const Center(child: CircularProgressIndicator());
+    if (_assignments == null) return const WinLoading();
     if (_assignmentsError != null) {
       return _ErrorState(message: _assignmentsError!, onRetry: _loadAssignments);
     }

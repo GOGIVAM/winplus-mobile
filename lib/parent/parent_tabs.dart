@@ -39,6 +39,7 @@ import '../student/search_screen.dart';
 import '../widgets/mobile_home.dart';
 import '../student/content_detail_screen.dart';
 import '../student/student_home.dart' show ContentCard;
+import '../widgets/win_screen.dart';
 
 /// ===================== ACCUEIL PARENT =====================
 
@@ -333,7 +334,7 @@ class _ParentDashTabState extends State<ParentDashTab> {
           onAction: () => ShellNav.go(context, 1),
           child: _children == null
               ? const SizedBox(
-                  height: 180, child: Center(child: CircularProgressIndicator()))
+                  height: 180, child: const WinLoading())
               : tracked.isEmpty
                   ? WinCard(
                       child: Text(l.parentDashNoChild,
@@ -579,7 +580,7 @@ class _ParentChildrenTabState extends State<ParentChildrenTab> {
     return Column(children: [
       Expanded(
           child: _children == null
-              ? const Center(child: CircularProgressIndicator())
+              ? const WinLoading()
               : ListView(
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                   children: [
@@ -777,7 +778,7 @@ class _ParentResourcesTabState extends State<ParentResourcesTab> {
                   style: WinType.archivo(size: 18, color: s.onStrong)),
               const SizedBox(height: 12),
               if (reco == null)
-                const Center(child: CircularProgressIndicator())
+                const WinLoading()
               else if (reco.isNotEmpty)
                 _grid(reco),
             ],
@@ -794,7 +795,7 @@ class _ParentResourcesTabState extends State<ParentResourcesTab> {
             if (_items.isEmpty && _loadingPage)
               const Padding(
                   padding: EdgeInsets.all(24),
-                  child: Center(child: CircularProgressIndicator()))
+                  child: const WinLoading())
             else if (_items.isEmpty && _error)
               Column(children: [
                 Text(l.studentTabsCatalogLoadError,
@@ -959,7 +960,7 @@ class _ParentPaymentsTabState extends State<ParentPaymentsTab> {
               if (_loading)
                 const Padding(
                     padding: EdgeInsets.all(24),
-                    child: Center(child: CircularProgressIndicator()))
+                    child: const WinLoading())
               else if (_failed)
                 WinCard(
                     child: Column(children: [

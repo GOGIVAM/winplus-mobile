@@ -56,7 +56,7 @@ void main() {
     routes([_tuteur()]);
     telephone(tester);
     await monter(tester, ecran(const TutorSearchScreen()));
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(chargement, findsOneWidget);
     await reseau(tester);
     expect(find.text('Mme Ngo'), findsOneWidget);
     expect(find.text('Professeure agregee'), findsOneWidget);

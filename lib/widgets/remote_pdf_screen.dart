@@ -5,6 +5,7 @@ import 'package:pdfrx/pdfrx.dart';
 import '../l10n/l10n.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
+import 'win_screen.dart';
 
 /// Affiche un PDF servi par un lien présigné (certificat, pièce jointe d'une
 /// leçon). Jamais utilisé pour les épreuves ni les livres du catalogue, qui
@@ -62,7 +63,7 @@ class _RemotePdfScreenState extends State<RemotePdfScreen> {
                   textAlign: TextAlign.center, style: WinType.bodyM(s.onMuted)),
             ))
           : _bytes == null
-              ? const Center(child: CircularProgressIndicator())
+              ? const WinLoading()
               : PdfViewer.data(_bytes!,
                   sourceName:
                       'winplus-pdf-${widget.url.hashCode}-${DateTime.now().microsecondsSinceEpoch}',

@@ -31,7 +31,7 @@ void main() {
       faux.repond('GET', '/cart', _panier());
       telephone(tester);
       await monter(tester, ecran(const CartScreen()));
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(chargement, findsOneWidget);
       await reseau(tester);
       final l = L10n.current;
       expect(find.text('Maths BAC 2024'), findsOneWidget);

@@ -13,6 +13,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import 'course_player_screen.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/win_screen.dart';
 
 class CourseDetailScreen extends StatefulWidget {
   final int courseId;
@@ -280,7 +281,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
     if (_loading)
       return Scaffold(
           backgroundColor: s.bg,
-          body: const Center(child: CircularProgressIndicator()));
+          body: const WinLoading());
     if (_course == null)
       return Scaffold(
         backgroundColor: s.bg,

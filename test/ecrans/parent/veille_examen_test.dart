@@ -21,7 +21,7 @@ void main() {
     faux.repond('GET', '/exam-coach/4/watch-mode', {'active': false});
     telephone(tester);
     await monter(tester, ecran(_onglet()));
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(chargement, findsOneWidget);
     await reseau(tester);
     final l = L10n.current;
     expect(find.text('${l.parentWatchTitle}  Zoe'), findsOneWidget);

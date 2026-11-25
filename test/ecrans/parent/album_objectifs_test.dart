@@ -41,7 +41,7 @@ void main() {
       faux.repond('GET', '/parent-reports/4/album', {}, statut: 404);
       telephone(tester);
       await monter(tester, ecran(const Scaffold(body: AlbumTab(child: _enfant))));
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(chargement, findsOneWidget);
       await reseau(tester);
       expect(find.text(L10n.current.parentAlbumNotGenerated('Zoe')), findsOneWidget);
     });

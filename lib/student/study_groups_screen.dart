@@ -7,6 +7,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import 'package:flutter/services.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/win_screen.dart';
 
 /// Module 24 (lot 8, rattrapage 16.3) : groupes d'étude réels
 /// (StudyGroupsController.cs, mêmes endpoints que le web
@@ -115,7 +116,7 @@ class _StudyGroupsScreenState extends State<StudyGroupsScreen> {
         title: Text(context.l10n.studentLinksStudyGroups),
       ),
       body: groups == null
-          ? const Center(child: CircularProgressIndicator())
+          ? const WinLoading()
           : ListView(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
               children: [

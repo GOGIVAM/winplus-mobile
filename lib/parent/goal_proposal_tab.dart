@@ -7,6 +7,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/win_screen.dart';
 
 List<(String, String)> get _goalTypes => [
   ('academic', L10n.current.parentGoalTypeAcademic),
@@ -107,7 +108,7 @@ class _GoalProposalTabState extends State<GoalProposalTab> {
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
     final goals = _goals;
-    if (goals == null) return const Center(child: CircularProgressIndicator());
+    if (goals == null) return const WinLoading();
 
     final pending = goals.where((g) => g.status == 'Pending').toList();
     final active = goals

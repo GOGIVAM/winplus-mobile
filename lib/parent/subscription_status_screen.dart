@@ -12,6 +12,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/win_screen.dart';
 
 class SubscriptionStatusScreen extends StatefulWidget {
   const SubscriptionStatusScreen({super.key});
@@ -103,7 +104,7 @@ class _SubscriptionStatusScreenState extends State<SubscriptionStatusScreen> {
               }),
             ]))
           : sub == null
-              ? const Center(child: CircularProgressIndicator())
+              ? const WinLoading()
               : ListView(
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
                   children: [

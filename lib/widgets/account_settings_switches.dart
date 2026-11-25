@@ -5,6 +5,7 @@ import '../services/user_service.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import 'win_widgets.dart';
+import 'win_screen.dart';
 
 enum AccountSettingsKind { notifications, privacy }
 
@@ -123,7 +124,7 @@ class _AccountSettingsSwitchesState extends State<AccountSettingsSwitches> {
     if (values == null) {
       return const Padding(
         padding: EdgeInsets.all(24),
-        child: Center(child: CircularProgressIndicator()),
+        child: const WinLoading(),
       );
     }
     if (_error) {

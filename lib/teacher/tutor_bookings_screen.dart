@@ -14,6 +14,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/win_screen.dart';
 
 String? _modeLabel(BuildContext context, String mode) => switch (mode) {
       'online' => context.l10n.commonOnline,
@@ -353,7 +354,7 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
         ],
       ),
       body: pending == null && !_error
-          ? const Center(child: CircularProgressIndicator())
+          ? const WinLoading()
           : _error
               ? Center(
                   child: Column(mainAxisSize: MainAxisSize.min, children: [

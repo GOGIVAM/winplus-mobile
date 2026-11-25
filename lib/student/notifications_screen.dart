@@ -8,6 +8,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/win_screen.dart';
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
@@ -177,7 +178,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
   Widget _buildBody(WinScheme s) {
     if (_notifs == null)
-      return const Center(child: CircularProgressIndicator());
+      return const WinLoading();
 
     // Les notifications lues restent listées (avant, une liste entièrement
     // lue disparaissait derrière « Tout est à jour ! »).

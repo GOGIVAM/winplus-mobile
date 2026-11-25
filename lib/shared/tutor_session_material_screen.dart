@@ -8,6 +8,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/win_screen.dart';
 
 /// Lot 9.6 (suivi 17.5) : support de séance généré par WinAI, parité web.
 /// - Tuteur : générer (décompté de son usage WinAI), relancer avec une
@@ -125,7 +126,7 @@ class _TutorSessionMaterialScreenState extends State<TutorSessionMaterialScreen>
       ),
       body: SafeArea(
         child: _loading
-            ? const Center(child: CircularProgressIndicator())
+            ? const WinLoading()
             : _v == null
                 ? Center(child: Padding(padding: const EdgeInsets.all(24), child: Text(_error ?? context.l10n.tutoringMatNotFound, style: WinType.bodyS(s.onMuted))))
                 : _editing && _v!.content != null

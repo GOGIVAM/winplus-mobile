@@ -53,9 +53,9 @@ void main() {
     tester.view.physicalSize = const Size(800, 3200);
     await monter(tester, ecran(const InstitutionDashTab()));
     expect(find.text('—'), findsWidgets);
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(chargement, findsOneWidget);
     await reseau(tester);
-    expect(find.byType(CircularProgressIndicator), findsNothing);
+    expect(chargement, findsNothing);
   });
 
   testWidgets('chiffres reels : eleves actifs, quiz du mois et sieges de licence', (tester) async {

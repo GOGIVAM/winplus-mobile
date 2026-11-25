@@ -79,7 +79,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
       body: _error
           ? WinErrorState(message: context.l10n.commonLoadError, onRetry: _load)
           : orders == null
-          ? const Center(child: CircularProgressIndicator())
+          ? const WinLoading()
           : orders.isEmpty
               ? Center(
                   child: Column(mainAxisSize: MainAxisSize.min, children: [
@@ -294,7 +294,7 @@ class _InvoiceViewerScreenState extends State<_InvoiceViewerScreen> {
   }
 
   Widget _buildBody(WinScheme s) {
-    if (_loading) return const Center(child: CircularProgressIndicator());
+    if (_loading) return const WinLoading();
     if (_error || _bytes == null) {
       return Center(
         child: Padding(

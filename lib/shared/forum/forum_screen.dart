@@ -9,6 +9,7 @@ import '../../widgets/win_widgets.dart';
 import 'thread_detail_screen.dart';
 import 'new_thread_screen.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../../widgets/win_screen.dart';
 
 class ForumScreen extends StatefulWidget {
   const ForumScreen({super.key});
@@ -126,7 +127,7 @@ class _ForumScreenState extends State<ForumScreen> {
         // Liste des threads
         Expanded(
           child: _loading
-              ? const Center(child: CircularProgressIndicator())
+              ? const WinLoading()
               : _error != null
                   ? Center(
                       child:
@@ -148,8 +149,7 @@ class _ForumScreenState extends State<ForumScreen> {
                                 const SizedBox(height: 10),
                             itemBuilder: (context, i) {
                               if (i == _threads.length)
-                                return const Center(
-                                    child: CircularProgressIndicator());
+                                return const WinLoading();
                               final t = _threads[i] as Map<String, dynamic>;
                               return _ThreadCard(
                                   thread: t,

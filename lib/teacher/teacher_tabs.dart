@@ -29,6 +29,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../shell/shell_nav.dart';
 import '../student/search_screen.dart';
 import '../widgets/mobile_home.dart';
+import '../widgets/win_screen.dart';
 
 BadgeColor _statusColor(String s) => switch (s) {
       'Publié' => BadgeColor.success,
@@ -312,7 +313,7 @@ class _TeacherDashTabState extends State<TeacherDashTab> {
           child: !loaded
               ? const Padding(
                   padding: EdgeInsets.all(24),
-                  child: Center(child: CircularProgressIndicator()))
+                  child: const WinLoading())
               : content.isEmpty
                   ? Center(
                       child: Padding(
@@ -489,7 +490,7 @@ class _TeacherContentTabState extends State<TeacherContentTab> {
       const SizedBox(height: 12),
       Expanded(
           child: _all == null
-              ? const Center(child: CircularProgressIndicator())
+              ? const WinLoading()
               : _items.isEmpty
                   ? Center(child: Builder(builder: (ctx) {
                       final s = WinTheme.of(ctx);
@@ -668,7 +669,7 @@ class _TeacherStudentsTabState extends State<TeacherStudentsTab> {
         ]),
         const SizedBox(height: 10),
         if (_classes == null)
-          const Padding(padding: EdgeInsets.symmetric(vertical: 24), child: Center(child: CircularProgressIndicator()))
+          const Padding(padding: EdgeInsets.symmetric(vertical: 24), child: const WinLoading())
         else if (_error != null)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16),
@@ -832,7 +833,7 @@ class _TeacherSessionsTabState extends State<TeacherSessionsTab> {
     if (sessions == null) {
       children.add(const Padding(
         padding: EdgeInsets.only(top: 48),
-        child: Center(child: CircularProgressIndicator()),
+        child: const WinLoading(),
       ));
     } else if (_error) {
       children.addAll([

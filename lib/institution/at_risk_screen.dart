@@ -10,6 +10,7 @@ import '../widgets/win_widgets.dart';
 import 'action_plan_screen.dart';
 import '../l10n/l10n.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/win_screen.dart';
 
 class AtRiskScreen extends StatefulWidget {
   const AtRiskScreen({super.key});
@@ -111,7 +112,7 @@ class _AtRiskScreenState extends State<AtRiskScreen> {
 
   Widget _buildList(WinScheme s) {
     if (_students == null)
-      return const Center(child: CircularProgressIndicator());
+      return const WinLoading();
     if (_items.isEmpty) {
       return Center(
           child: Column(mainAxisSize: MainAxisSize.min, children: [

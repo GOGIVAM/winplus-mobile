@@ -9,6 +9,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/win_screen.dart';
 
 /// Module 32 (lot 8, décision 14.3) : portage mobile de la session d'étude
 /// guidée, déjà entièrement reconstruite côté web au lot 6
@@ -326,7 +327,7 @@ class _StudySessionScreenState extends State<StudySessionScreen> {
         Text(context.l10n.commonSubject, style: WinType.titleM(s.onStrong)),
         const SizedBox(height: 10),
         if (_loadingSubjects)
-          const Center(child: CircularProgressIndicator())
+          const WinLoading()
         else if (_subjects.isEmpty)
           WinAlert(context.l10n.studentSessionNoSubjects,
               type: BadgeColor.warn)
@@ -434,7 +435,7 @@ class _StudySessionScreenState extends State<StudySessionScreen> {
         return _buildBriefing(s);
       case _Phase.quizLoading:
       case _Phase.synthesisLoading:
-        return const Center(child: CircularProgressIndicator());
+        return const WinLoading();
       case _Phase.quiz:
         return _buildQuiz(s);
       case _Phase.synthesis:
@@ -580,7 +581,7 @@ class _StudySessionScreenState extends State<StudySessionScreen> {
 
   Widget _buildHistory(WinScheme s) {
     if (_historyLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return const WinLoading();
     }
     if (_historyError != null) {
       return Center(

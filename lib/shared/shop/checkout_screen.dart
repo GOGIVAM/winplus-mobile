@@ -13,6 +13,7 @@ import '../../widgets/win_motion_widgets.dart';
 import '../../widgets/win_widgets.dart';
 import 'orders_screen.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../../widgets/win_screen.dart';
 
 /// Checkout (E36 récapitulatif + E37 paiement + E38 succès), en 2 étapes avec
 /// stepper numéroté (même langage que le flow de réservation tuteur) :
@@ -210,7 +211,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   }
 
   Widget _buildStepPayment(WinScheme s) {
-    if (_loadingCart) return const Center(child: CircularProgressIndicator());
+    if (_loadingCart) return const WinLoading();
     final cart = _cart;
     final pending = widget.pending;
     if (pending == null && (cart == null || cart.items.isEmpty)) {

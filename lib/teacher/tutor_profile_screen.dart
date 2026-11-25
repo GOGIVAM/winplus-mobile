@@ -11,6 +11,7 @@ import 'tutor_group_pricing_editor.dart';
 import 'tutor_pricing_grid_editor.dart';
 import 'tutor_verification_screen.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/win_screen.dart';
 
 /// Module 1  Onboarding et profil répétiteur (professeur_complete.md).
 /// Écran unique en 5 étapes (Workflow 1) : matières/niveaux, intervention,
@@ -456,7 +457,7 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
         ],
       ),
       body: _loading
-          ? const Center(child: CircularProgressIndicator())
+          ? const WinLoading()
           : SafeArea(
               child: _showPreview
                   ? _buildPreview(s)

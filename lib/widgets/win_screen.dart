@@ -175,6 +175,52 @@ class WinAuthHeading extends StatelessWidget {
   }
 }
 
+/// Chargement d'un écran ou d'une liste : des lignes fantômes à la forme du
+/// contenu (pastille et deux lignes de texte) au lieu d'un indicateur qui
+/// tourne seul au milieu d'un écran blanc. Ne dépend pas de la place
+/// disponible (pas de LayoutBuilder : il casse sous un parent qui mesure
+/// son contenu) ; dans un petit espace, les lignes en trop sont coupées.
+class WinLoading extends StatelessWidget {
+  /// Nombre de lignes fantômes.
+  final int rows;
+  const WinLoading({super.key, this.rows = 4});
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      label: MaterialLocalizations.of(context).refreshIndicatorSemanticLabel,
+      child: ClipRect(
+        child: SingleChildScrollView(
+          physics: const NeverScrollableScrollPhysics(),
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            for (var i = 0; i < rows; i++)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: Row(children: [
+                  const WinSkeleton(width: 44, height: 44),
+                  const SizedBox(width: 12),
+                  Expanded(
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                        FractionallySizedBox(
+                            widthFactor: i.isEven ? .72 : .58,
+                            child: const WinSkeleton(height: 14)),
+                        const SizedBox(height: 10),
+                        FractionallySizedBox(
+                            widthFactor: i.isEven ? .44 : .36,
+                            child: const WinSkeleton(height: 11)),
+                      ])),
+                ]),
+              ),
+          ]),
+        ),
+      ),
+    );
+  }
+}
+
 class WinEmptyState extends StatelessWidget {
   final String title;
   final String? message, actionLabel;

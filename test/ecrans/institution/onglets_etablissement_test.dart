@@ -47,7 +47,7 @@ void main() {
       ]);
       telephone(tester);
       await monter(tester, ecran(_page(const InstitutionGroupsTab())));
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(chargement, findsOneWidget);
       await reseau(tester);
       final l = L10n.current;
       expect(find.widgetWithText(TextField, l.instGroupSearch), findsOneWidget);
@@ -113,7 +113,7 @@ void main() {
     testWidgets('BUG PROBABLE : serveur en erreur, l\'onglet sort du chargement', (tester) async {
       faux.repond('GET', '/institution/groups', {}, statut: 500);
       await monterEcran(tester, _page(const InstitutionGroupsTab()));
-      expect(find.byType(CircularProgressIndicator), findsNothing);
+      expect(chargement, findsNothing);
     }, skip: true); // Bug probable : voir le commentaire ci-dessus.
   });
 

@@ -168,13 +168,13 @@ void main() {
 
     testWidgets('avec une progression, un anneau en pourcentage entoure l\'avatar', (tester) async {
       await monter(tester, appli(const WinAvatar('Ada Lovelace', progress: 50)));
-      final anneau = tester.widget<CircularProgressIndicator>(find.byType(CircularProgressIndicator));
+      final anneau = tester.widget<CircularProgressIndicator>(chargement);
       expect(anneau.value, 0.5);
     });
 
     testWidgets('sans progression, pas d\'anneau', (tester) async {
       await monter(tester, appli(const WinAvatar('Ada Lovelace')));
-      expect(find.byType(CircularProgressIndicator), findsNothing);
+      expect(chargement, findsNothing);
     });
   });
 

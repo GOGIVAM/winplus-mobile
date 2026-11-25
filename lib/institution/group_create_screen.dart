@@ -6,6 +6,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/win_screen.dart';
 
 class GroupCreateScreen extends StatefulWidget {
   const GroupCreateScreen({super.key});
@@ -214,7 +215,7 @@ class _GroupCreateScreenState extends State<GroupCreateScreen> {
                     if (_students == null)
                       const Padding(
                         padding: EdgeInsets.symmetric(vertical: 24),
-                        child: Center(child: CircularProgressIndicator()),
+                        child: const WinLoading(),
                       )
                     else if (_studentsError)
                       Row(children: [

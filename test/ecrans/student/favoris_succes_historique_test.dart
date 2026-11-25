@@ -27,9 +27,9 @@ void main() {
       faux.repond('GET', '/favorites', []);
       telephone(tester);
       await monter(tester, ecran(const FavoritesScreen()));
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(chargement, findsOneWidget);
       await reseau(tester);
-      expect(find.byType(CircularProgressIndicator), findsNothing);
+      expect(chargement, findsNothing);
     });
 
     testWidgets('liste vide : message et bouton « Explorer »', (tester) async {
@@ -112,7 +112,7 @@ void main() {
       ]);
       telephone(tester);
       await monter(tester, ecran(const AchievementsScreen()));
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(chargement, findsOneWidget);
       await reseau(tester);
       final l = L10n.current;
       expect(find.text(l.studentAchBadgesUnlocked(1, 2)), findsOneWidget);

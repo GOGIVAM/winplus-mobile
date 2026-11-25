@@ -34,7 +34,7 @@ void main() {
     faux.repond('GET', '/tutor-verification/me', {'message': 'Non autorise'}, statut: 403);
     telephone(tester);
     await monter(tester, ecran(const TutorVerificationScreen()));
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(chargement, findsOneWidget);
     await reseau(tester);
     expect(find.text('Non autorise'), findsOneWidget);
     statut({});

@@ -10,6 +10,7 @@ import '../../widgets/win_widgets.dart';
 import 'subscribe_sheet.dart';
 import 'subscription_notifier.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../../widgets/win_screen.dart';
 
 /// Lot 9.7b (étapes 3 et 5) : tarifs servis par l'API (GET /pricing/catalog,
 /// grille versionnée, prix TTC par période, droits réellement appliqués).
@@ -114,7 +115,7 @@ class _PricingScreenState extends State<PricingScreen> {
               WinButton(context.l10n.commonRetry, onTap: _load),
             ]))
           : _plans == null
-              ? const Center(child: CircularProgressIndicator())
+              ? const WinLoading()
               : _institution
                   ? Padding(
                       padding: const EdgeInsets.all(24),

@@ -8,6 +8,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/win_screen.dart';
 
 /// Lot 9.7b, étape 4 (étude 9.7b section 2.3, décision 18.21) : licence de
 /// l'établissement sur mobile (parité web). Licence en cours et sièges
@@ -113,7 +114,7 @@ class _LicenseScreenState extends State<LicenseScreen> {
       body: _error != null
           ? Center(child: Padding(padding: const EdgeInsets.all(24), child: Text(_error!, style: WinType.bodyM(s.onMuted))))
           : _data == null
-              ? const Center(child: CircularProgressIndicator())
+              ? const WinLoading()
               : ListView(padding: const EdgeInsets.all(16), children: license != null ? _current(s, license) : _subscribe(s)),
     );
   }

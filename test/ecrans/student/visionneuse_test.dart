@@ -19,7 +19,7 @@ void main() {
     faux.repond('GET', '/subjects/5/view', {}, statut: 404);
     telephone(tester);
     await monter(tester, ecran(const DocumentViewerScreen(subjectId: 5, title: 'Maths BAC')));
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(chargement, findsOneWidget);
     expect(find.text('Maths BAC'), findsOneWidget);
     await reseau(tester);
   });

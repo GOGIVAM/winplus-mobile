@@ -13,6 +13,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/win_screen.dart';
 
 /// Lot 9.3 (suivi 17.4) : cours particuliers réservés et payés par un parent
 /// pour ses enfants, ou par une institution pour ses élèves (parité web
@@ -238,7 +239,7 @@ class _TutoringForStudentsScreenState extends State<TutoringForStudentsScreen> w
           ? FloatingActionButton.extended(onPressed: _create, icon: const Icon(PhosphorIconsRegular.plus), label: Text(context.l10n.tutoringAssignTutor))
           : null,
       body: _loading
-          ? const Center(child: CircularProgressIndicator())
+          ? const WinLoading()
           : _error
               ? Center(child: WinButton(context.l10n.commonRetry, onTap: _load))
               : RefreshIndicator(

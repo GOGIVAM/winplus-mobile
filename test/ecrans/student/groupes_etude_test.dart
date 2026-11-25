@@ -20,7 +20,7 @@ void main() {
     faux.repond('GET', '/study-groups/me', {'data': []});
     telephone(tester);
     await monter(tester, ecran(const StudyGroupsScreen()));
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(chargement, findsOneWidget);
     await reseau(tester);
     expect(find.text(L10n.current.studentGroupsEmpty), findsOneWidget);
     expect(find.text(L10n.current.studentGroupsEmptyHint), findsOneWidget);

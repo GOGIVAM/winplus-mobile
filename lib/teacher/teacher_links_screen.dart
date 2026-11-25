@@ -6,6 +6,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/win_screen.dart';
 
 class TeacherLinksScreen extends StatefulWidget {
   const TeacherLinksScreen({super.key});
@@ -191,7 +192,7 @@ class _TeacherLinksScreenState extends State<TeacherLinksScreen>
         // Onglets
         Expanded(
           child: _loading
-              ? const Center(child: CircularProgressIndicator())
+              ? const WinLoading()
               : TabBarView(controller: _tabs, children: [
                   // Onglet "En attente"
                   _pending.isEmpty

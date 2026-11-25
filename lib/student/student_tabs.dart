@@ -34,6 +34,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../widgets/mobile_home.dart';
 import '../widgets/win_motion_widgets.dart';
 import '../widgets/voice_dictation_sheet.dart';
+import '../widgets/win_screen.dart';
 
 export 'student_home.dart' show StudentHomeTab;
 
@@ -228,7 +229,7 @@ class _StudentCatalogTabState extends State<StudentCatalogTab> {
           if (!loaded)
             const SliverFillRemaining(
                 hasScrollBody: false,
-                child: Center(child: CircularProgressIndicator()))
+                child: const WinLoading())
           else if (_error)
             SliverFillRemaining(
               hasScrollBody: false,

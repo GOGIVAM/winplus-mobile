@@ -6,6 +6,7 @@ import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import '../widgets/win_screen.dart';
 
 /// Module 15 (lot 6) : portage mobile du questionnaire VARK, jusqu'ici
 /// disponible uniquement sur le web (frontend/src/features/learningStyle/
@@ -192,7 +193,7 @@ class _LearningStyleQuizScreenState extends State<LearningStyleQuizScreen> {
             const SizedBox(height: 24),
             Expanded(
               child: _submitting
-                  ? const Center(child: CircularProgressIndicator())
+                  ? const WinLoading()
                   : ListView(
                       children: q.options.map((opt) {
                         final (label, tag) = opt;

@@ -7,6 +7,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/win_screen.dart';
 
 class AchievementsScreen extends StatefulWidget {
   const AchievementsScreen({super.key});
@@ -68,7 +69,7 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
         title: Text(context.l10n.studentAchTitle),
       ),
       body: _loading
-          ? const Center(child: CircularProgressIndicator())
+          ? const WinLoading()
           : ListView(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
               children: [

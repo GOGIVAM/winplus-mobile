@@ -8,6 +8,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_motion_widgets.dart';
 import '../widgets/win_widgets.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/win_screen.dart';
 
 class FavoritesScreen extends StatefulWidget {
   const FavoritesScreen({super.key});
@@ -97,7 +98,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
       ]));
     }
 
-    if (_favs == null) return const Center(child: CircularProgressIndicator());
+    if (_favs == null) return const WinLoading();
 
     if (favs.isEmpty) {
       return Center(

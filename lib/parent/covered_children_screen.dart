@@ -8,6 +8,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/win_screen.dart';
 
 /// Lot 9.7b (étude 1.4) : choix des enfants couverts par le plan du parent
 /// (catalogue, bonus WinAI, alertes) quand il a plus d'enfants liés que son
@@ -94,7 +95,7 @@ class _CoveredChildrenScreenState extends State<CoveredChildrenScreen> {
   }
 
   Widget _body(WinScheme s) {
-    if (_loading) return const Center(child: CircularProgressIndicator());
+    if (_loading) return const WinLoading();
     final st = _status;
     if (st == null) {
       return Center(

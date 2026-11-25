@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:winplus/l10n/l10n.dart';
 import 'package:winplus/student/quiz_revision_screen.dart';
@@ -26,7 +25,7 @@ void main() {
     ]);
     telephone(tester);
     await monter(tester, ecran(const QuizRevisionScreen()));
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(chargement, findsOneWidget);
     await reseau(tester);
     expect(find.text('Capitale du Cameroun ?'), findsOneWidget);
     expect(find.text('Douala'), findsOneWidget);

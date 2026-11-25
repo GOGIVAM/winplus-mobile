@@ -6,6 +6,7 @@ import '../../theme/win_theme.dart';
 import '../../theme/win_typography.dart';
 import '../../widgets/win_widgets.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../../widgets/win_screen.dart';
 
 /// Ouvre la politique de tutorat publique (lot 9.2, 17.10). L'écran ne
 /// demande aucune connexion : l'endpoint est anonyme.
@@ -155,7 +156,7 @@ class _TutorPolicyScreenState extends State<TutorPolicyScreen> {
                 ]),
               ))
             : p == null
-                ? const Center(child: CircularProgressIndicator())
+                ? const WinLoading()
                 : ListView(
                     padding: const EdgeInsets.all(16),
                     children: [

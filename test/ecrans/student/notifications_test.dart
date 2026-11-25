@@ -30,7 +30,7 @@ void main() {
     });
     telephone(tester);
     await monter(tester, ecran(const NotificationsScreen()));
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(chargement, findsOneWidget);
     await reseau(tester);
     final l = L10n.current;
     expect(find.text('Nouveau badge'), findsOneWidget);

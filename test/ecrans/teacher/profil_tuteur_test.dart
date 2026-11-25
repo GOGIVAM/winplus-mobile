@@ -87,7 +87,7 @@ void main() {
     telephone(tester);
     tester.view.physicalSize = const Size(800, 5000);
     await monter(tester, ecran(const TutorProfileScreen()));
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(chargement, findsOneWidget);
     await reseau(tester);
     final l = L10n.current;
     expect(find.text(l.teacherProfileTitle), findsOneWidget);
@@ -112,7 +112,7 @@ void main() {
     faux.repond('GET', '/tutor-profile/me', {}, statut: 500);
     await monterProfil(tester);
     expect(find.text(L10n.current.teacherProfileLoadError), findsOneWidget);
-    expect(find.byType(CircularProgressIndicator), findsNothing);
+    expect(chargement, findsNothing);
   });
 
   testWidgets('etape 1 : « Continuer » enregistre matieres, niveaux et specialites puis passe a l\'etape 2', (tester) async {

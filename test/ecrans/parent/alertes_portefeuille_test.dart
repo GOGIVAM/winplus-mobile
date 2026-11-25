@@ -47,7 +47,7 @@ void main() {
       faux.repond('GET', '/parent-alerts/4', []);
       telephone(tester);
       await monter(tester, ecran(const WinAIAlertsScreen()));
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(chargement, findsOneWidget);
       await reseau(tester);
       final l = L10n.current;
       expect(find.text(l.parentAlertsNone), findsOneWidget);

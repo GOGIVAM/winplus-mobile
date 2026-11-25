@@ -73,7 +73,7 @@ void main() {
       routes();
       telephone(tester);
       await monter(tester, ecran(const ChildActivityScreen(child: _enfant)));
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(chargement, findsOneWidget);
       await reseau(tester);
       final l = L10n.current;
       expect(find.text('Zoe'), findsOneWidget);
@@ -152,7 +152,7 @@ void main() {
       routes(stats: {'averageScore': 40, 'downloadsThisWeek': 9});
       await tester.tap(find.byIcon(PhosphorIconsRegular.arrowClockwise));
       await pomper(tester);
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(chargement, findsOneWidget);
       await reseau(tester);
       expect(find.text('40%'), findsOneWidget);
       expect(find.text('9'), findsOneWidget);

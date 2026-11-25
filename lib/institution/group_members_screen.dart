@@ -6,6 +6,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/win_screen.dart';
 
 class GroupMembersScreen extends StatefulWidget {
   final int groupId;
@@ -53,7 +54,7 @@ class _GroupMembersScreenState extends State<GroupMembersScreen> {
         ]),
       ),
       body: members == null
-          ? const Center(child: CircularProgressIndicator())
+          ? const WinLoading()
           : members.isEmpty
               ? Center(
                   child: Text(context.l10n.instGroupNoMembers,

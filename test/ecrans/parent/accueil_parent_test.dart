@@ -87,9 +87,9 @@ void main() {
     tester.view.physicalSize = const Size(800, 3200);
     await monter(tester, ecran(const ParentDashTab()));
     expect(find.text('—'), findsWidgets);
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(chargement, findsOneWidget);
     await reseau(tester);
-    expect(find.byType(CircularProgressIndicator), findsNothing);
+    expect(chargement, findsNothing);
   });
 
   testWidgets('sans abonnement ni enfant : pas de credits, « sans abonnement », invitation a rattacher', (tester) async {
@@ -174,7 +174,7 @@ void main() {
   testWidgets('serveur en erreur : plus d\'indicateur, liste d\'enfants vide', (tester) async {
     faux.repond('GET', '/parent/children', {}, statut: 500);
     await monterHaut(tester);
-    expect(find.byType(CircularProgressIndicator), findsNothing);
+    expect(chargement, findsNothing);
     expect(find.text(L10n.current.parentDashNoChild), findsOneWidget);
   });
 

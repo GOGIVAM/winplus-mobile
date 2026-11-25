@@ -9,6 +9,7 @@ import '../widgets/win_widgets.dart';
 import 'course_catalog_screen.dart';
 import 'course_player_screen.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/win_screen.dart';
 
 class MyCoursesScreen extends StatefulWidget {
   const MyCoursesScreen({super.key});
@@ -66,7 +67,7 @@ class _MyCoursesScreenState extends State<MyCoursesScreen> {
         ],
       ),
       body: _enrollments == null
-          ? const Center(child: CircularProgressIndicator())
+          ? const WinLoading()
           : _error
               ? Center(
                   child: Column(mainAxisSize: MainAxisSize.min, children: [

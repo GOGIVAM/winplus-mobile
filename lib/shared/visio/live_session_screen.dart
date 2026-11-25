@@ -102,7 +102,7 @@ class _LiveSessionScreenState extends State<LiveSessionScreen> {
     } else if (_error) {
       body = WinErrorState(message: l.commonLoadError, onRetry: _load);
     } else if (se == null) {
-      body = const Center(child: CircularProgressIndicator());
+      body = const WinLoading();
     } else {
       body = ListView(padding: const EdgeInsets.all(20), children: [
         WinCard(

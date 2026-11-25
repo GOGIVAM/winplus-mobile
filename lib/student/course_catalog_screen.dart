@@ -9,6 +9,7 @@ import '../widgets/win_motion_widgets.dart';
 import '../widgets/win_widgets.dart';
 import 'course_detail_screen.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/win_screen.dart';
 
 /// Catalogue de formations  composition en grille 2 colonnes (image en
 /// tête de carte, tag catégorie incrusté, titre + prix dessous) et rangée
@@ -275,7 +276,7 @@ class _CourseCatalogScreenState extends State<CourseCatalogScreen> {
         // Grille produit (2 colonnes)
         Expanded(
           child: _loading
-              ? const Center(child: CircularProgressIndicator())
+              ? const WinLoading()
               : (_items == null || _items!.isEmpty)
                   ? Center(
                       child: Text(context.l10n.studentCatalogEmpty,

@@ -7,6 +7,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import 'document_viewer_screen.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/win_screen.dart';
 
 class DownloadHistoryScreen extends StatefulWidget {
   const DownloadHistoryScreen({super.key});
@@ -142,7 +143,7 @@ class _DownloadHistoryScreenState extends State<DownloadHistoryScreen> {
     }
 
     if (_entries == null) {
-      return const Center(child: CircularProgressIndicator());
+      return const WinLoading();
     }
 
     final visible = _filtered;

@@ -119,7 +119,7 @@ void main() {
       routes(_profil({'averageRating': 4.5, 'reviewCount': 12}));
       telephone(tester);
       await monter(tester, ecran(const TutorPublicProfileScreen(userId: 21)));
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(chargement, findsOneWidget);
       await reseau(tester);
       final l = L10n.current;
       expect(find.text('Mme Ngo'), findsOneWidget);

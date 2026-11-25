@@ -51,7 +51,7 @@ void main() {
       });
       telephone(tester);
       await monter(tester, ecran(_page(const StudentCatalogTab())));
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(chargement, findsOneWidget);
       await reseau(tester);
       final l = L10n.current;
       // Pas de titre « Catalogue » dans la page : la barre du haut le porte.

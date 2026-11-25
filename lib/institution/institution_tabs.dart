@@ -327,7 +327,7 @@ class _InstitutionDashTabState extends State<InstitutionDashTab> {
           child: _groups == null
               ? const Padding(
                   padding: EdgeInsets.all(24),
-                  child: Center(child: CircularProgressIndicator()))
+                  child: const WinLoading())
               : Column(children: [
                   for (final g in groups.take(3))
                     Padding(
@@ -382,7 +382,7 @@ class _InstitutionGroupsTabState extends State<InstitutionGroupsTab> {
       const SizedBox(height: 12),
       Expanded(
           child: _groups == null
-              ? const Center(child: CircularProgressIndicator())
+              ? const WinLoading()
               : ListView(
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
                   children: [
@@ -469,7 +469,7 @@ class _InstitutionCatalogTabState extends State<InstitutionCatalogTab> {
       const SizedBox(height: 12),
       Expanded(
           child: items == null
-              ? const Center(child: CircularProgressIndicator())
+              ? const WinLoading()
               : _failed
                   ? WinErrorState(
                       message: context.l10n.commonLoadError,
@@ -594,7 +594,7 @@ class _InstitutionAnalyticsTabState extends State<InstitutionAnalyticsTab> {
                     WinPageRoute(builder: (_) => const ActionPlanScreen()))),
             const SizedBox(height: 20),
             if (_groups == null)
-              const Center(child: CircularProgressIndicator())
+              const WinLoading()
             else ...[
               Text(context.l10n.instAnalyticsByGroup,
                   style: WinType.archivo(size: 18, color: s.onStrong)),

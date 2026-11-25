@@ -27,7 +27,7 @@ void main() {
     routes();
     telephone(tester);
     await monter(tester, ecran(const TeacherClassDetailScreen(initialClass: _classe)));
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(chargement, findsOneWidget);
     await reseau(tester);
     expect(find.text('3eA'), findsOneWidget);
     expect(find.text(L10n.current.tutoringStudentsN(2)), findsOneWidget);

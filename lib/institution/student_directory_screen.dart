@@ -7,6 +7,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/win_screen.dart';
 
 class StudentDirectoryScreen extends StatefulWidget {
   const StudentDirectoryScreen({super.key});
@@ -132,7 +133,7 @@ class _StudentDirectoryScreenState extends State<StudentDirectoryScreen> {
             Text(context.l10n.instDirTitle, style: WinType.headlineS(s.onStrong)),
       ),
       body: _loading
-          ? const Center(child: CircularProgressIndicator())
+          ? const WinLoading()
           : _institutionId == null
               ? Center(
                   child: Text(context.l10n.instDirNoInstitution,

@@ -14,6 +14,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/win_screen.dart';
 
 /// Achat d'un contenu pour un enfant (lot 6), partagé par l'écran « Acheter
 /// pour un enfant » et le catalogue du parent : confirmation, paiement par le
@@ -252,7 +253,7 @@ class _BuyForChildScreenState extends State<BuyForChildScreen> {
           if (_loading)
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 40),
-              child: Center(child: CircularProgressIndicator()),
+              child: const WinLoading(),
             )
           else if (_catalog.isEmpty)
             Text(context.l10n.parentBuyNoContent,

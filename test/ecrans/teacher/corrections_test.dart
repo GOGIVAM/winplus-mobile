@@ -25,7 +25,7 @@ void main() {
     faux.repond('GET', '/teacher/corrections/pending', _copies);
     telephone(tester);
     await monter(tester, ecran(const CorrectionQueueScreen()));
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(chargement, findsOneWidget);
     await reseau(tester);
     final l = L10n.current;
     expect(find.text('Ada Eto'), findsOneWidget);

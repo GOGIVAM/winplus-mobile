@@ -61,7 +61,7 @@ void main() {
     testWidgets('erreur serveur : le message d\'erreur remplace la liste', (tester) async {
       faux.repond('GET', '/forums/threads', {}, statut: 500);
       await monterEcran(tester, const ForumScreen());
-      expect(find.byType(CircularProgressIndicator), findsNothing);
+      expect(chargement, findsNothing);
       expect(find.text(L10n.current.forumEmptyCategory), findsNothing);
       expect(find.textContaining('500'), findsOneWidget);
     });

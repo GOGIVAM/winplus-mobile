@@ -13,6 +13,7 @@ import 'tutor_booking_for_whom.dart';
 import 'tutor_policy_widgets.dart';
 import 'tutor_pricing_widgets.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../../widgets/win_screen.dart';
 
 String? _modeLabel(String mode) => switch (mode) {
       'online' => L10n.current.commonOnline,
@@ -456,7 +457,7 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
 
   Widget _buildStepSlot(WinScheme s) {
     if (_loadingCalendar)
-      return const Center(child: CircularProgressIndicator());
+      return const WinLoading();
     final daySlots = _occurrences
         .where((o) =>
             o.date.year == _selectedDay.year &&

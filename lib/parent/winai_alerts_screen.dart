@@ -8,6 +8,7 @@ import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
 import 'child_activity_screen.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/win_screen.dart';
 
 class WinAIAlertsScreen extends StatefulWidget {
   const WinAIAlertsScreen({super.key});
@@ -83,7 +84,7 @@ class _WinAIAlertsScreenState extends State<WinAIAlertsScreen> {
         ],
       ),
       body: _alerts == null
-          ? const Center(child: CircularProgressIndicator())
+          ? const WinLoading()
           : _buildBody(s),
     );
   }

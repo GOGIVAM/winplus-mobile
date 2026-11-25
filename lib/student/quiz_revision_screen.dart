@@ -8,6 +8,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import 'course_catalog_screen.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/win_screen.dart';
 
 /// Module 24 (lot 8, rattrapage 16.3) : révision des erreurs de quiz
 /// branchée sur les vraies questions ratées (QuizMistakesController.cs,
@@ -120,7 +121,7 @@ class _QuizRevisionScreenState extends State<QuizRevisionScreen> {
           const SizedBox(height: 12),
           Expanded(
             child: items == null
-                ? const Center(child: CircularProgressIndicator())
+                ? const WinLoading()
                 : _error
                     ? Center(
                         child: Text(context.l10n.studentRevisionLoadError,

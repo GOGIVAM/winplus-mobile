@@ -41,7 +41,7 @@ void main() {
     routes([_seance()]);
     telephone(tester);
     await monter(tester, ecran(const MyTutorBookingsScreen()));
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(chargement, findsOneWidget);
     await reseau(tester);
     final l = L10n.current;
     expect(find.text('Mme Ngo'), findsOneWidget);

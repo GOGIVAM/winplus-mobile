@@ -6,6 +6,7 @@ import '../../theme/win_theme.dart';
 import '../../theme/win_typography.dart';
 import 'new_thread_screen.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../../widgets/win_screen.dart';
 
 class ThreadDetailScreen extends StatefulWidget {
   final Map<String, dynamic> thread;
@@ -95,7 +96,7 @@ class _ThreadDetailScreenState extends State<ThreadDetailScreen> {
       body: Column(children: [
         Expanded(
           child: _loading
-              ? const Center(child: CircularProgressIndicator())
+              ? const WinLoading()
               : ListView.builder(
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                   itemCount: _posts.length + 1,

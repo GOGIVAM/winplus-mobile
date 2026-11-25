@@ -116,7 +116,7 @@ class _CorrectionQueueScreenState extends State<CorrectionQueueScreen> {
   }
 
   Widget _buildList(WinScheme s) {
-    if (_subs == null) return const Center(child: CircularProgressIndicator());
+    if (_subs == null) return const WinLoading();
     if (_failed) {
       return WinErrorState(
           message: context.l10n.commonLoadError,

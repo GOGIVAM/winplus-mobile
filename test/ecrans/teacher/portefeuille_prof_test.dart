@@ -75,7 +75,7 @@ void main() {
       routes(solde: _solde({'engagedXaf': 700}));
       telephone(tester);
       await monter(tester, ecran(_page()));
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(chargement, findsOneWidget);
       await reseau(tester);
       expect(find.text('SOLDE DISPONIBLE'), findsOneWidget);
       expect(find.text(_xaf(12500)), findsOneWidget);

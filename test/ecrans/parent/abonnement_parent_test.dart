@@ -58,7 +58,7 @@ void main() {
     faux.repond('GET', '/subscriptions/me', _abo());
     telephone(tester);
     await monter(tester, ecran(const SubscriptionStatusScreen()));
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(chargement, findsOneWidget);
     await reseau(tester);
     final l = L10n.current;
     final echeance = DateTime.parse('2026-07-01T12:00:00Z').toLocal();

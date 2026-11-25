@@ -7,6 +7,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/win_screen.dart';
 
 /// Mode veille d'examen : le parent active un suivi rapproché sur le plan
 /// ExamCoachPlan actif de l'enfant (ou en crée un). N'ajoute pas de nouvelle
@@ -126,7 +127,7 @@ class _ExamWatchModeTabState extends State<ExamWatchModeTab> {
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
     final state = _state;
-    if (state == null) return const Center(child: CircularProgressIndicator());
+    if (state == null) return const WinLoading();
 
     final daysLeft = state.examDate != null
         ? state.examDate!.difference(DateTime.now()).inDays

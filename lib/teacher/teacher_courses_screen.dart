@@ -10,6 +10,7 @@ import '../l10n/l10n.dart';
 import '../app_config.dart';
 import '../widgets/external_links.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/win_screen.dart';
 
 // ---------------------------------------------------------------------------
 // Model
@@ -288,7 +289,7 @@ class _TeacherCoursesScreenState extends State<TeacherCoursesScreen> {
 
   Widget _buildBody(WinScheme s) {
     if (_courses == null) {
-      return const Center(child: CircularProgressIndicator());
+      return const WinLoading();
     }
     if (_error != null) {
       return Center(

@@ -11,6 +11,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../widgets/protected_content.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/win_screen.dart';
 
 /// Énoncé (épreuve ou livre) ou corrigé d'une épreuve.
 enum ViewerDocumentKind { document, correction }
@@ -174,7 +175,7 @@ class _DocumentViewerScreenState extends State<DocumentViewerScreen> {
 
   Widget _buildBody(WinScheme s) {
     if (_loading) {
-      return const Center(child: CircularProgressIndicator());
+      return const WinLoading();
     }
 
     if (_error != null || _bytes == null) {

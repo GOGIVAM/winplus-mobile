@@ -60,7 +60,7 @@ class _PortfolioTabState extends State<PortfolioTab> {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    if (!_loaded) return const Center(child: CircularProgressIndicator());
+    if (!_loaded) return const WinLoading();
     if (_error) {
       return WinErrorState(message: context.l10n.commonLoadError, onRetry: _load);
     }

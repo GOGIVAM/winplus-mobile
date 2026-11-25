@@ -12,6 +12,7 @@ import 'exam_watch_mode_tab.dart';
 import 'goal_proposal_tab.dart';
 import 'portfolio_tab.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/win_screen.dart';
 
 class ChildActivityScreen extends StatefulWidget {
   final ApiChild child;
@@ -127,7 +128,7 @@ class _ChildActivityScreenState extends State<ChildActivityScreen>
         ),
       ),
       body: _stats == null
-          ? const Center(child: CircularProgressIndicator())
+          ? const WinLoading()
           : TabBarView(
               controller: _tab,
               children: [

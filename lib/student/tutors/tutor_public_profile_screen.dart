@@ -13,6 +13,7 @@ import 'tutor_booking_flow_screen.dart';
 import 'tutor_engagement_flow_screen.dart';
 import 'tutor_pricing_widgets.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../../widgets/win_screen.dart';
 
 /// Fiche répétiteur publique (vue élève)  professeur_complete.md, section
 /// "Fiche répétiteur (vue publique)".
@@ -119,7 +120,7 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
     return Scaffold(
       backgroundColor: s.bg,
       body: _loading
-          ? const Center(child: CircularProgressIndicator())
+          ? const WinLoading()
           : _error || p == null
               ? SafeArea(
                   child: Column(children: [

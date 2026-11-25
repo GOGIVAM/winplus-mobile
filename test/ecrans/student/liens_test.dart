@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:winplus/l10n/l10n.dart';
 import 'package:winplus/student/my_links_screen.dart';
@@ -34,7 +33,7 @@ void main() {
     });
     telephone(tester);
     await monter(tester, ecran(const MyLinksScreen()));
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(chargement, findsOneWidget);
     await reseau(tester);
     final l = L10n.current;
     expect(find.text(l.studentLinksParents), findsOneWidget);

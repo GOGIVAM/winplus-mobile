@@ -12,6 +12,7 @@ import '../widgets/win_widgets.dart';
 import '../app_config.dart';
 import '../widgets/external_links.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/win_screen.dart';
 
 class CertificatesScreen extends StatefulWidget {
   const CertificatesScreen({super.key});
@@ -82,7 +83,7 @@ class _CertificatesScreenState extends State<CertificatesScreen> {
         ],
       ),
       body: certs == null
-          ? const Center(child: CircularProgressIndicator())
+          ? const WinLoading()
           : _courseCerts.isNotEmpty
               ? ListView(
                   padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),

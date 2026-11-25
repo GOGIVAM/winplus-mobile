@@ -197,7 +197,7 @@ void main() {
       ]);
       telephone(tester);
       await monter(tester, ecran(const QuizHubScreen()));
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(chargement, findsOneWidget);
       await reseau(tester);
       expect(find.text(L10n.current.studentQuizAvailable), findsOneWidget);
       expect(find.text('Quiz algebre'), findsOneWidget);

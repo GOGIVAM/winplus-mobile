@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:winplus/l10n/l10n.dart';
 import 'package:winplus/student/certificates_screen.dart';
@@ -21,7 +20,7 @@ void main() {
     routes();
     telephone(tester);
     await monter(tester, ecran(const CertificatesScreen()));
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(chargement, findsOneWidget);
     await reseau(tester);
     expect(find.text(L10n.current.studentCertEmpty), findsOneWidget);
     expect(find.text(L10n.current.studentCertEmptyHint), findsOneWidget);

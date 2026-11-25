@@ -63,7 +63,7 @@ class _LiveClassesScreenState extends State<LiveClassesScreen> {
   Widget _body(WinScheme s, AppLocalizations l) {
     if (_error) return WinErrorState(message: l.commonLoadError, onRetry: _load);
     final list = _classes;
-    if (list == null) return const Center(child: CircularProgressIndicator());
+    if (list == null) return const WinLoading();
     if (list.isEmpty) {
       return WinEmptyState(
           icon: PhosphorIconsRegular.videoCamera, title: l.liveEmpty, message: l.liveEmptyHint);
@@ -231,7 +231,7 @@ class _VisioRecordingsScreenState extends State<VisioRecordingsScreen> {
     } else if (_error) {
       body = WinErrorState(message: l.commonLoadError, onRetry: _load);
     } else if (items == null) {
-      body = const Center(child: CircularProgressIndicator());
+      body = const WinLoading();
     } else if (items.isEmpty) {
       body = WinEmptyState(icon: PhosphorIconsRegular.filmStrip, title: l.liveRecordingsEmpty);
     } else {

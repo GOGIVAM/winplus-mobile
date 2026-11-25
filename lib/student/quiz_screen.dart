@@ -12,6 +12,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_motion_widgets.dart';
 import '../widgets/win_widgets.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/win_screen.dart';
 
 // ===================== QUIZ ACTIF =====================
 
@@ -497,7 +498,7 @@ class _QuizHubScreenState extends State<QuizHubScreen> {
         ],
       ),
       body: quizzes == null
-          ? const Center(child: CircularProgressIndicator())
+          ? const WinLoading()
           : ListView(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
               children: [

@@ -17,6 +17,7 @@ import '../../services/tutor_engagement_service.dart';
 import '../../shared/tutor_engagement_screen.dart';
 import '../../shared/tutor_session_material_screen.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../../widgets/win_screen.dart';
 
 String? _modeLabel(String mode) => switch (mode) {
       'online' => L10n.current.commonOnline,
@@ -176,7 +177,7 @@ class _MyTutorBookingsScreenState extends State<MyTutorBookingsScreen> {
         ],
       ),
       body: bookings == null && !_error
-          ? const Center(child: CircularProgressIndicator())
+          ? const WinLoading()
           : _error
               ? Center(
                   child: Column(mainAxisSize: MainAxisSize.min, children: [

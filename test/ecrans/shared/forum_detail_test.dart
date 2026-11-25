@@ -49,7 +49,7 @@ void main() {
   testWidgets('erreur de chargement : le sujet reste affiche sans reponse', (tester) async {
     faux.repond('GET', '/forums/threads/7/posts', {}, statut: 500);
     await monterEcran(tester, const ThreadDetailScreen(thread: _sujet));
-    expect(find.byType(CircularProgressIndicator), findsNothing);
+    expect(chargement, findsNothing);
     expect(find.text('Comment factoriser ?'), findsOneWidget);
   });
 

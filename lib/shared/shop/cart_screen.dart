@@ -10,6 +10,7 @@ import '../../widgets/win_motion_widgets.dart';
 import '../../widgets/win_widgets.dart';
 import 'checkout_screen.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../../widgets/win_screen.dart';
 
 /// Panier (E35)  vraies données serveur (GET/POST/DELETE /api/cart), pas de
 /// simulation. Composition carte produit (vignette + prix) cohérente avec le
@@ -120,7 +121,7 @@ class _CartScreenState extends State<CartScreen> {
                   const SizedBox(height: 12),
                   WinButton(context.l10n.commonRetry, onTap: _load),
                 ]))
-              : const Center(child: CircularProgressIndicator())
+              : const WinLoading()
           : cart.items.isEmpty
               ? Center(
                   child: Column(mainAxisSize: MainAxisSize.min, children: [

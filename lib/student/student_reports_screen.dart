@@ -6,6 +6,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/win_screen.dart';
 
 /// « Mes rapports » : progression réelle de l'élève, calculée par le serveur
 /// (GET /student/reports) à partir de ses quiz, sessions d'étude et
@@ -119,7 +120,7 @@ class _StudentReportsScreenState extends State<StudentReportsScreen> {
             if (_loading && r == null)
               const Padding(
                 padding: EdgeInsets.only(top: 48),
-                child: Center(child: CircularProgressIndicator()),
+                child: const WinLoading(),
               )
             else if (_error && r == null)
               Column(children: [

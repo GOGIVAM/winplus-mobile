@@ -9,6 +9,7 @@ import '../widgets/win_widgets.dart';
 import '../shared/subscription/upgrade_sheet.dart';
 import '../shared/subscription/subscription_notifier.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/win_screen.dart';
 
 /// Module 24 (lot 8, rattrapage 16.3) : Exam Coach porté sur les vrais
 /// endpoints déjà utilisés par le web (ExamCoach.tsx/examCoachService.ts) —
@@ -231,7 +232,7 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
         title: Text('Exam Coach'),
       ),
       body: _loading
-          ? const Center(child: CircularProgressIndicator())
+          ? const WinLoading()
           : (_plan == null ? _buildSetup(s) : _buildDashboard(s)),
     );
   }

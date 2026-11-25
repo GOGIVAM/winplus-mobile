@@ -51,7 +51,7 @@ void main() {
     testWidgets('matieres du catalogue, durees proposees, premiere matiere choisie', (tester) async {
       telephone(tester);
       await monter(tester, ecran(const StudySessionScreen()));
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(chargement, findsOneWidget);
       await reseau(tester);
       final l = L10n.current;
       expect(find.text(l.studentSessionIntro), findsOneWidget);

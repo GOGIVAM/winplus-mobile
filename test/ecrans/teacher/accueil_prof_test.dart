@@ -50,9 +50,9 @@ void main() {
     tester.view.physicalSize = const Size(800, 3200);
     await monter(tester, ecran(const TeacherDashTab()));
     expect(find.text('—'), findsWidgets);
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(chargement, findsOneWidget);
     await reseau(tester);
-    expect(find.byType(CircularProgressIndicator), findsNothing);
+    expect(chargement, findsNothing);
   });
 
   testWidgets('chiffres reels : publies, revenu du mois, telechargements, note et eleves actifs', (tester) async {
@@ -101,7 +101,7 @@ void main() {
 
   testWidgets('serveur en erreur : accueil vide, sans plantage ni indicateur perpetuel', (tester) async {
     await monterHaut(tester);
-    expect(find.byType(CircularProgressIndicator), findsNothing);
+    expect(chargement, findsNothing);
     expect(find.text(L10n.current.teacherDashMonthRevenue), findsOneWidget);
     expect(find.text(L10n.current.teacherDashNoContent), findsOneWidget);
   });

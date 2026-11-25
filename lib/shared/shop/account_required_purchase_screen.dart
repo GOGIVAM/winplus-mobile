@@ -12,6 +12,7 @@ import '../../theme/win_theme.dart';
 import '../../theme/win_typography.dart';
 import '../../widgets/win_widgets.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../../widgets/win_screen.dart';
 
 /// Écran « Acheter » d'un contenu payant.
 ///
@@ -128,7 +129,7 @@ class _AccountRequiredPurchaseScreenState
           ),
           const SizedBox(height: 20),
           if (_loggedIn == null)
-            const Center(child: CircularProgressIndicator())
+            const WinLoading()
           else if (_loggedIn == false) ...[
             Text(context.l10n.shopAccountRequiredTitle,
                 style: WinType.headlineS(s.onStrong)),

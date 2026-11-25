@@ -16,6 +16,7 @@ import 'tutor_booking_for_whom.dart';
 import 'tutor_policy_widgets.dart';
 import 'tutor_pricing_widgets.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../../widgets/win_screen.dart';
 
 /// Lot 9.4 (suivi 17.7) : création d'un engagement mensuel, parité web.
 /// Étapes : créneaux hebdomadaires et pour qui, devis serveur du mois
@@ -440,7 +441,7 @@ class _TutorEngagementFlowScreenState extends State<TutorEngagementFlowScreen> {
   }
 
   Widget _buildQuote(WinScheme s) {
-    if (_quoteLoading) return const Center(child: CircularProgressIndicator());
+    if (_quoteLoading) return const WinLoading();
     final q = _quote;
     if (q == null) {
       return ListView(padding: const EdgeInsets.all(16), children: [

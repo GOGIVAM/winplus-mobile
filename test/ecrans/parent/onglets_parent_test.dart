@@ -59,7 +59,7 @@ void main() {
       final abo = await abonnementAvecDroits(tester, faux, {'children.max': 5});
       telephone(tester);
       await monter(tester, ecran(_page(const ParentChildrenTab()), abonnement: abo));
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(chargement, findsOneWidget);
       await reseau(tester);
       final l = L10n.current;
       expect(find.text('Zoe Eto'), findsOneWidget);
@@ -114,7 +114,7 @@ void main() {
     testWidgets('BUG PROBABLE : serveur en erreur : l\'ecran sort du chargement', (tester) async {
       faux.repond('GET', '/parent/children', {}, statut: 500);
       await monterEcran(tester, _page(const ParentChildrenTab()));
-      expect(find.byType(CircularProgressIndicator), findsNothing);
+      expect(chargement, findsNothing);
     }, skip: true); // Bug probable : voir le commentaire ci-dessus.
   });
 

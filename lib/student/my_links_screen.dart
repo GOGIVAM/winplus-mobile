@@ -6,6 +6,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/win_screen.dart';
 
 class MyLinksScreen extends StatefulWidget {
   const MyLinksScreen({super.key});
@@ -110,7 +111,7 @@ class _MyLinksScreenState extends State<MyLinksScreen> {
         title: Text(context.l10n.studentLinksTitle),
       ),
       body: _loading
-          ? const Center(child: CircularProgressIndicator())
+          ? const WinLoading()
           : _data == null
               ? Center(
                   child: Text(context.l10n.studentLinksLoadError,

@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:winplus/widgets/win_screen.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -167,3 +169,9 @@ Future<void> fermerHive(Directory dossier) async {
   await Hive.close();
   if (dossier.existsSync()) dossier.deleteSync(recursive: true);
 }
+
+/// Un chargement est affiché : lignes fantômes d'un écran ([WinLoading]) ou
+/// indicateur rotatif (bouton, petite zone).
+Finder get chargement => find.byWidgetPredicate(
+    (w) => w is WinLoading || w is CircularProgressIndicator,
+    description: 'chargement');
