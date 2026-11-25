@@ -35,6 +35,8 @@ import '../widgets/mobile_home.dart';
 import '../widgets/win_motion_widgets.dart';
 import '../widgets/voice_dictation_sheet.dart';
 import '../widgets/win_screen.dart';
+import '../shell/more_screen.dart';
+import '../shared/visio/live_classes_screen.dart';
 
 export 'student_home.dart' show StudentHomeTab;
 
@@ -389,6 +391,9 @@ class StudentSpaceTab extends StatefulWidget {
 class _StudentSpaceTabState extends State<StudentSpaceTab> {
   ApiStudentStats? _stats;
 
+  void _open(Widget page) =>
+      Navigator.push(context, WinPageRoute(builder: (_) => page));
+
   @override
   void initState() {
     super.initState();
@@ -416,155 +421,93 @@ class _StudentSpaceTabState extends State<StudentSpaceTab> {
                         PhosphorIconsRegular.clock)),
               ]),
               const SizedBox(height: 16),
-              // Formations
-              _QuickLink(
-                  context.l10n.studentMyCoursesTitle,
-                  PhosphorIconsRegular.monitorPlay,
-                  WinColors.teal600,
-                  () => Navigator.push(context,
-                      WinPageRoute(builder: (_) => const MyCoursesScreen()))),
-              const SizedBox(height: 10),
-              _QuickLink(
-                  context.l10n.studentTabsCourseCatalog,
-                  PhosphorIconsRegular.compass,
-                  WinColors.teal400,
-                  () => Navigator.push(
-                      context,
-                      WinPageRoute(
-                          builder: (_) => const CourseCatalogScreen()))),
-              const SizedBox(height: 10),
-              _QuickLink(
-                  context.l10n.studentTabsFindTutor,
-                  PhosphorIconsRegular.userFocus,
-                  WinColors.blue500,
-                  () => Navigator.push(context,
-                      WinPageRoute(builder: (_) => const TutorSearchScreen()))),
-              const SizedBox(height: 10),
-              _QuickLink(
-                  context.l10n.studentTabsMyBookings,
-                  PhosphorIconsRegular.calendarCheck,
-                  WinColors.teal500,
-                  () => Navigator.push(
-                      context,
-                      WinPageRoute(
-                          builder: (_) => const MyTutorBookingsScreen()))),
-              const SizedBox(height: 10),
-              Row(children: [
-                Expanded(
-                    child: _QuickLink(
-                        context.l10n.studentTabsFavorites,
-                        PhosphorIconsRegular.heart,
-                        WinColors.error,
-                        () => Navigator.push(
-                            context,
-                            WinPageRoute(
-                                builder: (_) => const FavoritesScreen())))),
-                const SizedBox(width: 10),
-                Expanded(
-                    child: _QuickLink(
-                        context.l10n.studentHomeBadges,
-                        PhosphorIconsRegular.trophy,
-                        WinColors.gold,
-                        () => Navigator.push(
-                            context,
-                            WinPageRoute(
-                                builder: (_) => const AchievementsScreen())))),
+              // Rangement par usage, le même que le menu de l'élève sur le
+              // site : apprendre, s'entraîner, être accompagné, suivre sa
+              // progression, gérer ses achats.
+              _SpaceGroupTitle(context.l10n.spaceGroupLearn),
+              MoreGroup(children: [
+                MoreLine(
+                    icon: PhosphorIconsRegular.monitorPlay,
+                    label: context.l10n.studentMyCoursesTitle,
+                    onTap: () => _open(const MyCoursesScreen())),
+                MoreLine(
+                    icon: PhosphorIconsRegular.compass,
+                    label: context.l10n.studentTabsCourseCatalog,
+                    onTap: () => _open(const CourseCatalogScreen())),
+                MoreLine(
+                    icon: PhosphorIconsRegular.videoCamera,
+                    label: context.l10n.liveTitle,
+                    onTap: () => _open(const LiveClassesScreen())),
+                MoreLine(
+                    icon: PhosphorIconsRegular.heart,
+                    label: context.l10n.studentTabsFavorites,
+                    onTap: () => _open(const FavoritesScreen())),
+                MoreLine(
+                    icon: PhosphorIconsRegular.downloadSimple,
+                    label: context.l10n.studentHubHistory,
+                    onTap: () => _open(const DownloadHistoryScreen())),
               ]),
-              const SizedBox(height: 10),
-              Row(children: [
-                Expanded(
-                    child: _QuickLink(
-                        context.l10n.studentTabsCertificates,
-                        PhosphorIconsRegular.medal,
-                        WinColors.teal400,
-                        () => Navigator.push(
-                            context,
-                            WinPageRoute(
-                                builder: (_) => const CertificatesScreen())))),
-                const SizedBox(width: 10),
-                Expanded(
-                    child: _QuickLink(
-                        context.l10n.studentTabsExamCoach,
-                        PhosphorIconsRegular.graduationCap,
-                        WinColors.ink600,
-                        () => Navigator.push(
-                            context,
-                            WinPageRoute(
-                                builder: (_) => const ExamCoachScreen())))),
+              const SizedBox(height: 18),
+              _SpaceGroupTitle(context.l10n.spaceGroupPractice),
+              MoreGroup(children: [
+                MoreLine(
+                    icon: PhosphorIconsRegular.exam,
+                    label: context.l10n.studentHubRevisionQuiz,
+                    onTap: () => _open(const QuizRevisionScreen())),
+                MoreLine(
+                    icon: PhosphorIconsRegular.playCircle,
+                    label: context.l10n.studentTabsGuidedSession,
+                    onTap: () => _open(const StudySessionScreen())),
+                MoreLine(
+                    icon: PhosphorIconsRegular.graduationCap,
+                    label: context.l10n.studentTabsExamCoach,
+                    onTap: () => _open(const ExamCoachScreen())),
               ]),
-              const SizedBox(height: 10),
-              // Module 32 (lot 8, décision 14.3) : portage mobile de la
-              // session d'étude guidée (briefing → quiz → synthèse WinAI),
-              // point d'entrée équivalent à StudySessionLauncher côté web.
-              _QuickLink(
-                  context.l10n.studentTabsGuidedSession,
-                  PhosphorIconsRegular.playCircle,
-                  WinColors.teal500,
-                  () => Navigator.push(
-                      context,
-                      WinPageRoute(
-                          builder: (_) => const StudySessionScreen()))),
-              const SizedBox(height: 10),
-              Row(children: [
-                Expanded(
-                    child: _QuickLink(
-                        context.l10n.studentTabsMyCart,
-                        PhosphorIconsRegular.shoppingCart,
-                        WinColors.teal600,
-                        () => Navigator.push(context,
-                            WinPageRoute(builder: (_) => const CartScreen())))),
-                const SizedBox(width: 10),
-                Expanded(
-                    child: _QuickLink(
-                        context.l10n.studentTabsMyOrders,
-                        PhosphorIconsRegular.receipt,
-                        WinColors.blue500,
-                        () => Navigator.push(
-                            context,
-                            WinPageRoute(
-                                builder: (_) => const OrdersScreen())))),
+              const SizedBox(height: 18),
+              _SpaceGroupTitle(context.l10n.spaceGroupSupport),
+              MoreGroup(children: [
+                MoreLine(
+                    icon: PhosphorIconsRegular.userFocus,
+                    label: context.l10n.studentTabsFindTutor,
+                    onTap: () => _open(const TutorSearchScreen())),
+                MoreLine(
+                    icon: PhosphorIconsRegular.calendarCheck,
+                    label: context.l10n.studentTabsMyBookings,
+                    onTap: () => _open(const MyTutorBookingsScreen())),
+                MoreLine(
+                    icon: PhosphorIconsRegular.usersThree,
+                    label: context.l10n.studentLinksStudyGroups,
+                    onTap: () => _open(const StudyGroupsScreen())),
               ]),
-              const SizedBox(height: 10),
-              _QuickLink(
-                  context.l10n.studentHubHistory,
-                  PhosphorIconsRegular.downloadSimple,
-                  WinColors.ink400,
-                  () => Navigator.push(
-                      context,
-                      WinPageRoute(
-                          builder: (_) => const DownloadHistoryScreen()))),
-              const SizedBox(height: 10),
-              Row(children: [
-                Expanded(
-                    child: _QuickLink(
-                        context.l10n.studentLinksStudyGroups,
-                        PhosphorIconsRegular.usersThree,
-                        WinColors.teal600,
-                        () => Navigator.push(
-                            context,
-                            WinPageRoute(
-                                builder: (_) => const StudyGroupsScreen())))),
-                const SizedBox(width: 10),
-                Expanded(
-                    child: _QuickLink(
-                        context.l10n.studentReportsTitle,
-                        PhosphorIconsRegular.chartBar,
-                        WinColors.blue500,
-                        () => Navigator.push(
-                            context,
-                            WinPageRoute(
-                                builder: (_) =>
-                                    const StudentReportsScreen())))),
+              const SizedBox(height: 18),
+              _SpaceGroupTitle(context.l10n.spaceGroupProgress),
+              MoreGroup(children: [
+                MoreLine(
+                    icon: PhosphorIconsRegular.chartBar,
+                    label: context.l10n.studentReportsTitle,
+                    onTap: () => _open(const StudentReportsScreen())),
+                MoreLine(
+                    icon: PhosphorIconsRegular.trophy,
+                    label: context.l10n.studentHomeBadges,
+                    onTap: () => _open(const AchievementsScreen())),
+                MoreLine(
+                    icon: PhosphorIconsRegular.medal,
+                    label: context.l10n.studentTabsCertificates,
+                    onTap: () => _open(const CertificatesScreen())),
               ]),
-              const SizedBox(height: 10),
-              _QuickLink(
-                  context.l10n.studentHubRevisionQuiz,
-                  PhosphorIconsRegular.exam,
-                  WinColors.warn,
-                  () => Navigator.push(
-                      context,
-                      WinPageRoute(
-                          builder: (_) => const QuizRevisionScreen()))),
+              const SizedBox(height: 18),
+              _SpaceGroupTitle(context.l10n.spaceGroupPurchases),
+              MoreGroup(children: [
+                MoreLine(
+                    icon: PhosphorIconsRegular.shoppingCart,
+                    label: context.l10n.studentTabsMyCart,
+                    onTap: () => _open(const CartScreen())),
+                MoreLine(
+                    icon: PhosphorIconsRegular.receipt,
+                    label: context.l10n.studentTabsMyOrders,
+                    onTap: () => _open(const OrdersScreen())),
+              ]),
+              const SizedBox(height: 18),
               // « Performance par matière » de démonstration retirée : aucun
               // score par matière n'est servi pour l'élève ; ses résultats
               // réels sont dans « Mes rapports ».
@@ -574,24 +517,16 @@ class _StudentSpaceTabState extends State<StudentSpaceTab> {
   }
 }
 
-class _QuickLink extends StatelessWidget {
+/// Titre d'un groupe d'usage de « Mon espace ».
+class _SpaceGroupTitle extends StatelessWidget {
   final String label;
-  final IconData icon;
-  final Color color;
-  final VoidCallback onTap;
-  const _QuickLink(this.label, this.icon, this.color, this.onTap);
+  const _SpaceGroupTitle(this.label);
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    return WinCard(
-      onTap: onTap,
-      padding: const EdgeInsets.all(14),
-      child: Row(children: [
-        winIcon(icon, size: 20, color: color),
-        const SizedBox(width: 10),
-        Expanded(child: Text(label, style: WinType.titleM(s.onStrong))),
-        Icon(PhosphorIconsRegular.caretRight, size: 18, color: s.onFaint),
-      ]),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
+      child: Text(label, style: WinType.titleL(s.onStrong)),
     );
   }
 }

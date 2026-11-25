@@ -8951,4 +8951,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dlFreed => 'Space freed.';
+
+  @override
+  String get spaceGroupLearn => 'Learn';
+
+  @override
+  String get spaceGroupPractice => 'Revise and practise';
+
+  @override
+  String get spaceGroupSupport => 'Get support';
+
+  @override
+  String get spaceGroupProgress => 'My progress';
+
+  @override
+  String get spaceGroupPurchases => 'My purchases';
 }

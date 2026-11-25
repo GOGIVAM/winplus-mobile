@@ -2557,5 +2557,10 @@
   "dlCacheClear": "Clear",
   "dlCacheClearTitle": "Clear offline data?",
   "dlCacheClearBody": "Screens will reload from the server next time you are online.",
-  "dlFreed": "Space freed."
+  "dlFreed": "Space freed.",
+  "spaceGroupLearn": "Learn",
+  "spaceGroupPractice": "Revise and practise",
+  "spaceGroupSupport": "Get support",
+  "spaceGroupProgress": "My progress",
+  "spaceGroupPurchases": "My purchases"
 }

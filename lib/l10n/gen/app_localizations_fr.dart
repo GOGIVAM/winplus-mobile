@@ -9030,4 +9030,19 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get dlFreed => 'Place libérée.';
+
+  @override
+  String get spaceGroupLearn => 'Apprendre';
+
+  @override
+  String get spaceGroupPractice => 'Réviser et s\'entraîner';
+
+  @override
+  String get spaceGroupSupport => 'Être accompagné';
+
+  @override
+  String get spaceGroupProgress => 'Ma progression';
+
+  @override
+  String get spaceGroupPurchases => 'Mes achats';
 }

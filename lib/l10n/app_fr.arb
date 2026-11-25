@@ -5439,5 +5439,10 @@
   "dlCacheClear": "Vider",
   "dlCacheClearTitle": "Vider les données hors ligne ?",
   "dlCacheClearBody": "Les écrans se rechargeront depuis le serveur à la prochaine connexion.",
-  "dlFreed": "Place libérée."
+  "dlFreed": "Place libérée.",
+  "spaceGroupLearn": "Apprendre",
+  "spaceGroupPractice": "Réviser et s'entraîner",
+  "spaceGroupSupport": "Être accompagné",
+  "spaceGroupProgress": "Ma progression",
+  "spaceGroupPurchases": "Mes achats"
 }

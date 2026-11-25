@@ -15385,6 +15385,36 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Place libérée.'**
   String get dlFreed;
+
+  /// No description provided for @spaceGroupLearn.
+  ///
+  /// In fr, this message translates to:
+  /// **'Apprendre'**
+  String get spaceGroupLearn;
+
+  /// No description provided for @spaceGroupPractice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réviser et s\'entraîner'**
+  String get spaceGroupPractice;
+
+  /// No description provided for @spaceGroupSupport.
+  ///
+  /// In fr, this message translates to:
+  /// **'Être accompagné'**
+  String get spaceGroupSupport;
+
+  /// No description provided for @spaceGroupProgress.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ma progression'**
+  String get spaceGroupProgress;
+
+  /// No description provided for @spaceGroupPurchases.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mes achats'**
+  String get spaceGroupPurchases;
 }
 
 class _AppLocalizationsDelegate

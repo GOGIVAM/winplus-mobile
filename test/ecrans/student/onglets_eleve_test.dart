@@ -183,22 +183,29 @@ void main() {
       await monterEcran(tester, _page(const StudentSpaceTab()));
       final l = L10n.current;
       final liste = find.byType(Scrollable).first;
+      // Dans l'ordre de l'ecran : cinq groupes d'usage, chacun avec son titre.
       for (final libelle in [
+        l.spaceGroupLearn,
         l.studentMyCoursesTitle,
         l.studentTabsCourseCatalog,
+        l.liveTitle,
+        l.studentTabsFavorites,
+        l.studentHubHistory,
+        l.spaceGroupPractice,
+        l.studentHubRevisionQuiz,
+        l.studentTabsGuidedSession,
+        l.studentTabsExamCoach,
+        l.spaceGroupSupport,
         l.studentTabsFindTutor,
         l.studentTabsMyBookings,
-        l.studentTabsFavorites,
+        l.studentLinksStudyGroups,
+        l.spaceGroupProgress,
+        l.studentReportsTitle,
         l.studentHomeBadges,
         l.studentTabsCertificates,
-        l.studentTabsExamCoach,
-        l.studentTabsGuidedSession,
+        l.spaceGroupPurchases,
         l.studentTabsMyCart,
         l.studentTabsMyOrders,
-        l.studentHubHistory,
-        l.studentLinksStudyGroups,
-        l.studentReportsTitle,
-        l.studentHubRevisionQuiz,
       ]) {
         await tester.scrollUntilVisible(find.text(libelle), 300, scrollable: liste);
         expect(find.text(libelle), findsOneWidget, reason: libelle);
