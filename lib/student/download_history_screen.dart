@@ -126,20 +126,13 @@ class _DownloadHistoryScreenState extends State<DownloadHistoryScreen> {
 
   Widget _buildBody(WinScheme s) {
     if (_error != null) {
-      return Center(
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Icon(PhosphorIconsRegular.cloudSlash, size: 56, color: s.onFaint),
-        const SizedBox(height: 12),
-        Text(_error!, style: WinType.bodyM(s.onMuted)),
-        const SizedBox(height: 16),
-        WinButton(context.l10n.commonRetry, onTap: () {
+      return WinErrorState(message: _error!, onRetry: () {
           setState(() {
             _entries = null;
             _error = null;
           });
           _load();
-        }),
-      ]));
+        });
     }
 
     if (_entries == null) {

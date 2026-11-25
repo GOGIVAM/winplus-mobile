@@ -112,15 +112,7 @@ class _CartScreenState extends State<CartScreen> {
       ),
       body: cart == null
           ? _error
-              ? Center(
-                  child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  Icon(PhosphorIconsRegular.wifiSlash, size: 48, color: s.onFaint),
-                  const SizedBox(height: 12),
-                  Text(context.l10n.shopCartLoadFailed,
-                      style: WinType.bodyM(s.onMuted)),
-                  const SizedBox(height: 12),
-                  WinButton(context.l10n.commonRetry, onTap: _load),
-                ]))
+              ? WinErrorState(message: context.l10n.shopCartLoadFailed, onRetry: _load)
               : const WinLoading()
           : cart.items.isEmpty
               ? Center(

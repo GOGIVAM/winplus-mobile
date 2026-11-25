@@ -69,15 +69,7 @@ class _MyCoursesScreenState extends State<MyCoursesScreen> {
       body: _enrollments == null
           ? const WinLoading()
           : _error
-              ? Center(
-                  child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  Icon(PhosphorIconsRegular.wifiSlash, size: 48, color: s.onFaint),
-                  const SizedBox(height: 12),
-                  Text(context.l10n.studentMyCoursesLoadError,
-                      style: WinType.bodyM(s.onMuted)),
-                  const SizedBox(height: 12),
-                  WinButton(context.l10n.commonRetry, onTap: _load),
-                ]))
+              ? WinErrorState(message: context.l10n.studentMyCoursesLoadError, onRetry: _load)
               : _enrollments!.isEmpty
                   ? _EmptyState(onExplore: _goToCatalog)
                   : RefreshIndicator(

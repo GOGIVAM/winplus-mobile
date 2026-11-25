@@ -133,17 +133,7 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
                     ]),
                   ),
                   Expanded(
-                    child: Center(
-                      child: Column(mainAxisSize: MainAxisSize.min, children: [
-                        Icon(PhosphorIconsRegular.wifiSlash,
-                            size: 48, color: s.onFaint),
-                        const SizedBox(height: 12),
-                        Text(context.l10n.tutoringProfileLoadError,
-                            style: WinType.bodyM(s.onMuted)),
-                        const SizedBox(height: 12),
-                        WinButton(context.l10n.commonRetry, onTap: _load),
-                      ]),
-                    ),
+                    child: WinErrorState(message: context.l10n.tutoringProfileLoadError, onRetry: _load),
                   ),
                 ]))
               : Column(children: [

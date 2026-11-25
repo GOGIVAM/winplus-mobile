@@ -106,14 +106,7 @@ class _PricingScreenState extends State<PricingScreen> {
         actions: [IconButton(icon: Icon(PhosphorIconsRegular.arrowClockwise, color: s.onStrong), onPressed: _load)],
       ),
       body: _hasError
-          ? Center(
-              child: Column(mainAxisSize: MainAxisSize.min, children: [
-              Icon(PhosphorIconsRegular.wifiSlash, size: 48, color: s.onFaint),
-              const SizedBox(height: 12),
-              Text(context.l10n.subLoadError, style: WinType.bodyM(s.onMuted)),
-              const SizedBox(height: 12),
-              WinButton(context.l10n.commonRetry, onTap: _load),
-            ]))
+          ? WinErrorState(message: context.l10n.subLoadError, onRetry: _load)
           : _plans == null
               ? const WinLoading()
               : _institution

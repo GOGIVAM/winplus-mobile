@@ -82,20 +82,13 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
 
   Widget _buildBody(WinScheme s, List<ApiFavorite> favs, bool atLimit) {
     if (_error != null) {
-      return Center(
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Icon(PhosphorIconsRegular.cloudSlash, size: 56, color: s.onFaint),
-        const SizedBox(height: 12),
-        Text(_error!, style: WinType.bodyM(s.onMuted)),
-        const SizedBox(height: 16),
-        WinButton(context.l10n.commonRetry, onTap: () {
+      return WinErrorState(message: _error!, onRetry: () {
           setState(() {
             _favs = null;
             _error = null;
           });
           _load();
-        }),
-      ]));
+        });
     }
 
     if (_favs == null) return const WinLoading();
