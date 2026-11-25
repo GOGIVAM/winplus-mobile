@@ -296,7 +296,10 @@ class _TutorEngagementFlowScreenState extends State<TutorEngagementFlowScreen> {
         title: Text(_created != null ? context.l10n.tutoringEngStageSuccess : titles[_step]),
       ),
       body: SafeArea(
-        child: _created != null
+        // Mobile Money : l'écran d'attente (« valide sur ton téléphone »)
+        // reste affiché pendant le suivi du paiement, puis le résultat.
+        // Avant, le résultat remplaçait tout de suite l'attente.
+        child: _created != null && !_waiting
             ? _buildDone(s)
             : switch (_step) {
                 0 => _buildPlan(s),

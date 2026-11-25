@@ -74,7 +74,9 @@ class _TutoringForStudentsScreenState extends State<TutoringForStudentsScreen> w
 
   void _startRechargePolling(int paymentId) {
     _rechargePoll?.cancel();
-    _pendingRechargePaymentId = paymentId;
+    // setState : la ligne « en attente » et le bouton désactivé s'affichent
+    // tout de suite (avant, seulement au rafraîchissement suivant).
+    if (mounted) setState(() => _pendingRechargePaymentId = paymentId);
     _rechargeStartedAt = DateTime.now();
     _rechargePoll = Timer.periodic(_rechargePollEvery, (_) => _checkRecharge());
   }
@@ -163,9 +165,10 @@ class _TutoringForStudentsScreenState extends State<TutoringForStudentsScreen> w
         builder: (ctx, setD) => AlertDialog(
           title: Text(ctx.l10n.tutoringRechargeTitle),
           content: Column(mainAxisSize: MainAxisSize.min, children: [
-            Row(children: [
+            // Wrap : sur un téléphone étroit, « Orange Money » sortait de la
+            // boîte (rangée trop large) et ne pouvait pas être choisi.
+            Wrap(spacing: 8, runSpacing: 4, children: [
               ChoiceChip(label: const Text('MTN MoMo'), selected: op == 'mtn', onSelected: (_) => setD(() => op = 'mtn')),
-              const SizedBox(width: 8),
               ChoiceChip(label: const Text('Orange Money'), selected: op == 'orange', onSelected: (_) => setD(() => op = 'orange')),
             ]),
             TextField(controller: phoneCtrl, keyboardType: TextInputType.phone, decoration: InputDecoration(labelText: ctx.l10n.tutoringRechargePhone)),

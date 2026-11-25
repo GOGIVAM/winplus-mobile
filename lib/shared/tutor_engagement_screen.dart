@@ -122,22 +122,14 @@ class _TutorEngagementScreenState extends State<TutorEngagementScreen> {
   }
 
   Future<String?> _ask(String title, {String? hint, bool required = false}) async {
-    final ctrl = TextEditingController();
     final hintText = hint ?? context.l10n.tutoringReasonOptional;
-    final ok = await showDialog<bool>(
+    // Le champ vit dans la boîte (_AskDialog) : avant, le contrôleur était
+    // libéré pendant l'animation de fermeture et la boîte plantait.
+    final text = await showDialog<String>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(title),
-        content: TextField(controller: ctrl, decoration: InputDecoration(hintText: hintText), maxLines: 2),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(ctx.l10n.commonBack)),
-          TextButton(onPressed: () => Navigator.pop(ctx, true), child: Text(ctx.l10n.commonConfirm)),
-        ],
-      ),
+      builder: (_) => _AskDialog(title: title, hint: hintText),
     );
-    final text = ctrl.text.trim();
-    ctrl.dispose();
-    if (ok != true) return null;
+    if (text == null) return null;
     if (required && text.isEmpty) return null;
     return text;
   }
@@ -365,4 +357,35 @@ class _TutorEngagementScreenState extends State<TutorEngagementScreen> {
       ),
     );
   }
+}
+
+/// Boîte de saisie d'un motif ou d'un numéro : renvoie le texte saisi
+/// (Confirmer) ou null (Retour).
+class _AskDialog extends StatefulWidget {
+  final String title;
+  final String hint;
+  const _AskDialog({required this.title, required this.hint});
+
+  @override
+  State<_AskDialog> createState() => _AskDialogState();
+}
+
+class _AskDialogState extends State<_AskDialog> {
+  final _ctrl = TextEditingController();
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => AlertDialog(
+        title: Text(widget.title),
+        content: TextField(controller: _ctrl, decoration: InputDecoration(hintText: widget.hint), maxLines: 2),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: Text(context.l10n.commonBack)),
+          TextButton(onPressed: () => Navigator.pop(context, _ctrl.text.trim()), child: Text(context.l10n.commonConfirm)),
+        ],
+      );
 }
