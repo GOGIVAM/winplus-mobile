@@ -109,6 +109,11 @@
             <action android:name="android.intent.action.VIEW"/>
             <data android:scheme="https"/>
         </intent>
+        <!-- Lecture a voix haute (flutter_tts) : le moteur de synthese doit etre
+             visible depuis Android 11, sinon aucune voix n'est trouvee. -->
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE"/>
+        </intent>
     </queries>
     <!-- Appareil photo facultatif : l'application reste installable sans caméra
          (le choix d'un fichier reste possible pour le selfie). -->
