@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import '../shared/visio/live_classes_screen.dart';
+import '../teacher/dropout_alerts_screen.dart';
 import '../l10n/l10n.dart';
 import '../theme/win_motion.dart';
 import '../app_state.dart';
@@ -451,6 +452,9 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
                       child: const TeacherSessionsTab())),
               MoreEntry(l.liveTitle, PhosphorIconsRegular.videoCamera,
                   (_) => const LiveClassesScreen()),
+              // Lot 7 : élèves de ses formations qui décrochent, à relancer.
+              MoreEntry(l.dpTitle, PhosphorIconsRegular.warningCircle,
+                  (_) => const DropoutAlertsScreen()),
               MoreEntry(
                   l.shellTabEarnings,
                   PhosphorIconsRegular.wallet,

@@ -100,7 +100,7 @@ void main() {
     await pomper(tester, const Duration(milliseconds: 400));
     await reseau(tester);
     expect(find.byType(MoreScreen), findsOneWidget);
-    for (final t in [l.shellTabCatalog, l.mobileHomeSessions, l.shellTabEarnings, l.mobileHomeCorrections, l.settingsTitle]) {
+    for (final t in [l.shellTabCatalog, l.mobileHomeSessions, l.dpTitle, l.shellTabEarnings, l.mobileHomeCorrections, l.settingsTitle]) {
       expect(find.text(t), findsWidgets, reason: t);
     }
     final sortie = find.text(l.commonLogout);

@@ -9154,4 +9154,71 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get msgActions => 'React or reply';
+
+  @override
+  String get dpTitle => 'Dropout alerts';
+
+  @override
+  String get dpEmpty => 'No students to follow up.';
+
+  @override
+  String get dpEmptyHint =>
+      'WinPlus flags the students of your courses who are falling behind here.';
+
+  @override
+  String dpDetected(String date) {
+    return 'Flagged on $date';
+  }
+
+  @override
+  String get dpRelaunch => 'Follow up';
+
+  @override
+  String dpRelaunchAll(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Follow up all $count students',
+      one: 'Follow up the student',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get dpConfirmTitle => 'Follow up students';
+
+  @override
+  String dpConfirmAll(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Send a follow-up message to these $count students?',
+      one: 'Send a follow-up message to this student?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String dpSent(String name) {
+    return 'Message sent to $name.';
+  }
+
+  @override
+  String dpSentMany(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count students followed up.',
+      one: '1 student followed up.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String dpSentPartial(int sent, int total) {
+    return '$sent of $total students followed up; try again for the others.';
+  }
+
+  @override
+  String get dpSendError => 'The follow-up failed.';
 }

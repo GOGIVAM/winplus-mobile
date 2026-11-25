@@ -15745,6 +15745,78 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Réagir ou répondre'**
   String get msgActions;
+
+  /// No description provided for @dpTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Alertes de décrochage'**
+  String get dpTitle;
+
+  /// No description provided for @dpEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun élève à relancer.'**
+  String get dpEmpty;
+
+  /// No description provided for @dpEmptyHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'WinPlus signale ici les élèves de tes formations qui décrochent.'**
+  String get dpEmptyHint;
+
+  /// No description provided for @dpDetected.
+  ///
+  /// In fr, this message translates to:
+  /// **'Signalé le {date}'**
+  String dpDetected(String date);
+
+  /// No description provided for @dpRelaunch.
+  ///
+  /// In fr, this message translates to:
+  /// **'Relancer'**
+  String get dpRelaunch;
+
+  /// No description provided for @dpRelaunchAll.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{Relancer l’élève} other{Relancer les {count} élèves}}'**
+  String dpRelaunchAll(int count);
+
+  /// No description provided for @dpConfirmTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Relancer les élèves'**
+  String get dpConfirmTitle;
+
+  /// No description provided for @dpConfirmAll.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{Envoyer un message de relance à cet élève ?} other{Envoyer un message de relance à ces {count} élèves ?}}'**
+  String dpConfirmAll(int count);
+
+  /// No description provided for @dpSent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Message envoyé à {name}.'**
+  String dpSent(String name);
+
+  /// No description provided for @dpSentMany.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{1 élève relancé.} other{{count} élèves relancés.}}'**
+  String dpSentMany(int count);
+
+  /// No description provided for @dpSentPartial.
+  ///
+  /// In fr, this message translates to:
+  /// **'{sent} sur {total} élèves relancés ; réessaie pour les autres.'**
+  String dpSentPartial(int sent, int total);
+
+  /// No description provided for @dpSendError.
+  ///
+  /// In fr, this message translates to:
+  /// **'La relance n’a pas abouti.'**
+  String get dpSendError;
 }
 
 class _AppLocalizationsDelegate

@@ -9233,4 +9233,71 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get msgActions => 'Réagir ou répondre';
+
+  @override
+  String get dpTitle => 'Alertes de décrochage';
+
+  @override
+  String get dpEmpty => 'Aucun élève à relancer.';
+
+  @override
+  String get dpEmptyHint =>
+      'WinPlus signale ici les élèves de tes formations qui décrochent.';
+
+  @override
+  String dpDetected(String date) {
+    return 'Signalé le $date';
+  }
+
+  @override
+  String get dpRelaunch => 'Relancer';
+
+  @override
+  String dpRelaunchAll(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Relancer les $count élèves',
+      one: 'Relancer l’élève',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get dpConfirmTitle => 'Relancer les élèves';
+
+  @override
+  String dpConfirmAll(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Envoyer un message de relance à ces $count élèves ?',
+      one: 'Envoyer un message de relance à cet élève ?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String dpSent(String name) {
+    return 'Message envoyé à $name.';
+  }
+
+  @override
+  String dpSentMany(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count élèves relancés.',
+      one: '1 élève relancé.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String dpSentPartial(int sent, int total) {
+    return '$sent sur $total élèves relancés ; réessaie pour les autres.';
+  }
+
+  @override
+  String get dpSendError => 'La relance n’a pas abouti.';
 }

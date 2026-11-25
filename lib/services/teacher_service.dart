@@ -189,6 +189,23 @@ class TeacherService {
   /// GET /sessions/mine — séances du professeur entre [from] et [to]
   /// (calendrier du site). Une erreur remonte : l'écran affiche « réessayer »
   /// au lieu d'une liste vide trompeuse.
+  /// Alertes de décrochage non traitées, toutes formations confondues, les
+  /// plus récentes d'abord. Lève une erreur si le serveur ne répond pas.
+  Future<List<ApiDropoutAlert>> getDropoutAlerts() async {
+    final res = await _api.dio.get('/teacher/alertes-decrochage');
+    final raw = res.data is Map ? (res.data as Map)['data'] : res.data;
+    return (raw is List ? raw : const [])
+        .whereType<Map<String, dynamic>>()
+        .map(ApiDropoutAlert.fromJson)
+        .toList();
+  }
+
+  /// Relance l'élève : le serveur lui envoie un message (rédigé par WinAI
+  /// quand le plan le permet) et marque l'alerte traitée.
+  Future<void> relaunchDropoutAlert(int id) async {
+    await _api.dio.post('/teacher/alertes/$id/relancer');
+  }
+
   Future<List<ApiTeachingSession>> getMySessions(
       {DateTime? from, DateTime? to}) async {
     final res = await _api.dio.get('/sessions/mine', queryParameters: {
@@ -555,4 +572,42 @@ class ApiTeachingSession {
   /// Salle de visio WinPlus, comme sur le site : séance en direct sans lien
   /// externe (Meet, Zoom…), non annulée.
   bool get hasWinPlusVisio => type == 'live' && externalLink == null && !isCancelled;
+}
+
+/// Alerte de décrochage d'un élève d'une formation du professeur
+/// (GET /teacher/alertes-decrochage), non traitée.
+class ApiDropoutAlert {
+  final int id;
+  final int courseId;
+  final String courseTitle;
+  final int studentId;
+  final String studentName;
+  final String? studentAvatarUrl;
+  final String level;
+  final List<String> signals;
+  final DateTime? detectedAt;
+
+  const ApiDropoutAlert({
+    required this.id,
+    required this.courseId,
+    required this.courseTitle,
+    required this.studentId,
+    required this.studentName,
+    this.studentAvatarUrl,
+    required this.level,
+    required this.signals,
+    this.detectedAt,
+  });
+
+  factory ApiDropoutAlert.fromJson(Map<String, dynamic> j) => ApiDropoutAlert(
+        id: (j['id'] as num?)?.toInt() ?? 0,
+        courseId: (j['courseId'] as num?)?.toInt() ?? 0,
+        courseTitle: j['courseTitle']?.toString() ?? '',
+        studentId: (j['studentUserId'] as num?)?.toInt() ?? 0,
+        studentName: j['studentName']?.toString() ?? '',
+        studentAvatarUrl: j['studentAvatarUrl'] as String?,
+        level: j['niveau']?.toString() ?? '',
+        signals: (j['signaux'] as List? ?? const []).map((e) => '$e').toList(),
+        detectedAt: DateTime.tryParse(j['dateDetection']?.toString() ?? '')?.toLocal(),
+      );
 }
