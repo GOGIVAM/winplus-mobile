@@ -9385,4 +9385,94 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get crError => 'La fiche n’a pas pu être générée.';
+
+  @override
+  String get helpTitle => 'Aide et contact';
+
+  @override
+  String get helpFaq => 'Questions fréquentes';
+
+  @override
+  String get helpQ1 => 'Qu’est-ce que WinPlus ?';
+
+  @override
+  String get helpA1 =>
+      'WinPlus prépare aux examens et concours au Cameroun : annales corrigées, exercices interactifs et WinAI, disponible à toute heure, du BEPC jusqu’aux grands concours (ENSP, FMSB, ENS…).';
+
+  @override
+  String get helpQ2 => 'Qui peut utiliser WinPlus ?';
+
+  @override
+  String get helpA2 =>
+      'Les élèves de tous les niveaux, les parents qui suivent le parcours de leurs enfants, les professeurs et les établissements.';
+
+  @override
+  String get helpQ3 => 'Combien coûte l’abonnement ?';
+
+  @override
+  String get helpA3 =>
+      'Le plan Gratuit permet de découvrir WinPlus. Les plans payants (élève, parent, professeur) et leurs prix TTC au mois, au trimestre et à l’année sont dans « Abonnement ».';
+
+  @override
+  String get helpQ4 => 'Comment réinitialiser mon mot de passe ?';
+
+  @override
+  String get helpA4 =>
+      'Sur l’écran de connexion, touche « Mot de passe oublié », saisis ton e-mail et suis les instructions reçues.';
+
+  @override
+  String get helpQ5 => 'Puis-je consulter les annales hors connexion ?';
+
+  @override
+  String get helpA5 =>
+      'Non : les annales se consultent dans la visionneuse de WinPlus, avec une connexion, et ne sont pas téléchargeables. Les leçons de formation peuvent, elles, être enregistrées pour les regarder sans réseau.';
+
+  @override
+  String get helpQ6 => 'Quels moyens de paiement ?';
+
+  @override
+  String get helpA6 =>
+      'Dans l’application, le paiement se fait par Mobile Money (MTN, Orange) ou avec le solde de ton portefeuille WinPlus.';
+
+  @override
+  String get helpQ7 => 'Puis-je annuler mon abonnement ?';
+
+  @override
+  String get helpA7 =>
+      'Oui, à tout moment depuis « Abonnement ». L’annulation prend effet à la fin de la période en cours.';
+
+  @override
+  String get helpQ8 => 'Quelle connexion faut-il ?';
+
+  @override
+  String get helpA8 =>
+      'Une connexion de 1 à 2 Mbit/s suffit pour naviguer ; les vidéos en HD demandent au moins 5 Mbit/s. Sans réseau, les écrans déjà ouverts restent consultables et tes actions partent au retour de la connexion.';
+
+  @override
+  String get helpWrite => 'Nous écrire';
+
+  @override
+  String get helpWriteText =>
+      'Une question, un problème de paiement ou de compte ? Écris au support : ton application e-mail s’ouvre avec le message prêt à compléter.';
+
+  @override
+  String get helpWriteButton => 'Écrire au support';
+
+  @override
+  String get helpMailSubject => 'Aide WinPlus (application)';
+
+  @override
+  String helpMailBody(String email, String role) {
+    return 'Bonjour,\n\n\n\n---\nCompte : $email\nProfil : $role';
+  }
+
+  @override
+  String get helpNoMailApp =>
+      'Aucune application e-mail : écris à support@winplus.cm.';
+
+  @override
+  String get helpCopy => 'Copier l’adresse';
+
+  @override
+  String get helpCopied => 'Adresse copiée.';
 }

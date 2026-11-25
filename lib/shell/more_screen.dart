@@ -10,6 +10,7 @@ import '../theme/win_motion.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
+import '../shared/help_screen.dart';
 import 'settings_screen.dart';
 
 /// Entrée de l'onglet « Plus » : une fonction de l'espace qui n'a pas sa
@@ -137,6 +138,11 @@ class _MoreScreenState extends State<MoreScreen> {
               icon: PhosphorIconsRegular.gearSix,
               label: l.settingsTitle,
               onTap: () => _open((_) => const SettingsScreen())),
+          // Lot 7 : aide et contact à un appui, comme en bas du menu du site.
+          MoreLine(
+              icon: PhosphorIconsRegular.lifebuoy,
+              label: l.helpTitle,
+              onTap: () => _open((_) => const HelpScreen())),
         ]),
         const SizedBox(height: 20),
 

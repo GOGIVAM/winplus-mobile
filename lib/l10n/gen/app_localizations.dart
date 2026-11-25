@@ -15955,6 +15955,162 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'La fiche n’a pas pu être générée.'**
   String get crError;
+
+  /// No description provided for @helpTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aide et contact'**
+  String get helpTitle;
+
+  /// No description provided for @helpFaq.
+  ///
+  /// In fr, this message translates to:
+  /// **'Questions fréquentes'**
+  String get helpFaq;
+
+  /// No description provided for @helpQ1.
+  ///
+  /// In fr, this message translates to:
+  /// **'Qu’est-ce que WinPlus ?'**
+  String get helpQ1;
+
+  /// No description provided for @helpA1.
+  ///
+  /// In fr, this message translates to:
+  /// **'WinPlus prépare aux examens et concours au Cameroun : annales corrigées, exercices interactifs et WinAI, disponible à toute heure, du BEPC jusqu’aux grands concours (ENSP, FMSB, ENS…).'**
+  String get helpA1;
+
+  /// No description provided for @helpQ2.
+  ///
+  /// In fr, this message translates to:
+  /// **'Qui peut utiliser WinPlus ?'**
+  String get helpQ2;
+
+  /// No description provided for @helpA2.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les élèves de tous les niveaux, les parents qui suivent le parcours de leurs enfants, les professeurs et les établissements.'**
+  String get helpA2;
+
+  /// No description provided for @helpQ3.
+  ///
+  /// In fr, this message translates to:
+  /// **'Combien coûte l’abonnement ?'**
+  String get helpQ3;
+
+  /// No description provided for @helpA3.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le plan Gratuit permet de découvrir WinPlus. Les plans payants (élève, parent, professeur) et leurs prix TTC au mois, au trimestre et à l’année sont dans « Abonnement ».'**
+  String get helpA3;
+
+  /// No description provided for @helpQ4.
+  ///
+  /// In fr, this message translates to:
+  /// **'Comment réinitialiser mon mot de passe ?'**
+  String get helpQ4;
+
+  /// No description provided for @helpA4.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sur l’écran de connexion, touche « Mot de passe oublié », saisis ton e-mail et suis les instructions reçues.'**
+  String get helpA4;
+
+  /// No description provided for @helpQ5.
+  ///
+  /// In fr, this message translates to:
+  /// **'Puis-je consulter les annales hors connexion ?'**
+  String get helpQ5;
+
+  /// No description provided for @helpA5.
+  ///
+  /// In fr, this message translates to:
+  /// **'Non : les annales se consultent dans la visionneuse de WinPlus, avec une connexion, et ne sont pas téléchargeables. Les leçons de formation peuvent, elles, être enregistrées pour les regarder sans réseau.'**
+  String get helpA5;
+
+  /// No description provided for @helpQ6.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quels moyens de paiement ?'**
+  String get helpQ6;
+
+  /// No description provided for @helpA6.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dans l’application, le paiement se fait par Mobile Money (MTN, Orange) ou avec le solde de ton portefeuille WinPlus.'**
+  String get helpA6;
+
+  /// No description provided for @helpQ7.
+  ///
+  /// In fr, this message translates to:
+  /// **'Puis-je annuler mon abonnement ?'**
+  String get helpQ7;
+
+  /// No description provided for @helpA7.
+  ///
+  /// In fr, this message translates to:
+  /// **'Oui, à tout moment depuis « Abonnement ». L’annulation prend effet à la fin de la période en cours.'**
+  String get helpA7;
+
+  /// No description provided for @helpQ8.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quelle connexion faut-il ?'**
+  String get helpQ8;
+
+  /// No description provided for @helpA8.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une connexion de 1 à 2 Mbit/s suffit pour naviguer ; les vidéos en HD demandent au moins 5 Mbit/s. Sans réseau, les écrans déjà ouverts restent consultables et tes actions partent au retour de la connexion.'**
+  String get helpA8;
+
+  /// No description provided for @helpWrite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nous écrire'**
+  String get helpWrite;
+
+  /// No description provided for @helpWriteText.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une question, un problème de paiement ou de compte ? Écris au support : ton application e-mail s’ouvre avec le message prêt à compléter.'**
+  String get helpWriteText;
+
+  /// No description provided for @helpWriteButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Écrire au support'**
+  String get helpWriteButton;
+
+  /// No description provided for @helpMailSubject.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aide WinPlus (application)'**
+  String get helpMailSubject;
+
+  /// No description provided for @helpMailBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bonjour,\n\n\n\n---\nCompte : {email}\nProfil : {role}'**
+  String helpMailBody(String email, String role);
+
+  /// No description provided for @helpNoMailApp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune application e-mail : écris à support@winplus.cm.'**
+  String get helpNoMailApp;
+
+  /// No description provided for @helpCopy.
+  ///
+  /// In fr, this message translates to:
+  /// **'Copier l’adresse'**
+  String get helpCopy;
+
+  /// No description provided for @helpCopied.
+  ///
+  /// In fr, this message translates to:
+  /// **'Adresse copiée.'**
+  String get helpCopied;
 }
 
 class _AppLocalizationsDelegate

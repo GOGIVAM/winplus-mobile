@@ -9306,4 +9306,93 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get crError => 'The sheet could not be generated.';
+
+  @override
+  String get helpTitle => 'Help and contact';
+
+  @override
+  String get helpFaq => 'Frequently asked questions';
+
+  @override
+  String get helpQ1 => 'What is WinPlus?';
+
+  @override
+  String get helpA1 =>
+      'WinPlus prepares students for exams and competitive exams in Cameroon: corrected past papers, interactive exercises and WinAI, available at any time, from BEPC to the major competitive exams (ENSP, FMSB, ENS…).';
+
+  @override
+  String get helpQ2 => 'Who can use WinPlus?';
+
+  @override
+  String get helpA2 =>
+      'Students of all levels, parents following their children, teachers and schools.';
+
+  @override
+  String get helpQ3 => 'How much does the subscription cost?';
+
+  @override
+  String get helpA3 =>
+      'The Free plan lets you discover WinPlus. Paid plans (student, parent, teacher) and their prices per month, quarter and year are in “Subscription”.';
+
+  @override
+  String get helpQ4 => 'How do I reset my password?';
+
+  @override
+  String get helpA4 =>
+      'On the sign-in screen, tap “Forgot password”, enter your e-mail and follow the instructions you receive.';
+
+  @override
+  String get helpQ5 => 'Can I read past papers offline?';
+
+  @override
+  String get helpA5 =>
+      'No: past papers are read in the WinPlus viewer, online, and cannot be downloaded. Course lessons, however, can be saved to watch without a connection.';
+
+  @override
+  String get helpQ6 => 'Which payment methods?';
+
+  @override
+  String get helpA6 =>
+      'In the app, you pay with Mobile Money (MTN, Orange) or with your WinPlus wallet balance.';
+
+  @override
+  String get helpQ7 => 'Can I cancel my subscription?';
+
+  @override
+  String get helpA7 =>
+      'Yes, at any time from “Subscription”. Cancellation takes effect at the end of the current period.';
+
+  @override
+  String get helpQ8 => 'What connection do I need?';
+
+  @override
+  String get helpA8 =>
+      '1 to 2 Mbit/s is enough to browse; HD videos need at least 5 Mbit/s. Offline, screens you already opened stay readable and your actions are sent when you are back online.';
+
+  @override
+  String get helpWrite => 'Write to us';
+
+  @override
+  String get helpWriteText =>
+      'A question, a payment or account issue? Write to support: your e-mail app opens with the message ready to complete.';
+
+  @override
+  String get helpWriteButton => 'Write to support';
+
+  @override
+  String get helpMailSubject => 'WinPlus help (app)';
+
+  @override
+  String helpMailBody(String email, String role) {
+    return 'Hello,\n\n\n\n---\nAccount: $email\nProfile: $role';
+  }
+
+  @override
+  String get helpNoMailApp => 'No e-mail app: write to support@winplus.cm.';
+
+  @override
+  String get helpCopy => 'Copy the address';
+
+  @override
+  String get helpCopied => 'Address copied.';
 }

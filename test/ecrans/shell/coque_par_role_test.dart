@@ -134,6 +134,10 @@ void main() {
       final cours = find.text(l.liveTitle);
       await tester.scrollUntilVisible(cours, 200, scrollable: find.byType(Scrollable).last);
       expect(cours, findsOneWidget, reason: '$role');
+      // Lot 7 : aide et contact, sous « Paramètres », pour chaque espace.
+      final aide = find.text(l.helpTitle);
+      await tester.scrollUntilVisible(aide, 200, scrollable: find.byType(Scrollable).last);
+      expect(aide, findsOneWidget, reason: '$role');
       final ligne = find.text(l.settingsTitle);
       await tester.scrollUntilVisible(ligne, 200, scrollable: find.byType(Scrollable).last);
       await tester.tap(ligne);
