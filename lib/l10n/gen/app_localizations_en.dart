@@ -10366,4 +10366,365 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get concFaq => 'Frequently asked questions';
+
+  @override
+  String get peersScopePlatform => 'All students';
+
+  @override
+  String get peersScopeLevel => 'My level';
+
+  @override
+  String get peersScopeClass => 'My class';
+
+  @override
+  String peersScopeGroup(int count) {
+    return 'Anonymous comparison with $count students active over the last 30 days (quiz average, out of 20).';
+  }
+
+  @override
+  String peersGroupAverage(String group) {
+    return 'Average: $group';
+  }
+
+  @override
+  String peersYourAverage(String avg) {
+    return 'Your average: $avg / 20';
+  }
+
+  @override
+  String get peersSubjects => 'By subject';
+
+  @override
+  String peersSubjectLine(String you, String group) {
+    return 'You $you / 20 · group $group / 20';
+  }
+
+  @override
+  String peersSubjectYou(String you) {
+    return 'You $you / 20';
+  }
+
+  @override
+  String get peersNoClass =>
+      'No class is linked to your account. Your school or teacher can add you to your class.';
+
+  @override
+  String get peersNoLevel =>
+      'Your level is not set: add it to your profile to compare yourself with students at your level.';
+
+  @override
+  String get peersTooSmall =>
+      'Too few students took quizzes over the last 30 days to compare (at least 5 are needed).';
+
+  @override
+  String get mockTitle => 'Mock exams';
+
+  @override
+  String get mockPublished => 'Published';
+
+  @override
+  String get mockUpcoming => 'Scheduled';
+
+  @override
+  String get mockToPublish => 'To publish';
+
+  @override
+  String get mockOpen => 'In progress';
+
+  @override
+  String get mockEmptyTitle => 'No mock exam';
+
+  @override
+  String get mockEmptyText =>
+      'Schedule a timed mock exam for one or more classes, from a past paper or a quiz. Students are notified and find it in My homework.';
+
+  @override
+  String get mockCreate => 'Schedule an exam';
+
+  @override
+  String mockDuration(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String mockWindow(String opens, String closes) {
+    return 'From $opens to $closes';
+  }
+
+  @override
+  String mockSubmitted(int submitted, int expected) {
+    return '$submitted of $expected handed in';
+  }
+
+  @override
+  String mockAverage(String avg) {
+    return 'average $avg';
+  }
+
+  @override
+  String get mockSubject => 'Subject';
+
+  @override
+  String get mockKindExam => 'Past paper';
+
+  @override
+  String get mockKindQuiz => 'Quiz';
+
+  @override
+  String get mockSearchExam => 'Search a past paper (at least 2 letters)';
+
+  @override
+  String get mockSearchQuiz => 'Search a quiz (at least 2 letters)';
+
+  @override
+  String get mockChangeSubject => 'Change subject';
+
+  @override
+  String get mockClasses => 'Classes';
+
+  @override
+  String get mockNoClass => 'First create a class in the Classes tab.';
+
+  @override
+  String get mockWindowTitle => 'Opening';
+
+  @override
+  String get mockOpens => 'Opens on';
+
+  @override
+  String get mockCloses => 'Closes on';
+
+  @override
+  String get mockDurationLabel => 'Exam duration';
+
+  @override
+  String get mockTitleLabel => 'Title (optional)';
+
+  @override
+  String get mockTitleHint => 'Default: Mock exam · subject name';
+
+  @override
+  String get mockSchedule => 'Schedule';
+
+  @override
+  String get mockNeedSubject => 'Choose a past paper or a quiz.';
+
+  @override
+  String get mockNeedClass => 'Choose at least one class.';
+
+  @override
+  String get mockCloseAfterOpen => 'Closing must come after opening.';
+
+  @override
+  String get mockDurationRange => 'Duration between 5 minutes and 8 hours.';
+
+  @override
+  String mockCreated(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Exam scheduled: $count students notified.',
+      one: 'Exam scheduled: 1 student notified.',
+      zero: 'Exam scheduled.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get mockCopies => 'Handed in';
+
+  @override
+  String get mockAverageLabel => 'Average';
+
+  @override
+  String get mockPublish => 'Publish results';
+
+  @override
+  String get mockPublishConfirm =>
+      'Students will see their mark and rank, and will be notified. Papers handed in after publication won\'t count.';
+
+  @override
+  String get mockPublishedDone => 'Results published, students notified.';
+
+  @override
+  String mockPublishedOn(String date) {
+    return 'Results published on $date.';
+  }
+
+  @override
+  String get mockDistribution => 'Mark distribution';
+
+  @override
+  String get mockByClass => 'By class';
+
+  @override
+  String get mockRanking => 'Ranking';
+
+  @override
+  String get mockNoCopy => 'No paper handed in yet.';
+
+  @override
+  String mockMinutes(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String mockAbsent(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count absent',
+      one: '1 absent',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get mockDelete => 'Delete the exam';
+
+  @override
+  String get mockDeleteConfirm =>
+      'The mock exam disappears for the school and for students. Attempts already made stay in their history.';
+
+  @override
+  String get bullTitle => 'Report cards';
+
+  @override
+  String bullPeriod(String from, String to) {
+    return 'from $from to $to';
+  }
+
+  @override
+  String get bullAverage => 'Overall average';
+
+  @override
+  String get bullRank => 'Class rank';
+
+  @override
+  String bullClassAverage(String avg) {
+    return 'Class average: $avg';
+  }
+
+  @override
+  String get bullSubjects => 'By subject';
+
+  @override
+  String get bullNoQuiz => 'No quiz completed during the period.';
+
+  @override
+  String bullQuizzes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count quizzes',
+      one: '1 quiz',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String bullClass(String avg) {
+    return 'class $avg';
+  }
+
+  @override
+  String get bullHomework => 'Homework handed in';
+
+  @override
+  String get bullHomeworkAverage => 'Homework average';
+
+  @override
+  String get bullActiveDays => 'Days of work';
+
+  @override
+  String get bullStudyTime => 'Study time';
+
+  @override
+  String get bullQuizCount => 'Quizzes completed';
+
+  @override
+  String get bullAppreciation => 'Teacher\'s comment';
+
+  @override
+  String get bullUnreadable => 'This report card cannot be displayed.';
+
+  @override
+  String get bullMineTitle => 'My report cards';
+
+  @override
+  String get bullMineEmptyTitle => 'No report card';
+
+  @override
+  String get bullMineEmptyText =>
+      'Report cards shared by your school arrive here, with a notification.';
+
+  @override
+  String bullSharedOn(String date) {
+    return 'shared on $date';
+  }
+
+  @override
+  String get bullDelete => 'Withdraw the report card';
+
+  @override
+  String get bullDeleteConfirm =>
+      'The report card will no longer be visible to the student or their parents.';
+
+  @override
+  String get bullEmptyTitle => 'No report card shared';
+
+  @override
+  String get bullEmptyText =>
+      'Prepare a student\'s report card: average, rank, subjects, homework and regularity are computed from their work on WinPlus. You review it, add a comment, then share it with the student and their parents.';
+
+  @override
+  String get bullPrepare => 'Prepare a report card';
+
+  @override
+  String get bullStudent => 'Student';
+
+  @override
+  String get bullChangeStudent => 'Change student';
+
+  @override
+  String get bullSearchStudent => 'Search a student (at least 2 letters)';
+
+  @override
+  String get bullPeriodTitle => 'Period';
+
+  @override
+  String get bullFrom => 'From';
+
+  @override
+  String get bullTo => 'To';
+
+  @override
+  String get bullLabelHint => 'Period name (e.g. 1st term)';
+
+  @override
+  String get bullPreview => 'Compute the report card';
+
+  @override
+  String get bullAppreciationHint => 'Comment (optional)';
+
+  @override
+  String get bullWriteWithWinai => 'Suggest a comment with WinAI';
+
+  @override
+  String get bullShare => 'Share with the student and parents';
+
+  @override
+  String get bullNeedLabel => 'Name the period (e.g. 1st term).';
+
+  @override
+  String bullShared(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Report card shared with the student and $count parents.',
+      one: 'Report card shared with the student and 1 parent.',
+      zero: 'Report card shared with the student.',
+    );
+    return '$_temp0';
+  }
 }

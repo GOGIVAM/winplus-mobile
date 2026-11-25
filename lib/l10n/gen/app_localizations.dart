@@ -17744,6 +17744,582 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Questions fréquentes'**
   String get concFaq;
+
+  /// No description provided for @peersScopePlatform.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tous les élèves'**
+  String get peersScopePlatform;
+
+  /// No description provided for @peersScopeLevel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mon niveau'**
+  String get peersScopeLevel;
+
+  /// No description provided for @peersScopeClass.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ma classe'**
+  String get peersScopeClass;
+
+  /// No description provided for @peersScopeGroup.
+  ///
+  /// In fr, this message translates to:
+  /// **'Comparaison anonyme avec {count} élèves actifs ces 30 derniers jours (moyenne des quiz, sur 20).'**
+  String peersScopeGroup(int count);
+
+  /// No description provided for @peersGroupAverage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Moyenne : {group}'**
+  String peersGroupAverage(String group);
+
+  /// No description provided for @peersYourAverage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ta moyenne : {avg} / 20'**
+  String peersYourAverage(String avg);
+
+  /// No description provided for @peersSubjects.
+  ///
+  /// In fr, this message translates to:
+  /// **'Par matière'**
+  String get peersSubjects;
+
+  /// No description provided for @peersSubjectLine.
+  ///
+  /// In fr, this message translates to:
+  /// **'Toi {you} / 20 · groupe {group} / 20'**
+  String peersSubjectLine(String you, String group);
+
+  /// No description provided for @peersSubjectYou.
+  ///
+  /// In fr, this message translates to:
+  /// **'Toi {you} / 20'**
+  String peersSubjectYou(String you);
+
+  /// No description provided for @peersNoClass.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune classe n’est rattachée à ton compte. Ton établissement ou ton professeur peut t’ajouter à ta classe.'**
+  String get peersNoClass;
+
+  /// No description provided for @peersNoLevel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ton niveau n’est pas renseigné : ajoute-le dans ton profil pour te comparer aux élèves de ton niveau.'**
+  String get peersNoLevel;
+
+  /// No description provided for @peersTooSmall.
+  ///
+  /// In fr, this message translates to:
+  /// **'Trop peu d’élèves ont fait des quiz ces 30 derniers jours pour comparer (il en faut au moins 5).'**
+  String get peersTooSmall;
+
+  /// No description provided for @mockTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Examens blancs'**
+  String get mockTitle;
+
+  /// No description provided for @mockPublished.
+  ///
+  /// In fr, this message translates to:
+  /// **'Publié'**
+  String get mockPublished;
+
+  /// No description provided for @mockUpcoming.
+  ///
+  /// In fr, this message translates to:
+  /// **'Programmé'**
+  String get mockUpcoming;
+
+  /// No description provided for @mockToPublish.
+  ///
+  /// In fr, this message translates to:
+  /// **'À publier'**
+  String get mockToPublish;
+
+  /// No description provided for @mockOpen.
+  ///
+  /// In fr, this message translates to:
+  /// **'En cours'**
+  String get mockOpen;
+
+  /// No description provided for @mockEmptyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun examen blanc'**
+  String get mockEmptyTitle;
+
+  /// No description provided for @mockEmptyText.
+  ///
+  /// In fr, this message translates to:
+  /// **'Programmez un examen blanc chronométré pour une ou plusieurs classes, à partir d’une épreuve ou d’un quiz. Les élèves sont prévenus et le retrouvent dans Mes devoirs.'**
+  String get mockEmptyText;
+
+  /// No description provided for @mockCreate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Programmer un examen'**
+  String get mockCreate;
+
+  /// No description provided for @mockDuration.
+  ///
+  /// In fr, this message translates to:
+  /// **'{minutes} min'**
+  String mockDuration(int minutes);
+
+  /// No description provided for @mockWindow.
+  ///
+  /// In fr, this message translates to:
+  /// **'Du {opens} au {closes}'**
+  String mockWindow(String opens, String closes);
+
+  /// No description provided for @mockSubmitted.
+  ///
+  /// In fr, this message translates to:
+  /// **'{submitted} copies sur {expected}'**
+  String mockSubmitted(int submitted, int expected);
+
+  /// No description provided for @mockAverage.
+  ///
+  /// In fr, this message translates to:
+  /// **'moyenne {avg}'**
+  String mockAverage(String avg);
+
+  /// No description provided for @mockSubject.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sujet'**
+  String get mockSubject;
+
+  /// No description provided for @mockKindExam.
+  ///
+  /// In fr, this message translates to:
+  /// **'Épreuve'**
+  String get mockKindExam;
+
+  /// No description provided for @mockKindQuiz.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quiz'**
+  String get mockKindQuiz;
+
+  /// No description provided for @mockSearchExam.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher une épreuve (au moins 2 lettres)'**
+  String get mockSearchExam;
+
+  /// No description provided for @mockSearchQuiz.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher un quiz (au moins 2 lettres)'**
+  String get mockSearchQuiz;
+
+  /// No description provided for @mockChangeSubject.
+  ///
+  /// In fr, this message translates to:
+  /// **'Changer de sujet'**
+  String get mockChangeSubject;
+
+  /// No description provided for @mockClasses.
+  ///
+  /// In fr, this message translates to:
+  /// **'Classes'**
+  String get mockClasses;
+
+  /// No description provided for @mockNoClass.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créez d’abord une classe dans l’onglet Classes.'**
+  String get mockNoClass;
+
+  /// No description provided for @mockWindowTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouverture'**
+  String get mockWindowTitle;
+
+  /// No description provided for @mockOpens.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouvre le'**
+  String get mockOpens;
+
+  /// No description provided for @mockCloses.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ferme le'**
+  String get mockCloses;
+
+  /// No description provided for @mockDurationLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Durée de l’épreuve'**
+  String get mockDurationLabel;
+
+  /// No description provided for @mockTitleLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Titre (facultatif)'**
+  String get mockTitleLabel;
+
+  /// No description provided for @mockTitleHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Par défaut : Examen blanc · nom du sujet'**
+  String get mockTitleHint;
+
+  /// No description provided for @mockSchedule.
+  ///
+  /// In fr, this message translates to:
+  /// **'Programmer'**
+  String get mockSchedule;
+
+  /// No description provided for @mockNeedSubject.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisissez une épreuve ou un quiz.'**
+  String get mockNeedSubject;
+
+  /// No description provided for @mockNeedClass.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisissez au moins une classe.'**
+  String get mockNeedClass;
+
+  /// No description provided for @mockCloseAfterOpen.
+  ///
+  /// In fr, this message translates to:
+  /// **'La fermeture doit suivre l’ouverture.'**
+  String get mockCloseAfterOpen;
+
+  /// No description provided for @mockDurationRange.
+  ///
+  /// In fr, this message translates to:
+  /// **'Durée entre 5 minutes et 8 heures.'**
+  String get mockDurationRange;
+
+  /// No description provided for @mockCreated.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =0{Examen programmé.} =1{Examen programmé : 1 élève prévenu.} other{Examen programmé : {count} élèves prévenus.}}'**
+  String mockCreated(int count);
+
+  /// No description provided for @mockCopies.
+  ///
+  /// In fr, this message translates to:
+  /// **'Copies rendues'**
+  String get mockCopies;
+
+  /// No description provided for @mockAverageLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Moyenne'**
+  String get mockAverageLabel;
+
+  /// No description provided for @mockPublish.
+  ///
+  /// In fr, this message translates to:
+  /// **'Publier les résultats'**
+  String get mockPublish;
+
+  /// No description provided for @mockPublishConfirm.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les élèves verront leur note et leur rang, et seront prévenus. Les copies rendues après la publication ne compteront pas.'**
+  String get mockPublishConfirm;
+
+  /// No description provided for @mockPublishedDone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Résultats publiés, élèves prévenus.'**
+  String get mockPublishedDone;
+
+  /// No description provided for @mockPublishedOn.
+  ///
+  /// In fr, this message translates to:
+  /// **'Résultats publiés le {date}.'**
+  String mockPublishedOn(String date);
+
+  /// No description provided for @mockDistribution.
+  ///
+  /// In fr, this message translates to:
+  /// **'Répartition des notes'**
+  String get mockDistribution;
+
+  /// No description provided for @mockByClass.
+  ///
+  /// In fr, this message translates to:
+  /// **'Par classe'**
+  String get mockByClass;
+
+  /// No description provided for @mockRanking.
+  ///
+  /// In fr, this message translates to:
+  /// **'Classement'**
+  String get mockRanking;
+
+  /// No description provided for @mockNoCopy.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune copie rendue pour l’instant.'**
+  String get mockNoCopy;
+
+  /// No description provided for @mockMinutes.
+  ///
+  /// In fr, this message translates to:
+  /// **'{minutes} min'**
+  String mockMinutes(int minutes);
+
+  /// No description provided for @mockAbsent.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{1 absent} other{{count} absents}}'**
+  String mockAbsent(int count);
+
+  /// No description provided for @mockDelete.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer l’examen'**
+  String get mockDelete;
+
+  /// No description provided for @mockDeleteConfirm.
+  ///
+  /// In fr, this message translates to:
+  /// **'L’examen blanc disparaît pour l’établissement et pour les élèves. Les tentatives déjà faites restent dans leur historique.'**
+  String get mockDeleteConfirm;
+
+  /// No description provided for @bullTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bulletins'**
+  String get bullTitle;
+
+  /// No description provided for @bullPeriod.
+  ///
+  /// In fr, this message translates to:
+  /// **'du {from} au {to}'**
+  String bullPeriod(String from, String to);
+
+  /// No description provided for @bullAverage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Moyenne générale'**
+  String get bullAverage;
+
+  /// No description provided for @bullRank.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rang dans la classe'**
+  String get bullRank;
+
+  /// No description provided for @bullClassAverage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Moyenne de la classe : {avg}'**
+  String bullClassAverage(String avg);
+
+  /// No description provided for @bullSubjects.
+  ///
+  /// In fr, this message translates to:
+  /// **'Par matière'**
+  String get bullSubjects;
+
+  /// No description provided for @bullNoQuiz.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun quiz terminé pendant la période.'**
+  String get bullNoQuiz;
+
+  /// No description provided for @bullQuizzes.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{1 quiz} other{{count} quiz}}'**
+  String bullQuizzes(int count);
+
+  /// No description provided for @bullClass.
+  ///
+  /// In fr, this message translates to:
+  /// **'classe {avg}'**
+  String bullClass(String avg);
+
+  /// No description provided for @bullHomework.
+  ///
+  /// In fr, this message translates to:
+  /// **'Devoirs rendus'**
+  String get bullHomework;
+
+  /// No description provided for @bullHomeworkAverage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Moyenne des devoirs'**
+  String get bullHomeworkAverage;
+
+  /// No description provided for @bullActiveDays.
+  ///
+  /// In fr, this message translates to:
+  /// **'Jours de travail'**
+  String get bullActiveDays;
+
+  /// No description provided for @bullStudyTime.
+  ///
+  /// In fr, this message translates to:
+  /// **'Temps d’étude'**
+  String get bullStudyTime;
+
+  /// No description provided for @bullQuizCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quiz terminés'**
+  String get bullQuizCount;
+
+  /// No description provided for @bullAppreciation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Appréciation'**
+  String get bullAppreciation;
+
+  /// No description provided for @bullUnreadable.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce bulletin ne peut pas être affiché.'**
+  String get bullUnreadable;
+
+  /// No description provided for @bullMineTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mes bulletins'**
+  String get bullMineTitle;
+
+  /// No description provided for @bullMineEmptyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun bulletin'**
+  String get bullMineEmptyTitle;
+
+  /// No description provided for @bullMineEmptyText.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les bulletins partagés par ton établissement arrivent ici, avec une notification.'**
+  String get bullMineEmptyText;
+
+  /// No description provided for @bullSharedOn.
+  ///
+  /// In fr, this message translates to:
+  /// **'partagé le {date}'**
+  String bullSharedOn(String date);
+
+  /// No description provided for @bullDelete.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retirer le bulletin'**
+  String get bullDelete;
+
+  /// No description provided for @bullDeleteConfirm.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le bulletin ne sera plus visible par l’élève ni par ses parents.'**
+  String get bullDeleteConfirm;
+
+  /// No description provided for @bullEmptyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun bulletin partagé'**
+  String get bullEmptyTitle;
+
+  /// No description provided for @bullEmptyText.
+  ///
+  /// In fr, this message translates to:
+  /// **'Préparez le bulletin d’un élève : moyenne, rang, matières, devoirs et régularité sont calculés à partir de son travail sur WinPlus. Vous le relisez, ajoutez une appréciation, puis le partagez à l’élève et à ses parents.'**
+  String get bullEmptyText;
+
+  /// No description provided for @bullPrepare.
+  ///
+  /// In fr, this message translates to:
+  /// **'Préparer un bulletin'**
+  String get bullPrepare;
+
+  /// No description provided for @bullStudent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Élève'**
+  String get bullStudent;
+
+  /// No description provided for @bullChangeStudent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Changer d’élève'**
+  String get bullChangeStudent;
+
+  /// No description provided for @bullSearchStudent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher un élève (au moins 2 lettres)'**
+  String get bullSearchStudent;
+
+  /// No description provided for @bullPeriodTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Période'**
+  String get bullPeriodTitle;
+
+  /// No description provided for @bullFrom.
+  ///
+  /// In fr, this message translates to:
+  /// **'Du'**
+  String get bullFrom;
+
+  /// No description provided for @bullTo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Au'**
+  String get bullTo;
+
+  /// No description provided for @bullLabelHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom de la période (ex. 1er trimestre)'**
+  String get bullLabelHint;
+
+  /// No description provided for @bullPreview.
+  ///
+  /// In fr, this message translates to:
+  /// **'Calculer le bulletin'**
+  String get bullPreview;
+
+  /// No description provided for @bullAppreciationHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Appréciation (facultative)'**
+  String get bullAppreciationHint;
+
+  /// No description provided for @bullWriteWithWinai.
+  ///
+  /// In fr, this message translates to:
+  /// **'Proposer une appréciation avec WinAI'**
+  String get bullWriteWithWinai;
+
+  /// No description provided for @bullShare.
+  ///
+  /// In fr, this message translates to:
+  /// **'Partager à l’élève et à ses parents'**
+  String get bullShare;
+
+  /// No description provided for @bullNeedLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Donnez un nom à la période (ex. 1er trimestre).'**
+  String get bullNeedLabel;
+
+  /// No description provided for @bullShared.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =0{Bulletin partagé à l’élève.} =1{Bulletin partagé à l’élève et à 1 parent.} other{Bulletin partagé à l’élève et à {count} parents.}}'**
+  String bullShared(int count);
 }
 
 class _AppLocalizationsDelegate

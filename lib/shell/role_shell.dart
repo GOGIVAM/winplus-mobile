@@ -34,6 +34,9 @@ import '../institution/regional_comparison_screen.dart';
 import '../teacher/teacher_library_screen.dart';
 import '../teacher/tutor_coaching_screen.dart';
 import '../shared/concours_screen.dart';
+import '../shared/bulletin_view.dart';
+import '../institution/mock_exams_screen.dart';
+import '../institution/bulletins_screen.dart';
 import '../institution/license_screen.dart';
 import '../institution/at_risk_screen.dart';
 import '../teacher/tutor_profile_screen.dart';
@@ -437,6 +440,7 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
               l.barometerTitle: l.moreGroupChildren,
               l.liveTitle: l.moreGroupChildren,
               l.concTitle: l.moreGroupChildren,
+              l.bullMineTitle: l.moreGroupChildren,
               l.shellTabProfile: l.moreGroupAccount,
             }, entries: [
               MoreEntry(
@@ -452,6 +456,9 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
               // Lot 7 : concours et examens de l'enfant (calendrier, épreuves).
               MoreEntry(l.concTitle, PhosphorIconsRegular.graduationCap,
                   (_) => const ConcoursHubScreen()),
+              // Lot 7 : bulletins des enfants partagés par leur établissement.
+              MoreEntry(l.bullMineTitle, PhosphorIconsRegular.scroll,
+                  (_) => const MyBulletinsScreen()),
             ]),
           ],
         WinRole.teacher => [
@@ -540,6 +547,8 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
               l.instRiskTitle: l.moreGroupSteer,
               l.instReportsTitle: l.moreGroupSteer,
               l.regCmpTitle: l.moreGroupSteer,
+              l.mockTitle: l.moreGroupSteer,
+              l.bullTitle: l.moreGroupSteer,
               l.mobileHomeDirectory: l.moreGroupSteer,
               l.shellTabCatalog: l.moreGroupResources,
               l.liveTitle: l.moreGroupResources,
@@ -565,6 +574,12 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
               // Lot 7 : rang anonyme parmi les établissements de la région.
               MoreEntry(l.regCmpTitle, PhosphorIconsRegular.ranking,
                   (_) => const RegionalComparisonScreen()),
+              // Lot 7 : examens blancs chronométrés et classement.
+              MoreEntry(l.mockTitle, PhosphorIconsRegular.exam,
+                  (_) => const MockExamsScreen()),
+              // Lot 7 : bulletins calculés, appréciation WinAI, partage.
+              MoreEntry(l.bullTitle, PhosphorIconsRegular.scroll,
+                  (_) => const InstitutionBulletinsScreen()),
               // Lot 7 : annonces aux élèves et aux parents, comme le site.
               MoreEntry(l.annTitle, PhosphorIconsRegular.megaphone,
                   (_) => const InstitutionAnnouncementsScreen()),

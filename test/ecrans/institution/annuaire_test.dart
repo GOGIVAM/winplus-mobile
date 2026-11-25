@@ -59,7 +59,7 @@ void main() {
     await monterEcran(tester, const StudentDirectoryScreen());
     await tester.enterText(find.byType(TextField).last, 'ada');
     await reseau(tester);
-    expect(faux.recues('GET', '/institution/4/students').last.queryParameters['q'], 'ada');
+    expect(faux.recues('GET', '/institution/4/students').last.queryParameters['search'], 'ada');
   });
 
   testWidgets('ajout sans e-mail : message et aucun envoi', (tester) async {

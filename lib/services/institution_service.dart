@@ -2,6 +2,9 @@ import 'api_client.dart';
 
 class ApiInstitutionStudent {
   final int id;
+
+  /// Compte de l'élève (id est la ligne de rattachement à l'établissement).
+  final int studentId;
   final String firstName;
   final String lastName;
   final String email;
@@ -13,6 +16,7 @@ class ApiInstitutionStudent {
 
   const ApiInstitutionStudent({
     required this.id,
+    this.studentId = 0,
     required this.firstName,
     required this.lastName,
     required this.email,
@@ -28,6 +32,7 @@ class ApiInstitutionStudent {
   factory ApiInstitutionStudent.fromJson(Map<String, dynamic> j) =>
       ApiInstitutionStudent(
         id: j['id'] as int? ?? 0,
+        studentId: (j['studentId'] as num?)?.toInt() ?? (j['id'] as int? ?? 0),
         firstName: j['firstName'] as String? ?? '',
         lastName: j['lastName'] as String? ?? '',
         email: j['email'] as String? ?? '',
@@ -425,7 +430,9 @@ class InstitutionService {
     final res = await _api.dio.get(
       '/institution/$institutionId/students',
       queryParameters: {
-        if (q != null && q.isNotEmpty) 'q': q,
+        // Le serveur lit « search » (avant : « q », ignoré : la recherche
+        // de l'annuaire ne filtrait rien).
+        if (q != null && q.isNotEmpty) 'search': q,
         'page': page,
         'pageSize': pageSize,
       },

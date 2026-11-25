@@ -164,14 +164,14 @@ void main() {
       await expectLater(InstitutionService.instance.getActionPlan(), throwsA(anything));
     });
 
-    test('annuaire des eleves : filtre q seulement s\'il est non vide, liste ou { items }', () async {
+    test('annuaire des eleves : filtre search seulement s\'il est non vide, liste ou { items }', () async {
       faux.repond('GET', '/institution/4/students', {
         'items': [
           {'id': 1, 'firstName': 'A'},
         ],
       });
       expect(await InstitutionService.instance.getStudentDirectory(4, q: 'ad'), hasLength(1));
-      expect(faux.requetes.last.queryParameters, {'q': 'ad', 'page': 1, 'pageSize': 50});
+      expect(faux.requetes.last.queryParameters, {'search': 'ad', 'page': 1, 'pageSize': 50});
       faux.repond('GET', '/institution/4/students', [
         {'id': 1},
         {'id': 2},

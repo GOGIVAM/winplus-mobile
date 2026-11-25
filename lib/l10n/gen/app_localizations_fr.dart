@@ -10456,4 +10456,365 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get concFaq => 'Questions fréquentes';
+
+  @override
+  String get peersScopePlatform => 'Tous les élèves';
+
+  @override
+  String get peersScopeLevel => 'Mon niveau';
+
+  @override
+  String get peersScopeClass => 'Ma classe';
+
+  @override
+  String peersScopeGroup(int count) {
+    return 'Comparaison anonyme avec $count élèves actifs ces 30 derniers jours (moyenne des quiz, sur 20).';
+  }
+
+  @override
+  String peersGroupAverage(String group) {
+    return 'Moyenne : $group';
+  }
+
+  @override
+  String peersYourAverage(String avg) {
+    return 'Ta moyenne : $avg / 20';
+  }
+
+  @override
+  String get peersSubjects => 'Par matière';
+
+  @override
+  String peersSubjectLine(String you, String group) {
+    return 'Toi $you / 20 · groupe $group / 20';
+  }
+
+  @override
+  String peersSubjectYou(String you) {
+    return 'Toi $you / 20';
+  }
+
+  @override
+  String get peersNoClass =>
+      'Aucune classe n’est rattachée à ton compte. Ton établissement ou ton professeur peut t’ajouter à ta classe.';
+
+  @override
+  String get peersNoLevel =>
+      'Ton niveau n’est pas renseigné : ajoute-le dans ton profil pour te comparer aux élèves de ton niveau.';
+
+  @override
+  String get peersTooSmall =>
+      'Trop peu d’élèves ont fait des quiz ces 30 derniers jours pour comparer (il en faut au moins 5).';
+
+  @override
+  String get mockTitle => 'Examens blancs';
+
+  @override
+  String get mockPublished => 'Publié';
+
+  @override
+  String get mockUpcoming => 'Programmé';
+
+  @override
+  String get mockToPublish => 'À publier';
+
+  @override
+  String get mockOpen => 'En cours';
+
+  @override
+  String get mockEmptyTitle => 'Aucun examen blanc';
+
+  @override
+  String get mockEmptyText =>
+      'Programmez un examen blanc chronométré pour une ou plusieurs classes, à partir d’une épreuve ou d’un quiz. Les élèves sont prévenus et le retrouvent dans Mes devoirs.';
+
+  @override
+  String get mockCreate => 'Programmer un examen';
+
+  @override
+  String mockDuration(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String mockWindow(String opens, String closes) {
+    return 'Du $opens au $closes';
+  }
+
+  @override
+  String mockSubmitted(int submitted, int expected) {
+    return '$submitted copies sur $expected';
+  }
+
+  @override
+  String mockAverage(String avg) {
+    return 'moyenne $avg';
+  }
+
+  @override
+  String get mockSubject => 'Sujet';
+
+  @override
+  String get mockKindExam => 'Épreuve';
+
+  @override
+  String get mockKindQuiz => 'Quiz';
+
+  @override
+  String get mockSearchExam => 'Rechercher une épreuve (au moins 2 lettres)';
+
+  @override
+  String get mockSearchQuiz => 'Rechercher un quiz (au moins 2 lettres)';
+
+  @override
+  String get mockChangeSubject => 'Changer de sujet';
+
+  @override
+  String get mockClasses => 'Classes';
+
+  @override
+  String get mockNoClass => 'Créez d’abord une classe dans l’onglet Classes.';
+
+  @override
+  String get mockWindowTitle => 'Ouverture';
+
+  @override
+  String get mockOpens => 'Ouvre le';
+
+  @override
+  String get mockCloses => 'Ferme le';
+
+  @override
+  String get mockDurationLabel => 'Durée de l’épreuve';
+
+  @override
+  String get mockTitleLabel => 'Titre (facultatif)';
+
+  @override
+  String get mockTitleHint => 'Par défaut : Examen blanc · nom du sujet';
+
+  @override
+  String get mockSchedule => 'Programmer';
+
+  @override
+  String get mockNeedSubject => 'Choisissez une épreuve ou un quiz.';
+
+  @override
+  String get mockNeedClass => 'Choisissez au moins une classe.';
+
+  @override
+  String get mockCloseAfterOpen => 'La fermeture doit suivre l’ouverture.';
+
+  @override
+  String get mockDurationRange => 'Durée entre 5 minutes et 8 heures.';
+
+  @override
+  String mockCreated(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Examen programmé : $count élèves prévenus.',
+      one: 'Examen programmé : 1 élève prévenu.',
+      zero: 'Examen programmé.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get mockCopies => 'Copies rendues';
+
+  @override
+  String get mockAverageLabel => 'Moyenne';
+
+  @override
+  String get mockPublish => 'Publier les résultats';
+
+  @override
+  String get mockPublishConfirm =>
+      'Les élèves verront leur note et leur rang, et seront prévenus. Les copies rendues après la publication ne compteront pas.';
+
+  @override
+  String get mockPublishedDone => 'Résultats publiés, élèves prévenus.';
+
+  @override
+  String mockPublishedOn(String date) {
+    return 'Résultats publiés le $date.';
+  }
+
+  @override
+  String get mockDistribution => 'Répartition des notes';
+
+  @override
+  String get mockByClass => 'Par classe';
+
+  @override
+  String get mockRanking => 'Classement';
+
+  @override
+  String get mockNoCopy => 'Aucune copie rendue pour l’instant.';
+
+  @override
+  String mockMinutes(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String mockAbsent(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count absents',
+      one: '1 absent',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get mockDelete => 'Supprimer l’examen';
+
+  @override
+  String get mockDeleteConfirm =>
+      'L’examen blanc disparaît pour l’établissement et pour les élèves. Les tentatives déjà faites restent dans leur historique.';
+
+  @override
+  String get bullTitle => 'Bulletins';
+
+  @override
+  String bullPeriod(String from, String to) {
+    return 'du $from au $to';
+  }
+
+  @override
+  String get bullAverage => 'Moyenne générale';
+
+  @override
+  String get bullRank => 'Rang dans la classe';
+
+  @override
+  String bullClassAverage(String avg) {
+    return 'Moyenne de la classe : $avg';
+  }
+
+  @override
+  String get bullSubjects => 'Par matière';
+
+  @override
+  String get bullNoQuiz => 'Aucun quiz terminé pendant la période.';
+
+  @override
+  String bullQuizzes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count quiz',
+      one: '1 quiz',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String bullClass(String avg) {
+    return 'classe $avg';
+  }
+
+  @override
+  String get bullHomework => 'Devoirs rendus';
+
+  @override
+  String get bullHomeworkAverage => 'Moyenne des devoirs';
+
+  @override
+  String get bullActiveDays => 'Jours de travail';
+
+  @override
+  String get bullStudyTime => 'Temps d’étude';
+
+  @override
+  String get bullQuizCount => 'Quiz terminés';
+
+  @override
+  String get bullAppreciation => 'Appréciation';
+
+  @override
+  String get bullUnreadable => 'Ce bulletin ne peut pas être affiché.';
+
+  @override
+  String get bullMineTitle => 'Mes bulletins';
+
+  @override
+  String get bullMineEmptyTitle => 'Aucun bulletin';
+
+  @override
+  String get bullMineEmptyText =>
+      'Les bulletins partagés par ton établissement arrivent ici, avec une notification.';
+
+  @override
+  String bullSharedOn(String date) {
+    return 'partagé le $date';
+  }
+
+  @override
+  String get bullDelete => 'Retirer le bulletin';
+
+  @override
+  String get bullDeleteConfirm =>
+      'Le bulletin ne sera plus visible par l’élève ni par ses parents.';
+
+  @override
+  String get bullEmptyTitle => 'Aucun bulletin partagé';
+
+  @override
+  String get bullEmptyText =>
+      'Préparez le bulletin d’un élève : moyenne, rang, matières, devoirs et régularité sont calculés à partir de son travail sur WinPlus. Vous le relisez, ajoutez une appréciation, puis le partagez à l’élève et à ses parents.';
+
+  @override
+  String get bullPrepare => 'Préparer un bulletin';
+
+  @override
+  String get bullStudent => 'Élève';
+
+  @override
+  String get bullChangeStudent => 'Changer d’élève';
+
+  @override
+  String get bullSearchStudent => 'Rechercher un élève (au moins 2 lettres)';
+
+  @override
+  String get bullPeriodTitle => 'Période';
+
+  @override
+  String get bullFrom => 'Du';
+
+  @override
+  String get bullTo => 'Au';
+
+  @override
+  String get bullLabelHint => 'Nom de la période (ex. 1er trimestre)';
+
+  @override
+  String get bullPreview => 'Calculer le bulletin';
+
+  @override
+  String get bullAppreciationHint => 'Appréciation (facultative)';
+
+  @override
+  String get bullWriteWithWinai => 'Proposer une appréciation avec WinAI';
+
+  @override
+  String get bullShare => 'Partager à l’élève et à ses parents';
+
+  @override
+  String get bullNeedLabel => 'Donnez un nom à la période (ex. 1er trimestre).';
+
+  @override
+  String bullShared(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Bulletin partagé à l’élève et à $count parents.',
+      one: 'Bulletin partagé à l’élève et à 1 parent.',
+      zero: 'Bulletin partagé à l’élève.',
+    );
+    return '$_temp0';
+  }
 }

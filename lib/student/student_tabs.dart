@@ -16,6 +16,7 @@ import 'search_screen.dart';
 import 'download_history_screen.dart';
 import 'favorites_screen.dart';
 import '../shared/concours_screen.dart';
+import '../shared/bulletin_view.dart';
 import 'achievements_screen.dart';
 import 'certificates_screen.dart';
 import 'exam_coach_screen.dart';
@@ -493,6 +494,11 @@ class _StudentSpaceTabState extends State<StudentSpaceTab> {
                     icon: PhosphorIconsRegular.chartBar,
                     label: context.l10n.studentReportsTitle,
                     onTap: () => _open(const StudentReportsScreen())),
+                // Lot 7 : bulletins partagés par l'établissement.
+                MoreLine(
+                    icon: PhosphorIconsRegular.scroll,
+                    label: context.l10n.bullMineTitle,
+                    onTap: () => _open(const MyBulletinsScreen())),
                 MoreLine(
                     icon: PhosphorIconsRegular.trophy,
                     label: context.l10n.studentHomeBadges,
