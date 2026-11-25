@@ -101,8 +101,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     // Langue et « Passer » : réduits ensemble si la place
                     // manque (petit écran, grand texte système).
                     Expanded(
+                      // heightFactor : sans lui, l'Align prenait toute la
+                      // hauteur de la photo et la rangée centrait le logo
+                      // et la langue au milieu de l'image.
                       child: Align(
                         alignment: Alignment.centerRight,
+                        heightFactor: 1,
                         child: FittedBox(
                           fit: BoxFit.scaleDown,
                           alignment: Alignment.centerRight,

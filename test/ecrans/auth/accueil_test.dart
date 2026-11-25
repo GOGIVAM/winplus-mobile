@@ -36,6 +36,18 @@ void main() {
   });
 
   group('WelcomeScreen', () {
+    testWidgets('logo et choix de langue en haut de la photo, pas au milieu', (tester) async {
+      telephone(tester);
+      await monter(tester, ecran(const WelcomeScreen()));
+      await pomper(tester);
+      final logo = tester.getRect(find.byType(WinLogo));
+      final langue = tester.getRect(find.text('EN'));
+      final photo = tester.getRect(find.byType(PageView));
+      expect(logo.top - photo.top, lessThan(80), reason: 'logo colle au haut de la photo');
+      expect(langue.center.dy, lessThan(photo.top + 100), reason: 'langue en haut, alignee sur le logo');
+      expect((langue.center.dy - logo.center.dy).abs(), lessThan(24));
+    });
+
     testWidgets('trois ecrans avec photo : titre, « Suivant » avance, le dernier propose compte et connexion', (tester) async {
       await monterEcran(tester, const WelcomeScreen());
       final l = L10n.current;
