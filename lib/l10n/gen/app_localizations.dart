@@ -18320,6 +18320,606 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'{count, plural, =0{Bulletin partagé à l’élève.} =1{Bulletin partagé à l’élève et à 1 parent.} other{Bulletin partagé à l’élève et à {count} parents.}}'**
   String bullShared(int count);
+
+  /// No description provided for @tcourseLevelBase.
+  ///
+  /// In fr, this message translates to:
+  /// **'Débutant'**
+  String get tcourseLevelBase;
+
+  /// No description provided for @tcourseLevelMid.
+  ///
+  /// In fr, this message translates to:
+  /// **'Intermédiaire'**
+  String get tcourseLevelMid;
+
+  /// No description provided for @tcourseLevelHigh.
+  ///
+  /// In fr, this message translates to:
+  /// **'Avancé'**
+  String get tcourseLevelHigh;
+
+  /// No description provided for @tcourseTypeVideo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vidéo'**
+  String get tcourseTypeVideo;
+
+  /// No description provided for @tcourseTypeArticle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Article'**
+  String get tcourseTypeArticle;
+
+  /// No description provided for @tcourseTypeFile.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fichier'**
+  String get tcourseTypeFile;
+
+  /// No description provided for @tcourseTypeQuiz.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quiz'**
+  String get tcourseTypeQuiz;
+
+  /// No description provided for @tcourseCreate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créer une formation'**
+  String get tcourseCreate;
+
+  /// No description provided for @tcourseEditInfo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Informations de la formation'**
+  String get tcourseEditInfo;
+
+  /// No description provided for @tcourseCreateIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commencez par l’essentiel : la formation est créée en brouillon, vous ajoutez ensuite ses chapitres et ses leçons, puis vous la soumettez à la validation.'**
+  String get tcourseCreateIntro;
+
+  /// No description provided for @tcourseTitleLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Titre'**
+  String get tcourseTitleLabel;
+
+  /// No description provided for @tcourseTitleHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex. Réussir l’épreuve de maths du BAC C'**
+  String get tcourseTitleHint;
+
+  /// No description provided for @tcourseShortLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Résumé'**
+  String get tcourseShortLabel;
+
+  /// No description provided for @tcourseShortHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une ou deux phrases affichées dans le catalogue'**
+  String get tcourseShortHint;
+
+  /// No description provided for @tcourseDescriptionLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Description'**
+  String get tcourseDescriptionLabel;
+
+  /// No description provided for @tcourseLevel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Niveau'**
+  String get tcourseLevel;
+
+  /// No description provided for @tcourseCategory.
+  ///
+  /// In fr, this message translates to:
+  /// **'Catégorie'**
+  String get tcourseCategory;
+
+  /// No description provided for @tcourseLanguage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Langue'**
+  String get tcourseLanguage;
+
+  /// No description provided for @tcourseLangFr.
+  ///
+  /// In fr, this message translates to:
+  /// **'Français'**
+  String get tcourseLangFr;
+
+  /// No description provided for @tcourseLangEn.
+  ///
+  /// In fr, this message translates to:
+  /// **'Anglais'**
+  String get tcourseLangEn;
+
+  /// No description provided for @tcourseFree.
+  ///
+  /// In fr, this message translates to:
+  /// **'Gratuite'**
+  String get tcourseFree;
+
+  /// No description provided for @tcoursePrice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix payé par l’élève'**
+  String get tcoursePrice;
+
+  /// No description provided for @tcoursePriceHelp.
+  ///
+  /// In fr, this message translates to:
+  /// **'TVA comprise ; la part de la plateforme est fixée à la validation.'**
+  String get tcoursePriceHelp;
+
+  /// No description provided for @tcourseObjectives.
+  ///
+  /// In fr, this message translates to:
+  /// **'Objectifs'**
+  String get tcourseObjectives;
+
+  /// No description provided for @tcourseRequirements.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prérequis'**
+  String get tcourseRequirements;
+
+  /// No description provided for @tcourseOnePerLine.
+  ///
+  /// In fr, this message translates to:
+  /// **'Un par ligne'**
+  String get tcourseOnePerLine;
+
+  /// No description provided for @tcourseThumbnail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Image de couverture (adresse)'**
+  String get tcourseThumbnail;
+
+  /// No description provided for @tcoursePreviewVideo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vidéo de présentation (adresse)'**
+  String get tcoursePreviewVideo;
+
+  /// No description provided for @tcourseCertificate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Certificat à la fin de la formation'**
+  String get tcourseCertificate;
+
+  /// No description provided for @tcourseNeedTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Donnez un titre d’au moins 3 caractères.'**
+  String get tcourseNeedTitle;
+
+  /// No description provided for @tcourseNeedPrice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Indiquez un prix, ou rendez la formation gratuite.'**
+  String get tcourseNeedPrice;
+
+  /// No description provided for @tcourseCreateAction.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créer le brouillon'**
+  String get tcourseCreateAction;
+
+  /// No description provided for @tcourseSave.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrer'**
+  String get tcourseSave;
+
+  /// No description provided for @tcourseEditor.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier la formation'**
+  String get tcourseEditor;
+
+  /// No description provided for @tcoursePending.
+  ///
+  /// In fr, this message translates to:
+  /// **'Formation en cours de validation : elle ne peut pas être modifiée pour l’instant.'**
+  String get tcoursePending;
+
+  /// No description provided for @tcourseRejected.
+  ///
+  /// In fr, this message translates to:
+  /// **'Formation refusée : {reason}'**
+  String tcourseRejected(String reason);
+
+  /// No description provided for @tcourseCounts.
+  ///
+  /// In fr, this message translates to:
+  /// **'{sections, plural, =0{Aucun chapitre} =1{1 chapitre} other{{sections} chapitres}} · {lessons, plural, =0{aucune leçon} =1{1 leçon} other{{lessons} leçons}}'**
+  String tcourseCounts(int sections, int lessons);
+
+  /// No description provided for @tcourseProgramme.
+  ///
+  /// In fr, this message translates to:
+  /// **'Programme'**
+  String get tcourseProgramme;
+
+  /// No description provided for @tcourseAddSection.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter un chapitre'**
+  String get tcourseAddSection;
+
+  /// No description provided for @tcourseEditSection.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier le chapitre'**
+  String get tcourseEditSection;
+
+  /// No description provided for @tcourseDeleteSection.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer le chapitre'**
+  String get tcourseDeleteSection;
+
+  /// No description provided for @tcourseDeleteSectionConfirm.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer « {title} » et toutes ses leçons ?'**
+  String tcourseDeleteSectionConfirm(String title);
+
+  /// No description provided for @tcourseSectionActions.
+  ///
+  /// In fr, this message translates to:
+  /// **'Actions du chapitre'**
+  String get tcourseSectionActions;
+
+  /// No description provided for @tcourseMoveUp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Monter'**
+  String get tcourseMoveUp;
+
+  /// No description provided for @tcourseMoveDown.
+  ///
+  /// In fr, this message translates to:
+  /// **'Descendre'**
+  String get tcourseMoveDown;
+
+  /// No description provided for @tcourseNoSection.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pas encore de chapitre. Ajoutez-en un, ou laissez WinAI proposer un programme semaine par semaine.'**
+  String get tcourseNoSection;
+
+  /// No description provided for @tcourseUnlockAfter.
+  ///
+  /// In fr, this message translates to:
+  /// **'{days, plural, =1{Ouvert 1 jour après l’inscription} other{Ouvert {days} jours après l’inscription}}'**
+  String tcourseUnlockAfter(int days);
+
+  /// No description provided for @tcourseUnlockScore.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouvert après {score} % au chapitre précédent'**
+  String tcourseUnlockScore(int score);
+
+  /// No description provided for @tcourseAddLesson.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter une leçon'**
+  String get tcourseAddLesson;
+
+  /// No description provided for @tcourseEditLesson.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier la leçon'**
+  String get tcourseEditLesson;
+
+  /// No description provided for @tcourseDeleteLesson.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer la leçon'**
+  String get tcourseDeleteLesson;
+
+  /// No description provided for @tcourseDeleteLessonConfirm.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer « {title} » ?'**
+  String tcourseDeleteLessonConfirm(String title);
+
+  /// No description provided for @tcourseFromLibrary.
+  ///
+  /// In fr, this message translates to:
+  /// **'Depuis ma bibliothèque'**
+  String get tcourseFromLibrary;
+
+  /// No description provided for @tcourseFromLibraryHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Un contenu du catalogue que vous possédez'**
+  String get tcourseFromLibraryHint;
+
+  /// No description provided for @tcourseLibraryEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre bibliothèque est vide : achetez ou ajoutez des contenus aux favoris d’abord.'**
+  String get tcourseLibraryEmpty;
+
+  /// No description provided for @tcourseLessonAdded.
+  ///
+  /// In fr, this message translates to:
+  /// **'Leçon ajoutée.'**
+  String get tcourseLessonAdded;
+
+  /// No description provided for @tcourseDraftLesson.
+  ///
+  /// In fr, this message translates to:
+  /// **'brouillon'**
+  String get tcourseDraftLesson;
+
+  /// No description provided for @tcoursePreviewLesson.
+  ///
+  /// In fr, this message translates to:
+  /// **'aperçu gratuit'**
+  String get tcoursePreviewLesson;
+
+  /// No description provided for @tcourseNeedLesson.
+  ///
+  /// In fr, this message translates to:
+  /// **'Publiez au moins une leçon pour pouvoir soumettre la formation.'**
+  String get tcourseNeedLesson;
+
+  /// No description provided for @tcourseSubmit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Soumettre à la validation'**
+  String get tcourseSubmit;
+
+  /// No description provided for @tcourseSubmitConfirm.
+  ///
+  /// In fr, this message translates to:
+  /// **'L’équipe WinPlus vérifie la formation avant sa mise en ligne ; vous ne pourrez plus la modifier pendant la validation.'**
+  String get tcourseSubmitConfirm;
+
+  /// No description provided for @tcourseSubmitted.
+  ///
+  /// In fr, this message translates to:
+  /// **'Formation soumise à la validation.'**
+  String get tcourseSubmitted;
+
+  /// No description provided for @tcourseSectionTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Titre du chapitre'**
+  String get tcourseSectionTitle;
+
+  /// No description provided for @tcourseSectionDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Description (facultative)'**
+  String get tcourseSectionDescription;
+
+  /// No description provided for @tcourseUnlock.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouverture du chapitre'**
+  String get tcourseUnlock;
+
+  /// No description provided for @tcourseUnlockNow.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tout de suite'**
+  String get tcourseUnlockNow;
+
+  /// No description provided for @tcourseUnlockDelay.
+  ///
+  /// In fr, this message translates to:
+  /// **'Après un délai'**
+  String get tcourseUnlockDelay;
+
+  /// No description provided for @tcourseUnlockMinScore.
+  ///
+  /// In fr, this message translates to:
+  /// **'Après un score'**
+  String get tcourseUnlockMinScore;
+
+  /// No description provided for @tcourseDays.
+  ///
+  /// In fr, this message translates to:
+  /// **'Jours après l’inscription'**
+  String get tcourseDays;
+
+  /// No description provided for @tcourseMinScore.
+  ///
+  /// In fr, this message translates to:
+  /// **'Score minimal au chapitre précédent'**
+  String get tcourseMinScore;
+
+  /// No description provided for @tcourseLessonTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Titre de la leçon'**
+  String get tcourseLessonTitle;
+
+  /// No description provided for @tcourseLessonDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Description (facultative)'**
+  String get tcourseLessonDescription;
+
+  /// No description provided for @tcourseVideoUrl.
+  ///
+  /// In fr, this message translates to:
+  /// **'Adresse de la vidéo'**
+  String get tcourseVideoUrl;
+
+  /// No description provided for @tcourseVideoUrlHelp.
+  ///
+  /// In fr, this message translates to:
+  /// **'YouTube, Vimeo ou lien direct vers la vidéo'**
+  String get tcourseVideoUrlHelp;
+
+  /// No description provided for @tcourseVideoMinutes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Durée'**
+  String get tcourseVideoMinutes;
+
+  /// No description provided for @tcourseFileUrl.
+  ///
+  /// In fr, this message translates to:
+  /// **'Adresse du fichier'**
+  String get tcourseFileUrl;
+
+  /// No description provided for @tcourseFileName.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom affiché du fichier'**
+  String get tcourseFileName;
+
+  /// No description provided for @tcourseArticle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Texte de la leçon'**
+  String get tcourseArticle;
+
+  /// No description provided for @tcoursePublishedLesson.
+  ///
+  /// In fr, this message translates to:
+  /// **'Leçon publiée'**
+  String get tcoursePublishedLesson;
+
+  /// No description provided for @tcoursePublishedLessonHelp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une leçon non publiée reste invisible pour les élèves.'**
+  String get tcoursePublishedLessonHelp;
+
+  /// No description provided for @tcourseFreePreview.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aperçu gratuit'**
+  String get tcourseFreePreview;
+
+  /// No description provided for @tcourseFreePreviewHelp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Visible avant l’achat, pour donner envie.'**
+  String get tcourseFreePreviewHelp;
+
+  /// No description provided for @tcourseNeedLessonTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Donnez un titre à la leçon.'**
+  String get tcourseNeedLessonTitle;
+
+  /// No description provided for @tcourseNeedUrl.
+  ///
+  /// In fr, this message translates to:
+  /// **'Indiquez une adresse complète (https://…).'**
+  String get tcourseNeedUrl;
+
+  /// No description provided for @tcourseNeedArticle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Écrivez le texte de la leçon.'**
+  String get tcourseNeedArticle;
+
+  /// No description provided for @tcourseSyllabus.
+  ///
+  /// In fr, this message translates to:
+  /// **'Proposer un programme avec WinAI'**
+  String get tcourseSyllabus;
+
+  /// No description provided for @tcourseSyllabusIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'WinAI propose un programme semaine par semaine (notions, activités, ressources). Vous le relisez, puis il devient vos chapitres, avec une leçon brouillon par semaine à compléter.'**
+  String get tcourseSyllabusIntro;
+
+  /// No description provided for @tcourseSubject.
+  ///
+  /// In fr, this message translates to:
+  /// **'Matière ou thème'**
+  String get tcourseSubject;
+
+  /// No description provided for @tcourseWeeks.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{1 semaine} other{{count} semaines}}'**
+  String tcourseWeeks(int count);
+
+  /// No description provided for @tcourseFewerWeeks.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une semaine de moins'**
+  String get tcourseFewerWeeks;
+
+  /// No description provided for @tcourseMoreWeeks.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une semaine de plus'**
+  String get tcourseMoreWeeks;
+
+  /// No description provided for @tcourseTargetExams.
+  ///
+  /// In fr, this message translates to:
+  /// **'Examens visés'**
+  String get tcourseTargetExams;
+
+  /// No description provided for @tcourseGenerate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Générer le programme'**
+  String get tcourseGenerate;
+
+  /// No description provided for @tcourseRegenerate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Générer à nouveau'**
+  String get tcourseRegenerate;
+
+  /// No description provided for @tcourseNeedSubject.
+  ///
+  /// In fr, this message translates to:
+  /// **'Indiquez la matière ou le thème.'**
+  String get tcourseNeedSubject;
+
+  /// No description provided for @tcourseWeekTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Semaine {week} · {title}'**
+  String tcourseWeekTitle(int week, String title);
+
+  /// No description provided for @tcourseActivities.
+  ///
+  /// In fr, this message translates to:
+  /// **'Activités : {list}'**
+  String tcourseActivities(String list);
+
+  /// No description provided for @tcourseImport.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{Créer 1 chapitre} other{Créer {count} chapitres}}'**
+  String tcourseImport(int count);
+
+  /// No description provided for @tcourseSyllabusImported.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{1 chapitre ajouté.} other{{count} chapitres ajoutés.}}'**
+  String tcourseSyllabusImported(int count);
+
+  /// No description provided for @tcourseEditCourse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier la formation'**
+  String get tcourseEditCourse;
 }
 
 class _AppLocalizationsDelegate

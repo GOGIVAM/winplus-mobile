@@ -10727,4 +10727,375 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get tcourseLevelBase => 'Beginner';
+
+  @override
+  String get tcourseLevelMid => 'Intermediate';
+
+  @override
+  String get tcourseLevelHigh => 'Advanced';
+
+  @override
+  String get tcourseTypeVideo => 'Video';
+
+  @override
+  String get tcourseTypeArticle => 'Article';
+
+  @override
+  String get tcourseTypeFile => 'File';
+
+  @override
+  String get tcourseTypeQuiz => 'Quiz';
+
+  @override
+  String get tcourseCreate => 'Create a course';
+
+  @override
+  String get tcourseEditInfo => 'Course details';
+
+  @override
+  String get tcourseCreateIntro =>
+      'Start with the essentials: the course is created as a draft, then you add its chapters and lessons and submit it for review.';
+
+  @override
+  String get tcourseTitleLabel => 'Title';
+
+  @override
+  String get tcourseTitleHint => 'e.g. Pass the BAC C maths exam';
+
+  @override
+  String get tcourseShortLabel => 'Summary';
+
+  @override
+  String get tcourseShortHint => 'One or two sentences shown in the catalog';
+
+  @override
+  String get tcourseDescriptionLabel => 'Description';
+
+  @override
+  String get tcourseLevel => 'Level';
+
+  @override
+  String get tcourseCategory => 'Category';
+
+  @override
+  String get tcourseLanguage => 'Language';
+
+  @override
+  String get tcourseLangFr => 'French';
+
+  @override
+  String get tcourseLangEn => 'English';
+
+  @override
+  String get tcourseFree => 'Free';
+
+  @override
+  String get tcoursePrice => 'Price paid by the student';
+
+  @override
+  String get tcoursePriceHelp =>
+      'VAT included; the platform share is set at review.';
+
+  @override
+  String get tcourseObjectives => 'Objectives';
+
+  @override
+  String get tcourseRequirements => 'Prerequisites';
+
+  @override
+  String get tcourseOnePerLine => 'One per line';
+
+  @override
+  String get tcourseThumbnail => 'Cover image (address)';
+
+  @override
+  String get tcoursePreviewVideo => 'Preview video (address)';
+
+  @override
+  String get tcourseCertificate => 'Certificate at the end of the course';
+
+  @override
+  String get tcourseNeedTitle => 'Enter a title of at least 3 characters.';
+
+  @override
+  String get tcourseNeedPrice => 'Enter a price, or make the course free.';
+
+  @override
+  String get tcourseCreateAction => 'Create the draft';
+
+  @override
+  String get tcourseSave => 'Save';
+
+  @override
+  String get tcourseEditor => 'Edit the course';
+
+  @override
+  String get tcoursePending =>
+      'Course under review: it can\'t be edited for now.';
+
+  @override
+  String tcourseRejected(String reason) {
+    return 'Course rejected: $reason';
+  }
+
+  @override
+  String tcourseCounts(int sections, int lessons) {
+    String _temp0 = intl.Intl.pluralLogic(
+      sections,
+      locale: localeName,
+      other: '$sections chapters',
+      one: '1 chapter',
+      zero: 'No chapter',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      lessons,
+      locale: localeName,
+      other: '$lessons lessons',
+      one: '1 lesson',
+      zero: 'no lesson',
+    );
+    return '$_temp0 · $_temp1';
+  }
+
+  @override
+  String get tcourseProgramme => 'Curriculum';
+
+  @override
+  String get tcourseAddSection => 'Add a chapter';
+
+  @override
+  String get tcourseEditSection => 'Edit the chapter';
+
+  @override
+  String get tcourseDeleteSection => 'Delete the chapter';
+
+  @override
+  String tcourseDeleteSectionConfirm(String title) {
+    return 'Delete “$title” and all its lessons?';
+  }
+
+  @override
+  String get tcourseSectionActions => 'Chapter actions';
+
+  @override
+  String get tcourseMoveUp => 'Move up';
+
+  @override
+  String get tcourseMoveDown => 'Move down';
+
+  @override
+  String get tcourseNoSection =>
+      'No chapter yet. Add one, or let WinAI suggest a week-by-week curriculum.';
+
+  @override
+  String tcourseUnlockAfter(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Opens $days days after enrollment',
+      one: 'Opens 1 day after enrollment',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String tcourseUnlockScore(int score) {
+    return 'Opens after $score% in the previous chapter';
+  }
+
+  @override
+  String get tcourseAddLesson => 'Add a lesson';
+
+  @override
+  String get tcourseEditLesson => 'Edit the lesson';
+
+  @override
+  String get tcourseDeleteLesson => 'Delete the lesson';
+
+  @override
+  String tcourseDeleteLessonConfirm(String title) {
+    return 'Delete “$title”?';
+  }
+
+  @override
+  String get tcourseFromLibrary => 'From my library';
+
+  @override
+  String get tcourseFromLibraryHint => 'Catalog content you own';
+
+  @override
+  String get tcourseLibraryEmpty =>
+      'Your library is empty: buy content or add it to your favorites first.';
+
+  @override
+  String get tcourseLessonAdded => 'Lesson added.';
+
+  @override
+  String get tcourseDraftLesson => 'draft';
+
+  @override
+  String get tcoursePreviewLesson => 'free preview';
+
+  @override
+  String get tcourseNeedLesson =>
+      'Publish at least one lesson to submit the course.';
+
+  @override
+  String get tcourseSubmit => 'Submit for review';
+
+  @override
+  String get tcourseSubmitConfirm =>
+      'The WinPlus team checks the course before it goes live; you won\'t be able to edit it during review.';
+
+  @override
+  String get tcourseSubmitted => 'Course submitted for review.';
+
+  @override
+  String get tcourseSectionTitle => 'Chapter title';
+
+  @override
+  String get tcourseSectionDescription => 'Description (optional)';
+
+  @override
+  String get tcourseUnlock => 'Chapter opening';
+
+  @override
+  String get tcourseUnlockNow => 'Right away';
+
+  @override
+  String get tcourseUnlockDelay => 'After a delay';
+
+  @override
+  String get tcourseUnlockMinScore => 'After a score';
+
+  @override
+  String get tcourseDays => 'Days after enrollment';
+
+  @override
+  String get tcourseMinScore => 'Minimum score in the previous chapter';
+
+  @override
+  String get tcourseLessonTitle => 'Lesson title';
+
+  @override
+  String get tcourseLessonDescription => 'Description (optional)';
+
+  @override
+  String get tcourseVideoUrl => 'Video address';
+
+  @override
+  String get tcourseVideoUrlHelp =>
+      'YouTube, Vimeo or a direct link to the video';
+
+  @override
+  String get tcourseVideoMinutes => 'Duration';
+
+  @override
+  String get tcourseFileUrl => 'File address';
+
+  @override
+  String get tcourseFileName => 'File name shown';
+
+  @override
+  String get tcourseArticle => 'Lesson text';
+
+  @override
+  String get tcoursePublishedLesson => 'Published lesson';
+
+  @override
+  String get tcoursePublishedLessonHelp =>
+      'An unpublished lesson stays hidden from students.';
+
+  @override
+  String get tcourseFreePreview => 'Free preview';
+
+  @override
+  String get tcourseFreePreviewHelp =>
+      'Visible before purchase, to make students want more.';
+
+  @override
+  String get tcourseNeedLessonTitle => 'Give the lesson a title.';
+
+  @override
+  String get tcourseNeedUrl => 'Enter a full address (https://…).';
+
+  @override
+  String get tcourseNeedArticle => 'Write the lesson text.';
+
+  @override
+  String get tcourseSyllabus => 'Suggest a curriculum with WinAI';
+
+  @override
+  String get tcourseSyllabusIntro =>
+      'WinAI suggests a week-by-week curriculum (concepts, activities, resources). You review it, then it becomes your chapters, with one draft lesson per week to complete.';
+
+  @override
+  String get tcourseSubject => 'Subject or topic';
+
+  @override
+  String tcourseWeeks(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count weeks',
+      one: '1 week',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get tcourseFewerWeeks => 'One week less';
+
+  @override
+  String get tcourseMoreWeeks => 'One more week';
+
+  @override
+  String get tcourseTargetExams => 'Target exams';
+
+  @override
+  String get tcourseGenerate => 'Generate the curriculum';
+
+  @override
+  String get tcourseRegenerate => 'Generate again';
+
+  @override
+  String get tcourseNeedSubject => 'Enter the subject or topic.';
+
+  @override
+  String tcourseWeekTitle(int week, String title) {
+    return 'Week $week · $title';
+  }
+
+  @override
+  String tcourseActivities(String list) {
+    return 'Activities: $list';
+  }
+
+  @override
+  String tcourseImport(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Create $count chapters',
+      one: 'Create 1 chapter',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String tcourseSyllabusImported(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count chapters added.',
+      one: '1 chapter added.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get tcourseEditCourse => 'Edit the course';
 }

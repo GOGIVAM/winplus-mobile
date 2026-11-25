@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:winplus/l10n/l10n.dart';
 import 'package:winplus/teacher/teacher_courses_screen.dart';
@@ -163,44 +162,30 @@ void main() {
     });
   });
 
-  group('Creation sur le site', () {
-    testWidgets('bouton « + » : explique que la creation se fait sur le site et copie l\'adresse', (tester) async {
+  group('Creation dans l\'application (lot 7)', () {
+    testWidgets('bouton « + » : ouvre la creation, puis l\'editeur du brouillon cree', (tester) async {
       routes([]);
-      String? copie;
-      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(SystemChannels.platform, (call) async {
-        if (call.method == 'Clipboard.setData') copie = (call.arguments as Map)['text'] as String?;
-        return null;
-      });
-      addTearDown(() => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(SystemChannels.platform, null));
+      faux.repond('POST', '/teacher/courses', {'id': 12, 'slug': 'algebre'}, statut: 201);
+      faux.repond('GET', '/teacher/courses/12', {'id': 12, 'title': 'Algebre', 'status': 'draft', 'sections': []});
       await monterEcran(tester, const TeacherCoursesScreen());
       final l = L10n.current;
       await tester.tap(find.byType(FloatingActionButton));
       await pomper(tester);
       await pomper(tester, const Duration(milliseconds: 400));
-      expect(find.text(l.teacherCoursesCreateTitle), findsOneWidget);
-      expect(find.textContaining('https://winplus.cm/professeur?view=formations'), findsOneWidget);
-      await tester.tap(find.text(l.teacherCoursesCopyLink));
+      expect(find.text(l.tcourseCreateIntro), findsOneWidget);
+      await tester.enterText(find.byType(TextField).first, 'Algebre');
+      await tester.scrollUntilVisible(find.widgetWithText(SwitchListTile, l.tcourseFree), 200,
+          scrollable: find.byType(Scrollable).last);
+      await tester.tap(find.widgetWithText(SwitchListTile, l.tcourseFree));
       await pomper(tester);
-      await pomper(tester, const Duration(milliseconds: 400));
-      expect(copie, 'https://winplus.cm/professeur?view=formations');
-      expect(find.byType(AlertDialog), findsNothing);
-      expect(find.text(l.teacherCoursesLinkCopied), findsOneWidget);
-    });
-
-    testWidgets('« Fermer » ferme la fenetre sans message', (tester) async {
-      routes([]);
-      await monterEcran(tester, const TeacherCoursesScreen());
-      await tester.tap(find.byType(FloatingActionButton));
-      await pomper(tester);
-      await pomper(tester, const Duration(milliseconds: 400));
-      await tester.tap(find.text(L10n.current.commonClose));
-      await pomper(tester);
-      await pomper(tester, const Duration(milliseconds: 400));
-      expect(find.byType(AlertDialog), findsNothing);
-      expect(find.byType(SnackBar), findsNothing);
+      await tester.ensureVisible(_bouton(l.tcourseCreateAction));
+      await tester.tap(_bouton(l.tcourseCreateAction));
+      await reseau(tester);
+      expect((faux.recues('POST', '/teacher/courses').single.data as Map)['title'], 'Algebre');
+      expect(find.text(l.tcourseEditor), findsOneWidget);
+      expect(find.text(l.tcourseNoSection), findsOneWidget);
     });
   });
-
   group('Options d\'une formation', () {
     testWidgets('brouillon : voir details, soumettre et supprimer', (tester) async {
       routes([_formation()]);

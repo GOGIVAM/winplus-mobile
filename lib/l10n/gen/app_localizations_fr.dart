@@ -10817,4 +10817,378 @@ class AppLocalizationsFr extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get tcourseLevelBase => 'Débutant';
+
+  @override
+  String get tcourseLevelMid => 'Intermédiaire';
+
+  @override
+  String get tcourseLevelHigh => 'Avancé';
+
+  @override
+  String get tcourseTypeVideo => 'Vidéo';
+
+  @override
+  String get tcourseTypeArticle => 'Article';
+
+  @override
+  String get tcourseTypeFile => 'Fichier';
+
+  @override
+  String get tcourseTypeQuiz => 'Quiz';
+
+  @override
+  String get tcourseCreate => 'Créer une formation';
+
+  @override
+  String get tcourseEditInfo => 'Informations de la formation';
+
+  @override
+  String get tcourseCreateIntro =>
+      'Commencez par l’essentiel : la formation est créée en brouillon, vous ajoutez ensuite ses chapitres et ses leçons, puis vous la soumettez à la validation.';
+
+  @override
+  String get tcourseTitleLabel => 'Titre';
+
+  @override
+  String get tcourseTitleHint => 'Ex. Réussir l’épreuve de maths du BAC C';
+
+  @override
+  String get tcourseShortLabel => 'Résumé';
+
+  @override
+  String get tcourseShortHint =>
+      'Une ou deux phrases affichées dans le catalogue';
+
+  @override
+  String get tcourseDescriptionLabel => 'Description';
+
+  @override
+  String get tcourseLevel => 'Niveau';
+
+  @override
+  String get tcourseCategory => 'Catégorie';
+
+  @override
+  String get tcourseLanguage => 'Langue';
+
+  @override
+  String get tcourseLangFr => 'Français';
+
+  @override
+  String get tcourseLangEn => 'Anglais';
+
+  @override
+  String get tcourseFree => 'Gratuite';
+
+  @override
+  String get tcoursePrice => 'Prix payé par l’élève';
+
+  @override
+  String get tcoursePriceHelp =>
+      'TVA comprise ; la part de la plateforme est fixée à la validation.';
+
+  @override
+  String get tcourseObjectives => 'Objectifs';
+
+  @override
+  String get tcourseRequirements => 'Prérequis';
+
+  @override
+  String get tcourseOnePerLine => 'Un par ligne';
+
+  @override
+  String get tcourseThumbnail => 'Image de couverture (adresse)';
+
+  @override
+  String get tcoursePreviewVideo => 'Vidéo de présentation (adresse)';
+
+  @override
+  String get tcourseCertificate => 'Certificat à la fin de la formation';
+
+  @override
+  String get tcourseNeedTitle => 'Donnez un titre d’au moins 3 caractères.';
+
+  @override
+  String get tcourseNeedPrice =>
+      'Indiquez un prix, ou rendez la formation gratuite.';
+
+  @override
+  String get tcourseCreateAction => 'Créer le brouillon';
+
+  @override
+  String get tcourseSave => 'Enregistrer';
+
+  @override
+  String get tcourseEditor => 'Modifier la formation';
+
+  @override
+  String get tcoursePending =>
+      'Formation en cours de validation : elle ne peut pas être modifiée pour l’instant.';
+
+  @override
+  String tcourseRejected(String reason) {
+    return 'Formation refusée : $reason';
+  }
+
+  @override
+  String tcourseCounts(int sections, int lessons) {
+    String _temp0 = intl.Intl.pluralLogic(
+      sections,
+      locale: localeName,
+      other: '$sections chapitres',
+      one: '1 chapitre',
+      zero: 'Aucun chapitre',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      lessons,
+      locale: localeName,
+      other: '$lessons leçons',
+      one: '1 leçon',
+      zero: 'aucune leçon',
+    );
+    return '$_temp0 · $_temp1';
+  }
+
+  @override
+  String get tcourseProgramme => 'Programme';
+
+  @override
+  String get tcourseAddSection => 'Ajouter un chapitre';
+
+  @override
+  String get tcourseEditSection => 'Modifier le chapitre';
+
+  @override
+  String get tcourseDeleteSection => 'Supprimer le chapitre';
+
+  @override
+  String tcourseDeleteSectionConfirm(String title) {
+    return 'Supprimer « $title » et toutes ses leçons ?';
+  }
+
+  @override
+  String get tcourseSectionActions => 'Actions du chapitre';
+
+  @override
+  String get tcourseMoveUp => 'Monter';
+
+  @override
+  String get tcourseMoveDown => 'Descendre';
+
+  @override
+  String get tcourseNoSection =>
+      'Pas encore de chapitre. Ajoutez-en un, ou laissez WinAI proposer un programme semaine par semaine.';
+
+  @override
+  String tcourseUnlockAfter(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Ouvert $days jours après l’inscription',
+      one: 'Ouvert 1 jour après l’inscription',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String tcourseUnlockScore(int score) {
+    return 'Ouvert après $score % au chapitre précédent';
+  }
+
+  @override
+  String get tcourseAddLesson => 'Ajouter une leçon';
+
+  @override
+  String get tcourseEditLesson => 'Modifier la leçon';
+
+  @override
+  String get tcourseDeleteLesson => 'Supprimer la leçon';
+
+  @override
+  String tcourseDeleteLessonConfirm(String title) {
+    return 'Supprimer « $title » ?';
+  }
+
+  @override
+  String get tcourseFromLibrary => 'Depuis ma bibliothèque';
+
+  @override
+  String get tcourseFromLibraryHint =>
+      'Un contenu du catalogue que vous possédez';
+
+  @override
+  String get tcourseLibraryEmpty =>
+      'Votre bibliothèque est vide : achetez ou ajoutez des contenus aux favoris d’abord.';
+
+  @override
+  String get tcourseLessonAdded => 'Leçon ajoutée.';
+
+  @override
+  String get tcourseDraftLesson => 'brouillon';
+
+  @override
+  String get tcoursePreviewLesson => 'aperçu gratuit';
+
+  @override
+  String get tcourseNeedLesson =>
+      'Publiez au moins une leçon pour pouvoir soumettre la formation.';
+
+  @override
+  String get tcourseSubmit => 'Soumettre à la validation';
+
+  @override
+  String get tcourseSubmitConfirm =>
+      'L’équipe WinPlus vérifie la formation avant sa mise en ligne ; vous ne pourrez plus la modifier pendant la validation.';
+
+  @override
+  String get tcourseSubmitted => 'Formation soumise à la validation.';
+
+  @override
+  String get tcourseSectionTitle => 'Titre du chapitre';
+
+  @override
+  String get tcourseSectionDescription => 'Description (facultative)';
+
+  @override
+  String get tcourseUnlock => 'Ouverture du chapitre';
+
+  @override
+  String get tcourseUnlockNow => 'Tout de suite';
+
+  @override
+  String get tcourseUnlockDelay => 'Après un délai';
+
+  @override
+  String get tcourseUnlockMinScore => 'Après un score';
+
+  @override
+  String get tcourseDays => 'Jours après l’inscription';
+
+  @override
+  String get tcourseMinScore => 'Score minimal au chapitre précédent';
+
+  @override
+  String get tcourseLessonTitle => 'Titre de la leçon';
+
+  @override
+  String get tcourseLessonDescription => 'Description (facultative)';
+
+  @override
+  String get tcourseVideoUrl => 'Adresse de la vidéo';
+
+  @override
+  String get tcourseVideoUrlHelp =>
+      'YouTube, Vimeo ou lien direct vers la vidéo';
+
+  @override
+  String get tcourseVideoMinutes => 'Durée';
+
+  @override
+  String get tcourseFileUrl => 'Adresse du fichier';
+
+  @override
+  String get tcourseFileName => 'Nom affiché du fichier';
+
+  @override
+  String get tcourseArticle => 'Texte de la leçon';
+
+  @override
+  String get tcoursePublishedLesson => 'Leçon publiée';
+
+  @override
+  String get tcoursePublishedLessonHelp =>
+      'Une leçon non publiée reste invisible pour les élèves.';
+
+  @override
+  String get tcourseFreePreview => 'Aperçu gratuit';
+
+  @override
+  String get tcourseFreePreviewHelp =>
+      'Visible avant l’achat, pour donner envie.';
+
+  @override
+  String get tcourseNeedLessonTitle => 'Donnez un titre à la leçon.';
+
+  @override
+  String get tcourseNeedUrl => 'Indiquez une adresse complète (https://…).';
+
+  @override
+  String get tcourseNeedArticle => 'Écrivez le texte de la leçon.';
+
+  @override
+  String get tcourseSyllabus => 'Proposer un programme avec WinAI';
+
+  @override
+  String get tcourseSyllabusIntro =>
+      'WinAI propose un programme semaine par semaine (notions, activités, ressources). Vous le relisez, puis il devient vos chapitres, avec une leçon brouillon par semaine à compléter.';
+
+  @override
+  String get tcourseSubject => 'Matière ou thème';
+
+  @override
+  String tcourseWeeks(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count semaines',
+      one: '1 semaine',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get tcourseFewerWeeks => 'Une semaine de moins';
+
+  @override
+  String get tcourseMoreWeeks => 'Une semaine de plus';
+
+  @override
+  String get tcourseTargetExams => 'Examens visés';
+
+  @override
+  String get tcourseGenerate => 'Générer le programme';
+
+  @override
+  String get tcourseRegenerate => 'Générer à nouveau';
+
+  @override
+  String get tcourseNeedSubject => 'Indiquez la matière ou le thème.';
+
+  @override
+  String tcourseWeekTitle(int week, String title) {
+    return 'Semaine $week · $title';
+  }
+
+  @override
+  String tcourseActivities(String list) {
+    return 'Activités : $list';
+  }
+
+  @override
+  String tcourseImport(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Créer $count chapitres',
+      one: 'Créer 1 chapitre',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String tcourseSyllabusImported(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count chapitres ajoutés.',
+      one: '1 chapitre ajouté.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get tcourseEditCourse => 'Modifier la formation';
 }

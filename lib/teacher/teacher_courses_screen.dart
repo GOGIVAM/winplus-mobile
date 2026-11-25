@@ -1,14 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'course_editor_screen.dart';
 import '../services/api_client.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
-import '../app_config.dart';
-import '../widgets/external_links.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../widgets/win_screen.dart';
 
@@ -167,54 +165,17 @@ class _TeacherCoursesScreenState extends State<TeacherCoursesScreen> {
         _ => _statusLabel(f),
       };
 
-  /// Adresse de l'éditeur de formations du site (tableau de bord enseignant).
-  static const _webCourseEditorUrl =
-      '${AppConfig.siteUrl}/professeur?view=formations';
-
-  /// La création et l'édition d'une formation (leçons, vidéos, quiz) se font
-  /// sur le site : l'application ne propose pas d'éditeur. On l'indique
-  /// clairement, avec l'adresse à ouvrir, plutôt qu'une promesse.
-  void _showCourseFab() {
-    showDialog<void>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(ctx.l10n.teacherCoursesCreateTitle),
-        content: Text(ctx.l10n.teacherCoursesCreateOnWeb(_webCourseEditorUrl)),
-        actions: [
-          TextButton(
-            onPressed: () async {
-              final messenger = ScaffoldMessenger.of(context);
-              final nav = Navigator.of(ctx);
-              await Clipboard.setData(
-                  const ClipboardData(text: _webCourseEditorUrl));
-              nav.pop();
-              messenger.showSnackBar(SnackBar(
-                  content: Text(L10n.current.teacherCoursesLinkCopied)));
-            },
-            child: Text(ctx.l10n.teacherCoursesCopyLink),
-          ),
-          TextButton(
-            onPressed: () async {
-              final messenger = ScaffoldMessenger.of(context);
-              final nav = Navigator.of(ctx);
-              final ok = await ExternalLinks.open(_webCourseEditorUrl);
-              nav.pop();
-              if (!ok) {
-                messenger.showSnackBar(SnackBar(
-                    content: Text(L10n.current.commonLinkOpenError)));
-              }
-            },
-            child: Text(ctx.l10n.teacherCoursesOpenSite),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(ctx.l10n.commonClose),
-          ),
-        ],
-      ),
-    );
+  /// Lot 7 : création d'une formation dans l'application (avant, l'écran
+  /// renvoyait vers l'éditeur du site). Le brouillon créé s'ouvre dans
+  /// l'éditeur (chapitres, leçons, programme WinAI, soumission).
+  Future<void> _showCourseFab() async {
+    final id = await Navigator.of(context)
+        .push<int>(MaterialPageRoute(builder: (_) => const CourseInfoScreen()));
+    if (id == null || id <= 0 || !mounted) return;
+    await Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => CourseEditorScreen(courseId: id)));
+    if (mounted) _load();
   }
-
   void _showCourseOptions(_TeacherCourse course) {
     showModalBottomSheet(
       showDragHandle: false,
@@ -688,6 +649,19 @@ class _CourseOptionsSheetState extends State<_CourseOptionsSheet> {
             onTap: _loadingDetail ? null : _viewDetail,
             s: s,
           ),
+          if (widget.course.status != 'pending_review')
+            _OptionTile(
+              icon: PhosphorIconsRegular.pencilSimple,
+              label: context.l10n.tcourseEditCourse,
+              onTap: () async {
+                final nav = Navigator.of(context);
+                nav.pop();
+                await nav.push(MaterialPageRoute(
+                    builder: (_) => CourseEditorScreen(courseId: widget.course.id)));
+                widget.onRefresh();
+              },
+              s: s,
+            ),
           if (widget.course.status == 'draft' || widget.course.status == 'archived')
             _OptionTile(
               icon: PhosphorIconsRegular.paperPlaneRight,
