@@ -9773,4 +9773,22 @@ class AppLocalizationsFr extends AppLocalizations {
   String certVerifyGrade(String grade) {
     return 'Note : $grade';
   }
+
+  @override
+  String get studentDetailNotesEmpty =>
+      'Aucune note pour cette épreuve. Elles te suivent sur le site et sur tes autres appareils.';
+
+  @override
+  String get studentDetailNotePending => 'En attente d’envoi';
+
+  @override
+  String get studentDetailNoteKeptOffline =>
+      'Pas de réseau : la note est gardée sur le téléphone et partira à la prochaine ouverture.';
+
+  @override
+  String get studentDetailNoteError => 'La note n’a pas pu être enregistrée.';
+
+  @override
+  String get studentDetailTagError =>
+      'L’étiquette n’a pas pu être enregistrée.';
 }

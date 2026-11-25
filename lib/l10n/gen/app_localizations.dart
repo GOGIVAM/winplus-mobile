@@ -16609,6 +16609,36 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Note : {grade}'**
   String certVerifyGrade(String grade);
+
+  /// No description provided for @studentDetailNotesEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune note pour cette épreuve. Elles te suivent sur le site et sur tes autres appareils.'**
+  String get studentDetailNotesEmpty;
+
+  /// No description provided for @studentDetailNotePending.
+  ///
+  /// In fr, this message translates to:
+  /// **'En attente d’envoi'**
+  String get studentDetailNotePending;
+
+  /// No description provided for @studentDetailNoteKeptOffline.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pas de réseau : la note est gardée sur le téléphone et partira à la prochaine ouverture.'**
+  String get studentDetailNoteKeptOffline;
+
+  /// No description provided for @studentDetailNoteError.
+  ///
+  /// In fr, this message translates to:
+  /// **'La note n’a pas pu être enregistrée.'**
+  String get studentDetailNoteError;
+
+  /// No description provided for @studentDetailTagError.
+  ///
+  /// In fr, this message translates to:
+  /// **'L’étiquette n’a pas pu être enregistrée.'**
+  String get studentDetailTagError;
 }
 
 class _AppLocalizationsDelegate

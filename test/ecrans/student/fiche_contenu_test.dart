@@ -239,59 +239,97 @@ void main() {
   });
 
   group('Notes et etiquettes personnelles', () {
-    testWidgets('etiquettes rapides : cocher memorise le choix pour ce contenu', (tester) async {
-      await _monterHaut(tester, ContentDetailScreen(content: _contenu()));
-      final tag = find.text(L10n.current.studentDetailTagToRevise);
-      await tester.scrollUntilVisible(tag, 300, scrollable: find.byType(Scrollable).first);
-      await tester.tap(tag);
-      await pomper(tester);
-      final prefs = await tester.runAsync(SharedPreferences.getInstance);
-      expect(jsonDecode(prefs!.getString('tags_12')!), ['À réviser']);
-    });
+    // Lot 7 : notes et étiquettes gardées sur le serveur (comme le site).
+    Map<String, dynamic> notesServeur(List<Map<String, dynamic>> notes, [List<String> tags = const []]) =>
+        {'success': true, 'data': {'notes': notes, 'tags': tags, 'availableTags': ['À réviser', 'Difficile', 'Maîtrisé', 'À acheter']}};
 
-    testWidgets('ajouter une note : saisie, enregistrement, memorisation', (tester) async {
-      await _monterHaut(tester, ContentDetailScreen(content: _contenu()));
+    Future<void> allerAuxNotes(WidgetTester tester) async {
       final l = L10n.current;
       await tester.scrollUntilVisible(find.text(l.studentDetailAddNote), 300, scrollable: find.byType(Scrollable).first);
-      await tester.tap(find.text(l.studentDetailAddNote));
-      await pomper(tester);
+    }
+
+    testWidgets('notes du serveur affichees avec leur date ; etiquette cochee envoyee au serveur', (tester) async {
+      faux.repond('GET', '/revision-notes', notesServeur([
+        {'id': 5, 'content': 'Revoir les derivees', 'createdAt': '2026-11-20T08:00:00Z'},
+      ], ['Difficile']));
+      faux.repond('POST', '/revision-notes/tags/toggle', {'data': {'tags': ['Difficile', 'À réviser']}});
+      await _monterHaut(tester, ContentDetailScreen(content: _contenu()));
+      await allerAuxNotes(tester);
+      expect(faux.recues('GET', '/revision-notes').first.queryParameters['subjectId'], 12);
+      expect(find.text('Revoir les derivees'), findsOneWidget);
+      final l = L10n.current;
+      await tester.tap(find.text(l.studentDetailTagToRevise));
+      await reseau(tester);
+      expect((faux.recues('POST', '/revision-notes/tags/toggle').single.data as Map)['label'], 'À réviser');
+      final puce = tester.widget<WinChip>(find.widgetWithText(WinChip, l.studentDetailTagToRevise));
+      expect(puce.active, isTrue);
+    });
+
+    testWidgets('ajouter une note : envoyee au serveur et affichee ; supprimer : envoye au serveur', (tester) async {
+      faux.repond('GET', '/revision-notes', notesServeur([]));
+      faux.repond('POST', '/revision-notes', {'data': {'id': 9, 'content': 'Revoir le chapitre 3', 'createdAt': '2026-11-25T08:00:00Z'}});
+      faux.repond('DELETE', '/revision-notes/9', {});
+      await _monterHaut(tester, ContentDetailScreen(content: _contenu()));
+      final l = L10n.current;
+      await allerAuxNotes(tester);
+      expect(find.text(l.studentDetailNotesEmpty), findsOneWidget);
       await tester.enterText(find.byType(TextField), 'Revoir le chapitre 3');
-      await tester.tap(_bouton(l.commonSave));
-      await pomper(tester);
+      await tester.tap(find.text(l.studentDetailAddNote));
+      await reseau(tester);
+      final d = faux.recues('POST', '/revision-notes').single.data as Map;
+      expect(d['subjectId'], 12);
+      expect(d['content'], 'Revoir le chapitre 3');
       expect(find.text('Revoir le chapitre 3'), findsOneWidget);
-      final prefs = await tester.runAsync(SharedPreferences.getInstance);
-      expect(jsonDecode(prefs!.getString('notes_12')!), ['Revoir le chapitre 3']);
+      await tester.tap(find.byTooltip(l.commonDelete));
+      await reseau(tester);
+      expect(faux.recues('DELETE', '/revision-notes/9'), hasLength(1));
+      expect(find.text('Revoir le chapitre 3'), findsNothing);
     });
 
-    testWidgets('note vide ou annulee : rien n\'est ajoute', (tester) async {
-      await _monterHaut(tester, ContentDetailScreen(content: _contenu()));
-      final l = L10n.current;
-      await tester.scrollUntilVisible(find.text(l.studentDetailAddNote), 300, scrollable: find.byType(Scrollable).first);
-      await tester.tap(find.text(l.studentDetailAddNote));
-      await pomper(tester);
-      await tester.enterText(find.byType(TextField), '   ');
-      await tester.tap(_bouton(l.commonSave));
-      await pomper(tester);
-      expect(find.byIcon(PhosphorIconsRegular.note), findsNothing);
-      await tester.tap(find.text(l.studentDetailAddNote));
-      await pomper(tester);
-      await tester.tap(_bouton(l.commonCancel));
-      await pomper(tester);
-      expect(find.byType(TextField), findsNothing);
-    });
-
-    testWidgets('notes et etiquettes memorisees sont rechargees a l\'ouverture ; la croix supprime une note', (tester) async {
+    testWidgets('anciennes notes du telephone : envoyees au serveur puis effacees du telephone', (tester) async {
       faux = preparerEnvironnement(prefs: {
         'notes_12': jsonEncode(['Ancienne note']),
         'tags_12': jsonEncode(['Difficile']),
       });
       faux.repond('GET', '/subjects', {'items': []});
+      faux.repond('GET', '/revision-notes', notesServeur([]));
+      faux.repond('POST', '/revision-notes', {'data': {'id': 3, 'content': 'Ancienne note'}});
+      faux.repond('POST', '/revision-notes/tags/toggle', {'data': {'tags': ['Difficile']}});
       await _monterHaut(tester, ContentDetailScreen(content: _contenu()));
-      await tester.scrollUntilVisible(find.text('Ancienne note'), 300, scrollable: find.byType(Scrollable).first);
+      expect((faux.recues('POST', '/revision-notes').single.data as Map)['content'], 'Ancienne note');
+      expect((faux.recues('POST', '/revision-notes/tags/toggle').single.data as Map)['label'], 'Difficile');
+      final prefs = await tester.runAsync(SharedPreferences.getInstance);
+      expect(prefs!.getString('notes_12'), isNull);
+      expect(prefs.getString('tags_12'), isNull);
+    });
+
+    testWidgets('anciennes notes, envoi en panne : gardees sur le telephone et affichees « en attente »', (tester) async {
+      faux = preparerEnvironnement(prefs: {'notes_12': jsonEncode(['Ancienne note'])});
+      faux.repond('GET', '/subjects', {'items': []});
+      faux.repond('GET', '/revision-notes', notesServeur([]));
+      faux.repond('POST', '/revision-notes', {'error': 'x'}, statut: 500);
+      await _monterHaut(tester, ContentDetailScreen(content: _contenu()));
+      await allerAuxNotes(tester);
       expect(find.text('Ancienne note'), findsOneWidget);
-      await tester.tap(find.byIcon(PhosphorIconsRegular.x).last);
-      await pomper(tester);
-      expect(find.text('Ancienne note'), findsNothing);
+      expect(find.text(L10n.current.studentDetailNotePending), findsOneWidget);
+      final prefs = await tester.runAsync(SharedPreferences.getInstance);
+      expect(jsonDecode(prefs!.getString('notes_12')!), ['Ancienne note']);
+    });
+
+    testWidgets('sans reseau : la note ecrite est gardee sur le telephone et partira plus tard', (tester) async {
+      faux.coupure('GET', '/revision-notes');
+      faux.coupure('POST', '/revision-notes');
+      await _monterHaut(tester, ContentDetailScreen(content: _contenu()));
+      final l = L10n.current;
+      await allerAuxNotes(tester);
+      await tester.enterText(find.byType(TextField), 'Note hors ligne');
+      await tester.tap(find.text(l.studentDetailAddNote));
+      await reseau(tester);
+      expect(find.text('Note hors ligne'), findsOneWidget);
+      expect(find.text(l.studentDetailNotePending), findsOneWidget);
+      expect(find.text(l.studentDetailNoteKeptOffline), findsOneWidget);
+      final prefs = await tester.runAsync(SharedPreferences.getInstance);
+      expect(jsonDecode(prefs!.getString('notes_12')!), ['Note hors ligne']);
     });
 
     testWidgets('le coeur de la barre bascule le favori du contenu', (tester) async {

@@ -2798,5 +2798,10 @@
   "certVerifyIssued": "Issued on {date}",
   "@certVerifyIssued": {"placeholders": {"date": {"type": "String"}}},
   "certVerifyGrade": "Grade: {grade}",
-  "@certVerifyGrade": {"placeholders": {"grade": {"type": "String"}}}
+  "@certVerifyGrade": {"placeholders": {"grade": {"type": "String"}}},
+  "studentDetailNotesEmpty": "No notes for this paper. They follow you on the website and your other devices.",
+  "studentDetailNotePending": "Waiting to be sent",
+  "studentDetailNoteKeptOffline": "No connection: the note is kept on the phone and will be sent next time you open this page.",
+  "studentDetailNoteError": "The note could not be saved.",
+  "studentDetailTagError": "The tag could not be saved."
 }

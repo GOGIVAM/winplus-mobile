@@ -9691,4 +9691,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String certVerifyGrade(String grade) {
     return 'Grade: $grade';
   }
+
+  @override
+  String get studentDetailNotesEmpty =>
+      'No notes for this paper. They follow you on the website and your other devices.';
+
+  @override
+  String get studentDetailNotePending => 'Waiting to be sent';
+
+  @override
+  String get studentDetailNoteKeptOffline =>
+      'No connection: the note is kept on the phone and will be sent next time you open this page.';
+
+  @override
+  String get studentDetailNoteError => 'The note could not be saved.';
+
+  @override
+  String get studentDetailTagError => 'The tag could not be saved.';
 }

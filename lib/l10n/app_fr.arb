@@ -5680,5 +5680,10 @@
   "certVerifyIssued": "Délivré le {date}",
   "@certVerifyIssued": {"placeholders": {"date": {"type": "String"}}},
   "certVerifyGrade": "Note : {grade}",
-  "@certVerifyGrade": {"placeholders": {"grade": {"type": "String"}}}
+  "@certVerifyGrade": {"placeholders": {"grade": {"type": "String"}}},
+  "studentDetailNotesEmpty": "Aucune note pour cette épreuve. Elles te suivent sur le site et sur tes autres appareils.",
+  "studentDetailNotePending": "En attente d’envoi",
+  "studentDetailNoteKeptOffline": "Pas de réseau : la note est gardée sur le téléphone et partira à la prochaine ouverture.",
+  "studentDetailNoteError": "La note n’a pas pu être enregistrée.",
+  "studentDetailTagError": "L’étiquette n’a pas pu être enregistrée."
 }

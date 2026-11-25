@@ -1,8 +1,8 @@
 import '../l10n/l10n.dart';
-import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import '../services/revision_notes_service.dart';
 import '../theme/win_motion.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../data/reference_data.dart';
 import '../data/models.dart';
 import '../services/cart_service.dart';
@@ -33,10 +33,15 @@ class ContentDetailScreen extends StatefulWidget {
 class _ContentDetailScreenState extends State<ContentDetailScreen> {
   bool _fav = false;
   List<Content> _similar = [];
+  // Lot 7 : notes et étiquettes de révision gardées sur le serveur (comme
+  // le site) ; _pendingNotes : notes encore sur le téléphone (anciennes, ou
+  // écrites sans réseau), envoyées à la prochaine ouverture.
   Set<String> _selectedTags = {};
-  List<String> _notes = [];
+  List<ApiRevisionNote> _serverNotes = [];
+  List<String> _pendingNotes = [];
   final _noteCtrl = TextEditingController();
-  bool _showNoteInput = false;
+  bool _savingNote = false;
+  int? get _subjectId => int.tryParse(widget.content.id);
 
   @override
   void dispose() {
@@ -49,7 +54,7 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
     super.initState();
     _fav = widget.content.fav;
     _loadSimilar();
-    _loadPrefs();
+    _loadNotes();
   }
 
   /// Module 44 : épreuves, corrigés et livres ne se téléchargent plus ; ils
@@ -68,26 +73,94 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
         subjectId: id, title: widget.content.title, kind: kind);
   }
 
-  Future<void> _loadPrefs() async {
-    final p = await SharedPreferences.getInstance();
-    final rawNotes = p.getString('notes_${widget.content.id}');
-    final rawTags = p.getString('tags_${widget.content.id}');
-    if (!mounted) return;
-    setState(() {
-      if (rawNotes != null) {
-        _notes = List<String>.from(jsonDecode(rawNotes) as List);
-      }
-      if (rawTags != null) {
-        _selectedTags = Set<String>.from(jsonDecode(rawTags) as List);
-      }
-    });
+  Future<void> _loadNotes() async {
+    final id = _subjectId;
+    if (id == null) return;
+    final svc = RevisionNotesService.instance;
+    try {
+      var payload = await svc.load(id);
+      final hadLocal = (await svc.pendingNotes(id)).isNotEmpty;
+      await svc.syncLocal(id, serverTags: payload.tags);
+      if (hadLocal) payload = await svc.load(id);
+      final pending = await svc.pendingNotes(id);
+      if (!mounted) return;
+      setState(() {
+        _serverNotes = payload.notes;
+        _selectedTags = payload.tags.toSet();
+        _pendingNotes = pending;
+      });
+    } catch (_) {
+      // Sans réseau : les notes encore sur le téléphone restent visibles.
+      final pending = await svc.pendingNotes(id);
+      if (mounted) setState(() => _pendingNotes = pending);
+    }
   }
 
-  Future<void> _savePrefs() async {
-    final p = await SharedPreferences.getInstance();
-    await p.setString('notes_${widget.content.id}', jsonEncode(_notes));
-    await p.setString(
-        'tags_${widget.content.id}', jsonEncode(_selectedTags.toList()));
+  void _toast(String text) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
+  }
+
+  Future<void> _toggleTag(String tag) async {
+    final id = _subjectId;
+    if (id == null) return;
+    final before = Set<String>.from(_selectedTags);
+    setState(() {
+      if (!_selectedTags.remove(tag)) _selectedTags.add(tag);
+    });
+    try {
+      final tags = await RevisionNotesService.instance.toggleTag(id, tag);
+      if (mounted) setState(() => _selectedTags = tags.toSet());
+    } catch (_) {
+      if (mounted) setState(() => _selectedTags = before);
+      _toast(context.l10n.studentDetailTagError);
+    }
+  }
+
+  Future<void> _addNote() async {
+    final id = _subjectId;
+    final text = _noteCtrl.text.trim();
+    if (id == null || text.isEmpty) return;
+    final l = context.l10n;
+    setState(() => _savingNote = true);
+    try {
+      final note = await RevisionNotesService.instance.add(id, text);
+      _noteCtrl.clear();
+      if (mounted) setState(() => _serverNotes = [note, ..._serverNotes]);
+    } on DioException catch (e) {
+      if (e.response != null) {
+        final d = e.response?.data;
+        _toast(d is Map ? (d['error']?.toString() ?? l.studentDetailNoteError) : l.studentDetailNoteError);
+      } else {
+        // Pas de réseau : la note est gardée et partira plus tard.
+        await RevisionNotesService.instance.keepPending(id, text);
+        _noteCtrl.clear();
+        if (mounted) setState(() => _pendingNotes = [..._pendingNotes, text]);
+        _toast(l.studentDetailNoteKeptOffline);
+      }
+    } catch (_) {
+      _toast(l.studentDetailNoteError);
+    } finally {
+      if (mounted) setState(() => _savingNote = false);
+    }
+  }
+
+  Future<void> _deleteNote(ApiRevisionNote note) async {
+    final before = _serverNotes;
+    setState(() => _serverNotes = _serverNotes.where((n) => n.id != note.id).toList());
+    try {
+      await RevisionNotesService.instance.delete(note.id);
+    } catch (_) {
+      if (mounted) setState(() => _serverNotes = before);
+      _toast(context.l10n.studentDetailNoteError);
+    }
+  }
+
+  Future<void> _deletePending(String text) async {
+    final id = _subjectId;
+    if (id == null) return;
+    await RevisionNotesService.instance.removePending(id, text);
+    if (mounted) setState(() => _pendingNotes = [..._pendingNotes]..remove(text));
   }
 
   Future<void> _loadSimilar() async {
@@ -308,159 +381,73 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                       const SizedBox(height: 16),
                       WinSectionHeader(context.l10n.studentDetailMyNotes),
                       const SizedBox(height: 10),
-                      // Tags rapides
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: [
-                          for (final tag in [
-                            'À réviser',
-                            'Difficile',
-                            'Maîtrisé',
-                            'À acheter'
-                          ])
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  if (_selectedTags.contains(tag)) {
-                                    _selectedTags.remove(tag);
-                                  } else {
-                                    _selectedTags.add(tag);
-                                  }
-                                });
-                                _savePrefs();
-                              },
-                              child: AnimatedContainer(
-                                duration: const Duration(milliseconds: 140),
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 6),
-                                decoration: BoxDecoration(
-                                  color: _selectedTags.contains(tag)
-                                      ? s.primary
-                                      : Colors.transparent,
-                                  border: Border.all(
-                                      color: _selectedTags.contains(tag)
-                                          ? s.primary
-                                          : s.outline),
-                                  borderRadius:
-                                      BorderRadius.circular(WinRadii.full),
-                                ),
-                                child: Text(
-                                    {
-                                          'À réviser': context
-                                              .l10n.studentDetailTagToRevise,
-                                          'Difficile':
-                                              context.l10n.studentDetailTagHard,
-                                          'Maîtrisé': context
-                                              .l10n.studentDetailTagMastered,
-                                          'À acheter':
-                                              context.l10n.studentDetailTagToBuy,
-                                        }[tag] ??
-                                        tag,
-                                    style: WinType.manrope(
-                                        size: 12,
-                                        weight: FontWeight.w600,
-                                        color: _selectedTags.contains(tag)
-                                            ? s.onPrimary
-                                            : s.onMuted)),
-                              ),
-                            ),
-                        ],
-                      ),
+                      // Étiquettes rapides (serveur, comme le site).
+                      Wrap(spacing: 8, runSpacing: 8, children: [
+                        for (final (tag, label) in [
+                          ('À réviser', context.l10n.studentDetailTagToRevise),
+                          ('Difficile', context.l10n.studentDetailTagHard),
+                          ('Maîtrisé', context.l10n.studentDetailTagMastered),
+                          ('À acheter', context.l10n.studentDetailTagToBuy),
+                        ])
+                          WinChip(label,
+                              active: _selectedTags.contains(tag),
+                              onTap: () => _toggleTag(tag)),
+                      ]),
                       const SizedBox(height: 10),
-                      // Existing notes
-                      ..._notes.map((note) => Padding(
-                            padding: const EdgeInsets.only(bottom: 8),
-                            child: WinCard(
-                              padding: const EdgeInsets.all(12),
-                              child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Icon(PhosphorIconsRegular.note,
-                                        size: 16, color: WinColors.teal500),
-                                    const SizedBox(width: 8),
-                                    Expanded(
-                                        child: Text(note,
-                                            style: WinType.bodyS(s.onSurface))),
-                                    GestureDetector(
-                                      onTap: () {
-                                        setState(() => _notes.remove(note));
-                                        _savePrefs();
-                                      },
-                                      child: Icon(PhosphorIconsRegular.x,
-                                          size: 16, color: s.onFaint),
-                                    ),
-                                  ]),
-                            ),
-                          )),
-                      // Add note toggle
-                      if (_showNoteInput) ...[
-                        TextField(
-                          controller: _noteCtrl,
-                          autofocus: true,
-                          maxLines: 1,
-                          maxLength: 150,
-                          decoration: InputDecoration(
-                            counterText: '',
-                            hintText: context.l10n.studentDetailAddNoteHint,
-                            hintStyle: WinType.bodyS(s.onFaint),
-                            filled: true,
-                            fillColor: s.surface2,
-                            contentPadding: const EdgeInsets.all(12),
-                            border: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.circular(WinRadii.md),
-                                borderSide: BorderSide(color: s.outline)),
-                            enabledBorder: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.circular(WinRadii.md),
-                                borderSide: BorderSide(color: s.outline)),
-                            focusedBorder: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.circular(WinRadii.md),
-                                borderSide:
-                                    BorderSide(color: s.primary, width: 2)),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Row(children: [
-                          Expanded(
-                            child: WinButton(context.l10n.commonSave,
-                                icon: PhosphorIconsBold.check,
-                                block: true,
-                                small: true, onTap: () {
-                              final t = _noteCtrl.text.trim();
-                              if (t.isNotEmpty) {
-                                setState(() {
-                                  _notes.add(t);
-                                  _noteCtrl.clear();
-                                });
-                                _savePrefs();
-                              }
-                              setState(() => _showNoteInput = false);
-                            }),
-                          ),
-                          const SizedBox(width: 10),
-                          WinButton(context.l10n.commonCancel,
-                              variant: WinButtonVariant.ghost,
-                              small: true,
-                              onTap: () => setState(() {
-                                    _noteCtrl.clear();
-                                    _showNoteInput = false;
-                                  })),
-                        ]),
-                      ] else
-                        GestureDetector(
-                          onTap: () => setState(() => _showNoteInput = true),
-                          child: Row(children: [
-                            Icon(PhosphorIconsRegular.plusCircle,
-                                size: 18, color: s.primary),
-                            const SizedBox(width: 6),
-                            Text(context.l10n.studentDetailAddNote,
-                                style: WinType.bodyS(s.primary)
-                                    .copyWith(fontWeight: FontWeight.w600)),
-                          ]),
-                        ),
+                      WinCard(
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (_serverNotes.isEmpty && _pendingNotes.isEmpty)
+                                Text(context.l10n.studentDetailNotesEmpty,
+                                    style: WinType.bodyS(s.onMuted)),
+                              for (final n in _serverNotes)
+                                Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                  Expanded(
+                                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                      Text(n.content, style: WinType.bodyM(s.onStrong)),
+                                      if (n.createdAt != null)
+                                        Text(WinFormat.dateShort(n.createdAt!),
+                                            style: WinType.labelM(s.onMuted)),
+                                    ]),
+                                  ),
+                                  IconButton(
+                                    tooltip: context.l10n.commonDelete,
+                                    icon: const Icon(PhosphorIconsRegular.trash, size: 18),
+                                    onPressed: () => _deleteNote(n),
+                                  ),
+                                ]),
+                              for (final t in _pendingNotes)
+                                Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                  Expanded(
+                                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                      Text(t, style: WinType.bodyM(s.onStrong)),
+                                      Text(context.l10n.studentDetailNotePending,
+                                          style: WinType.labelM(s.onMuted)),
+                                    ]),
+                                  ),
+                                  IconButton(
+                                    tooltip: context.l10n.commonDelete,
+                                    icon: const Icon(PhosphorIconsRegular.trash, size: 18),
+                                    onPressed: () => _deletePending(t),
+                                  ),
+                                ]),
+                              const SizedBox(height: 8),
+                              TextField(
+                                controller: _noteCtrl,
+                                minLines: 1,
+                                maxLines: 4,
+                                maxLength: RevisionNotesService.maxLength,
+                                decoration: InputDecoration(
+                                    hintText: context.l10n.studentDetailAddNoteHint),
+                              ),
+                              WinButton(context.l10n.studentDetailAddNote,
+                                  icon: PhosphorIconsRegular.plusCircle,
+                                  small: true,
+                                  loading: _savingNote,
+                                  onTap: _savingNote ? null : _addNote),
+                            ]),
+                      ),
                       if (_similar.isNotEmpty) ...[
                         const SizedBox(height: 20),
                         const WinDivider(),
