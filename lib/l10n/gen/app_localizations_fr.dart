@@ -9210,4 +9210,27 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get hwSchoolMissing => 'Non fait';
+
+  @override
+  String get msgReply => 'Répondre';
+
+  @override
+  String msgReplyingTo(String name) {
+    return 'Réponse à $name';
+  }
+
+  @override
+  String get msgYou => 'Toi';
+
+  @override
+  String get msgCancelReply => 'Annuler la réponse';
+
+  @override
+  String get msgDeleted => 'Message supprimé';
+
+  @override
+  String get msgReactError => 'La réaction n’a pas été enregistrée.';
+
+  @override
+  String get msgActions => 'Réagir ou répondre';
 }

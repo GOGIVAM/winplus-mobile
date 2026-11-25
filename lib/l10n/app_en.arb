@@ -2619,5 +2619,13 @@
   "hwMockStartTitle": "Start the exam?",
   "hwMockStartBody": "You will have {minutes} minutes. The timer keeps running if you leave the screen.",
   "@hwMockStartBody": {"placeholders": {"minutes": {"type": "int"}}},
-  "hwSchoolMissing": "Not done"
+  "hwSchoolMissing": "Not done",
+  "msgReply": "Reply",
+  "msgReplyingTo": "Replying to {name}",
+  "@msgReplyingTo": {"placeholders": {"name": {"type": "String"}}},
+  "msgYou": "You",
+  "msgCancelReply": "Cancel reply",
+  "msgDeleted": "Message deleted",
+  "msgReactError": "The reaction was not saved.",
+  "msgActions": "React or reply"
 }

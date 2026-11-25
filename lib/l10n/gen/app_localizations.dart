@@ -15703,6 +15703,48 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Non fait'**
   String get hwSchoolMissing;
+
+  /// No description provided for @msgReply.
+  ///
+  /// In fr, this message translates to:
+  /// **'Répondre'**
+  String get msgReply;
+
+  /// No description provided for @msgReplyingTo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réponse à {name}'**
+  String msgReplyingTo(String name);
+
+  /// No description provided for @msgYou.
+  ///
+  /// In fr, this message translates to:
+  /// **'Toi'**
+  String get msgYou;
+
+  /// No description provided for @msgCancelReply.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annuler la réponse'**
+  String get msgCancelReply;
+
+  /// No description provided for @msgDeleted.
+  ///
+  /// In fr, this message translates to:
+  /// **'Message supprimé'**
+  String get msgDeleted;
+
+  /// No description provided for @msgReactError.
+  ///
+  /// In fr, this message translates to:
+  /// **'La réaction n’a pas été enregistrée.'**
+  String get msgReactError;
+
+  /// No description provided for @msgActions.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réagir ou répondre'**
+  String get msgActions;
 }
 
 class _AppLocalizationsDelegate

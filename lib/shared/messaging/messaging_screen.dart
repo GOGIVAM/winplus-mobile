@@ -217,18 +217,160 @@ class _ConversationScreenState extends State<ConversationScreen> {
     _load();
   }
 
+  /// Message auquel on répond (aperçu au-dessus de la saisie).
+  ApiMessage? _replyTo;
+
   Future<void> _send() async {
     final text = _ctrl.text.trim();
     if (text.isEmpty) return;
     _ctrl.clear();
-    setState(() => _sending = true);
+    final replyTo = _replyTo?.id;
+    setState(() {
+      _sending = true;
+      _replyTo = null;
+    });
     // Envoyé immédiatement si en ligne, mis en file sinon (jamais perdu)
     // voir MessagingService.sendMessageQueueable.
     final ok = await MessagingService.instance
-        .sendMessageQueueable(widget.conversation.id, text);
+        .sendMessageQueueable(widget.conversation.id, text, replyTo: replyTo);
     if (!mounted) return;
     setState(() => _sending = false);
     if (ok) _load();
+  }
+
+  static const _emojis = ['👍', '❤️', '😂', '😮', '😢', '🙏'];
+
+  /// Appui long : réactions rapides et « Répondre ».
+  Future<void> _actions(ApiMessage m) async {
+    final l = context.l10n;
+    await showModalBottomSheet<void>(
+      context: context,
+      builder: (ctx) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            Text(l.msgActions, style: WinType.titleM(WinTheme.of(ctx).onStrong)),
+            const SizedBox(height: 12),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+              for (final e in _emojis)
+                IconButton(
+                  tooltip: e,
+                  onPressed: () {
+                    Navigator.pop(ctx);
+                    _react(m, e);
+                  },
+                  icon: Text(e, style: const TextStyle(fontSize: 26)),
+                ),
+            ]),
+            ListTile(
+              leading: const Icon(PhosphorIconsRegular.arrowBendUpLeft),
+              title: Text(l.msgReply),
+              onTap: () {
+                Navigator.pop(ctx);
+                setState(() => _replyTo = m);
+              },
+            ),
+          ]),
+        ),
+      ),
+    );
+  }
+
+  /// Ajoute, change ou retire ma réaction, tout de suite à l'écran ; si le
+  /// serveur refuse, l'état précédent revient avec un message.
+  Future<void> _react(ApiMessage m, String emoji) async {
+    final before = m.reactions;
+    final old = m.myReaction;
+    final next = [
+      ...before.where((r) => !r.isMine),
+      if (old != emoji) ApiReaction(emoji: emoji, isMine: true),
+    ];
+    _replaceMessage(m.id, (x) => x.withReactions(next));
+    try {
+      final server = await MessagingService.instance.react(m.id, emoji);
+      _replaceMessage(m.id, (x) => x.withReactions(server));
+    } catch (_) {
+      _replaceMessage(m.id, (x) => x.withReactions(before));
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(context.l10n.msgReactError)));
+      }
+    }
+  }
+
+  void _replaceMessage(int id, ApiMessage Function(ApiMessage) f) {
+    if (!mounted || _messages == null) return;
+    setState(() {
+      _messages = [for (final x in _messages!) x.id == id ? f(x) : x];
+    });
+  }
+
+  String _who(bool fromMe) =>
+      fromMe ? context.l10n.msgYou : widget.conversation.participantName;
+
+  Widget _bubble(WinScheme s, ApiMessage m) {
+    final mine = m.isFromMe;
+    // Réactions groupées par emoji, avec leur nombre ; la mienne en avant.
+    final counts = <String, int>{};
+    for (final r in m.reactions) {
+      counts[r.emoji] = (counts[r.emoji] ?? 0) + 1;
+    }
+    final myEmoji = m.myReaction;
+    return Align(
+      alignment: mine ? Alignment.centerRight : Alignment.centerLeft,
+      child: Column(
+        crossAxisAlignment: mine ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        children: [
+          GestureDetector(
+            onLongPress: m.isDeleted ? null : () => _actions(m),
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.78),
+              decoration: BoxDecoration(
+                color: mine ? s.primaryContainer : s.cardBg,
+                border: mine ? null : Border.all(color: s.cardBorder),
+                borderRadius: BorderRadius.circular(WinRadii.lg),
+              ),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                if (m.replyTo != null)
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 6),
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: s.surface2,
+                      borderRadius: BorderRadius.circular(WinRadii.sm),
+                    ),
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Text(_who(m.replyTo!.isFromMe), style: WinType.labelS(s.onMuted)),
+                      Text(m.replyTo!.content,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: WinType.bodyS(s.onMuted)),
+                    ]),
+                  ),
+                Text(m.isDeleted ? context.l10n.msgDeleted : m.content,
+                    style: WinType.bodyM(m.isDeleted ? s.onFaint : s.onStrong)
+                        .copyWith(fontStyle: m.isDeleted ? FontStyle.italic : null)),
+              ]),
+            ),
+          ),
+          if (counts.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 4),
+              child: Wrap(spacing: 6, children: [
+                for (final e in counts.entries)
+                  WinChip('${e.key} ${e.value}',
+                      active: e.key == myEmoji, onTap: () => _react(m, e.key)),
+              ]),
+            ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 12, left: 4, right: 4),
+            child: Text(_timeLabel(m.sentAt), style: WinType.labelS(s.onFaint)),
+          ),
+        ],
+      ),
+    );
   }
 
   String _timeLabel(DateTime dt) {
@@ -279,57 +421,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                       controller: _scrollCtrl,
                       padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
                       itemCount: _messages!.length,
-                      itemBuilder: (_, i) {
-                        final m = _messages![i];
-                        return Align(
-                          alignment: m.isFromMe
-                              ? Alignment.centerRight
-                              : Alignment.centerLeft,
-                          child: Column(
-                            crossAxisAlignment: m.isFromMe
-                                ? CrossAxisAlignment.end
-                                : CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                margin: const EdgeInsets.only(bottom: 4),
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 14, vertical: 10),
-                                constraints: BoxConstraints(
-                                    maxWidth:
-                                        MediaQuery.of(context).size.width *
-                                            0.72),
-                                decoration: BoxDecoration(
-                                  color:
-                                      m.isFromMe ? WinColors.ink800 : s.cardBg,
-                                  border: m.isFromMe
-                                      ? null
-                                      : Border.all(color: s.cardBorder),
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(WinRadii.lg),
-                                    topRight: Radius.circular(WinRadii.lg),
-                                    bottomLeft: Radius.circular(m.isFromMe
-                                        ? WinRadii.lg
-                                        : WinRadii.sm / 3),
-                                    bottomRight: Radius.circular(m.isFromMe
-                                        ? WinRadii.sm / 3
-                                        : WinRadii.lg),
-                                  ),
-                                ),
-                                child: Text(m.content,
-                                    style: WinType.bodyM(m.isFromMe
-                                        ? WinColors.cream50
-                                        : s.onSurface)),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    bottom: 12, left: 4, right: 4),
-                                child: Text(_timeLabel(m.sentAt),
-                                    style: WinType.labelS(s.onFaint)),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
+                      itemBuilder: (_, i) => _bubble(s, _messages![i]),
                     ),
         ),
         Container(
@@ -338,7 +430,35 @@ class _ConversationScreenState extends State<ConversationScreen> {
             color: s.surface,
             border: Border(top: BorderSide(color: s.outline)),
           ),
-          child: Row(children: [
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            // Réponse en cours : le message cité, et de quoi l'annuler.
+            if (_replyTo != null)
+              Container(
+                margin: const EdgeInsets.only(bottom: 8),
+                padding: const EdgeInsets.fromLTRB(12, 6, 4, 6),
+                decoration: BoxDecoration(
+                  color: s.surface2,
+                  borderRadius: BorderRadius.circular(WinRadii.sm),
+                ),
+                child: Row(children: [
+                  Expanded(
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Text(context.l10n.msgReplyingTo(_who(_replyTo!.isFromMe)),
+                          style: WinType.labelS(s.onMuted)),
+                      Text(_replyTo!.content,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: WinType.bodyS(s.onStrong)),
+                    ]),
+                  ),
+                  IconButton(
+                    tooltip: context.l10n.msgCancelReply,
+                    icon: const Icon(PhosphorIconsRegular.x),
+                    onPressed: () => setState(() => _replyTo = null),
+                  ),
+                ]),
+              ),
+            Row(children: [
             Expanded(
                 child: WinTextField(
               hint: context.l10n.msgHint,
@@ -364,6 +484,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                     : Icon(PhosphorIconsFill.paperPlaneRight, size: 20, color: s.onPrimary),
               ),
             ),
+          ]),
           ]),
         ),
       ]),

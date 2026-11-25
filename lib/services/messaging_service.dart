@@ -31,16 +31,52 @@ class ApiConversation {
       );
 }
 
+/// Message cité par une réponse (aperçu renvoyé par le serveur).
+class ApiMessageReply {
+  final int id;
+  final String content;
+  final bool isFromMe;
+  const ApiMessageReply({required this.id, required this.content, required this.isFromMe});
+
+  static ApiMessageReply? fromJson(dynamic j) => j is Map
+      ? ApiMessageReply(
+          id: (j['id'] as num?)?.toInt() ?? 0,
+          content: j['content']?.toString() ?? '',
+          isFromMe: j['isFromMe'] == true,
+        )
+      : null;
+}
+
+/// Réaction (emoji) d'un participant ; une seule par personne et par message.
+class ApiReaction {
+  final String emoji;
+  final bool isMine;
+  const ApiReaction({required this.emoji, required this.isMine});
+
+  factory ApiReaction.fromJson(Map<String, dynamic> j) =>
+      ApiReaction(emoji: j['emoji']?.toString() ?? '', isMine: j['isMine'] == true);
+
+  static List<ApiReaction> listFrom(dynamic raw) => raw is List
+      ? raw.whereType<Map<String, dynamic>>().map(ApiReaction.fromJson).toList()
+      : const [];
+}
+
 class ApiMessage {
   final int id;
   final String content;
   final bool isFromMe;
   final DateTime sentAt;
+  final bool isDeleted;
+  final ApiMessageReply? replyTo;
+  final List<ApiReaction> reactions;
   const ApiMessage({
     required this.id,
     required this.content,
     required this.isFromMe,
     required this.sentAt,
+    this.isDeleted = false,
+    this.replyTo,
+    this.reactions = const [],
   });
 
   factory ApiMessage.fromJson(Map<String, dynamic> j) => ApiMessage(
@@ -49,7 +85,28 @@ class ApiMessage {
         isFromMe: j['isFromMe'] as bool? ?? false,
         sentAt:
             DateTime.tryParse(j['sentAt'] as String? ?? '') ?? DateTime.now(),
+        isDeleted: j['isDeleted'] == true,
+        replyTo: ApiMessageReply.fromJson(j['replyTo']),
+        reactions: ApiReaction.listFrom(j['reactions']),
       );
+
+  ApiMessage withReactions(List<ApiReaction> r) => ApiMessage(
+        id: id,
+        content: content,
+        isFromMe: isFromMe,
+        sentAt: sentAt,
+        isDeleted: isDeleted,
+        replyTo: replyTo,
+        reactions: r,
+      );
+
+  /// Ma réaction actuelle, ou null.
+  String? get myReaction {
+    for (final r in reactions) {
+      if (r.isMine) return r.emoji;
+    }
+    return null;
+  }
 }
 
 class MessagingService {
@@ -81,17 +138,23 @@ class MessagingService {
     OutboxService.instance.registerHandler('message_send', (payload) async {
       await ApiClient.instance.dio.post(
         '/messages/conversations/${payload['conversationId']}/messages',
-        data: {'content': payload['content']},
+        data: {
+          'content': payload['content'],
+          if (payload['replyToMessageId'] != null)
+            'replyToMessageId': payload['replyToMessageId'],
+        },
       );
       return true;
     });
   }
 
-  Future<bool> sendMessage(int conversationId, String content) async {
+  /// [replyTo] : identifiant du message cité (réponse).
+  Future<bool> sendMessage(int conversationId, String content, {int? replyTo}) async {
     try {
       await _api.dio
           .post('/messages/conversations/$conversationId/messages', data: {
         'content': content,
+        if (replyTo != null) 'replyToMessageId': replyTo,
       });
       return true;
     } catch (_) {
@@ -102,16 +165,25 @@ class MessagingService {
   /// Envoie immédiatement si en ligne ; sinon met le message en file
   /// (OutboxService) pour un envoi automatique au retour du réseau, plutôt
   /// que de perdre silencieusement le contenu saisi.
-  Future<bool> sendMessageQueueable(int conversationId, String content) async {
+  Future<bool> sendMessageQueueable(int conversationId, String content, {int? replyTo}) async {
     if (ConnectivityService.instance.isOnline) {
-      final ok = await sendMessage(conversationId, content);
+      final ok = await sendMessage(conversationId, content, replyTo: replyTo);
       if (ok) return true;
     }
     await OutboxService.instance.enqueue('message_send', {
       'conversationId': conversationId,
       'content': content,
+      if (replyTo != null) 'replyToMessageId': replyTo,
     });
     return true; // mis en file avec succès  affiché comme envoyé/en attente côté UI
+  }
+
+  /// Ajoute, change ou retire (même emoji) ma réaction ; renvoie les
+  /// réactions du message après le changement. Lève une erreur en cas
+  /// d'échec (l'écran remet l'état précédent).
+  Future<List<ApiReaction>> react(int messageId, String emoji) async {
+    final res = await _api.dio.post('/messages/$messageId/react', data: {'emoji': emoji});
+    return ApiReaction.listFrom(res.data);
   }
 
   Future<int?> startConversation(int recipientId,

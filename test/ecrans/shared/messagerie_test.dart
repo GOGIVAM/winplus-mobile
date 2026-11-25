@@ -112,5 +112,77 @@ void main() {
       expect(tester.widget<TextField>(find.byType(TextField)).controller!.text, isEmpty);
       expect(faux.recues('GET', '/messages/conversations/1/messages'), hasLength(2));
     });
+
+    // Lot 7 : réponses citées et réactions, comme la messagerie du site.
+    testWidgets('message cite et reactions affiches sous la bulle', (tester) async {
+      faux.repond('GET', '/messages/conversations/1/messages', [
+        {'id': 1, 'content': 'Le devoir est pour lundi', 'isFromMe': false, 'sentAt': _ilYa(const Duration(minutes: 5)),
+         'reactions': [{'userId': 9, 'emoji': '👍', 'isMine': true}, {'userId': 3, 'emoji': '👍', 'isMine': false}]},
+        {'id': 2, 'content': 'Merci', 'isFromMe': true, 'sentAt': _ilYa(const Duration(minutes: 2)),
+         'replyTo': {'id': 1, 'content': 'Le devoir est pour lundi', 'isFromMe': false}},
+        {'id': 3, 'content': null, 'isDeleted': true, 'isFromMe': false, 'sentAt': _ilYa(const Duration(minutes: 1))},
+      ]);
+      await monterEcran(tester, const ConversationScreen(conversation: conv));
+      expect(find.text('👍 2'), findsOneWidget);
+      expect(find.text('Le devoir est pour lundi'), findsNWidgets(2), reason: 'le message et sa citation');
+      expect(find.text('Mme Ngo'), findsWidgets);
+      expect(find.text(L10n.current.msgDeleted), findsOneWidget);
+    });
+
+    testWidgets('appui long : reagir envoie l\'emoji et affiche les reactions du serveur', (tester) async {
+      faux.repond('GET', '/messages/conversations/1/messages', [
+        {'id': 1, 'content': 'Bonjour', 'isFromMe': false, 'sentAt': _ilYa(const Duration(minutes: 5))},
+      ]);
+      faux.repond('POST', '/messages/1/react', [{'userId': 9, 'emoji': '❤️', 'isMine': true}]);
+      await monterEcran(tester, const ConversationScreen(conversation: conv));
+      await tester.longPress(find.text('Bonjour'));
+      await reseau(tester);
+      await tester.tap(find.text('❤️'));
+      await reseau(tester);
+      expect(faux.recues('POST', '/messages/1/react').single.data, {'emoji': '❤️'});
+      expect(find.text('❤️ 1'), findsOneWidget);
+    });
+
+    testWidgets('reaction refusee : l\'etat precedent revient avec un message', (tester) async {
+      faux.repond('GET', '/messages/conversations/1/messages', [
+        {'id': 1, 'content': 'Bonjour', 'isFromMe': false, 'sentAt': _ilYa(const Duration(minutes: 5))},
+      ]);
+      faux.repond('POST', '/messages/1/react', {'error': 'x'}, statut: 500);
+      await monterEcran(tester, const ConversationScreen(conversation: conv));
+      await tester.longPress(find.text('Bonjour'));
+      await reseau(tester);
+      await tester.tap(find.text('👍'));
+      await reseau(tester);
+      expect(find.text('👍 1'), findsNothing);
+      expect(find.text(L10n.current.msgReactError), findsOneWidget);
+    });
+
+    testWidgets('repondre : apercu au-dessus de la saisie, envoi avec le message cite, annulable', (tester) async {
+      faux.repond('GET', '/messages/conversations/1/messages', [
+        {'id': 7, 'content': 'Tu as fini ?', 'isFromMe': false, 'sentAt': _ilYa(const Duration(minutes: 5))},
+      ]);
+      faux.repond('POST', '/messages/conversations/1/messages', {});
+      await monterEcran(tester, const ConversationScreen(conversation: conv));
+      final l = L10n.current;
+      await tester.longPress(find.text('Tu as fini ?'));
+      await reseau(tester);
+      await tester.tap(find.text(l.msgReply));
+      await reseau(tester);
+      expect(find.text(l.msgReplyingTo('Mme Ngo')), findsOneWidget);
+      await tester.enterText(find.byType(TextField), 'Oui');
+      await tester.tap(find.byIcon(PhosphorIconsFill.paperPlaneRight));
+      await reseau(tester);
+      expect(faux.recues('POST', '/messages/conversations/1/messages').single.data,
+          {'content': 'Oui', 'replyToMessageId': 7});
+      expect(find.text(l.msgReplyingTo('Mme Ngo')), findsNothing, reason: 'apercu retire apres l\'envoi');
+
+      await tester.longPress(find.text('Tu as fini ?'));
+      await reseau(tester);
+      await tester.tap(find.text(l.msgReply));
+      await reseau(tester);
+      await tester.tap(find.byTooltip(l.msgCancelReply));
+      await reseau(tester);
+      expect(find.text(l.msgReplyingTo('Mme Ngo')), findsNothing);
+    });
   });
 }

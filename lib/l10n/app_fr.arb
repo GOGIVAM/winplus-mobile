@@ -5501,5 +5501,13 @@
   "hwMockStartTitle": "Commencer l’examen ?",
   "hwMockStartBody": "Tu auras {minutes} minutes. Le chrono continue même si tu quittes l’écran.",
   "@hwMockStartBody": {"placeholders": {"minutes": {"type": "int"}}},
-  "hwSchoolMissing": "Non fait"
+  "hwSchoolMissing": "Non fait",
+  "msgReply": "Répondre",
+  "msgReplyingTo": "Réponse à {name}",
+  "@msgReplyingTo": {"placeholders": {"name": {"type": "String"}}},
+  "msgYou": "Toi",
+  "msgCancelReply": "Annuler la réponse",
+  "msgDeleted": "Message supprimé",
+  "msgReactError": "La réaction n’a pas été enregistrée.",
+  "msgActions": "Réagir ou répondre"
 }
