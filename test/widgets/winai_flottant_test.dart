@@ -36,6 +36,27 @@ void main() {
     expect(zone.dy - coin.dy, 88);
   });
 
+  testWidgets('en bas d une liste, le bouton s efface pour laisser voir la derniere ligne, puis revient', (tester) async {
+    await monterEcran(
+        tester,
+        Scaffold(
+            body: WinAIFloatingWidget(
+                role: WinRole.student,
+                child: ListView(children: [
+                  for (var i = 0; i < 40; i++) SizedBox(height: 60, child: Text('ligne $i')),
+                ]))));
+    expect(find.byKey(const ValueKey('winai-fab')), findsOneWidget);
+    await tester.drag(find.byType(ListView), const Offset(0, -5000));
+    await pomper(tester);
+    await pomper(tester, const Duration(milliseconds: 400));
+    expect(find.text('ligne 39'), findsOneWidget);
+    expect(find.byKey(const ValueKey('winai-fab')), findsNothing);
+    await tester.drag(find.byType(ListView), const Offset(0, 600));
+    await pomper(tester);
+    await pomper(tester, const Duration(milliseconds: 400));
+    expect(find.byKey(const ValueKey('winai-fab')), findsOneWidget);
+  });
+
   testWidgets('toucher le bouton ouvre la mini-carte : titre, sous-titre du role et quatre suggestions', (tester) async {
     await monterEcran(tester, _coque(WinRole.student));
     await tester.tap(_bouton());

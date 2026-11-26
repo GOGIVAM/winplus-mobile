@@ -82,7 +82,8 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
 
   /// Feuille du bas ou menu ouvert dans la coque : le bouton WinAI s'efface.
   final _popup = ValueNotifier<bool>(false);
-  late final _observer = _PopupObserver(_popup);
+  final _routes = ValueNotifier<int>(0);
+  late final _observer = _PopupObserver(_popup, _routes);
 
   @override
   void setState(VoidCallback fn) {
@@ -231,6 +232,7 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
           role: role,
           navigatorKey: _inner,
           hidden: _popup,
+          routeChanged: _routes,
           // Lu ici, au-dessus du Scaffold : dessous, il retire déjà la
           // hauteur du clavier.
           keyboardOpen: MediaQuery.viewInsetsOf(context).bottom > 0,
@@ -722,10 +724,14 @@ Widget _withUnread(bool messages, Widget icon) {
 /// navigateur de la coque.
 class _PopupObserver extends NavigatorObserver {
   final ValueNotifier<bool> open;
+
+  /// Incrémenté à chaque écran ouvert ou fermé.
+  final ValueNotifier<int> routes;
   int _count = 0;
-  _PopupObserver(this.open);
+  _PopupObserver(this.open, this.routes);
 
   void _set(int delta, Route<dynamic>? route) {
+    WidgetsBinding.instance.addPostFrameCallback((_) => routes.value++);
     if (route is! PopupRoute) return;
     _count = (_count + delta).clamp(0, 99);
     final value = _count > 0;

@@ -44,6 +44,10 @@ class WinAIFloatingWidget extends StatefulWidget {
   /// ouvert (le bouton passerait par-dessus), ou WinAI occupe déjà l'écran.
   final ValueListenable<bool>? hidden;
 
+  /// Change à chaque ouverture ou fermeture d'un écran de la coque : l'état
+  /// « fin de liste » de l'écran quitté ne vaut plus.
+  final Listenable? routeChanged;
+
   /// Clavier ouvert : le bouton s'efface (il se posait sur le bouton d'envoi
   /// d'une conversation, à droite du champ).
   final bool keyboardOpen;
@@ -58,6 +62,7 @@ class WinAIFloatingWidget extends StatefulWidget {
       required this.role,
       this.navigatorKey,
       this.hidden,
+      this.routeChanged,
       this.keyboardOpen = false});
 
   @override
@@ -69,6 +74,41 @@ class _WinAIFloatingWidgetState extends State<WinAIFloatingWidget> {
   Offset? _pos;
   bool _open = false;
   bool _dragged = false;
+
+  /// La liste affichée est arrivée en bas : le bouton s'efface pour laisser
+  /// voir et toucher sa dernière ligne ; il revient dès qu'on remonte.
+  bool _atEnd = false;
+
+  void _resetEnd() {
+    if (_atEnd && mounted) setState(() => _atEnd = false);
+  }
+
+  bool _onMetrics(ScrollMetrics m) {
+    if (m.axis != Axis.vertical) return false;
+    final end = m.maxScrollExtent > 0 && m.extentAfter < 72;
+    if (end != _atEnd) {
+      // Après l'image en cours : la mesure peut arriver pendant un rendu.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && end != _atEnd) setState(() => _atEnd = end);
+      });
+    }
+    return false;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    widget.routeChanged?.addListener(_resetEnd);
+  }
+
+  @override
+  void didUpdateWidget(WinAIFloatingWidget old) {
+    super.didUpdateWidget(old);
+    if (old.routeChanged != widget.routeChanged) {
+      old.routeChanged?.removeListener(_resetEnd);
+      widget.routeChanged?.addListener(_resetEnd);
+    }
+  }
   final _ctrl = TextEditingController();
 
   _WinAIRoleConfig _configFor(WinRole role) {
@@ -141,6 +181,7 @@ class _WinAIFloatingWidgetState extends State<WinAIFloatingWidget> {
 
   @override
   void dispose() {
+    widget.routeChanged?.removeListener(_resetEnd);
     _ctrl.dispose();
     super.dispose();
   }
@@ -150,19 +191,33 @@ class _WinAIFloatingWidgetState extends State<WinAIFloatingWidget> {
     final cfg = _configFor(widget.role);
     final hidden = widget.hidden;
 
+    return NotificationListener<ScrollMetricsNotification>(
+      onNotification: (n) => _onMetrics(n.metrics),
+      child: NotificationListener<ScrollUpdateNotification>(
+        onNotification: (n) => _onMetrics(n.metrics),
+        child: _withVisibility(cfg, hidden),
+      ),
+    );
+  }
+
+  Widget _withVisibility(_WinAIRoleConfig cfg, ValueListenable<bool>? hidden) {
     return ListenableBuilder(
         listenable: Listenable.merge(
             [WinAIFloatingWidget.suppressed, if (hidden != null) hidden]),
         builder: (context, _) {
+          // La mini-carte ouverte reste affichée même en fin de liste.
           final off = widget.keyboardOpen ||
+              (_atEnd && !_open) ||
               WinAIFloatingWidget.suppressed.value > 0 ||
               (hidden?.value ?? false);
-          if (off) return widget.child;
-          return _buildWithButton(context, cfg);
+          // Meme arbre que le bouton soit affiche ou non : sinon l'ecran
+          // dessous serait reconstruit (liste remise en haut, saisie perdue).
+          return _buildWithButton(context, cfg, off);
         });
   }
 
-  Widget _buildWithButton(BuildContext context, _WinAIRoleConfig cfg) {
+  Widget _buildWithButton(
+      BuildContext context, _WinAIRoleConfig cfg, bool off) {
     return LayoutBuilder(builder: (context, constraints) {
       final maxW = constraints.maxWidth;
       final maxH = constraints.maxHeight;
@@ -178,7 +233,7 @@ class _WinAIFloatingWidgetState extends State<WinAIFloatingWidget> {
         widget.child,
 
         // ── Scrim + mini-carte ──
-        if (_open) ...[
+        if (_open && !off) ...[
           Positioned.fill(
             child: GestureDetector(
               onTap: () => setState(() => _open = false),
@@ -211,7 +266,7 @@ class _WinAIFloatingWidgetState extends State<WinAIFloatingWidget> {
         ],
 
         // ── Bouton flottant déplaçable ──
-        Positioned(
+        if (!off) Positioned(
           key: const ValueKey('winai-fab'),
           left: pos.dx,
           top: pos.dy,
