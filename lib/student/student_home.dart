@@ -34,6 +34,7 @@ import 'study_groups_screen.dart';
 import 'study_session_screen.dart';
 import 'tutors/my_tutor_bookings_screen.dart';
 import 'tutors/tutor_search_screen.dart';
+import '../shared/net_image.dart';
 
 /// ===================== ACCUEIL ÉTUDIANT =====================
 class StudentHomeTab extends StatefulWidget {
@@ -462,9 +463,8 @@ class _ContentCardState extends State<ContentCard> {
               // ou si elle ne se charge pas : la couleur de la matière et son
               // pictogramme.
               if (content.imageUrl != null && content.imageUrl!.isNotEmpty)
-                Image.network(content.imageUrl!,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => _visuelMatiere(subj))
+                NetImage(content.imageUrl!,
+                    error: (_) => _visuelMatiere(subj))
               else
                 _visuelMatiere(subj),
               Positioned(

@@ -7,6 +7,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../widgets/win_screen.dart';
+import '../shared/net_image.dart';
 
 class MyLinksScreen extends StatefulWidget {
   const MyLinksScreen({super.key});
@@ -157,8 +158,8 @@ class _MyLinksScreenState extends State<MyLinksScreen> {
                                         radius: 18,
                                         backgroundImage:
                                             inv['avatarUrl'] != null
-                                                ? NetworkImage(
-                                                    inv['avatarUrl'] as String)
+                                                ? NetImage.provider(context,
+                                                    inv['avatarUrl'] as String, size: 36)
                                                 : null,
                                         backgroundColor: s.surface2,
                                         child: inv['avatarUrl'] == null
@@ -374,7 +375,7 @@ class _PersonCard extends StatelessWidget {
         CircleAvatar(
           radius: 20,
           backgroundImage: person['avatarUrl'] != null
-              ? NetworkImage(person['avatarUrl'] as String)
+              ? NetImage.provider(context, person['avatarUrl'] as String, size: 40)
               : null,
           backgroundColor: s.surface2,
           child: person['avatarUrl'] == null

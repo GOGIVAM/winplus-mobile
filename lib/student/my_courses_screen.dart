@@ -10,6 +10,7 @@ import 'course_catalog_screen.dart';
 import 'course_player_screen.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../widgets/win_screen.dart';
+import '../shared/net_image.dart';
 
 class MyCoursesScreen extends StatefulWidget {
   const MyCoursesScreen({super.key});
@@ -121,9 +122,8 @@ class _CourseCard extends StatelessWidget {
               AspectRatio(
                 aspectRatio: 16 / 9,
                 child: e.thumbnailUrl != null
-                    ? Image.network(e.thumbnailUrl!,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => _ThumbPlaceholder())
+                    ? NetImage(e.thumbnailUrl!,
+                        error: (_) => _ThumbPlaceholder())
                     : _ThumbPlaceholder(),
               ),
               if (e.isCompleted)

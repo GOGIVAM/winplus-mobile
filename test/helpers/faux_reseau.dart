@@ -19,6 +19,7 @@ import 'package:winplus/services/biometric_service.dart';
 import 'package:winplus/services/http_cache.dart';
 import 'package:winplus/services/session_manager.dart';
 import 'package:winplus/services/tutor_booking_service.dart';
+import 'package:winplus/shared/net_image.dart';
 
 /// Corps brut, envoyé tel quel (flux d'évènements « data: … » par exemple).
 class FauxTexte {
@@ -129,6 +130,11 @@ FauxReseau preparerEnvironnement({Map<String, Object> prefs = const {}}) {
   FlutterSecureStorage.setMockInitialValues({});
   SessionManager.resetForTest();
   ApiClient.instance.onSessionExpired = null;
+  // Relance des lectures coupées (lot 8) : coupée dans les tests, où chaque
+  // coupure simulée est voulue ; test dédié : relance_lecture_test.
+  ApiClient.instance.networkRetries = 0;
+  // Images distantes : sans cache disque (greffons absents des tests).
+  NetImage.diskCache = false;
   // Politique de tutorat gardée en mémoire par le service : une réponse
   // attendue par le test précédent ne viendra jamais.
   TutorBookingService.instance.resetPolicyForTest();

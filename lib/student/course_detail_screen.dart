@@ -14,6 +14,7 @@ import '../widgets/win_widgets.dart';
 import 'course_player_screen.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../widgets/win_screen.dart';
+import '../shared/net_image.dart';
 
 class CourseDetailScreen extends StatefulWidget {
   final int courseId;
@@ -311,10 +312,8 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
           ),
           flexibleSpace: FlexibleSpaceBar(
             background: c.thumbnailUrl != null
-                ? Image.network(c.thumbnailUrl!,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) =>
-                        Container(color: WinColors.ink900))
+                ? NetImage(c.thumbnailUrl!,
+                    error: (_) => Container(color: WinColors.ink900))
                 : Container(
                     decoration: const BoxDecoration(
                       gradient: LinearGradient(
@@ -701,7 +700,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                           CircleAvatar(
                             radius: 18,
                             backgroundImage: r.authorAvatarUrl != null
-                                ? NetworkImage(r.authorAvatarUrl!)
+                                ? NetImage.provider(context, r.authorAvatarUrl!, size: 36)
                                 : null,
                             backgroundColor: s.surface2,
                             child: r.authorAvatarUrl == null

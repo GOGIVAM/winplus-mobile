@@ -315,7 +315,10 @@ Dépend de tous les lots précédents.
 
 1. Tests sur de vrais téléphones : un Android d'entrée de gamme (2 Go de mémoire, Android 8), un Android récent, un iPhone.
 2. Réseau lent et instable (2G/3G), cas le plus courant des utilisateurs : délais, reprises, taille des images.
+   - Fait (26/11) : une lecture qui n'a pas joint le serveur est relancée une fois (jamais une écriture, ni une réponse du serveur en erreur, ni hors ligne connu) avant la copie locale ; images distantes gardées sur le téléphone (`cached_network_image`) et décodées à la taille affichée (`shared/net_image.dart`).
+   - Reste : essai sur un vrai réseau lent (téléphone en 2G forcée).
 3. Poids de l'application et temps de démarrage. Les polices sont téléchargées au premier lancement par `google_fonts` : les embarquer dans l'application, sinon le premier lancement hors ligne n'a pas les bonnes polices.
+   - Fait : Archivo embarquée (`assets/google_fonts/`), téléchargement coupé (`allowRuntimeFetching = false`). Reste : mesurer poids et démarrage sur l'appareil d'entrée de gamme.
 4. Suivi des plantages en production (*Georges* : choix de l'outil).
 5. Parcours complets sur l'intégration, avec les comptes de test (élève 30, parent 26, professeur 50) : inscription, achat, quiz, formation, réservation, message, hors ligne puis retour du réseau.
 6. Relecture de sécurité : jetons, cache chiffré, captures d'écran, liens profonds.

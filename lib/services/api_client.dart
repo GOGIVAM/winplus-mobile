@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import '../app_config.dart';
 import '../l10n/l10n.dart';
+import 'connectivity_service.dart';
 import 'http_cache.dart';
 import 'outbox_service.dart';
 import 'session_manager.dart';
@@ -76,11 +77,53 @@ class ApiClient {
         handler.next(e);
       },
     ));
+    // Lot 8 (réseau lent) : une lecture qui n'a pas pu joindre le serveur
+    // (micro-coupure, antenne qui change) est relancée avant de tomber sur la
+    // copie locale ou sur une erreur. Placée avant le cache, pour que la
+    // copie locale ne serve qu'après la relance.
+    d.interceptors.add(InterceptorsWrapper(
+      onError: (DioException e, handler) async {
+        final o = e.requestOptions;
+        final tries = (o.extra[_retryKey] as int?) ?? 0;
+        if (!shouldRetry(e) || tries >= networkRetries) return handler.next(e);
+        await Future<void>.delayed(retryDelay * (tries + 1));
+        o.extra[_retryKey] = tries + 1;
+        try {
+          return handler.resolve(await d.fetch(o));
+        } on DioException catch (again) {
+          return handler.next(again);
+        }
+      },
+    ));
     // Mode hors ligne (lot 3) : après l'intercepteur de session, pour que
     // l'échec réseau d'une requête lui parvienne une fois les 401 traités.
     d.interceptors.add(HttpCacheInterceptor());
 
     return d;
+  }
+
+  static const _retryKey = 'winplusRetries';
+
+  /// Relances d'une lecture qui n'a pas joint le serveur (0 dans les tests
+  /// d'écran : chaque coupure simulée y est voulue).
+  int networkRetries = 1;
+
+  /// Attente avant la première relance (doublée à la seconde).
+  Duration retryDelay = const Duration(milliseconds: 800);
+
+  /// Seules les lectures (GET) sont relancées, et seulement quand le serveur
+  /// n'a pas été joint : une écriture passe par la file d'attente (lot 3),
+  /// un délai de réponse dépassé a déjà coûté 30 s, et une réponse du
+  /// serveur, même en erreur, est une vraie réponse. Hors ligne connu, pas
+  /// de relance : la copie locale sert tout de suite.
+  static bool shouldRetry(DioException e) {
+    if (e.requestOptions.method.toUpperCase() != 'GET') return false;
+    if (e.response != null) return false;
+    if (e.type != DioExceptionType.connectionError &&
+        e.type != DioExceptionType.connectionTimeout) {
+      return false;
+    }
+    return ConnectivityService.instance.isOnline;
   }
 
   static String _shortHash(String s) {

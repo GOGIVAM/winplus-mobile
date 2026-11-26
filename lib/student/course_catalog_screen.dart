@@ -10,6 +10,7 @@ import '../widgets/win_widgets.dart';
 import 'course_detail_screen.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../widgets/win_screen.dart';
+import '../shared/net_image.dart';
 
 /// Catalogue de formations  composition en grille 2 colonnes (image en
 /// tête de carte, tag catégorie incrusté, titre + prix dessous) et rangée
@@ -347,9 +348,8 @@ class _CourseCard extends StatelessWidget {
           flex: 6,
           child: Stack(fit: StackFit.expand, children: [
             c.thumbnailUrl != null
-                ? Image.network(c.thumbnailUrl!,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(
+                ? NetImage(c.thumbnailUrl!,
+                    error: (_) => Container(
                         color: s.outline2,
                         child: Icon(PhosphorIconsRegular.monitorPlay,
                             size: 32, color: s.onFaint)))
