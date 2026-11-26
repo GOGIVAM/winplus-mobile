@@ -6,6 +6,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 import 'connectivity_service.dart';
 import 'session_manager.dart';
+import 'secure_hive.dart';
 
 /// Règle de lecture commune du mode hors ligne (lot 3) : chaque lecture
 /// réussie est gardée, par compte ; sans réseau, ou quand le serveur ne
@@ -76,7 +77,7 @@ class HttpCache {
     if (_store != null) return _store;
     if (_unavailable) return null;
     try {
-      _store = _HiveStore(await Hive.openBox(boxName));
+      _store = _HiveStore(await SecureHive.open(boxName));
     } catch (e) {
       // Hive non initialisé (isolat de fond, outil) : pas de cache.
       _unavailable = true;

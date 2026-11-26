@@ -9,6 +9,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'api_client.dart';
 import 'connectivity_service.dart';
 import 'http_cache.dart';
+import 'secure_hive.dart';
 
 /// Action en attente d'envoi, telle que la montre l'écran « En attente
 /// d'envoi ».
@@ -76,7 +77,7 @@ class OutboxService {
   StreamSubscription<bool>? _connSub;
 
   Future<void> init() async {
-    _box ??= await Hive.openBox(_boxName);
+    _box ??= await SecureHive.open(_boxName);
     _count();
     _registerHttpHandler();
     _connSub ??= ConnectivityService.instance.onStatusChange.listen((online) {

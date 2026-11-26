@@ -322,6 +322,14 @@ Dépend de tous les lots précédents.
 4. Suivi des plantages en production (*Georges* : choix de l'outil).
 5. Parcours complets sur l'intégration, avec les comptes de test (élève 30, parent 26, professeur 50) : inscription, achat, quiz, formation, réservation, message, hors ligne puis retour du réseau.
 6. Relecture de sécurité : jetons, cache chiffré, captures d'écran, liens profonds.
+   - Relu le 26/11 :
+     - **Jetons :** dans le trousseau chiffré. Les anciennes copies dans les préférences sont effacées, rien n'est journalisé, et la déconnexion n'efface que les jetons.
+     - **Captures d'écran :** FLAG_SECURE.
+     - **Liens profonds :** trois chemins seulement (`/reset-password/`, `/visio/`, `/sessions/`) sur les hôtes WinPlus.
+     - **Sauvegardes Android :** sans trousseau ni `app_flutter/`.
+   - Corrigé : les copies locales (lectures hors ligne, tableaux de bord, file des envois en attente, index des formations téléchargées) étaient écrites en clair.
+     - Elles sont maintenant chiffrées en AES-256 par `services/secure_hive.dart`, avec une clé tirée au premier lancement et rangée dans le trousseau.
+     - Une boîte en clair est reprise sans perte, puis son fichier est supprimé.
 
 **Critères de fin :** aucun plantage sur les parcours du point 5, sur les trois téléphones ; premier lancement utilisable en moins de 5 secondes sur l'appareil d'entrée de gamme.
 

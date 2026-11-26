@@ -7,6 +7,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'session_manager.dart';
 import '../l10n/l10n.dart';
+import 'secure_hive.dart';
 
 /// Module 27 (lot 8) : téléchargement hors-ligne chiffré des LEÇONS DE
 /// FORMATION (Course) uniquement.
@@ -41,7 +42,7 @@ class CourseOfflineService {
 
   Future<Box> _box() async {
     if (_metaBox != null && _metaBox!.isOpen) return _metaBox!;
-    _metaBox = await Hive.openBox(_metaBoxName);
+    _metaBox = await SecureHive.open(_metaBoxName);
     return _metaBox!;
   }
 

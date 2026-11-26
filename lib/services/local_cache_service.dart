@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'secure_hive.dart';
 
 /// Cache local structuré (Hive) pour les données déjà affichées à
 /// l'utilisateur : chaque écran principal peut donc se relancer avec sa
@@ -27,10 +28,10 @@ class LocalCacheService {
     if (_initialized) return;
     await Hive.initFlutter();
     await Future.wait([
-      Hive.openBox(parentDashboardBoxName),
-      Hive.openBox(studentDashboardBoxName),
-      Hive.openBox(examCoachBoxName),
-      Hive.openBox(reportsBoxName),
+      SecureHive.open(parentDashboardBoxName),
+      SecureHive.open(studentDashboardBoxName),
+      SecureHive.open(examCoachBoxName),
+      SecureHive.open(reportsBoxName),
     ]);
     _initialized = true;
   }
