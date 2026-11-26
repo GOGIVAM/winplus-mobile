@@ -1,3 +1,6 @@
+import 'dart:typed_data';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:winplus/l10n/l10n.dart';
@@ -46,6 +49,32 @@ Map<String, dynamic> _profil([Map<String, dynamic> en = const {}]) => {
       'monthlyMaxDiscountPercent': 30,
       ...en,
     };
+
+/// Faux selecteur de fichier : rend le fichier prepare par le test.
+class _FauxSelecteur extends FilePicker {
+  PlatformFile? fichier;
+  List<String>? extensionsDemandees;
+
+  @override
+  Future<FilePickerResult?> pickFiles({
+    String? dialogTitle,
+    String? initialDirectory,
+    FileType type = FileType.any,
+    List<String>? allowedExtensions,
+    dynamic onFileLoading,
+    bool? allowCompression,
+    int? compressionQuality,
+    bool allowMultiple = false,
+    bool? withData,
+    bool? withReadStream,
+    bool lockParentWindow = false,
+    bool? readSequential,
+  }) async {
+    extensionsDemandees = allowedExtensions;
+    final f = fichier;
+    return f == null ? null : FilePickerResult([f]);
+  }
+}
 
 void main() {
   late FauxReseau faux;
@@ -372,7 +401,7 @@ void main() {
       await tester.enterText(find.byWidgetPredicate((w) => w is TextField && w.maxLength == 300), 'Dix ans d\'experience');
       await tester.tap(_puce(l.teacherProfileStyleInteractive));
       await pomper(tester);
-      await tester.enterText(find.widgetWithText(TextField, 'https://youtube.com/...'), 'https://exemple.test/v');
+      await tester.enterText(find.widgetWithText(TextField, l.tutorVideoLinkHint), 'https://exemple.test/v');
       await tester.tap(_bouton(l.commonSave));
       await reseau(tester);
       expect(envoye(), {
@@ -400,7 +429,7 @@ void main() {
       expect(find.text(l.teacherProfileActivated), findsOneWidget);
     });
 
-    testWidgets('activation refusee : message d\'erreur, le bouton reste', (tester) async {
+    testWidgets('activation refusee : le motif du serveur est affiche, le bouton reste', (tester) async {
       routes(_profil({'onboardingStep': 5}));
       faux.repond('POST', '/tutor-profile/me/activate', {'error': 'Profil incomplet'}, statut: 400);
       await monterProfil(tester);
@@ -408,7 +437,9 @@ void main() {
       await reseau(tester);
       // Le message d'enregistrement passe d'abord : l'erreur est en file.
       await laisserPasserUnMessage(tester);
-      expect(find.text(L10n.current.teacherProfileActivateError), findsOneWidget);
+      // Le serveur dit ce qui manque : son message remplace le message generique.
+      expect(find.text('Profil incomplet'), findsOneWidget);
+      expect(find.text(L10n.current.teacherProfileActivateError), findsNothing);
       expect(_bouton(L10n.current.teacherProfileActivate), findsOneWidget);
     });
 
@@ -419,17 +450,51 @@ void main() {
       expect(_bouton(L10n.current.commonSave), findsOneWidget);
     });
 
-    testWidgets('diplome : envoi de l\'adresse du document puis relecture du profil', (tester) async {
+    testWidgets('diplome : le fichier choisi est depose, son adresse soumise, puis le profil est relu', (tester) async {
       routes(_profil({'onboardingStep': 5}));
-      faux.repond('POST', '/tutor-profile/me/verification-document', {'id': 4, 'documentUrl': 'https://exemple.test/d.pdf', 'status': 'pending'});
+      faux.repond('POST', '/tutor-profile/uploads/document', {'url': 'https://stockage.test/diplomes/d.pdf'});
+      faux.repond('POST', '/tutor-profile/me/verification-document', {'id': 4, 'documentUrl': 'https://stockage.test/diplomes/d.pdf', 'status': 'pending'});
+      final selecteur = _FauxSelecteur()..fichier = PlatformFile(name: 'd.pdf', size: 3, bytes: Uint8List.fromList([1, 2, 3]));
+      FilePicker.platform = selecteur;
       await monterProfil(tester);
       final l = L10n.current;
-      await tester.enterText(find.widgetWithText(TextField, l.teacherProfileDocUrlHint), ' https://exemple.test/d.pdf ');
-      // Il existe deux boutons « Envoyer » possibles : celui du diplome est le seul de l'ecran.
-      await tester.tap(_bouton(l.commonSend));
+      // Plus d'adresse a coller : un bouton pour joindre le fichier.
+      expect(find.widgetWithText(TextField, l.teacherProfileDocUrlHint), findsNothing);
+      await tester.ensureVisible(_bouton(l.tutorDiplomaAttach));
+      await pomper(tester);
+      await tester.tap(_bouton(l.tutorDiplomaAttach));
       await reseau(tester);
-      expect(faux.recues('POST', '/tutor-profile/me/verification-document').single.data, {'documentUrl': 'https://exemple.test/d.pdf'});
+      await reseau(tester);
+      expect(selecteur.extensionsDemandees, containsAll(['pdf', 'jpg', 'png', 'webp']));
+      expect(faux.recues('POST', '/tutor-profile/uploads/document'), hasLength(1));
+      expect(faux.recues('POST', '/tutor-profile/me/verification-document').single.data, {'documentUrl': 'https://stockage.test/diplomes/d.pdf'});
       expect(faux.recues('GET', '/tutor-profile/me'), hasLength(2));
+    });
+
+    testWidgets('diplome trop lourd : refuse avant tout envoi', (tester) async {
+      routes(_profil({'onboardingStep': 5}));
+      FilePicker.platform = _FauxSelecteur()..fichier = PlatformFile(name: 'gros.pdf', size: 11 * 1024 * 1024, bytes: Uint8List(1));
+      await monterProfil(tester);
+      final l = L10n.current;
+      await tester.ensureVisible(_bouton(l.tutorDiplomaAttach));
+      await pomper(tester);
+      await tester.tap(_bouton(l.tutorDiplomaAttach));
+      await reseau(tester);
+      expect(find.text(l.tutorFileTooBig(10)), findsOneWidget);
+      expect(faux.recues('POST', '/tutor-profile/uploads/document'), isEmpty);
+    });
+
+    testWidgets('etat du profil et photo : « Brouillon » puis « En ligne », bouton de photo dans la presentation', (tester) async {
+      routes(_profil({'onboardingStep': 5}));
+      await monterProfil(tester);
+      final l = L10n.current;
+      expect(find.text(l.tutorStateDraft), findsOneWidget);
+      expect(find.text(l.tutorPhotoTitle), findsOneWidget);
+      expect(_bouton(l.tutorPhotoPick), findsOneWidget);
+      routes(_profil({'onboardingStep': 5, 'isActive': true}));
+      await monter(tester, const SizedBox());
+      await monterProfil(tester);
+      expect(find.text(l.tutorStateOnline), findsOneWidget);
     });
 
     testWidgets('diplome deja envoye : son statut est affiche a la place du champ', (tester) async {

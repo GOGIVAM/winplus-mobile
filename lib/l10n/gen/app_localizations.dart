@@ -20276,6 +20276,96 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Pour vous'**
   String get mobileHomeForYouFormal;
+
+  /// No description provided for @tutorStateDraft.
+  ///
+  /// In fr, this message translates to:
+  /// **'Brouillon'**
+  String get tutorStateDraft;
+
+  /// No description provided for @tutorStateOnline.
+  ///
+  /// In fr, this message translates to:
+  /// **'En ligne'**
+  String get tutorStateOnline;
+
+  /// No description provided for @tutorStateVacation.
+  ///
+  /// In fr, this message translates to:
+  /// **'En vacances'**
+  String get tutorStateVacation;
+
+  /// No description provided for @tutorPhotoTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Photo de profil'**
+  String get tutorPhotoTitle;
+
+  /// No description provided for @tutorPhotoHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Obligatoire pour publier votre profil : les familles choisissent plus volontiers un répétiteur dont elles voient le visage.'**
+  String get tutorPhotoHint;
+
+  /// No description provided for @tutorPhotoPick.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir une photo'**
+  String get tutorPhotoPick;
+
+  /// No description provided for @tutorPhotoChange.
+  ///
+  /// In fr, this message translates to:
+  /// **'Changer la photo'**
+  String get tutorPhotoChange;
+
+  /// No description provided for @tutorVideoHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une vidéo d\'une minute environ : MP4, WEBM ou MOV, 25 Mo au plus. Vous pouvez aussi coller un lien.'**
+  String get tutorVideoHint;
+
+  /// No description provided for @tutorVideoUpload.
+  ///
+  /// In fr, this message translates to:
+  /// **'Envoyer une vidéo'**
+  String get tutorVideoUpload;
+
+  /// No description provided for @tutorVideoLinkHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lien vers votre vidéo'**
+  String get tutorVideoLinkHint;
+
+  /// No description provided for @tutorVideoSent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vidéo envoyée. Enregistrez pour la publier.'**
+  String get tutorVideoSent;
+
+  /// No description provided for @tutorDiplomaHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'PDF, JPG, PNG ou WEBP, 10 Mo au plus. L\'équipe WinPlus le vérifie avant d\'afficher le badge « Diplôme vérifié ».'**
+  String get tutorDiplomaHint;
+
+  /// No description provided for @tutorDiplomaAttach.
+  ///
+  /// In fr, this message translates to:
+  /// **'Joindre mon diplôme'**
+  String get tutorDiplomaAttach;
+
+  /// No description provided for @tutorFileTooBig.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce fichier dépasse {size} Mo.'**
+  String tutorFileTooBig(int size);
+
+  /// No description provided for @tutorUploadFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'L\'envoi a échoué. Vérifiez la connexion, puis réessayez.'**
+  String get tutorUploadFailed;
 }
 
 class _AppLocalizationsDelegate

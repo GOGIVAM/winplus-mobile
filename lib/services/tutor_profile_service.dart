@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'api_client.dart';
 
 /// Profil "Mode Répétiteur" (Module 1  professeur_complete.md).
@@ -555,6 +556,44 @@ class TutorProfileService {
         await _api.dio.post('/tutor-profile/me/vacation', data: isOnVacation);
     return TutorProfile.fromJson(res.data as Map<String, dynamic>);
   }
+
+  /// Phrase du serveur pour un refus (fichier trop lourd, format, élément
+  /// manquant à l'activation…), ou null si l'erreur n'en porte pas.
+  static String? serverMessage(Object error) {
+    if (error is! DioException) return null;
+    final body = error.response?.data;
+    if (body is! Map) return null;
+    for (final k in const ['message', 'error']) {
+      final v = body[k];
+      if (v is String && v.trim().isNotEmpty) return v.trim();
+    }
+    return null;
+  }
+
+  Future<String> _upload(String path, List<int> bytes, String fileName) async {
+    final res = await _api.dio.post(path,
+        data: FormData.fromMap(
+            {'file': MultipartFile.fromBytes(bytes, filename: fileName)}),
+        // Une vidéo de 25 Mo sur un réseau lent dépasse le délai habituel.
+        options: Options(
+            sendTimeout: const Duration(minutes: 5),
+            receiveTimeout: const Duration(minutes: 2)));
+    final url = res.data is Map ? res.data['url'] : null;
+    if (url is! String || url.isEmpty) {
+      throw StateError('upload: url absente');
+    }
+    return url;
+  }
+
+  /// Dépose le diplôme (PDF, JPG, PNG ou WEBP, 10 Mo au plus) dans le
+  /// stockage WinPlus et renvoie son adresse, à soumettre ensuite par
+  /// [submitVerificationDocument] (le serveur refuse toute autre adresse).
+  Future<String> uploadDocument(List<int> bytes, String fileName) =>
+      _upload('/tutor-profile/uploads/document', bytes, fileName);
+
+  /// Dépose la vidéo de présentation (MP4, WEBM ou MOV, 25 Mo au plus).
+  Future<String> uploadVideo(List<int> bytes, String fileName) =>
+      _upload('/tutor-profile/uploads/video', bytes, fileName);
 
   Future<TutorVerificationDocument> submitVerificationDocument(
       String documentUrl) async {

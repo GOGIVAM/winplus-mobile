@@ -12087,4 +12087,55 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get mobileHomeForYouFormal => 'Pour vous';
+
+  @override
+  String get tutorStateDraft => 'Brouillon';
+
+  @override
+  String get tutorStateOnline => 'En ligne';
+
+  @override
+  String get tutorStateVacation => 'En vacances';
+
+  @override
+  String get tutorPhotoTitle => 'Photo de profil';
+
+  @override
+  String get tutorPhotoHint =>
+      'Obligatoire pour publier votre profil : les familles choisissent plus volontiers un répétiteur dont elles voient le visage.';
+
+  @override
+  String get tutorPhotoPick => 'Choisir une photo';
+
+  @override
+  String get tutorPhotoChange => 'Changer la photo';
+
+  @override
+  String get tutorVideoHint =>
+      'Une vidéo d\'une minute environ : MP4, WEBM ou MOV, 25 Mo au plus. Vous pouvez aussi coller un lien.';
+
+  @override
+  String get tutorVideoUpload => 'Envoyer une vidéo';
+
+  @override
+  String get tutorVideoLinkHint => 'Lien vers votre vidéo';
+
+  @override
+  String get tutorVideoSent => 'Vidéo envoyée. Enregistrez pour la publier.';
+
+  @override
+  String get tutorDiplomaHint =>
+      'PDF, JPG, PNG ou WEBP, 10 Mo au plus. L\'équipe WinPlus le vérifie avant d\'afficher le badge « Diplôme vérifié ».';
+
+  @override
+  String get tutorDiplomaAttach => 'Joindre mon diplôme';
+
+  @override
+  String tutorFileTooBig(int size) {
+    return 'Ce fichier dépasse $size Mo.';
+  }
+
+  @override
+  String get tutorUploadFailed =>
+      'L\'envoi a échoué. Vérifiez la connexion, puis réessayez.';
 }

@@ -11993,4 +11993,55 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mobileHomeForYouFormal => 'For you';
+
+  @override
+  String get tutorStateDraft => 'Draft';
+
+  @override
+  String get tutorStateOnline => 'Online';
+
+  @override
+  String get tutorStateVacation => 'On holiday';
+
+  @override
+  String get tutorPhotoTitle => 'Profile photo';
+
+  @override
+  String get tutorPhotoHint =>
+      'Required to publish your profile: families more readily choose a tutor whose face they can see.';
+
+  @override
+  String get tutorPhotoPick => 'Choose a photo';
+
+  @override
+  String get tutorPhotoChange => 'Change photo';
+
+  @override
+  String get tutorVideoHint =>
+      'A video of about one minute: MP4, WEBM or MOV, 25 MB at most. You can also paste a link.';
+
+  @override
+  String get tutorVideoUpload => 'Upload a video';
+
+  @override
+  String get tutorVideoLinkHint => 'Link to your video';
+
+  @override
+  String get tutorVideoSent => 'Video uploaded. Save to publish it.';
+
+  @override
+  String get tutorDiplomaHint =>
+      'PDF, JPG, PNG or WEBP, 10 MB at most. The WinPlus team checks it before showing the \"Verified diploma\" badge.';
+
+  @override
+  String get tutorDiplomaAttach => 'Attach my diploma';
+
+  @override
+  String tutorFileTooBig(int size) {
+    return 'This file is over $size MB.';
+  }
+
+  @override
+  String get tutorUploadFailed =>
+      'Upload failed. Check the connection, then try again.';
 }

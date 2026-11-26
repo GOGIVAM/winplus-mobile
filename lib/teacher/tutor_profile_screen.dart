@@ -12,6 +12,10 @@ import 'tutor_pricing_grid_editor.dart';
 import 'tutor_verification_screen.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../widgets/win_screen.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:image_picker/image_picker.dart';
+import '../services/user_service.dart';
+import '../shared/net_image.dart';
 
 /// Module 1  Onboarding et profil répétiteur (professeur_complete.md).
 /// Écran unique en 5 étapes (Workflow 1) : matières/niveaux, intervention,
@@ -185,7 +189,11 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
   final _bioCtrl = TextEditingController();
   final _videoCtrl = TextEditingController();
   String? _teachingStyle;
-  final _diplomaCtrl = TextEditingController();
+  /// Envoi de fichier en cours : 'photo', 'video' ou 'diploma'.
+  String? _uploading;
+
+  /// Photo du compte (obligatoire pour publier le profil).
+  String? _avatarUrl;
   TutorRateSuggestion? _rateSuggestion;
   bool _rateLoading = false;
   // Lot 9.1 : grille tarifaire (matière/mode, créneaux, dégressivité).
@@ -259,6 +267,7 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
     _titleCtrl.text = p.title ?? '';
     _bioCtrl.text = p.tutorBio ?? '';
     _videoCtrl.text = p.videoUrl ?? '';
+    if ((p.avatarUrl ?? '').isNotEmpty) _avatarUrl = p.avatarUrl;
     _teachingStyle = p.teachingStyle;
     setState(() {
       _profile = p;
@@ -383,6 +392,78 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
     }
   }
 
+  void _toast(String text) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
+  }
+
+  /// Choisit un fichier d'au plus [maxMb] Mo ; null si rien n'est choisi ou
+  /// si le fichier est trop lourd (l'utilisateur est prévenu).
+  Future<PlatformFile?> _pickFile(
+      {required FileType type, List<String>? extensions, required int maxMb}) async {
+    final res = await FilePicker.platform.pickFiles(
+        type: type, allowedExtensions: extensions, withData: true);
+    final f = res?.files.firstOrNull;
+    if (f == null || f.bytes == null) return null;
+    if (f.size > maxMb * 1024 * 1024) {
+      _toast(L10n.current.tutorFileTooBig(maxMb));
+      return null;
+    }
+    return f;
+  }
+
+  Future<void> _send(String kind, Future<void> Function() work) async {
+    setState(() => _uploading = kind);
+    try {
+      await work();
+    } catch (e) {
+      _toast(TutorProfileService.serverMessage(e) ??
+          L10n.current.tutorUploadFailed);
+    } finally {
+      if (mounted) setState(() => _uploading = null);
+    }
+  }
+
+  Future<void> _pickPhoto() async {
+    final shot = await ImagePicker().pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 1200,
+        maxHeight: 1200,
+        imageQuality: 85);
+    if (shot == null) return;
+    await _send('photo', () async {
+      final url = await UserService.instance
+          .uploadAvatar(await shot.readAsBytes(), shot.name);
+      if (url == null) throw StateError('avatar: envoi refuse');
+      if (mounted) setState(() => _avatarUrl = url);
+      // La photo compte dans la complétude : on relit le profil.
+      _hydrate(await _service.getMine());
+    });
+  }
+
+  Future<void> _pickVideo() async {
+    final f = await _pickFile(type: FileType.video, maxMb: 25);
+    if (f == null) return;
+    await _send('video', () async {
+      final url = await _service.uploadVideo(f.bytes!, f.name);
+      if (mounted) setState(() => _videoCtrl.text = url);
+      _toast(L10n.current.tutorVideoSent);
+    });
+  }
+
+  Future<void> _pickDiploma() async {
+    final f = await _pickFile(
+        type: FileType.custom,
+        extensions: const ['pdf', 'jpg', 'jpeg', 'png', 'webp'],
+        maxMb: 10);
+    if (f == null) return;
+    await _send('diploma', () async {
+      final url = await _service.uploadDocument(f.bytes!, f.name);
+      await _service.submitVerificationDocument(url);
+      _hydrate(await _service.getMine());
+    });
+  }
+
   Future<void> _activate() async {
     setState(() => _saving = true);
     try {
@@ -393,9 +474,10 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
             content:
                 Text(L10n.current.teacherProfileActivated)));
     } catch (e) {
+      // Le serveur dit ce qui manque (photo, matière, tarif…).
       if (mounted)
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(
+            content: Text(TutorProfileService.serverMessage(e) ??
                 L10n.current.teacherProfileActivateError)));
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -552,6 +634,20 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
   Widget _buildCompletion(WinScheme s) {
     final c = _completion!;
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      // État du profil : brouillon, en ligne ou en vacances.
+      Align(
+        alignment: AlignmentDirectional.centerStart,
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: _profile?.isActive != true
+              ? WinBadge(context.l10n.tutorStateDraft, color: BadgeColor.neutral)
+              : _profile?.isOnVacation == true
+                  ? WinBadge(context.l10n.tutorStateVacation,
+                      color: BadgeColor.warn)
+                  : WinBadge(context.l10n.tutorStateOnline,
+                      color: BadgeColor.success),
+        ),
+      ),
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         Text(context.l10n.teacherProfileCompletion, style: WinType.bodyM(s.onMuted)),
         Text('${c.score}/100',
@@ -930,6 +1026,42 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
       case 4:
       default:
         return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          // Photo : obligatoire pour publier le profil.
+          Text(context.l10n.tutorPhotoTitle, style: WinType.labelM(s.onStrong)),
+          const SizedBox(height: 8),
+          Row(children: [
+            ClipOval(
+              child: SizedBox(
+                width: 64,
+                height: 64,
+                child: (_avatarUrl ?? '').isEmpty
+                    ? WinAvatar(_profile?.fullName ?? '', size: 64)
+                    : NetImage(_avatarUrl!,
+                        error: (_) =>
+                            WinAvatar(_profile?.fullName ?? '', size: 64)),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(context.l10n.tutorPhotoHint,
+                        style: WinType.bodyS(s.onMuted)),
+                    const SizedBox(height: 8),
+                    WinButton(
+                        (_avatarUrl ?? '').isEmpty
+                            ? context.l10n.tutorPhotoPick
+                            : context.l10n.tutorPhotoChange,
+                        small: true,
+                        variant: WinButtonVariant.outline,
+                        icon: PhosphorIconsRegular.camera,
+                        loading: _uploading == 'photo',
+                        onTap: _uploading == null ? _pickPhoto : null),
+                  ]),
+            ),
+          ]),
+          const SizedBox(height: 16),
           Text(context.l10n.teacherProfileProTitle, style: WinType.labelM(s.onStrong)),
           const SizedBox(height: 8),
           WinTextField(
@@ -953,7 +1085,17 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
           Text(context.l10n.teacherProfileVideo,
               style: WinType.labelM(s.onStrong)),
           const SizedBox(height: 8),
-          WinTextField(controller: _videoCtrl, hint: 'https://youtube.com/...'),
+          Text(context.l10n.tutorVideoHint, style: WinType.bodyS(s.onMuted)),
+          const SizedBox(height: 8),
+          WinButton(context.l10n.tutorVideoUpload,
+              small: true,
+              variant: WinButtonVariant.outline,
+              icon: PhosphorIconsRegular.videoCamera,
+              loading: _uploading == 'video',
+              onTap: _uploading == null ? _pickVideo : null),
+          const SizedBox(height: 8),
+          WinTextField(
+              controller: _videoCtrl, hint: context.l10n.tutorVideoLinkHint),
           const SizedBox(height: 16),
           // Lot 9.5 : vérification pour le présentiel (identité, entretien, caution).
           WinCard(
@@ -984,22 +1126,16 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
             WinAlert(context.l10n.teacherProfileDocStatus(_profile!.pendingOrLatestDocument!.status),
                 type: BadgeColor.neutral)
           else
-            Row(children: [
-              Expanded(
-                  child: WinTextField(
-                      controller: _diplomaCtrl,
-                      hint: context.l10n.teacherProfileDocUrlHint)),
-              const SizedBox(width: 8),
-              WinButton(context.l10n.commonSend,
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(context.l10n.tutorDiplomaHint,
+                  style: WinType.bodyS(s.onMuted)),
+              const SizedBox(height: 8),
+              WinButton(context.l10n.tutorDiplomaAttach,
                   small: true,
-                  variant: WinButtonVariant.outline, onTap: () async {
-                if (_diplomaCtrl.text.trim().isEmpty) return;
-                await _service
-                    .submitVerificationDocument(_diplomaCtrl.text.trim());
-                final p = await _service.getMine();
-                _hydrate(p);
-                _diplomaCtrl.clear();
-              }),
+                  variant: WinButtonVariant.outline,
+                  icon: PhosphorIconsRegular.paperclip,
+                  loading: _uploading == 'diploma',
+                  onTap: _uploading == null ? _pickDiploma : null),
             ]),
         ]);
     }

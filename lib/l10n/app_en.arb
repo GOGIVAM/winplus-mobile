@@ -3523,5 +3523,21 @@
   "@cstatRelaunchStats": {"placeholders": {"sent": {"type": "int"}, "rate": {"type": "String"}}},
   "cstatLastActivity": "Last activity: {date}",
   "@cstatLastActivity": {"placeholders": {"date": {"type": "String"}}},
-  "mobileHomeForYouFormal": "For you"
+  "mobileHomeForYouFormal": "For you",
+  "tutorStateDraft": "Draft",
+  "tutorStateOnline": "Online",
+  "tutorStateVacation": "On holiday",
+  "tutorPhotoTitle": "Profile photo",
+  "tutorPhotoHint": "Required to publish your profile: families more readily choose a tutor whose face they can see.",
+  "tutorPhotoPick": "Choose a photo",
+  "tutorPhotoChange": "Change photo",
+  "tutorVideoHint": "A video of about one minute: MP4, WEBM or MOV, 25 MB at most. You can also paste a link.",
+  "tutorVideoUpload": "Upload a video",
+  "tutorVideoLinkHint": "Link to your video",
+  "tutorVideoSent": "Video uploaded. Save to publish it.",
+  "tutorDiplomaHint": "PDF, JPG, PNG or WEBP, 10 MB at most. The WinPlus team checks it before showing the \"Verified diploma\" badge.",
+  "tutorDiplomaAttach": "Attach my diploma",
+  "tutorFileTooBig": "This file is over {size} MB.",
+  "@tutorFileTooBig": {"placeholders": {"size": {"type": "int"}}},
+  "tutorUploadFailed": "Upload failed. Check the connection, then try again."
 }
