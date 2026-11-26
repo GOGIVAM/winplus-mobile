@@ -9,6 +9,7 @@ import 'package:winplus/widgets/win_widgets.dart';
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:winplus/data/models.dart' show fmtXaf;
 
 Finder _bouton(String libelle) => find.widgetWithText(WinButton, libelle);
 
@@ -239,7 +240,8 @@ void main() {
       routes(detail({'price': 5000, 'isFree': false}));
       await monterEcran(tester, const CourseDetailScreen(courseId: 1));
       final l = L10n.current;
-      expect(find.text('5000 XAF'), findsOneWidget);
+      // Separateur de milliers, comme sur le reste de l'application.
+      expect(find.text('${fmtXaf(5000)} XAF'), findsOneWidget);
       expect(find.text(l.studentCourseVatNote), findsOneWidget);
       expect(_bouton(l.studentCourseBuy), findsOneWidget);
       expect(_bouton(l.studentCourseStartFree), findsNothing);

@@ -15,6 +15,7 @@ import 'course_player_screen.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../widgets/win_screen.dart';
 import '../shared/net_image.dart';
+import '../data/models.dart' show fmtXaf;
 
 class CourseDetailScreen extends StatefulWidget {
   final int courseId;
@@ -403,7 +404,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                   // jamais incluse dans un abonnement (18.16).
                   Row(children: [
                     Text(
-                      c.isPaid ? '${c.price.toInt()} XAF' : context.l10n.commonFree,
+                      c.isPaid ? '${fmtXaf(c.price.toInt())} XAF' : context.l10n.commonFree,
                       style: WinType.archivo(
                           size: 22,
                           color: c.isPaid ? s.onStrong : WinColors.teal600),
@@ -544,9 +545,13 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
               const SizedBox(height: 20),
               Text(context.l10n.commonDescription, style: WinType.headlineS(s.onStrong)),
               const SizedBox(height: 10),
-              WinCard(
-                  child:
-                      Text(c.description!, style: WinType.bodyM(s.onSurface))),
+              // Toute la largeur, comme les autres blocs de la fiche.
+              SizedBox(
+                width: double.infinity,
+                child: WinCard(
+                    child: Text(c.description!,
+                        style: WinType.bodyM(s.onSurface))),
+              ),
             ],
 
             // Curriculum

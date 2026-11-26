@@ -290,7 +290,10 @@ class _CourseCatalogScreenState extends State<CourseCatalogScreen> {
                           crossAxisCount: 2,
                           mainAxisSpacing: 14,
                           crossAxisSpacing: 14,
-                          childAspectRatio: 0.66,
+                          // Hauteur fixe : avec un rapport, la carte
+                          // s'allongeait et laissait un grand vide sous
+                          // le titre.
+                          mainAxisExtent: 216,
                         ),
                         itemCount:
                             _items!.length + (_totalPages > _page ? 2 : 0),

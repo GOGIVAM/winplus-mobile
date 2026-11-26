@@ -223,7 +223,8 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
               Text(
                 (p.trialSessionPriceXaf ?? 0) == 0
                     ? context.l10n.tutoringTrialFree
-                    : context.l10n.tutoringTrialPrice('${p.trialSessionPriceXaf}'),
+                    : context.l10n.tutoringTrialPrice(
+                        fmtXaf((p.trialSessionPriceXaf ?? 0).round())),
                 style: WinType.labelM(WinColors.success),
               ),
             ],
@@ -469,7 +470,9 @@ class _AvailabilityCalendarState extends State<_AvailabilityCalendar> {
                 decoration: BoxDecoration(
                   color: active
                       ? s.primary
-                      : (bookable ? WinColors.successBg : s.chipBg),
+                      : (bookable
+                          ? winTone(s, BadgeColor.success).bg
+                          : s.chipBg),
                   borderRadius: BorderRadius.circular(WinRadii.sm),
                   border: Border.all(color: active ? s.primary : s.outline),
                 ),
@@ -504,7 +507,9 @@ class _AvailabilityCalendarState extends State<_AvailabilityCalendar> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
-                    color: occ.isBookable ? WinColors.successBg : s.chipBg,
+                    color: occ.isBookable
+                        ? winTone(s, BadgeColor.success).bg
+                        : s.chipBg,
                     borderRadius: BorderRadius.circular(WinRadii.full),
                     border: Border.all(
                         color: occ.isBookable ? WinColors.success : s.outline),

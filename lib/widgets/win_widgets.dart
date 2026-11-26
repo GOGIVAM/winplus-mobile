@@ -700,7 +700,11 @@ class WinCircleIconButton extends StatelessWidget {
             color: Colors.white.withValues(alpha: 0.85),
             shape: BoxShape.circle,
           ),
-          child: winIcon(icon, size: 19, color: iconColor ?? s.onStrong),
+          // Le disque est toujours blanc : icone foncee dans les deux
+          // themes (en sombre, la couleur du texte y etait invisible).
+          child: winIcon(icon,
+              size: 19,
+              color: iconColor ?? (s.dark ? WinColors.ink900 : s.onStrong)),
         ),
       ),
     );
