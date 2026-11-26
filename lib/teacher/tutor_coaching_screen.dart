@@ -10,6 +10,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_screen.dart';
 import '../widgets/win_widgets.dart';
+import '../services/content_refusal.dart';
 
 /// « Coaching WinAI » du répétiteur (lot 7), comme TutorCoachingPanel du
 /// site : rapport mensuel (points forts, matières en progrès, stagnations,
@@ -263,11 +264,18 @@ class _TutorStudentSheetScreenState extends State<TutorStudentSheetScreen> {
   Future<void> _send() async {
     final l = context.l10n;
     setState(() => _sending = true);
-    final id = await MessagingService.instance
-        .startConversation(widget.student.userId, firstMessage: '${l.coachSheetMessage}\n\n${_text.text.trim()}');
+    int? id;
+    String? refusal;
+    try {
+      id = await MessagingService.instance
+          .startConversation(widget.student.userId, firstMessage: '${l.coachSheetMessage}\n\n${_text.text.trim()}');
+    } on ContentRefused catch (r) {
+      // Filtre des messageries : message du serveur, le texte reste.
+      refusal = r.message;
+    }
     if (!mounted) return;
     setState(() => _sending = false);
-    _toast(id != null ? l.coachSheetSent(widget.student.name) : l.coachSheetSendError);
+    _toast(refusal ?? (id != null ? l.coachSheetSent(widget.student.name) : l.coachSheetSendError));
   }
 
   Future<void> _copy() async {

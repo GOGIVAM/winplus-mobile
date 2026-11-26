@@ -1,5 +1,6 @@
 import 'api_client.dart';
 import 'connectivity_service.dart';
+import 'content_refusal.dart';
 import 'outbox_service.dart';
 
 class ApiConversation {
@@ -157,7 +158,11 @@ class MessagingService {
         if (replyTo != null) 'replyToMessageId': replyTo,
       });
       return true;
-    } catch (_) {
+    } catch (e) {
+      // Filtre des messageries : le refus remonte jusqu'à l'écran, qui
+      // l'affiche et garde le texte ; jamais mis en file.
+      final refused = ContentRefused.of(e);
+      if (refused != null) throw refused;
       return false;
     }
   }
@@ -195,7 +200,9 @@ class MessagingService {
       });
       final d = res.data as Map<String, dynamic>?;
       return d?['conversationId'] as int? ?? d?['id'] as int?;
-    } catch (_) {
+    } catch (e) {
+      final refused = ContentRefused.of(e);
+      if (refused != null) throw refused;
       return null;
     }
   }

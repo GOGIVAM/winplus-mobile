@@ -27,9 +27,17 @@ class _GroupMembersScreenState extends State<GroupMembersScreen> {
     _load();
   }
 
+  bool _failed = false;
+
   Future<void> _load() async {
-    final m = await InstitutionService.instance.getGroupMembers(widget.groupId);
-    if (mounted) setState(() => _members = m);
+    if (_failed) setState(() => _failed = false);
+    try {
+      final m = await InstitutionService.instance.getGroupMembers(widget.groupId);
+      if (mounted) setState(() => _members = m);
+    } catch (_) {
+      // Lot 8 : panne du serveur, plus de chargement sans fin.
+      if (mounted) setState(() => _failed = true);
+    }
   }
 
   @override
@@ -53,7 +61,9 @@ class _GroupMembersScreenState extends State<GroupMembersScreen> {
                 style: WinType.labelS(s.onMuted)),
         ]),
       ),
-      body: members == null
+      body: _failed
+          ? WinErrorState(message: context.l10n.commonLoadError, onRetry: _load)
+          : members == null
           ? const WinLoading()
           : members.isEmpty
               ? WinEmptyState(title: context.l10n.instGroupNoMembers)

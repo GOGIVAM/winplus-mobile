@@ -236,7 +236,10 @@ class _ChildrenComparisonCardState extends State<ChildrenComparisonCard> {
                   leading: Icon(PhosphorIconsRegular.student, color: s.primary),
                   title: Text(c.name),
                   subtitle: Text(l.cmpChildrenMeta(c.quizCount, c.activeDays)),
-                  trailing: Text('${(c.avgScore / 5).toStringAsFixed(1)} / 20', style: WinType.titleS(s.onStrong)),
+                  // Aucun quiz : pas de moyenne (« 0.0 / 20 » laissait croire à une
+            // note nulle).
+            trailing: Text(c.quizCount == 0 ? '–' : '${(c.avgScore / 5).toStringAsFixed(1)} / 20',
+                style: WinType.titleS(s.onStrong)),
                 ),
               if (d.insights.isNotEmpty)
                 Padding(

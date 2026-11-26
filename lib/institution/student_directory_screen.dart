@@ -46,7 +46,10 @@ class _StudentDirectoryScreenState extends State<StudentDirectoryScreen> {
     super.dispose();
   }
 
+  bool _failed = false;
+
   Future<void> _load() async {
+    if (_failed) setState(() { _failed = false; _loading = true; });
     final id = _institutionId ??
         await InstitutionService.instance.getMyInstitutionId();
     if (id == null) {
@@ -55,11 +58,18 @@ class _StudentDirectoryScreenState extends State<StudentDirectoryScreen> {
       }
       return;
     }
-    final results = await Future.wait([
-      InstitutionService.instance
-          .getStudentDirectory(id, q: _query.isEmpty ? null : _query),
-      InstitutionService.instance.getInstitutionKpis(id),
-    ]);
+    final List<Object?> results;
+    try {
+      results = await Future.wait([
+        InstitutionService.instance
+            .getStudentDirectory(id, q: _query.isEmpty ? null : _query),
+        InstitutionService.instance.getInstitutionKpis(id),
+      ]);
+    } catch (_) {
+      // Lot 8 : panne du serveur, plus de chargement sans fin.
+      if (mounted) setState(() { _loading = false; _failed = true; });
+      return;
+    }
     if (mounted) {
       setState(() {
         _institutionId = id;
@@ -132,7 +142,9 @@ class _StudentDirectoryScreenState extends State<StudentDirectoryScreen> {
         title:
             Text(context.l10n.instDirTitle, style: WinType.headlineS(s.onStrong)),
       ),
-      body: _loading
+      body: _failed
+          ? WinErrorState(message: context.l10n.commonLoadError, onRetry: _load)
+          : _loading
           ? const WinLoading()
           : _institutionId == null
               ? Center(

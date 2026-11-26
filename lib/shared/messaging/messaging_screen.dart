@@ -8,6 +8,7 @@ import '../../theme/win_typography.dart';
 import '../../widgets/win_widgets.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../widgets/win_screen.dart';
+import '../../services/content_refusal.dart';
 
 class MessagingScreen extends StatefulWidget {
   const MessagingScreen({super.key});
@@ -231,8 +232,19 @@ class _ConversationScreenState extends State<ConversationScreen> {
     });
     // Envoyé immédiatement si en ligne, mis en file sinon (jamais perdu)
     // voir MessagingService.sendMessageQueueable.
-    final ok = await MessagingService.instance
-        .sendMessageQueueable(widget.conversation.id, text, replyTo: replyTo);
+    final bool ok;
+    try {
+      ok = await MessagingService.instance
+          .sendMessageQueueable(widget.conversation.id, text, replyTo: replyTo);
+    } on ContentRefused catch (r) {
+      // Filtre des messageries : le texte revient dans le champ pour être
+      // corrigé, avec le message du serveur.
+      if (!mounted) return;
+      _ctrl.text = text;
+      setState(() => _sending = false);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(r.message)));
+      return;
+    }
     if (!mounted) return;
     setState(() => _sending = false);
     if (ok) _load();
@@ -373,7 +385,9 @@ class _ConversationScreenState extends State<ConversationScreen> {
     );
   }
 
-  String _timeLabel(DateTime dt) {
+  String _timeLabel(DateTime sent) {
+    // Heure du serveur en UTC : ramenée à l'heure du téléphone (lot 8).
+    final dt = sent.toLocal();
     final now = DateTime.now();
     if (dt.day == now.day && dt.month == now.month) {
       return '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';

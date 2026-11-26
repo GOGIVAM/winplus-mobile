@@ -47,6 +47,7 @@ void main() {
       'children_summary': [
         {'child_id': 30, 'child_name': 'Paul', 'avg_score': 70.0, 'quiz_count': 8, 'active_days': 12},
         {'child_id': 31, 'child_name': 'Zoe', 'avg_score': 55.0, 'quiz_count': 3, 'active_days': 1},
+        {'child_id': 32, 'child_name': 'Leo', 'avg_score': 0.0, 'quiz_count': 0, 'active_days': 1},
       ],
       'insights': ['Paul est tres regulier ce mois-ci.'],
     });
@@ -56,6 +57,8 @@ void main() {
     expect(faux.recues('GET', '/parent/children-insights').single.queryParameters['childIds'], '30,31');
     expect(find.text('14.0 / 20'), findsOneWidget);
     expect(find.text(l.cmpChildrenMeta(3, 1)), findsOneWidget);
+    expect(find.text('0.0 / 20'), findsNothing, reason: 'aucun quiz : pas de note nulle');
+    expect(find.text('–'), findsOneWidget);
     expect(find.text('Paul est tres regulier ce mois-ci.'), findsOneWidget);
     await tester.tap(find.byTooltip(l.cmpChildrenHide));
     await reseau(tester);

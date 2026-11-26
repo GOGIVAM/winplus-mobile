@@ -24,15 +24,11 @@ class ApiQuizQuestion {
     final opts = (j['options'] as List? ?? []).map((o) => '$o').toList();
     // Le serveur renvoie la bonne réponse en texte (l'option elle-même) ;
     // l'ancienne lecture « as int » levait une erreur sur chaque quiz réel.
+    // Lot 8 : un quiz servi à un élève ne contient pas la bonne réponse (le
+    // serveur la garde jusqu'à l'envoi) : -1, « inconnue ». Avant, elle
+    // valait 0 et toute réponse A était comptée juste (100 % affiché).
     final raw = j['correctAnswerIndex'] ?? j['correctAnswer'];
-    var correct = 0;
-    if (raw is int) {
-      correct = raw;
-    } else if (raw is String) {
-      final i = opts.indexWhere(
-          (o) => o.trim().toLowerCase() == raw.trim().toLowerCase());
-      correct = i >= 0 ? i : int.tryParse(raw) ?? 0;
-    }
+    final correct = raw is int ? raw : raw is String ? optionIndex(opts, raw) : -1;
     return ApiQuizQuestion(
       id: '${j['id'] ?? ''}',
       questionText:
@@ -42,6 +38,46 @@ class ApiQuizQuestion {
       explanation: j['explanation'] as String?,
     );
   }
+}
+
+/// Numéro de l'option [answer] parmi [options] : texte identique
+/// (« B) 122 »), lettre seule (« B ») ou numéro (« 1 ») ; -1 sinon.
+int optionIndex(List<String> options, String answer) {
+  final a = answer.trim().toLowerCase();
+  if (a.isEmpty) return -1;
+  final exact = options.indexWhere((o) => o.trim().toLowerCase() == a);
+  if (exact >= 0) return exact;
+  if (a.length == 1 && a.codeUnitAt(0) >= 97 && a.codeUnitAt(0) < 97 + options.length) {
+    return a.codeUnitAt(0) - 97;
+  }
+  final prefixed = options.indexWhere((o) => o.trim().toLowerCase().startsWith('$a)'));
+  if (prefixed >= 0) return prefixed;
+  final n = int.tryParse(a);
+  return n != null && n >= 0 && n < options.length ? n : -1;
+}
+
+/// Correction d'une question renvoyée par le serveur après l'envoi.
+class QuizQuestionResult {
+  final String questionId;
+  final String correctAnswer;
+  final bool isCorrect;
+  final String? explanation;
+  final bool needsReview;
+  const QuizQuestionResult({
+    required this.questionId,
+    required this.correctAnswer,
+    required this.isCorrect,
+    this.explanation,
+    this.needsReview = false,
+  });
+
+  factory QuizQuestionResult.fromJson(Map<String, dynamic> j) => QuizQuestionResult(
+        questionId: '${j['questionId'] ?? ''}',
+        correctAnswer: '${j['correctAnswer'] ?? ''}',
+        isCorrect: j['isCorrect'] == true,
+        explanation: j['explanation'] as String?,
+        needsReview: j['needsReview'] == true,
+      );
 }
 
 class ApiQuiz {
@@ -95,12 +131,41 @@ class QuizAttemptResult {
   final int correct;
   final int total;
   final String? certificateUrl;
+
+  /// Correction question par question (bonne réponse, explication).
+  final List<QuizQuestionResult> questionResults;
+
+  /// Questions ouvertes en attente du professeur : score partiel.
+  final bool pendingReview;
   const QuizAttemptResult({
     required this.score,
     required this.correct,
     required this.total,
     this.certificateUrl,
+    this.questionResults = const [],
+    this.pendingReview = false,
   });
+
+  /// Le quiz avec les bonnes réponses et explications du serveur, pour la
+  /// revue des réponses.
+  Quiz corrected(Quiz quiz) {
+    final byId = {for (final r in questionResults) r.questionId: r};
+    return Quiz(
+      id: quiz.id,
+      title: quiz.title,
+      subjectId: quiz.subjectId,
+      durationMinutes: quiz.durationMinutes,
+      questions: [
+        for (final q in quiz.questions)
+          if (byId[q.id] case final r?)
+            QuizQuestion(q.question, q.options, optionIndex(q.options, r.correctAnswer),
+                (r.explanation ?? '').isNotEmpty ? r.explanation! : q.explain,
+                id: q.id)
+          else
+            q,
+      ],
+    );
+  }
 }
 
 class QuizService {
@@ -194,6 +259,11 @@ class QuizService {
       correct: (d['correctAnswers'] as num?)?.toInt() ?? 0,
       total: (d['totalQuestions'] as num?)?.toInt() ?? 0,
       certificateUrl: d['certificateUrl'] as String?,
+      questionResults: (d['questionResults'] is List ? d['questionResults'] as List : const [])
+          .whereType<Map<String, dynamic>>()
+          .map(QuizQuestionResult.fromJson)
+          .toList(),
+      pendingReview: d['pendingHumanReview'] == true,
     );
   }
 

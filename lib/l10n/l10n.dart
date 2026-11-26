@@ -32,20 +32,24 @@ class WinFormat {
 
   static String get _l => L10n.code;
 
+  // Lot 8 : le serveur envoie ses heures en UTC (« …Z ») ; chaque format
+  // les ramène à l'heure du téléphone. Avant, un message envoyé à 19:06
+  // s'affichait 18:06.
+
   /// « 5 janvier 2026 » / « January 5, 2026 ».
-  static String date(DateTime d) => DateFormat.yMMMMd(_l).format(d);
+  static String date(DateTime d) => DateFormat.yMMMMd(_l).format(d.toLocal());
 
   /// « 5 janv. 2026 » / « Jan 5, 2026 ».
-  static String dateShort(DateTime d) => DateFormat.yMMMd(_l).format(d);
+  static String dateShort(DateTime d) => DateFormat.yMMMd(_l).format(d.toLocal());
 
   /// « 5 janvier » / « January 5 ».
-  static String dayMonth(DateTime d) => DateFormat.MMMMd(_l).format(d);
+  static String dayMonth(DateTime d) => DateFormat.MMMMd(_l).format(d.toLocal());
 
   /// « 5 janv. » / « Jan 5 ».
-  static String dayMonthShort(DateTime d) => DateFormat.MMMd(_l).format(d);
+  static String dayMonthShort(DateTime d) => DateFormat.MMMd(_l).format(d.toLocal());
 
   /// « 14:05 » dans les deux langues (horaire scolaire sur 24 h).
-  static String time(DateTime d) => DateFormat('HH:mm').format(d);
+  static String time(DateTime d) => DateFormat('HH:mm').format(d.toLocal());
 
   /// « 5 janvier à 14:05 » / « January 5 at 14:05 ».
   static String dayMonthTime(DateTime d) =>
@@ -56,7 +60,7 @@ class WinFormat {
       L10n.current.fmtDateAtTime(date(d), time(d));
 
   /// « 05/01/2026 » / « 01/05/2026 ».
-  static String dateNumeric(DateTime d) => DateFormat.yMd(_l).format(d);
+  static String dateNumeric(DateTime d) => DateFormat.yMd(_l).format(d.toLocal());
 
   /// Nom du mois (1 = janvier) : « janvier » / « January ».
   static String monthName(int month) =>

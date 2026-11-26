@@ -53,9 +53,18 @@ void main() {
       expect(ApiQuizQuestion.fromJson({'options': ['a', 'b', 'c'], 'correctAnswer': '2'}).correctAnswerIndex, 2);
     });
 
-    test('sans bonne reponse reconnue, l\'index est 0', () {
-      expect(ApiQuizQuestion.fromJson({'options': ['a', 'b'], 'correctAnswer': 'zzz'}).correctAnswerIndex, 0);
-      expect(ApiQuizQuestion.fromJson({'options': ['a', 'b']}).correctAnswerIndex, 0);
+    test('sans bonne reponse reconnue (ou cachee par le serveur), l\'index est -1 : jamais A par defaut', () {
+      expect(ApiQuizQuestion.fromJson({'options': ['a', 'b'], 'correctAnswer': 'zzz'}).correctAnswerIndex, -1);
+      expect(ApiQuizQuestion.fromJson({'options': ['a', 'b']}).correctAnswerIndex, -1);
+    });
+
+    test('bonne reponse en lettre, en numero ou en texte', () {
+      const o = ['A) -242', 'B) 122', 'C) -122'];
+      expect(optionIndex(o, 'B'), 1);
+      expect(optionIndex(o, 'B) 122'), 1);
+      expect(optionIndex(o, 'c'), 2);
+      expect(optionIndex(o, '0'), 0);
+      expect(optionIndex(o, ''), -1);
     });
 
     test('les options non textuelles sont converties en texte', () {

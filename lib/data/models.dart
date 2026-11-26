@@ -112,6 +112,9 @@ class ContentReview {
 class QuizQuestion {
   final String question;
   final List<String> options;
+
+  /// Numéro de la bonne option ; -1 tant que le serveur ne l'a pas donnée
+  /// (quiz servi à un élève : elle n'arrive qu'avec la correction).
   final int answer;
   final String explain;
 
@@ -152,6 +155,13 @@ class QuizResult {
   final int correct, total, durationSeconds;
   final List<int?> answers;
   final String date;
+
+  /// Hors ligne, sans les bonnes réponses : le score viendra du serveur au
+  /// retour du réseau, rien n'est affiché d'ici là.
+  final bool pending;
+
+  /// Questions ouvertes en attente du professeur : score partiel.
+  final bool pendingReview;
   const QuizResult({
     required this.quizId,
     required this.quizTitle,
@@ -160,6 +170,8 @@ class QuizResult {
     required this.durationSeconds,
     required this.answers,
     required this.date,
+    this.pending = false,
+    this.pendingReview = false,
   });
   double get score => total == 0 ? 0 : correct / total * 100;
 }

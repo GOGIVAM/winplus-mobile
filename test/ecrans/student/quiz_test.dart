@@ -7,6 +7,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:winplus/data/models.dart';
 import 'package:winplus/l10n/l10n.dart';
 import 'package:winplus/services/local_cache_service.dart';
+import 'package:winplus/services/outbox_service.dart';
 import 'package:winplus/student/quiz_screen.dart';
 import 'package:winplus/widgets/win_widgets.dart';
 
@@ -82,7 +83,7 @@ void main() {
     });
 
     testWidgets('quiz termine avec deux bonnes reponses : resultat 100 %, envoi de la tentative au serveur', (tester) async {
-      faux.repond('POST', '/quizzes/3/submit', {'score': 100});
+      faux.repond('POST', '/quizzes/3/submit', {'score': 100, 'correctAnswers': 2, 'totalQuestions': 2});
       await monterEcran(tester, const QuizActiveScreen(quiz: _quiz));
       await repondre(tester, '4');
       await tester.tap(_bouton(L10n.current.authNext));
@@ -102,6 +103,52 @@ void main() {
         {'questionId': 'q2', 'answer': '9'},
       ]);
       expect(d['timeSpentSeconds'], isA<int>());
+    });
+
+    testWidgets('bonnes reponses cachees par le serveur : score et correction viennent de l\'envoi, jamais 100 % par defaut', (tester) async {
+      const cache = Quiz(id: '3', title: 'Calcul mental', subjectId: 'math', durationMinutes: 1, questions: [
+        QuizQuestion('2 + 2 ?', ['A) 3', 'B) 4'], -1, '', id: 'q1'),
+        QuizQuestion('3 x 3 ?', ['A) 6', 'B) 9'], -1, '', id: 'q2'),
+      ]);
+      faux.repond('POST', '/quizzes/3/submit', {
+        'score': 50, 'correctAnswers': 1, 'totalQuestions': 2,
+        'questionResults': [
+          {'questionId': 'q1', 'correctAnswer': 'B', 'isCorrect': false, 'explanation': '2 + 2 = 4'},
+          {'questionId': 'q2', 'correctAnswer': 'A) 6', 'isCorrect': true},
+        ],
+      });
+      await monterEcran(tester, const QuizActiveScreen(quiz: cache));
+      await repondre(tester, 'A) 3');
+      await tester.tap(_bouton(L10n.current.authNext));
+      await pomper(tester);
+      await repondre(tester, 'A) 6');
+      await tester.tap(_bouton(L10n.current.studentQuizFinish));
+      await pomper(tester);
+      await pomper(tester, const Duration(milliseconds: 500));
+      await reseau(tester);
+      expect(find.text('50%'), findsOneWidget);
+      final ecran = tester.widget<QuizResultScreen>(find.byType(QuizResultScreen));
+      expect(ecran.quiz.questions[0].answer, 1, reason: 'lettre B du serveur');
+      expect(ecran.quiz.questions[0].explain, '2 + 2 = 4');
+      expect(ecran.quiz.questions[1].answer, 0);
+    });
+
+    testWidgets('hors ligne sans les bonnes reponses : resultat en attente, aucun score invente', (tester) async {
+      const cache = Quiz(id: '3', title: 'Calcul mental', subjectId: 'math', durationMinutes: 1, questions: [
+        QuizQuestion('2 + 2 ?', ['A) 3', 'B) 4'], -1, '', id: 'q1'),
+      ]);
+      faux.coupure('POST', '/quizzes/3/submit');
+      await tester.runAsync(OutboxService.instance.initForTest);
+      await monterEcran(tester, const QuizActiveScreen(quiz: cache));
+      await repondre(tester, 'A) 3');
+      await tester.tap(_bouton(L10n.current.studentQuizFinish));
+      await pomper(tester);
+      await pomper(tester, const Duration(milliseconds: 500));
+      await reseau(tester);
+      expect(find.text(L10n.current.studentQuizPendingTitle), findsOneWidget);
+      expect(find.text('100%'), findsNothing);
+      expect(find.text('0%'), findsNothing);
+      expect(OutboxService.instance.pendingCount, 1, reason: 'tentative en file pour le retour du reseau');
     });
 
     testWidgets('temps ecoule : la tentative est terminee d\'office, reponses vides envoyees comme chaines vides', (tester) async {

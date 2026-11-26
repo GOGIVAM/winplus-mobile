@@ -98,33 +98,23 @@ class _QuizActiveScreenState extends State<QuizActiveScreen> {
 
   Future<void> _finish() async {
     if (_finishing) return;
-    _finishing = true;
+    setState(() => _finishing = true);
     _timer?.cancel();
     final elapsed = _totalSeconds - _seconds;
-    final correct = _answers.asMap().entries.where((e) {
-      final q = widget.quiz.questions[e.key];
-      return e.value == q.answer;
-    }).length;
-    final result = QuizResult(
-      quizId: widget.quiz.id,
-      quizTitle: widget.quiz.title,
-      correct: correct,
-      total: widget.quiz.questions.length,
-      durationSeconds: elapsed,
-      answers: List<int?>.from(_answers),
-      date: context.l10n.studentQuizNow,
-    );
-
-    // Le score affiché est calculé localement ci-dessus (jamais bloqué par
-    // le réseau) ; cet appel se contente de faire atteindre le résultat au
-    // serveur, immédiatement si possible, en file sinon (voir
-    // QuizService.submitAttemptQueueable).
+    final answers = List<int?>.from(_answers);
+    final items = QuizService.answerItems(widget.quiz, answers);
     final quizId = int.tryParse(widget.quiz.id);
-    if (quizId != null && (widget.courseExam || widget.homework)) {
+
+    // Lot 8 : le score vient du serveur, qui seul connaît les bonnes
+    // réponses (il ne les donne pas avant l'envoi). Avant, l'application
+    // comptait elle-même avec des réponses inconnues et affichait 100 % à
+    // tout élève qui répondait A partout.
+    QuizAttemptResult? server;
+    if (quizId != null) {
       try {
-        await QuizService.instance.submitAttempt(
+        server = await QuizService.instance.submitAttempt(
           quizId: quizId,
-          items: QuizService.answerItems(widget.quiz, List<int?>.from(_answers)),
+          items: items,
           durationSeconds: elapsed,
           assignmentId: widget.assignmentId,
         );
@@ -144,27 +134,50 @@ class _QuizActiveScreenState extends State<QuizActiveScreen> {
           Navigator.pop(context, 'refused');
           return;
         }
-        // Coupure : la tentative part en file, le résultat local s'affiche.
-        await QuizService.instance.submitAttemptQueueable(
-          quizId: quizId,
-          items: QuizService.answerItems(widget.quiz, List<int?>.from(_answers)),
-          durationSeconds: elapsed,
-          assignmentId: widget.assignmentId,
-        );
+        // Coupure : la tentative part en file et sera corrigée au retour
+        // du réseau. Un refus du serveur (quiz déjà répondu…) n'y va pas.
+        if (e.response == null) {
+          try {
+            await QuizService.instance.submitAttemptQueueable(
+              quizId: quizId,
+              items: items,
+              durationSeconds: elapsed,
+              assignmentId: widget.assignmentId,
+            );
+          } catch (_) {
+            // File indisponible : l'élève voit quand même son écran de fin
+            // au lieu de rester bloqué sur le bouton.
+          }
+        }
+      } catch (_) {
+        // Réponse illisible : pas de score inventé, résultat en attente.
       }
       if (!mounted) return;
-    } else if (quizId != null) {
-      unawaited(QuizService.instance.submitAttemptQueueable(
-        quizId: quizId,
-        items: QuizService.answerItems(widget.quiz, List<int?>.from(_answers)),
-        durationSeconds: elapsed,
-      ));
     }
+
+    // Sans le serveur, un score local n'est juste que si toutes les bonnes
+    // réponses sont connues (quiz local) ; sinon, résultat en attente.
+    final known = widget.quiz.questions.every((q) => q.answer >= 0);
+    final localCorrect = answers.asMap().entries
+        .where((e) => e.value != null && e.value == widget.quiz.questions[e.key].answer)
+        .length;
+    final result = QuizResult(
+      quizId: widget.quiz.id,
+      quizTitle: widget.quiz.title,
+      correct: server?.correct ?? localCorrect,
+      total: server != null && server.total > 0 ? server.total : widget.quiz.questions.length,
+      durationSeconds: elapsed,
+      answers: answers,
+      date: context.l10n.studentQuizNow,
+      pending: server == null && !known,
+      pendingReview: server?.pendingReview ?? false,
+    );
+    final reviewQuiz = server?.corrected(widget.quiz) ?? widget.quiz;
 
     Navigator.pushReplacement(
       context,
       WinPageRoute(
-          builder: (_) => QuizResultScreen(result: result, quiz: widget.quiz)),
+          builder: (_) => QuizResultScreen(result: result, quiz: reviewQuiz)),
     );
   }
 
@@ -270,7 +283,8 @@ class _QuizActiveScreenState extends State<QuizActiveScreen> {
           child: WinButton(
             _current < total - 1 ? context.l10n.authNext : context.l10n.studentQuizFinish,
             block: true,
-            onTap: _answers[_current] != null ? _next : null,
+            loading: _finishing,
+            onTap: _answers[_current] != null && !_finishing ? _next : null,
           ),
         ),
       ]),
@@ -301,6 +315,34 @@ class QuizResultScreen extends StatelessWidget {
             : context.l10n.studentQuizToImprove;
     final durMin = result.durationSeconds ~/ 60;
     final durSec = result.durationSeconds % 60;
+
+    if (result.pending) {
+      // Hors ligne : les réponses partent au retour du réseau, le score
+      // viendra du serveur. Rien d'inventé d'ici là.
+      return Scaffold(
+        backgroundColor: s.bg,
+        appBar: AppBar(
+          backgroundColor: s.bg,
+          elevation: 0,
+          automaticallyImplyLeading: false,
+          title: Text(context.l10n.studentQuizResults),
+        ),
+        body: ListView(padding: const EdgeInsets.fromLTRB(16, 24, 16, 32), children: [
+          SizedBox(
+            height: 320,
+            child: WinEmptyState(
+              icon: PhosphorIconsRegular.cloudArrowUp,
+              title: context.l10n.studentQuizPendingTitle,
+              message: context.l10n.studentQuizPendingText,
+            ),
+          ),
+          WinButton(context.l10n.studentQuizBackToCatalog,
+              variant: WinButtonVariant.ghost,
+              block: true,
+              onTap: () => Navigator.popUntil(context, (r) => r.isFirst)),
+        ]),
+      );
+    }
 
     return Scaffold(
       backgroundColor: s.bg,
@@ -340,6 +382,10 @@ class QuizResultScreen extends StatelessWidget {
             const SizedBox(width: 10),
             _ResultStat('${durMin}m ${durSec}s', context.l10n.commonDuration, s.primary),
           ]),
+          if (result.pendingReview) ...[
+            const SizedBox(height: 16),
+            WinAlert(context.l10n.studentQuizPendingReview, type: BadgeColor.warn),
+          ],
           const SizedBox(height: 28),
           WinButton(context.l10n.studentQuizReviewAnswers,
               block: true,
@@ -428,15 +474,20 @@ class QuizReviewScreen extends StatelessWidget {
                   style: WinType.titleM(s.onStrong)),
               const SizedBox(height: 10),
               ...q.options.asMap().entries.map((e) {
+                // Bonne réponse inconnue (-1) : seul le choix de l'élève
+                // est montré, sans le juger.
                 final isCorrect = e.key == q.answer;
                 final isSelected = e.key == userAnswer;
+                final unknown = q.answer < 0;
                 Color bg = s.cardBg;
                 Color border = s.outline;
                 if (isCorrect) {
-                  bg = WinColors.successBg;
+                  bg = winTone(s, BadgeColor.success).bg;
                   border = WinColors.success;
+                } else if (isSelected && unknown) {
+                  border = s.primary;
                 } else if (isSelected && !isCorrect) {
-                  bg = WinColors.errorBg;
+                  bg = winTone(s, BadgeColor.error).bg;
                   border = WinColors.error;
                 }
                 return Padding(
@@ -453,13 +504,13 @@ class QuizReviewScreen extends StatelessWidget {
                         isCorrect
                             ? PhosphorIconsFill.checkCircle
                             : isSelected
-                                ? PhosphorIconsFill.xCircle
+                                ? (unknown ? PhosphorIconsFill.circle : PhosphorIconsFill.xCircle)
                                 : PhosphorIconsRegular.circle,
                         size: 16,
                         color: isCorrect
                             ? WinColors.success
                             : isSelected
-                                ? WinColors.error
+                                ? (unknown ? s.primary : WinColors.error)
                                 : s.onFaint,
                       ),
                       const SizedBox(width: 10),
@@ -470,9 +521,11 @@ class QuizReviewScreen extends StatelessWidget {
                   ),
                 );
               }),
-              const SizedBox(height: 8),
-              WinAlert(q.explain,
-                  type: BadgeColor.teal, icon: PhosphorIconsRegular.lightbulb),
+              if (q.explain.trim().isNotEmpty) ...[
+                const SizedBox(height: 8),
+                WinAlert(q.explain,
+                    type: BadgeColor.teal, icon: PhosphorIconsRegular.lightbulb),
+              ],
             ]),
           );
         },
@@ -498,10 +551,16 @@ class _QuizHubScreenState extends State<QuizHubScreen> {
     _load();
   }
 
+  bool _failed = false;
+
   Future<void> _load() async {
-    final quizzes = await QuizService.instance.getAll();
-    if (mounted) {
-      setState(() => _quizzes = quizzes);
+    if (_failed) setState(() => _failed = false);
+    try {
+      final quizzes = await QuizService.instance.getAll();
+      if (mounted) setState(() => _quizzes = quizzes);
+    } catch (_) {
+      // Lot 8 : panne du serveur sans copie locale, plus de chargement sans fin.
+      if (mounted) setState(() => _failed = true);
     }
   }
 
@@ -532,7 +591,9 @@ class _QuizHubScreenState extends State<QuizHubScreen> {
           ),
         ],
       ),
-      body: quizzes == null
+      body: _failed
+          ? WinErrorState(message: context.l10n.commonLoadError, onRetry: _load)
+          : quizzes == null
           ? const WinLoading()
           : ListView(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),

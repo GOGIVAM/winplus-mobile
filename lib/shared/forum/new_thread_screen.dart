@@ -6,6 +6,7 @@ import '../../theme/win_theme.dart';
 import '../../theme/win_typography.dart';
 import '../../widgets/win_widgets.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../../services/content_refusal.dart';
 
 /// Libellé affiché d'une catégorie du forum ; la valeur envoyée à l'API
 /// reste le nom français (lot 10.11).
@@ -52,10 +53,12 @@ class _NewThreadScreenState extends State<NewThreadScreen> {
         Navigator.pop(context, true);
       }
     } catch (e) {
+      // Filtre des messageries : message du serveur tel quel, le texte reste.
+      final refused = ContentRefused.of(e);
       if (mounted)
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(context.l10n.forumError(e)),
-            backgroundColor: WinColors.error));
+            content: Text(refused?.message ?? context.l10n.forumError(e)),
+            backgroundColor: refused == null ? WinColors.error : null));
     } finally {
       if (mounted) setState(() => _loading = false);
     }

@@ -26,15 +26,23 @@ class _WinAIAlertsScreenState extends State<WinAIAlertsScreen> {
     _load();
   }
 
+  bool _failed = false;
+
   Future<void> _load() async {
-    final children = await ParentService.instance.getChildren();
-    final alerts = await ParentService.instance
-        .getAllPersistedAlerts(children.map((c) => c.id).toList());
-    if (mounted)
-      setState(() {
-        _alerts = alerts;
-        _children = children;
-      });
+    if (_failed) setState(() => _failed = false);
+    try {
+      final children = await ParentService.instance.getChildren();
+      final alerts = await ParentService.instance
+          .getAllPersistedAlerts(children.map((c) => c.id).toList());
+      if (mounted)
+        setState(() {
+          _alerts = alerts;
+          _children = children;
+        });
+    } catch (_) {
+      // Lot 8 : panne du serveur, plus de chargement sans fin.
+      if (mounted) setState(() => _failed = true);
+    }
   }
 
   // La sévérité (Low/Medium/High), pas le type de signal, porte le niveau de gravité.
@@ -83,7 +91,9 @@ class _WinAIAlertsScreenState extends State<WinAIAlertsScreen> {
           ),
         ],
       ),
-      body: _alerts == null
+      body: _failed
+          ? WinErrorState(message: context.l10n.commonLoadError, onRetry: _load)
+          : _alerts == null
           ? const WinLoading()
           : _buildBody(s),
     );

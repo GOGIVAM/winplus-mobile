@@ -7,6 +7,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../services/content_refusal.dart';
 
 class EncouragementSheet extends StatefulWidget {
   final ApiChild child;
@@ -81,12 +82,15 @@ class _EncouragementSheetState extends State<EncouragementSheet> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(L10n.current.parentEncourageSent(widget.child.firstName))),
       );
-    } catch (_) {
+    } catch (e) {
       if (!mounted) return;
       setState(() => _sending = false);
+      // Filtre des messageries : le message du serveur, la feuille reste
+      // ouverte avec le texte.
+      final refused = ContentRefused.of(e);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Text(L10n.current.parentEncourageSendError)),
+            content: Text(refused?.message ?? L10n.current.parentEncourageSendError)),
       );
     }
   }

@@ -572,6 +572,7 @@ class ParentChildrenTab extends StatefulWidget {
 
 class _ParentChildrenTabState extends State<ParentChildrenTab> {
   List<ApiChild>? _children;
+  bool _error = false;
 
   @override
   void initState() {
@@ -580,8 +581,15 @@ class _ParentChildrenTabState extends State<ParentChildrenTab> {
   }
 
   Future<void> _load() async {
-    final kids = await ParentService.instance.getChildren();
-    if (mounted) setState(() => _children = kids);
+    if (_error) setState(() => _error = false);
+    try {
+      final kids = await ParentService.instance.getChildren();
+      if (mounted) setState(() => _children = kids);
+    } catch (_) {
+      // Lot 8 : une panne du serveur (502 pendant un déploiement) laissait
+      // l'écran en chargement sans fin.
+      if (mounted && _children == null) setState(() => _error = true);
+    }
   }
 
   @override
@@ -594,7 +602,9 @@ class _ParentChildrenTabState extends State<ParentChildrenTab> {
     final childLimit = sub.limit(EntitlementKeys.childrenMax);
     return Column(children: [
       Expanded(
-          child: _children == null
+          child: _error
+              ? WinErrorState(message: context.l10n.commonLoadError, onRetry: _load)
+              : _children == null
               ? const WinLoading()
               : ListView(
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),

@@ -173,12 +173,22 @@ class _InstitutionDashTabState extends State<InstitutionDashTab> {
     });
   }
 
+  bool _failed = false;
+
   Future<void> _load() async {
-    final results = await Future.wait([
-      InstitutionService.instance.getGroups(),
-      InstitutionService.instance.getAtRiskStudents(),
-      InstitutionService.instance.getAnalytics(),
-    ]);
+    if (_failed) setState(() => _failed = false);
+    final List<Object> results;
+    try {
+      results = await Future.wait([
+        InstitutionService.instance.getGroups(),
+        InstitutionService.instance.getAtRiskStudents(),
+        InstitutionService.instance.getAnalytics(),
+      ]);
+    } catch (_) {
+      // Lot 8 : panne du serveur, plus de chargement sans fin.
+      if (mounted) setState(() => _failed = true);
+      return;
+    }
     if (mounted) {
       setState(() {
         _groups = results[0] as List<ApiGroup>;
@@ -323,10 +333,12 @@ class _InstitutionDashTabState extends State<InstitutionDashTab> {
           title: l.shellTabGroups,
           actionLabel: groups.isNotEmpty ? l.commonSeeAll : null,
           onAction: () => ShellNav.go(context, 1),
-          child: _groups == null
+          child: _failed
+              ? WinErrorState(message: l.commonLoadError, onRetry: _load)
+              : _groups == null
               ? const Padding(
                   padding: EdgeInsets.all(24),
-                  child: const WinLoading())
+                  child: WinLoading())
               : Column(children: [
                   for (final g in groups.take(3))
                     Padding(
@@ -364,9 +376,16 @@ class _InstitutionGroupsTabState extends State<InstitutionGroupsTab> {
     _load();
   }
 
+  bool _failed = false;
+
   Future<void> _load() async {
-    final groups = await InstitutionService.instance.getGroups();
-    if (mounted) setState(() => _groups = groups);
+    if (_failed) setState(() => _failed = false);
+    try {
+      final groups = await InstitutionService.instance.getGroups();
+      if (mounted) setState(() => _groups = groups);
+    } catch (_) {
+      if (mounted) setState(() => _failed = true);
+    }
   }
 
   @override
@@ -380,7 +399,9 @@ class _InstitutionGroupsTabState extends State<InstitutionGroupsTab> {
               onChanged: (v) => setState(() => _query = v.trim().toLowerCase()))),
       const SizedBox(height: 12),
       Expanded(
-          child: _groups == null
+          child: _failed
+              ? WinErrorState(message: context.l10n.commonLoadError, onRetry: _load)
+              : _groups == null
               ? const WinLoading()
               : ListView(
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
@@ -536,14 +557,21 @@ class _InstitutionAnalyticsTabState extends State<InstitutionAnalyticsTab> {
     _load();
   }
 
+  bool _failed = false;
+
   Future<void> _load() async {
-    final analytics = await InstitutionService.instance.getAnalytics();
-    final groups = await InstitutionService.instance.getGroups();
-    if (mounted)
-      setState(() {
-        _analytics = analytics;
-        _groups = groups;
-      });
+    if (_failed) setState(() => _failed = false);
+    try {
+      final analytics = await InstitutionService.instance.getAnalytics();
+      final groups = await InstitutionService.instance.getGroups();
+      if (mounted)
+        setState(() {
+          _analytics = analytics;
+          _groups = groups;
+        });
+    } catch (_) {
+      if (mounted) setState(() => _failed = true);
+    }
   }
 
   @override
@@ -590,7 +618,9 @@ class _InstitutionAnalyticsTabState extends State<InstitutionAnalyticsTab> {
                 onTap: () => Navigator.push(context,
                     WinPageRoute(builder: (_) => const ActionPlanScreen()))),
             const SizedBox(height: 20),
-            if (_groups == null)
+            if (_failed)
+              WinErrorState(message: context.l10n.commonLoadError, onRetry: _load)
+            else if (_groups == null)
               const WinLoading()
             else ...[
               Text(context.l10n.instAnalyticsByGroup,

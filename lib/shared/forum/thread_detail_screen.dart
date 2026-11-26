@@ -8,6 +8,7 @@ import 'new_thread_screen.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../widgets/win_screen.dart';
 import '../../widgets/win_widgets.dart';
+import '../../services/content_refusal.dart';
 
 class ThreadDetailScreen extends StatefulWidget {
   final Map<String, dynamic> thread;
@@ -62,7 +63,14 @@ class _ThreadDetailScreenState extends State<ThreadDetailScreen> {
             SnackBar(content: Text(context.l10n.pendingQueuedSnack)));
       }
       await _loadPosts();
-    } catch (_) {
+    } catch (e) {
+      // Filtre des messageries : le texte reste dans le champ, avec le
+      // message du serveur. Avant, toute erreur était tue.
+      final refused = ContentRefused.of(e);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(refused?.message ?? context.l10n.commonLoadError)));
+      }
     } finally {
       if (mounted) setState(() => _sending = false);
     }
