@@ -335,7 +335,7 @@ class _TutorSessionMaterialScreenState extends State<TutorSessionMaterialScreen>
                 return Container(
                   margin: const EdgeInsets.only(bottom: 4),
                   decoration: BoxDecoration(
-                    color: correct ? WinColors.successBg : wrong ? WinColors.errorBg : null,
+                    color: correct ? winTone(s, BadgeColor.success).bg : wrong ? winTone(s, BadgeColor.error).bg : null,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: RadioListTile<String>(
@@ -395,7 +395,7 @@ class _TutorSessionMaterialScreenState extends State<TutorSessionMaterialScreen>
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(color: WinColors.successBg, borderRadius: BorderRadius.circular(10)),
+            decoration: BoxDecoration(color: winTone(s, BadgeColor.success).bg, borderRadius: BorderRadius.circular(10)),
             child: Text(context.l10n.tutoringMatSolution('${e.solution}'), style: WinType.labelS(s.onStrong)),
           ),
         ],

@@ -178,7 +178,7 @@ class _AtRiskCard extends StatelessWidget {
                 border: Border.all(color: riskColor, width: 2)),
             child: WinAvatar(student.fullName,
                 size: 36,
-                color: critical ? WinColors.errorBg : WinColors.warnBg),
+                color: critical ? winTone(s, BadgeColor.error).bg : winTone(s, BadgeColor.warn).bg),
           ),
           const SizedBox(width: 12),
           Expanded(

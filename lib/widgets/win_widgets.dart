@@ -139,13 +139,16 @@ class _WinButtonState extends State<WinButton> {
             onTap: loading ? null : onTap,
             onHighlightChanged:
                 loading ? null : (v) => setState(() => _pressed = v),
+            // Pas de « alignment » sur le Container : il etirait un bouton
+            // sans « block » sur toute la largeur disponible. Le Center a
+            // facteur 1 garde la largeur du libelle ; un bouton « block » ou
+            // place dans un Expanded remplit toujours sa place.
             child: Container(
-              alignment: Alignment.center,
               padding: EdgeInsets.symmetric(horizontal: small ? 14 : 20),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(WinRadii.sm),
                   border: Border.all(color: bd)),
-              child: child,
+              child: Center(widthFactor: block ? null : 1, child: child),
             ),
           ),
         ),
@@ -250,6 +253,34 @@ class WinChip extends StatelessWidget {
 
 enum BadgeColor { neutral, teal, blue, success, warn, error, gold }
 
+/// Fond teinté et couleur de texte d'un ton (succès, alerte, sarcelle…),
+/// lisibles dans les deux thèmes. En clair : le fond pâle et le ton foncé de
+/// la palette. En sombre : le ton éclairci sur un voile du même ton (un fond
+/// pâle y éblouit, et un texte clair posé dessus devient illisible).
+({Color bg, Color fg}) winTone(WinScheme s, BadgeColor color) {
+  if (!s.dark) {
+    return switch (color) {
+      BadgeColor.neutral => (bg: WinColors.ink50, fg: WinColors.ink700),
+      BadgeColor.teal => (bg: WinColors.teal50, fg: WinColors.teal700),
+      BadgeColor.blue => (bg: WinColors.blue50, fg: WinColors.blue700),
+      BadgeColor.success => (bg: WinColors.successBg, fg: WinColors.success),
+      BadgeColor.warn => (bg: WinColors.warnBg, fg: WinColors.warn),
+      BadgeColor.error => (bg: WinColors.errorBg, fg: WinColors.error),
+      BadgeColor.gold => (bg: WinColors.goldBg, fg: WinColors.gold),
+    };
+  }
+  final Color fg = switch (color) {
+    BadgeColor.neutral => s.onMuted,
+    BadgeColor.teal => WinColors.teal300,
+    BadgeColor.blue => const Color(0xFF8DB8DA),
+    BadgeColor.success => const Color(0xFF5CCB9E),
+    BadgeColor.warn => const Color(0xFFEBAE5B),
+    BadgeColor.error => const Color(0xFFF0907E),
+    BadgeColor.gold => const Color(0xFFE2B866),
+  };
+  return (bg: Color.alphaBlend(fg.withValues(alpha: 0.14), s.surface), fg: fg);
+}
+
 class WinBadge extends StatelessWidget {
   final String label;
   final BadgeColor color;
@@ -257,24 +288,34 @@ class WinBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final pairs = {
-      BadgeColor.neutral: [WinColors.ink50, WinColors.ink700],
-      BadgeColor.teal: [WinColors.teal100, WinColors.teal700],
-      BadgeColor.blue: [WinColors.blue100, WinColors.blue700],
-      BadgeColor.success: [WinColors.successBg, WinColors.success],
-      BadgeColor.warn: [WinColors.warnBg, WinColors.warn],
-      BadgeColor.error: [WinColors.errorBg, WinColors.error],
-      BadgeColor.gold: [WinColors.goldBg, WinColors.gold],
-    }[color]!;
+    final s = WinTheme.of(context);
+    final tone = winTone(s, color);
+    // En clair, le badge garde ses fonds un peu plus soutenus que l'alerte.
+    final pairs = [
+      s.dark
+          ? tone.bg
+          : switch (color) {
+              BadgeColor.teal => WinColors.teal100,
+              BadgeColor.blue => WinColors.blue100,
+              _ => tone.bg,
+            },
+      tone.fg,
+    ];
+    // Pas de « alignment » sur le Container : il l'etirait sur toute la
+    // largeur disponible (badges en bandeaux dans les fiches). Le Center a
+    // facteur 1 centre le texte en gardant la largeur du libelle.
     return Container(
       constraints: const BoxConstraints(minHeight: 20),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
           color: pairs[0], borderRadius: BorderRadius.circular(WinRadii.full)),
-      alignment: Alignment.center,
-      child: Text(label,
-          style: WinType.manrope(
-              size: 11, weight: FontWeight.w600, color: pairs[1])),
+      child: Center(
+        widthFactor: 1,
+        heightFactor: 1,
+        child: Text(label,
+            style: WinType.manrope(
+                size: 11, weight: FontWeight.w600, color: pairs[1])),
+      ),
     );
   }
 }
@@ -545,15 +586,7 @@ class WinAlert extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (Color bg, Color fg) = switch (type) {
-      BadgeColor.neutral => (WinColors.ink50, WinColors.ink700),
-      BadgeColor.teal => (WinColors.teal50, WinColors.teal700),
-      BadgeColor.blue => (WinColors.blue50, WinColors.blue700),
-      BadgeColor.success => (WinColors.successBg, WinColors.success),
-      BadgeColor.warn => (WinColors.warnBg, WinColors.warn),
-      BadgeColor.error => (WinColors.errorBg, WinColors.error),
-      BadgeColor.gold => (WinColors.goldBg, WinColors.gold),
-    };
+    final (:bg, :fg) = winTone(WinTheme.of(context), type);
     final ic = icon ??
         switch (type) {
           BadgeColor.success => PhosphorIconsRegular.checkCircle,

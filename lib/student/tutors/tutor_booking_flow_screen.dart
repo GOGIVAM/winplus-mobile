@@ -1063,7 +1063,7 @@ class _PayOption extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           decoration: BoxDecoration(
-            color: selected ? WinColors.teal50 : s.chipBg,
+            color: selected ? winTone(s, BadgeColor.teal).bg : s.chipBg,
             borderRadius: BorderRadius.circular(WinRadii.sm),
             border: Border.all(
                 color: selected ? WinColors.teal400 : s.outline,

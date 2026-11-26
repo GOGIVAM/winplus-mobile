@@ -534,7 +534,7 @@ class _ResultsTab extends StatelessWidget {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: WinColors.successBg,
+                  color: winTone(s, BadgeColor.success).bg,
                   borderRadius: BorderRadius.circular(WinRadii.sm),
                 ),
                 child: const Icon(PhosphorIconsRegular.exam,

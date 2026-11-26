@@ -777,7 +777,7 @@ class _LessonRow extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
             decoration: BoxDecoration(
-              color: WinColors.teal50,
+              color: winTone(s, BadgeColor.teal).bg,
               borderRadius: BorderRadius.circular(WinRadii.full),
             ),
             child: Text(context.l10n.studentCoursePreview, style: WinType.labelS(WinColors.teal600)),

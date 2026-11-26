@@ -321,7 +321,7 @@ class _TutorEngagementFlowScreenState extends State<TutorEngagementFlowScreen> {
       const SizedBox(height: 16),
       Text(context.l10n.tutoringEngFirstDay, style: WinType.labelM(s.onStrong)),
       const SizedBox(height: 6),
-      WinButton(
+      Align(child: WinButton(
         '${_shortDate(_startDate)} ${_startDate.year}',
         variant: WinButtonVariant.outline,
         icon: PhosphorIconsRegular.calendar,
@@ -334,7 +334,7 @@ class _TutorEngagementFlowScreenState extends State<TutorEngagementFlowScreen> {
               lastDate: now.add(const Duration(days: 120)));
           if (picked != null) setState(() => _startDate = picked);
         },
-      ),
+      )),
       const SizedBox(height: 16),
       Text(context.l10n.tutoringEngWeeklySlots, style: WinType.labelM(s.onStrong)),
       const SizedBox(height: 6),

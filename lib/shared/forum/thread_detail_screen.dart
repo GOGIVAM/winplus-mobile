@@ -7,6 +7,7 @@ import '../../theme/win_typography.dart';
 import 'new_thread_screen.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../widgets/win_screen.dart';
+import '../../widgets/win_widgets.dart';
 
 class ThreadDetailScreen extends StatefulWidget {
   final Map<String, dynamic> thread;
@@ -202,7 +203,7 @@ class _PostCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: isAccepted ? WinColors.successBg : s.surface,
+        color: isAccepted ? winTone(s, BadgeColor.success).bg : s.surface,
         borderRadius: BorderRadius.circular(WinRadii.lg),
         border: Border.all(
           color: isAccepted ? WinColors.success : s.outline,

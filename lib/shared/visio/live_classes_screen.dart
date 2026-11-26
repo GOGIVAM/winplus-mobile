@@ -118,7 +118,7 @@ class _LiveClassCard extends StatelessWidget {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                  color: c.state == 'ouverte' ? WinColors.successBg : s.surface2,
+                  color: c.state == 'ouverte' ? winTone(s, BadgeColor.success).bg : s.surface2,
                   borderRadius: BorderRadius.circular(12)),
               child: Icon(PhosphorIconsRegular.videoCamera,
                   color: c.state == 'ouverte' ? WinColors.success : s.onMuted),

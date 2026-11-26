@@ -904,7 +904,7 @@ class _ParentPaymentsTabState extends State<ParentPaymentsTab> {
             width: 36,
             height: 36,
             decoration: BoxDecoration(
-                color: paid ? WinColors.successBg : s.surface2,
+                color: paid ? winTone(s, BadgeColor.success).bg : s.surface2,
                 shape: BoxShape.circle),
             child: Icon(icon,
                 size: 16, color: paid ? WinColors.success : s.onMuted)),
