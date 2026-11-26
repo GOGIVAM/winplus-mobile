@@ -293,7 +293,13 @@ void main() {
       await ouvrirFormulaire(tester);
       final l = L10n.current;
       faux.repond('GET', '/tutor-profile/search', []);
-      await tester.enterText(find.widgetWithText(TextField, l.tutoringAssignSubjectHint), ' SVT ');
+      // La matiere se choisit dans le selecteur.
+      await tester.ensureVisible(find.widgetWithText(WinChip, 'SVT'));
+      await pomper(tester);
+      await tester.tap(find.widgetWithText(WinChip, 'SVT'));
+      await pomper(tester);
+      await tester.ensureVisible(find.byIcon(PhosphorIconsRegular.magnifyingGlass));
+      await pomper(tester);
       await tester.tap(find.byIcon(PhosphorIconsRegular.magnifyingGlass));
       await reseau(tester);
       expect(faux.recues('GET', '/tutor-profile/search').last.queryParameters['subject'], 'SVT');
@@ -323,7 +329,10 @@ void main() {
       expect(find.byIcon(PhosphorIconsFill.radioButton), findsOneWidget);
       await tester.tap(find.widgetWithText(WinChip, 'Zoe Eto'));
       await pomper(tester);
-      await tester.enterText(find.widgetWithText(TextField, l.tutoringAssignSubjectHint), 'Chimie');
+      await tester.ensureVisible(find.widgetWithText(WinChip, 'Chimie'));
+      await pomper(tester);
+      await tester.tap(find.widgetWithText(WinChip, 'Chimie'));
+      await pomper(tester);
       await tester.enterText(find.widgetWithText(TextField, l.tutoringAssignNoteHint), ' Deux fois par semaine ');
       await tester.tap(_bouton(l.tutoringAssignSubmit));
       await reseau(tester);

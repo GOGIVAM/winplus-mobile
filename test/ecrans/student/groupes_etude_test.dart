@@ -115,12 +115,18 @@ void main() {
     expect(find.text(L10n.current.studentGroupsNameTooShort), findsOneWidget);
     expect(faux.recues('POST', '/study-groups'), isEmpty);
     await tester.enterText(find.byType(TextField).at(0), 'Mon groupe');
-    await tester.enterText(find.byType(TextField).at(1), 'Maths');
+    // La matiere se choisit dans le selecteur.
+    await tester.ensureVisible(find.widgetWithText(WinChip, 'Maths'));
+    await pomper(tester);
+    await tester.tap(find.widgetWithText(WinChip, 'Maths'));
+    await pomper(tester);
+    await tester.ensureVisible(_bouton(L10n.current.studentGroupsCreateBtn));
+    await pomper(tester);
     await tester.tap(_bouton(L10n.current.studentGroupsCreateBtn));
     await reseau(tester);
     final d = faux.recues('POST', '/study-groups').single.data as Map;
     expect(d['name'], 'Mon groupe');
-    expect(d['subject'], 'Maths');
+    expect(d['subject'], 'Mathématiques');
     expect(faux.recues('GET', '/study-groups/me'), hasLength(2));
   });
 

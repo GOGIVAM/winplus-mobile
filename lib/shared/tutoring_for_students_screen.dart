@@ -14,6 +14,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../widgets/win_screen.dart';
+import '../widgets/win_subject_picker.dart';
 
 /// Lot 9.3 (suivi 17.4) : cours particuliers réservés et payés par un parent
 /// pour ses enfants, ou par une institution pour ses élèves (parité web
@@ -456,10 +457,17 @@ class _AssignTutorScreenState extends State<_AssignTutorScreen> {
         Text(context.l10n.tutoringAssignIntro,
             style: WinType.labelS(s.onFaint)),
         const SizedBox(height: 12),
-        Row(children: [
-          Expanded(child: WinTextField(hint: context.l10n.tutoringAssignSubjectHint, controller: _subjectCtrl)),
-          IconButton(icon: const Icon(PhosphorIconsRegular.magnifyingGlass), onPressed: _searching ? null : _search),
-        ]),
+        // La matière se choisit, elle ne se tape pas ; la loupe lance la
+        // recherche des répétiteurs de cette matière.
+        WinSubjectPicker(
+            value: _subjectCtrl.text,
+            onChanged: (v) => setState(() => _subjectCtrl.text = v)),
+        Align(
+          alignment: AlignmentDirectional.centerEnd,
+          child: IconButton(
+              icon: const Icon(PhosphorIconsRegular.magnifyingGlass),
+              onPressed: _searching ? null : _search),
+        ),
         const SizedBox(height: 8),
         if (_searching)
           const Center(child: Padding(padding: EdgeInsets.all(8), child: CircularProgressIndicator()))

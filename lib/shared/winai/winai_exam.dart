@@ -12,6 +12,7 @@ import '../../theme/win_typography.dart';
 import '../../widgets/win_screen.dart';
 import '../../widgets/win_widgets.dart';
 import '../../widgets/winai_markdown.dart';
+import '../../widgets/win_subject_picker.dart';
 
 const _examTypes = ['interrogation', 'devoir', 'composition', 'examen-blanc'];
 
@@ -39,7 +40,7 @@ class WinAIExamSettings extends StatefulWidget {
 }
 
 class _WinAIExamSettingsState extends State<WinAIExamSettings> {
-  final _subject = TextEditingController();
+  String _subject = '';
   final _topic = TextEditingController();
   final _level = TextEditingController();
   String _type = 'devoir';
@@ -50,19 +51,18 @@ class _WinAIExamSettingsState extends State<WinAIExamSettings> {
 
   @override
   void dispose() {
-    _subject.dispose();
     _topic.dispose();
     _level.dispose();
     super.dispose();
   }
 
   void _submit() {
-    if (_subject.text.trim().isEmpty) {
+    if (_subject.isEmpty) {
       setState(() => _missing = true);
       return;
     }
     Navigator.pop<WinAIExamRequest>(context, (
-      subject: _subject.text.trim(),
+      subject: _subject,
       topic: _topic.text.trim(),
       level: _level.text.trim(),
       examType: _type,
@@ -90,13 +90,13 @@ class _WinAIExamSettingsState extends State<WinAIExamSettings> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          WinTextField(
-              label: l.commonSubject,
-              hint: l.winaiExamSubjectHint,
-              controller: _subject,
-              onChanged: (_) {
-                if (_missing) setState(() => _missing = false);
-              }),
+          label(l.commonSubject),
+          WinSubjectPicker(
+              value: _subject,
+              onChanged: (v) => setState(() {
+                    _subject = v;
+                    _missing = false;
+                  })),
           if (_missing)
             Padding(
                 padding: const EdgeInsets.only(top: 6),

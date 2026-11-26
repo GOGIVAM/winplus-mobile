@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:winplus/data/models.dart';
+import 'package:winplus/data/reference_data.dart';
 import 'package:winplus/l10n/l10n.dart';
 import 'package:winplus/shared/winai/winai_exam.dart';
 import 'package:winplus/shared/winai/winai_screen.dart';
@@ -51,6 +52,11 @@ void main() {
     await pomper(tester);
   }
 
+  // La matiere se choisit dans le selecteur (jamais tapee).
+  void choisirMatiere(WidgetTester tester) => tester
+      .widget<WinChip>(find.widgetWithText(WinChip, WinData.subjects.first.short, skipOffstage: false).first)
+      .onTap!();
+
   Future<void> voir(WidgetTester tester, String texte) async {
     await tester.scrollUntilVisible(find.text(texte), 200, scrollable: find.byType(Scrollable).last);
     await pomper(tester);
@@ -71,7 +77,8 @@ void main() {
     expect(find.text(l.winaiExamSubjectRequired, skipOffstage: false), findsOneWidget);
     expect(faux.recues('POST', '/teacher/epreuves'), isEmpty);
 
-    await tester.enterText(find.byType(TextField).first, 'Maths');
+    choisirMatiere(tester);
+    await pomper(tester);
     tester.widget<WinChip>(find.widgetWithText(WinChip, l.winaiExamTypeMock, skipOffstage: false)).onTap!();
     await pomper(tester);
     await generer(tester);
@@ -82,7 +89,7 @@ void main() {
     await pomper(tester, const Duration(milliseconds: 400));
 
     final envoi = faux.recues('POST', '/teacher/epreuves').single.data as Map;
-    expect(envoi['subject'], 'Maths');
+    expect(envoi['subject'], WinData.subjects.first.name);
     expect(envoi['examType'], 'examen-blanc');
     expect(envoi['durationMinutes'], 120);
     expect(envoi['totalPoints'], 20);
@@ -109,7 +116,8 @@ void main() {
     await tester.tap(find.text(l.winaiToolExam));
     await pomper(tester);
     await pomper(tester, const Duration(milliseconds: 400));
-    await tester.enterText(find.byType(TextField).first, 'Maths');
+    choisirMatiere(tester);
+    await pomper(tester);
     await generer(tester);
     await pomper(tester);
     await pomper(tester, const Duration(milliseconds: 400));

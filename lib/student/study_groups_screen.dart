@@ -8,6 +8,7 @@ import '../widgets/win_widgets.dart';
 import 'package:flutter/services.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../widgets/win_screen.dart';
+import '../widgets/win_subject_picker.dart';
 
 /// Module 24 (lot 8, rattrapage 16.3) : groupes d'étude réels
 /// (StudyGroupsController.cs, mêmes endpoints que le web
@@ -265,7 +266,13 @@ class _CreateGroupSheetState extends State<_CreateGroupSheet> {
             if (_error != null) ...[WinAlert(_error!, type: BadgeColor.error), const SizedBox(height: 12)],
             WinTextField(icon: PhosphorIconsFill.users, hint: context.l10n.studentGroupsNameHint, controller: _nameCtrl),
             const SizedBox(height: 12),
-            WinTextField(icon: PhosphorIconsRegular.bookOpen, hint: context.l10n.studentGroupsSubjectHint, controller: _subjectCtrl),
+            // La matière se choisit, elle ne se tape pas.
+            Text(context.l10n.commonSubject, style: WinType.titleM(WinTheme.of(context).onStrong)),
+            const SizedBox(height: 8),
+            WinSubjectPicker(
+                value: _subjectCtrl.text,
+                allowNone: true,
+                onChanged: (v) => setState(() => _subjectCtrl.text = v)),
             const SizedBox(height: 24),
             WinButton(_busy ? context.l10n.studentGroupsCreating : context.l10n.studentGroupsCreateBtn, block: true, onTap: _busy ? null : _submit),
           ]),
