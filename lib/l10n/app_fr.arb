@@ -501,7 +501,7 @@
     }
   },
   "instLicenseAutoRenew": "Renouvellement automatique par le portefeuille",
-  "instLicenseGridMin": "Minimum {min} sièges, un siège enseignant pour {perTeacher} élèves.",
+  "instLicenseGridMin": "Minimum {min} places, une place enseignant pour {perTeacher} élèves.",
   "@instLicenseGridMin": {
     "placeholders": {
       "min": {
@@ -520,7 +520,7 @@
       }
     }
   },
-  "instLicenseGridTier": "{price} XAF dès {seats} sièges",
+  "instLicenseGridTier": "{price} XAF dès {seats} places",
   "@instLicenseGridTier": {
     "placeholders": {
       "price": {
@@ -563,7 +563,7 @@
   "instLicensePromo": "Code promo",
   "instLicensePurchase": "Souscrire avec le portefeuille",
   "instLicensePurchaseError": "Souscription impossible.",
-  "instLicenseQuoteLine": "{price} XAF par élève · {teacherSeats} sièges enseignants · jusqu'au {date}",
+  "instLicenseQuoteLine": "{price} XAF par élève · {teacherSeats} places enseignants · jusqu'au {date}",
   "@instLicenseQuoteLine": {
     "placeholders": {
       "price": {
@@ -588,11 +588,11 @@
   "instLicenseRelease": "Libérer",
   "instLicenseReleaseError": "Libération impossible.",
   "instLicenseRenewWallet": "Renouveler avec le portefeuille",
-  "instLicenseSeatBenefits": "Chaque siège ouvre à l'élève le catalogue, le plan d'étude, la session guidée, Exam Coach et un bonus WinAI ; un siège enseignant ouvre les outils du plan Pro et une part de 75 % sur le tutorat.",
-  "instLicenseSeatsInfo": "Un siège élève est attribué quand l'élève accepte son rattachement ; un siège enseignant quand le professeur accepte l'affiliation.",
-  "instLicenseSeatsTitle": "Sièges attribués",
+  "instLicenseSeatBenefits": "Chaque place ouvre à l'élève le catalogue, le plan d'étude, la session guidée, Exam Coach et un bonus WinAI ; une place enseignant ouvre les outils du plan Pro et une part de 75 % sur le tutorat.",
+  "instLicenseSeatsInfo": "Une place élève est attribuée quand l'élève accepte son rattachement ; une place enseignant quand le professeur accepte l'affiliation.",
+  "instLicenseSeatsTitle": "Places attribuées",
   "instLicenseStatusEnded": "Terminée",
-  "instLicenseStudentSeats": "Sièges élèves",
+  "instLicenseStudentSeats": "Places élèves",
   "instLicenseStudentSeatsUsed": "Sièges élèves : {used} / {total}",
   "@instLicenseStudentSeatsUsed": {
     "placeholders": {
@@ -619,7 +619,7 @@
   "instLicenseTermQuarter": "Trimestre",
   "instLicenseTermYear": "Année scolaire",
   "instLicenseTitle": "Licence WinPlus",
-  "instLicenseTrial": "Essai gratuit ({days} jours, {seats} sièges)",
+  "instLicenseTrial": "Essai gratuit ({days} jours, {seats} places)",
   "@instLicenseTrial": {
     "placeholders": {
       "days": {
@@ -6516,5 +6516,22 @@
   "tutoringHighlyResponsive": "Très réactif",
   "tutoringZonesTitle": "Zones d'intervention",
   "tutoringWatchVideo": "Regarder la vidéo de présentation",
-  "tutoringVideoOpenError": "Impossible d'ouvrir la vidéo."
+  "tutoringVideoOpenError": "Impossible d'ouvrir la vidéo.",
+  "instLicenseTeacherSeats": "Places enseignants",
+  "instLicenseUsedOf": "{used} sur {total}",
+  "@instLicenseUsedOf": {"placeholders": {"used": {"type": "String"}, "total": {"type": "String"}}},
+  "instLicenseAiBudgetLabel": "Budget WinAI utilisé",
+  "instLicenseDaysLeft": "{n, plural, =0{Dernier jour de la licence} =1{Il reste 1 jour} other{Il reste {n} jours}}",
+  "@instLicenseDaysLeft": {"placeholders": {"n": {"type": "int"}}},
+  "instLicenseAutoRenewTitle": "Renouvellement automatique",
+  "instLicenseRenewOn": "Le {date}, {amount} XAF seront prélevés sur le portefeuille de l'établissement.",
+  "@instLicenseRenewOn": {"placeholders": {"date": {"type": "String"}, "amount": {"type": "String"}}},
+  "instLicenseRenewOnNoAmount": "Le {date}, la licence sera renouvelée par le portefeuille de l'établissement.",
+  "@instLicenseRenewOnNoAmount": {"placeholders": {"date": {"type": "String"}}},
+  "instLicenseRenewOff": "Sans renouvellement, la licence s'arrête le {date}.",
+  "@instLicenseRenewOff": {"placeholders": {"date": {"type": "String"}}},
+  "instLicenseWalletBalance": "Solde du portefeuille : {amount} XAF",
+  "@instLicenseWalletBalance": {"placeholders": {"amount": {"type": "String"}}},
+  "instLicenseWalletShort": "Solde insuffisant pour le renouvellement : il manque {amount} XAF. Rechargez le portefeuille avant l'échéance.",
+  "@instLicenseWalletShort": {"placeholders": {"amount": {"type": "String"}}}
 }

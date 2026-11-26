@@ -1049,7 +1049,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String instLicenseGridMin(Object min, Object perTeacher) {
-    return 'Minimum $min sièges, un siège enseignant pour $perTeacher élèves.';
+    return 'Minimum $min places, une place enseignant pour $perTeacher élèves.';
   }
 
   @override
@@ -1059,7 +1059,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String instLicenseGridTier(Object price, Object seats) {
-    return '$price XAF dès $seats sièges';
+    return '$price XAF dès $seats places';
   }
 
   @override
@@ -1095,7 +1095,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String instLicenseQuoteLine(Object price, Object teacherSeats, Object date) {
-    return '$price XAF par élève · $teacherSeats sièges enseignants · jusqu\'au $date';
+    return '$price XAF par élève · $teacherSeats places enseignants · jusqu\'au $date';
   }
 
   @override
@@ -1114,20 +1114,20 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get instLicenseSeatBenefits =>
-      'Chaque siège ouvre à l\'élève le catalogue, le plan d\'étude, la session guidée, Exam Coach et un bonus WinAI ; un siège enseignant ouvre les outils du plan Pro et une part de 75 % sur le tutorat.';
+      'Chaque place ouvre à l\'élève le catalogue, le plan d\'étude, la session guidée, Exam Coach et un bonus WinAI ; une place enseignant ouvre les outils du plan Pro et une part de 75 % sur le tutorat.';
 
   @override
   String get instLicenseSeatsInfo =>
-      'Un siège élève est attribué quand l\'élève accepte son rattachement ; un siège enseignant quand le professeur accepte l\'affiliation.';
+      'Une place élève est attribuée quand l\'élève accepte son rattachement ; une place enseignant quand le professeur accepte l\'affiliation.';
 
   @override
-  String get instLicenseSeatsTitle => 'Sièges attribués';
+  String get instLicenseSeatsTitle => 'Places attribuées';
 
   @override
   String get instLicenseStatusEnded => 'Terminée';
 
   @override
-  String get instLicenseStudentSeats => 'Sièges élèves';
+  String get instLicenseStudentSeats => 'Places élèves';
 
   @override
   String instLicenseStudentSeatsUsed(Object used, Object total) {
@@ -1153,7 +1153,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String instLicenseTrial(Object days, Object seats) {
-    return 'Essai gratuit ($days jours, $seats sièges)';
+    return 'Essai gratuit ($days jours, $seats places)';
   }
 
   @override
@@ -12451,4 +12451,55 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tutoringVideoOpenError => 'Impossible d\'ouvrir la vidéo.';
+
+  @override
+  String get instLicenseTeacherSeats => 'Places enseignants';
+
+  @override
+  String instLicenseUsedOf(String used, String total) {
+    return '$used sur $total';
+  }
+
+  @override
+  String get instLicenseAiBudgetLabel => 'Budget WinAI utilisé';
+
+  @override
+  String instLicenseDaysLeft(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Il reste $n jours',
+      one: 'Il reste 1 jour',
+      zero: 'Dernier jour de la licence',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get instLicenseAutoRenewTitle => 'Renouvellement automatique';
+
+  @override
+  String instLicenseRenewOn(String date, String amount) {
+    return 'Le $date, $amount XAF seront prélevés sur le portefeuille de l\'établissement.';
+  }
+
+  @override
+  String instLicenseRenewOnNoAmount(String date) {
+    return 'Le $date, la licence sera renouvelée par le portefeuille de l\'établissement.';
+  }
+
+  @override
+  String instLicenseRenewOff(String date) {
+    return 'Sans renouvellement, la licence s\'arrête le $date.';
+  }
+
+  @override
+  String instLicenseWalletBalance(String amount) {
+    return 'Solde du portefeuille : $amount XAF';
+  }
+
+  @override
+  String instLicenseWalletShort(String amount) {
+    return 'Solde insuffisant pour le renouvellement : il manque $amount XAF. Rechargez le portefeuille avant l\'échéance.';
+  }
 }

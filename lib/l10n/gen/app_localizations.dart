@@ -1968,7 +1968,7 @@ abstract class AppLocalizations {
   /// No description provided for @instLicenseGridMin.
   ///
   /// In fr, this message translates to:
-  /// **'Minimum {min} sièges, un siège enseignant pour {perTeacher} élèves.'**
+  /// **'Minimum {min} places, une place enseignant pour {perTeacher} élèves.'**
   String instLicenseGridMin(Object min, Object perTeacher);
 
   /// No description provided for @instLicenseGridPrices.
@@ -1980,7 +1980,7 @@ abstract class AppLocalizations {
   /// No description provided for @instLicenseGridTier.
   ///
   /// In fr, this message translates to:
-  /// **'{price} XAF dès {seats} sièges'**
+  /// **'{price} XAF dès {seats} places'**
   String instLicenseGridTier(Object price, Object seats);
 
   /// No description provided for @instLicenseHeading.
@@ -2034,7 +2034,7 @@ abstract class AppLocalizations {
   /// No description provided for @instLicenseQuoteLine.
   ///
   /// In fr, this message translates to:
-  /// **'{price} XAF par élève · {teacherSeats} sièges enseignants · jusqu\'au {date}'**
+  /// **'{price} XAF par élève · {teacherSeats} places enseignants · jusqu\'au {date}'**
   String instLicenseQuoteLine(Object price, Object teacherSeats, Object date);
 
   /// No description provided for @instLicenseQuoteTotal.
@@ -2064,19 +2064,19 @@ abstract class AppLocalizations {
   /// No description provided for @instLicenseSeatBenefits.
   ///
   /// In fr, this message translates to:
-  /// **'Chaque siège ouvre à l\'élève le catalogue, le plan d\'étude, la session guidée, Exam Coach et un bonus WinAI ; un siège enseignant ouvre les outils du plan Pro et une part de 75 % sur le tutorat.'**
+  /// **'Chaque place ouvre à l\'élève le catalogue, le plan d\'étude, la session guidée, Exam Coach et un bonus WinAI ; une place enseignant ouvre les outils du plan Pro et une part de 75 % sur le tutorat.'**
   String get instLicenseSeatBenefits;
 
   /// No description provided for @instLicenseSeatsInfo.
   ///
   /// In fr, this message translates to:
-  /// **'Un siège élève est attribué quand l\'élève accepte son rattachement ; un siège enseignant quand le professeur accepte l\'affiliation.'**
+  /// **'Une place élève est attribuée quand l\'élève accepte son rattachement ; une place enseignant quand le professeur accepte l\'affiliation.'**
   String get instLicenseSeatsInfo;
 
   /// No description provided for @instLicenseSeatsTitle.
   ///
   /// In fr, this message translates to:
-  /// **'Sièges attribués'**
+  /// **'Places attribuées'**
   String get instLicenseSeatsTitle;
 
   /// No description provided for @instLicenseStatusEnded.
@@ -2088,7 +2088,7 @@ abstract class AppLocalizations {
   /// No description provided for @instLicenseStudentSeats.
   ///
   /// In fr, this message translates to:
-  /// **'Sièges élèves'**
+  /// **'Places élèves'**
   String get instLicenseStudentSeats;
 
   /// No description provided for @instLicenseStudentSeatsUsed.
@@ -2130,7 +2130,7 @@ abstract class AppLocalizations {
   /// No description provided for @instLicenseTrial.
   ///
   /// In fr, this message translates to:
-  /// **'Essai gratuit ({days} jours, {seats} sièges)'**
+  /// **'Essai gratuit ({days} jours, {seats} places)'**
   String instLicenseTrial(Object days, Object seats);
 
   /// No description provided for @instLicenseTrialError.
@@ -20943,6 +20943,66 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Impossible d\'ouvrir la vidéo.'**
   String get tutoringVideoOpenError;
+
+  /// No description provided for @instLicenseTeacherSeats.
+  ///
+  /// In fr, this message translates to:
+  /// **'Places enseignants'**
+  String get instLicenseTeacherSeats;
+
+  /// No description provided for @instLicenseUsedOf.
+  ///
+  /// In fr, this message translates to:
+  /// **'{used} sur {total}'**
+  String instLicenseUsedOf(String used, String total);
+
+  /// No description provided for @instLicenseAiBudgetLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Budget WinAI utilisé'**
+  String get instLicenseAiBudgetLabel;
+
+  /// No description provided for @instLicenseDaysLeft.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n, plural, =0{Dernier jour de la licence} =1{Il reste 1 jour} other{Il reste {n} jours}}'**
+  String instLicenseDaysLeft(int n);
+
+  /// No description provided for @instLicenseAutoRenewTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Renouvellement automatique'**
+  String get instLicenseAutoRenewTitle;
+
+  /// No description provided for @instLicenseRenewOn.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le {date}, {amount} XAF seront prélevés sur le portefeuille de l\'établissement.'**
+  String instLicenseRenewOn(String date, String amount);
+
+  /// No description provided for @instLicenseRenewOnNoAmount.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le {date}, la licence sera renouvelée par le portefeuille de l\'établissement.'**
+  String instLicenseRenewOnNoAmount(String date);
+
+  /// No description provided for @instLicenseRenewOff.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sans renouvellement, la licence s\'arrête le {date}.'**
+  String instLicenseRenewOff(String date);
+
+  /// No description provided for @instLicenseWalletBalance.
+  ///
+  /// In fr, this message translates to:
+  /// **'Solde du portefeuille : {amount} XAF'**
+  String instLicenseWalletBalance(String amount);
+
+  /// No description provided for @instLicenseWalletShort.
+  ///
+  /// In fr, this message translates to:
+  /// **'Solde insuffisant pour le renouvellement : il manque {amount} XAF. Rechargez le portefeuille avant l\'échéance.'**
+  String instLicenseWalletShort(String amount);
 }
 
 class _AppLocalizationsDelegate

@@ -163,28 +163,80 @@ void main() {
       faux.repond('GET', '/institution/license', {}, statut: 500);
       await monterEcran(tester, const LicenseScreen());
       expect(find.text(L10n.current.instLicenseUnavailable), findsOneWidget);
+      // L'erreur se relance sans quitter l'ecran.
+      expect(_bouton(L10n.current.commonRetry), findsOneWidget);
     });
 
-    testWidgets('licence en cours : sieges utilises et liberation d\'un siege', (tester) async {
-      faux.repond('GET', '/institution/license', {
-        'license': {'status': 'active', 'studentSeats': 100, 'studentSeatsUsed': 40, 'teacherSeats': 5, 'teacherSeatsUsed': 2, 'aiBudgetUsedPercent': 12, 'autoRenew': true, 'startDate': '2026-01-05T00:00:00Z', 'endDate': '2027-01-05T00:00:00Z'},
-        'seats': [
-          {'id': 11, 'kind': 'student', 'name': 'Ada Eto'},
-          {'id': 12, 'kind': 'teacher', 'userId': 9},
-        ],
-      });
-      faux.repond('DELETE', '/institution/license/seats/11', {'message': 'Siege libere'});
+    Map<String, dynamic> licence([Map<String, dynamic> en = const {}]) => {
+          'license': {
+            'status': 'active', 'studentSeats': 100, 'studentSeatsUsed': 40, 'teacherSeats': 5, 'teacherSeatsUsed': 2,
+            'aiBudgetUsedPercent': 12, 'autoRenew': true, 'totalPriceTtc': 150000,
+            'startDate': '2026-01-05T12:00:00Z', 'endDate': '2027-01-05T12:00:00Z', ...en,
+          },
+          'seats': [
+            {'id': 11, 'kind': 'student', 'name': 'Ada Eto'},
+            {'id': 12, 'kind': 'teacher', 'userId': 9},
+          ],
+        };
+
+    testWidgets('licence en cours : etat en pastille, dates lisibles, places utilisees et liberation d\'une place', (tester) async {
+      faux.repond('GET', '/institution/license', licence());
+      faux.repond('DELETE', '/institution/license/seats/11', {'message': 'Place liberee'});
       await monterEcran(tester, const LicenseScreen());
       final l = L10n.current;
-      expect(find.text(l.instLicenseStudentSeatsUsed('40', '100')), findsOneWidget);
-      expect(find.text(l.instLicenseTeacherSeatsUsed('2', '5')), findsOneWidget);
-      expect(find.text(l.instLicensePeriod('05/01/2026', '05/01/2027')), findsOneWidget);
-      expect(find.text('Ada Eto'), findsOneWidget);
-      expect(find.text(l.instLicenseAccount('9')), findsOneWidget);
+      expect(find.widgetWithText(WinBadge, l.teacherVerifActive), findsOneWidget);
+      expect(find.text(l.instLicensePeriod(WinFormat.date(DateTime.utc(2026, 1, 5, 12)), WinFormat.date(DateTime.utc(2027, 1, 5, 12)))), findsOneWidget);
+      expect(find.text(l.instLicenseUsedOf('40', '100')), findsOneWidget);
+      expect(find.text(l.instLicenseUsedOf('2', '5')), findsOneWidget);
+      expect(find.text(WinFormat.percent(12)), findsOneWidget);
+      await tester.scrollUntilVisible(find.text('Ada Eto'), 300, scrollable: find.byType(Scrollable).first);
+      expect(find.text(l.instLicenseAccount('9'), skipOffstage: false), findsOneWidget);
       await tester.tap(find.text(l.instLicenseRelease).first);
       await reseau(tester);
       expect(faux.recues('DELETE', '/institution/license/seats/11'), hasLength(1));
-      expect(find.text('Siege libere'), findsOneWidget);
+      expect(find.text('Place liberee'), findsOneWidget);
+    });
+
+    testWidgets('jours restants : comptes jusqu\'a la fin de la licence', (tester) async {
+      final fin = DateTime.now().add(const Duration(days: 12));
+      faux.repond('GET', '/institution/license', licence({'endDate': DateTime(fin.year, fin.month, fin.day, 12).toIso8601String()}));
+      await monterEcran(tester, const LicenseScreen());
+      expect(find.text(L10n.current.instLicenseDaysLeft(12)), findsOneWidget);
+    });
+
+    testWidgets('renouvellement : montant et date annonces, solde du portefeuille, alerte s\'il ne suffit pas', (tester) async {
+      faux.repond('GET', '/institution/license', licence());
+      faux.repond('GET', '/wallet/me', {'availableXaf': 100000, 'pendingXaf': 0, 'engagedXaf': 0});
+      await monterEcran(tester, const LicenseScreen());
+      final l = L10n.current;
+      final fin = WinFormat.date(DateTime.utc(2027, 1, 5, 12));
+      expect(find.text(l.instLicenseRenewOn(fin, fmtXaf(150000))), findsOneWidget);
+      expect(find.text(l.instLicenseWalletBalance(fmtXaf(100000))), findsOneWidget);
+      expect(find.text(l.instLicenseWalletShort(fmtXaf(50000))), findsOneWidget);
+    });
+
+    testWidgets('renouvellement : solde suffisant = pas d\'alerte ; coupe = date de fin annoncee', (tester) async {
+      faux.repond('GET', '/institution/license', licence());
+      faux.repond('GET', '/wallet/me', {'availableXaf': 200000, 'pendingXaf': 0, 'engagedXaf': 0});
+      await monterEcran(tester, const LicenseScreen());
+      final l = L10n.current;
+      expect(find.text(l.instLicenseWalletShort(fmtXaf(50000))), findsNothing);
+      expect(find.byType(WinAlert), findsNothing);
+    });
+
+    testWidgets('renouvellement coupe : la date de fin est annoncee', (tester) async {
+      faux.repond('GET', '/institution/license', licence({'autoRenew': false}));
+      await monterEcran(tester, const LicenseScreen());
+      final l = L10n.current;
+      expect(find.text(l.instLicenseRenewOff(WinFormat.date(DateTime.utc(2027, 1, 5, 12)))), findsOneWidget);
+    });
+
+    testWidgets('portefeuille illisible : la carte du renouvellement reste, sans solde', (tester) async {
+      faux.repond('GET', '/institution/license', licence());
+      await monterEcran(tester, const LicenseScreen());
+      final l = L10n.current;
+      expect(find.text(l.instLicenseAutoRenewTitle), findsOneWidget);
+      expect(find.textContaining(l.instLicenseWalletBalance('')), findsNothing);
     });
 
     testWidgets('licence d\'essai : pas d\'interrupteur de renouvellement', (tester) async {

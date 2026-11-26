@@ -12356,4 +12356,55 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tutoringVideoOpenError => 'Could not open the video.';
+
+  @override
+  String get instLicenseTeacherSeats => 'Teacher seats';
+
+  @override
+  String instLicenseUsedOf(String used, String total) {
+    return '$used of $total';
+  }
+
+  @override
+  String get instLicenseAiBudgetLabel => 'WinAI budget used';
+
+  @override
+  String instLicenseDaysLeft(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n days left',
+      one: '1 day left',
+      zero: 'Last day of the licence',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get instLicenseAutoRenewTitle => 'Automatic renewal';
+
+  @override
+  String instLicenseRenewOn(String date, String amount) {
+    return 'On $date, $amount XAF will be taken from the school wallet.';
+  }
+
+  @override
+  String instLicenseRenewOnNoAmount(String date) {
+    return 'On $date, the licence will be renewed from the school wallet.';
+  }
+
+  @override
+  String instLicenseRenewOff(String date) {
+    return 'Without renewal, the licence ends on $date.';
+  }
+
+  @override
+  String instLicenseWalletBalance(String amount) {
+    return 'Wallet balance: $amount XAF';
+  }
+
+  @override
+  String instLicenseWalletShort(String amount) {
+    return 'Not enough in the wallet for the renewal: $amount XAF missing. Top up the wallet before the due date.';
+  }
 }

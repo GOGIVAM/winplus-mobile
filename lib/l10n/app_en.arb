@@ -3640,5 +3640,22 @@
   "tutoringHighlyResponsive": "Very responsive",
   "tutoringZonesTitle": "Areas covered",
   "tutoringWatchVideo": "Watch the introduction video",
-  "tutoringVideoOpenError": "Could not open the video."
+  "tutoringVideoOpenError": "Could not open the video.",
+  "instLicenseTeacherSeats": "Teacher seats",
+  "instLicenseUsedOf": "{used} of {total}",
+  "@instLicenseUsedOf": {"placeholders": {"used": {"type": "String"}, "total": {"type": "String"}}},
+  "instLicenseAiBudgetLabel": "WinAI budget used",
+  "instLicenseDaysLeft": "{n, plural, =0{Last day of the licence} =1{1 day left} other{{n} days left}}",
+  "@instLicenseDaysLeft": {"placeholders": {"n": {"type": "int"}}},
+  "instLicenseAutoRenewTitle": "Automatic renewal",
+  "instLicenseRenewOn": "On {date}, {amount} XAF will be taken from the school wallet.",
+  "@instLicenseRenewOn": {"placeholders": {"date": {"type": "String"}, "amount": {"type": "String"}}},
+  "instLicenseRenewOnNoAmount": "On {date}, the licence will be renewed from the school wallet.",
+  "@instLicenseRenewOnNoAmount": {"placeholders": {"date": {"type": "String"}}},
+  "instLicenseRenewOff": "Without renewal, the licence ends on {date}.",
+  "@instLicenseRenewOff": {"placeholders": {"date": {"type": "String"}}},
+  "instLicenseWalletBalance": "Wallet balance: {amount} XAF",
+  "@instLicenseWalletBalance": {"placeholders": {"amount": {"type": "String"}}},
+  "instLicenseWalletShort": "Not enough in the wallet for the renewal: {amount} XAF missing. Top up the wallet before the due date.",
+  "@instLicenseWalletShort": {"placeholders": {"amount": {"type": "String"}}}
 }
