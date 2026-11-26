@@ -11763,4 +11763,15 @@ class AppLocalizationsFr extends AppLocalizations {
   String benchWeakest(String subject) {
     return 'À renforcer face aux autres : $subject';
   }
+
+  @override
+  String get winaiUsedSources => 'Sources utilisées';
+
+  @override
+  String get winaiCreationsDeleteTitle => 'Supprimer cette création ?';
+
+  @override
+  String winaiCreationsDeleteBody(String title) {
+    return '« $title » sera supprimé définitivement.';
+  }
 }

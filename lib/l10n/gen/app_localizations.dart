@@ -19790,6 +19790,24 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'À renforcer face aux autres : {subject}'**
   String benchWeakest(String subject);
+
+  /// No description provided for @winaiUsedSources.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sources utilisées'**
+  String get winaiUsedSources;
+
+  /// No description provided for @winaiCreationsDeleteTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer cette création ?'**
+  String get winaiCreationsDeleteTitle;
+
+  /// No description provided for @winaiCreationsDeleteBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'« {title} » sera supprimé définitivement.'**
+  String winaiCreationsDeleteBody(String title);
 }
 
 class _AppLocalizationsDelegate

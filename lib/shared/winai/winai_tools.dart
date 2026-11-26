@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../l10n/l10n.dart';
+import '../../services/winai_sources_service.dart';
 import '../../theme/win_colors.dart';
 import '../../theme/win_theme.dart';
 import '../../theme/win_typography.dart';
@@ -70,12 +71,16 @@ class WinAITextScreen extends StatelessWidget {
 
   /// Identifie ce texte pour la lecture à voix haute.
   final String speechKey;
+
+  /// Sources sur lesquelles WinAI s'est appuyé, citées sous le texte.
+  final List<WinAICitation> citations;
   const WinAITextScreen(
       {super.key,
       required this.title,
       required this.text,
       required this.speechKey,
-      this.subtitle});
+      this.subtitle,
+      this.citations = const []});
 
   @override
   Widget build(BuildContext context) {
@@ -93,6 +98,32 @@ class WinAITextScreen extends StatelessWidget {
             const SizedBox(height: 12),
           ],
           WinAIMarkdown(text, color: s.onSurface),
+          if (citations.isNotEmpty) ...[
+            const SizedBox(height: 20),
+            Text(context.l10n.winaiUsedSources,
+                style: WinType.titleM(s.onStrong)),
+            const SizedBox(height: 6),
+            for (final c in citations)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 4),
+                child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                          padding: const EdgeInsets.only(top: 2),
+                          child: Icon(PhosphorIconsRegular.fileText,
+                              size: 16, color: s.onMuted)),
+                      const SizedBox(width: 8),
+                      Expanded(
+                          child: Text(
+                              c.page == null
+                                  ? c.title
+                                  : context.l10n
+                                      .winaiCitationPage(c.title, c.page!),
+                              style: WinType.bodyS(s.onMuted))),
+                    ]),
+              ),
+          ],
         ],
       ),
     );

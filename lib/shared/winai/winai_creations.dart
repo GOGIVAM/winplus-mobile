@@ -142,6 +142,48 @@ class _WinAICreationsScreenState extends State<WinAICreationsScreen> {
     }
   }
 
+  /// Supprime un paquet de fiches ou un résumé, après confirmation.
+  Future<void> _deleteProduction(WinAIProduction p,
+      {required bool deck}) async {
+    final l = context.l10n;
+    final ok = await showDialog<bool>(
+        context: context,
+        builder: (c) => AlertDialog(
+              title: Text(l.winaiCreationsDeleteTitle),
+              content: Text(l.winaiCreationsDeleteBody(p.title)),
+              actions: [
+                TextButton(
+                    onPressed: () => Navigator.pop(c, false),
+                    child: Text(l.commonCancel)),
+                TextButton(
+                    onPressed: () => Navigator.pop(c, true),
+                    child: Text(l.commonDelete)),
+              ],
+            ));
+    if (ok != true) return;
+    try {
+      final svc = WinAiProductionsService.instance;
+      deck
+          ? await svc.deleteFlashcardDeck(p.id)
+          : await svc.deleteAudioSummary(p.id);
+      if (!mounted) return;
+      setState(() {
+        if (deck) {
+          _decks = _decks.where((x) => x.id != p.id).toList();
+        } else {
+          _audios = _audios.where((x) => x.id != p.id).toList();
+        }
+      });
+    } on WinAiStudioException catch (e) {
+      _toast(e.message);
+    }
+  }
+
+  Widget _trash(WinAIProduction p, {required bool deck}) => IconButton(
+      tooltip: context.l10n.commonDelete,
+      icon: const Icon(PhosphorIconsRegular.trash, size: 18),
+      onPressed: () => _deleteProduction(p, deck: deck));
+
   /// Fiches recto verso ou résumé à écouter : la liste ne porte pas le
   /// contenu, on relit la production complète.
   Future<void> _openProduction(WinAIProduction p, {required bool deck}) async {
@@ -168,7 +210,8 @@ class _WinAICreationsScreenState extends State<WinAICreationsScreen> {
                       title: l.winaiToolAudio,
                       subtitle: full.title,
                       text: full.script,
-                      speechKey: 'audio:${full.id}')));
+                      speechKey: 'audio:${full.id}',
+                      citations: full.citations)));
     } on WinAiStudioException catch (e) {
       _toast(e.message);
     } finally {
@@ -232,6 +275,7 @@ class _WinAICreationsScreenState extends State<WinAICreationsScreen> {
                   MoreLine(
                       icon: PhosphorIconsRegular.cards,
                       label: d.title,
+                      trailing: _trash(d, deck: true),
                       onTap: () => _openProduction(d, deck: true)),
               ]),
               const SizedBox(height: 18),
@@ -243,6 +287,7 @@ class _WinAICreationsScreenState extends State<WinAICreationsScreen> {
                   MoreLine(
                       icon: PhosphorIconsRegular.headphones,
                       label: a.title,
+                      trailing: _trash(a, deck: false),
                       onTap: () => _openProduction(a, deck: false)),
               ]),
             ],

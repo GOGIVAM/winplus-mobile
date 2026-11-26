@@ -11670,4 +11670,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String benchWeakest(String subject) {
     return 'To strengthen compared with others: $subject';
   }
+
+  @override
+  String get winaiUsedSources => 'Sources used';
+
+  @override
+  String get winaiCreationsDeleteTitle => 'Delete this creation?';
+
+  @override
+  String winaiCreationsDeleteBody(String title) {
+    return '\"$title\" will be deleted for good.';
+  }
 }

@@ -631,6 +631,18 @@ void main() {
       expect(find.text(l.winaiCreationsDecks), findsOneWidget);
       expect(find.text(l.winaiCreationsAudio), findsOneWidget);
       expect(find.text('Resume des derivees'), findsOneWidget);
+      // Supprimer un resume : confirmation, appel serveur, la ligne disparait.
+      faux.repond('DELETE', '/winai/resume-audio/9', {'success': true});
+      await tester.tap(find.byIcon(PhosphorIconsRegular.trash).last);
+      await pomper(tester);
+      await pomper(tester, const Duration(milliseconds: 400));
+      expect(find.text(l.winaiCreationsDeleteTitle), findsOneWidget);
+      await tester.tap(find.text(l.commonDelete));
+      await pomper(tester);
+      await reseau(tester);
+      await pomper(tester, const Duration(milliseconds: 400));
+      expect(faux.recues('DELETE', '/winai/resume-audio/9'), hasLength(1));
+      expect(find.text('Resume des derivees'), findsNothing);
       await tester.tap(find.text('Paquet Pythagore'));
       await pomper(tester);
       await reseau(tester);

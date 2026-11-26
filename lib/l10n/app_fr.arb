@@ -6308,5 +6308,9 @@
   "benchStrongest": "Matière la plus forte : {subject}",
   "@benchStrongest": {"placeholders": {"subject": {"type": "String"}}},
   "benchWeakest": "À renforcer face aux autres : {subject}",
-  "@benchWeakest": {"placeholders": {"subject": {"type": "String"}}}
+  "@benchWeakest": {"placeholders": {"subject": {"type": "String"}}},
+  "winaiUsedSources": "Sources utilisées",
+  "winaiCreationsDeleteTitle": "Supprimer cette création ?",
+  "winaiCreationsDeleteBody": "« {title} » sera supprimé définitivement.",
+  "@winaiCreationsDeleteBody": {"placeholders": {"title": {"type": "String"}}}
 }

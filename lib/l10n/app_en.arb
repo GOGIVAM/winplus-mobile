@@ -3426,5 +3426,9 @@
   "benchStrongest": "Strongest subject: {subject}",
   "@benchStrongest": {"placeholders": {"subject": {"type": "String"}}},
   "benchWeakest": "To strengthen compared with others: {subject}",
-  "@benchWeakest": {"placeholders": {"subject": {"type": "String"}}}
+  "@benchWeakest": {"placeholders": {"subject": {"type": "String"}}},
+  "winaiUsedSources": "Sources used",
+  "winaiCreationsDeleteTitle": "Delete this creation?",
+  "winaiCreationsDeleteBody": "\"{title}\" will be deleted for good.",
+  "@winaiCreationsDeleteBody": {"placeholders": {"title": {"type": "String"}}}
 }

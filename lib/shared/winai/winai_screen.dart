@@ -666,7 +666,8 @@ class _StudioState extends State<_Studio> {
               title: t.label,
               subtitle: sub,
               text: p.script,
-              speechKey: 'audio:${p.id}'));
+              speechKey: 'audio:${p.id}',
+              citations: p.citations));
       return true;
     } on WinAiStudioException catch (e) {
       if (WinAiProductionsService.routeMissing(e)) return false;
