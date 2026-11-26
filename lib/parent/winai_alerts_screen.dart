@@ -46,16 +46,12 @@ class _WinAIAlertsScreenState extends State<WinAIAlertsScreen> {
   }
 
   // La sévérité (Low/Medium/High), pas le type de signal, porte le niveau de gravité.
-  Color _alertColor(String severity) => switch (severity) {
-        'High' => WinColors.error,
-        'Medium' => WinColors.warn,
-        _ => WinColors.success,
-      };
-
-  Color _alertBg(String severity) => switch (severity) {
-        'High' => WinColors.errorBg,
-        'Medium' => WinColors.warnBg,
-        _ => WinColors.successBg,
+  // Ton de l'alerte, lisible dans les deux themes (en sombre, un fond pale
+  // sous le texte clair du theme rendait le message illisible).
+  BadgeColor _alertTone(String severity) => switch (severity) {
+        'High' => BadgeColor.error,
+        'Medium' => BadgeColor.warn,
+        _ => BadgeColor.success,
       };
 
   IconData _alertIcon(String severity) => switch (severity) {
@@ -113,22 +109,18 @@ class _WinAIAlertsScreenState extends State<WinAIAlertsScreen> {
         ),
         const SizedBox(height: 20),
         if (alerts.isEmpty) ...[
-          Center(
-              child: Column(mainAxisSize: MainAxisSize.min, children: [
-            const Icon(PhosphorIconsRegular.checkCircle,
-                size: 56, color: WinColors.success),
-            const SizedBox(height: 12),
-            Text(context.l10n.parentAlertsNone, style: WinType.bodyM(s.onMuted)),
-            Text(context.l10n.parentAlertsAllGood,
-                style: WinType.bodyS(s.onFaint)),
-          ])),
-          const SizedBox(height: 24),
+          WinEmptyState(
+              title: context.l10n.parentAlertsNone,
+              message: context.l10n.parentAlertsAllGood,
+              icon: PhosphorIconsRegular.checkCircle),
+          const SizedBox(height: 8),
         ] else ...[
           Text(context.l10n.parentAlertsRecent, style: WinType.headlineS(s.onStrong)),
           const SizedBox(height: 12),
           ...alerts.map((alert) {
-            final color = _alertColor(alert.severity);
-            final bg = _alertBg(alert.severity);
+            final tone = winTone(s, _alertTone(alert.severity));
+            final color = tone.fg;
+            final bg = tone.bg;
             final child =
                 children.where((c) => c.id == alert.childId).firstOrNull;
             return Padding(
@@ -140,8 +132,12 @@ class _WinAIAlertsScreenState extends State<WinAIAlertsScreen> {
                       Row(children: [
                         WinAvatar(child.fullName, size: 28),
                         const SizedBox(width: 8),
-                        Text(child.fullName, style: WinType.titleM(s.onStrong)),
-                        const Spacer(),
+                        Expanded(
+                            child: Text(child.fullName,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: WinType.titleM(s.onStrong))),
+                        const SizedBox(width: 8),
                         Text(_formatDate(alert.detectedAt),
                             style: WinType.labelS(s.onFaint)),
                       ]),
@@ -169,7 +165,7 @@ class _WinAIAlertsScreenState extends State<WinAIAlertsScreen> {
                             const SizedBox(width: 10),
                             Expanded(
                                 child: Text(alert.content,
-                                    style: WinType.bodyS(s.onSurface))),
+                                    style: WinType.bodyM(s.onStrong))),
                           ]),
                           ),
                         ),
