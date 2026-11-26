@@ -1,5 +1,6 @@
 import '../l10n/class_levels.dart';
 import 'package:flutter/material.dart';
+import 'child_follow_tab.dart';
 import '../services/parent_service.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_theme.dart';
@@ -36,7 +37,7 @@ class _ChildActivityScreenState extends State<ChildActivityScreen>
   @override
   void initState() {
     super.initState();
-    _tab = TabController(length: 8, vsync: this);
+    _tab = TabController(length: 9, vsync: this);
     _load();
   }
 
@@ -124,6 +125,7 @@ class _ChildActivityScreenState extends State<ChildActivityScreen>
           labelStyle: WinType.manrope(size: 13, weight: FontWeight.w600),
           tabs: [
             Tab(text: context.l10n.parentChildTabActivity),
+            Tab(text: context.l10n.followTab),
             Tab(text: context.l10n.studentQuizResults),
             Tab(text: context.l10n.parentChildTabGoals),
             Tab(text: context.l10n.parentChildTabExamWatch),
@@ -143,6 +145,8 @@ class _ChildActivityScreenState extends State<ChildActivityScreen>
                   stats: _stats!,
                   activities: _activities ?? [],
                 ),
+                // Lot 7 : à travailler et achats récents.
+                ChildFollowTab(childId: widget.child.id, childName: widget.child.firstName),
                 _ResultsTab(
                     scores: _subjectScores ??
                         const ApiChildSubjectScores(subjects: [])),

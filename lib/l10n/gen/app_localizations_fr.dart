@@ -11222,4 +11222,114 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get winaiCreationsAudio => 'Mes résumés à écouter';
+
+  @override
+  String get followTab => 'Suivi';
+
+  @override
+  String get followEmptyTitle => 'Rien à suivre pour l’instant';
+
+  @override
+  String followEmptyText(String name) {
+    return 'Les quiz que $name n’a pas encore faits, ses fiches de révision et les achats faits pour lui apparaîtront ici.';
+  }
+
+  @override
+  String get followToWork => 'À travailler';
+
+  @override
+  String followToWorkSub(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count contenus disponibles',
+      one: '1 contenu disponible',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String followQuestions(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count questions',
+      one: '1 question',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get followQuizNotDone => 'Pas encore fait';
+
+  @override
+  String get followSheet => 'Fiche';
+
+  @override
+  String get followPurchases => 'Achats récents';
+
+  @override
+  String followPurchasesSub(int consulted, int total) {
+    return '$consulted sur $total déjà ouverts';
+  }
+
+  @override
+  String get followContent => 'Contenu';
+
+  @override
+  String followOpenedOn(String date) {
+    return 'Ouvert pour la première fois le $date';
+  }
+
+  @override
+  String followBoughtOn(String date) {
+    return 'Acheté le $date';
+  }
+
+  @override
+  String get followConsulted => 'Ouvert';
+
+  @override
+  String get followNotOpened => 'Pas encore ouvert';
+
+  @override
+  String get cmpChildrenTitle => 'Mes enfants côte à côte';
+
+  @override
+  String get cmpChildrenSub => 'Chiffres du mois, et ce que WinAI en retient.';
+
+  @override
+  String get cmpChildrenHide => 'Masquer la comparaison';
+
+  @override
+  String get cmpChildrenEnableText =>
+      'Comparer l’activité de vos enfants ce mois-ci.';
+
+  @override
+  String get cmpChildrenEnable => 'Afficher';
+
+  @override
+  String get cmpChildrenEmpty =>
+      'Pas encore assez d’activité ce mois-ci pour comparer.';
+
+  @override
+  String cmpChildrenMeta(int quiz, int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      quiz,
+      locale: localeName,
+      other: '$quiz quiz',
+      one: '1 quiz',
+      zero: 'aucun quiz',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days jours actifs',
+      one: '1 jour actif',
+    );
+    return '$_temp0 · $_temp1';
+  }
+
+  @override
+  String get cmpChildrenWinai => 'Ce que WinAI remarque';
 }

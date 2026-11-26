@@ -1,6 +1,7 @@
 import '../l10n/class_levels.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'child_follow_tab.dart';
 import '../shared/announcements_feed.dart';
 import '../l10n/l10n.dart';
 import '../widgets/language_selector.dart';
@@ -242,6 +243,9 @@ MobileForYou(slides: [
         // Lot 7 : annonces de l'établissement, sous « Pour toi » ; rien
         // tant qu'il n'y en a pas.
         const AnnouncementsFeedCard(),
+        // Lot 7 : enfants côte à côte (2 enfants ou plus), désactivable.
+        if ((_children ?? const []).length >= 2)
+          ChildrenComparisonCard(childIds: [for (final c in _children!) c.id]),
       ]),
       quick: MobileQuickAccess(
         title: l.mobileHomeQuick,

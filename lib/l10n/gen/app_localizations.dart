@@ -18980,6 +18980,144 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Mes résumés à écouter'**
   String get winaiCreationsAudio;
+
+  /// No description provided for @followTab.
+  ///
+  /// In fr, this message translates to:
+  /// **'Suivi'**
+  String get followTab;
+
+  /// No description provided for @followEmptyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rien à suivre pour l’instant'**
+  String get followEmptyTitle;
+
+  /// No description provided for @followEmptyText.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les quiz que {name} n’a pas encore faits, ses fiches de révision et les achats faits pour lui apparaîtront ici.'**
+  String followEmptyText(String name);
+
+  /// No description provided for @followToWork.
+  ///
+  /// In fr, this message translates to:
+  /// **'À travailler'**
+  String get followToWork;
+
+  /// No description provided for @followToWorkSub.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{1 contenu disponible} other{{count} contenus disponibles}}'**
+  String followToWorkSub(int count);
+
+  /// No description provided for @followQuestions.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{1 question} other{{count} questions}}'**
+  String followQuestions(int count);
+
+  /// No description provided for @followQuizNotDone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pas encore fait'**
+  String get followQuizNotDone;
+
+  /// No description provided for @followSheet.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fiche'**
+  String get followSheet;
+
+  /// No description provided for @followPurchases.
+  ///
+  /// In fr, this message translates to:
+  /// **'Achats récents'**
+  String get followPurchases;
+
+  /// No description provided for @followPurchasesSub.
+  ///
+  /// In fr, this message translates to:
+  /// **'{consulted} sur {total} déjà ouverts'**
+  String followPurchasesSub(int consulted, int total);
+
+  /// No description provided for @followContent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Contenu'**
+  String get followContent;
+
+  /// No description provided for @followOpenedOn.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouvert pour la première fois le {date}'**
+  String followOpenedOn(String date);
+
+  /// No description provided for @followBoughtOn.
+  ///
+  /// In fr, this message translates to:
+  /// **'Acheté le {date}'**
+  String followBoughtOn(String date);
+
+  /// No description provided for @followConsulted.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouvert'**
+  String get followConsulted;
+
+  /// No description provided for @followNotOpened.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pas encore ouvert'**
+  String get followNotOpened;
+
+  /// No description provided for @cmpChildrenTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mes enfants côte à côte'**
+  String get cmpChildrenTitle;
+
+  /// No description provided for @cmpChildrenSub.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chiffres du mois, et ce que WinAI en retient.'**
+  String get cmpChildrenSub;
+
+  /// No description provided for @cmpChildrenHide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Masquer la comparaison'**
+  String get cmpChildrenHide;
+
+  /// No description provided for @cmpChildrenEnableText.
+  ///
+  /// In fr, this message translates to:
+  /// **'Comparer l’activité de vos enfants ce mois-ci.'**
+  String get cmpChildrenEnableText;
+
+  /// No description provided for @cmpChildrenEnable.
+  ///
+  /// In fr, this message translates to:
+  /// **'Afficher'**
+  String get cmpChildrenEnable;
+
+  /// No description provided for @cmpChildrenEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pas encore assez d’activité ce mois-ci pour comparer.'**
+  String get cmpChildrenEmpty;
+
+  /// No description provided for @cmpChildrenMeta.
+  ///
+  /// In fr, this message translates to:
+  /// **'{quiz, plural, =0{aucun quiz} =1{1 quiz} other{{quiz} quiz}} · {days, plural, =1{1 jour actif} other{{days} jours actifs}}'**
+  String cmpChildrenMeta(int quiz, int days);
+
+  /// No description provided for @cmpChildrenWinai.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce que WinAI remarque'**
+  String get cmpChildrenWinai;
 }
 
 class _AppLocalizationsDelegate

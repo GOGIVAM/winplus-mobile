@@ -214,10 +214,12 @@ class _VisioRecordingsScreenState extends State<VisioRecordingsScreen> {
     }
   }
 
+  /// Taille d'un enregistrement, unités selon la langue (Go/Mo/Ko, GB/MB/KB).
   String _size(int bytes) {
-    if (bytes >= 1024 * 1024 * 1024) return '${(bytes / (1024 * 1024 * 1024)).toStringAsFixed(1)} Go';
-    if (bytes >= 1024 * 1024) return '${(bytes / (1024 * 1024)).round()} Mo';
-    return '${(bytes / 1024).round()} Ko';
+    final en = L10n.isEn;
+    if (bytes >= 1024 * 1024 * 1024) return '${(bytes / (1024 * 1024 * 1024)).toStringAsFixed(1)} ${en ? 'GB' : 'Go'}';
+    if (bytes >= 1024 * 1024) return '${(bytes / (1024 * 1024)).round()} ${en ? 'MB' : 'Mo'}';
+    return '${(bytes / 1024).round()} ${en ? 'KB' : 'Ko'}';
   }
 
   @override
