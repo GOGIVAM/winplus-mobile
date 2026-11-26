@@ -11,12 +11,12 @@ import 'package:winplus/institution/reports_screen.dart';
 import 'package:winplus/institution/tutor_endorsements_screen.dart';
 import 'package:winplus/l10n/l10n.dart';
 import 'package:winplus/shared/tutoring_for_students_screen.dart';
-import 'package:winplus/widgets/language_selector.dart';
 import 'package:winplus/widgets/win_widgets.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:winplus/institution/institution_profile_screen.dart';
 
 Finder _bouton(String libelle) => find.widgetWithText(WinButton, libelle);
 
@@ -190,17 +190,34 @@ void main() {
   });
 
   group('InstitutionAccountTab', () {
-    testWidgets('nom de l\'etablissement lu sur le serveur', (tester) async {
-      faux.repond('GET', '/institution/me', {
-        'data': {'id': 3, 'name': 'Lycee Leclerc'},
-      });
+    const fiche = {
+      'success': true,
+      'data': {
+        'id': 3, 'name': 'Lycee Leclerc', 'code': 'LYC-003', 'country': 'CM', 'city': 'Yaounde',
+        'phone': '699000000', 'type': 'lycee', 'cycles': ['secondaire'], 'subsystem': 'fr',
+        'teaching': 'general', 'studentsEstimate': 800, 'goals': ['suivi'],
+      },
+    };
+
+    testWidgets('identite lue sur la fiche : nom, type et ville ; plus de reglage d application ici', (tester) async {
+      faux.repond('GET', '/institution/profile', fiche);
       await monterHaut(tester, _page(const InstitutionAccountTab()));
       final l = L10n.current;
       expect(find.text('Lycee Leclerc'), findsOneWidget);
-      expect(find.text(l.instAccountSchool), findsOneWidget);
+      expect(find.textContaining('Yaounde'), findsOneWidget);
+      expect(find.textContaining(l.instTypeLycee), findsOneWidget);
+      expect(find.text(l.instProfileTitle), findsOneWidget);
       expect(find.text(l.instAccountLicense), findsOneWidget);
-      expect(find.byType(LanguageToggle), findsOneWidget);
-      expect(find.text(l.commonLogout), findsOneWidget);
+      // Mode sombre, langue et deconnexion sont dans « Plus » et « Parametres ».
+      expect(find.byType(Switch), findsNothing);
+      expect(find.text(l.commonLogout), findsNothing);
+    });
+
+    testWidgets('serveur sans la fiche : repli sur le nom de l etablissement', (tester) async {
+      faux.repond('GET', '/institution/me', {'data': {'id': 3, 'name': 'Lycee Leclerc'}});
+      await monterHaut(tester, _page(const InstitutionAccountTab()));
+      expect(find.text('Lycee Leclerc'), findsOneWidget);
+      expect(find.text(L10n.current.instAccountSchool), findsOneWidget);
     });
 
     testWidgets('nom introuvable : « Mon etablissement »', (tester) async {
@@ -209,10 +226,11 @@ void main() {
       expect(find.text(L10n.current.instMySchool), findsOneWidget);
     });
 
-    testWidgets('liens : licence, tutorat, cautions et rapports ouvrent leur ecran', (tester) async {
-      faux.repond('GET', '/institution/me', {'name': 'Lycee Leclerc'});
+    testWidgets('liens : fiche, licence, tutorat, cautions et rapports ouvrent leur ecran', (tester) async {
+      faux.repond('GET', '/institution/profile', fiche);
       final l = L10n.current;
       final cas = <String, Type>{
+        l.instProfileTitle: InstitutionProfileScreen,
         l.instAccountLicense: LicenseScreen,
         l.instAccountTutoring: TutoringForStudentsScreen,
         l.instEndorseScreenTitle: TutorEndorsementsScreen,
@@ -226,16 +244,83 @@ void main() {
         await monter(tester, const SizedBox());
       }
     });
+  });
 
-    testWidgets('mode sombre : l\'interrupteur bascule le theme global', (tester) async {
-      faux.repond('GET', '/institution/me', {'name': 'Lycee Leclerc'});
-      final etat = WinAppState();
-      await monterHaut(tester, _page(const InstitutionAccountTab()), etat: etat);
-      expect(etat.dark, isFalse);
-      final ligne = find.widgetWithText(Row, L10n.current.commonDarkMode);
-      await tester.tap(find.descendant(of: ligne, matching: find.byType(Switch)));
+  group('InstitutionProfileScreen', () {
+    Map<String, dynamic> fiche([Map<String, dynamic> plus = const {}]) => {
+          'success': true,
+          'data': {
+            'id': 3, 'name': 'Lycee Leclerc', 'code': 'LYC-003', 'city': 'Yaounde', 'phone': '699000000',
+            'type': 'lycee', 'cycles': ['secondaire'], 'subsystem': 'fr', 'teaching': 'general',
+            'studentsEstimate': 800, 'goals': ['suivi'], ...plus,
+          },
+        };
+
+    Future<void> enregistrer(WidgetTester tester) async {
+      final l = L10n.current;
+      await tester.scrollUntilVisible(find.widgetWithText(WinButton, l.commonSave), 300, scrollable: find.byType(Scrollable).first);
+      // Fiche plus haute que l'ecran de test : le bouton est declenche par son composant.
+      tester.widget<WinButton>(find.widgetWithText(WinButton, l.commonSave)).onTap!();
+      await reseau(tester);
+    }
+
+    testWidgets('fiche chargee : champs remplis et choix actifs ; sans changement, rien ne part', (tester) async {
+      faux.repond('GET', '/institution/profile', fiche());
+      await monterEcran(tester, const InstitutionProfileScreen());
+      final l = L10n.current;
+      expect(find.text(l.instProfileCode('LYC-003')), findsOneWidget);
+      expect(find.widgetWithText(TextField, 'Lycee Leclerc'), findsOneWidget);
+      expect(tester.widget<WinChip>(find.widgetWithText(WinChip, l.instTypeLycee)).active, isTrue);
+      expect(tester.widget<WinChip>(find.widgetWithText(WinChip, l.instTypeCollege)).active, isFalse);
+      await enregistrer(tester);
+      expect(faux.recues('PUT', '/institution/profile'), isEmpty);
+      expect(find.text(l.instProfileNoChange), findsOneWidget);
+    });
+
+    testWidgets('seuls les champs modifies sont envoyes ; le telephone se modifie', (tester) async {
+      faux.repond('GET', '/institution/profile', fiche());
+      faux.repond('PUT', '/institution/profile', {...fiche({'phone': '677111222'}), 'nameChangeRequested': false});
+      await monterEcran(tester, const InstitutionProfileScreen());
+      final l = L10n.current;
+      await tester.scrollUntilVisible(find.widgetWithText(TextField, '699000000'), 200, scrollable: find.byType(Scrollable).first);
       await pomper(tester);
-      expect(etat.dark, isTrue);
+      await tester.enterText(find.widgetWithText(TextField, '699000000'), '677111222');
+      await tester.scrollUntilVisible(find.widgetWithText(WinChip, l.instCycleHigher), 200, scrollable: find.byType(Scrollable).first);
+      tester.widget<WinChip>(find.widgetWithText(WinChip, l.instCycleHigher)).onTap!();
+      await pomper(tester);
+      await enregistrer(tester);
+      expect(faux.recues('PUT', '/institution/profile').single.data, {
+        'phone': '677111222',
+        'cycles': ['secondaire', 'superieur'],
+      });
+      expect(find.text(l.instProfileSaved), findsOneWidget);
+    });
+
+    testWidgets('changement de nom : la demande part, le message de verification s affiche', (tester) async {
+      faux.repond('GET', '/institution/profile', fiche());
+      faux.repond('PUT', '/institution/profile', {...fiche(), 'nameChangeRequested': true});
+      await monterEcran(tester, const InstitutionProfileScreen());
+      await tester.enterText(find.widgetWithText(TextField, 'Lycee Leclerc'), 'Lycee General Leclerc');
+      await enregistrer(tester);
+      expect(faux.recues('PUT', '/institution/profile').single.data, {'name': 'Lycee General Leclerc'});
+      expect(find.text(L10n.current.instProfileNameRequested), findsOneWidget);
+    });
+
+    testWidgets('refus du serveur : son message s affiche, la saisie reste', (tester) async {
+      faux.repond('GET', '/institution/profile', fiche());
+      faux.repond('PUT', '/institution/profile', {'success': false, 'code': 'telephone_invalide', 'message': 'Numero de telephone invalide.'}, statut: 400);
+      await monterEcran(tester, const InstitutionProfileScreen());
+      await tester.scrollUntilVisible(find.widgetWithText(TextField, '699000000'), 200, scrollable: find.byType(Scrollable).first);
+      await pomper(tester);
+      await tester.enterText(find.widgetWithText(TextField, '699000000'), 'abc');
+      await enregistrer(tester);
+      expect(find.text('Numero de telephone invalide.', skipOffstage: false), findsOneWidget);
+      expect(find.widgetWithText(TextField, 'abc', skipOffstage: false), findsOneWidget);
+    });
+
+    testWidgets('serveur sans la route : ecran « pas encore disponible »', (tester) async {
+      await monterEcran(tester, const InstitutionProfileScreen());
+      expect(find.text(L10n.current.instProfileUnavailable), findsOneWidget);
     });
   });
 

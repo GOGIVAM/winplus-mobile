@@ -20366,6 +20366,330 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'L\'envoi a échoué. Vérifiez la connexion, puis réessayez.'**
   String get tutorUploadFailed;
+
+  /// No description provided for @instAccountGroupSchool.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre établissement'**
+  String get instAccountGroupSchool;
+
+  /// No description provided for @instAccountGroupTutoring.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tutorat'**
+  String get instAccountGroupTutoring;
+
+  /// No description provided for @instProfileTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fiche de l\'établissement'**
+  String get instProfileTitle;
+
+  /// No description provided for @instProfileUnavailable.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fiche pas encore disponible'**
+  String get instProfileUnavailable;
+
+  /// No description provided for @instProfileUnavailableHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'La modification de la fiche arrive avec la prochaine mise à jour de WinPlus.'**
+  String get instProfileUnavailableHint;
+
+  /// No description provided for @instProfileNotLinked.
+  ///
+  /// In fr, this message translates to:
+  /// **'Compte non rattaché à un établissement'**
+  String get instProfileNotLinked;
+
+  /// No description provided for @instProfileCode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code {code}'**
+  String instProfileCode(String code);
+
+  /// No description provided for @instProfileLogoPick.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter un logo'**
+  String get instProfileLogoPick;
+
+  /// No description provided for @instProfileLogoChange.
+  ///
+  /// In fr, this message translates to:
+  /// **'Changer le logo'**
+  String get instProfileLogoChange;
+
+  /// No description provided for @instProfileIdentity.
+  ///
+  /// In fr, this message translates to:
+  /// **'Identité'**
+  String get instProfileIdentity;
+
+  /// No description provided for @instProfileName.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom de l\'établissement'**
+  String get instProfileName;
+
+  /// No description provided for @instProfileNameHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Un changement de nom est vérifié par l\'équipe WinPlus avant d\'être appliqué.'**
+  String get instProfileNameHint;
+
+  /// No description provided for @instProfileType.
+  ///
+  /// In fr, this message translates to:
+  /// **'Type d\'établissement'**
+  String get instProfileType;
+
+  /// No description provided for @instProfileContact.
+  ///
+  /// In fr, this message translates to:
+  /// **'Coordonnées'**
+  String get instProfileContact;
+
+  /// No description provided for @instProfileCity.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ville'**
+  String get instProfileCity;
+
+  /// No description provided for @instProfileRegion.
+  ///
+  /// In fr, this message translates to:
+  /// **'Région'**
+  String get instProfileRegion;
+
+  /// No description provided for @instProfileAddress.
+  ///
+  /// In fr, this message translates to:
+  /// **'Adresse'**
+  String get instProfileAddress;
+
+  /// No description provided for @instProfilePhone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Téléphone'**
+  String get instProfilePhone;
+
+  /// No description provided for @instProfileEmail.
+  ///
+  /// In fr, this message translates to:
+  /// **'E-mail de contact'**
+  String get instProfileEmail;
+
+  /// No description provided for @instProfileTeaching.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enseignement'**
+  String get instProfileTeaching;
+
+  /// No description provided for @instProfileCycles.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cycles'**
+  String get instProfileCycles;
+
+  /// No description provided for @instProfileSubsystem.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sous-système'**
+  String get instProfileSubsystem;
+
+  /// No description provided for @instProfileTeachingKind.
+  ///
+  /// In fr, this message translates to:
+  /// **'Type d\'enseignement'**
+  String get instProfileTeachingKind;
+
+  /// No description provided for @instProfileStudents.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nombre d\'élèves (estimation)'**
+  String get instProfileStudents;
+
+  /// No description provided for @instProfileGoals.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vos objectifs avec WinPlus'**
+  String get instProfileGoals;
+
+  /// No description provided for @instProfileCityRequired.
+  ///
+  /// In fr, this message translates to:
+  /// **'Indiquez la ville de l\'établissement.'**
+  String get instProfileCityRequired;
+
+  /// No description provided for @instProfileCycleRequired.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisissez au moins un cycle.'**
+  String get instProfileCycleRequired;
+
+  /// No description provided for @instProfileNoChange.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune modification à enregistrer.'**
+  String get instProfileNoChange;
+
+  /// No description provided for @instProfileSaved.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fiche enregistrée.'**
+  String get instProfileSaved;
+
+  /// No description provided for @instProfileNameRequested.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre demande de changement de nom a été envoyée à l\'équipe WinPlus.'**
+  String get instProfileNameRequested;
+
+  /// No description provided for @instTypePrimary.
+  ///
+  /// In fr, this message translates to:
+  /// **'École primaire'**
+  String get instTypePrimary;
+
+  /// No description provided for @instTypeCollege.
+  ///
+  /// In fr, this message translates to:
+  /// **'Collège'**
+  String get instTypeCollege;
+
+  /// No description provided for @instTypeLycee.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lycée'**
+  String get instTypeLycee;
+
+  /// No description provided for @instTypeTechnical.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lycée technique'**
+  String get instTypeTechnical;
+
+  /// No description provided for @instTypeUniversity.
+  ///
+  /// In fr, this message translates to:
+  /// **'Université'**
+  String get instTypeUniversity;
+
+  /// No description provided for @instTypeGrandeEcole.
+  ///
+  /// In fr, this message translates to:
+  /// **'Grande école'**
+  String get instTypeGrandeEcole;
+
+  /// No description provided for @instTypeTraining.
+  ///
+  /// In fr, this message translates to:
+  /// **'Centre de formation'**
+  String get instTypeTraining;
+
+  /// No description provided for @instTypeExamPrep.
+  ///
+  /// In fr, this message translates to:
+  /// **'Centre de préparation aux concours'**
+  String get instTypeExamPrep;
+
+  /// No description provided for @instCyclePrimary.
+  ///
+  /// In fr, this message translates to:
+  /// **'Primaire'**
+  String get instCyclePrimary;
+
+  /// No description provided for @instCycleSecondary.
+  ///
+  /// In fr, this message translates to:
+  /// **'Secondaire'**
+  String get instCycleSecondary;
+
+  /// No description provided for @instCycleHigher.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supérieur'**
+  String get instCycleHigher;
+
+  /// No description provided for @instCycleExams.
+  ///
+  /// In fr, this message translates to:
+  /// **'Concours'**
+  String get instCycleExams;
+
+  /// No description provided for @instSubsystemFr.
+  ///
+  /// In fr, this message translates to:
+  /// **'Francophone'**
+  String get instSubsystemFr;
+
+  /// No description provided for @instSubsystemEn.
+  ///
+  /// In fr, this message translates to:
+  /// **'Anglophone'**
+  String get instSubsystemEn;
+
+  /// No description provided for @instSubsystemBilingual.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bilingue'**
+  String get instSubsystemBilingual;
+
+  /// No description provided for @instTeachingGeneral.
+  ///
+  /// In fr, this message translates to:
+  /// **'Général'**
+  String get instTeachingGeneral;
+
+  /// No description provided for @instTeachingTechnical.
+  ///
+  /// In fr, this message translates to:
+  /// **'Technique'**
+  String get instTeachingTechnical;
+
+  /// No description provided for @instTeachingBoth.
+  ///
+  /// In fr, this message translates to:
+  /// **'Général et technique'**
+  String get instTeachingBoth;
+
+  /// No description provided for @instGoalTracking.
+  ///
+  /// In fr, this message translates to:
+  /// **'Suivre les élèves'**
+  String get instGoalTracking;
+
+  /// No description provided for @instGoalExams.
+  ///
+  /// In fr, this message translates to:
+  /// **'Préparer les examens'**
+  String get instGoalExams;
+
+  /// No description provided for @instGoalHomework.
+  ///
+  /// In fr, this message translates to:
+  /// **'Gérer les devoirs'**
+  String get instGoalHomework;
+
+  /// No description provided for @instGoalParents.
+  ///
+  /// In fr, this message translates to:
+  /// **'Informer les parents'**
+  String get instGoalParents;
+
+  /// No description provided for @instGoalTeachers.
+  ///
+  /// In fr, this message translates to:
+  /// **'Outiller les enseignants'**
+  String get instGoalTeachers;
+
+  /// No description provided for @instGoalGuidance.
+  ///
+  /// In fr, this message translates to:
+  /// **'Orienter les élèves'**
+  String get instGoalGuidance;
 }
 
 class _AppLocalizationsDelegate

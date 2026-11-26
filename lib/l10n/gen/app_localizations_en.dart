@@ -12044,4 +12044,171 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get tutorUploadFailed =>
       'Upload failed. Check the connection, then try again.';
+
+  @override
+  String get instAccountGroupSchool => 'Your school';
+
+  @override
+  String get instAccountGroupTutoring => 'Tutoring';
+
+  @override
+  String get instProfileTitle => 'School details';
+
+  @override
+  String get instProfileUnavailable => 'Details not available yet';
+
+  @override
+  String get instProfileUnavailableHint =>
+      'Editing the details arrives with the next WinPlus update.';
+
+  @override
+  String get instProfileNotLinked => 'Account not linked to a school';
+
+  @override
+  String instProfileCode(String code) {
+    return 'Code $code';
+  }
+
+  @override
+  String get instProfileLogoPick => 'Add a logo';
+
+  @override
+  String get instProfileLogoChange => 'Change logo';
+
+  @override
+  String get instProfileIdentity => 'Identity';
+
+  @override
+  String get instProfileName => 'School name';
+
+  @override
+  String get instProfileNameHint =>
+      'A name change is checked by the WinPlus team before it is applied.';
+
+  @override
+  String get instProfileType => 'Type of school';
+
+  @override
+  String get instProfileContact => 'Contact details';
+
+  @override
+  String get instProfileCity => 'City';
+
+  @override
+  String get instProfileRegion => 'Region';
+
+  @override
+  String get instProfileAddress => 'Address';
+
+  @override
+  String get instProfilePhone => 'Phone';
+
+  @override
+  String get instProfileEmail => 'Contact e-mail';
+
+  @override
+  String get instProfileTeaching => 'Teaching';
+
+  @override
+  String get instProfileCycles => 'Cycles';
+
+  @override
+  String get instProfileSubsystem => 'Subsystem';
+
+  @override
+  String get instProfileTeachingKind => 'Kind of teaching';
+
+  @override
+  String get instProfileStudents => 'Number of students (estimate)';
+
+  @override
+  String get instProfileGoals => 'Your goals with WinPlus';
+
+  @override
+  String get instProfileCityRequired => 'Enter the city of the school.';
+
+  @override
+  String get instProfileCycleRequired => 'Pick at least one cycle.';
+
+  @override
+  String get instProfileNoChange => 'Nothing to save.';
+
+  @override
+  String get instProfileSaved => 'Details saved.';
+
+  @override
+  String get instProfileNameRequested =>
+      'Your name change request has been sent to the WinPlus team.';
+
+  @override
+  String get instTypePrimary => 'Primary school';
+
+  @override
+  String get instTypeCollege => 'Lower secondary school';
+
+  @override
+  String get instTypeLycee => 'High school';
+
+  @override
+  String get instTypeTechnical => 'Technical high school';
+
+  @override
+  String get instTypeUniversity => 'University';
+
+  @override
+  String get instTypeGrandeEcole => 'Higher school';
+
+  @override
+  String get instTypeTraining => 'Training centre';
+
+  @override
+  String get instTypeExamPrep => 'Entrance exam prep centre';
+
+  @override
+  String get instCyclePrimary => 'Primary';
+
+  @override
+  String get instCycleSecondary => 'Secondary';
+
+  @override
+  String get instCycleHigher => 'Higher education';
+
+  @override
+  String get instCycleExams => 'Entrance exams';
+
+  @override
+  String get instSubsystemFr => 'French-speaking';
+
+  @override
+  String get instSubsystemEn => 'English-speaking';
+
+  @override
+  String get instSubsystemBilingual => 'Bilingual';
+
+  @override
+  String get instTeachingGeneral => 'General';
+
+  @override
+  String get instTeachingTechnical => 'Technical';
+
+  @override
+  String get instTeachingBoth => 'General and technical';
+
+  @override
+  String get instGoalTracking => 'Track students';
+
+  @override
+  String get instGoalExams => 'Prepare for exams';
+
+  @override
+  String get instGoalHomework => 'Manage homework';
+
+  @override
+  String get instGoalParents => 'Keep parents informed';
+
+  @override
+  String get instGoalTeachers => 'Equip teachers';
+
+  @override
+  String get instGoalGuidance => 'Guide students';
 }

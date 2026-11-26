@@ -12138,4 +12138,172 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get tutorUploadFailed =>
       'L\'envoi a échoué. Vérifiez la connexion, puis réessayez.';
+
+  @override
+  String get instAccountGroupSchool => 'Votre établissement';
+
+  @override
+  String get instAccountGroupTutoring => 'Tutorat';
+
+  @override
+  String get instProfileTitle => 'Fiche de l\'établissement';
+
+  @override
+  String get instProfileUnavailable => 'Fiche pas encore disponible';
+
+  @override
+  String get instProfileUnavailableHint =>
+      'La modification de la fiche arrive avec la prochaine mise à jour de WinPlus.';
+
+  @override
+  String get instProfileNotLinked => 'Compte non rattaché à un établissement';
+
+  @override
+  String instProfileCode(String code) {
+    return 'Code $code';
+  }
+
+  @override
+  String get instProfileLogoPick => 'Ajouter un logo';
+
+  @override
+  String get instProfileLogoChange => 'Changer le logo';
+
+  @override
+  String get instProfileIdentity => 'Identité';
+
+  @override
+  String get instProfileName => 'Nom de l\'établissement';
+
+  @override
+  String get instProfileNameHint =>
+      'Un changement de nom est vérifié par l\'équipe WinPlus avant d\'être appliqué.';
+
+  @override
+  String get instProfileType => 'Type d\'établissement';
+
+  @override
+  String get instProfileContact => 'Coordonnées';
+
+  @override
+  String get instProfileCity => 'Ville';
+
+  @override
+  String get instProfileRegion => 'Région';
+
+  @override
+  String get instProfileAddress => 'Adresse';
+
+  @override
+  String get instProfilePhone => 'Téléphone';
+
+  @override
+  String get instProfileEmail => 'E-mail de contact';
+
+  @override
+  String get instProfileTeaching => 'Enseignement';
+
+  @override
+  String get instProfileCycles => 'Cycles';
+
+  @override
+  String get instProfileSubsystem => 'Sous-système';
+
+  @override
+  String get instProfileTeachingKind => 'Type d\'enseignement';
+
+  @override
+  String get instProfileStudents => 'Nombre d\'élèves (estimation)';
+
+  @override
+  String get instProfileGoals => 'Vos objectifs avec WinPlus';
+
+  @override
+  String get instProfileCityRequired =>
+      'Indiquez la ville de l\'établissement.';
+
+  @override
+  String get instProfileCycleRequired => 'Choisissez au moins un cycle.';
+
+  @override
+  String get instProfileNoChange => 'Aucune modification à enregistrer.';
+
+  @override
+  String get instProfileSaved => 'Fiche enregistrée.';
+
+  @override
+  String get instProfileNameRequested =>
+      'Votre demande de changement de nom a été envoyée à l\'équipe WinPlus.';
+
+  @override
+  String get instTypePrimary => 'École primaire';
+
+  @override
+  String get instTypeCollege => 'Collège';
+
+  @override
+  String get instTypeLycee => 'Lycée';
+
+  @override
+  String get instTypeTechnical => 'Lycée technique';
+
+  @override
+  String get instTypeUniversity => 'Université';
+
+  @override
+  String get instTypeGrandeEcole => 'Grande école';
+
+  @override
+  String get instTypeTraining => 'Centre de formation';
+
+  @override
+  String get instTypeExamPrep => 'Centre de préparation aux concours';
+
+  @override
+  String get instCyclePrimary => 'Primaire';
+
+  @override
+  String get instCycleSecondary => 'Secondaire';
+
+  @override
+  String get instCycleHigher => 'Supérieur';
+
+  @override
+  String get instCycleExams => 'Concours';
+
+  @override
+  String get instSubsystemFr => 'Francophone';
+
+  @override
+  String get instSubsystemEn => 'Anglophone';
+
+  @override
+  String get instSubsystemBilingual => 'Bilingue';
+
+  @override
+  String get instTeachingGeneral => 'Général';
+
+  @override
+  String get instTeachingTechnical => 'Technique';
+
+  @override
+  String get instTeachingBoth => 'Général et technique';
+
+  @override
+  String get instGoalTracking => 'Suivre les élèves';
+
+  @override
+  String get instGoalExams => 'Préparer les examens';
+
+  @override
+  String get instGoalHomework => 'Gérer les devoirs';
+
+  @override
+  String get instGoalParents => 'Informer les parents';
+
+  @override
+  String get instGoalTeachers => 'Outiller les enseignants';
+
+  @override
+  String get instGoalGuidance => 'Orienter les élèves';
 }

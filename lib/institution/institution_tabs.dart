@@ -1,13 +1,9 @@
 import '../l10n/class_levels.dart';
 import 'package:flutter/material.dart';
 import '../l10n/l10n.dart';
-import '../widgets/language_selector.dart';
 import '../theme/win_motion.dart';
-import '../app_state.dart';
-import '../auth/login_screen.dart';
 import '../data/models.dart';
 import '../data/reference_data.dart';
-import '../services/auth_service.dart';
 import '../services/institution_service.dart';
 import '../services/subject_service.dart';
 import '../theme/win_colors.dart';
@@ -28,6 +24,10 @@ import '../shell/shell_nav.dart';
 import '../widgets/mobile_home.dart';
 import '../widgets/win_screen.dart';
 import '../shared/winai/winai_screen.dart';
+import '../shell/more_screen.dart';
+import '../shared/net_image.dart';
+import 'institution_profile_screen.dart';
+import '../services/institution_profile_service.dart';
 
 Widget _statCard(BuildContext c, IconData icon, String value, String label) {
   final s = WinTheme.of(c);
@@ -661,124 +661,134 @@ class InstitutionAccountTab extends StatefulWidget {
 }
 
 class _InstitutionAccountTabState extends State<InstitutionAccountTab> {
-  // Lu une seule fois : un FutureBuilder dont la future est creee dans build
-  // relancerait l'appel a chaque reconstruction (mode sombre, langue...).
-  late final Future<String?> _name =
-      InstitutionService.instance.getMyInstitutionName();
+  InstitutionProfile? _profile;
+  String? _fallbackName;
+  bool _loaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  /// Fiche de l'établissement ; à défaut (serveur plus ancien), son seul nom.
+  Future<void> _load() async {
+    try {
+      final p = await InstitutionProfileService.instance.load();
+      if (mounted) {
+        setState(() {
+          _profile = p;
+          _loaded = true;
+        });
+      }
+    } on InstitutionProfileException {
+      String? name;
+      try {
+        name = await InstitutionService.instance.getMyInstitutionName();
+      } catch (_) {}
+      if (mounted) {
+        setState(() {
+          _fallbackName = name;
+          _loaded = true;
+        });
+      }
+    }
+  }
+
+  Future<void> _edit() async {
+    await Navigator.push(context,
+        WinPageRoute(builder: (_) => const InstitutionProfileScreen()));
+    if (mounted) _load();
+  }
+
+  void _open(Widget page) =>
+      Navigator.push(context, WinPageRoute(builder: (_) => page));
 
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    final state = WinAppScope.of(context);
-    return Column(children: [
-      Expanded(
-          child: ListView(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-              children: [
-            Center(
-                child: Column(children: [
-              Container(
-                  width: 80,
-                  height: 80,
-                  decoration: BoxDecoration(
-                      color: winTone(s, BadgeColor.gold).bg,
-                      borderRadius: BorderRadius.circular(WinRadii.lg)),
-                  child: const Icon(PhosphorIconsRegular.buildings,
-                      size: 40, color: WinColors.gold)),
-              const SizedBox(height: 12),
-              FutureBuilder<String?>(
-                future: _name,
-                builder: (_, snap) => Text(
-                    snap.data ??
-                        (snap.connectionState == ConnectionState.done
-                            ? context.l10n.instMySchool
-                            : '…'),
-                    style: WinType.archivo(size: 22, color: s.onStrong)),
-              ),
-              Text(context.l10n.instAccountSchool, style: WinType.bodyM(s.onMuted)),
-            ])),
-            const SizedBox(height: 20),
-            // Lot 9.7b, étape 4 : licence réelle (sièges, renouvellement),
-            // à la place de la carte « Licences utilisées » fictive.
-            GestureDetector(
-              onTap: () => Navigator.push(context, WinPageRoute(builder: (_) => const LicenseScreen())),
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(color: s.inkCard, borderRadius: BorderRadius.circular(WinRadii.lg)),
-                child: Row(children: [
-                  const Icon(PhosphorIconsRegular.shield, size: 20, color: WinColors.teal400),
-                  const SizedBox(width: 8),
-                  Expanded(child: Text(context.l10n.instAccountLicense, style: WinType.titleL(WinColors.cream50))),
-                  const Icon(PhosphorIconsRegular.caretRight, color: WinColors.cream50),
-                ]),
+    final l = context.l10n;
+    final p = _profile;
+    final name = p?.name.isNotEmpty == true
+        ? p!.name
+        : (_fallbackName ?? (_loaded ? l.instMySchool : '\u2026'));
+    final details = [
+      if (p != null && p.type.isNotEmpty) institutionTypeLabel(context, p.type),
+      if (p != null && p.city.isNotEmpty) p.city,
+    ].join(' \u00b7 ');
+    final gold = winTone(s, BadgeColor.gold);
+    Widget logo() => Container(
+        color: gold.bg,
+        child: Icon(PhosphorIconsRegular.buildings, size: 30, color: gold.fg));
+    Widget title(String t) => Padding(
+        padding: const EdgeInsets.fromLTRB(4, 20, 4, 8),
+        child: Text(t, style: WinType.titleL(s.onStrong)));
+
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+      children: [
+        // Identité de l'établissement, ouvre sa fiche.
+        WinCard(
+          onTap: _edit,
+          child: Row(children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(WinRadii.lg),
+              child: SizedBox(
+                width: 60,
+                height: 60,
+                child: p?.logoUrl == null
+                    ? logo()
+                    : NetImage(p!.logoUrl!, error: (_) => logo()),
               ),
             ),
-            const SizedBox(height: 20),
-            // Lot 9.3 : attribution de tuteurs, réservations et portefeuille institution.
-            _Row(PhosphorIconsRegular.graduationCap, context.l10n.instAccountTutoring,
-                onTap: () => Navigator.push(context,
-                    WinPageRoute(builder: (_) => const TutoringForStudentsScreen()))),
-            // Lot 9.5 (17.11) : caution des répétiteurs rattachés pour le présentiel.
-            _Row(PhosphorIconsRegular.shieldCheck, context.l10n.instEndorseScreenTitle,
-                onTap: () => Navigator.push(context,
-                    WinPageRoute(builder: (_) => const TutorEndorsementsScreen()))),
-            _Row(PhosphorIconsRegular.chartBar, context.l10n.instAccountReports,
-                onTap: () => Navigator.push(context,
-                    WinPageRoute(builder: (_) => const ReportsScreen()))),
-            _Row(PhosphorIconsRegular.moon, context.l10n.commonDarkMode,
-                trailing: Switch(
-                    value: state.dark,
-                    activeThumbColor: s.primary,
-                    onChanged: (_) => state.toggleTheme())),
-            _Row(PhosphorIconsRegular.globe, context.l10n.language,
-            trailing: const LanguageToggle()),
-            const SizedBox(height: 8),
-            TextButton(
-                onPressed: () async {
-                  await AuthService.instance.signOut();
-                  if (!context.mounted) return;
-                  Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-                    WinPageRoute(builder: (_) => const LoginScreen()),
-                    (r) => false,
-                  );
-                },
-                child: Text(context.l10n.commonLogout,
-                    style: WinType.manrope(
-                        size: 14,
-                        weight: FontWeight.w600,
-                        color: WinColors.error))),
-          ])),
-    ]);
-  }
-}
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(name,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: WinType.headlineS(s.onStrong)),
+                    const SizedBox(height: 2),
+                    Text(details.isEmpty ? l.instAccountSchool : details,
+                        style: WinType.bodyS(s.onMuted)),
+                  ]),
+            ),
+            Icon(PhosphorIconsRegular.caretRight, color: s.onFaint),
+          ]),
+        ),
 
-class _Row extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final Widget? trailing;
-  final VoidCallback? onTap;
-  const _Row(this.icon, this.label, {this.trailing, this.onTap});
-  @override
-  Widget build(BuildContext context) {
-    final s = WinTheme.of(context);
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: 54,
-        decoration:
-            BoxDecoration(border: Border(bottom: BorderSide(color: s.outline))),
-        child: Row(children: [
-          Icon(icon, size: 20, color: s.onFaint),
-          const SizedBox(width: 12),
-          Expanded(
-              child: Text(label,
-                  style: WinType.bodyM(s.onStrong)
-                      .copyWith(fontWeight: FontWeight.w500))),
-          trailing ??
-              const Icon(PhosphorIconsRegular.caretRight,
-                  size: 18, color: WinColors.ink300),
+        title(l.instAccountGroupSchool),
+        MoreGroup(children: [
+          MoreLine(
+              icon: PhosphorIconsRegular.pencilSimple,
+              label: l.instProfileTitle,
+              onTap: _edit),
+          MoreLine(
+              icon: PhosphorIconsRegular.shield,
+              label: l.instAccountLicense,
+              onTap: () => _open(const LicenseScreen())),
+          MoreLine(
+              icon: PhosphorIconsRegular.chartBar,
+              label: l.instAccountReports,
+              onTap: () => _open(const ReportsScreen())),
         ]),
-      ),
+
+        title(l.instAccountGroupTutoring),
+        MoreGroup(children: [
+          // Attribution de tuteurs, réservations et portefeuille.
+          MoreLine(
+              icon: PhosphorIconsRegular.graduationCap,
+              label: l.instAccountTutoring,
+              onTap: () => _open(const TutoringForStudentsScreen())),
+          // Caution des répétiteurs rattachés, pour le présentiel.
+          MoreLine(
+              icon: PhosphorIconsRegular.shieldCheck,
+              label: l.instEndorseScreenTitle,
+              onTap: () => _open(const TutorEndorsementsScreen())),
+        ]),
+      ],
     );
   }
 }
