@@ -152,9 +152,9 @@ class _WinAISourcesTabState extends State<WinAISourcesTab>
   static String _size(int bytes) {
     if (bytes >= 1024 * 1024) {
       final mb = bytes / (1024 * 1024);
-      return '${mb >= 10 ? mb.round() : mb.toStringAsFixed(1)} Mo';
+      return '${mb >= 10 ? mb.round() : mb.toStringAsFixed(1)} ${L10n.isEn ? 'MB' : 'Mo'}';
     }
-    return '${(bytes / 1024).ceil()} Ko';
+    return '${(bytes / 1024).ceil()} ${L10n.isEn ? 'KB' : 'Ko'}';
   }
 
   @override

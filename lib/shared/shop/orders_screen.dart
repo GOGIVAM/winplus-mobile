@@ -291,19 +291,8 @@ class _InvoiceViewerScreenState extends State<_InvoiceViewerScreen> {
   Widget _buildBody(WinScheme s) {
     if (_loading) return const WinLoading();
     if (_error || _bytes == null) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Icon(PhosphorIconsRegular.filePdf, size: 56, color: s.onFaint),
-            const SizedBox(height: 16),
-            Text(context.l10n.shopInvoiceLoadFailed,
-                style: WinType.bodyM(s.onMuted)),
-            const SizedBox(height: 16),
-            WinButton(context.l10n.commonRetry, icon: PhosphorIconsRegular.arrowClockwise, onTap: _load),
-          ]),
-        ),
-      );
+      return WinErrorState(
+          message: context.l10n.shopInvoiceLoadFailed, onRetry: _load);
     }
     return PdfViewer.data(
       _bytes!,

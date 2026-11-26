@@ -224,25 +224,11 @@ class _EmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final s = WinTheme.of(context);
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          Icon(PhosphorIconsRegular.graduationCap, size: 72, color: s.onFaint),
-          const SizedBox(height: 20),
-          Text(context.l10n.studentMyCoursesEmpty,
-              style: WinType.headlineS(s.onStrong)),
-          const SizedBox(height: 8),
-          Text(
-            context.l10n.studentMyCoursesEmptyHint,
-            style: WinType.bodyM(s.onMuted),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 24),
-          WinButton(context.l10n.studentMyCoursesExplore, onTap: onExplore),
-        ]),
-      ),
-    );
+    return WinEmptyState(
+        title: context.l10n.studentMyCoursesEmpty,
+        message: context.l10n.studentMyCoursesEmptyHint,
+        icon: PhosphorIconsRegular.graduationCap,
+        actionLabel: context.l10n.studentMyCoursesExplore,
+        onAction: onExplore);
   }
 }

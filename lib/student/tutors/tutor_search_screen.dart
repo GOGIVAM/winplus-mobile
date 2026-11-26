@@ -287,29 +287,13 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
           child: _loading
               ? const WinLoading()
               : _error
-                  ? Center(
-                      child: Column(mainAxisSize: MainAxisSize.min, children: [
-                      Icon(PhosphorIconsRegular.wifiSlash, size: 48, color: s.onFaint),
-                      const SizedBox(height: 12),
-                      Text(context.l10n.tutoringSearchLoadError,
-                          style: WinType.bodyM(s.onMuted)),
-                      const SizedBox(height: 12),
-                      WinButton(context.l10n.commonRetry, onTap: _search),
-                    ]))
+                  ? WinErrorState(
+                      message: context.l10n.tutoringSearchLoadError,
+                      onRetry: _search)
                   : _results.isEmpty
-                      ? Center(
-                          child: Padding(
-                          padding: const EdgeInsets.all(32),
-                          child:
-                              Column(mainAxisSize: MainAxisSize.min, children: [
-                            Icon(PhosphorIconsRegular.userFocus,
-                                size: 64, color: s.onFaint),
-                            const SizedBox(height: 12),
-                            Text(context.l10n.tutoringSearchEmpty,
-                                style: WinType.bodyM(s.onMuted),
-                                textAlign: TextAlign.center),
-                          ]),
-                        ))
+                      ? WinEmptyState(
+                          title: context.l10n.tutoringSearchEmpty,
+                          icon: PhosphorIconsRegular.userFocus)
                       : ListView.separated(
                           padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
                           itemCount: _ordered.length,

@@ -94,19 +94,11 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     if (_favs == null) return const WinLoading();
 
     if (favs.isEmpty) {
-      return Center(
-          child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          Icon(PhosphorIconsRegular.heart, size: 64, color: s.onFaint),
-          const SizedBox(height: 12),
-          Text(context.l10n.studentFavEmpty, style: WinType.bodyM(s.onMuted)),
-          const SizedBox(height: 20),
-          WinButton(context.l10n.studentFavExplore,
-              icon: PhosphorIconsRegular.compass,
-              onTap: () => Navigator.pop(context)),
-        ]),
-      ));
+      return WinEmptyState(
+          title: context.l10n.studentFavEmpty,
+          icon: PhosphorIconsRegular.heart,
+          actionLabel: context.l10n.studentFavExplore,
+          onAction: () => Navigator.pop(context));
     }
 
     return Column(children: [
