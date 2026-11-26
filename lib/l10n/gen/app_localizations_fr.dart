@@ -12306,4 +12306,39 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get instGoalGuidance => 'Orienter les élèves';
+
+  @override
+  String get tutorMissingSubjects => 'Matières';
+
+  @override
+  String get tutorMissingLevels => 'Niveaux';
+
+  @override
+  String get tutorMissingMode => 'Mode d\'intervention';
+
+  @override
+  String get tutorMissingRate => 'Tarif';
+
+  @override
+  String get tutorMissingAvailability => 'Disponibilités';
+
+  @override
+  String get tutorNotListed =>
+      'Votre profil n\'apparaît plus dans la recherche : complétez les éléments obligatoires ci-dessous pour y revenir.';
+
+  @override
+  String get tutorDeactivate => 'Retirer mon profil de la recherche';
+
+  @override
+  String get tutorDeactivateTitle => 'Retirer votre profil ?';
+
+  @override
+  String get tutorDeactivateBody =>
+      'Vous ne serez plus proposé aux familles. Les séances déjà réservées sont maintenues. Vous pourrez republier votre profil à tout moment.';
+
+  @override
+  String get tutorDeactivateConfirm => 'Retirer';
+
+  @override
+  String get tutorDeactivated => 'Profil retiré de la recherche.';
 }

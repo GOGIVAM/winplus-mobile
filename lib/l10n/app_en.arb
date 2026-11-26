@@ -3594,5 +3594,16 @@
   "instGoalHomework": "Manage homework",
   "instGoalParents": "Keep parents informed",
   "instGoalTeachers": "Equip teachers",
-  "instGoalGuidance": "Guide students"
+  "instGoalGuidance": "Guide students",
+  "tutorMissingSubjects": "Subjects",
+  "tutorMissingLevels": "Levels",
+  "tutorMissingMode": "Teaching mode",
+  "tutorMissingRate": "Rate",
+  "tutorMissingAvailability": "Availability",
+  "tutorNotListed": "Your profile no longer appears in search: complete the required items below to come back.",
+  "tutorDeactivate": "Remove my profile from search",
+  "tutorDeactivateTitle": "Remove your profile?",
+  "tutorDeactivateBody": "You will no longer be offered to families. Sessions already booked are kept. You can publish your profile again at any time.",
+  "tutorDeactivateConfirm": "Remove",
+  "tutorDeactivated": "Profile removed from search."
 }

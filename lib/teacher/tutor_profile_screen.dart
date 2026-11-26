@@ -526,8 +526,9 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
           if (_profile?.isActive == true)
             IconButton(
               icon: Icon(
+                  // Icône pleine quand les vacances sont actives.
                   _profile!.isOnVacation
-                      ? PhosphorIconsRegular.airplaneTakeoff
+                      ? PhosphorIconsFill.airplaneTakeoff
                       : PhosphorIconsRegular.airplaneTakeoff,
                   color: _profile!.isOnVacation ? WinColors.warn : s.onMuted),
               tooltip: context.l10n.teacherProfileOnHoliday,
@@ -535,6 +536,15 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
                 final p = await _service.setVacation(!_profile!.isOnVacation);
                 _hydrate(p);
               },
+            ),
+          if (_profile?.isActive == true)
+            PopupMenuButton<String>(
+              icon: Icon(PhosphorIconsBold.dotsThreeVertical, color: s.onMuted),
+              onSelected: (_) => _deactivate(),
+              itemBuilder: (_) => [
+                PopupMenuItem(
+                    value: 'off', child: Text(context.l10n.tutorDeactivate)),
+              ],
             ),
         ],
       ),
@@ -631,6 +641,63 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
     ]);
   }
 
+  /// Libellé d'un élément manquant, traduit d'après son code ; le libellé du
+  /// serveur (en français) sert de repli.
+  String _missingLabel(Map<String, String> m) {
+    final l = context.l10n;
+    return switch (m['field']) {
+      'photo' => l.tutorPhotoTitle,
+      'subjects' => l.tutorMissingSubjects,
+      'levels' => l.tutorMissingLevels,
+      'interventionMode' => l.tutorMissingMode,
+      'hourlyRate' => l.tutorMissingRate,
+      'availability' => l.tutorMissingAvailability,
+      'bio' => l.teacherProfileBio,
+      'title' => l.teacherProfileProTitle,
+      'video' => l.teacherProfileVideo,
+      _ => m['label'] ?? '',
+    };
+  }
+
+  int? _missingStep(String? field) => switch (field) {
+        'subjects' || 'levels' => 0,
+        'interventionMode' => 1,
+        'hourlyRate' => 2,
+        'availability' => 3,
+        'photo' || 'bio' || 'title' || 'video' => 4,
+        _ => null,
+      };
+
+  /// Retirer le profil de la recherche, après confirmation.
+  Future<void> _deactivate() async {
+    final l = context.l10n;
+    final ok = await showDialog<bool>(
+        context: context,
+        builder: (c) => AlertDialog(
+              title: Text(l.tutorDeactivateTitle),
+              content: Text(l.tutorDeactivateBody),
+              actions: [
+                TextButton(
+                    onPressed: () => Navigator.pop(c, false),
+                    child: Text(l.commonCancel)),
+                TextButton(
+                    onPressed: () => Navigator.pop(c, true),
+                    child: Text(l.tutorDeactivateConfirm)),
+              ],
+            ));
+    if (ok != true || !mounted) return;
+    setState(() => _saving = true);
+    try {
+      _hydrate(await _service.deactivate());
+      _toast(L10n.current.tutorDeactivated);
+    } catch (e) {
+      _toast(TutorProfileService.serverMessage(e) ??
+          L10n.current.teacherProfileSaveError);
+    } finally {
+      if (mounted) setState(() => _saving = false);
+    }
+  }
+
   Widget _buildCompletion(WinScheme s) {
     final c = _completion!;
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -648,6 +715,13 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
                       color: BadgeColor.success),
         ),
       ),
+      // Profil actif qui ne remplit plus le minimum : il n'est plus proposé
+      // aux élèves tant qu'il n'est pas complété.
+      if (_profile?.isActive == true && _profile?.isListedInSearch == false)
+        Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: WinAlert(context.l10n.tutorNotListed, type: BadgeColor.warn),
+        ),
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         Text(context.l10n.teacherProfileCompletion, style: WinType.bodyM(s.onMuted)),
         Text('${c.score}/100',
@@ -668,14 +742,22 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
         Wrap(
             spacing: 6,
             runSpacing: 6,
-            children: c.missingItems
-                .map((m) => Chip(
-                      label: Text(m['label'] ?? '',
-                          style: const TextStyle(fontSize: 11)),
-                      backgroundColor: winTone(s, BadgeColor.warn).bg,
-                      side: BorderSide.none,
-                    ))
-                .toList()),
+            children: [
+              for (final m in c.missingItems)
+                ActionChip(
+                  label: Text(_missingLabel(m),
+                      style: const TextStyle(fontSize: 11)),
+                  backgroundColor: winTone(s, BadgeColor.warn).bg,
+                  side: BorderSide.none,
+                  // Mène à l'étape où l'élément se renseigne.
+                  onPressed: _missingStep(m['field']) == null
+                      ? null
+                      : () => setState(() {
+                            _showPreview = false;
+                            _step = _missingStep(m['field'])!;
+                          }),
+                ),
+            ]),
       ],
     ]);
   }

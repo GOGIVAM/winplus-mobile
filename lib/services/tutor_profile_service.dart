@@ -295,6 +295,10 @@ class TutorProfile {
   final int noticeHours;
   final int? maxSessionsPerWeek;
   final bool isOnVacation;
+
+  /// Faux quand un profil actif ne remplit plus le minimum et sort de la
+  /// recherche ; null sur une fiche publique ou un serveur plus ancien.
+  final bool? isListedInSearch;
   final bool isDiplomaVerified;
 
   /// Lot 9.5 (17.11) : vérifié pour le présentiel, suspension, présentiel possible.
@@ -367,6 +371,7 @@ class TutorProfile {
     this.noticeHours = 24,
     this.maxSessionsPerWeek,
     this.isOnVacation = false,
+    this.isListedInSearch,
     this.isDiplomaVerified = false,
     this.isInPersonVerified = false,
     this.inPersonSuspended = false,
@@ -425,6 +430,7 @@ class TutorProfile {
         noticeHours: j['noticeHours'] as int? ?? 24,
         maxSessionsPerWeek: j['maxSessionsPerWeek'] as int?,
         isOnVacation: j['isOnVacation'] as bool? ?? false,
+        isListedInSearch: j['isListedInSearch'] as bool?,
         isDiplomaVerified: j['isDiplomaVerified'] as bool? ?? false,
         isInPersonVerified: j['isInPersonVerified'] as bool? ?? false,
         inPersonSuspended: j['inPersonSuspended'] as bool? ?? false,
@@ -496,8 +502,15 @@ class TutorProfileCompletion {
   factory TutorProfileCompletion.fromJson(Map<String, dynamic> j) =>
       TutorProfileCompletion(
         score: j['score'] as int? ?? 0,
+        // Le serveur envoie aussi un code (field) et un booléen (required) :
+        // on ne garde que les textes, sans supposer le type de chaque valeur.
         missingItems: (j['missingItems'] as List? ?? [])
-            .map((e) => Map<String, String>.from(e as Map))
+            .whereType<Map>()
+            .map((e) => <String, String>{
+                  for (final x in e.entries)
+                    if (x.value is String) x.key.toString(): x.value as String,
+                  if (e['required'] == true) 'required': 'true',
+                })
             .toList(),
       );
 }
@@ -548,6 +561,13 @@ class TutorProfileService {
 
   Future<TutorProfile> activate() async {
     final res = await _api.dio.post('/tutor-profile/me/activate');
+    return TutorProfile.fromJson(res.data as Map<String, dynamic>);
+  }
+
+  /// Retire le profil de la recherche (les réservations prises sont
+  /// maintenues) ; [activate] le republie.
+  Future<TutorProfile> deactivate() async {
+    final res = await _api.dio.post('/tutor-profile/me/deactivate');
     return TutorProfile.fromJson(res.data as Map<String, dynamic>);
   }
 

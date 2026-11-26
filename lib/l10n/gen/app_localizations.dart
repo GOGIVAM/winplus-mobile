@@ -20690,6 +20690,72 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Orienter les élèves'**
   String get instGoalGuidance;
+
+  /// No description provided for @tutorMissingSubjects.
+  ///
+  /// In fr, this message translates to:
+  /// **'Matières'**
+  String get tutorMissingSubjects;
+
+  /// No description provided for @tutorMissingLevels.
+  ///
+  /// In fr, this message translates to:
+  /// **'Niveaux'**
+  String get tutorMissingLevels;
+
+  /// No description provided for @tutorMissingMode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mode d\'intervention'**
+  String get tutorMissingMode;
+
+  /// No description provided for @tutorMissingRate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tarif'**
+  String get tutorMissingRate;
+
+  /// No description provided for @tutorMissingAvailability.
+  ///
+  /// In fr, this message translates to:
+  /// **'Disponibilités'**
+  String get tutorMissingAvailability;
+
+  /// No description provided for @tutorNotListed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre profil n\'apparaît plus dans la recherche : complétez les éléments obligatoires ci-dessous pour y revenir.'**
+  String get tutorNotListed;
+
+  /// No description provided for @tutorDeactivate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retirer mon profil de la recherche'**
+  String get tutorDeactivate;
+
+  /// No description provided for @tutorDeactivateTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retirer votre profil ?'**
+  String get tutorDeactivateTitle;
+
+  /// No description provided for @tutorDeactivateBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous ne serez plus proposé aux familles. Les séances déjà réservées sont maintenues. Vous pourrez republier votre profil à tout moment.'**
+  String get tutorDeactivateBody;
+
+  /// No description provided for @tutorDeactivateConfirm.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retirer'**
+  String get tutorDeactivateConfirm;
+
+  /// No description provided for @tutorDeactivated.
+  ///
+  /// In fr, this message translates to:
+  /// **'Profil retiré de la recherche.'**
+  String get tutorDeactivated;
 }
 
 class _AppLocalizationsDelegate

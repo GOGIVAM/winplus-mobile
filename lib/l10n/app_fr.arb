@@ -6476,5 +6476,16 @@
   "instGoalHomework": "Gérer les devoirs",
   "instGoalParents": "Informer les parents",
   "instGoalTeachers": "Outiller les enseignants",
-  "instGoalGuidance": "Orienter les élèves"
+  "instGoalGuidance": "Orienter les élèves",
+  "tutorMissingSubjects": "Matières",
+  "tutorMissingLevels": "Niveaux",
+  "tutorMissingMode": "Mode d'intervention",
+  "tutorMissingRate": "Tarif",
+  "tutorMissingAvailability": "Disponibilités",
+  "tutorNotListed": "Votre profil n'apparaît plus dans la recherche : complétez les éléments obligatoires ci-dessous pour y revenir.",
+  "tutorDeactivate": "Retirer mon profil de la recherche",
+  "tutorDeactivateTitle": "Retirer votre profil ?",
+  "tutorDeactivateBody": "Vous ne serez plus proposé aux familles. Les séances déjà réservées sont maintenues. Vous pourrez republier votre profil à tout moment.",
+  "tutorDeactivateConfirm": "Retirer",
+  "tutorDeactivated": "Profil retiré de la recherche."
 }

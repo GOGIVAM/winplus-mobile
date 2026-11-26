@@ -82,7 +82,7 @@ void main() {
   setUpAll(initialiserDates);
   setUp(() => faux = preparerEnvironnement(prefs: {'user_role': 'teacher'}));
 
-  void routes([Map<String, dynamic>? profil, List<Map<String, String>> manquants = const []]) {
+  void routes([Map<String, dynamic>? profil, List<Map<String, dynamic>> manquants = const []]) {
     final p = profil ?? _profil();
     faux.repond('GET', '/tutor-profile/me', p);
     faux.repond('GET', '/tutor-profile/me/completion', {'score': 60, 'missingItems': manquants});
@@ -552,12 +552,61 @@ void main() {
       await tester.tap(find.byTooltip(l.teacherProfileOnHoliday));
       await reseau(tester);
       expect(faux.recues('POST', '/tutor-profile/me/vacation').single.data, true);
-      expect(find.byIcon(PhosphorIconsRegular.airplaneTakeoff), findsOneWidget);
+      // En vacances : l'icone passe en forme pleine.
+      expect(find.byIcon(PhosphorIconsFill.airplaneTakeoff), findsOneWidget);
 
       await monter(tester, const SizedBox());
       routes(_profil());
       await monterProfil(tester);
       expect(find.byTooltip(l.teacherProfileOnHoliday), findsNothing);
+    });
+  });
+
+  group('Contrat du serveur : minimum du profil', () {
+    testWidgets('elements manquants : code et booleen acceptes, libelle traduit, la pastille mene a son etape', (tester) async {
+      routes(_profil({'onboardingStep': 5}), [
+        {'field': 'hourlyRate', 'label': 'Tarif horaire', 'required': true},
+        {'field': 'video', 'label': 'Video', 'required': false},
+      ]);
+      await monterProfil(tester);
+      final l = L10n.current;
+      // Le libelle vient du code, pas du texte francais du serveur.
+      expect(find.widgetWithText(ActionChip, l.tutorMissingRate), findsOneWidget);
+      expect(find.text('Tarif horaire'), findsNothing);
+      await tester.tap(find.widgetWithText(ActionChip, l.tutorMissingRate));
+      await pomper(tester);
+      await pomper(tester, const Duration(milliseconds: 300));
+      // Etape des tarifs : le champ du tarif horaire est affiche.
+      expect(find.text(l.teacherProfileProTitle), findsNothing);
+    });
+
+    testWidgets('profil actif sorti de la recherche : bandeau d alerte', (tester) async {
+      routes(_profil({'isActive': true, 'isListedInSearch': false}));
+      await monterProfil(tester);
+      final l = L10n.current;
+      expect(find.text(l.tutorNotListed), findsOneWidget);
+      await monter(tester, const SizedBox());
+      routes(_profil({'isActive': true, 'isListedInSearch': true}));
+      await monterProfil(tester);
+      expect(find.text(l.tutorNotListed), findsNothing);
+    });
+
+    testWidgets('retirer le profil de la recherche : confirmation, appel serveur, retour a « Brouillon »', (tester) async {
+      routes(_profil({'isActive': true}));
+      faux.repond('POST', '/tutor-profile/me/deactivate', _profil({'isActive': false}));
+      await monterProfil(tester);
+      final l = L10n.current;
+      await tester.tap(find.byIcon(PhosphorIconsBold.dotsThreeVertical));
+      await pomper(tester);
+      await pomper(tester, const Duration(milliseconds: 400));
+      await tester.tap(find.text(l.tutorDeactivate));
+      await pomper(tester);
+      await pomper(tester, const Duration(milliseconds: 400));
+      expect(find.text(l.tutorDeactivateBody), findsOneWidget);
+      await tester.tap(find.text(l.tutorDeactivateConfirm));
+      await reseau(tester);
+      expect(faux.recues('POST', '/tutor-profile/me/deactivate'), hasLength(1));
+      expect(find.text(l.tutorStateDraft), findsOneWidget);
     });
   });
 }

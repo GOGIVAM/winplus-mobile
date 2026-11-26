@@ -12211,4 +12211,39 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get instGoalGuidance => 'Guide students';
+
+  @override
+  String get tutorMissingSubjects => 'Subjects';
+
+  @override
+  String get tutorMissingLevels => 'Levels';
+
+  @override
+  String get tutorMissingMode => 'Teaching mode';
+
+  @override
+  String get tutorMissingRate => 'Rate';
+
+  @override
+  String get tutorMissingAvailability => 'Availability';
+
+  @override
+  String get tutorNotListed =>
+      'Your profile no longer appears in search: complete the required items below to come back.';
+
+  @override
+  String get tutorDeactivate => 'Remove my profile from search';
+
+  @override
+  String get tutorDeactivateTitle => 'Remove your profile?';
+
+  @override
+  String get tutorDeactivateBody =>
+      'You will no longer be offered to families. Sessions already booked are kept. You can publish your profile again at any time.';
+
+  @override
+  String get tutorDeactivateConfirm => 'Remove';
+
+  @override
+  String get tutorDeactivated => 'Profile removed from search.';
 }
