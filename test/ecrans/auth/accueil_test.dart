@@ -49,12 +49,12 @@ void main() {
       expect((langue.center.dy - logo.center.dy).abs(), lessThan(24));
     });
 
-    testWidgets('trois ecrans avec photo : titre, « Suivant » avance, le dernier propose compte et connexion', (tester) async {
+    testWidgets('six ecrans avec photo, dans l ordre de l accueil du site : titre, « Suivant » avance, le dernier propose compte et connexion', (tester) async {
       await monterEcran(tester, const WelcomeScreen());
       final l = L10n.current;
       expect(find.byType(WinLogo), findsOneWidget);
       // Une photo par ecran (PageView), pas d'icone a la place.
-      expect(find.byWidgetPredicate((w) => w is Image && w.image is AssetImage && (w.image as AssetImage).assetName == 'assets/home/epreuves.webp'), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is Image && w.image is AssetImage && (w.image as AssetImage).assetName == 'assets/home/hero-eleve-confiance.webp'), findsOneWidget);
       expect(find.text(l.authWelcomeSlide1Title), findsOneWidget);
       await tester.tap(_bouton(l.authNext));
       await pomper(tester);
@@ -64,6 +64,12 @@ void main() {
       await pomper(tester);
       await pomper(tester, const Duration(milliseconds: 500));
       expect(find.text(l.authWelcomeSlide3Title), findsOneWidget);
+      for (final titre in [l.authWelcomeSlide4Title, l.authWelcomeSlide5Title, l.authWelcomeSlide6Title]) {
+        await tester.tap(_bouton(l.authNext));
+        await pomper(tester);
+        await pomper(tester, const Duration(milliseconds: 500));
+        expect(find.text(titre), findsOneWidget);
+      }
       expect(_bouton(l.authNext), findsNothing);
       expect(_bouton(l.createAccount), findsOneWidget);
       expect(find.text(l.authSkip), findsNothing);
@@ -79,7 +85,7 @@ void main() {
       await tester.tap(find.text(l.authSkip));
       await pomper(tester);
       await pomper(tester, const Duration(milliseconds: 600));
-      expect(find.text(l.authWelcomeSlide3Title), findsOneWidget);
+      expect(find.text(l.authWelcomeSlide6Title), findsOneWidget);
       expect(_bouton(l.createAccount), findsOneWidget);
     });
   });

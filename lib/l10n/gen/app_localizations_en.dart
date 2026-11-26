@@ -413,24 +413,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get authWelcomeSlide1Subtitle =>
-      'Past papers, worked solutions and quizzes, from the BEPC to the entrance exams of the top schools.';
+      'WinAI explains every exercise step by step, generates quizzes, spots your gaps and builds your revision plan up to exam day.';
 
   @override
-  String get authWelcomeSlide1Title => 'All your papers, in one place';
+  String get authWelcomeSlide1Title => 'WinAI, your tutor at any hour';
 
   @override
   String get authWelcomeSlide2Subtitle =>
-      'A learning assistant that spots your gaps and suggests a revision plan.';
+      'Video courses and lessons published by teachers, your progress tracked step by step and a certificate at the end.';
 
   @override
-  String get authWelcomeSlide2Title => 'WinAI by your side';
+  String get authWelcomeSlide2Title => 'Learn with real teachers';
 
   @override
   String get authWelcomeSlide3Subtitle =>
-      'Parents, teachers, students: everyone follows the student\'s progress.';
+      'Pick a tutor by subject, book an online session and pay with Mobile Money.';
 
   @override
-  String get authWelcomeSlide3Title => 'The whole family involved';
+  String get authWelcomeSlide3Title => 'A tutor, right when it counts';
 
   @override
   String get authXpUnlocked => '+50 XP unlocked';
@@ -11696,4 +11696,26 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get integrationRibbon => 'INTEGRATION';
+
+  @override
+  String get authWelcomeSlide4Title => 'A catalogue that keeps growing';
+
+  @override
+  String get authWelcomeSlide4Subtitle =>
+      'BEPC, Probatoire, Baccalauréat and entrance exams: every paper is read online, with its answers when they exist.';
+
+  @override
+  String get authWelcomeSlide5Title =>
+      'Follow their progress, without hovering';
+
+  @override
+  String get authWelcomeSlide5Subtitle =>
+      'Your child\'s results, consistency, alerts and report card in one place. Following a child is free.';
+
+  @override
+  String get authWelcomeSlide6Title => 'Your whole school, in one place';
+
+  @override
+  String get authWelcomeSlide6Subtitle =>
+      'Classes, homework, report cards, timetables and mock exams: spot struggling students early.';
 }

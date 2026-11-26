@@ -417,24 +417,24 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get authWelcomeSlide1Subtitle =>
-      'Annales, corrigés et quiz du BEPC aux concours des grandes écoles.';
+      'WinAI explique chaque exercice étape par étape, génère des quiz, repère tes lacunes et construit ton plan de révision jusqu\'au jour de l\'examen.';
 
   @override
-  String get authWelcomeSlide1Title => 'Toutes tes épreuves, réunies';
+  String get authWelcomeSlide1Title => 'WinAI, ton répétiteur à toute heure';
 
   @override
   String get authWelcomeSlide2Subtitle =>
-      'Un assistant pédagogique qui identifie tes lacunes et te propose un plan de révision.';
+      'Des formations en vidéo et en leçons publiées par des enseignants, ta progression suivie pas à pas et un certificat à la fin.';
 
   @override
-  String get authWelcomeSlide2Title => 'WinAI à tes côtés';
+  String get authWelcomeSlide2Title => 'Forme-toi avec de vrais enseignants';
 
   @override
   String get authWelcomeSlide3Subtitle =>
-      'Parents, professeurs, élèves : chacun suit la progression de l’élève.';
+      'Choisis un tuteur par matière, réserve une séance en ligne et paie par Mobile Money.';
 
   @override
-  String get authWelcomeSlide3Title => 'Toute la famille impliquée';
+  String get authWelcomeSlide3Title => 'Un répétiteur, au bon moment';
 
   @override
   String get authXpUnlocked => '+50 XP débloqués';
@@ -11789,4 +11789,27 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get integrationRibbon => 'INTÉGRATION';
+
+  @override
+  String get authWelcomeSlide4Title => 'Un catalogue qui s\'enrichit';
+
+  @override
+  String get authWelcomeSlide4Subtitle =>
+      'BEPC, Probatoire, Baccalauréat et concours d\'entrée : chaque épreuve se lit en ligne, avec son corrigé quand il existe.';
+
+  @override
+  String get authWelcomeSlide5Title =>
+      'Suivez sa progression, sans être derrière lui';
+
+  @override
+  String get authWelcomeSlide5Subtitle =>
+      'Résultats, régularité, alertes et bulletin de votre enfant au même endroit. Le suivi d\'un enfant est gratuit.';
+
+  @override
+  String get authWelcomeSlide6Title =>
+      'Tout votre établissement, au même endroit';
+
+  @override
+  String get authWelcomeSlide6Subtitle =>
+      'Classes, devoirs, bulletins, emplois du temps et examens blancs : repérez tôt les élèves en difficulté.';
 }

@@ -839,37 +839,37 @@ abstract class AppLocalizations {
   /// No description provided for @authWelcomeSlide1Subtitle.
   ///
   /// In fr, this message translates to:
-  /// **'Annales, corrigés et quiz du BEPC aux concours des grandes écoles.'**
+  /// **'WinAI explique chaque exercice étape par étape, génère des quiz, repère tes lacunes et construit ton plan de révision jusqu\'au jour de l\'examen.'**
   String get authWelcomeSlide1Subtitle;
 
   /// No description provided for @authWelcomeSlide1Title.
   ///
   /// In fr, this message translates to:
-  /// **'Toutes tes épreuves, réunies'**
+  /// **'WinAI, ton répétiteur à toute heure'**
   String get authWelcomeSlide1Title;
 
   /// No description provided for @authWelcomeSlide2Subtitle.
   ///
   /// In fr, this message translates to:
-  /// **'Un assistant pédagogique qui identifie tes lacunes et te propose un plan de révision.'**
+  /// **'Des formations en vidéo et en leçons publiées par des enseignants, ta progression suivie pas à pas et un certificat à la fin.'**
   String get authWelcomeSlide2Subtitle;
 
   /// No description provided for @authWelcomeSlide2Title.
   ///
   /// In fr, this message translates to:
-  /// **'WinAI à tes côtés'**
+  /// **'Forme-toi avec de vrais enseignants'**
   String get authWelcomeSlide2Title;
 
   /// No description provided for @authWelcomeSlide3Subtitle.
   ///
   /// In fr, this message translates to:
-  /// **'Parents, professeurs, élèves : chacun suit la progression de l’élève.'**
+  /// **'Choisis un tuteur par matière, réserve une séance en ligne et paie par Mobile Money.'**
   String get authWelcomeSlide3Subtitle;
 
   /// No description provided for @authWelcomeSlide3Title.
   ///
   /// In fr, this message translates to:
-  /// **'Toute la famille impliquée'**
+  /// **'Un répétiteur, au bon moment'**
   String get authWelcomeSlide3Title;
 
   /// No description provided for @authXpUnlocked.
@@ -19832,6 +19832,42 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'INTÉGRATION'**
   String get integrationRibbon;
+
+  /// No description provided for @authWelcomeSlide4Title.
+  ///
+  /// In fr, this message translates to:
+  /// **'Un catalogue qui s\'enrichit'**
+  String get authWelcomeSlide4Title;
+
+  /// No description provided for @authWelcomeSlide4Subtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'BEPC, Probatoire, Baccalauréat et concours d\'entrée : chaque épreuve se lit en ligne, avec son corrigé quand il existe.'**
+  String get authWelcomeSlide4Subtitle;
+
+  /// No description provided for @authWelcomeSlide5Title.
+  ///
+  /// In fr, this message translates to:
+  /// **'Suivez sa progression, sans être derrière lui'**
+  String get authWelcomeSlide5Title;
+
+  /// No description provided for @authWelcomeSlide5Subtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Résultats, régularité, alertes et bulletin de votre enfant au même endroit. Le suivi d\'un enfant est gratuit.'**
+  String get authWelcomeSlide5Subtitle;
+
+  /// No description provided for @authWelcomeSlide6Title.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tout votre établissement, au même endroit'**
+  String get authWelcomeSlide6Title;
+
+  /// No description provided for @authWelcomeSlide6Subtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Classes, devoirs, bulletins, emplois du temps et examens blancs : repérez tôt les élèves en difficulté.'**
+  String get authWelcomeSlide6Subtitle;
 }
 
 class _AppLocalizationsDelegate

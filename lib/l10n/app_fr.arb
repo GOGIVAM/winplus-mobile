@@ -165,12 +165,12 @@
       }
     }
   },
-  "authWelcomeSlide1Subtitle": "Annales, corrigés et quiz du BEPC aux concours des grandes écoles.",
-  "authWelcomeSlide1Title": "Toutes tes épreuves, réunies",
-  "authWelcomeSlide2Subtitle": "Un assistant pédagogique qui identifie tes lacunes et te propose un plan de révision.",
-  "authWelcomeSlide2Title": "WinAI à tes côtés",
-  "authWelcomeSlide3Subtitle": "Parents, professeurs, élèves : chacun suit la progression de l’élève.",
-  "authWelcomeSlide3Title": "Toute la famille impliquée",
+  "authWelcomeSlide1Subtitle": "WinAI explique chaque exercice étape par étape, génère des quiz, repère tes lacunes et construit ton plan de révision jusqu'au jour de l'examen.",
+  "authWelcomeSlide1Title": "WinAI, ton répétiteur à toute heure",
+  "authWelcomeSlide2Subtitle": "Des formations en vidéo et en leçons publiées par des enseignants, ta progression suivie pas à pas et un certificat à la fin.",
+  "authWelcomeSlide2Title": "Forme-toi avec de vrais enseignants",
+  "authWelcomeSlide3Subtitle": "Choisis un tuteur par matière, réserve une séance en ligne et paie par Mobile Money.",
+  "authWelcomeSlide3Title": "Un répétiteur, au bon moment",
   "authXpUnlocked": "+50 XP débloqués",
   "authYouDefault": "toi",
   "commonAccept": "Accepter",
@@ -6316,5 +6316,11 @@
   "authErrTooManyAttempts": "Trop d'essais de connexion. Patiente quelques minutes avant de réessayer.",
   "authErrEmailNotVerified": "Ton adresse e-mail n'est pas encore vérifiée. Ouvre le lien reçu par e-mail.",
   "authErrAccountInactive": "Ce compte est désactivé. Contacte le support WinPlus.",
-  "integrationRibbon": "INTÉGRATION"
+  "integrationRibbon": "INTÉGRATION",
+  "authWelcomeSlide4Title": "Un catalogue qui s'enrichit",
+  "authWelcomeSlide4Subtitle": "BEPC, Probatoire, Baccalauréat et concours d'entrée : chaque épreuve se lit en ligne, avec son corrigé quand il existe.",
+  "authWelcomeSlide5Title": "Suivez sa progression, sans être derrière lui",
+  "authWelcomeSlide5Subtitle": "Résultats, régularité, alertes et bulletin de votre enfant au même endroit. Le suivi d'un enfant est gratuit.",
+  "authWelcomeSlide6Title": "Tout votre établissement, au même endroit",
+  "authWelcomeSlide6Subtitle": "Classes, devoirs, bulletins, emplois du temps et examens blancs : repérez tôt les élèves en difficulté."
 }

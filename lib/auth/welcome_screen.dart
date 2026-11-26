@@ -11,9 +11,11 @@ import '../widgets/win_widgets.dart';
 import 'login_screen.dart';
 import 'role_screen.dart';
 
-/// Présentation de WinPlus avant la connexion : trois écrans, chacun avec
-/// une photo du site en grand, le logo dans son disque blanc, un titre et une
-/// phrase. « Passer » mène au dernier écran, qui propose de créer un compte
+/// Présentation de WinPlus avant la connexion : les six mises en avant de la
+/// page d'accueil du site, dans le même ordre et avec les mêmes photos
+/// (WinAI, formations, répétiteurs, catalogue, parents, établissements).
+/// Chaque écran : la photo en grand, le logo dans son disque blanc, un titre
+/// et une phrase. « Passer » mène au dernier écran, qui propose de créer un compte
 /// ou de se connecter.
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -22,10 +24,14 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
+  // Mêmes photos que le carrousel de la page d'accueil du site.
   static const _images = [
-    'assets/home/epreuves.webp',
     'assets/home/hero-eleve-confiance.webp',
-    'assets/home/parent-enfant-etude.jpg',
+    'assets/home/eleve-ecrit.jpg',
+    'assets/home/hero-repetiteur-eleve.webp',
+    'assets/home/hero-bibliotheque.webp',
+    'assets/home/pere-fils-devoirs.jpg',
+    'assets/home/eleves-classe.jpg',
   ];
 
   final _pages = PageController();
@@ -60,6 +66,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       (_images[0], l.authWelcomeSlide1Title, l.authWelcomeSlide1Subtitle),
       (_images[1], l.authWelcomeSlide2Title, l.authWelcomeSlide2Subtitle),
       (_images[2], l.authWelcomeSlide3Title, l.authWelcomeSlide3Subtitle),
+      (_images[3], l.authWelcomeSlide4Title, l.authWelcomeSlide4Subtitle),
+      (_images[4], l.authWelcomeSlide5Title, l.authWelcomeSlide5Subtitle),
+      (_images[5], l.authWelcomeSlide6Title, l.authWelcomeSlide6Subtitle),
     ];
     final last = _page == slides.length - 1;
 
