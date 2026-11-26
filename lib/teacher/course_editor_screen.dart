@@ -10,6 +10,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_screen.dart';
 import '../widgets/win_widgets.dart';
+import 'course_stats_screen.dart';
 
 String _levelLabel(AppLocalizations l, String v) => switch (v) {
       'intermediaire' => l.tcourseLevelMid,
@@ -503,6 +504,17 @@ class _CourseEditorScreenState extends State<CourseEditorScreen> {
               if (editable) Icon(PhosphorIconsRegular.pencilSimple, color: s.onMuted),
             ]),
           ),
+          // Lot 7 : suivi des leçons, points et classement.
+          if (c.status == 'published')
+            Align(
+              alignment: Alignment.centerLeft,
+              child: TextButton.icon(
+                onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => CourseStatsScreen(courseId: c.id, title: c.title))),
+                icon: const Icon(PhosphorIconsRegular.chartLineUp),
+                label: Text(l.cstatOpen),
+              ),
+            ),
           const SizedBox(height: 16),
           Row(children: [
             Expanded(child: Text(l.tcourseProgramme, style: WinType.titleM(s.onStrong))),

@@ -184,6 +184,72 @@ class EditorCourse {
       );
 }
 
+/// Ludification d'une formation : points et classement.
+class Gamification {
+  final bool enabled;
+  final int pointsPerLesson;
+  final int pointsPerQuiz;
+  final int bonusPerfect;
+  final bool leaderboardVisible;
+  const Gamification({
+    this.enabled = false,
+    this.pointsPerLesson = 10,
+    this.pointsPerQuiz = 20,
+    this.bonusPerfect = 10,
+    this.leaderboardVisible = true,
+  });
+
+  factory Gamification.fromJson(Map<String, dynamic> j) => Gamification(
+        enabled: j['gamificationEnabled'] == true,
+        pointsPerLesson: (j['pointsPerLesson'] as num?)?.toInt() ?? 10,
+        pointsPerQuiz: (j['pointsPerQuiz'] as num?)?.toInt() ?? 20,
+        bonusPerfect: (j['pointsBonusPerfectScore'] as num?)?.toInt() ?? 10,
+        leaderboardVisible: j['leaderboardVisible'] != false,
+      );
+
+  Map<String, dynamic> toJson() => {
+        'gamificationEnabled': enabled,
+        'pointsPerLesson': pointsPerLesson,
+        'pointsPerQuiz': pointsPerQuiz,
+        'pointsBonusPerfectScore': bonusPerfect,
+        'leaderboardVisible': leaderboardVisible,
+      };
+
+  Gamification copyWith({bool? enabled, int? pointsPerLesson, int? pointsPerQuiz, int? bonusPerfect, bool? leaderboardVisible}) =>
+      Gamification(
+        enabled: enabled ?? this.enabled,
+        pointsPerLesson: pointsPerLesson ?? this.pointsPerLesson,
+        pointsPerQuiz: pointsPerQuiz ?? this.pointsPerQuiz,
+        bonusPerfect: bonusPerfect ?? this.bonusPerfect,
+        leaderboardVisible: leaderboardVisible ?? this.leaderboardVisible,
+      );
+}
+
+/// Suivi d'une leçon par les inscrits.
+class LessonStats {
+  final int lessonId;
+  final String title;
+  final String type;
+  final double completionRate;
+  final int completed;
+  final int watchSec;
+  final double? quizScore;
+  final bool lowCompletion;
+  const LessonStats(this.lessonId, this.title, this.type, this.completionRate, this.completed, this.watchSec, this.quizScore,
+      this.lowCompletion);
+
+  factory LessonStats.fromJson(Map j) => LessonStats(
+        (j['lessonId'] as num?)?.toInt() ?? 0,
+        '${j['title'] ?? ''}',
+        '${j['lessonType'] ?? ''}',
+        (j['completionRate'] as num?)?.toDouble() ?? 0,
+        (j['completedCount'] as num?)?.toInt() ?? 0,
+        (j['averageWatchTimeSec'] as num?)?.toInt() ?? 0,
+        (j['averageQuizScore'] as num?)?.toDouble(),
+        j['lowCompletionAlert'] == true,
+      );
+}
+
 /// Semaine d'un syllabus proposé par WinAI.
 class SyllabusWeek {
   final int week;
@@ -485,6 +551,34 @@ class CourseEditorService {
   /// Ajoute un contenu du catalogue déjà possédé comme leçon.
   Future<void> addLessonFromSubject(int courseId, int sectionId, int subjectId) => _guard(() =>
       _api.dio.post('/teacher/courses/$courseId/sections/$sectionId/lessons/from-subject', data: {'subjectId': subjectId}));
+
+  /// Réglages de ludification d'une formation.
+  Future<Gamification> gamification(int courseId) => _guard(() async {
+        final res = await _api.dio.get('/teacher/courses/$courseId/gamification');
+        return Gamification.fromJson(_map(res.data));
+      });
+
+  Future<Gamification> saveGamification(int courseId, Gamification g) => _guard(() async {
+        final res = await _api.dio.put('/teacher/courses/$courseId/gamification', data: g.toJson());
+        return Gamification.fromJson(_map(res.data));
+      });
+
+  /// Classement des élèves (vrais noms, réservé au professeur).
+  Future<List<(int, String, int)>> leaderboard(int courseId) => _guard(() async {
+        final res = await _api.dio.get('/teacher/courses/$courseId/leaderboard');
+        final raw = res.data is Map ? (res.data as Map)['data'] : res.data;
+        return (raw is List ? raw : const [])
+            .whereType<Map>()
+            .map((r) => ((r['rank'] as num?)?.toInt() ?? 0, '${r['name'] ?? ''}', (r['points'] as num?)?.toInt() ?? 0))
+            .toList();
+      });
+
+  /// Suivi de chaque leçon : taux de complétion, temps de visionnage, score.
+  Future<List<LessonStats>> lessonStats(int courseId) => _guard(() async {
+        final res = await _api.dio.get('/teacher/courses/$courseId/analytics/lessons');
+        final raw = res.data is Map ? (res.data as Map)['data'] : res.data;
+        return (raw is List ? raw : const []).whereType<Map>().map(LessonStats.fromJson).toList();
+      });
 
   /// Soumet la formation à la validation de l'équipe (au moins une leçon
   /// publiée ; limite de formations publiées du plan vérifiée au serveur).

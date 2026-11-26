@@ -11567,4 +11567,75 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notifSummaryHide => 'Hide the summary';
+
+  @override
+  String get cstatOpen => 'Tracking and gamification';
+
+  @override
+  String get cstatLessons => 'Lesson tracking';
+
+  @override
+  String get cstatNoLesson => 'No lesson to track yet.';
+
+  @override
+  String cstatCompleted(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'finished by $count students',
+      one: 'finished by 1 student',
+      zero: 'no student finished it',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String cstatWatch(int minutes) {
+    return '$minutes min watched on average';
+  }
+
+  @override
+  String cstatQuiz(String score) {
+    return 'quiz $score';
+  }
+
+  @override
+  String get cstatGamification => 'Gamification';
+
+  @override
+  String get cstatGamificationHint =>
+      'Points for each lesson and quiz, and a leaderboard to motivate students.';
+
+  @override
+  String get cstatEnabled => 'Points and leaderboard on';
+
+  @override
+  String get cstatPerLesson => 'Points per finished lesson';
+
+  @override
+  String get cstatPerQuiz => 'Points per passed quiz';
+
+  @override
+  String get cstatBonus => 'Bonus for a perfect score';
+
+  @override
+  String get cstatBoardVisible => 'Leaderboard visible to students';
+
+  @override
+  String get cstatBoardVisibleHint =>
+      'Students see their rank; other names stay hidden.';
+
+  @override
+  String get cstatSaved => 'Settings saved.';
+
+  @override
+  String get cstatBoard => 'Leaderboard';
+
+  @override
+  String get cstatNoPoints => 'No student has earned points yet.';
+
+  @override
+  String cstatPoints(int count) {
+    return '$count pts';
+  }
 }

@@ -19634,6 +19634,114 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Masquer le résumé'**
   String get notifSummaryHide;
+
+  /// No description provided for @cstatOpen.
+  ///
+  /// In fr, this message translates to:
+  /// **'Suivi et ludification'**
+  String get cstatOpen;
+
+  /// No description provided for @cstatLessons.
+  ///
+  /// In fr, this message translates to:
+  /// **'Suivi des leçons'**
+  String get cstatLessons;
+
+  /// No description provided for @cstatNoLesson.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pas encore de leçon à suivre.'**
+  String get cstatNoLesson;
+
+  /// No description provided for @cstatCompleted.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =0{aucun élève ne l’a terminée} =1{terminée par 1 élève} other{terminée par {count} élèves}}'**
+  String cstatCompleted(int count);
+
+  /// No description provided for @cstatWatch.
+  ///
+  /// In fr, this message translates to:
+  /// **'{minutes} min de visionnage en moyenne'**
+  String cstatWatch(int minutes);
+
+  /// No description provided for @cstatQuiz.
+  ///
+  /// In fr, this message translates to:
+  /// **'quiz {score}'**
+  String cstatQuiz(String score);
+
+  /// No description provided for @cstatGamification.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ludification'**
+  String get cstatGamification;
+
+  /// No description provided for @cstatGamificationHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Des points pour chaque leçon et chaque quiz, et un classement pour motiver les élèves.'**
+  String get cstatGamificationHint;
+
+  /// No description provided for @cstatEnabled.
+  ///
+  /// In fr, this message translates to:
+  /// **'Points et classement activés'**
+  String get cstatEnabled;
+
+  /// No description provided for @cstatPerLesson.
+  ///
+  /// In fr, this message translates to:
+  /// **'Points par leçon terminée'**
+  String get cstatPerLesson;
+
+  /// No description provided for @cstatPerQuiz.
+  ///
+  /// In fr, this message translates to:
+  /// **'Points par quiz réussi'**
+  String get cstatPerQuiz;
+
+  /// No description provided for @cstatBonus.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bonus pour un sans-faute'**
+  String get cstatBonus;
+
+  /// No description provided for @cstatBoardVisible.
+  ///
+  /// In fr, this message translates to:
+  /// **'Classement visible par les élèves'**
+  String get cstatBoardVisible;
+
+  /// No description provided for @cstatBoardVisibleHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les élèves voient leur rang ; les noms des autres restent masqués.'**
+  String get cstatBoardVisibleHint;
+
+  /// No description provided for @cstatSaved.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réglages enregistrés.'**
+  String get cstatSaved;
+
+  /// No description provided for @cstatBoard.
+  ///
+  /// In fr, this message translates to:
+  /// **'Classement'**
+  String get cstatBoard;
+
+  /// No description provided for @cstatNoPoints.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun élève n’a encore gagné de points.'**
+  String get cstatNoPoints;
+
+  /// No description provided for @cstatPoints.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} pts'**
+  String cstatPoints(int count);
 }
 
 class _AppLocalizationsDelegate
