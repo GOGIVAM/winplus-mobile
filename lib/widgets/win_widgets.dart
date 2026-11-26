@@ -365,18 +365,24 @@ class WinAvatar extends StatelessWidget {
         .map((w) => w[0])
         .join()
         .toUpperCase();
+    // Disque : en sombre, voile sarcelle par defaut (le conteneur principal
+    // y est pale). Initiales choisies selon la clarte reelle du disque, pour
+    // rester lisibles meme avec une couleur passee par l'ecran.
+    final disc =
+        color ?? (s.dark ? winTone(s, BadgeColor.teal).bg : s.primaryContainer);
+    final onDisc = disc.computeLuminance() > 0.45
+        ? WinColors.teal700
+        : WinColors.teal200;
     final inner = Container(
       width: size,
       height: size,
-      decoration: BoxDecoration(
-          color: color ?? s.primaryContainer, shape: BoxShape.circle),
+      decoration: BoxDecoration(color: disc, shape: BoxShape.circle),
       alignment: Alignment.center,
       child: Text(initials,
           style: WinType.manrope(
               size: size * 0.36,
               weight: FontWeight.w600,
-              // En sombre, le disque est fonce : initiales eclaircies.
-              color: s.dark ? WinColors.teal300 : WinColors.teal700)),
+              color: onDisc)),
     );
     if (progress == null) return inner;
     return SizedBox(
@@ -701,15 +707,20 @@ class WinCircleIconButton extends StatelessWidget {
         child: Container(
           width: 38,
           height: 38,
+          // Clair : disque blanc, icone foncee. Sombre : disque sombre
+          // translucide, icone claire (un disque blanc y eblouit).
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.85),
+            color: s.dark
+                ? Colors.black.withValues(alpha: 0.45)
+                : Colors.white.withValues(alpha: 0.85),
             shape: BoxShape.circle,
+            border: s.dark
+                ? Border.all(color: Colors.white.withValues(alpha: 0.18))
+                : null,
           ),
-          // Le disque est toujours blanc : icone foncee dans les deux
-          // themes (en sombre, la couleur du texte y etait invisible).
           child: winIcon(icon,
               size: 19,
-              color: iconColor ?? (s.dark ? WinColors.ink900 : s.onStrong)),
+              color: iconColor ?? (s.dark ? Colors.white : s.onStrong)),
         ),
       ),
     );
