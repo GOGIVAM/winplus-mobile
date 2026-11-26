@@ -19118,6 +19118,300 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Ce que WinAI remarque'**
   String get cmpChildrenWinai;
+
+  /// No description provided for @teachTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enseignants'**
+  String get teachTitle;
+
+  /// No description provided for @teachEmptyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun enseignant affilié'**
+  String get teachEmptyTitle;
+
+  /// No description provided for @teachEmptyText.
+  ///
+  /// In fr, this message translates to:
+  /// **'Invitez les enseignants de votre établissement : une fois affiliés, vous les affectez à vos classes et suivez leurs contenus.'**
+  String get teachEmptyText;
+
+  /// No description provided for @teachInvite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Inviter un enseignant'**
+  String get teachInvite;
+
+  /// No description provided for @teachSearch.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom ou e-mail (au moins 2 lettres)'**
+  String get teachSearch;
+
+  /// No description provided for @teachNoResult.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun enseignant trouvé.'**
+  String get teachNoResult;
+
+  /// No description provided for @teachInvited.
+  ///
+  /// In fr, this message translates to:
+  /// **'Invitation envoyée à {name}.'**
+  String teachInvited(String name);
+
+  /// No description provided for @teachReceived.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{1 demande reçue} other{{count} demandes reçues}}'**
+  String teachReceived(int count);
+
+  /// No description provided for @teachSent.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{1 invitation envoyée} other{{count} invitations envoyées}}'**
+  String teachSent(int count);
+
+  /// No description provided for @teachAffiliated.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =0{Enseignants affiliés} =1{1 enseignant affilié} other{{count} enseignants affiliés}}'**
+  String teachAffiliated(int count);
+
+  /// No description provided for @teachNoneYet.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun enseignant affilié pour l’instant.'**
+  String get teachNoneYet;
+
+  /// No description provided for @teachAccept.
+  ///
+  /// In fr, this message translates to:
+  /// **'Accepter'**
+  String get teachAccept;
+
+  /// No description provided for @teachDecline.
+  ///
+  /// In fr, this message translates to:
+  /// **'Refuser'**
+  String get teachDecline;
+
+  /// No description provided for @teachAccepted.
+  ///
+  /// In fr, this message translates to:
+  /// **'{name} fait maintenant partie de vos enseignants.'**
+  String teachAccepted(String name);
+
+  /// No description provided for @teachDeclined.
+  ///
+  /// In fr, this message translates to:
+  /// **'Demande refusée.'**
+  String get teachDeclined;
+
+  /// No description provided for @teachCancelInvite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annuler l’invitation'**
+  String get teachCancelInvite;
+
+  /// No description provided for @teachInviteCancelled.
+  ///
+  /// In fr, this message translates to:
+  /// **'Invitation annulée.'**
+  String get teachInviteCancelled;
+
+  /// No description provided for @teachStats.
+  ///
+  /// In fr, this message translates to:
+  /// **'{contents} contenus ({published} publiés) · {quizzes} quiz'**
+  String teachStats(int contents, int published, int quizzes);
+
+  /// No description provided for @teachAssign.
+  ///
+  /// In fr, this message translates to:
+  /// **'Affecter à une classe'**
+  String get teachAssign;
+
+  /// No description provided for @teachAssignTo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Affecter {name}'**
+  String teachAssignTo(String name);
+
+  /// No description provided for @teachAssigned.
+  ///
+  /// In fr, this message translates to:
+  /// **'{name} affecté à {group}.'**
+  String teachAssigned(String name, String group);
+
+  /// No description provided for @teachNoClassLeft.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cet enseignant est déjà dans toutes vos classes (ou vous n’avez pas encore de classe).'**
+  String get teachNoClassLeft;
+
+  /// No description provided for @teachUnassign.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retirer de la classe'**
+  String get teachUnassign;
+
+  /// No description provided for @teachUnassignConfirm.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retirer {name} de {group} ?'**
+  String teachUnassignConfirm(String name, String group);
+
+  /// No description provided for @teachUnassigned.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enseignant retiré de la classe.'**
+  String get teachUnassigned;
+
+  /// No description provided for @teachRevoke.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mettre fin à l’affiliation'**
+  String get teachRevoke;
+
+  /// No description provided for @teachRevokeConfirm.
+  ///
+  /// In fr, this message translates to:
+  /// **'{name} ne fera plus partie de vos enseignants et sera retiré de vos classes.'**
+  String teachRevokeConfirm(String name);
+
+  /// No description provided for @teachRevoked.
+  ///
+  /// In fr, this message translates to:
+  /// **'Affiliation terminée.'**
+  String get teachRevoked;
+
+  /// No description provided for @ihwTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Devoirs'**
+  String get ihwTitle;
+
+  /// No description provided for @ihwEmptyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun devoir donné'**
+  String get ihwEmptyTitle;
+
+  /// No description provided for @ihwEmptyText.
+  ///
+  /// In fr, this message translates to:
+  /// **'Donnez un quiz ou une épreuve à une classe, avec des consignes et une date limite : les élèves le retrouvent dans Mes devoirs et vous suivez qui l’a fait.'**
+  String get ihwEmptyText;
+
+  /// No description provided for @ihwCreate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Donner un devoir'**
+  String get ihwCreate;
+
+  /// No description provided for @ihwDue.
+  ///
+  /// In fr, this message translates to:
+  /// **'à rendre le {date}'**
+  String ihwDue(String date);
+
+  /// No description provided for @ihwDone.
+  ///
+  /// In fr, this message translates to:
+  /// **'{done} sur {total} faits'**
+  String ihwDone(int done, int total);
+
+  /// No description provided for @ihwClass.
+  ///
+  /// In fr, this message translates to:
+  /// **'Classe'**
+  String get ihwClass;
+
+  /// No description provided for @ihwInstructions.
+  ///
+  /// In fr, this message translates to:
+  /// **'Consignes (facultatives)'**
+  String get ihwInstructions;
+
+  /// No description provided for @ihwDueLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Date limite'**
+  String get ihwDueLabel;
+
+  /// No description provided for @ihwNoDue.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sans date limite (toucher pour en choisir une)'**
+  String get ihwNoDue;
+
+  /// No description provided for @ihwRemoveDue.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retirer la date limite'**
+  String get ihwRemoveDue;
+
+  /// No description provided for @ihwNeedClass.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisissez une classe.'**
+  String get ihwNeedClass;
+
+  /// No description provided for @ihwDueFuture.
+  ///
+  /// In fr, this message translates to:
+  /// **'La date limite doit être dans le futur.'**
+  String get ihwDueFuture;
+
+  /// No description provided for @ihwGive.
+  ///
+  /// In fr, this message translates to:
+  /// **'Donner le devoir'**
+  String get ihwGive;
+
+  /// No description provided for @ihwCreated.
+  ///
+  /// In fr, this message translates to:
+  /// **'Devoir donné, élèves prévenus.'**
+  String get ihwCreated;
+
+  /// No description provided for @ihwDelete.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer le devoir'**
+  String get ihwDelete;
+
+  /// No description provided for @ihwDeleteConfirm.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le devoir disparaît pour la classe. Les quiz déjà faits restent dans l’historique des élèves.'**
+  String get ihwDeleteConfirm;
+
+  /// No description provided for @ihwNoStudent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun élève dans cette classe.'**
+  String get ihwNoStudent;
+
+  /// No description provided for @ihwStatusDone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fait'**
+  String get ihwStatusDone;
+
+  /// No description provided for @ihwStatusLate.
+  ///
+  /// In fr, this message translates to:
+  /// **'En retard'**
+  String get ihwStatusLate;
+
+  /// No description provided for @ihwStatusTodo.
+  ///
+  /// In fr, this message translates to:
+  /// **'À faire'**
+  String get ihwStatusTodo;
 }
 
 class _AppLocalizationsDelegate

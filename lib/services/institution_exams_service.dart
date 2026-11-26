@@ -120,6 +120,58 @@ class MockExamRanking {
       );
 }
 
+/// Devoir donné par l'établissement à une classe.
+class InstitutionHomework {
+  final int id;
+  final String title;
+  final String? instructions;
+  final DateTime? dueDate;
+  final String? groupName;
+  final String? subject;
+  final int students;
+  final int done;
+  final double? average;
+
+  const InstitutionHomework({
+    required this.id,
+    required this.title,
+    this.instructions,
+    this.dueDate,
+    this.groupName,
+    this.subject,
+    this.students = 0,
+    this.done = 0,
+    this.average,
+  });
+
+  factory InstitutionHomework.fromJson(Map<String, dynamic> j) => InstitutionHomework(
+        id: _int(j['id']),
+        title: j['title']?.toString() ?? j['quizTitle']?.toString() ?? '',
+        instructions: j['instructions'] as String?,
+        dueDate: _date(j['dueDate']),
+        groupName: j['groupName'] as String?,
+        subject: j['quizSubject'] as String?,
+        students: _int(j['students']),
+        done: _int(j['done']),
+        average: _num(j['averageScore']),
+      );
+}
+
+/// Avancement d'un élève sur un devoir : done, late ou pending.
+class HomeworkProgress {
+  final int studentId;
+  final String name;
+  final String status;
+  final double? score;
+  const HomeworkProgress(this.studentId, this.name, this.status, this.score);
+
+  factory HomeworkProgress.fromJson(Map<String, dynamic> j) {
+    final n = '${j['firstName'] ?? ''} ${j['lastName'] ?? ''}'.trim();
+    return HomeworkProgress(_int(j['id']), n.isNotEmpty ? n : '${j['email'] ?? ''}',
+        j['status']?.toString() ?? 'pending', _num(j['score']));
+  }
+}
+
 /// Quiz ou épreuve choisi comme sujet d'un examen blanc.
 class ExamPick {
   final bool isExam;
@@ -329,6 +381,37 @@ class InstitutionExamsService {
   Future<void> publish(int id) => _guard(() => _api.dio.post('/institution/mock-exams/$id/publish', data: const {}));
 
   Future<void> deleteMockExam(int id) => _guard(() => _api.dio.delete('/institution/mock-exams/$id'));
+
+  // ── Devoirs de l'établissement ──────────────────────────────────────────
+
+  Future<List<InstitutionHomework>> homework() => _guard(() async {
+        final res = await _api.dio.get('/institution/homework');
+        return _list(res.data).map(InstitutionHomework.fromJson).toList();
+      });
+
+  /// Donne un devoir (quiz ou épreuve) à une classe ; date limite facultative.
+  Future<void> createHomework({
+    required int groupId,
+    required ExamPick subject,
+    String? title,
+    String? instructions,
+    DateTime? dueDate,
+  }) =>
+      _guard(() => _api.dio.post('/institution/homework', data: {
+            'studyGroupId': groupId,
+            'quizId': subject.isExam ? null : subject.id,
+            'examId': subject.isExam ? subject.id : null,
+            if ((title ?? '').trim().isNotEmpty) 'title': title!.trim(),
+            if ((instructions ?? '').trim().isNotEmpty) 'instructions': instructions!.trim(),
+            if (dueDate != null) 'dueDate': _iso(dueDate),
+          }));
+
+  Future<List<HomeworkProgress>> homeworkProgress(int id) => _guard(() async {
+        final res = await _api.dio.get('/institution/homework/$id/progress');
+        return _list(res.data).map(HomeworkProgress.fromJson).toList();
+      });
+
+  Future<void> deleteHomework(int id) => _guard(() => _api.dio.delete('/institution/homework/$id'));
 
   // ── Bulletins ───────────────────────────────────────────────────────────
 

@@ -11239,4 +11239,198 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cmpChildrenWinai => 'What WinAI notices';
+
+  @override
+  String get teachTitle => 'Teachers';
+
+  @override
+  String get teachEmptyTitle => 'No affiliated teacher';
+
+  @override
+  String get teachEmptyText =>
+      'Invite your school\'s teachers: once affiliated, you assign them to your classes and follow their content.';
+
+  @override
+  String get teachInvite => 'Invite a teacher';
+
+  @override
+  String get teachSearch => 'Name or email (at least 2 letters)';
+
+  @override
+  String get teachNoResult => 'No teacher found.';
+
+  @override
+  String teachInvited(String name) {
+    return 'Invitation sent to $name.';
+  }
+
+  @override
+  String teachReceived(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count requests received',
+      one: '1 request received',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String teachSent(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count invitations sent',
+      one: '1 invitation sent',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String teachAffiliated(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count affiliated teachers',
+      one: '1 affiliated teacher',
+      zero: 'Affiliated teachers',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get teachNoneYet => 'No affiliated teacher yet.';
+
+  @override
+  String get teachAccept => 'Accept';
+
+  @override
+  String get teachDecline => 'Decline';
+
+  @override
+  String teachAccepted(String name) {
+    return '$name is now one of your teachers.';
+  }
+
+  @override
+  String get teachDeclined => 'Request declined.';
+
+  @override
+  String get teachCancelInvite => 'Cancel the invitation';
+
+  @override
+  String get teachInviteCancelled => 'Invitation cancelled.';
+
+  @override
+  String teachStats(int contents, int published, int quizzes) {
+    return '$contents contents ($published published) · $quizzes quizzes';
+  }
+
+  @override
+  String get teachAssign => 'Assign to a class';
+
+  @override
+  String teachAssignTo(String name) {
+    return 'Assign $name';
+  }
+
+  @override
+  String teachAssigned(String name, String group) {
+    return '$name assigned to $group.';
+  }
+
+  @override
+  String get teachNoClassLeft =>
+      'This teacher is already in all your classes (or you don\'t have a class yet).';
+
+  @override
+  String get teachUnassign => 'Remove from the class';
+
+  @override
+  String teachUnassignConfirm(String name, String group) {
+    return 'Remove $name from $group?';
+  }
+
+  @override
+  String get teachUnassigned => 'Teacher removed from the class.';
+
+  @override
+  String get teachRevoke => 'End the affiliation';
+
+  @override
+  String teachRevokeConfirm(String name) {
+    return '$name will no longer be one of your teachers and will be removed from your classes.';
+  }
+
+  @override
+  String get teachRevoked => 'Affiliation ended.';
+
+  @override
+  String get ihwTitle => 'Homework';
+
+  @override
+  String get ihwEmptyTitle => 'No homework given';
+
+  @override
+  String get ihwEmptyText =>
+      'Give a quiz or a past paper to a class, with instructions and a due date: students find it in My homework and you see who did it.';
+
+  @override
+  String get ihwCreate => 'Give homework';
+
+  @override
+  String ihwDue(String date) {
+    return 'due $date';
+  }
+
+  @override
+  String ihwDone(int done, int total) {
+    return '$done of $total done';
+  }
+
+  @override
+  String get ihwClass => 'Class';
+
+  @override
+  String get ihwInstructions => 'Instructions (optional)';
+
+  @override
+  String get ihwDueLabel => 'Due date';
+
+  @override
+  String get ihwNoDue => 'No due date (tap to choose one)';
+
+  @override
+  String get ihwRemoveDue => 'Remove the due date';
+
+  @override
+  String get ihwNeedClass => 'Choose a class.';
+
+  @override
+  String get ihwDueFuture => 'The due date must be in the future.';
+
+  @override
+  String get ihwGive => 'Give the homework';
+
+  @override
+  String get ihwCreated => 'Homework given, students notified.';
+
+  @override
+  String get ihwDelete => 'Delete the homework';
+
+  @override
+  String get ihwDeleteConfirm =>
+      'The homework disappears for the class. Quizzes already taken stay in the students\' history.';
+
+  @override
+  String get ihwNoStudent => 'No student in this class.';
+
+  @override
+  String get ihwStatusDone => 'Done';
+
+  @override
+  String get ihwStatusLate => 'Late';
+
+  @override
+  String get ihwStatusTodo => 'To do';
 }

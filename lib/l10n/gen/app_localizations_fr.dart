@@ -11332,4 +11332,198 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get cmpChildrenWinai => 'Ce que WinAI remarque';
+
+  @override
+  String get teachTitle => 'Enseignants';
+
+  @override
+  String get teachEmptyTitle => 'Aucun enseignant affilié';
+
+  @override
+  String get teachEmptyText =>
+      'Invitez les enseignants de votre établissement : une fois affiliés, vous les affectez à vos classes et suivez leurs contenus.';
+
+  @override
+  String get teachInvite => 'Inviter un enseignant';
+
+  @override
+  String get teachSearch => 'Nom ou e-mail (au moins 2 lettres)';
+
+  @override
+  String get teachNoResult => 'Aucun enseignant trouvé.';
+
+  @override
+  String teachInvited(String name) {
+    return 'Invitation envoyée à $name.';
+  }
+
+  @override
+  String teachReceived(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count demandes reçues',
+      one: '1 demande reçue',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String teachSent(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count invitations envoyées',
+      one: '1 invitation envoyée',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String teachAffiliated(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count enseignants affiliés',
+      one: '1 enseignant affilié',
+      zero: 'Enseignants affiliés',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get teachNoneYet => 'Aucun enseignant affilié pour l’instant.';
+
+  @override
+  String get teachAccept => 'Accepter';
+
+  @override
+  String get teachDecline => 'Refuser';
+
+  @override
+  String teachAccepted(String name) {
+    return '$name fait maintenant partie de vos enseignants.';
+  }
+
+  @override
+  String get teachDeclined => 'Demande refusée.';
+
+  @override
+  String get teachCancelInvite => 'Annuler l’invitation';
+
+  @override
+  String get teachInviteCancelled => 'Invitation annulée.';
+
+  @override
+  String teachStats(int contents, int published, int quizzes) {
+    return '$contents contenus ($published publiés) · $quizzes quiz';
+  }
+
+  @override
+  String get teachAssign => 'Affecter à une classe';
+
+  @override
+  String teachAssignTo(String name) {
+    return 'Affecter $name';
+  }
+
+  @override
+  String teachAssigned(String name, String group) {
+    return '$name affecté à $group.';
+  }
+
+  @override
+  String get teachNoClassLeft =>
+      'Cet enseignant est déjà dans toutes vos classes (ou vous n’avez pas encore de classe).';
+
+  @override
+  String get teachUnassign => 'Retirer de la classe';
+
+  @override
+  String teachUnassignConfirm(String name, String group) {
+    return 'Retirer $name de $group ?';
+  }
+
+  @override
+  String get teachUnassigned => 'Enseignant retiré de la classe.';
+
+  @override
+  String get teachRevoke => 'Mettre fin à l’affiliation';
+
+  @override
+  String teachRevokeConfirm(String name) {
+    return '$name ne fera plus partie de vos enseignants et sera retiré de vos classes.';
+  }
+
+  @override
+  String get teachRevoked => 'Affiliation terminée.';
+
+  @override
+  String get ihwTitle => 'Devoirs';
+
+  @override
+  String get ihwEmptyTitle => 'Aucun devoir donné';
+
+  @override
+  String get ihwEmptyText =>
+      'Donnez un quiz ou une épreuve à une classe, avec des consignes et une date limite : les élèves le retrouvent dans Mes devoirs et vous suivez qui l’a fait.';
+
+  @override
+  String get ihwCreate => 'Donner un devoir';
+
+  @override
+  String ihwDue(String date) {
+    return 'à rendre le $date';
+  }
+
+  @override
+  String ihwDone(int done, int total) {
+    return '$done sur $total faits';
+  }
+
+  @override
+  String get ihwClass => 'Classe';
+
+  @override
+  String get ihwInstructions => 'Consignes (facultatives)';
+
+  @override
+  String get ihwDueLabel => 'Date limite';
+
+  @override
+  String get ihwNoDue => 'Sans date limite (toucher pour en choisir une)';
+
+  @override
+  String get ihwRemoveDue => 'Retirer la date limite';
+
+  @override
+  String get ihwNeedClass => 'Choisissez une classe.';
+
+  @override
+  String get ihwDueFuture => 'La date limite doit être dans le futur.';
+
+  @override
+  String get ihwGive => 'Donner le devoir';
+
+  @override
+  String get ihwCreated => 'Devoir donné, élèves prévenus.';
+
+  @override
+  String get ihwDelete => 'Supprimer le devoir';
+
+  @override
+  String get ihwDeleteConfirm =>
+      'Le devoir disparaît pour la classe. Les quiz déjà faits restent dans l’historique des élèves.';
+
+  @override
+  String get ihwNoStudent => 'Aucun élève dans cette classe.';
+
+  @override
+  String get ihwStatusDone => 'Fait';
+
+  @override
+  String get ihwStatusLate => 'En retard';
+
+  @override
+  String get ihwStatusTodo => 'À faire';
 }
