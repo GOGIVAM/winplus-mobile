@@ -10,6 +10,7 @@ import 'package:winplus/widgets/win_widgets.dart';
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:winplus/services/tutor_profile_service.dart';
 
 Finder _bouton(String libelle) => find.widgetWithText(WinButton, libelle);
 Finder _puce(String libelle) => find.widgetWithText(WinChip, libelle);
@@ -80,7 +81,10 @@ void main() {
   late FauxReseau faux;
 
   setUpAll(initialiserDates);
-  setUp(() => faux = preparerEnvironnement(prefs: {'user_role': 'teacher'}));
+  setUp(() {
+    faux = preparerEnvironnement(prefs: {'user_role': 'teacher'});
+    TutorProfileService.instance.forgetReferential();
+  });
 
   void routes([Map<String, dynamic>? profil, List<Map<String, dynamic>> manquants = const []]) {
     final p = profil ?? _profil();
@@ -121,7 +125,7 @@ void main() {
     final l = L10n.current;
     expect(find.text(l.teacherProfileTitle), findsOneWidget);
     expect(find.text(l.teacherProfileCompletion), findsOneWidget);
-    expect(find.text('60/100'), findsOneWidget);
+    expect(find.text(WinFormat.percent(60)), findsOneWidget);
     expect(find.text('Biographie'), findsOneWidget);
     expect(find.text(l.teacherProfileSubjectsTaught), findsOneWidget);
     // Profil existant : matiere et niveau deja actifs.
@@ -163,6 +167,47 @@ void main() {
     expect(p['onboardingStep'], 1);
     expect(find.text(l.teacherProfileStepSaved), findsOneWidget);
     expect(find.text(l.teacherProfileModes), findsOneWidget);
+  });
+
+  testWidgets('sans la liste commune du serveur : pas de puce « Autres matieres »', (tester) async {
+    routes();
+    await monterProfil(tester);
+    expect(_puce(L10n.current.tutoringMoreSubjects), findsNothing);
+    expect(_puce(L10n.current.tutoringMoreLevels), findsNothing);
+  });
+
+  testWidgets('liste commune du serveur : « Autres matieres » ouvre la liste complete, le choix s\'ajoute et part', (tester) async {
+    routes();
+    faux.repond('GET', '/tutor-profile/referential', {
+      'success': true,
+      'data': {
+        'subjects': {
+          'secondary': ['Mathématiques', 'Physique'],
+          'superior': ['Droit'],
+        },
+        'levels': {
+          'secondary': ['Terminale', 'Licence (Université)'],
+          'superior': ['Licence (Université)'],
+        },
+        'aliases': {'ENSP Polytechnique': 'ENSP Yaoundé (ENSPY)'},
+      },
+    });
+    await monterProfil(tester);
+    final l = L10n.current;
+    // L'ancien libelle de la liste courte prend celui de la liste commune.
+    expect(_puce('ENSP Yaoundé (ENSPY)'), findsOneWidget);
+    expect(_puce('ENSP Polytechnique'), findsNothing);
+    await tester.tap(_puce(l.tutoringMoreSubjects));
+    await reseau(tester);
+    await tester.tap(find.text('Droit'));
+    await pomper(tester);
+    await tester.tap(_bouton(l.commonConfirm));
+    await reseau(tester);
+    // La matiere cochee apparait parmi les puces, active.
+    expect(tester.widget<WinChip>(_puce('Droit')).active, isTrue);
+    await tester.tap(_bouton(l.commonContinue));
+    await reseau(tester);
+    expect(envoye()['subjects'], containsAll(['Mathématiques', 'Droit']));
   });
 
   testWidgets('echec de l\'enregistrement : message et on reste sur l\'etape', (tester) async {
@@ -281,7 +326,7 @@ void main() {
       final envoi = faux.recues('POST', '/tutor-profile/me/suggest-rate').single.data as Map;
       expect(envoi['subject'], 'Mathématiques');
       expect(envoi['level'], 'Terminale');
-      expect(find.text(l.teacherProfileRateSuggested(1500, 1000, 2000, 'Selon le marche')), findsOneWidget);
+      expect(find.text(l.teacherProfileRateSuggested(WinFormat.number(1500), WinFormat.number(1000), WinFormat.number(2000), 'Selon le marche')), findsOneWidget);
       await tester.tap(find.text(l.teacherProfileUseRate));
       await pomper(tester);
       expect(tester.widget<TextField>(find.widgetWithText(TextField, '1500').first).controller!.text, '1500');

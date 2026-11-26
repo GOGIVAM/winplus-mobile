@@ -124,7 +124,7 @@ void main() {
       final l = L10n.current;
       expect(find.text('Mme Ngo'), findsOneWidget);
       expect(find.text('Professeure agregee'), findsOneWidget);
-      expect(find.text(l.tutoringRatingReviews('4.5', 12)), findsOneWidget);
+      expect(find.text(l.tutoringRatingReviews(WinFormat.decimal(4.5), 12)), findsOneWidget);
       expect(_bouton(l.tutoringBookSession), findsOneWidget);
     });
 
@@ -179,12 +179,43 @@ void main() {
       final l = L10n.current;
       expect(find.text('Dix ans d\'experience'), findsOneWidget);
       expect(find.text(l.tutoringIntroVideo), findsOneWidget);
-      expect(find.text('https://exemple.test/v'), findsOneWidget);
+      // La video s'ouvre par un bouton ; son adresse n'est plus affichee.
+      expect(_bouton(l.tutoringWatchVideo), findsOneWidget);
+      expect(find.text('https://exemple.test/v'), findsNothing);
       await tester.scrollUntilVisible(find.text('Physique'), 300, scrollable: find.byType(Scrollable).first);
       // Les avis, construits en bas de la liste, se chargent au défilement.
       await reseau(tester);
       expect(find.text('Mathematiques'), findsOneWidget);
       expect(find.text('Terminale'), findsOneWidget);
+    });
+
+    testWidgets('reperes « Experimente » et « Tres reactif », specialites et zones d\'intervention', (tester) async {
+      routes(_profil({
+        'isExperienced': true,
+        'isHighlyResponsive': true,
+        'specialties': ['Soutien scolaire'],
+        'interventionZones': [
+          {'city': 'Douala', 'quartier': 'Bonapriso'},
+          {'city': 'Kribi'},
+        ],
+      }));
+      await monterEcran(tester, const TutorPublicProfileScreen(userId: 21));
+      final l = L10n.current;
+      expect(find.text(l.tutoringExperienced), findsOneWidget);
+      expect(find.text(l.tutoringHighlyResponsive), findsOneWidget);
+      await tester.scrollUntilVisible(find.text(l.tutoringZonesTitle), 300, scrollable: find.byType(Scrollable).first);
+      await reseau(tester);
+      expect(find.text('Soutien scolaire'), findsOneWidget);
+      expect(find.text('Douala · Bonapriso'), findsOneWidget);
+      expect(find.text('Kribi'), findsOneWidget);
+    });
+
+    testWidgets('sans specialite ni zone : pas de carte vide', (tester) async {
+      routes(_profil());
+      await monterEcran(tester, const TutorPublicProfileScreen(userId: 21));
+      await tester.scrollUntilVisible(find.text(L10n.current.tutoringLevels), 300, scrollable: find.byType(Scrollable).first);
+      expect(find.text(L10n.current.tutoringZonesTitle), findsNothing);
+      expect(find.text(L10n.current.teacherProfileSpecialties), findsNothing);
     });
 
     testWidgets('matieres et niveaux vides : « Non renseigne » deux fois', (tester) async {

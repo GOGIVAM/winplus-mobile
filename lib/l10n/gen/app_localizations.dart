@@ -20781,6 +20781,168 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'{quizzes} quiz réussis'**
   String studentGroupsRankLineNoDuration(Object quizzes);
+
+  /// No description provided for @tutoringPickSubjectTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir une matière'**
+  String get tutoringPickSubjectTitle;
+
+  /// No description provided for @tutoringPickLevelTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir un niveau'**
+  String get tutoringPickLevelTitle;
+
+  /// No description provided for @tutoringRefSearch.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher dans la liste'**
+  String get tutoringRefSearch;
+
+  /// No description provided for @tutoringRefEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun élément ne correspond.'**
+  String get tutoringRefEmpty;
+
+  /// No description provided for @tutoringMoreSubjects.
+  ///
+  /// In fr, this message translates to:
+  /// **'Autres matières'**
+  String get tutoringMoreSubjects;
+
+  /// No description provided for @tutoringMoreLevels.
+  ///
+  /// In fr, this message translates to:
+  /// **'Autres niveaux'**
+  String get tutoringMoreLevels;
+
+  /// No description provided for @tutoringSortFilter.
+  ///
+  /// In fr, this message translates to:
+  /// **'Trier et filtrer'**
+  String get tutoringSortFilter;
+
+  /// No description provided for @tutoringSortBy.
+  ///
+  /// In fr, this message translates to:
+  /// **'Trier par'**
+  String get tutoringSortBy;
+
+  /// No description provided for @tutoringSortRelevance.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pertinence'**
+  String get tutoringSortRelevance;
+
+  /// No description provided for @tutoringSortPriceAsc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tarif croissant'**
+  String get tutoringSortPriceAsc;
+
+  /// No description provided for @tutoringSortPriceDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tarif décroissant'**
+  String get tutoringSortPriceDesc;
+
+  /// No description provided for @tutoringSortNextSlot.
+  ///
+  /// In fr, this message translates to:
+  /// **'Disponibilité la plus proche'**
+  String get tutoringSortNextSlot;
+
+  /// No description provided for @tutoringMaxRate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tarif maximum par heure'**
+  String get tutoringMaxRate;
+
+  /// No description provided for @tutoringAnyRate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tous les tarifs'**
+  String get tutoringAnyRate;
+
+  /// No description provided for @tutoringMaxRateValue.
+  ///
+  /// In fr, this message translates to:
+  /// **'Jusqu\'à {amount} XAF'**
+  String tutoringMaxRateValue(String amount);
+
+  /// No description provided for @tutoringMinRating.
+  ///
+  /// In fr, this message translates to:
+  /// **'Note minimale'**
+  String get tutoringMinRating;
+
+  /// No description provided for @tutoringAnyRating.
+  ///
+  /// In fr, this message translates to:
+  /// **'Toutes les notes'**
+  String get tutoringAnyRating;
+
+  /// No description provided for @tutoringMinRatingValue.
+  ///
+  /// In fr, this message translates to:
+  /// **'{rating} et plus'**
+  String tutoringMinRatingValue(String rating);
+
+  /// No description provided for @tutoringShowResults.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir les résultats'**
+  String get tutoringShowResults;
+
+  /// No description provided for @tutoringRatingShort.
+  ///
+  /// In fr, this message translates to:
+  /// **'{rating} ({count} avis)'**
+  String tutoringRatingShort(String rating, int count);
+
+  /// No description provided for @tutoringNewTutor.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau sur WinPlus'**
+  String get tutoringNewTutor;
+
+  /// No description provided for @tutoringNextSlot.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prochain créneau : {when}'**
+  String tutoringNextSlot(String when);
+
+  /// No description provided for @tutoringExperienced.
+  ///
+  /// In fr, this message translates to:
+  /// **'Expérimenté'**
+  String get tutoringExperienced;
+
+  /// No description provided for @tutoringHighlyResponsive.
+  ///
+  /// In fr, this message translates to:
+  /// **'Très réactif'**
+  String get tutoringHighlyResponsive;
+
+  /// No description provided for @tutoringZonesTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Zones d\'intervention'**
+  String get tutoringZonesTitle;
+
+  /// No description provided for @tutoringWatchVideo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Regarder la vidéo de présentation'**
+  String get tutoringWatchVideo;
+
+  /// No description provided for @tutoringVideoOpenError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible d\'ouvrir la vidéo.'**
+  String get tutoringVideoOpenError;
 }
 
 class _AppLocalizationsDelegate

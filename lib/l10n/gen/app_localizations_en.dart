@@ -12267,4 +12267,93 @@ class AppLocalizationsEn extends AppLocalizations {
   String studentGroupsRankLineNoDuration(Object quizzes) {
     return '$quizzes quizzes passed';
   }
+
+  @override
+  String get tutoringPickSubjectTitle => 'Choose a subject';
+
+  @override
+  String get tutoringPickLevelTitle => 'Choose a level';
+
+  @override
+  String get tutoringRefSearch => 'Search the list';
+
+  @override
+  String get tutoringRefEmpty => 'Nothing matches.';
+
+  @override
+  String get tutoringMoreSubjects => 'More subjects';
+
+  @override
+  String get tutoringMoreLevels => 'More levels';
+
+  @override
+  String get tutoringSortFilter => 'Sort and filter';
+
+  @override
+  String get tutoringSortBy => 'Sort by';
+
+  @override
+  String get tutoringSortRelevance => 'Relevance';
+
+  @override
+  String get tutoringSortPriceAsc => 'Lowest rate first';
+
+  @override
+  String get tutoringSortPriceDesc => 'Highest rate first';
+
+  @override
+  String get tutoringSortNextSlot => 'Soonest availability';
+
+  @override
+  String get tutoringMaxRate => 'Maximum hourly rate';
+
+  @override
+  String get tutoringAnyRate => 'Any rate';
+
+  @override
+  String tutoringMaxRateValue(String amount) {
+    return 'Up to $amount XAF';
+  }
+
+  @override
+  String get tutoringMinRating => 'Minimum rating';
+
+  @override
+  String get tutoringAnyRating => 'Any rating';
+
+  @override
+  String tutoringMinRatingValue(String rating) {
+    return '$rating and up';
+  }
+
+  @override
+  String get tutoringShowResults => 'Show results';
+
+  @override
+  String tutoringRatingShort(String rating, int count) {
+    return '$rating ($count reviews)';
+  }
+
+  @override
+  String get tutoringNewTutor => 'New on WinPlus';
+
+  @override
+  String tutoringNextSlot(String when) {
+    return 'Next slot: $when';
+  }
+
+  @override
+  String get tutoringExperienced => 'Experienced';
+
+  @override
+  String get tutoringHighlyResponsive => 'Very responsive';
+
+  @override
+  String get tutoringZonesTitle => 'Areas covered';
+
+  @override
+  String get tutoringWatchVideo => 'Watch the introduction video';
+
+  @override
+  String get tutoringVideoOpenError => 'Could not open the video.';
 }

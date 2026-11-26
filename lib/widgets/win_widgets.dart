@@ -6,6 +6,7 @@ import '../theme/win_typography.dart';
 import 'win_motion_widgets.dart';
 import 'win_mascot.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../shared/net_image.dart';
 
 /// Widgets communs alignés sur la version téléphone du site.
 
@@ -351,8 +352,12 @@ class WinAvatar extends StatelessWidget {
   final double size;
   final Color? color;
   final double? progress;
+
+  /// Photo de la personne ; les initiales la remplacent si elle manque ou
+  /// ne se charge pas.
+  final String? imageUrl;
   const WinAvatar(this.name,
-      {super.key, this.size = 48, this.color, this.progress});
+      {super.key, this.size = 48, this.color, this.progress, this.imageUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -373,7 +378,7 @@ class WinAvatar extends StatelessWidget {
     final onDisc = disc.computeLuminance() > 0.45
         ? WinColors.teal700
         : WinColors.teal200;
-    final inner = Container(
+    final letters = Container(
       width: size,
       height: size,
       decoration: BoxDecoration(color: disc, shape: BoxShape.circle),
@@ -384,6 +389,13 @@ class WinAvatar extends StatelessWidget {
               weight: FontWeight.w600,
               color: onDisc)),
     );
+    final inner = (imageUrl ?? '').isEmpty
+        ? letters
+        : ClipOval(
+            child: SizedBox(
+                width: size,
+                height: size,
+                child: NetImage(imageUrl!, error: (_) => letters)));
     if (progress == null) return inner;
     return SizedBox(
       width: size + 10,

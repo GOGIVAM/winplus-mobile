@@ -1,4 +1,3 @@
-import '../../l10n/class_levels.dart';
 import 'package:flutter/material.dart';
 import '../../l10n/l10n.dart';
 import '../../theme/win_motion.dart';
@@ -12,49 +11,8 @@ import 'tutor_public_profile_screen.dart';
 import 'tutor_pricing_widgets.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../widgets/win_screen.dart';
+import '../../shared/tutor_ref_picker.dart';
 
-const _tutorSubjects = [
-  'Mathématiques',
-  'Physique',
-  'Chimie',
-  'SVT',
-  'Français',
-  'Philosophie',
-  'Anglais',
-  'Histoire-Géo',
-  'Informatique',
-  'Économie',
-];
-
-/// Libellé affiché d'une matière du filtre (la valeur envoyée à l'API reste en français).
-String _subjectLabel(String v) {
-  final l = L10n.current;
-  return switch (v) {
-    'Mathématiques' => l.dataSubjectMath,
-    'Physique' => l.dataSubjectPhysics,
-    'Chimie' => l.dataSubjectChemistry,
-    'Français' => l.dataSubjectFrench,
-    'Philosophie' => l.dataSubjectPhilosophy,
-    'Anglais' => l.dataSubjectEnglish,
-    'Histoire-Géo' => l.dataSubjectHistGeo,
-    'Informatique' => l.dataSubjectComputing,
-    'Économie' => l.tutoringSubjectEconomics,
-    _ => v,
-  };
-}
-const _tutorLevels = [
-  '6ème',
-  '5ème',
-  '4ème',
-  '3ème',
-  'Seconde',
-  'Première',
-  'Terminale',
-  'BEPC',
-  'Probatoire',
-  'BAC',
-  'Prépa',
-];
 List<(String, String)> get _tutorModes => [
   ('online', L10n.current.commonOnline),
   // Lot 9.5 (17.11) : tout mode présentiel ne renvoie que des tuteurs vérifiés.
@@ -79,6 +37,10 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
   String? _mode;
   String? _city;
   bool _availableSoon = false;
+  // Réglages de la feuille « Trier et filtrer ».
+  num? _maxRate;
+  double? _minRating;
+  String? _sort;
   // Sujets de séance (lot 9.1, 17.5) : classent les tuteurs côté serveur et
   // sont repris dans la réservation.
   List<String> _topics = [];
@@ -128,6 +90,9 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
         mode: _mode,
         city: _city,
         availableSoon: _availableSoon ? true : null,
+        maxHourlyRateXaf: _maxRate,
+        minRating: _minRating,
+        sort: _sort,
         topics: _topics,
         pageSize: 30,
       );
@@ -145,9 +110,119 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
     }
   }
 
+  /// Matière choisie dans la liste commune du tutorat.
+  Future<void> _pickSubject() async {
+    final ref = await TutorProfileService.instance.referential();
+    if (!mounted) return;
+    final l = context.l10n;
+    final r = await showTutorRefPicker(context,
+        title: l.tutoringPickSubjectTitle,
+        sections: [
+          (l.instCycleSecondary, ref.secondarySubjects),
+          (l.instCycleHigher, ref.superiorSubjects),
+        ],
+        selected: {if (_subject != null) _subject!},
+        labelOf: tutorSubjectLabel,
+        noneLabel: l.tutoringAllSubjects);
+    if (r == null || !mounted) return;
+    setState(() => _subject = r.firstOrNull);
+    _search();
+  }
+
+  Future<void> _pickLevel() async {
+    final ref = await TutorProfileService.instance.referential();
+    if (!mounted) return;
+    final l = context.l10n;
+    final r = await showTutorRefPicker(context,
+        title: l.tutoringPickLevelTitle,
+        sections: [
+          (l.instCycleSecondary, ref.secondaryLevels),
+          (l.instCycleHigher, ref.superiorLevels),
+        ],
+        selected: {if (_level != null) _level!},
+        labelOf: tutorLevelLabel,
+        noneLabel: l.tutoringAllLevels);
+    if (r == null || !mounted) return;
+    setState(() => _level = r.firstOrNull);
+    _search();
+  }
+
+  /// Nombre de réglages actifs dans « Trier et filtrer ».
+  int get _extraCount =>
+      (_maxRate != null ? 1 : 0) +
+      (_minRating != null ? 1 : 0) +
+      (_sort != null ? 1 : 0);
+
+  /// Tri, tarif maximum et note minimale ; la recherche repart à la fermeture.
+  Future<void> _openSortFilter() async {
+    final l = context.l10n;
+    await showWinBottomSheet<void>(
+      context: context,
+      title: l.tutoringSortFilter,
+      child: StatefulBuilder(builder: (c, setSheet) {
+        final s = WinTheme.of(c);
+        void set(VoidCallback f) {
+          setState(f);
+          setSheet(() {});
+        }
+
+        Widget title(String t) => Padding(
+            padding: const EdgeInsets.only(top: 18, bottom: 8),
+            child: Text(t, style: WinType.labelM(s.onMuted)));
+        return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(l.tutoringSortBy, style: WinType.labelM(s.onMuted)),
+              const SizedBox(height: 8),
+              Wrap(spacing: 8, runSpacing: 8, children: [
+                for (final (value, label) in <(String?, String)>[
+                  (null, l.tutoringSortRelevance),
+                  ('price-asc', l.tutoringSortPriceAsc),
+                  ('price-desc', l.tutoringSortPriceDesc),
+                  ('next-slot', l.tutoringSortNextSlot),
+                ])
+                  WinChip(label,
+                      active: _sort == value,
+                      onTap: () => set(() => _sort = value)),
+              ]),
+              title(l.tutoringMaxRate),
+              Wrap(spacing: 8, runSpacing: 8, children: [
+                WinChip(l.tutoringAnyRate,
+                    active: _maxRate == null,
+                    onTap: () => set(() => _maxRate = null)),
+                for (final v in const [2000, 3000, 5000, 10000])
+                  WinChip(l.tutoringMaxRateValue(fmtXaf(v)),
+                      active: _maxRate == v,
+                      onTap: () => set(() => _maxRate = v)),
+              ]),
+              title(l.tutoringMinRating),
+              Wrap(spacing: 8, runSpacing: 8, children: [
+                WinChip(l.tutoringAnyRating,
+                    active: _minRating == null,
+                    onTap: () => set(() => _minRating = null)),
+                for (final v in const [3.0, 4.0, 4.5])
+                  WinChip(l.tutoringMinRatingValue(WinFormat.decimal(v)),
+                      active: _minRating == v,
+                      icon: PhosphorIconsRegular.star,
+                      onTap: () => set(() => _minRating = v)),
+              ]),
+              const SizedBox(height: 22),
+              SizedBox(
+                width: double.infinity,
+                child: WinButton(l.tutoringShowResults,
+                    block: true, onTap: () => Navigator.pop(c)),
+              ),
+            ]);
+      }),
+    );
+    if (mounted) _search();
+  }
+
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
+    final l = context.l10n;
     return Scaffold(
       backgroundColor: s.bg,
       appBar: AppBar(
@@ -158,6 +233,18 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(context.l10n.studentTabsFindTutor),
+        actions: [
+          IconButton(
+            tooltip: l.tutoringSortFilter,
+            onPressed: _openSortFilter,
+            icon: Badge(
+              isLabelVisible: _extraCount > 0,
+              label: Text('$_extraCount'),
+              child: Icon(PhosphorIconsRegular.slidersHorizontal,
+                  color: s.onStrong),
+            ),
+          ),
+        ],
       ),
       body: Column(children: [
         Padding(
@@ -171,59 +258,34 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
             },
           ),
         ),
+        // Matière et niveau se choisissent dans la liste commune du tutorat.
         SizedBox(
-          height: 40,
-          child: ListView.separated(
+          height: 44,
+          child: ListView(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            itemCount: _tutorSubjects.length + 1,
-            separatorBuilder: (_, __) => const SizedBox(width: 8),
-            itemBuilder: (_, i) {
-              if (i == 0) {
-                return WinChip(context.l10n.tutoringAllSubjects, active: _subject == null,
-                    onTap: () {
-                  setState(() => _subject = null);
-                  _search();
-                });
-              }
-              final subj = _tutorSubjects[i - 1];
-              return WinChip(_subjectLabel(subj), active: _subject == subj, onTap: () {
-                setState(() => _subject = _subject == subj ? null : subj);
+            children: [
+              WinChip(
+                  _subject == null
+                      ? l.tutoringAllSubjects
+                      : tutorSubjectLabel(_subject!),
+                  active: _subject != null,
+                  icon: PhosphorIconsRegular.bookOpen,
+                  onTap: _pickSubject),
+              const SizedBox(width: 8),
+              WinChip(
+                  _level == null ? l.tutoringAllLevels : tutorLevelLabel(_level!),
+                  active: _level != null,
+                  icon: PhosphorIconsRegular.graduationCap,
+                  onTap: _pickLevel),
+              const SizedBox(width: 8),
+              WinChip(l.tutoringDiplomaVerified,
+                  active: _verifiedOnly,
+                  icon: PhosphorIconsRegular.sealCheck, onTap: () {
+                setState(() => _verifiedOnly = !_verifiedOnly);
                 _search();
-              });
-            },
-          ),
-        ),
-        const SizedBox(height: 6),
-        SizedBox(
-          height: 40,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            itemCount: _tutorLevels.length + 2,
-            separatorBuilder: (_, __) => const SizedBox(width: 8),
-            itemBuilder: (_, i) {
-              if (i == 0) {
-                return WinChip(context.l10n.tutoringAllLevels, active: _level == null,
-                    onTap: () {
-                  setState(() => _level = null);
-                  _search();
-                });
-              }
-              if (i == 1) {
-                return WinChip(context.l10n.tutoringDiplomaVerified,
-                    active: _verifiedOnly,
-                    icon: PhosphorIconsRegular.sealCheck, onTap: () {
-                  setState(() => _verifiedOnly = !_verifiedOnly);
-                  _search();
-                });
-              }
-              final lvl = _tutorLevels[i - 2];
-              return WinChip(ClassLevels.label(lvl), active: _level == lvl, onTap: () {
-                setState(() => _level = _level == lvl ? null : lvl);
-                _search();
-              });
-            },
+              }),
+            ],
           ),
         ),
         const SizedBox(height: 6),
@@ -335,7 +397,8 @@ class _TutorResultCard extends StatelessWidget {
         // cœur favori des cartes catalogue : indicateur incrusté sur
         // l'image plutôt qu'une ligne de texte séparée).
         Stack(clipBehavior: Clip.none, children: [
-          WinAvatar(tutor.fullName.isEmpty ? '?' : tutor.fullName, size: 56),
+          WinAvatar(tutor.fullName.isEmpty ? '?' : tutor.fullName,
+              size: 56, imageUrl: tutor.avatarUrl),
           // Lot 9.5 : la coche signale la vérification pour le présentiel.
           if (tutor.isInPersonVerified)
             Positioned(
@@ -380,6 +443,25 @@ class _TutorResultCard extends StatelessWidget {
                 ),
               ),
             ]),
+            // Note et nombre d'avis ; « Nouveau » tant qu'il n'y a pas d'avis.
+            Padding(
+              padding: const EdgeInsets.only(top: 3),
+              child: Row(children: [
+                Icon(PhosphorIconsFill.star,
+                    size: 14,
+                    color: tutor.reviewCount > 0 && tutor.averageRating != null
+                        ? WinColors.gold
+                        : s.onFaint),
+                const SizedBox(width: 4),
+                Text(
+                    tutor.reviewCount > 0 && tutor.averageRating != null
+                        ? context.l10n.tutoringRatingShort(
+                            WinFormat.decimal(tutor.averageRating!),
+                            tutor.reviewCount)
+                        : context.l10n.tutoringNewTutor,
+                    style: WinType.labelS(s.onMuted)),
+              ]),
+            ),
             if (assignment != null)
               Padding(
                 padding: const EdgeInsets.only(top: 2),
@@ -423,9 +505,25 @@ class _TutorResultCard extends StatelessWidget {
                     '${tutor.endorsedByInstitutions.isNotEmpty ? ' · ${context.l10n.tutoringEndorsedBy(tutor.endorsedByInstitutions.first)}' : ''}',
                     style: WinType.labelS(s.onFaint)),
               ),
+            if (tutor.nextAvailableSlot != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 6),
+                child: Row(children: [
+                  Icon(PhosphorIconsRegular.calendarCheck,
+                      size: 14, color: s.primary),
+                  const SizedBox(width: 4),
+                  Expanded(
+                    child: Text(
+                        context.l10n.tutoringNextSlot(WinFormat.dayMonthTime(
+                            tutor.nextAvailableSlot!)),
+                        style: WinType.labelS(s.primary)),
+                  ),
+                ]),
+              ),
           ]),
         ),
       ]),
     );
   }
 }
+

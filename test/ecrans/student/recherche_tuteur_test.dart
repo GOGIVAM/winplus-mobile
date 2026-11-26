@@ -4,6 +4,9 @@ import 'package:winplus/l10n/l10n.dart';
 import 'package:winplus/student/tutors/tutor_public_profile_screen.dart';
 import 'package:winplus/student/tutors/tutor_search_screen.dart';
 import 'package:winplus/widgets/win_widgets.dart';
+import 'package:winplus/student/tutors/tutor_pricing_widgets.dart';
+import 'package:winplus/l10n/class_levels.dart';
+import 'package:winplus/services/tutor_profile_service.dart';
 
 import '../../helpers/ecran.dart';
 import '../../helpers/faux_reseau.dart';
@@ -30,6 +33,33 @@ Future<void> _toucher(WidgetTester tester, Finder puce) async {
   await tester.tap(puce);
 }
 
+const _referentiel = {
+  'success': true,
+  'data': {
+    'subjects': {
+      'secondary': ['Mathématiques', 'Physique', 'Chimie', 'SVT'],
+      'superior': ['Droit', 'Banque & finance'],
+    },
+    'levels': {
+      'secondary': ['Seconde', 'Terminale', 'Licence (Université)'],
+      'superior': ['Licence (Université)'],
+    },
+    'aliases': {'ENSP Polytechnique': 'ENSP Yaoundé (ENSPY)'},
+  },
+};
+
+/// Ouvre un selecteur par sa puce, filtre au besoin, puis touche une ligne.
+Future<void> _choisir(WidgetTester tester, Finder puce, String ligne, {String? chercher}) async {
+  await _toucher(tester, puce);
+  await reseau(tester);
+  if (chercher != null) {
+    await tester.enterText(find.byType(TextField).last, chercher);
+    await pomper(tester);
+  }
+  await tester.tap(find.text(ligne).last);
+  await reseau(tester);
+}
+
 Map<String, dynamic> _tuteur([Map<String, dynamic> en = const {}]) => {
       'userId': 21,
       'fullName': 'Mme Ngo',
@@ -43,7 +73,10 @@ Map<String, dynamic> _tuteur([Map<String, dynamic> en = const {}]) => {
 void main() {
   late FauxReseau faux;
 
-  setUp(() => faux = preparerEnvironnement(prefs: {'user_role': 'student'}));
+  setUp(() {
+    faux = preparerEnvironnement(prefs: {'user_role': 'student'});
+    TutorProfileService.instance.forgetReferential();
+  });
 
   void routes(List<Map<String, dynamic>> tuteurs, {List<Map<String, dynamic>> attributions = const []}) {
     faux.repond('GET', '/tutor-profile/search', tuteurs);
@@ -66,7 +99,7 @@ void main() {
     final q = derniere();
     expect(q['pageSize'], 30);
     expect(q['page'], 1);
-    for (final cle in ['subject', 'level', 'verifiedOnly', 'mode', 'city', 'availableSoon', 'topics']) {
+    for (final cle in ['subject', 'level', 'verifiedOnly', 'mode', 'city', 'availableSoon', 'topics', 'sort', 'minRating', 'maxHourlyRateXaf']) {
       expect(q.containsKey(cle), isFalse, reason: cle);
     }
   });
@@ -131,30 +164,81 @@ void main() {
     expect(find.text('Mme Ngo'), findsOneWidget);
   });
 
-  testWidgets('filtre matiere : envoye au serveur, un second appui le retire', (tester) async {
+  testWidgets('matiere : choisie dans le selecteur, envoyee au serveur ; « Toutes matieres » la retire', (tester) async {
     routes([_tuteur()]);
     await monterEcran(tester, const TutorSearchScreen());
-    final maths = _puce(L10n.current.dataSubjectMath);
-    await tester.tap(maths);
-    await reseau(tester);
+    final l = L10n.current;
+    await _choisir(tester, _puce(l.tutoringAllSubjects), l.dataSubjectMath);
     expect(derniere()['subject'], 'Mathématiques');
-    expect(tester.widget<WinChip>(maths).active, isTrue);
-    expect(tester.widget<WinChip>(_puce(L10n.current.tutoringAllSubjects)).active, isFalse);
-    await tester.tap(maths);
-    await reseau(tester);
+    // La puce porte la matiere choisie et passe a l'etat actif.
+    expect(tester.widget<WinChip>(_puce(l.dataSubjectMath)).active, isTrue);
+    expect(_puce(l.tutoringAllSubjects), findsNothing);
+    await _choisir(tester, _puce(l.dataSubjectMath), l.tutoringAllSubjects);
     expect(derniere().containsKey('subject'), isFalse);
-    expect(tester.widget<WinChip>(_puce(L10n.current.tutoringAllSubjects)).active, isTrue);
+    expect(tester.widget<WinChip>(_puce(l.tutoringAllSubjects)).active, isFalse);
   });
 
-  testWidgets('« Toutes matieres » efface la matiere choisie', (tester) async {
+  testWidgets('niveau : choisi dans le selecteur apres recherche sans accent', (tester) async {
     routes([_tuteur()]);
     await monterEcran(tester, const TutorSearchScreen());
-    await _toucher(tester, _puce(L10n.current.dataSubjectPhysics));
+    final l = L10n.current;
+    await _choisir(tester, _puce(l.tutoringAllLevels), ClassLevels.label('Première'), chercher: 'premie');
+    expect(derniere()['level'], 'Première');
+  });
+
+  testWidgets('liste commune du serveur : matieres du superieur proposees, niveaux sans doublon', (tester) async {
+    routes([_tuteur()]);
+    faux.repond('GET', '/tutor-profile/referential', _referentiel);
+    await monterEcran(tester, const TutorSearchScreen());
+    final l = L10n.current;
+    await _toucher(tester, _puce(l.tutoringAllSubjects));
     await reseau(tester);
-    expect(derniere()['subject'], 'Physique');
-    await _toucher(tester, _puce(L10n.current.tutoringAllSubjects));
+    expect(find.text(l.instCycleSecondary), findsOneWidget);
+    expect(find.text(l.instCycleHigher), findsOneWidget);
+    await tester.tap(find.text('Banque & finance'));
     await reseau(tester);
-    expect(derniere().containsKey('subject'), isFalse);
+    expect(derniere()['subject'], 'Banque & finance');
+    await _toucher(tester, _puce(l.tutoringAllLevels));
+    await reseau(tester);
+    // Le serveur repete les niveaux du superieur dans la premiere liste.
+    expect(find.text('Licence (Université)'), findsOneWidget);
+  });
+
+  testWidgets('trier et filtrer : tri, tarif maximum et note minimale envoyes a la fermeture', (tester) async {
+    routes([_tuteur()]);
+    await monterEcran(tester, const TutorSearchScreen());
+    final l = L10n.current;
+    await tester.tap(find.byTooltip(l.tutoringSortFilter));
+    await reseau(tester);
+    for (final puce in [
+      l.tutoringSortPriceAsc,
+      l.tutoringMaxRateValue(fmtXaf(3000)),
+      l.tutoringMinRatingValue(WinFormat.decimal(4)),
+    ]) {
+      tester.widget<WinChip>(_puce(puce)).onTap!();
+      await pomper(tester);
+    }
+    tester.widget<WinButton>(_bouton(l.tutoringShowResults)).onTap!();
+    await reseau(tester);
+    final q = derniere();
+    expect(q['sort'], 'price-asc');
+    expect(q['maxHourlyRateXaf'], 3000);
+    expect(q['minRating'], 4.0);
+    // Trois reglages actifs : la pastille de l'action le dit.
+    expect(find.descendant(of: find.byType(Badge), matching: find.text('3')), findsOneWidget);
+  });
+
+  testWidgets('carte : note et nombre d\'avis, « Nouveau » sans avis, prochain creneau', (tester) async {
+    final creneau = DateTime(2026, 12, 3, 16, 30);
+    routes([
+      _tuteur({'averageRating': 4.5, 'reviewCount': 12, 'nextAvailableSlot': creneau.toIso8601String()}),
+      _tuteur({'userId': 22, 'fullName': 'M. Eto'}),
+    ]);
+    await monterEcran(tester, const TutorSearchScreen());
+    final l = L10n.current;
+    expect(find.text(l.tutoringRatingShort(WinFormat.decimal(4.5), 12)), findsOneWidget);
+    expect(find.text(l.tutoringNewTutor), findsOneWidget);
+    expect(find.text(l.tutoringNextSlot(WinFormat.dayMonthTime(creneau))), findsOneWidget);
   });
 
   testWidgets('diplome verifie, disponible bientot et mode en ligne : criteres envoyes', (tester) async {
@@ -182,7 +266,7 @@ void main() {
     routes([_tuteur()]);
     await monterEcran(tester, const TutorSearchScreen());
     expect(faux.recues('GET', '/tutor-profile/search'), hasLength(1));
-    await _toucher(tester, _puce(L10n.current.dataSubjectChemistry));
+    await _toucher(tester, _puce(L10n.current.tutoringDiplomaVerified));
     await reseau(tester);
     await _toucher(tester, _puce(L10n.current.tutoringAvailableSoon));
     await reseau(tester);

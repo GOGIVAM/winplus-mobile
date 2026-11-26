@@ -539,10 +539,97 @@ class TutorRateSuggestion {
       );
 }
 
+/// Liste commune des matières et des niveaux du répétiteur, donnée par le
+/// serveur (GET /tutor-profile/referential) pour que le site et le mobile
+/// proposent les mêmes choix. [fallback] sert tant que le serveur ne l'a pas.
+class TutorReferential {
+  final List<String> secondarySubjects;
+  final List<String> superiorSubjects;
+  final List<String> secondaryLevels;
+  final List<String> superiorLevels;
+
+  /// Anciens libellés vers le libellé de la liste.
+  final Map<String, String> aliases;
+  final bool fromServer;
+
+  const TutorReferential({
+    required this.secondarySubjects,
+    required this.superiorSubjects,
+    required this.secondaryLevels,
+    required this.superiorLevels,
+    this.aliases = const {},
+    this.fromServer = false,
+  });
+
+  static const fallback = TutorReferential(
+    secondarySubjects: [
+      'Mathématiques', 'Physique', 'Chimie', 'SVT', 'Français', 'Philosophie',
+      'Anglais', 'Histoire-Géo', 'Informatique', 'Économie',
+    ],
+    superiorSubjects: [],
+    secondaryLevels: [
+      '6ème', '5ème', '4ème', '3ème', 'Seconde', 'Première', 'Terminale',
+      'BEPC', 'Probatoire', 'BAC',
+    ],
+    superiorLevels: [
+      'Prépa', 'ENSP Polytechnique', 'FMSB Médecine', 'ESSEC Commerce',
+      'ENAM Administration', 'ENS École Normale', 'ENSET',
+    ],
+  );
+
+  /// Libellé de la liste pour une valeur enregistrée sous un ancien nom.
+  String canonical(String v) => aliases[v] ?? v;
+
+  factory TutorReferential.fromJson(Map<String, dynamic> j) {
+    List<String> list(Object? v) =>
+        (v as List? ?? []).map((e) => e.toString()).toList();
+    final subjects = j['subjects'] as Map? ?? const {};
+    final levels = j['levels'] as Map? ?? const {};
+    final superior = list(levels['superior']);
+    return TutorReferential(
+      secondarySubjects: list(subjects['secondary']),
+      superiorSubjects: list(subjects['superior']),
+      // Le serveur répète les niveaux du supérieur dans la première liste.
+      secondaryLevels:
+          list(levels['secondary']).where((l) => !superior.contains(l)).toList(),
+      superiorLevels: superior,
+      aliases: {
+        for (final e in (j['aliases'] as Map? ?? const {}).entries)
+          e.key.toString(): e.value.toString(),
+      },
+      fromServer: true,
+    );
+  }
+}
+
 class TutorProfileService {
   TutorProfileService._();
   static final TutorProfileService instance = TutorProfileService._();
   final _api = ApiClient.instance;
+
+  TutorReferential? _referential;
+
+  /// Liste commune des matières et des niveaux ; gardée pour la session une
+  /// fois reçue. Serveur sans la route, ou réseau coupé : liste de secours.
+  Future<TutorReferential> referential() async {
+    final known = _referential;
+    if (known != null) return known;
+    try {
+      final res = await _api.dio.get('/tutor-profile/referential');
+      final data = res.data is Map ? (res.data as Map)['data'] : null;
+      if (data is! Map) return TutorReferential.fallback;
+      final ref = TutorReferential.fromJson(Map<String, dynamic>.from(data));
+      if (ref.secondarySubjects.isEmpty || ref.secondaryLevels.isEmpty) {
+        return TutorReferential.fallback;
+      }
+      return _referential = ref;
+    } catch (_) {
+      return TutorReferential.fallback;
+    }
+  }
+
+  /// Oublie la liste gardée (tests).
+  void forgetReferential() => _referential = null;
 
   Future<TutorProfile> getMine() async {
     final res = await _api.dio.get('/tutor-profile/me');
@@ -670,6 +757,10 @@ class TutorProfileService {
     String? mode,
     String? city,
     bool? availableSoon,
+    double? minRating,
+
+    /// price-asc | price-desc | next-slot ; sans valeur : pertinence.
+    String? sort,
 
     /// Sujets de séance (lot 9.1) : classent les tuteurs par correspondance.
     List<String> topics = const [],
@@ -686,6 +777,8 @@ class TutorProfileService {
       if (mode != null && mode.isNotEmpty) 'mode': mode,
       if (city != null && city.isNotEmpty) 'city': city,
       if (availableSoon != null) 'availableSoon': availableSoon,
+      if (minRating != null) 'minRating': minRating,
+      if (sort != null && sort.isNotEmpty) 'sort': sort,
       'page': page,
       'pageSize': pageSize,
     });
@@ -722,6 +815,9 @@ class TutorSearchResult {
   final num? fromHourlyRateXaf;
   final List<String> matchedTopics;
 
+  /// Premier créneau libre dans les 14 jours, s'il y en a un.
+  final DateTime? nextAvailableSlot;
+
   const TutorSearchResult({
     required this.userId,
     required this.fullName,
@@ -738,11 +834,14 @@ class TutorSearchResult {
     this.levels = const [],
     this.fromHourlyRateXaf,
     this.matchedTopics = const [],
+    this.nextAvailableSlot,
   });
 
   factory TutorSearchResult.fromJson(Map<String, dynamic> j) =>
       TutorSearchResult(
         fromHourlyRateXaf: j['fromHourlyRateXaf'] as num?,
+        nextAvailableSlot:
+            DateTime.tryParse(j['nextAvailableSlot']?.toString() ?? ''),
         matchedTopics: (j['matchedTopics'] as List? ?? [])
             .map((e) => e.toString())
             .toList(),

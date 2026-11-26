@@ -15,6 +15,7 @@ import 'tutor_engagement_flow_screen.dart';
 import 'tutor_pricing_widgets.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../widgets/win_screen.dart';
+import '../../widgets/external_links.dart';
 
 /// Fiche répétiteur publique (vue élève)  professeur_complete.md, section
 /// "Fiche répétiteur (vue publique)".
@@ -171,18 +172,16 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
           const SizedBox(height: 16),
           _SectionTitle(context.l10n.tutoringIntroVideo),
           const SizedBox(height: 8),
-          WinCard(
-            child: Row(children: [
-              Icon(PhosphorIconsRegular.playCircle, color: s.primary, size: 22),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(p.videoUrl!,
-                    style: WinType.bodyS(s.primary),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis),
-              ),
-            ]),
-          ),
+          WinButton(context.l10n.tutoringWatchVideo,
+              variant: WinButtonVariant.outline,
+              icon: PhosphorIconsRegular.playCircle,
+              onTap: () async {
+                final ok = await ExternalLinks.open(p.videoUrl!);
+                if (!ok && mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text(L10n.current.tutoringVideoOpenError)));
+                }
+              }),
         ],
         const SizedBox(height: 16),
         _SectionTitle(context.l10n.tutoringRatesPackages),
@@ -293,6 +292,38 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
                         .toList()),
           ]),
         ),
+        if (p.specialties.isNotEmpty || p.interventionZones.isNotEmpty) ...[
+          const SizedBox(height: 16),
+          WinCard(
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              if (p.specialties.isNotEmpty) ...[
+                Text(context.l10n.teacherProfileSpecialties,
+                    style: WinType.labelM(s.onMuted)),
+                const SizedBox(height: 6),
+                Wrap(spacing: 6, runSpacing: 6, children: [
+                  for (final sp in p.specialties)
+                    WinBadge(sp, color: BadgeColor.neutral),
+                ]),
+              ],
+              if (p.specialties.isNotEmpty && p.interventionZones.isNotEmpty)
+                const SizedBox(height: 12),
+              if (p.interventionZones.isNotEmpty) ...[
+                Text(context.l10n.tutoringZonesTitle,
+                    style: WinType.labelM(s.onMuted)),
+                const SizedBox(height: 6),
+                Wrap(spacing: 6, runSpacing: 6, children: [
+                  for (final z in p.interventionZones)
+                    WinBadge(
+                        (z.quartier ?? '').isEmpty
+                            ? z.city
+                            : '${z.city} · ${z.quartier}',
+                        color: BadgeColor.blue),
+                ]),
+              ],
+            ]),
+          ),
+        ],
         // Lot 6 : les avis eux-mêmes, plus seulement la note.
         TutorReviewsSection(tutorUserId: widget.userId),
         const SizedBox(height: 100), // laisse la place au bouton sticky
@@ -330,7 +361,7 @@ class _HeroHeader extends StatelessWidget {
           Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Stack(clipBehavior: Clip.none, children: [
               WinAvatar(p.fullName ?? p.title ?? '?',
-                  size: 72, color: WinColors.teal400),
+                  size: 72, color: WinColors.teal400, imageUrl: p.avatarUrl),
               if (p.isInPersonVerified && !p.inPersonSuspended)
                 Positioned(
                   bottom: -2,
@@ -376,9 +407,15 @@ class _HeroHeader extends StatelessWidget {
                       if (!p.inPersonAllowed)
                         WinBadge(context.l10n.tutoringOnlineOnly,
                             color: BadgeColor.neutral),
+                      if (p.isExperienced)
+                        WinBadge(context.l10n.tutoringExperienced,
+                            color: BadgeColor.gold),
+                      if (p.isHighlyResponsive)
+                        WinBadge(context.l10n.tutoringHighlyResponsive,
+                            color: BadgeColor.teal),
                       WinBadge(
                           p.averageRating != null && p.reviewCount > 0
-                              ? context.l10n.tutoringRatingReviews(p.averageRating!.toStringAsFixed(1), p.reviewCount)
+                              ? context.l10n.tutoringRatingReviews(WinFormat.decimal(p.averageRating!), p.reviewCount)
                               : context.l10n.tutoringNoReviewsYet,
                           color: BadgeColor.neutral),
                     ]),

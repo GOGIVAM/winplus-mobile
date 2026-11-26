@@ -16,6 +16,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import '../services/user_service.dart';
 import '../shared/net_image.dart';
+import '../shared/tutor_ref_picker.dart';
 
 /// Module 1  Onboarding et profil répétiteur (professeur_complete.md).
 /// Écran unique en 5 étapes (Workflow 1) : matières/niveaux, intervention,
@@ -163,6 +164,9 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
 
   Set<String> _subjectsSel = {};
   Set<String> _levelsSel = {};
+  // Liste commune des matières et des niveaux (celle du site) ; la liste
+  // de secours tant que le serveur ne l'a pas donnée.
+  TutorReferential _ref = TutorReferential.fallback;
   Set<String> _specialtiesSel = {};
   bool _online = false, _atStudent = false, _atTutor = false, _neutral = false;
   final List<TutorZone> _zones = [];
@@ -211,6 +215,46 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
   void initState() {
     super.initState();
     _load();
+    _service.referential().then((r) {
+      if (!mounted) return;
+      setState(() {
+        _ref = r;
+        // Un ancien libellé enregistré rejoint celui de la liste.
+        _subjectsSel = _subjectsSel.map(r.canonical).toSet();
+        _levelsSel = _levelsSel.map(r.canonical).toSet();
+      });
+    });
+  }
+
+  /// Choix proposés d'emblée : la liste courte, puis ce qui a été coché
+  /// ailleurs dans la liste complète.
+  List<String> _shown(List<String> core, Set<String> sel) {
+    final base = core.map(_ref.canonical).toList();
+    return [...base, ...sel.where((v) => !base.contains(v))];
+  }
+
+  /// Liste complète (secondaire et supérieur), à cocher.
+  Future<void> _pickMore({required bool subjects}) async {
+    final l = context.l10n;
+    final r = await showTutorRefPicker(context,
+        title: subjects
+            ? l.teacherProfileSubjectsTaught
+            : l.teacherProfileLevelsCovered,
+        sections: [
+          (
+            l.instCycleSecondary,
+            subjects ? _ref.secondarySubjects : _ref.secondaryLevels
+          ),
+          (
+            l.instCycleHigher,
+            subjects ? _ref.superiorSubjects : _ref.superiorLevels
+          ),
+        ],
+        selected: subjects ? _subjectsSel : _levelsSel,
+        labelOf: subjects ? tutorSubjectLabel : tutorLevelLabel,
+        multiple: true);
+    if (r == null || !mounted) return;
+    setState(() => subjects ? _subjectsSel = r : _levelsSel = r);
   }
 
   Future<void> _load() async {
@@ -232,8 +276,8 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
   }
 
   void _hydrate(TutorProfile p) {
-    _subjectsSel = p.subjects.toSet();
-    _levelsSel = p.levels.toSet();
+    _subjectsSel = p.subjects.map(_ref.canonical).toSet();
+    _levelsSel = p.levels.map(_ref.canonical).toSet();
     _specialtiesSel = p.specialties.toSet();
     _online = p.offersOnline;
     // Lot 9.5 (17.17) : choix ENREGISTRÉS (conservés sans vérification), pas
@@ -597,7 +641,7 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
               if (p.reviewCount > 0 && p.averageRating != null)
                 WinBadge(
                     context.l10n.teacherProfileRating(
-                        p.averageRating!.toStringAsFixed(1), p.reviewCount),
+                        WinFormat.decimal(p.averageRating!), p.reviewCount),
                     color: BadgeColor.gold)
               else
                 WinBadge(context.l10n.teacherProfileNoReviews,
@@ -622,7 +666,7 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
         const SizedBox(height: 4),
         Text(
             p.hourlyRateXaf != null
-                ? '${p.hourlyRateXaf} XAF/h'
+                ? '${WinFormat.number(p.hourlyRateXaf!)} XAF/h'
                 : context.l10n.tutoringNotSpecified,
             style: WinType.bodyM(s.onMuted)),
         if (p.trialSessionEnabled) Text(context.l10n.teacherProfileTrialOffered),
@@ -724,7 +768,7 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
         ),
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         Text(context.l10n.teacherProfileCompletion, style: WinType.bodyM(s.onMuted)),
-        Text('${c.score}/100',
+        Text(WinFormat.percent(c.score),
             style: WinType.labelM(s.onStrong)
                 .copyWith(fontWeight: FontWeight.w700)),
       ]),
@@ -805,30 +849,40 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
           Wrap(
               spacing: 8,
               runSpacing: 8,
-              children: _subjects
-                  .map((m) => WinChip(
-                        _subjectLabel(context, m),
-                        active: _subjectsSel.contains(m),
-                        onTap: () => setState(() => _subjectsSel.contains(m)
-                            ? _subjectsSel.remove(m)
-                            : _subjectsSel.add(m)),
-                      ))
-                  .toList()),
+              children: [
+                for (final m in _shown(_subjects, _subjectsSel))
+                  WinChip(
+                    _subjectLabel(context, m),
+                    active: _subjectsSel.contains(m),
+                    onTap: () => setState(() => _subjectsSel.contains(m)
+                        ? _subjectsSel.remove(m)
+                        : _subjectsSel.add(m)),
+                  ),
+                if (_ref.fromServer)
+                  WinChip(context.l10n.tutoringMoreSubjects,
+                      icon: PhosphorIconsRegular.plus,
+                      onTap: () => _pickMore(subjects: true)),
+              ]),
           const SizedBox(height: 20),
           Text(context.l10n.teacherProfileLevelsCovered, style: WinType.labelM(s.onStrong)),
           const SizedBox(height: 8),
           Wrap(
               spacing: 8,
               runSpacing: 8,
-              children: _levels
-                  .map((l) => WinChip(
-                        _levelLabel(context, l),
-                        active: _levelsSel.contains(l),
-                        onTap: () => setState(() => _levelsSel.contains(l)
-                            ? _levelsSel.remove(l)
-                            : _levelsSel.add(l)),
-                      ))
-                  .toList()),
+              children: [
+                for (final l in _shown(_levels, _levelsSel))
+                  WinChip(
+                    _levelLabel(context, l),
+                    active: _levelsSel.contains(l),
+                    onTap: () => setState(() => _levelsSel.contains(l)
+                        ? _levelsSel.remove(l)
+                        : _levelsSel.add(l)),
+                  ),
+                if (_ref.fromServer)
+                  WinChip(context.l10n.tutoringMoreLevels,
+                      icon: PhosphorIconsRegular.plus,
+                      onTap: () => _pickMore(subjects: false)),
+              ]),
           const SizedBox(height: 20),
           Text(context.l10n.teacherProfileSpecialties, style: WinType.labelM(s.onStrong)),
           const SizedBox(height: 8),
@@ -955,7 +1009,7 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
           if (_rateSuggestion != null) ...[
             const SizedBox(height: 10),
             WinAlert(
-              context.l10n.teacherProfileRateSuggested(_rateSuggestion!.suggestedRateXaf, _rateSuggestion!.rangeLowXaf, _rateSuggestion!.rangeHighXaf, _rateSuggestion!.explanation),
+              context.l10n.teacherProfileRateSuggested(WinFormat.number(_rateSuggestion!.suggestedRateXaf), WinFormat.number(_rateSuggestion!.rangeLowXaf), WinFormat.number(_rateSuggestion!.rangeHighXaf), _rateSuggestion!.explanation),
               type: BadgeColor.blue,
             ),
             TextButton(

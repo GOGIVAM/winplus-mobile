@@ -12362,4 +12362,93 @@ class AppLocalizationsFr extends AppLocalizations {
   String studentGroupsRankLineNoDuration(Object quizzes) {
     return '$quizzes quiz réussis';
   }
+
+  @override
+  String get tutoringPickSubjectTitle => 'Choisir une matière';
+
+  @override
+  String get tutoringPickLevelTitle => 'Choisir un niveau';
+
+  @override
+  String get tutoringRefSearch => 'Rechercher dans la liste';
+
+  @override
+  String get tutoringRefEmpty => 'Aucun élément ne correspond.';
+
+  @override
+  String get tutoringMoreSubjects => 'Autres matières';
+
+  @override
+  String get tutoringMoreLevels => 'Autres niveaux';
+
+  @override
+  String get tutoringSortFilter => 'Trier et filtrer';
+
+  @override
+  String get tutoringSortBy => 'Trier par';
+
+  @override
+  String get tutoringSortRelevance => 'Pertinence';
+
+  @override
+  String get tutoringSortPriceAsc => 'Tarif croissant';
+
+  @override
+  String get tutoringSortPriceDesc => 'Tarif décroissant';
+
+  @override
+  String get tutoringSortNextSlot => 'Disponibilité la plus proche';
+
+  @override
+  String get tutoringMaxRate => 'Tarif maximum par heure';
+
+  @override
+  String get tutoringAnyRate => 'Tous les tarifs';
+
+  @override
+  String tutoringMaxRateValue(String amount) {
+    return 'Jusqu\'à $amount XAF';
+  }
+
+  @override
+  String get tutoringMinRating => 'Note minimale';
+
+  @override
+  String get tutoringAnyRating => 'Toutes les notes';
+
+  @override
+  String tutoringMinRatingValue(String rating) {
+    return '$rating et plus';
+  }
+
+  @override
+  String get tutoringShowResults => 'Voir les résultats';
+
+  @override
+  String tutoringRatingShort(String rating, int count) {
+    return '$rating ($count avis)';
+  }
+
+  @override
+  String get tutoringNewTutor => 'Nouveau sur WinPlus';
+
+  @override
+  String tutoringNextSlot(String when) {
+    return 'Prochain créneau : $when';
+  }
+
+  @override
+  String get tutoringExperienced => 'Expérimenté';
+
+  @override
+  String get tutoringHighlyResponsive => 'Très réactif';
+
+  @override
+  String get tutoringZonesTitle => 'Zones d\'intervention';
+
+  @override
+  String get tutoringWatchVideo => 'Regarder la vidéo de présentation';
+
+  @override
+  String get tutoringVideoOpenError => 'Impossible d\'ouvrir la vidéo.';
 }
