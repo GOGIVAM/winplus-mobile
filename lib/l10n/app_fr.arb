@@ -6296,5 +6296,17 @@
   "cstatBoard": "Classement",
   "cstatNoPoints": "Aucun élève n’a encore gagné de points.",
   "cstatPoints": "{count} pts",
-  "@cstatPoints": {"placeholders": {"count": {"type": "int"}}}
+  "@cstatPoints": {"placeholders": {"count": {"type": "int"}}},
+  "benchTitle": "Face à la moyenne nationale",
+  "benchSub": "Votre établissement fait mieux que {pct} % des établissements, de façon anonyme.",
+  "@benchSub": {"placeholders": {"pct": {"type": "int"}}},
+  "benchAverage": "Moyenne des élèves",
+  "benchPassRate": "Taux de réussite",
+  "benchEngagement": "Élèves actifs",
+  "benchNational": "Moyenne nationale : {value}",
+  "@benchNational": {"placeholders": {"value": {"type": "String"}}},
+  "benchStrongest": "Matière la plus forte : {subject}",
+  "@benchStrongest": {"placeholders": {"subject": {"type": "String"}}},
+  "benchWeakest": "À renforcer face aux autres : {subject}",
+  "@benchWeakest": {"placeholders": {"subject": {"type": "String"}}}
 }

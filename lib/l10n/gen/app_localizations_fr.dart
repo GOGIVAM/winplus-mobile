@@ -11731,4 +11731,36 @@ class AppLocalizationsFr extends AppLocalizations {
   String cstatPoints(int count) {
     return '$count pts';
   }
+
+  @override
+  String get benchTitle => 'Face à la moyenne nationale';
+
+  @override
+  String benchSub(int pct) {
+    return 'Votre établissement fait mieux que $pct % des établissements, de façon anonyme.';
+  }
+
+  @override
+  String get benchAverage => 'Moyenne des élèves';
+
+  @override
+  String get benchPassRate => 'Taux de réussite';
+
+  @override
+  String get benchEngagement => 'Élèves actifs';
+
+  @override
+  String benchNational(String value) {
+    return 'Moyenne nationale : $value';
+  }
+
+  @override
+  String benchStrongest(String subject) {
+    return 'Matière la plus forte : $subject';
+  }
+
+  @override
+  String benchWeakest(String subject) {
+    return 'À renforcer face aux autres : $subject';
+  }
 }

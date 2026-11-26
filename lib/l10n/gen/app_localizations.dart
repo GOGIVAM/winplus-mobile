@@ -19742,6 +19742,54 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'{count} pts'**
   String cstatPoints(int count);
+
+  /// No description provided for @benchTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Face à la moyenne nationale'**
+  String get benchTitle;
+
+  /// No description provided for @benchSub.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre établissement fait mieux que {pct} % des établissements, de façon anonyme.'**
+  String benchSub(int pct);
+
+  /// No description provided for @benchAverage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Moyenne des élèves'**
+  String get benchAverage;
+
+  /// No description provided for @benchPassRate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Taux de réussite'**
+  String get benchPassRate;
+
+  /// No description provided for @benchEngagement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Élèves actifs'**
+  String get benchEngagement;
+
+  /// No description provided for @benchNational.
+  ///
+  /// In fr, this message translates to:
+  /// **'Moyenne nationale : {value}'**
+  String benchNational(String value);
+
+  /// No description provided for @benchStrongest.
+  ///
+  /// In fr, this message translates to:
+  /// **'Matière la plus forte : {subject}'**
+  String benchStrongest(String subject);
+
+  /// No description provided for @benchWeakest.
+  ///
+  /// In fr, this message translates to:
+  /// **'À renforcer face aux autres : {subject}'**
+  String benchWeakest(String subject);
 }
 
 class _AppLocalizationsDelegate

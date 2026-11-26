@@ -273,6 +273,42 @@ Dépend des lots 3 à 5, pour que chaque nouvel écran naisse avec le cache, le 
 
 **Critères de fin :** un tableau de parité tenu à jour dans ce fichier, une ligne par fonction du site, avec l'écran mobile correspondant ou la mention « hors périmètre » et sa raison.
 
+### Tableau de parité (26 novembre 2026)
+
+| Fonction du site | Écran mobile |
+|---|---|
+| Aide, questions fréquentes, contact | `shared/help_screen.dart` |
+| Vérification d'un certificat | `shared/verify_certificate_screen.dart` |
+| Réactions et réponses citées (messagerie) | `shared/messaging/messaging_screen.dart` |
+| Résumé des notifications par WinAI | `shared/notifications_ai_summary.dart`, en tête des notifications |
+| Hub et pages des concours | `shared/concours_screen.dart` (élève : Mon espace › Apprendre ; parent : Plus) |
+| Mes devoirs (élève) | `student/my_homework_screen.dart` |
+| Comparaison avec les pairs (classe, niveau, matière) | `student/peer_comparison_section.dart`, dans Mes rapports |
+| Notes de révision | zone de notes de `content_detail_screen.dart` |
+| Mes bulletins (élève, parent) | `shared/bulletin_view.dart` |
+| Baromètre (parent) | `parent/barometer_tab.dart` |
+| Comparaison entre enfants | `parent/child_follow_tab.dart` (`ChildrenComparisonCard`, accueil du parent) |
+| Fiche de révision pour un enfant | `showChildRevisionSheet` (fiche de l'enfant) |
+| Alertes WinAI (rappels) | onglet Alertes WinAI de la fiche de l'enfant |
+| Impact des achats, contenus à travailler | onglet Suivi de la fiche de l'enfant (`parent/child_follow_tab.dart`) |
+| Affiliation (professeur) | `teacher/affiliate_screen.dart` |
+| Analyse de classe | `teacher/class_analysis_screen.dart` |
+| Alertes de décrochage | `teacher/dropout_alerts_screen.dart` |
+| Coaching WinAI du répétiteur | `teacher/tutor_coaching_screen.dart` |
+| Formations : création, édition, programme WinAI | `teacher/course_editor_screen.dart` |
+| Formations : statistiques, ludification | `teacher/course_stats_screen.dart` (depuis l'éditeur, formation publiée) |
+| Bibliothèque | `teacher/teacher_library_screen.dart` |
+| Avis sur le profil du tuteur | `student/tutors/tutor_reviews_section.dart` |
+| Enseignants (établissement) | `institution/teachers_screen.dart` |
+| Annonces | `institution/announcements_screen.dart` |
+| Devoirs de l'établissement | `institution/homework_screen.dart` |
+| Examens blancs | `institution/mock_exams_screen.dart` |
+| Bulletins | `institution/bulletins_screen.dart` |
+| Comparaison régionale et nationale | `institution/regional_comparison_screen.dart`, `national_benchmark_card.dart` |
+| Prévision de réussite | `institution/class_prediction_screen.dart` |
+| Résultats des étudiants (`pages/resultats/`) | hors périmètre : page publique de témoignages (décision du 14/11) |
+| Prédiction de note (`SuccessPrediction` d'`aiService.ts`) | hors périmètre : type sans écran sur le site, rien à reprendre |
+
 ## Lot 8 : qualité avant publication
 
 Dépend de tous les lots précédents.

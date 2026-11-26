@@ -59,4 +59,25 @@ void main() {
     await monterEcran(tester, const RegionalComparisonScreen());
     expect(find.text(L10n.current.commonLoadError), findsOneWidget);
   });
+
+  testWidgets('comparaison nationale : moyenne sur 20, taux, matieres ; affichee meme sans comparaison regionale', (tester) async {
+    faux.repond('GET', '/institution/comparison',
+        {'data': {'available': false, 'reason': 'Pas encore assez.'}, 'success': true});
+    faux.repond('GET', '/institution/me', {'data': {'id': 4}, 'success': true});
+    faux.repond('GET', '/institutions/4/benchmark', {
+      'institution_avg_score': 64.0, 'national_avg_score': 58.0, 'top_quartile_avg': 75.0, 'institution_percentile': 70,
+      'institution_pass_rate': 72.0, 'national_pass_rate': 61.0, 'strongest_subject': 'Maths', 'weakest_subject_vs_peers': 'Anglais',
+      'engagement_rate': 55.0, 'peer_engagement_avg': 48.0, 'student_count': 420, 'national_student_count': 9000,
+    });
+    tester.view.physicalSize = const Size(800, 3000);
+    await monterEcran(tester, const RegionalComparisonScreen());
+    tester.view.physicalSize = const Size(800, 3000);
+    await reseau(tester);
+    final l = L10n.current;
+    expect(find.text(l.regCmpNoneTitle), findsOneWidget);
+    expect(find.text(l.benchSub(70)), findsOneWidget);
+    expect(find.text('12.8 / 20'), findsOneWidget);
+    expect(find.text(l.benchNational('11.6 / 20')), findsOneWidget);
+    expect(find.text(l.benchStrongest('Maths')), findsOneWidget);
+  });
 }

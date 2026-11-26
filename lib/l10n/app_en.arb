@@ -3414,5 +3414,17 @@
   "cstatBoard": "Leaderboard",
   "cstatNoPoints": "No student has earned points yet.",
   "cstatPoints": "{count} pts",
-  "@cstatPoints": {"placeholders": {"count": {"type": "int"}}}
+  "@cstatPoints": {"placeholders": {"count": {"type": "int"}}},
+  "benchTitle": "Compared with the national average",
+  "benchSub": "Your school does better than {pct}% of schools, anonymously.",
+  "@benchSub": {"placeholders": {"pct": {"type": "int"}}},
+  "benchAverage": "Students' average",
+  "benchPassRate": "Pass rate",
+  "benchEngagement": "Active students",
+  "benchNational": "National average: {value}",
+  "@benchNational": {"placeholders": {"value": {"type": "String"}}},
+  "benchStrongest": "Strongest subject: {subject}",
+  "@benchStrongest": {"placeholders": {"subject": {"type": "String"}}},
+  "benchWeakest": "To strengthen compared with others: {subject}",
+  "@benchWeakest": {"placeholders": {"subject": {"type": "String"}}}
 }

@@ -11638,4 +11638,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String cstatPoints(int count) {
     return '$count pts';
   }
+
+  @override
+  String get benchTitle => 'Compared with the national average';
+
+  @override
+  String benchSub(int pct) {
+    return 'Your school does better than $pct% of schools, anonymously.';
+  }
+
+  @override
+  String get benchAverage => 'Students\' average';
+
+  @override
+  String get benchPassRate => 'Pass rate';
+
+  @override
+  String get benchEngagement => 'Active students';
+
+  @override
+  String benchNational(String value) {
+    return 'National average: $value';
+  }
+
+  @override
+  String benchStrongest(String subject) {
+    return 'Strongest subject: $subject';
+  }
+
+  @override
+  String benchWeakest(String subject) {
+    return 'To strengthen compared with others: $subject';
+  }
 }

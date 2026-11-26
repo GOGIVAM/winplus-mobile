@@ -8,6 +8,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_screen.dart';
 import '../widgets/win_widgets.dart';
+import 'national_benchmark_card.dart';
 
 /// Écart d'une matière : l'établissement face à la moyenne des autres.
 class RegionalSubject {
@@ -176,13 +177,21 @@ class _RegionalComparisonScreenState extends State<RegionalComparisonScreen> {
     } else if (!d.available) {
       // La raison du serveur est en français ; en anglais, phrase générique.
       final reason = L10n.locale.languageCode == 'fr' && (d.reason ?? '').isNotEmpty ? d.reason! : l.regCmpNoneText;
-      body = WinEmptyState(
-        icon: PhosphorIconsRegular.mapPin,
-        title: l.regCmpNoneTitle,
-        message: reason,
-        actionLabel: l.commonRetry,
-        onAction: _load,
-      );
+      // La comparaison nationale peut exister sans assez d'établissements
+      // dans la région : elle reste affichée sous le message.
+      body = ListView(padding: const EdgeInsets.fromLTRB(16, 8, 16, 24), children: [
+        SizedBox(
+          height: 320,
+          child: WinEmptyState(
+            icon: PhosphorIconsRegular.mapPin,
+            title: l.regCmpNoneTitle,
+            message: reason,
+            actionLabel: l.commonRetry,
+            onAction: _load,
+          ),
+        ),
+        const NationalBenchmarkCard(),
+      ]);
     } else {
       body = RefreshIndicator(
         onRefresh: _load,
@@ -211,6 +220,8 @@ class _RegionalComparisonScreenState extends State<RegionalComparisonScreen> {
             const SizedBox(height: 8),
             for (final x in d.subjects) _subject(s, l, x),
           ],
+          // Lot 7 : face à la moyenne nationale, comme BenchmarkPanel du site.
+          const NationalBenchmarkCard(),
         ]),
       );
     }
