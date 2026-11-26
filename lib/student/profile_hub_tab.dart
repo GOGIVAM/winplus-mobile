@@ -77,7 +77,7 @@ class _ProfileHubTabState extends State<ProfileHubTab> {
     if (ok != true || !mounted) return;
     await AuthService.instance.signOut();
     if (!mounted) return;
-    Navigator.of(context).pushAndRemoveUntil(
+    Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
       WinPageRoute(builder: (_) => const LoginScreen()),
       (r) => false,
     );

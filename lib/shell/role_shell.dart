@@ -70,6 +70,24 @@ class RoleShell extends StatefulWidget {
 
 class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
   int _index = 0;
+
+  /// Navigateur interne : les écrans secondaires s'ouvrent dans la coque,
+  /// sous la barre du bas et le bouton WinAI, qui restent toujours visibles.
+  final _inner = GlobalKey<NavigatorState>();
+
+  /// Redessine la page d'accueil de la coque (logée dans le navigateur
+  /// interne) à chaque changement d'état de la coque.
+  final _tick = ValueNotifier<int>(0);
+
+  /// Feuille du bas ou menu ouvert dans la coque : le bouton WinAI s'efface.
+  final _popup = ValueNotifier<bool>(false);
+  late final _observer = _PopupObserver(_popup);
+
+  @override
+  void setState(VoidCallback fn) {
+    super.setState(fn);
+    _tick.value++;
+  }
   // Module 24 (lot 8) : initiales réelles pour l'avatar de la barre de
   // navigation, remplace WinData.userProfile/parentAccount (élève/parent) et
   // "MF" codé en dur (professeur) — aucun des trois n'était jamais la bonne
@@ -140,6 +158,9 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
   double _direction = 1;
 
   void _goTab(int i) {
+    // Un écran secondaire est ouvert : on revient d'abord à l'onglet.
+    final nav = _inner.currentState;
+    if (nav != null && nav.canPop()) nav.popUntil((r) => r.isFirst);
     if (i == _index) return;
     setState(() {
       _direction = i > _index ? 1 : -1;
@@ -184,17 +205,58 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
     }
   }
 
-  void _push(Widget page) =>
-      Navigator.push(context, WinPageRoute(builder: (_) => page));
+  NavigatorState get _nav => _inner.currentState ?? Navigator.of(context);
+
+  void _push(Widget page) => _nav.push(WinPageRoute(builder: (_) => page));
 
   Future<void> _openNotifications() async {
-    await Navigator.push(
-        context, WinPageRoute(builder: (_) => const NotificationsScreen()));
+    await _nav
+        .push(WinPageRoute(builder: (_) => const NotificationsScreen()));
     _loadUnread();
   }
 
   @override
   Widget build(BuildContext context) {
+    final s = WinTheme.of(context);
+    final role = WinAppScope.of(context).role;
+    final tabs = _tabsFor(role, context.l10n);
+    final safeIndex = _index.clamp(0, tabs.length - 1);
+
+    return Scaffold(
+      backgroundColor: s.bg,
+      body: ShellNav(
+        goTab: _goLegacy,
+        child: WinAIFloatingWidget(
+          role: role,
+          navigatorKey: _inner,
+          hidden: _popup,
+          // Retour d'Android : ferme d'abord l'écran secondaire ouvert.
+          child: NavigatorPopHandler(
+            onPopWithResult: (_) => _inner.currentState?.maybePop(),
+            child: Navigator(
+              key: _inner,
+              observers: [_observer],
+              onGenerateRoute: (_) => MaterialPageRoute<void>(
+                builder: (_) => ListenableBuilder(
+                    listenable: _tick, builder: (ctx, _) => _home(ctx)),
+              ),
+            ),
+          ),
+        ),
+      ),
+      bottomNavigationBar: _BottomNav(
+        tabs: tabs,
+        index: safeIndex,
+        onTap: _goTab,
+        // Onglet Messages : avant-dernier pour tous les rôles.
+        messagesIndex: tabs.length - 2,
+      ),
+    );
+  }
+
+  /// Page d'accueil de la coque : la barre du haut et l'onglet courant. Les
+  /// écrans secondaires la recouvrent, sans toucher à la barre du bas.
+  Widget _home(BuildContext context) {
     final s = WinTheme.of(context);
     final role = WinAppScope.of(context).role;
     final tabs = _tabsFor(role, context.l10n);
@@ -276,10 +338,7 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
         child: Column(children: [
           // Hors ligne, date des données, actions en attente (lot 3).
           const OfflineStrip(),
-          Expanded(child: ShellNav(
-          goTab: _goLegacy,
-          child: WinAIFloatingWidget(
-            role: role,
+          Expanded(
             // L'onglet ouvert glisse depuis le côté de son bouton dans la
             // barre du bas (gauche ou droite de l'onglet quitté).
             child: AnimatedSwitcher(
@@ -304,15 +363,7 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
                   key: ValueKey(safeIndex), child: pages[safeIndex]),
             ),
           ),
-        )),
         ]),
-      ),
-      bottomNavigationBar: _BottomNav(
-        tabs: tabs,
-        index: safeIndex,
-        onTap: _goTab,
-        // Onglet Messages : avant-dernier pour tous les rôles.
-        messagesIndex: tabs.length - 2,
       ),
     );
   }
@@ -653,6 +704,32 @@ Widget _withUnread(bool messages, Widget icon) {
             ),
           ]),
   );
+}
+
+/// Suit les feuilles du bas, menus et autres fenêtres ouverts dans le
+/// navigateur de la coque.
+class _PopupObserver extends NavigatorObserver {
+  final ValueNotifier<bool> open;
+  int _count = 0;
+  _PopupObserver(this.open);
+
+  void _set(int delta, Route<dynamic>? route) {
+    if (route is! PopupRoute) return;
+    _count = (_count + delta).clamp(0, 99);
+    final value = _count > 0;
+    // Hors du build en cours : la navigation peut être déclenchée pendant.
+    WidgetsBinding.instance.addPostFrameCallback((_) => open.value = value);
+  }
+
+  @override
+  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) =>
+      _set(1, route);
+  @override
+  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) =>
+      _set(-1, route);
+  @override
+  void didRemove(Route<dynamic> route, Route<dynamic>? previousRoute) =>
+      _set(-1, route);
 }
 
 class _BottomNav extends StatelessWidget {

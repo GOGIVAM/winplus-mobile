@@ -180,7 +180,7 @@ class _TeacherWalletViewState extends State<TeacherWalletView>
   }
 
   void _goToLogin() {
-    Navigator.of(context).pushAndRemoveUntil(
+    Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
         WinPageRoute(builder: (_) => const LoginScreen()), (_) => false);
   }
 

@@ -25,14 +25,15 @@ void main() {
 
   setUp(() => faux = preparerEnvironnement(prefs: {'user_role': 'student'}));
 
-  testWidgets('au repos : le contenu est affiche et le bouton se place en bas a droite avec 16 points de marge', (tester) async {
+  testWidgets('au repos : le contenu est affiche et le bouton se place a droite, au-dessus des barres d action du bas', (tester) async {
     await monterEcran(tester, _coque(WinRole.student));
     expect(find.text('contenu de la page'), findsOneWidget);
     expect(find.text('WinAI'), findsNothing);
     final coin = tester.getBottomRight(find.ancestor(of: _bouton(), matching: find.byType(Container)).first);
     final zone = tester.getBottomRight(find.byType(Scaffold));
     expect(zone.dx - coin.dx, 16);
-    expect(zone.dy - coin.dy, 16);
+    // 88 points du bas : au-dessus d'un bouton d'action ou d'un champ de message.
+    expect(zone.dy - coin.dy, 88);
   });
 
   testWidgets('toucher le bouton ouvre la mini-carte : titre, sous-titre du role et quatre suggestions', (tester) async {

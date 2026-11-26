@@ -737,7 +737,7 @@ class _InstitutionAccountTabState extends State<InstitutionAccountTab> {
                 onPressed: () async {
                   await AuthService.instance.signOut();
                   if (!context.mounted) return;
-                  Navigator.of(context).pushAndRemoveUntil(
+                  Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
                     WinPageRoute(builder: (_) => const LoginScreen()),
                     (r) => false,
                   );

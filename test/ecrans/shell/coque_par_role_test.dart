@@ -12,6 +12,7 @@ import 'package:winplus/services/user_service.dart';
 import 'package:winplus/shell/role_shell.dart';
 import 'package:winplus/student/notifications_screen.dart';
 import 'package:winplus/shell/more_screen.dart';
+import 'package:winplus/widgets/winai_floating_widget.dart';
 import 'package:winplus/shell/settings_screen.dart';
 
 import '../../helpers/ecran.dart';
@@ -225,6 +226,21 @@ void main() {
     await monterCoque(tester, WinRole.student);
     final avant = faux.recues('GET', '/notifications/unread-count').length;
     await tester.tap(find.byTooltip(L10n.current.studentNotifTitle));
+    await pomper(tester);
+    await pomper(tester, const Duration(milliseconds: 400));
+    await reseau(tester);
+    expect(find.byType(NotificationsScreen), findsOneWidget);
+    // Ecran secondaire : la barre du bas et le bouton WinAI restent visibles.
+    final l = L10n.current;
+    expect(find.text(l.shellTabHome), findsOneWidget);
+    expect(find.text(l.shellTabMessages), findsOneWidget);
+    expect(find.byType(WinAIFloatingWidget), findsOneWidget);
+    // Toucher l'onglet Accueil referme l'ecran secondaire.
+    await tester.tap(find.text(l.shellTabHome));
+    await pomper(tester);
+    await pomper(tester, const Duration(milliseconds: 400));
+    expect(find.byType(NotificationsScreen), findsNothing);
+    await tester.tap(find.byTooltip(l.studentNotifTitle));
     await pomper(tester);
     await pomper(tester, const Duration(milliseconds: 400));
     await reseau(tester);

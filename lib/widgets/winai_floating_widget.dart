@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../theme/win_motion.dart';
 import '../data/models.dart';
@@ -34,8 +35,25 @@ class _WinAIRoleConfig {
 class WinAIFloatingWidget extends StatefulWidget {
   final Widget child;
   final WinRole role;
+
+  /// Navigateur dans lequel ouvrir WinAI (celui de la coque : la barre du bas
+  /// reste visible). Sans lui, le navigateur le plus proche.
+  final GlobalKey<NavigatorState>? navigatorKey;
+
+  /// Vrai quand le bouton doit s'effacer : une feuille du bas ou un menu est
+  /// ouvert (le bouton passerait par-dessus), ou WinAI occupe déjà l'écran.
+  final ValueListenable<bool>? hidden;
+
+  /// Écrans qui occupent déjà l'écran avec WinAI : ils retirent le bouton le
+  /// temps de leur présence (voir [WinAIFabHidden]).
+  static final ValueNotifier<int> suppressed = ValueNotifier<int>(0);
+
   const WinAIFloatingWidget(
-      {super.key, required this.child, required this.role});
+      {super.key,
+      required this.child,
+      required this.role,
+      this.navigatorKey,
+      this.hidden});
 
   @override
   State<WinAIFloatingWidget> createState() => _WinAIFloatingWidgetState();
@@ -109,8 +127,7 @@ class _WinAIFloatingWidgetState extends State<WinAIFloatingWidget> {
 
   void _openFull([String? initialMessage]) {
     setState(() => _open = false);
-    Navigator.push(
-      context,
+    (widget.navigatorKey?.currentState ?? Navigator.of(context)).push(
       WinPageRoute(
         builder: (ctx) => _screenFor(widget.role, initialMessage),
       ),
@@ -126,11 +143,26 @@ class _WinAIFloatingWidgetState extends State<WinAIFloatingWidget> {
   @override
   Widget build(BuildContext context) {
     final cfg = _configFor(widget.role);
+    final hidden = widget.hidden;
 
+    return ListenableBuilder(
+        listenable: Listenable.merge(
+            [WinAIFloatingWidget.suppressed, if (hidden != null) hidden]),
+        builder: (context, _) {
+          final off = WinAIFloatingWidget.suppressed.value > 0 ||
+              (hidden?.value ?? false);
+          if (off) return widget.child;
+          return _buildWithButton(context, cfg);
+        });
+  }
+
+  Widget _buildWithButton(BuildContext context, _WinAIRoleConfig cfg) {
     return LayoutBuilder(builder: (context, constraints) {
       final maxW = constraints.maxWidth;
       final maxH = constraints.maxHeight;
-      _pos ??= Offset(maxW - _size - 16, maxH - _size - 16);
+      // Au-dessus des barres d'action et des champs de message du bas des
+      // écrans secondaires (le bouton reste déplaçable).
+      _pos ??= Offset(maxW - _size - 16, maxH - _size - 88);
       final pos = Offset(
         _pos!.dx.clamp(8, maxW - _size - 8),
         _pos!.dy.clamp(8, maxH - _size - 8),
@@ -164,7 +196,8 @@ class _WinAIFloatingWidgetState extends State<WinAIFloatingWidget> {
               onSend: () => _openFull(_ctrl.text.trim()),
               onMemories: () {
                 setState(() => _open = false);
-                showWinAIMemoriesSheet(context);
+                showWinAIMemoriesSheet(
+                    widget.navigatorKey?.currentContext ?? context);
               },
               onOpenFull: () => _openFull(),
             ),
@@ -371,4 +404,35 @@ class _MiniCard extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Retire le bouton WinAI flottant tant que cet écran est affiché (WinAI en
+/// plein écran, salle de visio) : le bouton y ferait doublon ou gênerait.
+class WinAIFabHidden extends StatefulWidget {
+  final Widget child;
+  const WinAIFabHidden({super.key, required this.child});
+  @override
+  State<WinAIFabHidden> createState() => _WinAIFabHiddenState();
+}
+
+class _WinAIFabHiddenState extends State<WinAIFabHidden> {
+  @override
+  void initState() {
+    super.initState();
+    // Après la première image : on ne modifie pas un écouteur pendant un build.
+    WidgetsBinding.instance.addPostFrameCallback(
+        (_) => WinAIFloatingWidget.suppressed.value++);
+  }
+
+  @override
+  void dispose() {
+    final n = WinAIFloatingWidget.suppressed;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (n.value > 0) n.value--;
+    });
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }

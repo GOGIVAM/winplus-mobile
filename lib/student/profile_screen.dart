@@ -623,7 +623,7 @@ class _TabCompteState extends State<_TabCompte> {
   Future<void> _signOut() async {
     await AuthService.instance.signOut();
     if (!mounted) return;
-    Navigator.of(context).pushAndRemoveUntil(
+    Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
       WinPageRoute(builder: (_) => const LoginScreen()),
       (r) => false,
     );

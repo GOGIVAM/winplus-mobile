@@ -95,7 +95,7 @@ class _MoreScreenState extends State<MoreScreen> {
   Future<void> _logout() async {
     await AuthService.instance.signOut();
     if (!mounted) return;
-    Navigator.of(context).pushAndRemoveUntil(
+    Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
         WinPageRoute(builder: (_) => const LoginScreen()), (r) => false);
   }
 

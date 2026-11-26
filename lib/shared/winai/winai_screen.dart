@@ -21,6 +21,7 @@ import '../../widgets/knowledge_base_toggle.dart';
 import '../../widgets/voice_dictation_sheet.dart';
 import '../../widgets/win_screen.dart';
 import '../../widgets/win_widgets.dart';
+import '../../widgets/winai_floating_widget.dart';
 import '../../widgets/winai_markdown.dart';
 import '../../widgets/winai_memories_sheet.dart';
 import '../../services/winai_sources_service.dart';
@@ -239,7 +240,7 @@ class _WinAIScreenState extends State<WinAIScreen>
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
     final l = context.l10n;
-    return Scaffold(
+    return WinAIFabHidden(child: Scaffold(
       backgroundColor: s.bg,
       appBar: AppBar(
         title: const Text('WinAI'),
@@ -277,7 +278,7 @@ class _WinAIScreenState extends State<WinAIScreen>
               onGenerate: _generate),
         ],
       ),
-    );
+    ));
   }
 
   Widget _chat(WinScheme s) {
