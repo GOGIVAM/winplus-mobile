@@ -11191,4 +11191,35 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tcourseEditCourse => 'Modifier la formation';
+
+  @override
+  String get winaiStudioReport => 'Faire le point';
+
+  @override
+  String get winaiToolWeekReport => 'Bilan de la semaine';
+
+  @override
+  String get winaiToolClassSummary => 'Synthèse d\'une classe';
+
+  @override
+  String get winaiPickChild => 'Pour quel enfant ?';
+
+  @override
+  String get winaiPickGroup => 'Pour quelle classe ?';
+
+  @override
+  String get winaiNoChild => 'Aucun enfant n\'est rattaché à votre compte';
+
+  @override
+  String get winaiNoGroup => 'Aucune classe pour le moment';
+
+  @override
+  String get winaiToolUnavailable =>
+      'Cet outil n\'est pas encore disponible. Réessayez un peu plus tard.';
+
+  @override
+  String get winaiCreationsDecks => 'Mes fiches recto verso';
+
+  @override
+  String get winaiCreationsAudio => 'Mes résumés à écouter';
 }

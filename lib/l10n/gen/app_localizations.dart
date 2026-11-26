@@ -18920,6 +18920,66 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Modifier la formation'**
   String get tcourseEditCourse;
+
+  /// No description provided for @winaiStudioReport.
+  ///
+  /// In fr, this message translates to:
+  /// **'Faire le point'**
+  String get winaiStudioReport;
+
+  /// No description provided for @winaiToolWeekReport.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bilan de la semaine'**
+  String get winaiToolWeekReport;
+
+  /// No description provided for @winaiToolClassSummary.
+  ///
+  /// In fr, this message translates to:
+  /// **'Synthèse d\'une classe'**
+  String get winaiToolClassSummary;
+
+  /// No description provided for @winaiPickChild.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pour quel enfant ?'**
+  String get winaiPickChild;
+
+  /// No description provided for @winaiPickGroup.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pour quelle classe ?'**
+  String get winaiPickGroup;
+
+  /// No description provided for @winaiNoChild.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun enfant n\'est rattaché à votre compte'**
+  String get winaiNoChild;
+
+  /// No description provided for @winaiNoGroup.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune classe pour le moment'**
+  String get winaiNoGroup;
+
+  /// No description provided for @winaiToolUnavailable.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cet outil n\'est pas encore disponible. Réessayez un peu plus tard.'**
+  String get winaiToolUnavailable;
+
+  /// No description provided for @winaiCreationsDecks.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mes fiches recto verso'**
+  String get winaiCreationsDecks;
+
+  /// No description provided for @winaiCreationsAudio.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mes résumés à écouter'**
+  String get winaiCreationsAudio;
 }
 
 class _AppLocalizationsDelegate

@@ -12,6 +12,8 @@ import '../../theme/win_typography.dart';
 import '../../widgets/win_screen.dart';
 import '../../widgets/winai_markdown.dart';
 import 'winai_listen_bar.dart';
+import 'winai_tools.dart';
+import '../../services/winai_productions_service.dart';
 
 /// Lecture d'une fiche de révision générée par WinAI (texte mis en forme).
 class WinAISheetScreen extends StatelessWidget {
@@ -63,6 +65,8 @@ class WinAICreationsScreen extends StatefulWidget {
 class _WinAICreationsScreenState extends State<WinAICreationsScreen> {
   List<StudioQuiz>? _quizzes;
   List<StudioSheet>? _sheets;
+  List<WinAIProduction> _decks = const [];
+  List<WinAIProduction> _audios = const [];
   String? _error;
   int? _opening;
 
@@ -82,10 +86,15 @@ class _WinAICreationsScreenState extends State<WinAICreationsScreen> {
       final svc = WinAiStudioService.instance;
       final q = await svc.generatedQuizzes();
       final f = await svc.generatedSheets();
+      final prod = WinAiProductionsService.instance;
+      final d = await prod.flashcardDecks();
+      final a = await prod.audioSummaries();
       if (mounted) {
         setState(() {
           _quizzes = q;
           _sheets = f;
+          _decks = d;
+          _audios = a;
         });
       }
     } on WinAiStudioException catch (e) {
@@ -133,6 +142,40 @@ class _WinAICreationsScreenState extends State<WinAICreationsScreen> {
     }
   }
 
+  /// Fiches recto verso ou résumé à écouter : la liste ne porte pas le
+  /// contenu, on relit la production complète.
+  Future<void> _openProduction(WinAIProduction p, {required bool deck}) async {
+    if (_opening != null) return;
+    final l = context.l10n;
+    setState(() => _opening = p.id);
+    try {
+      final svc = WinAiProductionsService.instance;
+      final full =
+          deck ? await svc.flashcardDeck(p.id) : await svc.audioSummary(p.id);
+      if (!mounted) return;
+      await Navigator.push(
+          context,
+          WinPageRoute(
+              builder: (_) => deck
+                  ? WinAIFlashcardsScreen(
+                      title: l.winaiToolCards,
+                      subtitle: full.title,
+                      cards: [
+                          for (final c in full.cards)
+                            (question: c.front, answer: c.back),
+                        ])
+                  : WinAITextScreen(
+                      title: l.winaiToolAudio,
+                      subtitle: full.title,
+                      text: full.script,
+                      speechKey: 'audio:${full.id}')));
+    } on WinAiStudioException catch (e) {
+      _toast(e.message);
+    } finally {
+      if (mounted) setState(() => _opening = null);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
@@ -143,7 +186,10 @@ class _WinAICreationsScreenState extends State<WinAICreationsScreen> {
       body = WinErrorState(message: _error!, onRetry: _load);
     } else if (quizzes == null || sheets == null) {
       body = const WinLoading();
-    } else if (quizzes.isEmpty && sheets.isEmpty) {
+    } else if (quizzes.isEmpty &&
+        sheets.isEmpty &&
+        _decks.isEmpty &&
+        _audios.isEmpty) {
       body = WinEmptyState(
           title: l.winaiCreationsEmpty,
           message: l.winaiCreationsEmptyHint,
@@ -176,6 +222,28 @@ class _WinAICreationsScreenState extends State<WinAICreationsScreen> {
                       icon: PhosphorIconsRegular.fileText,
                       label: f.title,
                       onTap: () => _openSheet(f)),
+              ]),
+              const SizedBox(height: 18),
+            ],
+            if (_decks.isNotEmpty) ...[
+              title(l.winaiCreationsDecks),
+              MoreGroup(children: [
+                for (final d in _decks)
+                  MoreLine(
+                      icon: PhosphorIconsRegular.cards,
+                      label: d.title,
+                      onTap: () => _openProduction(d, deck: true)),
+              ]),
+              const SizedBox(height: 18),
+            ],
+            if (_audios.isNotEmpty) ...[
+              title(l.winaiCreationsAudio),
+              MoreGroup(children: [
+                for (final a in _audios)
+                  MoreLine(
+                      icon: PhosphorIconsRegular.headphones,
+                      label: a.title,
+                      onTap: () => _openProduction(a, deck: false)),
               ]),
             ],
           ],

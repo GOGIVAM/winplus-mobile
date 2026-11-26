@@ -31,6 +31,9 @@ import '../../services/winai_studio_service.dart';
 import '../../student/quiz_screen.dart';
 import 'winai_creations.dart';
 import 'winai_tools.dart';
+import '../../services/institution_service.dart';
+import '../../services/parent_service.dart';
+import '../../services/winai_productions_service.dart';
 
 /// WinAI, un seul écran pour les quatre espaces (il était recopié quatre
 /// fois). Deux onglets :
@@ -612,6 +615,7 @@ class _StudioState extends State<_Studio> {
         [set.subject, set.topic].where((x) => x.isNotEmpty).join(' · ');
     setState(() => _busy = true);
     try {
+      if (await _viaServer(t, set, subtitle)) return;
       final text = await ChatbotService.instance.generate(
           prompt: t.prompt(set.subject, topic, _levels()[set.level], set.long),
           sources: widget.sources);
@@ -636,6 +640,103 @@ class _StudioState extends State<_Studio> {
     }
   }
 
+  /// Fiches recto verso et résumé à écouter : générés et gardés par le
+  /// serveur (on les retrouve dans « Mes créations »). Renvoie false quand
+  /// le serveur ne connaît pas la route : l'outil passe par la discussion.
+  Future<bool> _viaServer(_Tool t, _Settings set, String subtitle) async {
+    final isCards = t.kind == _ToolKind.cards;
+    if (!isCards && !t.withLength) return false;
+    final svc = WinAiProductionsService.instance;
+    try {
+      final p = isCards
+          ? await svc.generateFlashcards(
+              subject: set.subject, topic: set.topic, sources: widget.sources)
+          : await svc.generateAudioSummary(
+              subject: set.subject,
+              topic: set.topic,
+              long: set.long,
+              sources: widget.sources);
+      if (!mounted) return true;
+      final sub = p.title.isEmpty ? subtitle : p.title;
+      _open(isCards
+          ? WinAIFlashcardsScreen(title: t.label, subtitle: sub, cards: [
+              for (final c in p.cards) (question: c.front, answer: c.back),
+            ])
+          : WinAITextScreen(
+              title: t.label,
+              subtitle: sub,
+              text: p.script,
+              speechKey: 'audio:${p.id}'));
+      return true;
+    } on WinAiStudioException catch (e) {
+      if (WinAiProductionsService.routeMissing(e)) return false;
+      rethrow;
+    }
+  }
+
+  void _toast(String text) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
+  }
+
+  /// Synthèse à partir de résultats réels : on choisit l'enfant ou la
+  /// classe, puis WinAI rédige (bilan de la semaine, synthèse de classe).
+  Future<void> _synthesis<T>({
+    required String tool,
+    required String pickTitle,
+    required String empty,
+    required IconData icon,
+    required Future<List<T>> Function() load,
+    required String Function(T) label,
+    required Future<WinAISynthesis> Function(T) make,
+  }) async {
+    final l = context.l10n;
+    setState(() => _busy = true);
+    List<T> items;
+    try {
+      items = await load();
+    } catch (_) {
+      _toast(l.commonLoadError);
+      return;
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+    if (!mounted) return;
+    if (items.isEmpty) return _toast(empty);
+    final pick = items.length == 1
+        ? items.first
+        : await showWinBottomSheet<T>(
+            context: context,
+            title: pickTitle,
+            child: Builder(
+                builder: (sheet) => MoreGroup(children: [
+                      for (final it in items)
+                        MoreLine(
+                            icon: icon,
+                            label: label(it),
+                            onTap: () => Navigator.pop<T>(sheet, it)),
+                    ])));
+    if (pick == null || !mounted) return;
+    setState(() => _busy = true);
+    try {
+      final r = await make(pick);
+      if (!mounted) return;
+      _open(WinAITextScreen(
+          title: tool,
+          subtitle: r.title,
+          text: r.text,
+          speechKey: 'synthesis:${r.title}:${r.text.hashCode}'));
+    } on WinAiStudioException catch (e) {
+      if (WinAiProductionsService.routeMissing(e)) {
+        _toast(l.winaiToolUnavailable);
+      } else {
+        _refused(e);
+      }
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
   MoreLine _line(_Tool t) => MoreLine(
       icon: t.icon, label: t.label, onTap: _busy ? null : () => _run(t));
 
@@ -648,9 +749,12 @@ class _StudioState extends State<_Studio> {
   /// limite de l'abonnement.
   void _refused(WinAiStudioException e) {
     if (!mounted) return;
+    // Les offres ne sont proposées que pour une limite ou une fonction hors
+    // de l'abonnement, pas pour une source refusée.
+    final plans = e.status == 402 || e.code == 'feature_not_in_plan';
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(e.message),
-      action: e.isQuota
+      action: plans
           ? SnackBarAction(
               label: context.l10n.winaiStudioSeePlans,
               onPressed: () => _open(const PricingScreen()))
@@ -809,6 +913,24 @@ class _StudioState extends State<_Studio> {
           ]),
         ],
       WinRole.parent => [
+          title(l.winaiStudioReport),
+          MoreGroup(children: [
+            MoreLine(
+                icon: PhosphorIconsRegular.chartLineUp,
+                label: l.winaiToolWeekReport,
+                onTap: _busy
+                    ? null
+                    : () => _synthesis<ApiChild>(
+                        tool: l.winaiToolWeekReport,
+                        pickTitle: l.winaiPickChild,
+                        empty: l.winaiNoChild,
+                        icon: PhosphorIconsRegular.student,
+                        load: ParentService.instance.getChildren,
+                        label: (c) => '${c.firstName} ${c.lastName}'.trim(),
+                        make: (c) => WinAiProductionsService.instance
+                            .childWeekReport(c.id))),
+          ]),
+          const SizedBox(height: 18),
           title(l.winaiStudioHelp),
           MoreGroup(children: [
             _line(helpChild),
@@ -826,6 +948,24 @@ class _StudioState extends State<_Studio> {
           ]),
         ],
       WinRole.institution => [
+          title(l.winaiStudioReport),
+          MoreGroup(children: [
+            MoreLine(
+                icon: PhosphorIconsRegular.chartLineUp,
+                label: l.winaiToolClassSummary,
+                onTap: _busy
+                    ? null
+                    : () => _synthesis<ApiGroup>(
+                        tool: l.winaiToolClassSummary,
+                        pickTitle: l.winaiPickGroup,
+                        empty: l.winaiNoGroup,
+                        icon: PhosphorIconsRegular.usersThree,
+                        load: InstitutionService.instance.getGroups,
+                        label: (g) => g.name,
+                        make: (g) => WinAiProductionsService.instance
+                            .groupSummary(g.id))),
+          ]),
+          const SizedBox(height: 18),
           title(l.winaiStudioPrepare),
           MoreGroup(children: [
             _line(remediation),

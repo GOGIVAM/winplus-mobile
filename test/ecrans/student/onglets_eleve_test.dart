@@ -19,6 +19,7 @@ import 'package:winplus/data/models.dart';
 import 'package:winplus/shared/winai/winai_screen.dart';
 import 'package:winplus/shared/winai/winai_listen_bar.dart';
 import 'package:winplus/shared/winai/winai_tools.dart';
+import 'package:winplus/shared/winai/winai_creations.dart';
 
 /// Les onglets sont des colonnes sans Scaffold : on les pose dans un Scaffold.
 Widget _page(Widget onglet) => Scaffold(body: onglet);
@@ -562,6 +563,79 @@ void main() {
           expect(find.text(t), findsOneWidget, reason: '${e.key} : $t');
         }
       }
+    });
+
+    testWidgets('atelier : fiches recto verso generees et gardees par le serveur, sans passer par la discussion', (tester) async {
+      faux.repond('POST', '/winai/flashcards', {
+        'success': true,
+        'data': {
+          'id': 7, 'kind': 'flashcards', 'title': 'Pythagore', 'cardCount': 2,
+          'cards': [
+            {'front': 'Enonce du theoreme ?', 'back': 'a2 + b2 = c2', 'hint': 'triangle rectangle'},
+            {'front': 'Nom du plus grand cote ?', 'back': 'Hypotenuse'},
+          ],
+        }
+      }, statut: 201);
+      await monterEcran(tester, const StudentWinAITab());
+      final l = L10n.current;
+      await lancerOutil(tester, l.winaiToolCards, chapitre: 'Pythagore');
+      final envoi = faux.recues('POST', '/winai/flashcards').single.data as Map;
+      expect(envoi['topic'], 'Pythagore');
+      expect(envoi.containsKey('level'), isFalse);
+      expect(faux.recues('POST', '/chatbot/message'), isEmpty);
+      expect(find.text('Enonce du theoreme ?'), findsOneWidget);
+      expect(find.text(l.winaiCardsCount(1, 2)), findsOneWidget);
+    });
+
+    testWidgets('atelier : fiches hors de l abonnement (403), message du serveur et acces aux offres, pas de repli', (tester) async {
+      faux.repond('POST', '/winai/flashcards',
+          {'success': false, 'error': 'Les fiches sont reservees a l offre Standard.', 'code': 'feature_not_in_plan'}, statut: 403);
+      await monterEcran(tester, const StudentWinAITab());
+      final l = L10n.current;
+      await lancerOutil(tester, l.winaiToolCards);
+      expect(faux.recues('POST', '/chatbot/message'), isEmpty);
+      expect(find.text('Les fiches sont reservees a l offre Standard.'), findsOneWidget);
+      expect(find.text(l.winaiStudioSeePlans), findsOneWidget);
+    });
+
+    testWidgets('atelier : resume a ecouter redige par le serveur (duree longue), lu par la barre d ecoute', (tester) async {
+      faux.repond('POST', '/winai/resume-audio', {
+        'data': {'id': 9, 'kind': 'resume-audio', 'title': 'Les derivees', 'script': 'La derivee mesure une variation.', 'estimatedSeconds': 180}
+      }, statut: 201);
+      await monterEcran(tester, const StudentWinAITab());
+      final l = L10n.current;
+      await lancerOutil(tester, l.winaiToolAudio, option: l.winaiLengthLong);
+      final envoi = faux.recues('POST', '/winai/resume-audio').single.data as Map;
+      expect(envoi['duree'], 'longue');
+      expect(faux.recues('POST', '/chatbot/message'), isEmpty);
+      expect(find.byType(WinAITextScreen, skipOffstage: false), findsOneWidget);
+      expect(find.text('Les derivees'), findsOneWidget);
+      expect(find.byType(WinAIListenBar), findsOneWidget);
+    });
+
+    testWidgets('« Mes creations » : paquets de fiches et resumes gardes par le serveur, un paquet se rouvre', (tester) async {
+      faux.repond('GET', '/quizzes/me/generated', []);
+      faux.repond('GET', '/revisions/me/generated', []);
+      faux.repond('GET', '/winai/flashcards', {'data': [{'id': 7, 'title': 'Paquet Pythagore', 'cardCount': 2}]});
+      faux.repond('GET', '/winai/resume-audio', {'data': [{'id': 9, 'title': 'Resume des derivees'}]});
+      faux.repond('GET', '/winai/flashcards/7', {
+        'data': {'id': 7, 'title': 'Paquet Pythagore', 'cards': [
+          {'front': 'Enonce ?', 'back': 'a2 + b2 = c2'},
+          {'front': 'Grand cote ?', 'back': 'Hypotenuse'},
+        ]}
+      });
+      await monterEcran(tester, const WinAICreationsScreen());
+      await reseau(tester);
+      await pomper(tester);
+      final l = L10n.current;
+      expect(find.text(l.winaiCreationsDecks), findsOneWidget);
+      expect(find.text(l.winaiCreationsAudio), findsOneWidget);
+      expect(find.text('Resume des derivees'), findsOneWidget);
+      await tester.tap(find.text('Paquet Pythagore'));
+      await pomper(tester);
+      await reseau(tester);
+      await pomper(tester, const Duration(milliseconds: 400));
+      expect(find.text('Enonce ?'), findsOneWidget);
     });
 
     test('lecture des fiches : formes francaise et anglaise, numeros et gras ignores, fiche sans reponse ecartee', () {

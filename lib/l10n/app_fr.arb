@@ -6129,5 +6129,15 @@
   "@tcourseImport": {"placeholders": {"count": {"type": "int"}}},
   "tcourseSyllabusImported": "{count, plural, =1{1 chapitre ajouté.} other{{count} chapitres ajoutés.}}",
   "@tcourseSyllabusImported": {"placeholders": {"count": {"type": "int"}}},
-  "tcourseEditCourse": "Modifier la formation"
+  "tcourseEditCourse": "Modifier la formation",
+  "winaiStudioReport": "Faire le point",
+  "winaiToolWeekReport": "Bilan de la semaine",
+  "winaiToolClassSummary": "Synthèse d'une classe",
+  "winaiPickChild": "Pour quel enfant ?",
+  "winaiPickGroup": "Pour quelle classe ?",
+  "winaiNoChild": "Aucun enfant n'est rattaché à votre compte",
+  "winaiNoGroup": "Aucune classe pour le moment",
+  "winaiToolUnavailable": "Cet outil n'est pas encore disponible. Réessayez un peu plus tard.",
+  "winaiCreationsDecks": "Mes fiches recto verso",
+  "winaiCreationsAudio": "Mes résumés à écouter"
 }

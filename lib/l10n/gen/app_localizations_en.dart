@@ -11098,4 +11098,35 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tcourseEditCourse => 'Edit the course';
+
+  @override
+  String get winaiStudioReport => 'Take stock';
+
+  @override
+  String get winaiToolWeekReport => 'Weekly report';
+
+  @override
+  String get winaiToolClassSummary => 'Class summary';
+
+  @override
+  String get winaiPickChild => 'For which child?';
+
+  @override
+  String get winaiPickGroup => 'For which class?';
+
+  @override
+  String get winaiNoChild => 'No child is linked to your account';
+
+  @override
+  String get winaiNoGroup => 'No class yet';
+
+  @override
+  String get winaiToolUnavailable =>
+      'This tool is not available yet. Try again a little later.';
+
+  @override
+  String get winaiCreationsDecks => 'My flashcards';
+
+  @override
+  String get winaiCreationsAudio => 'My summaries to listen to';
 }
