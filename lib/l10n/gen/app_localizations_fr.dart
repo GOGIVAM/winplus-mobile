@@ -11652,4 +11652,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String reviewsSeeAll(int count) {
     return 'Voir les $count avis';
   }
+
+  @override
+  String notifSummaryTitle(int count) {
+    return 'WinAI résume vos $count notifications non lues';
+  }
+
+  @override
+  String get notifSummaryHide => 'Masquer le résumé';
 }

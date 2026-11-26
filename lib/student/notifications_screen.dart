@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../shared/notifications_ai_summary.dart';
 import '../l10n/l10n.dart';
 import '../services/background_notifications.dart';
 import '../services/user_service.dart';
@@ -214,6 +215,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
       children: [
+        // Lot 7 : résumé WinAI des non lues (3 ou plus), masquable.
+        NotificationsAiSummary(unread: _notifs!.where((n) => !n.isRead).toList()),
         ...groups.entries
           .map((entry) => Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

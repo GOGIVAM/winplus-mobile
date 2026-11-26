@@ -19622,6 +19622,18 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Voir les {count} avis'**
   String reviewsSeeAll(int count);
+
+  /// No description provided for @notifSummaryTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'WinAI résume vos {count} notifications non lues'**
+  String notifSummaryTitle(int count);
+
+  /// No description provided for @notifSummaryHide.
+  ///
+  /// In fr, this message translates to:
+  /// **'Masquer le résumé'**
+  String get notifSummaryHide;
 }
 
 class _AppLocalizationsDelegate

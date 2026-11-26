@@ -3389,5 +3389,8 @@
   "reviewsStudent": "Student",
   "reviewsTutorReply": "Tutor's reply",
   "reviewsSeeAll": "See all {count} reviews",
-  "@reviewsSeeAll": {"placeholders": {"count": {"type": "int"}}}
+  "@reviewsSeeAll": {"placeholders": {"count": {"type": "int"}}},
+  "notifSummaryTitle": "WinAI sums up your {count} unread notifications",
+  "@notifSummaryTitle": {"placeholders": {"count": {"type": "int"}}},
+  "notifSummaryHide": "Hide the summary"
 }

@@ -6271,5 +6271,8 @@
   "reviewsStudent": "Élève",
   "reviewsTutorReply": "Réponse du tuteur",
   "reviewsSeeAll": "Voir les {count} avis",
-  "@reviewsSeeAll": {"placeholders": {"count": {"type": "int"}}}
+  "@reviewsSeeAll": {"placeholders": {"count": {"type": "int"}}},
+  "notifSummaryTitle": "WinAI résume vos {count} notifications non lues",
+  "@notifSummaryTitle": {"placeholders": {"count": {"type": "int"}}},
+  "notifSummaryHide": "Masquer le résumé"
 }
