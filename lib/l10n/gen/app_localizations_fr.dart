@@ -11526,4 +11526,108 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get ihwStatusTodo => 'À faire';
+
+  @override
+  String get canTitle => 'Analyse de classe';
+
+  @override
+  String get canIntro =>
+      'Choisissez un contenu publié : WinAI analyse ses élèves (niveau, difficultés, actions conseillées). L’analyse consomme du crédit WinAI.';
+
+  @override
+  String get canNoContentTitle => 'Aucun contenu publié';
+
+  @override
+  String get canNoContentText =>
+      'L’analyse porte sur les élèves d’un contenu publié. Publiez un contenu pour l’utiliser.';
+
+  @override
+  String get canAverage => 'Moyenne des élèves';
+
+  @override
+  String get canStudents => 'Élèves';
+
+  @override
+  String get canMastery => 'Niveau de maîtrise';
+
+  @override
+  String get canExcellent => 'Excellent';
+
+  @override
+  String get canGood => 'Bon';
+
+  @override
+  String get canStruggling => 'En difficulté';
+
+  @override
+  String get canAtRisk => 'À risque';
+
+  @override
+  String get canHardest => 'Questions les plus ratées';
+
+  @override
+  String canWrongRate(String topic, int rate) {
+    return '$topic : $rate % d’erreurs';
+  }
+
+  @override
+  String get canMistakes => 'Erreurs fréquentes';
+
+  @override
+  String get canActions => 'Actions conseillées';
+
+  @override
+  String get predTitle => 'Prévision de réussite';
+
+  @override
+  String get predIntro =>
+      'WinAI estime le taux de réussite de vos élèves à partir de leur travail sur WinPlus, et propose des actions. La prévision consomme du crédit WinAI.';
+
+  @override
+  String get predRun => 'Lancer la prévision';
+
+  @override
+  String get predRerun => 'Relancer';
+
+  @override
+  String get predPassRate => 'Taux de réussite prévu';
+
+  @override
+  String get predConfHigh => 'Confiance élevée';
+
+  @override
+  String get predConfMedium => 'Confiance moyenne';
+
+  @override
+  String get predConfLow => 'Confiance faible';
+
+  @override
+  String predVsLastYear(String value) {
+    return '$value points par rapport à l’an dernier';
+  }
+
+  @override
+  String get predExcel => 'En avance';
+
+  @override
+  String get predMiddle => 'Dans la moyenne';
+
+  @override
+  String get predAtRisk => 'En difficulté';
+
+  @override
+  String get predRiskFactors => 'Facteurs de risque';
+
+  @override
+  String get predActions => 'Actions conseillées';
+
+  @override
+  String predImpact(String value) {
+    return 'impact $value';
+  }
+
+  @override
+  String predEffort(String value) {
+    return 'effort $value';
+  }
 }

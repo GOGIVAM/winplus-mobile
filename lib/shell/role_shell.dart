@@ -39,6 +39,8 @@ import '../institution/mock_exams_screen.dart';
 import '../institution/bulletins_screen.dart';
 import '../institution/teachers_screen.dart';
 import '../institution/homework_screen.dart';
+import '../institution/class_prediction_screen.dart';
+import '../teacher/class_analysis_screen.dart';
 import '../institution/license_screen.dart';
 import '../institution/at_risk_screen.dart';
 import '../teacher/tutor_profile_screen.dart';
@@ -480,6 +482,7 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
               l.shellTabCatalog: l.moreGroupTeach,
               l.libTitle: l.moreGroupTeach,
               l.dpTitle: l.moreGroupFollow,
+              l.canTitle: l.moreGroupFollow,
               l.mobileHomeCorrections: l.moreGroupFollow,
               l.teacherClassesMyLinks: l.moreGroupFollow,
               l.teacherProfileTitle: l.moreGroupTutoring,
@@ -508,6 +511,9 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
               // Lot 7 : élèves de ses formations qui décrochent, à relancer.
               MoreEntry(l.dpTitle, PhosphorIconsRegular.warningCircle,
                   (_) => const DropoutAlertsScreen()),
+              // Lot 7 : analyse WinAI des élèves d'un contenu publié.
+              MoreEntry(l.canTitle, PhosphorIconsRegular.chartPie,
+                  (_) => const ClassAnalysisScreen()),
               MoreEntry(
                   l.shellTabEarnings,
                   PhosphorIconsRegular.wallet,
@@ -549,6 +555,7 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
               l.instRiskTitle: l.moreGroupSteer,
               l.instReportsTitle: l.moreGroupSteer,
               l.regCmpTitle: l.moreGroupSteer,
+              l.predTitle: l.moreGroupSteer,
               l.ihwTitle: l.moreGroupSteer,
               l.mockTitle: l.moreGroupSteer,
               l.bullTitle: l.moreGroupSteer,
@@ -578,6 +585,9 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
               // Lot 7 : rang anonyme parmi les établissements de la région.
               MoreEntry(l.regCmpTitle, PhosphorIconsRegular.ranking,
                   (_) => const RegionalComparisonScreen()),
+              // Lot 7 : prévision de réussite par WinAI.
+              MoreEntry(l.predTitle, PhosphorIconsRegular.trendUp,
+                  (_) => const ClassPredictionScreen()),
               // Lot 7 : devoirs donnés aux classes et leur avancement.
               MoreEntry(l.ihwTitle, PhosphorIconsRegular.notebook,
                   (_) => const InstitutionHomeworkScreen()),

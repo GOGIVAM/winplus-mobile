@@ -19412,6 +19412,192 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'À faire'**
   String get ihwStatusTodo;
+
+  /// No description provided for @canTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Analyse de classe'**
+  String get canTitle;
+
+  /// No description provided for @canIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisissez un contenu publié : WinAI analyse ses élèves (niveau, difficultés, actions conseillées). L’analyse consomme du crédit WinAI.'**
+  String get canIntro;
+
+  /// No description provided for @canNoContentTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun contenu publié'**
+  String get canNoContentTitle;
+
+  /// No description provided for @canNoContentText.
+  ///
+  /// In fr, this message translates to:
+  /// **'L’analyse porte sur les élèves d’un contenu publié. Publiez un contenu pour l’utiliser.'**
+  String get canNoContentText;
+
+  /// No description provided for @canAverage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Moyenne des élèves'**
+  String get canAverage;
+
+  /// No description provided for @canStudents.
+  ///
+  /// In fr, this message translates to:
+  /// **'Élèves'**
+  String get canStudents;
+
+  /// No description provided for @canMastery.
+  ///
+  /// In fr, this message translates to:
+  /// **'Niveau de maîtrise'**
+  String get canMastery;
+
+  /// No description provided for @canExcellent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Excellent'**
+  String get canExcellent;
+
+  /// No description provided for @canGood.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bon'**
+  String get canGood;
+
+  /// No description provided for @canStruggling.
+  ///
+  /// In fr, this message translates to:
+  /// **'En difficulté'**
+  String get canStruggling;
+
+  /// No description provided for @canAtRisk.
+  ///
+  /// In fr, this message translates to:
+  /// **'À risque'**
+  String get canAtRisk;
+
+  /// No description provided for @canHardest.
+  ///
+  /// In fr, this message translates to:
+  /// **'Questions les plus ratées'**
+  String get canHardest;
+
+  /// No description provided for @canWrongRate.
+  ///
+  /// In fr, this message translates to:
+  /// **'{topic} : {rate} % d’erreurs'**
+  String canWrongRate(String topic, int rate);
+
+  /// No description provided for @canMistakes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Erreurs fréquentes'**
+  String get canMistakes;
+
+  /// No description provided for @canActions.
+  ///
+  /// In fr, this message translates to:
+  /// **'Actions conseillées'**
+  String get canActions;
+
+  /// No description provided for @predTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prévision de réussite'**
+  String get predTitle;
+
+  /// No description provided for @predIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'WinAI estime le taux de réussite de vos élèves à partir de leur travail sur WinPlus, et propose des actions. La prévision consomme du crédit WinAI.'**
+  String get predIntro;
+
+  /// No description provided for @predRun.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lancer la prévision'**
+  String get predRun;
+
+  /// No description provided for @predRerun.
+  ///
+  /// In fr, this message translates to:
+  /// **'Relancer'**
+  String get predRerun;
+
+  /// No description provided for @predPassRate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Taux de réussite prévu'**
+  String get predPassRate;
+
+  /// No description provided for @predConfHigh.
+  ///
+  /// In fr, this message translates to:
+  /// **'Confiance élevée'**
+  String get predConfHigh;
+
+  /// No description provided for @predConfMedium.
+  ///
+  /// In fr, this message translates to:
+  /// **'Confiance moyenne'**
+  String get predConfMedium;
+
+  /// No description provided for @predConfLow.
+  ///
+  /// In fr, this message translates to:
+  /// **'Confiance faible'**
+  String get predConfLow;
+
+  /// No description provided for @predVsLastYear.
+  ///
+  /// In fr, this message translates to:
+  /// **'{value} points par rapport à l’an dernier'**
+  String predVsLastYear(String value);
+
+  /// No description provided for @predExcel.
+  ///
+  /// In fr, this message translates to:
+  /// **'En avance'**
+  String get predExcel;
+
+  /// No description provided for @predMiddle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dans la moyenne'**
+  String get predMiddle;
+
+  /// No description provided for @predAtRisk.
+  ///
+  /// In fr, this message translates to:
+  /// **'En difficulté'**
+  String get predAtRisk;
+
+  /// No description provided for @predRiskFactors.
+  ///
+  /// In fr, this message translates to:
+  /// **'Facteurs de risque'**
+  String get predRiskFactors;
+
+  /// No description provided for @predActions.
+  ///
+  /// In fr, this message translates to:
+  /// **'Actions conseillées'**
+  String get predActions;
+
+  /// No description provided for @predImpact.
+  ///
+  /// In fr, this message translates to:
+  /// **'impact {value}'**
+  String predImpact(String value);
+
+  /// No description provided for @predEffort.
+  ///
+  /// In fr, this message translates to:
+  /// **'effort {value}'**
+  String predEffort(String value);
 }
 
 class _AppLocalizationsDelegate

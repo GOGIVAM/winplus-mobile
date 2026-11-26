@@ -11433,4 +11433,108 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ihwStatusTodo => 'To do';
+
+  @override
+  String get canTitle => 'Class analysis';
+
+  @override
+  String get canIntro =>
+      'Choose a published content: WinAI analyses its students (level, difficulties, suggested actions). The analysis uses WinAI credit.';
+
+  @override
+  String get canNoContentTitle => 'No published content';
+
+  @override
+  String get canNoContentText =>
+      'The analysis covers the students of a published content. Publish content to use it.';
+
+  @override
+  String get canAverage => 'Students\' average';
+
+  @override
+  String get canStudents => 'Students';
+
+  @override
+  String get canMastery => 'Mastery level';
+
+  @override
+  String get canExcellent => 'Excellent';
+
+  @override
+  String get canGood => 'Good';
+
+  @override
+  String get canStruggling => 'Struggling';
+
+  @override
+  String get canAtRisk => 'At risk';
+
+  @override
+  String get canHardest => 'Most missed questions';
+
+  @override
+  String canWrongRate(String topic, int rate) {
+    return '$topic: $rate% wrong';
+  }
+
+  @override
+  String get canMistakes => 'Common mistakes';
+
+  @override
+  String get canActions => 'Suggested actions';
+
+  @override
+  String get predTitle => 'Success forecast';
+
+  @override
+  String get predIntro =>
+      'WinAI estimates your students\' pass rate from their work on WinPlus and suggests actions. The forecast uses WinAI credit.';
+
+  @override
+  String get predRun => 'Run the forecast';
+
+  @override
+  String get predRerun => 'Run again';
+
+  @override
+  String get predPassRate => 'Predicted pass rate';
+
+  @override
+  String get predConfHigh => 'High confidence';
+
+  @override
+  String get predConfMedium => 'Medium confidence';
+
+  @override
+  String get predConfLow => 'Low confidence';
+
+  @override
+  String predVsLastYear(String value) {
+    return '$value points compared with last year';
+  }
+
+  @override
+  String get predExcel => 'Ahead';
+
+  @override
+  String get predMiddle => 'On track';
+
+  @override
+  String get predAtRisk => 'Struggling';
+
+  @override
+  String get predRiskFactors => 'Risk factors';
+
+  @override
+  String get predActions => 'Suggested actions';
+
+  @override
+  String predImpact(String value) {
+    return 'impact $value';
+  }
+
+  @override
+  String predEffort(String value) {
+    return 'effort $value';
+  }
 }
