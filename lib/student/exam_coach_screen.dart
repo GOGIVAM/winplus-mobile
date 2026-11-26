@@ -156,7 +156,9 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
   }
 
   int _todayDayNumber() {
-    final created = _plan!.createdAt;
+    // Date du serveur en UTC : ramenée au jour local (entre minuit et 1 h à
+    // Douala, l'élève validait le jour suivant de son plan).
+    final created = _plan!.createdAt.toLocal();
     final createdDate = DateTime(created.year, created.month, created.day);
     final today = DateTime.now();
     final todayDate = DateTime(today.year, today.month, today.day);
