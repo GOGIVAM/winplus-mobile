@@ -346,7 +346,7 @@ class _MiniCard extends StatelessWidget {
                         style: WinType.bodyM(s.onStrong),
                         decoration: InputDecoration(
                           isDense: true,
-                          border: InputBorder.none,
+                          filled: false, border: InputBorder.none,
                           hintText: context.l10n.aiAskHint,
                           hintStyle: WinType.bodyS(s.onFaint),
                         ),

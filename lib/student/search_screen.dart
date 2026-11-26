@@ -140,7 +140,7 @@ class _SearchScreenState extends State<SearchScreen> {
           decoration: InputDecoration(
             hintText: context.l10n.studentSearchHint,
             hintStyle: WinType.manrope(size: 15, color: s.onFaint),
-            border: InputBorder.none,
+            filled: false, border: InputBorder.none,
             suffixIcon: _query.isNotEmpty
                 ? IconButton(
                     icon: Icon(PhosphorIconsRegular.x, size: 18, color: s.onFaint),

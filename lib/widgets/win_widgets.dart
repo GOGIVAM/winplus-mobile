@@ -414,7 +414,7 @@ class _WinTextFieldState extends State<WinTextField> {
                         isDense: true,
                         contentPadding:
                             const EdgeInsets.symmetric(vertical: 14),
-                        border: InputBorder.none,
+                        filled: false, border: InputBorder.none,
                         hintText: widget.hint,
                         hintStyle:
                             WinType.manrope(size: 16, color: s.onFaint)))),

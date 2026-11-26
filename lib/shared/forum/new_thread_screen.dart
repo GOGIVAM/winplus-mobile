@@ -127,7 +127,7 @@ class _NewThreadScreenState extends State<NewThreadScreen> {
                     style: WinType.bodyM(s.onStrong),
                     decoration: InputDecoration(
                       isDense: true,
-                      border: InputBorder.none,
+                      filled: false, border: InputBorder.none,
                       hintText: l10n.forumContentHint,
                       hintStyle: WinType.bodyM(s.onFaint),
                     ),

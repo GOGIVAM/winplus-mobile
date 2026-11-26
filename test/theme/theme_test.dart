@@ -4,6 +4,9 @@ import 'package:winplus/theme/win_colors.dart';
 import 'package:winplus/theme/win_motion.dart';
 import 'package:winplus/theme/win_theme.dart';
 
+import 'package:winplus/widgets/win_widgets.dart';
+
+import '../helpers/ecran.dart';
 import '../helpers/faux_reseau.dart';
 
 void main() {
@@ -104,5 +107,22 @@ void main() {
       expect(WinDurations.fast, const Duration(milliseconds: 140));
       expect(WinDurations.stagger, const Duration(milliseconds: 40));
     });
+  });
+
+  // Le theme des champs ne doit pas redessiner un cadre dans un champ qui a
+  // deja le sien (double cadre vu sur l'ecran de connexion).
+  testWidgets('WinTextField : un seul cadre, celui du composant', (tester) async {
+    // Le theme de l'application, comme dans main.dart (l'outil de test ne le pose pas).
+    await monterEcran(
+        tester,
+        Theme(
+            data: winMaterialTheme(WinScheme.dark_),
+            child: const Scaffold(body: WinTextField(label: 'Email'))),
+        schema: WinScheme.dark_);
+    final d = tester.widget<InputDecorator>(find.byType(InputDecorator)).decoration;
+    expect(d.filled, isFalse);
+    expect(d.border, InputBorder.none);
+    expect(d.enabledBorder, isNull);
+    expect(d.focusedBorder, isNull);
   });
 }

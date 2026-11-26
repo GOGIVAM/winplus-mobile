@@ -229,18 +229,20 @@ ThemeData winMaterialTheme(WinScheme s) => ThemeData(
         labelStyle: WinType.bodyM(s.onMuted),
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-        border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(WinRadii.sm),
-            borderSide: BorderSide(color: s.outline2)),
-        enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(WinRadii.sm),
-            borderSide: BorderSide(color: s.outline2)),
-        focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(WinRadii.sm),
-            borderSide: BorderSide(color: s.primary, width: 1.6)),
-        errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(WinRadii.sm),
-            borderSide: const BorderSide(color: WinColors.error)),
+        // Un seul « border » qui suit l'etat du champ, et pas de
+        // enabledBorder / focusedBorder : ils passaient devant le
+        // « border: InputBorder.none » des champs qui dessinent leur propre
+        // cadre (WinTextField) et leur ajoutaient un second cadre.
+        border: MaterialStateOutlineInputBorder.resolveWith((states) {
+          final side = states.contains(WidgetState.error)
+              ? const BorderSide(color: WinColors.error)
+              : states.contains(WidgetState.focused)
+                  ? BorderSide(color: s.primary, width: 1.6)
+                  : BorderSide(color: s.outline2);
+          return OutlineInputBorder(
+              borderRadius: BorderRadius.circular(WinRadii.sm),
+              borderSide: side);
+        }),
       ),
       dialogTheme: DialogThemeData(
         backgroundColor: s.surface,

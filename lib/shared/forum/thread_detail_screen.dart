@@ -136,7 +136,7 @@ class _ThreadDetailScreenState extends State<ThreadDetailScreen> {
                     isDense: true,
                     hintText: l10n.forumReplyHint,
                     hintStyle: WinType.bodyM(s.onFaint),
-                    border: InputBorder.none,
+                    filled: false, border: InputBorder.none,
                   ),
                 ),
               ),
