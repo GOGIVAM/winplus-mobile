@@ -75,13 +75,29 @@ class AuthService {
       );
       return AuthResult(success: true, locale: u['locale'] as String?);
     } on DioException catch (e) {
-      final data = e.response?.data as Map<String, dynamic>?;
+      final data = e.response?.data is Map<String, dynamic> ? e.response!.data as Map<String, dynamic> : null;
+      final code = data?['errorCode'] as String?;
       return AuthResult(
         success: false,
-        message: data?['error'] as String? ?? L10n.current.svcLoginFailed,
-        errorCode: data?['errorCode'] as String?,
+        message: signInMessage(e.response?.statusCode, code),
+        errorCode: code,
       );
     }
+  }
+
+  /// Message de connexion refusée, dans la langue de l'application. Le
+  /// serveur renvoie ses messages en anglais (« Invalid email or password ») :
+  /// seul son code d'erreur est repris.
+  static String signInMessage(int? status, String? errorCode) {
+    final l = L10n.current;
+    if (status == null) return l.authErrNetwork;
+    if (status == 429 || errorCode == 'TOO_MANY_ATTEMPTS') return l.authErrTooManyAttempts;
+    return switch (errorCode) {
+      'EMAIL_NOT_VERIFIED' => l.authErrEmailNotVerified,
+      'ACCOUNT_INACTIVE' => l.authErrAccountInactive,
+      _ when status == 401 => l.wrongCredentials,
+      _ => l.svcLoginFailed,
+    };
   }
 
   /// Identifiant client Google (public), lu sur le serveur qui garde le

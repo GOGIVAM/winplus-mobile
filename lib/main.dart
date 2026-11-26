@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'app_config.dart';
 import 'app_state.dart';
 import 'l10n/gen/app_localizations.dart';
 import 'theme/win_theme.dart';
@@ -125,6 +126,17 @@ class _WinPlusAppState extends State<WinPlusApp>
                   GlobalCupertinoLocalizations.delegate,
                 ],
                 home: const SplashScreen(),
+                // Version d'intégration : ruban en coin sur tous les écrans,
+                // pour ne jamais la confondre avec la production (comme le
+                // bandeau du site d'intégration).
+                builder: AppConfig.isIntegration
+                    ? (context, child) => Banner(
+                          message: context.l10n.integrationRibbon,
+                          location: BannerLocation.topStart,
+                          color: const Color(0xFFE67E22),
+                          child: child ?? const SizedBox.shrink(),
+                        )
+                    : null,
               ),
             );
           },

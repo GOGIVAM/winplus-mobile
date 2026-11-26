@@ -11681,4 +11681,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String winaiCreationsDeleteBody(String title) {
     return '\"$title\" will be deleted for good.';
   }
+
+  @override
+  String get authErrTooManyAttempts =>
+      'Too many sign-in attempts. Wait a few minutes before trying again.';
+
+  @override
+  String get authErrEmailNotVerified =>
+      'Your email address isn\'t verified yet. Open the link we emailed you.';
+
+  @override
+  String get authErrAccountInactive =>
+      'This account is disabled. Contact WinPlus support.';
+
+  @override
+  String get integrationRibbon => 'INTEGRATION';
 }

@@ -42,13 +42,13 @@ void main() {
       expect(faux.requetes, isEmpty);
     });
 
-    testWidgets('identifiants refuses : le message du serveur est affiche et le bouton redevient actif', (tester) async {
-      faux.repond('POST', '/auth/signin', {'error': 'Mot de passe errone'}, statut: 401);
+    testWidgets('identifiants refuses : message traduit (pas le texte du serveur) et le bouton redevient actif', (tester) async {
+      faux.repond('POST', '/auth/signin', {'error': 'Invalid email or password'}, statut: 401);
       await monterEcran(tester, const LoginScreen());
       await tester.enterText(find.byType(TextField).at(0), '  ada@x.cm ');
       await tester.enterText(find.byType(TextField).at(1), 'secret');
       await _toucher(tester, _bouton(L10n.current.login));
-      expect(find.text('Mot de passe errone'), findsOneWidget);
+      expect(find.text(L10n.current.wrongCredentials), findsOneWidget);
       expect(faux.recues('POST', '/auth/signin').single.data, {'email': 'ada@x.cm', 'password': 'secret'});
       expect(tester.widget<WinButton>(_bouton(L10n.current.login)).loading, isFalse);
     });

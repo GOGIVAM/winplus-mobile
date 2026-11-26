@@ -3430,5 +3430,9 @@
   "winaiUsedSources": "Sources used",
   "winaiCreationsDeleteTitle": "Delete this creation?",
   "winaiCreationsDeleteBody": "\"{title}\" will be deleted for good.",
-  "@winaiCreationsDeleteBody": {"placeholders": {"title": {"type": "String"}}}
+  "@winaiCreationsDeleteBody": {"placeholders": {"title": {"type": "String"}}},
+  "authErrTooManyAttempts": "Too many sign-in attempts. Wait a few minutes before trying again.",
+  "authErrEmailNotVerified": "Your email address isn't verified yet. Open the link we emailed you.",
+  "authErrAccountInactive": "This account is disabled. Contact WinPlus support.",
+  "integrationRibbon": "INTEGRATION"
 }

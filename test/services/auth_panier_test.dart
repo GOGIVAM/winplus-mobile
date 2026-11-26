@@ -52,12 +52,12 @@ void main() {
       expect(await SessionManager.getUserName(), '');
     });
 
-    test('un refus du serveur renvoie son message et son code, sans session', () async {
-      faux.repond('POST', '/auth/signin', {'error': 'Email non verifie', 'errorCode': 'EMAIL_NON_VERIFIE'}, statut: 403);
+    test('un refus du serveur renvoie un message traduit et son code, sans session', () async {
+      faux.repond('POST', '/auth/signin', {'error': 'Email not verified', 'errorCode': 'EMAIL_NOT_VERIFIED'}, statut: 401);
       final r = await AuthService.instance.signIn('x@y.cm', 'p');
       expect(r.success, isFalse);
-      expect(r.message, 'Email non verifie');
-      expect(r.errorCode, 'EMAIL_NON_VERIFIE');
+      expect(r.message, L10n.current.authErrEmailNotVerified);
+      expect(r.errorCode, 'EMAIL_NOT_VERIFIED');
       expect(await SessionManager.isLoggedIn(), isFalse);
     });
 
@@ -70,13 +70,13 @@ void main() {
       expect(r.errorCode, isNull);
     });
 
-    test('hors ligne, le message par defaut est rendu dans la langue de l\'application', () async {
+    test('hors ligne, le message reseau est rendu dans la langue de l\'application', () async {
       L10n.locale = const Locale('en');
       faux.coupure('POST', '/auth/signin');
       final r = await AuthService.instance.signIn('x@y.cm', 'p');
       expect(r.success, isFalse);
-      expect(r.message, L10n.current.svcLoginFailed);
-      expect(r.message, isNot('Connexion impossible'));
+      expect(r.message, L10n.current.authErrNetwork);
+      expect(r.message, isNot('Erreur réseau.'));
     });
   });
 

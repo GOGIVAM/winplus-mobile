@@ -19808,6 +19808,30 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'« {title} » sera supprimé définitivement.'**
   String winaiCreationsDeleteBody(String title);
+
+  /// No description provided for @authErrTooManyAttempts.
+  ///
+  /// In fr, this message translates to:
+  /// **'Trop d\'essais de connexion. Patiente quelques minutes avant de réessayer.'**
+  String get authErrTooManyAttempts;
+
+  /// No description provided for @authErrEmailNotVerified.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ton adresse e-mail n\'est pas encore vérifiée. Ouvre le lien reçu par e-mail.'**
+  String get authErrEmailNotVerified;
+
+  /// No description provided for @authErrAccountInactive.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce compte est désactivé. Contacte le support WinPlus.'**
+  String get authErrAccountInactive;
+
+  /// No description provided for @integrationRibbon.
+  ///
+  /// In fr, this message translates to:
+  /// **'INTÉGRATION'**
+  String get integrationRibbon;
 }
 
 class _AppLocalizationsDelegate

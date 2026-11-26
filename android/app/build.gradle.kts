@@ -1,3 +1,4 @@
+import java.util.Base64
 import java.util.Properties
 
 plugins {
@@ -16,6 +17,14 @@ val keystoreProperties = Properties().apply {
     if (f.exists()) f.inputStream().use { load(it) }
 }
 val hasReleaseKey = keystoreProperties.getProperty("storeFile") != null
+
+// Version d'intégration (--dart-define=WINPLUS_ENV=integration) : identifiant
+// et nom distincts, pour l'installer à côté de l'application de production
+// sans la remplacer (essais des parcours sur l'intégration, lot 8).
+val isIntegrationBuild = (project.findProperty("dart-defines") as String?)
+    ?.split(",")
+    ?.map { String(Base64.getDecoder().decode(it)) }
+    ?.contains("WINPLUS_ENV=integration") == true
 
 android {
     namespace = "com.example.winplus"
@@ -46,6 +55,11 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        if (isIntegrationBuild) {
+            applicationIdSuffix = ".integration"
+            versionNameSuffix = "-integration"
+        }
+        manifestPlaceholders["appLabel"] = if (isIntegrationBuild) "WinPlus intégration" else "WinPlus"
     }
 
     signingConfigs {

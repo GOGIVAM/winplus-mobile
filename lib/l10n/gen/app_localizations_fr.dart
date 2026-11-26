@@ -11774,4 +11774,19 @@ class AppLocalizationsFr extends AppLocalizations {
   String winaiCreationsDeleteBody(String title) {
     return '« $title » sera supprimé définitivement.';
   }
+
+  @override
+  String get authErrTooManyAttempts =>
+      'Trop d\'essais de connexion. Patiente quelques minutes avant de réessayer.';
+
+  @override
+  String get authErrEmailNotVerified =>
+      'Ton adresse e-mail n\'est pas encore vérifiée. Ouvre le lien reçu par e-mail.';
+
+  @override
+  String get authErrAccountInactive =>
+      'Ce compte est désactivé. Contacte le support WinPlus.';
+
+  @override
+  String get integrationRibbon => 'INTÉGRATION';
 }
