@@ -83,7 +83,7 @@ void main() {
       final l = L10n.current;
       expect(find.text('Epreuve de maths BAC'), findsOneWidget);
       expect(find.text(l.studentDetailBy('Mme Ngo')), findsOneWidget);
-      expect(find.text(l.studentDetailRatingCount('4.3', 8)), findsOneWidget);
+      expect(find.text(l.studentDetailRatingCount('4,3', 8)), findsOneWidget);
       expect(find.text(l.studentDetailViews(120)), findsOneWidget);
       expect(find.text('2024'), findsOneWidget);
       expect(find.text('Une epreuve complete'), findsOneWidget);

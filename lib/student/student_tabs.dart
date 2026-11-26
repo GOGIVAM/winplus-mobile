@@ -402,9 +402,10 @@ class _StudentSpaceTabState extends State<StudentSpaceTab> {
 
   @override
   Widget build(BuildContext context) {
-    final avg = _stats != null ? '${_stats!.averageScore.round()}%' : '—';
+    // Lot 1 : la moyenne des quiz est une note sur 20 ; sans quiz, « – ».
+    final avg = _stats != null ? _stats!.averageGrade : '—';
     final week =
-        _stats != null ? '${_stats!.weeklyStudyHoursTotal.round()}h' : '—';
+        _stats != null ? _orDash(WinFormat.duration((_stats!.weeklyStudyHoursTotal * 60).round())) : '—';
     return Column(children: [
       Expanded(
         child: ListView(
@@ -551,3 +552,6 @@ class StudentWinAITab extends StatelessWidget {
   Widget build(BuildContext context) =>
       WinAIScreen(role: WinRole.student, initialMessage: initialMessage);
 }
+
+/// Lot 1 : tiret pour une valeur vide (durée nulle).
+String _orDash(String v) => v.isEmpty ? '—' : v;

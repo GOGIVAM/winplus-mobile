@@ -211,10 +211,10 @@ class _InstitutionDashTabState extends State<InstitutionDashTab> {
     final a = _analytics;
     final lic = _license;
     final pctActive = a != null && a.totalStudents > 0
-        ? ' (${(a.activeStudents / a.totalStudents * 100).round()}%)'
+        ? ' (${WinFormat.percent(a.activeStudents / a.totalStudents * 100)})'
         : '';
     final pctLic = lic != null && lic.studentSeats > 0
-        ? ' (${(lic.studentSeatsUsed / lic.studentSeats * 100).round()}%)'
+        ? ' (${WinFormat.percent(lic.studentSeatsUsed / lic.studentSeats * 100)})'
         : '';
 
     return MobileHomeView(
@@ -297,7 +297,8 @@ class _InstitutionDashTabState extends State<InstitutionDashTab> {
             onTap: () => ShellNav.go(context, 3)),
         MobileStat(
             label: l.studentReportsAvgScore,
-            value: a != null ? '${a.averageScore.round()}%' : '—',
+            // Lot 1 : score moyen des quiz en note sur 20.
+            value: a != null ? WinFormat.grade20(a.averageScore) : '—',
             tone: MobileStatTone.ink,
             onTap: () => ShellNav.go(context, 3)),
         MobileStat(

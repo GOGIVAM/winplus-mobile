@@ -347,7 +347,7 @@ class _StudySessionScreenState extends State<StudySessionScreen> {
         Wrap(
           spacing: 8,
           children: _durations
-              .map((d) => WinChip(context.l10n.studentSessionMinutes(d),
+              .map((d) => WinChip(WinFormat.duration(d),
                   active: _selectedDuration == d,
                   onTap: () => setState(() => _selectedDuration = d)))
               .toList(),
@@ -530,7 +530,7 @@ class _StudySessionScreenState extends State<StudySessionScreen> {
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         WinBadge(
-            context.l10n.studentSessionScoreLine(_correctCount, _questions.length, _score.round()),
+            context.l10n.studentSessionScoreLine(_correctCount, _questions.length, WinFormat.grade20(_score)),
             color: _score >= 50 ? BadgeColor.success : BadgeColor.warn),
         const SizedBox(height: 16),
         if (_synthesisError)
@@ -568,7 +568,7 @@ class _StudySessionScreenState extends State<StudySessionScreen> {
           Text(context.l10n.studentSessionDone, style: WinType.headlineS(s.onStrong)),
           const SizedBox(height: 8),
           Text(
-              context.l10n.studentSessionDoneScore(_score.round(), session?.subject.name ?? ''),
+              context.l10n.studentSessionDoneScore(WinFormat.grade20(_score), session?.subject.name ?? ''),
               style: WinType.bodyM(s.onMuted)),
           const SizedBox(height: 28),
           WinButton(context.l10n.commonBack, block: true, onTap: () => Navigator.pop(context)),
@@ -614,7 +614,12 @@ class _StudySessionScreenState extends State<StudySessionScreen> {
                     Text(it.subject, style: WinType.titleM(s.onStrong)),
                     const SizedBox(height: 2),
                     Text(
-                        context.l10n.studentSessionHistoryLine(it.duration, it.score != null ? '${it.score!.round()}%' : context.l10n.studentSessionNoScore, dateStr),
+                        // Lot 1 : note sur 20, durée au format commun (masquée si nulle).
+                        WinFormat.duration(it.duration).isEmpty
+                            ? context.l10n.studentSessionHistoryLineNoDuration(
+                                it.score != null ? WinFormat.grade20(it.score) : context.l10n.studentSessionNoScore, dateStr)
+                            : context.l10n.studentSessionHistoryLine(WinFormat.duration(it.duration),
+                                it.score != null ? WinFormat.grade20(it.score) : context.l10n.studentSessionNoScore, dateStr),
                         style: WinType.bodyS(s.onMuted)),
                   ])),
             ]),

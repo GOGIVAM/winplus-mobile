@@ -58,10 +58,10 @@ void main() {
       expect(find.text('Maths'), findsOneWidget);
       expect(find.text('Physique'), findsOneWidget);
       for (final d in [15, 25, 45, 60]) {
-        expect(find.text(l.studentSessionMinutes(d)), findsOneWidget);
+        expect(find.text(WinFormat.duration(d)), findsOneWidget);
       }
       expect(tester.widget<WinChip>(find.widgetWithText(WinChip, 'Maths')).active, isTrue);
-      expect(tester.widget<WinChip>(find.widgetWithText(WinChip, l.studentSessionMinutes(25))).active, isTrue);
+      expect(tester.widget<WinChip>(find.widgetWithText(WinChip, WinFormat.duration(25))).active, isTrue);
     });
 
     testWidgets('aucune matiere : avertissement ; demarrer demande de choisir une matiere', (tester) async {
@@ -86,7 +86,7 @@ void main() {
       sessionOk();
       await monterEcran(tester, const StudySessionScreen());
       await tester.tap(find.text('Physique'));
-      await tester.tap(find.text(L10n.current.studentSessionMinutes(45)));
+      await tester.tap(find.text(WinFormat.duration(45)));
       await pomper(tester);
       await lancer(tester);
       final l = L10n.current;
@@ -136,7 +136,7 @@ void main() {
       // Une reponse revelee est verrouillee : le second toucher sur « 2 »
       // ne change plus la bonne reponse « 1 ». Une sur deux : 50 %.
       expect(faux.recues('POST', '/ai/study-session/phase3/summary').single.data, {'user_id': 7, 'subject_id': 1, 'score': 50.0});
-      expect(find.text(l.studentSessionScoreLine(1, 2, 50)), findsOneWidget);
+      expect(find.text(l.studentSessionScoreLine(1, 2, '10/20')), findsOneWidget);
       expect(find.text('Bon travail sur les fractions'), findsOneWidget);
       expect(find.text('Simplifier'), findsOneWidget);
       await tester.tap(_bouton(l.studentSessionFinish));
@@ -145,7 +145,7 @@ void main() {
       expect(d['key_points'], ['Additionner', 'Simplifier']);
       expect(d['duration_minutes'], 25);
       expect(find.text(l.studentSessionDone), findsOneWidget);
-      expect(find.text(l.studentSessionDoneScore(50, 'Maths')), findsOneWidget);
+      expect(find.text(l.studentSessionDoneScore('10/20', 'Maths')), findsOneWidget);
     });
 
     testWidgets('un clic apres la reponse n\'en change pas le resultat ; deux bonnes reponses = score de 100', (tester) async {
@@ -166,7 +166,7 @@ void main() {
       await pomper(tester);
       await tester.tap(_bouton(l.studentSessionSeeSummary));
       await reseau(tester);
-      expect(find.text(l.studentSessionScoreLine(2, 2, 100)), findsOneWidget);
+      expect(find.text(l.studentSessionScoreLine(2, 2, '20/20')), findsOneWidget);
     });
 
     testWidgets('quiz indisponible (liste vide) : retour au briefing avec message', (tester) async {
@@ -214,8 +214,8 @@ void main() {
       await tester.tap(find.text(L10n.current.studentSessionHistory));
       await reseau(tester);
       final l = L10n.current;
-      expect(find.text(l.studentSessionHistoryLine(25, '80%', '05/01/2026')), findsOneWidget);
-      expect(find.text(l.studentSessionHistoryLine(15, l.studentSessionNoScore, '')), findsOneWidget);
+      expect(find.text(l.studentSessionHistoryLine('25 min', '16/20', '05/01/2026')), findsOneWidget);
+      expect(find.text(l.studentSessionHistoryLine('15 min', l.studentSessionNoScore, '')), findsOneWidget);
       await tester.tap(find.byIcon(PhosphorIconsRegular.x));
       await pomper(tester);
       expect(_bouton(l.studentSessionStart), findsOneWidget);

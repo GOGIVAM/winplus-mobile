@@ -58,14 +58,14 @@ void main() {
     tester.view.physicalSize = const Size(800, 3200);
     await monter(tester, ecran(const StudentHomeTab()));
     await reseau(tester);
-    expect(find.text('74%'), findsOneWidget);
+    expect(find.text('14,9/20'), findsOneWidget);
 
     await monter(tester, const SizedBox());
     ConnectivityService.instance.debugSetOnline(false);
     toutCouper();
     await monter(tester, ecran(const StudentHomeTab()));
     await reseau(tester);
-    expect(find.text('74%'), findsOneWidget);
+    expect(find.text('14,9/20'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
@@ -79,6 +79,6 @@ void main() {
     toutCouper();
     await monter(tester, ecran(const StudentHomeTab()));
     await reseau(tester);
-    expect(find.text('74%'), findsOneWidget);
+    expect(find.text('14,9/20'), findsOneWidget);
   });
 }

@@ -83,8 +83,8 @@ void main() {
     expect(find.text('${fmtXaf(45000)} XAF'), findsOneWidget);
     await chiffre(tester, find.text('40'));
     expect(find.text('40'), findsOneWidget);
-    await chiffre(tester, find.text('4.5'));
-    expect(find.text('4.5'), findsOneWidget);
+    await chiffre(tester, find.text('4,5'));
+    expect(find.text('4,5'), findsOneWidget);
     await chiffre(tester, find.text('12'));
     expect(find.text('12'), findsOneWidget);
     expect(find.text(l.studentReportsWeekShort(4)), findsOneWidget);
@@ -124,7 +124,7 @@ void main() {
     await monterHaut(tester);
     final l = L10n.current;
     await chiffre(tester, find.text(l.mobileHomeShare));
-    expect(find.textContaining(' %'), findsNothing);
+    expect(find.textContaining(WinFormat.percent(0).substring(1)), findsNothing);
     expect(find.text('—'), findsWidgets);
   });
 
@@ -132,8 +132,8 @@ void main() {
     routes();
     final abo = await abonnementAvecDroits(tester, faux, {'teacher.revenue_share': 70}, plan: 'Pro');
     await monterHaut(tester, abonnement: abo);
-    await chiffre(tester, find.text('70 %'));
-    expect(find.text('70 %'), findsOneWidget);
+    await chiffre(tester, find.text(WinFormat.percent(70)));
+    expect(find.text(WinFormat.percent(70)), findsOneWidget);
     expect(find.text('Pro'), findsOneWidget);
   });
 

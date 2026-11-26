@@ -202,10 +202,10 @@ class _AtRiskCard extends StatelessWidget {
           _InfoChip(
               PhosphorIconsRegular.textAlignLeft,
               student.weakSubject.isNotEmpty
-                  ? '${student.weakSubject}  ${student.weakScore}%'
+                  ? '${student.weakSubject}  ${WinFormat.grade20(student.weakScore)}'
                   : context.l10n.instRiskWeakSubject,
               WinColors.error),
-          _InfoChip(PhosphorIconsRegular.chartBar, context.l10n.instRiskScore(student.globalScore),
+          _InfoChip(PhosphorIconsRegular.chartBar, context.l10n.instRiskScore(WinFormat.grade20(student.globalScore)),
               scoreColor),
           _InfoChip(
               PhosphorIconsRegular.clock,

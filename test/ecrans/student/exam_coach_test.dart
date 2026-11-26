@@ -93,7 +93,7 @@ void main() {
     final l = L10n.current;
     expect(find.text(l.studentCoachThisWeek), findsOneWidget);
     expect(find.text('Algebre'), findsOneWidget);
-    expect(find.text('90 min'), findsOneWidget);
+    expect(find.text('1 h 30'), findsOneWidget);
     expect(find.text(l.studentCoachRest), findsOneWidget);
     expect(find.text(l.studentCoachReliability(80)), findsOneWidget);
     expect(_bouton(l.studentCoachMarkToday), findsOneWidget);

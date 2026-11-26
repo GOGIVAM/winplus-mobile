@@ -95,7 +95,7 @@ void main() {
       final l = L10n.current;
       expect(find.text('Groupe A'), findsOneWidget);
       expect(find.textContaining('Maths'), findsOneWidget);
-      expect(find.text(l.instRiskScore(60)), findsOneWidget);
+      expect(find.text(l.instRiskScore('12/20')), findsOneWidget);
       expect(find.text(l.instRiskInactiveFor(2)), findsOneWidget);
       expect(find.text('Notes en baisse'), findsOneWidget);
       expect(find.text(l.instRiskModerate), findsWidgets);
@@ -216,8 +216,8 @@ void main() {
       expect(find.text(L10n.current.instStudentCount(2)), findsOneWidget);
       expect(find.text('Ada Eto'), findsOneWidget);
       expect(find.text('ada@x.cm'), findsOneWidget);
-      expect(find.text('82%'), findsOneWidget);
-      expect(find.text('45%'), findsOneWidget);
+      expect(find.text('16,5/20'), findsOneWidget);
+      expect(find.text('9/20'), findsOneWidget);
     });
 
     testWidgets('groupe sans membre : message dedie', (tester) async {

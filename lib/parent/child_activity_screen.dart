@@ -196,7 +196,7 @@ class _ChildActivityScreenState extends State<ChildActivityScreen>
               onTap: () => EncouragementSheet.show(
                 context,
                 widget.child,
-                childScore: _stats?.averageScore.round(),
+                childScore: (_stats?.averageScore ?? 0) == 0 ? null : _stats!.averageScore,
               ),
             ),
           ]),
@@ -258,12 +258,13 @@ class _ActivityTab extends StatelessWidget {
                 ),
               ),
               Column(mainAxisSize: MainAxisSize.min, children: [
+                // Lot 1 : la moyenne s'affiche sur 20 (le serveur envoie un %).
                 Text(
-                  '${stats.averageScore.round()}',
+                  stats.averageScore == 0 ? WinFormat.none : WinFormat.gradeValue(stats.averageScore),
                   style: WinType.archivo(
                       size: 32, weight: FontWeight.w700, color: s.onStrong),
                 ),
-                Text('/100', style: WinType.labelS(s.onMuted)),
+                Text('/20', style: WinType.labelS(s.onMuted)),
               ]),
             ]),
             const SizedBox(height: 10),
@@ -283,7 +284,7 @@ class _ActivityTab extends StatelessWidget {
           Expanded(
               child: _StatBox(
                   icon: PhosphorIconsRegular.trendUp,
-                  value: '${stats.averageScore.round()}%',
+                  value: stats.averageGrade,
                   label: context.l10n.parentChildAvgScoreShort,
                   color: s.primary)),
           const SizedBox(width: 8),
@@ -379,7 +380,8 @@ class _ActivityTab extends StatelessWidget {
                                 style: WinType.labelM(s.onMuted)),
                           ])),
                       if (ev.score != null)
-                        WinBadge('${ev.score}/20', color: BadgeColor.success),
+                        // Lot 1 : le score du quiz est un % ; affiché sur 20.
+                        WinBadge(WinFormat.grade20(ev.score), color: BadgeColor.success),
                       const SizedBox(width: 4),
                       winIcon(icon, size: 16, color: dot),
                     ]),
@@ -456,7 +458,7 @@ class _ResultsTab extends StatelessWidget {
                           Expanded(
                               child: Text(entry.subjectTitle,
                                   style: WinType.labelM(s.onStrong))),
-                          Text('${entry.averageScore.round()}%',
+                          Text(WinFormat.grade20(entry.averageScore),
                               style: WinType.archivo(size: 14, color: color)),
                         ]),
                         const SizedBox(height: 6),
@@ -496,7 +498,7 @@ class _ResultsTab extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(best.subjectTitle,
                           style: WinType.titleM(s.onStrong)),
-                      Text('${best.averageScore.round()}%',
+                      Text(WinFormat.grade20(best.averageScore),
                           style: WinType.archivo(
                               size: 18, color: WinColors.success)),
                     ]),
@@ -519,7 +521,7 @@ class _ResultsTab extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(worst.subjectTitle,
                           style: WinType.titleM(s.onStrong)),
-                      Text('${worst.averageScore.round()}%',
+                      Text(WinFormat.grade20(worst.averageScore),
                           style:
                               WinType.archivo(size: 18, color: WinColors.warn)),
                     ]),
@@ -547,12 +549,18 @@ class _ResultsTab extends StatelessWidget {
                     children: [
                       Text(context.l10n.parentChildLastQuiz, style: WinType.labelM(s.onMuted)),
                       const SizedBox(height: 2),
+                      // Lot 1 : le nombre de bonnes réponses n'est montré que
+                      // s'il concorde avec le score (le serveur envoie 0 bonne
+                      // réponse pour certaines tentatives notées : « 0/10 » à
+                      // côté de « 50 % »).
                       Text(
-                          '${quiz.title} · ${quiz.correctAnswers}/${quiz.totalQuestions}',
+                          quiz.answersMatchScore
+                              ? '${quiz.title} · ${quiz.correctAnswers}/${quiz.totalQuestions}'
+                              : quiz.title,
                           style: WinType.titleM(s.onStrong)),
                     ]),
               ),
-              WinBadge('${quiz.scorePercent.round()}%', color: quizBadgeColor),
+              WinBadge(WinFormat.grade20(quiz.scorePercent), color: quizBadgeColor),
             ]),
           ),
         ],

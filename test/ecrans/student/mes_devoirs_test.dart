@@ -78,7 +78,7 @@ void main() {
     expect(find.text(l.hwStatusTodo), findsOneWidget);
     expect(find.text(l.hwStatusLate), findsOneWidget);
     expect(find.text(l.hwStatusDone), findsOneWidget);
-    expect(find.text(l.hwScore('15.5', '20')), findsOneWidget);
+    expect(find.text(l.hwScore('15,5', '20')), findsOneWidget);
     await tester.scrollUntilVisible(find.text('Revision chap 2'), 200);
     expect(find.text(l.hwChipOpen), findsOneWidget);
     expect(find.text(l.hwSchoolMissing), findsOneWidget);

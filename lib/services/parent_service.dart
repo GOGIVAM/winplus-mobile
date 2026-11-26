@@ -117,6 +117,14 @@ class ApiChildStats {
         .subtract(Duration(days: inactivityDays));
   }
 
+  /// Lot 1 : moyenne des quiz sur 30 jours en note sur 20. Le serveur
+  /// envoie 0 quand l'enfant n'a fait aucun quiz : « – » plutôt que « 0/20 ».
+  String get averageGrade => averageGrade20(averageScore);
+
+  /// Note sur 20 d'un score moyen du serveur, « – » pour 0 (aucun quiz).
+  static String averageGrade20(double? pct) =>
+      pct == null || pct == 0 ? WinFormat.none : WinFormat.grade20(pct);
+
   factory ApiChildStats.fromJson(Map<String, dynamic> j) => ApiChildStats(
         downloadsThisWeek: j['downloadsThisWeek'] as int? ?? 0,
         quizzesThisWeek: j['quizzesThisWeek'] as int? ?? 0,
@@ -162,6 +170,13 @@ class ApiLastQuiz {
         correctAnswers: j['correctAnswers'] as int? ?? 0,
         totalQuestions: j['totalQuestions'] as int? ?? 0,
       );
+
+  /// Lot 1 : vrai si « bonnes réponses / questions » concorde avec le score
+  /// (à 5 points près, l'arrondi du serveur). Sinon l'écran ne montre que
+  /// la note : une tentative notée 50 % arrivait avec 0 bonne réponse.
+  bool get answersMatchScore =>
+      totalQuestions > 0 &&
+      (correctAnswers * 100 / totalQuestions - scorePercent).abs() <= 5;
 }
 
 /// GET /parent/children/{childId}/subject-scores  remplace les tableaux

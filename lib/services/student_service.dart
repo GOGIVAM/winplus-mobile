@@ -94,6 +94,11 @@ class ApiStudentStats {
   double get weeklyStudyHoursTotal =>
       weeklyStudyHours.fold(0.0, (a, b) => a + b);
 
+  /// Lot 1 : moyenne des quiz en note sur 20 ; « – » tant qu'aucun quiz
+  /// n'est noté (le serveur envoie alors 0).
+  String get averageGrade =>
+      quizCompleted == 0 && averageScore == 0 ? WinFormat.none : WinFormat.grade20(averageScore);
+
   factory ApiStudentStats.fromJson(Map<String, dynamic> j) => ApiStudentStats(
         averageScore: ((j['averageScore'] ?? 0) as num).toDouble(),
         hoursSpent: ((j['hoursSpent'] ?? 0) as num).toDouble(),

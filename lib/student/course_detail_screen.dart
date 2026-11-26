@@ -201,7 +201,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
           Padding(
             padding: const EdgeInsets.all(16),
             child: Text(
-                L10n.current.studentCourseOfferTitle(c.title, c.price.toInt()),
+                L10n.current.studentCourseOfferTitle(c.title, fmtXaf(c.price.round())),
                 style: WinType.titleM(s.onStrong)),
           ),
           ...children.map((ch) => ListTile(
@@ -246,7 +246,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                 Text(context.l10n.studentCourseBuy, style: WinType.headlineS(s.onStrong)),
                 const SizedBox(height: 6),
                 Text(
-                    context.l10n.studentCourseBuyNote(c.price.toInt()),
+                    context.l10n.studentCourseBuyNote(fmtXaf(c.price.round())),
                     style: WinType.bodyS(s.onMuted)),
                 const SizedBox(height: 16),
                 WinButton(
@@ -367,6 +367,8 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                 (PhosphorIconsRegular.clock, c.durationStr),
                 (PhosphorIconsRegular.playCircle, context.l10n.studentCourseLessons(totalLessons)),
               ])
+                // Lot 1 : une durée nulle ne s'affiche pas.
+                if (label.isNotEmpty)
                 Row(mainAxisSize: MainAxisSize.min, children: [
                   Icon(icon, size: 15, color: s.onMuted),
                   const SizedBox(width: 4),
@@ -388,7 +390,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                         )),
                 const SizedBox(width: 6),
                 Text(
-                    context.l10n.studentDetailRatingCount(c.avgRating.toStringAsFixed(1), c.reviewsCount),
+                    context.l10n.studentDetailRatingCount(WinFormat.decimal(c.avgRating), c.reviewsCount),
                     style: WinType.labelM(s.onMuted)),
               ]),
             ],
@@ -559,7 +561,9 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
             Text(context.l10n.studentCourseContent, style: WinType.headlineS(s.onStrong)),
             const SizedBox(height: 4),
             Text(
-                context.l10n.studentCourseCurriculumSummary(c.sections.length, totalLessons, c.durationStr),
+                c.durationStr.isEmpty
+                    ? context.l10n.studentCourseCurriculumSummaryNoDuration(c.sections.length, totalLessons)
+                    : context.l10n.studentCourseCurriculumSummary(c.sections.length, totalLessons, c.durationStr),
                 style: WinType.labelM(s.onMuted)),
             const SizedBox(height: 10),
             ...c.sections.asMap().entries.map((entry) {

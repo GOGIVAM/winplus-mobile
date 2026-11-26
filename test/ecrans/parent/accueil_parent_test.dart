@@ -124,8 +124,8 @@ void main() {
     await chiffre(tester, find.text(l.parentPlanName('Famille')));
     expect(find.text(l.parentPlanName('Famille')), findsOneWidget);
     await chiffre(tester, find.text(l.mobileHomeChildrenAvg));
-    // Moyenne des enfants (14 % chacun) : dans la bande et sur chaque carte.
-    expect(find.text('14%'), findsWidgets);
+    // Moyenne des enfants (14 % chacun, soit 2,8/20) : dans la bande et sur chaque carte.
+    expect(find.text('2,8/20'), findsWidgets);
   });
 
   testWidgets('conseil WinAI : le plus recent est affiche et ouvre les conseils', (tester) async {

@@ -355,7 +355,7 @@ void main() {
       expect(find.text(l.parentSubChildrenFollowed), findsOneWidget);
       expect(find.text('Zoe'), findsOneWidget);
       expect(find.text('Terminale'), findsOneWidget);
-      expect(find.text('66%'), findsOneWidget);
+      expect(find.text('13,3/20'), findsOneWidget);
       await tester.tap(find.text('Zoe'));
       await reseau(tester);
       expect(tester.widget<ChildActivityScreen>(find.byType(ChildActivityScreen)).child.id, 4);

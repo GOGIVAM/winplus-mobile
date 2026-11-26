@@ -43,7 +43,7 @@ void main() {
     expect(find.text('1re D'), findsOneWidget);
     expect(find.text('Zoe Eto'), findsOneWidget);
     expect(find.text(l.teacherStudentsDirect), findsOneWidget);
-    expect(find.text('72 %'), findsOneWidget);
+    expect(find.text(l.teacherClassesAverage('14,4/20')), findsOneWidget);
   });
 
   testWidgets('recherche par nom ou par classe', (tester) async {

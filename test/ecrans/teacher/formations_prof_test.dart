@@ -224,7 +224,7 @@ void main() {
       expect(find.byType(AlertDialog), findsOneWidget);
       expect(find.text('Un cours complet'), findsOneWidget);
       expect(find.text(l.teacherCoursesEnrolledMany(30)), findsOneWidget);
-      expect(find.text('4.5'), findsOneWidget);
+      expect(find.text('4,5'), findsOneWidget);
       await tester.tap(find.text(l.commonClose));
       await pomper(tester);
       await pomper(tester, const Duration(milliseconds: 400));

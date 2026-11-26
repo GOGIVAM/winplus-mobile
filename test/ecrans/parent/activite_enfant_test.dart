@@ -89,8 +89,9 @@ void main() {
       routes();
       await monterEcran(tester, const ChildActivityScreen(child: _enfant));
       final l = L10n.current;
-      expect(find.text('72'), findsOneWidget);
-      expect(find.text('72%'), findsOneWidget);
+      // Lot 1 : 72,4 % devient 14,5/20 (anneau : valeur puis « /20 »).
+      expect(find.text('14,5'), findsOneWidget);
+      expect(find.text('14,5/20'), findsOneWidget);
       expect(find.text(l.parentChildAvgScore30), findsOneWidget);
       expect(find.text('3'), findsOneWidget);
       expect(find.text('2'), findsOneWidget);
@@ -102,7 +103,7 @@ void main() {
 
     testWidgets('activite recente : description, anciennete et note ; sept barres de la semaine', (tester) async {
       routes(activites: [
-        {'type': 'quiz', 'description': 'Quiz de maths termine', 'occurredAt': _ilYA(const Duration(hours: 2)), 'score': 15},
+        {'type': 'quiz', 'description': 'Quiz de maths termine', 'occurredAt': _ilYA(const Duration(hours: 2)), 'score': 75},
         {'type': 'download', 'description': 'Epreuve telechargee', 'occurredAt': _ilYA(const Duration(days: 3))},
         {'type': 'ai_chat', 'description': 'Question a WinAI', 'occurredAt': _ilYA(const Duration(minutes: 20))},
       ]);
@@ -143,7 +144,9 @@ void main() {
       faux.repond('GET', '/parent/children/4/stats', {}, statut: 500);
       await monterEcran(tester, const ChildActivityScreen(child: _enfant));
       expect(_chargement, findsNothing);
-      expect(find.text('0%'), findsOneWidget);
+      // Aucun quiz (score 0) : pas de note nulle, un tiret.
+      expect(find.text('–'), findsWidgets);
+      expect(find.text('0/20'), findsNothing);
       await tester.scrollUntilVisible(find.text(L10n.current.parentChildNoRecentActivity), 300, scrollable: _vertical);
       expect(find.text(L10n.current.parentChildNoRecentActivity), findsOneWidget);
     });
@@ -156,7 +159,7 @@ void main() {
       await pomper(tester);
       expect(chargement, findsOneWidget);
       await reseau(tester);
-      expect(find.text('40%'), findsOneWidget);
+      expect(find.text('8/20'), findsOneWidget);
       expect(find.text('9'), findsOneWidget);
     });
 
@@ -173,15 +176,27 @@ void main() {
       await ouvrirOnglet(tester, L10n.current.studentQuizResults);
       final l = L10n.current;
       expect(find.text(l.parentChildScoreBySubject), findsOneWidget);
-      expect(find.text('88%'), findsNWidgets(2));
-      expect(find.text('40%'), findsNWidgets(2));
+      expect(find.text('17,6/20'), findsNWidgets(2));
+      expect(find.text('8/20'), findsNWidgets(2));
       // Ordre : du meilleur au plus faible.
       expect(tester.getTopLeft(find.text('Maths').first).dy, lessThan(tester.getTopLeft(find.text('Physique')).dy));
       expect(tester.getTopLeft(find.text('Physique')).dy, lessThan(tester.getTopLeft(find.text('Chimie').first).dy));
       expect(find.text(l.parentChildBestSubject), findsOneWidget);
       expect(find.text(l.parentChildToWorkOn), findsOneWidget);
       expect(find.text('Quiz de limites · 6/8'), findsOneWidget);
-      expect(find.text('75%'), findsOneWidget);
+      expect(find.text('15/20'), findsOneWidget);
+    });
+
+    testWidgets('dernier quiz : bonnes reponses incoherentes avec le score = note seule', (tester) async {
+      routes(scores: {
+        'subjects': [],
+        'lastQuiz': {'title': 'Quiz', 'scorePercent': 50, 'correctAnswers': 0, 'totalQuestions': 10},
+      });
+      await monterEcran(tester, const ChildActivityScreen(child: _enfant));
+      await ouvrirOnglet(tester, L10n.current.studentQuizResults);
+      expect(find.text('Quiz · 0/10'), findsNothing);
+      expect(find.text('Quiz'), findsWidgets);
+      expect(find.text('10/20'), findsOneWidget);
     });
 
     testWidgets('onglet Resultats : une seule matiere = pas de cartes meilleure / a travailler', (tester) async {
@@ -193,7 +208,7 @@ void main() {
       await monterEcran(tester, const ChildActivityScreen(child: _enfant));
       await ouvrirOnglet(tester, L10n.current.studentQuizResults);
       expect(find.text(L10n.current.parentChildBestSubject), findsNothing);
-      expect(find.text('88%'), findsOneWidget);
+      expect(find.text('17,6/20'), findsOneWidget);
     });
 
     testWidgets('onglet Resultats vide : « Pas encore de resultats »', (tester) async {
@@ -304,19 +319,19 @@ void main() {
       await pomper(tester, const Duration(milliseconds: 400));
       expect(find.byType(EncouragementSheet), findsOneWidget);
       expect(find.text(L10n.current.parentEncourageTitle('Zoe')), findsOneWidget);
-      // Le modele « votre score » reprend la moyenne arrondie de l'enfant.
-      expect(find.text(L10n.current.parentEncourageTpl4('Zoe', '72%')), findsOneWidget);
+      // Le modele « votre score » reprend la moyenne de l'enfant, sur 20.
+      expect(find.text(L10n.current.parentEncourageTpl4('Zoe', '14,5/20')), findsOneWidget);
     });
   });
 
   group('EncouragementSheet', () {
-    Widget ouvreur({int? score}) => Builder(
+    Widget ouvreur({double? score}) => Builder(
           builder: (c) => Scaffold(
             body: TextButton(onPressed: () => EncouragementSheet.show(c, _enfant, childScore: score), child: const Text('encourager')),
           ),
         );
 
-    Future<void> ouvrirFeuille(WidgetTester tester, {int? score}) async {
+    Future<void> ouvrirFeuille(WidgetTester tester, {double? score}) async {
       await monterEcran(tester, ouvreur(score: score));
       await tester.tap(find.text('encourager'));
       await pomper(tester);
@@ -363,7 +378,7 @@ void main() {
       faux.repond('POST', '/messages/conversations', {'conversationId': 9});
       await ouvrirFeuille(tester, score: 80);
       final l = L10n.current;
-      await tester.tap(find.text(l.parentEncourageTpl4('Zoe', '80%')));
+      await tester.tap(find.text(l.parentEncourageTpl4('Zoe', '16/20')));
       await pomper(tester);
       await tester.ensureVisible(_bouton(l.commonSend));
       await pomper(tester);
@@ -372,7 +387,7 @@ void main() {
       await pomper(tester, const Duration(milliseconds: 400));
       expect(faux.recues('POST', '/messages/conversations').single.data, {
         'participantId': 4,
-        'firstMessage': l.parentEncourageTpl4('Zoe', '80%'),
+        'firstMessage': l.parentEncourageTpl4('Zoe', '16/20'),
       });
       expect(find.byType(EncouragementSheet), findsNothing);
       expect(find.text(l.parentEncourageSent('Zoe')), findsOneWidget);

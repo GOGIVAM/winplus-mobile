@@ -21,7 +21,7 @@ void main() {
     await monterEcran(tester, const InstitutionHomeworkScreen());
     final l = L10n.current;
     expect(find.text('Devoir derivees'), findsOneWidget);
-    expect(find.text('${l.ihwDone(15, 20)} · ${l.mockAverage('13.0 / 20')}'), findsOneWidget);
+    expect(find.text('${l.ihwDone(15, 20)} · ${l.mockAverage('13/20')}'), findsOneWidget);
   });
 
   testWidgets('donner un devoir : classe obligatoire, sujet, consignes', (tester) async {
@@ -60,7 +60,7 @@ void main() {
     faux.repond('DELETE', '/institution/homework/3', {'success': true});
     await monterEcran(tester, const HomeworkProgressScreen(homework: InstitutionHomework(id: 3, title: 'Devoir derivees')));
     final l = L10n.current;
-    expect(find.text('16.0 / 20'), findsOneWidget);
+    expect(find.text('16/20'), findsOneWidget);
     expect(find.widgetWithText(WinBadge, l.ihwStatusLate), findsOneWidget);
     expect(find.widgetWithText(WinBadge, l.ihwStatusTodo), findsOneWidget);
     await tester.tap(find.byTooltip(l.ihwDelete));

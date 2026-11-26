@@ -46,12 +46,12 @@ void main() {
     await monterGrand(tester);
     final l = L10n.current;
     expect(find.text('10'), findsOneWidget, reason: 'inscrits');
-    expect(find.text('53 %'), findsOneWidget, reason: 'completion moyenne (80 + 25) / 2');
-    expect(find.text('12.0 / 20'), findsOneWidget, reason: 'score moyen des quiz');
+    expect(find.text(WinFormat.percent(53)), findsOneWidget, reason: 'completion moyenne (80 + 25) / 2');
+    expect(find.text('12/20'), findsOneWidget, reason: 'score moyen des quiz');
     expect(find.text('${l.cstatDropTitle} : ${l.cstatDropText(6, 'Introduction', 'Exercices')}'), findsOneWidget);
     expect(find.text(l.cstatLessonOf(8, 10)), findsOneWidget);
-    expect(find.text(l.cstatWatch(10)), findsOneWidget);
-    expect(find.text(l.cstatQuiz('12.0 / 20')), findsOneWidget);
+    expect(find.text(l.cstatWatch('10 min')), findsOneWidget);
+    expect(find.text(l.cstatQuiz('12/20')), findsOneWidget);
     expect(find.text(l.cstatReviewBadge), findsOneWidget);
   });
 

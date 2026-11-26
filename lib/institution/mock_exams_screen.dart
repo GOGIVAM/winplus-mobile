@@ -13,7 +13,7 @@ import '../widgets/win_screen.dart';
 import '../widgets/win_widgets.dart';
 
 /// Pourcentage (0 à 100) vers une note sur 20.
-String on20(double? v) => v == null ? '–' : '${(v / 5).toStringAsFixed(1)} / 20';
+String on20(double? v) => WinFormat.grade20(v);
 
 (String, BadgeColor) _state(AppLocalizations l, String state) => switch (state) {
       'published' => (l.mockPublished, BadgeColor.success),
@@ -102,7 +102,7 @@ class _MockExamsScreenState extends State<MockExamsScreen> {
                       [
                         if ((e.subject ?? '').isNotEmpty) e.subject!,
                         if (e.groups.isNotEmpty) e.groups.join(', '),
-                        l.mockDuration(e.durationMinutes),
+                        if (e.durationMinutes > 0) WinFormat.duration(e.durationMinutes),
                       ].join(' · '),
                       style: WinType.labelM(s.onMuted)),
                   if (e.opensAt != null && e.closesAt != null)
@@ -476,7 +476,7 @@ class _MockExamRankingScreenState extends State<MockExamRankingScreen> {
                 child: Row(children: [
                   SizedBox(
                       width: 92,
-                      child: Text('${b.$1 ~/ 5} – ${b.$2 ~/ 5} / 20', style: WinType.labelM(s.onMuted))),
+                      child: Text('${b.$1 ~/ 5} – ${b.$2 ~/ 5}/20', style: WinType.labelM(s.onMuted))),
                   Expanded(
                       child: WinProgressBar(maxBucket == 0 ? 0 : b.$3 / maxBucket * 100,
                           color: WinColors.teal600, height: 8)),
@@ -521,7 +521,7 @@ class _MockExamRankingScreenState extends State<MockExamRankingScreen> {
                       child: Text('${x.rank}', style: WinType.labelM(s.onStrong)),
                     ),
                     title: Text(x.name),
-                    subtitle: Text([if (x.group.isNotEmpty) x.group, l.mockMinutes(x.minutes)].join(' · ')),
+                    subtitle: Text([if (x.group.isNotEmpty) x.group, if (x.minutes > 0) WinFormat.duration(x.minutes)].join(' · ')),
                     trailing: Text(on20(x.score), style: WinType.titleS(s.onStrong)),
                   ),
               ]),

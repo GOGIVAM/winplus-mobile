@@ -9,7 +9,7 @@ import '../widgets/win_screen.dart';
 import '../widgets/win_widgets.dart';
 
 /// Pourcentage (0 à 100) vers une note sur 20.
-String bulletinOn20(double? v) => v == null ? '–' : '${(v / 5).toStringAsFixed(1)} / 20';
+String bulletinOn20(double? v) => WinFormat.grade20(v);
 
 /// Contenu d'un bulletin (aperçu de l'établissement ou bulletin reçu) :
 /// moyenne et rang, moyennes par matière face à la classe, devoirs,
@@ -25,8 +25,8 @@ class BulletinView extends StatelessWidget {
     final s = WinTheme.of(context);
     final l = context.l10n;
     final d = data;
-    final hours = d.studyMinutes ~/ 60;
-    final minutes = d.studyMinutes % 60;
+    // Lot 1 : durée au format commun ; « – » sans temps d'étude.
+    final studyTime = WinFormat.duration(d.studyMinutes);
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       WinCard(
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -87,7 +87,7 @@ class BulletinView extends StatelessWidget {
               d.homeworkGiven == 0 ? '–' : '${d.homeworkDone} / ${d.homeworkGiven}'),
           if (d.homeworkAverage != null) _line(s, PhosphorIconsRegular.checkCircle, l.bullHomeworkAverage, bulletinOn20(d.homeworkAverage)),
           _line(s, PhosphorIconsRegular.calendarCheck, l.bullActiveDays, '${d.activeDays}'),
-          _line(s, PhosphorIconsRegular.clock, l.bullStudyTime, hours > 0 ? '$hours h ${minutes.toString().padLeft(2, '0')}' : '$minutes min'),
+          _line(s, PhosphorIconsRegular.clock, l.bullStudyTime, studyTime.isEmpty ? WinFormat.none : studyTime),
           _line(s, PhosphorIconsRegular.exam, l.bullQuizCount, '${d.quizCount}'),
         ]),
       ),

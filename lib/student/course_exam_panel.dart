@@ -132,7 +132,7 @@ class _CourseExamPanelState extends State<CourseExamPanel> {
         ]),
         const SizedBox(height: 8),
         if (widget.isFinal && widget.passScore != null)
-          Text(l.studentExamFinalIntro(widget.passScore!), style: WinType.bodyM(Colors.white70)),
+          Text(l.studentExamFinalIntro(WinFormat.grade20(widget.passScore)), style: WinType.bodyM(Colors.white70)),
         if (locked) ...[
           const SizedBox(height: 8),
           Text(l.studentExamPausedTitle, style: WinType.titleM(WinColors.gold)),

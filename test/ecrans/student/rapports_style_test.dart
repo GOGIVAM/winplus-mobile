@@ -52,15 +52,15 @@ void main() {
       await reseau(tester);
       final l = L10n.current;
       expect(faux.recues('GET', '/student/reports').single.queryParameters, {'period': 30});
-      expect(find.text('68%'), findsOneWidget);
+      expect(find.text('13,6/20'), findsOneWidget);
       expect(find.text('Mathematiques'), findsOneWidget);
-      expect(find.text('82%'), findsOneWidget);
+      expect(find.text('16,4/20'), findsOneWidget);
       expect(find.text('12'), findsOneWidget);
-      expect(find.text('75%'), findsOneWidget);
+      expect(find.text(WinFormat.percent(75)), findsOneWidget);
       expect(find.text('6'), findsOneWidget, reason: 'heures d\'etude arrondies');
       expect(find.text(l.studentReportsBest('Mathematiques')), findsOneWidget);
       expect(find.text(l.studentReportsWeakest('Chimie')), findsOneWidget);
-      expect(find.text('—'), findsOneWidget, reason: 'semaine sans quiz');
+      expect(find.text(WinFormat.none), findsOneWidget, reason: 'semaine sans quiz');
       expect(find.text(l.studentReportsPlanRequired), findsNothing, reason: 'aucune restriction inventee');
     });
 
@@ -76,7 +76,7 @@ void main() {
     testWidgets('aucun quiz sur la periode : « — » et message, pas de chiffre invente', (tester) async {
       faux.repond('GET', '/student/reports', rapport(vide: true));
       await monterEcran(tester, const StudentReportsScreen());
-      expect(find.text('—'), findsWidgets);
+      expect(find.text(WinFormat.none), findsWidgets);
       expect(find.text(L10n.current.studentReportsNoData), findsOneWidget);
       expect(find.text(L10n.current.studentReportsBySubject), findsNothing);
     });
@@ -88,7 +88,7 @@ void main() {
       faux.sur('GET', '/student/reports', (o) => FauxReponse(rapport()));
       await tester.tap(find.text(L10n.current.commonRetry));
       await reseau(tester);
-      expect(find.text('68%'), findsOneWidget);
+      expect(find.text('13,6/20'), findsOneWidget);
     });
   });
 

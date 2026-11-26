@@ -27,7 +27,7 @@ void main() {
     final l = L10n.current;
     expect(find.text('Examen blanc · Maths'), findsOneWidget);
     expect(find.widgetWithText(WinBadge, l.mockToPublish), findsOneWidget);
-    expect(find.text('${l.mockSubmitted(25, 30)} · ${l.mockAverage('12.4 / 20')}'), findsOneWidget);
+    expect(find.text('${l.mockSubmitted(25, 30)} · ${l.mockAverage('12,4/20')}'), findsOneWidget);
   });
 
   testWidgets('vide : explication et programmer', (tester) async {
@@ -93,10 +93,10 @@ void main() {
     await pomper(tester);
     final l = L10n.current;
     expect(find.text('Paul Eto'), findsOneWidget);
-    expect(find.text('18.0 / 20'), findsWidgets);
+    expect(find.text('18/20'), findsWidgets);
     expect(find.text(l.mockAbsent(1)), findsOneWidget);
     expect(find.text('Ali Bello (Tle C)'), findsOneWidget);
-    expect(find.text('15 – 20 / 20'), findsOneWidget);
+    expect(find.text('15 – 20/20'), findsOneWidget);
     await tester.tap(find.widgetWithText(WinButton, l.mockPublish));
     await pomper(tester, const Duration(milliseconds: 400));
     await tester.tap(find.widgetWithText(TextButton, l.mockPublish));

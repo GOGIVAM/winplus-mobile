@@ -300,7 +300,7 @@ class _CoursePlayerScreenState extends State<CoursePlayerScreen> {
                 ),
               ),
               const SizedBox(width: 6),
-              Text('${_progressPercent.toInt()}%',
+              Text(WinFormat.percent(_progressPercent.floor()),
                   style: WinType.labelS(Colors.white70)),
             ]),
           ),

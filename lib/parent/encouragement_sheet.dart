@@ -11,11 +11,11 @@ import '../services/content_refusal.dart';
 
 class EncouragementSheet extends StatefulWidget {
   final ApiChild child;
-  final int? childScore;
+  final double? childScore; // score moyen en %, affiche sur 20
   const EncouragementSheet({super.key, required this.child, this.childScore});
 
   static Future<void> show(BuildContext context, ApiChild child,
-          {int? childScore}) =>
+          {double? childScore}) =>
       showModalBottomSheet(
       showDragHandle: false,
         context: context,
@@ -38,7 +38,7 @@ class _EncouragementSheetState extends State<EncouragementSheet> {
     final name = widget.child.firstName;
     final l = L10n.current;
     final score =
-        widget.childScore != null ? '${widget.childScore}%' : l.parentEncourageYourScore;
+        widget.childScore != null ? WinFormat.grade20(widget.childScore) : l.parentEncourageYourScore;
     return [
       (
         PhosphorIconsRegular.barbell,

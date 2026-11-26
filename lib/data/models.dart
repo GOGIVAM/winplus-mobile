@@ -504,7 +504,8 @@ enum Trend { up, down, stable }
 
 class TrackedChild {
   final String id, name, level;
-  final int avgScore;
+  /// Score moyen des quiz en pourcentage (0-100), affiché sur 20.
+  final double avgScore;
   /// Null : aucune tendance calculée par le serveur (rien n'est affiché).
   final Trend? trend;
   /// Null : l'enfant n'a encore aucune activité.

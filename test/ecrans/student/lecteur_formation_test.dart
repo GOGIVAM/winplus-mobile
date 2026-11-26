@@ -85,7 +85,7 @@ void main() {
     expect(find.text('Algebre'), findsOneWidget);
     expect(find.text('Les ensembles'), findsWidgets);
     expect(find.text('Texte de la lecon 1'), findsOneWidget);
-    expect(find.text('40%'), findsOneWidget);
+    expect(find.text(WinFormat.percent(40)), findsOneWidget);
     expect(find.text(l.studentPlayerMarkDone), findsOneWidget);
     expect(faux.recues('GET', '/courses/7/play/1'), hasLength(1));
   });
@@ -139,7 +139,7 @@ void main() {
     await reseau(tester);
     final envoi = faux.recues('POST', '/courses/7/play/1/progress').single;
     expect(envoi.data, {'watchTimeSec': 0, 'lastPositionSec': 0, 'isCompleted': true});
-    expect(find.text('50%'), findsOneWidget);
+    expect(find.text(WinFormat.percent(50)), findsOneWidget);
     expect(find.text(l.studentPlayerLessonDone), findsOneWidget);
     expect(find.text(l.studentPlayerMarkDone), findsNothing);
     expect(find.text(l.studentPlayerCourseDone), findsNothing);
@@ -158,7 +158,7 @@ void main() {
     await reseau(tester);
     expect(find.byType(AlertDialog), findsNothing);
     expect(find.text(l.studentPlayerCertAvailable), findsOneWidget);
-    expect(find.text('100%'), findsOneWidget);
+    expect(find.text(WinFormat.percent(100)), findsOneWidget);
   });
 
   testWidgets('completion refusee par le serveur (409) : message du serveur, lecon toujours a faire', (tester) async {
@@ -170,7 +170,7 @@ void main() {
     await reseau(tester);
     expect(find.text('Lis la lecon plus longtemps'), findsOneWidget);
     expect(find.text(l.studentPlayerMarkDone), findsOneWidget);
-    expect(find.text('0%'), findsOneWidget);
+    expect(find.text(WinFormat.percent(0)), findsOneWidget);
   });
 
   testWidgets('panne serveur pendant la completion : aucun message, lecon toujours a faire', (tester) async {

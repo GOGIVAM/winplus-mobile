@@ -177,14 +177,8 @@
   "commonActive": "Actif",
   "studentExamModuleTitle": "Quiz de fin de module",
   "studentExamFinalTitle": "Examen final",
-  "studentExamFinalIntro": "L’examen final couvre toute la formation : au moins {score} % pour obtenir le certificat.",
-  "@studentExamFinalIntro": {
-    "placeholders": {
-      "score": {
-        "type": "int"
-      }
-    }
-  },
+  "studentExamFinalIntro": "L’examen final couvre toute la formation : au moins {score} pour obtenir le certificat.",
+  "@studentExamFinalIntro": {"placeholders": {"score": {"type": "String"}}},
   "studentExamFinalLocked": "Termine toutes les leçons pour ouvrir l’examen final.",
   "studentExamStart": "Commencer",
   "studentExamRetry": "Repasser",
@@ -730,7 +724,7 @@
     }
   },
   "instRiskModerate": "Modéré",
-  "instRiskScore": "Score : {n}%",
+  "instRiskScore": "Score : {n}",
   "@instRiskScore": {
     "placeholders": {
       "n": {
@@ -1891,7 +1885,7 @@
   "studentGroupsNameTooShort": "Le nom doit contenir au moins 3 caractères.",
   "studentGroupsNoActivity": "Personne n'a encore d'activité cette semaine.",
   "studentGroupsOwner": "Propriétaire",
-  "studentGroupsRankLine": "{quizzes} quiz réussis · {minutes} min étudiées",
+  "studentGroupsRankLine": "{quizzes} quiz réussis · {minutes} d’étude",
   "@studentGroupsRankLine": {
     "placeholders": {
       "quizzes": {
@@ -2196,7 +2190,7 @@
   "studentQuizFinish": "Terminer le quiz",
   "studentQuizGoodWork": "Bon travail",
   "studentQuizIncorrect": "Incorrectes",
-  "studentQuizMeta": "{count} questions · {minutes} min",
+  "studentQuizMeta": "{count} questions · {minutes}",
   "@studentQuizMeta": {
     "placeholders": {
       "count": {
@@ -2279,7 +2273,7 @@
     }
   },
   "studentSessionDone": "Session terminée !",
-  "studentSessionDoneScore": "Score : {pct}% sur {subject}",
+  "studentSessionDoneScore": "Score : {pct} en {subject}",
   "@studentSessionDoneScore": {
     "placeholders": {
       "pct": {
@@ -2292,7 +2286,7 @@
   },
   "studentSessionFinish": "Terminer la session",
   "studentSessionHistory": "Voir mes sessions passées",
-  "studentSessionHistoryLine": "{duration} min · {score} · {date}",
+  "studentSessionHistoryLine": "{duration} · {score} · {date}",
   "@studentSessionHistoryLine": {
     "placeholders": {
       "duration": {
@@ -2321,7 +2315,7 @@
   "studentSessionNoSubjects": "Aucune matière disponible pour le moment.",
   "studentSessionPickSubject": "Choisis une matière pour commencer.",
   "studentSessionQuizError": "Impossible de générer le quiz. Réessaie dans un instant.",
-  "studentSessionScoreLine": "{correct}/{total} correctes · {pct}%",
+  "studentSessionScoreLine": "{correct}/{total} correctes · {pct}",
   "@studentSessionScoreLine": {
     "placeholders": {
       "correct": {
@@ -2975,7 +2969,7 @@
     }
   },
   "teacherClassesActionFailed": "Cette action a échoué.",
-  "teacherClassesAverage": "{avg}% moy.",
+  "teacherClassesAverage": "moy. {avg}",
   "@teacherClassesAverage": {
     "placeholders": {
       "avg": {
@@ -3529,7 +3523,7 @@
   "teacherSessionCreatedHint": "Les étudiants inscrits recevront une notification.",
   "teacherSessionDateHint": "25 août 2026 à 14h00",
   "teacherSessionDateLabel": "Date et heure",
-  "teacherSessionDuration": "Durée : {minutes} minutes",
+  "teacherSessionDuration": "Durée : {minutes}",
   "@teacherSessionDuration": {
     "placeholders": {
       "minutes": {
@@ -5474,7 +5468,7 @@
   "hwStatusTodo": "À rendre",
   "hwStatusLate": "En retard",
   "hwStatusDone": "Rendu",
-  "hwScore": "{score} / {max}",
+  "hwScore": "{score}/{max}",
   "@hwScore": {"placeholders": {"score": {"type": "String"}, "max": {"type": "String"}}},
   "hwQuiz": "Quiz",
   "hwTakeQuiz": "Faire le quiz",
@@ -5483,17 +5477,17 @@
   "hwCopySent": "Copie envoyée à ton professeur.",
   "hwEmptyCopy": "Écris ta réponse avant de l’envoyer.",
   "hwAlreadySubmitted": "Tu as rendu ce devoir. Ton professeur le corrige.",
-  "hwGrade": "Note : {score} / {max}",
+  "hwGrade": "Note : {score}/{max}",
   "@hwGrade": {"placeholders": {"score": {"type": "String"}, "max": {"type": "String"}}},
   "hwTeacherComment": "Commentaire du professeur",
   "hwSubmitFailed": "L’envoi n’a pas abouti.",
-  "hwMockUpcoming": "Ouvre le {date} · {minutes} min",
-  "@hwMockUpcoming": {"placeholders": {"date": {"type": "String"}, "minutes": {"type": "int"}}},
-  "hwMockOpen": "Ouvert jusqu’au {date} · {minutes} min",
-  "@hwMockOpen": {"placeholders": {"date": {"type": "String"}, "minutes": {"type": "int"}}},
+  "hwMockUpcoming": "Ouvre le {date} · {minutes}",
+  "@hwMockUpcoming": {"placeholders": {"date": {"type": "String"}, "minutes": {"type": "String"}}},
+  "hwMockOpen": "Ouvert jusqu’au {date} · {minutes}",
+  "@hwMockOpen": {"placeholders": {"date": {"type": "String"}, "minutes": {"type": "String"}}},
   "hwMockSubmitted": "Copie rendue, résultats bientôt publiés",
   "hwMockMissed": "Manqué",
-  "hwMockResult": "{score} / 100 · {rank}e sur {total} · moyenne {average}",
+  "hwMockResult": "{score} · {rank}e sur {total} · moyenne {average}",
   "@hwMockResult": {"placeholders": {"score": {"type": "String"}, "rank": {"type": "int"}, "total": {"type": "int"}, "average": {"type": "String"}}},
   "hwChipUpcoming": "À venir",
   "hwChipOpen": "Ouvert",
@@ -5693,7 +5687,7 @@
   "peersNotEnough": "Pas encore assez d’activité pour comparer : fais quelques quiz et reviens ici.",
   "peersYou": "Toi",
   "peersAverage": "Moyenne des élèves",
-  "peersTop": "20 % les plus réguliers : {avg} / 20",
+  "peersTop": "20 % les plus réguliers : {avg}",
   "@peersTop": {"placeholders": {"avg": {"type": "String"}}},
   "peersAbove": "Au-dessus de la moyenne",
   "peersClose": "Proche de la moyenne",
@@ -5911,12 +5905,12 @@
   "@peersScopeGroup": {"placeholders": {"count": {"type": "int"}}},
   "peersGroupAverage": "Moyenne : {group}",
   "@peersGroupAverage": {"placeholders": {"group": {"type": "String"}}},
-  "peersYourAverage": "Ta moyenne : {avg} / 20",
+  "peersYourAverage": "Ta moyenne : {avg}",
   "@peersYourAverage": {"placeholders": {"avg": {"type": "String"}}},
   "peersSubjects": "Par matière",
-  "peersSubjectLine": "Toi {you} / 20 · groupe {group} / 20",
+  "peersSubjectLine": "Toi {you} · groupe {group}",
   "@peersSubjectLine": {"placeholders": {"you": {"type": "String"}, "group": {"type": "String"}}},
-  "peersSubjectYou": "Toi {you} / 20",
+  "peersSubjectYou": "Toi {you}",
   "@peersSubjectYou": {"placeholders": {"you": {"type": "String"}}},
   "peersNoClass": "Aucune classe n’est rattachée à ton compte. Ton établissement ou ton professeur peut t’ajouter à ta classe.",
   "peersNoLevel": "Ton niveau n’est pas renseigné : ajoute-le dans ton profil pour te comparer aux élèves de ton niveau.",
@@ -6280,8 +6274,8 @@
   "cstatNoLesson": "Pas encore de leçon à suivre.",
   "cstatCompleted": "{count, plural, =0{aucun élève ne l’a terminée} =1{terminée par 1 élève} other{terminée par {count} élèves}}",
   "@cstatCompleted": {"placeholders": {"count": {"type": "int"}}},
-  "cstatWatch": "{minutes} min de visionnage en moyenne",
-  "@cstatWatch": {"placeholders": {"minutes": {"type": "int"}}},
+  "cstatWatch": "{minutes} de visionnage en moyenne",
+  "@cstatWatch": {"placeholders": {"minutes": {"type": "String"}}},
   "cstatQuiz": "quiz {score}",
   "@cstatQuiz": {"placeholders": {"score": {"type": "String"}}},
   "cstatGamification": "Ludification",
@@ -6487,5 +6481,9 @@
   "tutorDeactivateTitle": "Retirer votre profil ?",
   "tutorDeactivateBody": "Vous ne serez plus proposé aux familles. Les séances déjà réservées sont maintenues. Vous pourrez republier votre profil à tout moment.",
   "tutorDeactivateConfirm": "Retirer",
-  "tutorDeactivated": "Profil retiré de la recherche."
+  "tutorDeactivated": "Profil retiré de la recherche.",
+  "studentCourseCurriculumSummaryNoDuration": "{sections} sections · {lessons} leçons",
+  "studentSessionHistoryLineNoDuration": "{score} · {date}",
+  "studentQuizMetaNoDuration": "{count} questions",
+  "studentGroupsRankLineNoDuration": "{quizzes} quiz réussis"
 }

@@ -394,6 +394,8 @@ class _CourseCard extends StatelessWidget {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis),
               const Spacer(),
+              // Lot 1 : une durée nulle ne s'affiche pas.
+              if (c.durationStr.isNotEmpty)
               Row(children: [
                 Icon(PhosphorIconsRegular.clock, size: 12, color: s.onMuted),
                 const SizedBox(width: 3),
@@ -414,7 +416,7 @@ class _CourseCard extends StatelessWidget {
     if (c.isFree || c.price <= 0)
       return _PriceBadge(L10n.current.commonFree, WinColors.teal700, Colors.white);
     return _PriceBadge(
-        L10n.current.studentCatalogPriceTtc(c.price.toInt()), WinColors.ink800, Colors.white);
+        L10n.current.studentCatalogPriceTtc(WinFormat.number(c.price)), WinColors.ink800, Colors.white);
   }
 }
 

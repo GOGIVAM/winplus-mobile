@@ -31,14 +31,14 @@ void main() {
     final l = L10n.current;
     expect(find.text(l.regCmpRank(2, 6)), findsOneWidget);
     expect(find.text(l.regCmpBetter(80)), findsOneWidget);
-    expect(find.text('14.0 / 20'), findsOneWidget, reason: '70 sur 100');
-    expect(find.text('12.0 / 20'), findsWidgets);
+    expect(find.text('14/20'), findsOneWidget, reason: '70 sur 100');
+    expect(find.text('12/20'), findsWidgets);
     expect(find.text(l.regCmpAverage('région Centre')), findsOneWidget);
     expect(find.text(l.regCmpStudents(42)), findsOneWidget);
     await tester.scrollUntilVisible(find.text('SVT'), 200, scrollable: find.byType(Scrollable).first);
-    expect(find.text('+2.4'), findsOneWidget, reason: '(72 - 60) / 5');
-    expect(find.text('-2.0'), findsOneWidget);
-    expect(find.text('+0.2'), findsOneWidget, reason: 'ecart faible : affiche, mais neutre');
+    expect(find.text('+2,4'), findsOneWidget, reason: '(72 - 60) / 5');
+    expect(find.text('-2'), findsOneWidget);
+    expect(find.text('+0,2'), findsOneWidget, reason: 'ecart faible : affiche, mais neutre');
   });
 
   testWidgets('pas assez d\'etablissements : raison du serveur et Reessayer', (tester) async {
@@ -76,8 +76,8 @@ void main() {
     final l = L10n.current;
     expect(find.text(l.regCmpNoneTitle), findsOneWidget);
     expect(find.text(l.benchSub(70)), findsOneWidget);
-    expect(find.text('12.8 / 20'), findsOneWidget);
-    expect(find.text(l.benchNational('11.6 / 20')), findsOneWidget);
+    expect(find.text('12,8/20'), findsOneWidget);
+    expect(find.text(l.benchNational('11,6/20')), findsOneWidget);
     expect(find.text(l.benchStrongest('Maths')), findsOneWidget);
   });
 }

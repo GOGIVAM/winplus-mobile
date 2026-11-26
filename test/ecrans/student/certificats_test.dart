@@ -65,7 +65,7 @@ void main() {
     expect(find.text('Algebre complete'), findsOneWidget);
     expect(find.text(l.studentCertPapersAndPaths), findsOneWidget);
     expect(find.text('Physique BEPC'), findsOneWidget);
-    expect(find.text('80%'), findsOneWidget);
+    expect(find.text('16/20'), findsOneWidget);
   });
 
   testWidgets('erreur sur les formations seulement : les certificats de sujets restent affiches', (tester) async {

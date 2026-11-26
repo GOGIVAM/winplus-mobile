@@ -86,7 +86,8 @@ class _NationalBenchmarkCardState extends State<NationalBenchmarkCard> {
     } catch (_) {}
   }
 
-  static String _on20(double v) => '${(v / 5).toStringAsFixed(1)} / 20';
+  // Lot 1 : format commun des notes et des taux.
+  static String _on20(double v) => WinFormat.grade20(v);
 
   Widget _row(WinScheme s, String label, String mine, String ref, double mineV, double refV) => Padding(
         padding: const EdgeInsets.only(bottom: 10),
@@ -116,9 +117,9 @@ class _NationalBenchmarkCardState extends State<NationalBenchmarkCard> {
         WinCard(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             _row(s, l.benchAverage, _on20(d.avg), l.benchNational(_on20(d.nationalAvg)), d.avg, d.nationalAvg),
-            _row(s, l.benchPassRate, '${d.passRate.round()} %', l.benchNational('${d.nationalPassRate.round()} %'), d.passRate,
+            _row(s, l.benchPassRate, WinFormat.percent(d.passRate), l.benchNational(WinFormat.percent(d.nationalPassRate)), d.passRate,
                 d.nationalPassRate),
-            _row(s, l.benchEngagement, '${d.engagement.round()} %', l.benchNational('${d.peerEngagement.round()} %'),
+            _row(s, l.benchEngagement, WinFormat.percent(d.engagement), l.benchNational(WinFormat.percent(d.peerEngagement)),
                 d.engagement, d.peerEngagement),
             if (d.strongest != null || d.weakest != null) const SizedBox(height: 4),
             if (d.strongest != null)

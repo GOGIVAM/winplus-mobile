@@ -168,7 +168,7 @@ class _StudentDirectoryScreenState extends State<StudentDirectoryScreen> {
                         const SizedBox(width: 8),
                         _KpiCard(
                             label: context.l10n.instDirAvg,
-                            value: '${_kpis!.averageScore.toStringAsFixed(0)}%',
+                            value: WinFormat.grade20(_kpis!.averageScore),
                             s: s),
                         const SizedBox(width: 8),
                         _KpiCard(
@@ -378,7 +378,7 @@ class _StudentRow extends StatelessWidget {
         ])),
         if (score != null) ...[
           Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-            Text('${score.toStringAsFixed(0)}%',
+            Text(WinFormat.grade20(score),
                 style: WinType.archivo(size: 14, color: scoreColor)),
             const SizedBox(height: 4),
             SizedBox(

@@ -119,7 +119,7 @@ class _WinAIExamSettingsState extends State<WinAIExamSettings> {
           const SizedBox(height: 18),
           label(l.winaiExamDuration),
           chips<int>(const [30, 60, 120, 180, 240], _duration,
-              (m) => l.winaiExamMinutes(m), (v) => _duration = v),
+              (m) => WinFormat.duration(m), (v) => _duration = v),
           const SizedBox(height: 18),
           label(l.winaiExamTotal),
           chips<int>(const [10, 20, 40, 100], _total, (p) => '$p',
@@ -158,7 +158,7 @@ class _WinAIExamScreenState extends State<WinAIExamScreen> {
     final meta = [
       if (e.examType.isNotEmpty) examTypeLabel(context, e.examType),
       if (e.level.isNotEmpty) e.level,
-      if (e.durationMinutes > 0) l.winaiExamMinutes(e.durationMinutes),
+      if (e.durationMinutes > 0) WinFormat.duration(e.durationMinutes),
       if (e.totalPoints > 0) l.winaiExamOutOf(_points(e.totalPoints)),
     ].join(' · ');
     Widget pts(double p) => Text(l.winaiExamPointsShort(_points(p)),

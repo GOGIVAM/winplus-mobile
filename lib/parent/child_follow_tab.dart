@@ -238,7 +238,7 @@ class _ChildrenComparisonCardState extends State<ChildrenComparisonCard> {
                   subtitle: Text(l.cmpChildrenMeta(c.quizCount, c.activeDays)),
                   // Aucun quiz : pas de moyenne (« 0.0 / 20 » laissait croire à une
             // note nulle).
-            trailing: Text(c.quizCount == 0 ? '–' : '${(c.avgScore / 5).toStringAsFixed(1)} / 20',
+            trailing: Text(c.quizCount == 0 ? WinFormat.none : WinFormat.grade20(c.avgScore),
                 style: WinType.titleS(s.onStrong)),
                 ),
               if (d.insights.isNotEmpty)

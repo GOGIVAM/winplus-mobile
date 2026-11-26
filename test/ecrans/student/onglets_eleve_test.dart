@@ -172,8 +172,8 @@ void main() {
       expect(find.text('—'), findsNWidgets(2));
       await reseau(tester);
       final l = L10n.current;
-      expect(find.text('72%'), findsOneWidget);
-      expect(find.text('9h'), findsOneWidget);
+      expect(find.text('14,3/20'), findsOneWidget);
+      expect(find.text('9 h 24'), findsOneWidget);
       expect(find.text(l.studentReportsAvgScore), findsOneWidget);
       expect(find.text(l.studentTabsStudyThisWeek), findsOneWidget);
     });

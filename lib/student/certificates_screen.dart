@@ -118,7 +118,7 @@ class _CertificatesScreenState extends State<CertificatesScreen> {
                                     child: Text(c.title,
                                         style: WinType.bodyM(s.onStrong))),
                                 if ((c.score ?? 0) > 0)
-                                  WinBadge('${c.score}%'),
+                                  WinBadge(WinFormat.grade20(c.score)),
                               ]),
                             ),
                           )),
@@ -199,7 +199,7 @@ class _CertificatesScreenState extends State<CertificatesScreen> {
                                   children: [
                                     if (score > 0) ...[
                                       Row(children: [
-                                        WinBadge('$score%',
+                                        WinBadge(WinFormat.grade20(score),
                                             color: isHigh
                                                 ? BadgeColor.success
                                                 : BadgeColor.warn),
@@ -301,7 +301,7 @@ class _CourseCertificateCard extends StatelessWidget {
                   style: WinType.titleM(s.onStrong),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis)),
-          if (cert.grade != null) WinBadge('${cert.grade!.round()} %'),
+          if (cert.grade != null) WinBadge(WinFormat.grade20(cert.grade)),
         ]),
         const SizedBox(height: 6),
         Text(

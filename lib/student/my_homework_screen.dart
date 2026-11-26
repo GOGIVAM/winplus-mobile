@@ -12,7 +12,9 @@ import '../widgets/win_screen.dart';
 import '../widgets/win_widgets.dart';
 import 'quiz_screen.dart';
 
-String _num(num n) => n % 1 == 0 ? n.toInt().toString() : n.toStringAsFixed(1);
+/// Lot 1 : note d'un devoir ramenée sur 20 (barème du professeur, 20 par
+/// défaut), au format commun : « 12,5 ».
+String _on20(num score, num max) => WinFormat.decimal(max == 0 ? 0 : score * 20 / max);
 
 String _when(DateTime d) => '${WinFormat.dateShort(d)} ${WinFormat.time(d)}';
 
@@ -169,7 +171,7 @@ class _MyHomeworkScreenState extends State<MyHomeworkScreen> {
 
   Widget _assignmentCard(AppLocalizations l, ApiStudentAssignment a) {
     final (chip, color) = a.graded
-        ? (l.hwScore(_num(a.myScore!), _num(a.maxScore)), BadgeColor.success)
+        ? (l.hwScore(_on20(a.myScore!, a.maxScore), '20'), BadgeColor.success)
         : a.submitted
             ? (l.hwStatusDone, BadgeColor.teal)
             : a.late
@@ -191,16 +193,16 @@ class _MyHomeworkScreenState extends State<MyHomeworkScreen> {
 
   Widget _mockCard(AppLocalizations l, ApiMockExam e) {
     final (chip, color, meta) = switch (e.status) {
-      'open' => (l.hwChipOpen, BadgeColor.warn, l.hwMockOpen(_when(e.closesAt), e.durationMinutes)),
+      'open' => (l.hwChipOpen, BadgeColor.warn, l.hwMockOpen(_when(e.closesAt), WinFormat.duration(e.durationMinutes))),
       'submitted' => (
           l.hwStatusDone,
           BadgeColor.teal,
           e.published && e.score != null && e.rank != null && e.total != null
-              ? l.hwMockResult(_num(e.score!), e.rank!, e.total!, e.average == null ? '—' : _num(e.average!))
+              ? l.hwMockResult(WinFormat.grade20(e.score), e.rank!, e.total!, WinFormat.grade20(e.average))
               : l.hwMockSubmitted
         ),
-      'missed' => (l.hwMockMissed, BadgeColor.error, l.hwMockOpen(_when(e.closesAt), e.durationMinutes)),
-      _ => (l.hwChipUpcoming, BadgeColor.neutral, l.hwMockUpcoming(_when(e.opensAt), e.durationMinutes)),
+      'missed' => (l.hwMockMissed, BadgeColor.error, l.hwMockOpen(_when(e.closesAt), WinFormat.duration(e.durationMinutes))),
+      _ => (l.hwChipUpcoming, BadgeColor.neutral, l.hwMockUpcoming(_when(e.opensAt), WinFormat.duration(e.durationMinutes))),
     };
     return _HomeworkCard(
       icon: PhosphorIconsRegular.timer,
@@ -214,7 +216,7 @@ class _MyHomeworkScreenState extends State<MyHomeworkScreen> {
 
   Widget _schoolCard(AppLocalizations l, ApiInstitutionHomework h) {
     final (chip, color) = switch (h.status) {
-      'done' => (h.myScore != null ? '${_num(h.myScore!)} / 100' : l.hwStatusDone, BadgeColor.success),
+      'done' => (h.myScore != null ? WinFormat.grade20(h.myScore) : l.hwStatusDone, BadgeColor.success),
       'missing' => (l.hwSchoolMissing, BadgeColor.error),
       _ => (l.hwStatusTodo, BadgeColor.warn),
     };
@@ -363,7 +365,7 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
   List<Widget> _action(WinScheme s, AppLocalizations l, ApiStudentAssignment a) {
     if (a.graded) {
       return [
-        WinAlert(l.hwGrade(_num(a.myScore!), _num(a.maxScore)),
+        WinAlert(l.hwGrade(_on20(a.myScore!, a.maxScore), '20'),
             type: BadgeColor.success, icon: PhosphorIconsRegular.sealCheck),
         if ((a.myComment ?? '').trim().isNotEmpty) ...[
           const SizedBox(height: 12),

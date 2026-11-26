@@ -95,7 +95,7 @@ void main() {
       await reseau(tester);
       final l = L10n.current;
       expect(find.byType(QuizResultScreen), findsOneWidget);
-      expect(find.text('100%'), findsOneWidget);
+      expect(find.text('20/20'), findsOneWidget);
       expect(find.text(l.studentQuizExcellent), findsOneWidget);
       final d = faux.recues('POST', '/quizzes/3/submit').single.data as Map;
       expect(d['answers'], [
@@ -126,7 +126,7 @@ void main() {
       await pomper(tester);
       await pomper(tester, const Duration(milliseconds: 500));
       await reseau(tester);
-      expect(find.text('50%'), findsOneWidget);
+      expect(find.text('10/20'), findsOneWidget);
       final ecran = tester.widget<QuizResultScreen>(find.byType(QuizResultScreen));
       expect(ecran.quiz.questions[0].answer, 1, reason: 'lettre B du serveur');
       expect(ecran.quiz.questions[0].explain, '2 + 2 = 4');
@@ -146,8 +146,8 @@ void main() {
       await pomper(tester, const Duration(milliseconds: 500));
       await reseau(tester);
       expect(find.text(L10n.current.studentQuizPendingTitle), findsOneWidget);
-      expect(find.text('100%'), findsNothing);
-      expect(find.text('0%'), findsNothing);
+      expect(find.text('20/20'), findsNothing);
+      expect(find.text('0/20'), findsNothing);
       expect(OutboxService.instance.pendingCount, 1, reason: 'tentative en file pour le retour du reseau');
     });
 
@@ -158,7 +158,7 @@ void main() {
       await pomper(tester, const Duration(milliseconds: 500));
       await reseau(tester);
       expect(find.byType(QuizResultScreen), findsOneWidget);
-      expect(find.text('0%'), findsOneWidget);
+      expect(find.text('0/20'), findsOneWidget);
       expect(find.text(L10n.current.studentQuizToImprove), findsOneWidget);
       final d = faux.recues('POST', '/quizzes/3/submit').single.data as Map;
       expect(d['answers'], [
@@ -202,7 +202,7 @@ void main() {
     testWidgets('score, corrects, incorrects et duree', (tester) async {
       await monterEcran(tester, const QuizResultScreen(result: moyen, quiz: _quiz));
       final l = L10n.current;
-      expect(find.text('50%'), findsOneWidget);
+      expect(find.text('10/20'), findsOneWidget);
       expect(find.text(l.studentQuizGoodWork), findsOneWidget);
       expect(find.text(l.studentQuizCorrect), findsOneWidget);
       expect(find.text('0m 5s'), findsOneWidget);
@@ -248,7 +248,7 @@ void main() {
       await reseau(tester);
       expect(find.text(L10n.current.studentQuizAvailable), findsOneWidget);
       expect(find.text('Quiz algebre'), findsOneWidget);
-      expect(find.text(L10n.current.studentQuizMeta(1, 20)), findsOneWidget);
+      expect(find.text(L10n.current.studentQuizMeta(1, '20 min')), findsOneWidget);
       expect(faux.requetes.single.queryParameters, {'page': 1, 'pageSize': 20});
     });
 

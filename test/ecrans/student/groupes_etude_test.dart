@@ -180,6 +180,6 @@ void main() {
     expect(find.text(l.studentGroupsMembersCount(2)), findsOneWidget);
     expect(find.text('ABC123'), findsOneWidget);
     expect(find.text('Bob Nku'), findsOneWidget);
-    expect(find.text(l.studentGroupsRankLine(3, 90)), findsOneWidget);
+    expect(find.text(l.studentGroupsRankLine(3, '1 h 30')), findsOneWidget);
   });
 }

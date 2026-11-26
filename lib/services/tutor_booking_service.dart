@@ -14,12 +14,8 @@ String addMinutesToHhmm(String hhmm, int minutes) {
 }
 
 /// "30 min", "1 h", "1 h 30".
-String formatDurationMinutes(int minutes) {
-  final h = minutes ~/ 60;
-  final m = minutes % 60;
-  if (h == 0) return L10n.current.svcDurationMin(m);
-  return m == 0 ? L10n.current.svcDurationHours(h) : L10n.current.svcDurationHoursMin(h, m.toString().padLeft(2, '0'));
-}
+/// Lot 1 : passe par le format commun (une durée nulle donne une chaîne vide).
+String formatDurationMinutes(int minutes) => WinFormat.duration(minutes);
 
 /// Point de départ réservable (lot 9.1) : depuis [startTime], l'élève choisit
 /// une durée multiple de 30 min parmi [availableDurationsMinutes], jusqu'à la

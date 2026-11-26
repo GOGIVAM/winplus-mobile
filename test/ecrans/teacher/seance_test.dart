@@ -18,7 +18,7 @@ void main() {
     await monterEcran(tester, const SessionCreateScreen());
     final l = L10n.current;
     expect(find.byType(TextField), findsNWidgets(3));
-    expect(find.text(l.teacherSessionDuration(60)), findsOneWidget);
+    expect(find.text(l.teacherSessionDuration('1 h')), findsOneWidget);
     expect(find.text(l.teacherSessionMaxStudents(30)), findsOneWidget);
     expect(find.text(l.teacherSession30Min), findsOneWidget);
     expect(find.text(l.teacherSession3h), findsOneWidget);
@@ -39,7 +39,7 @@ void main() {
     final duree = tester.widget<Slider>(curseurs.at(0));
     duree.onChanged!(90);
     await pomper(tester);
-    expect(find.text(L10n.current.teacherSessionDuration(90)), findsOneWidget);
+    expect(find.text(L10n.current.teacherSessionDuration('1 h 30')), findsOneWidget);
     tester.widget<Slider>(curseurs.at(1)).onChanged!(50);
     await pomper(tester);
     expect(find.text(L10n.current.teacherSessionMaxStudents(50)), findsOneWidget);

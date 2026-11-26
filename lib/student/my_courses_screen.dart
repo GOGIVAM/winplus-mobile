@@ -168,7 +168,7 @@ class _CourseCard extends StatelessWidget {
                   ),
                 )),
                 const SizedBox(width: 10),
-                Text('${pct.toInt()}%',
+                Text(WinFormat.percent(pct.floor()),
                     style: WinType.labelM(s.primary)
                         .copyWith(fontWeight: FontWeight.w700)),
               ]),
@@ -179,10 +179,13 @@ class _CourseCard extends StatelessWidget {
                 const SizedBox(width: 4),
                 Text(context.l10n.studentCourseLessons(e.lessonsCount),
                     style: WinType.labelM(s.onMuted)),
-                const SizedBox(width: 12),
-                Icon(PhosphorIconsRegular.clock, size: 14, color: s.onMuted),
-                const SizedBox(width: 4),
-                Text(e.durationStr, style: WinType.labelM(s.onMuted)),
+                // Lot 1 : une durée nulle ne s'affiche pas.
+                if (e.durationStr.isNotEmpty) ...[
+                  const SizedBox(width: 12),
+                  Icon(PhosphorIconsRegular.clock, size: 14, color: s.onMuted),
+                  const SizedBox(width: 4),
+                  Text(e.durationStr, style: WinType.labelM(s.onMuted)),
+                ],
               ]),
               const SizedBox(height: 12),
 

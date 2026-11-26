@@ -199,7 +199,8 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
               Text(st.displayName, style: WinType.titleM(s.onStrong)),
               Text(st.level != null ? ClassLevels.label(st.level) : st.email ?? '', style: WinType.labelM(s.onMuted)),
             ])),
-            Text(hasScore ? '${st.avgScore!.round()}%' : '—', style: WinType.archivo(size: 15, color: col)),
+            // Lot 1 : moyenne de l'élève en note sur 20.
+            Text(hasScore ? context.l10n.teacherClassesAverage(WinFormat.grade20(st.avgScore)) : '—', style: WinType.archivo(size: 15, color: col)),
             const SizedBox(width: 6),
             IconButton(
               icon: Icon(PhosphorIconsRegular.userMinus, size: 19, color: s.onFaint),

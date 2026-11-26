@@ -279,6 +279,8 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                         WinBadge(context.l10n.studentDetailVerified, color: BadgeColor.teal),
                       ]),
                       const SizedBox(height: 12),
+                      // Lot 1 : une note sans avis ne s'affiche pas (« 0.0 (0 avis) »).
+                      if (c.ratings > 0) ...[
                       Row(children: [
                         ...List.generate(
                             5,
@@ -291,10 +293,11 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                                 )),
                         const SizedBox(width: 6),
                         Text(
-                            context.l10n.studentDetailRatingCount(c.rating.toStringAsFixed(1), c.ratings),
+                            context.l10n.studentDetailRatingCount(WinFormat.decimal(c.rating), c.ratings),
                             style: WinType.bodyS(s.onMuted)),
                       ]),
                       const SizedBox(height: 12),
+                      ],
                       Row(children: [
                         Icon(PhosphorIconsRegular.eye,
                             size: 16, color: s.onFaint),

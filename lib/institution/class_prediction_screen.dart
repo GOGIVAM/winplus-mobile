@@ -135,7 +135,7 @@ class _ClassPredictionScreenState extends State<ClassPredictionScreen> {
                   Expanded(child: Text(l.predPassRate, style: WinType.labelM(s.onMuted))),
                   WinBadge(conf.$1, color: conf.$2),
                 ]),
-                Text('${d.passRate} %', style: WinType.archivo(size: 32, color: s.onStrong)),
+                Text(WinFormat.percent(d.passRate), style: WinType.archivo(size: 32, color: s.onStrong)),
                 if (d.vsLastYear != null)
                   Text(l.predVsLastYear('${d.vsLastYear! >= 0 ? '+' : ''}${d.vsLastYear}'), style: WinType.labelM(s.onMuted)),
                 const SizedBox(height: 12),

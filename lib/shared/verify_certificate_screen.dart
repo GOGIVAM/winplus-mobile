@@ -98,7 +98,8 @@ class _VerifyCertificateScreenState extends State<VerifyCertificateScreen> {
                 Text(
                     [
                       if (r.issuedAt != null) l.certVerifyIssued(WinFormat.dateShort(r.issuedAt!)),
-                      if (r.grade != null) l.certVerifyGrade(r.grade! % 1 == 0 ? '${r.grade!.toInt()}' : r.grade!.toStringAsFixed(1)),
+                      // Lot 1 : la note du serveur est un pourcentage, affichée sur 20.
+                      if (r.grade != null) l.certVerifyGrade(WinFormat.grade20(r.grade)),
                       if ((r.number ?? '').isNotEmpty) r.number!,
                     ].join(' · '),
                     style: WinType.labelM(s.onMuted)),

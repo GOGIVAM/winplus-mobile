@@ -495,7 +495,10 @@ class _GroupDetailSheetState extends State<_GroupDetailSheet> {
                             children: [
                               Text(r.fullName.isEmpty ? context.l10n.studentGroupsMember : r.fullName,
                                   style: WinType.bodyM(s.onStrong)),
-                              Text(context.l10n.studentGroupsRankLine(r.quizzesPassed, r.studyMinutes),
+                              Text(
+                                  r.studyMinutes > 0
+                                      ? context.l10n.studentGroupsRankLine(r.quizzesPassed, WinFormat.duration(r.studyMinutes))
+                                      : context.l10n.studentGroupsRankLineNoDuration(r.quizzesPassed),
                                   style: WinType.labelS(s.onMuted)),
                             ],
                           ),

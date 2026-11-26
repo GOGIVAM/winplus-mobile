@@ -368,7 +368,11 @@ class QuizResultScreen extends StatelessWidget {
                 ),
               ),
               Column(mainAxisSize: MainAxisSize.min, children: [
-                Text('${pct.round()}%', style: WinType.displayM(scoreColor)),
+                // Lot 1 : la note du quiz s'affiche sur 20.
+                Text.rich(TextSpan(children: [
+                  TextSpan(text: WinFormat.gradeValue(pct), style: WinType.displayM(scoreColor)),
+                  TextSpan(text: '/20', style: WinType.titleM(scoreColor)),
+                ])),
                 Text(scoreLabel, style: WinType.labelM(s.onMuted)),
               ]),
             ]),
@@ -699,7 +703,10 @@ class _QuizCard extends StatelessWidget {
                   style: WinType.titleM(s.onStrong)),
               const Spacer(),
               Text(
-                  context.l10n.studentQuizMeta(quiz.questions.length, quiz.durationMinutes),
+                  // Lot 1 : durée au format commun, masquée si nulle.
+                  quiz.durationMinutes > 0
+                      ? context.l10n.studentQuizMeta(quiz.questions.length, WinFormat.duration(quiz.durationMinutes))
+                      : context.l10n.studentQuizMetaNoDuration(quiz.questions.length),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: WinType.labelS(s.onMuted)),

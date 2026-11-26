@@ -168,7 +168,7 @@ class _ClassAnalysisScreenState extends State<ClassAnalysisScreen> {
         if (d != null) ...[
           Row(children: [
             Expanded(
-                child: WinStatCard('${(d.avgScore / 5).toStringAsFixed(1)} / 20', l.canAverage,
+                child: WinStatCard(WinFormat.grade20(d.avgScore), l.canAverage,
                     icon: PhosphorIconsRegular.chartBar)),
             const SizedBox(width: 10),
             Expanded(child: WinStatCard('${d.students}', l.canStudents, icon: PhosphorIconsRegular.users)),

@@ -26,7 +26,7 @@ void main() {
       'data': {
         'isValid': true, 'certificateNumber': 'WP-2026-0042', 'studentName': 'Zoe Eto',
         'courseName': 'Mathematiques Terminale', 'issuedAt': '2026-11-20T10:00:00Z',
-        'completionDate': '2026-11-20T10:00:00Z', 'grade': 16.5,
+        'completionDate': '2026-11-20T10:00:00Z', 'grade': 82.5,
       },
     });
     await monterEcran(tester, const VerifyCertificateScreen());
@@ -36,7 +36,7 @@ void main() {
     expect(find.text('Zoe Eto'), findsOneWidget);
     expect(find.text('Mathematiques Terminale'), findsOneWidget);
     expect(find.textContaining('WP-2026-0042'), findsOneWidget);
-    expect(find.textContaining(l.certVerifyGrade('16.5')), findsOneWidget);
+    expect(find.textContaining(l.certVerifyGrade('16,5/20')), findsOneWidget);
     expect(faux.recues('GET', '/certificats/ABC123'), isEmpty, reason: 'trouve du premier coup');
   });
 

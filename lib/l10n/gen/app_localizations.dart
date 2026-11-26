@@ -911,8 +911,8 @@ abstract class AppLocalizations {
   /// No description provided for @studentExamFinalIntro.
   ///
   /// In fr, this message translates to:
-  /// **'L’examen final couvre toute la formation : au moins {score} % pour obtenir le certificat.'**
-  String studentExamFinalIntro(int score);
+  /// **'L’examen final couvre toute la formation : au moins {score} pour obtenir le certificat.'**
+  String studentExamFinalIntro(String score);
 
   /// No description provided for @studentExamFinalLocked.
   ///
@@ -2364,7 +2364,7 @@ abstract class AppLocalizations {
   /// No description provided for @instRiskScore.
   ///
   /// In fr, this message translates to:
-  /// **'Score : {n}%'**
+  /// **'Score : {n}'**
   String instRiskScore(Object n);
 
   /// No description provided for @instRiskTitle.
@@ -5431,7 +5431,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentGroupsRankLine.
   ///
   /// In fr, this message translates to:
-  /// **'{quizzes} quiz réussis · {minutes} min étudiées'**
+  /// **'{quizzes} quiz réussis · {minutes} d’étude'**
   String studentGroupsRankLine(Object quizzes, Object minutes);
 
   /// No description provided for @studentGroupsSending.
@@ -6517,7 +6517,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentQuizMeta.
   ///
   /// In fr, this message translates to:
-  /// **'{count} questions · {minutes} min'**
+  /// **'{count} questions · {minutes}'**
   String studentQuizMeta(Object count, Object minutes);
 
   /// No description provided for @studentQuizMyQuizzes.
@@ -6745,7 +6745,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentSessionDoneScore.
   ///
   /// In fr, this message translates to:
-  /// **'Score : {pct}% sur {subject}'**
+  /// **'Score : {pct} en {subject}'**
   String studentSessionDoneScore(Object pct, Object subject);
 
   /// No description provided for @studentSessionFinish.
@@ -6763,7 +6763,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentSessionHistoryLine.
   ///
   /// In fr, this message translates to:
-  /// **'{duration} min · {score} · {date}'**
+  /// **'{duration} · {score} · {date}'**
   String studentSessionHistoryLine(Object duration, Object score, Object date);
 
   /// No description provided for @studentSessionIntro.
@@ -6817,7 +6817,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentSessionScoreLine.
   ///
   /// In fr, this message translates to:
-  /// **'{correct}/{total} correctes · {pct}%'**
+  /// **'{correct}/{total} correctes · {pct}'**
   String studentSessionScoreLine(Object correct, Object total, Object pct);
 
   /// No description provided for @studentSessionSeeSummary.
@@ -8731,7 +8731,7 @@ abstract class AppLocalizations {
   /// No description provided for @teacherClassesAverage.
   ///
   /// In fr, this message translates to:
-  /// **'{avg}% moy.'**
+  /// **'moy. {avg}'**
   String teacherClassesAverage(Object avg);
 
   /// No description provided for @teacherClassesCreate.
@@ -10329,7 +10329,7 @@ abstract class AppLocalizations {
   /// No description provided for @teacherSessionDuration.
   ///
   /// In fr, this message translates to:
-  /// **'Durée : {minutes} minutes'**
+  /// **'Durée : {minutes}'**
   String teacherSessionDuration(Object minutes);
 
   /// No description provided for @teacherSessionLinkLabel.
@@ -15575,7 +15575,7 @@ abstract class AppLocalizations {
   /// No description provided for @hwScore.
   ///
   /// In fr, this message translates to:
-  /// **'{score} / {max}'**
+  /// **'{score}/{max}'**
   String hwScore(String score, String max);
 
   /// No description provided for @hwQuiz.
@@ -15623,7 +15623,7 @@ abstract class AppLocalizations {
   /// No description provided for @hwGrade.
   ///
   /// In fr, this message translates to:
-  /// **'Note : {score} / {max}'**
+  /// **'Note : {score}/{max}'**
   String hwGrade(String score, String max);
 
   /// No description provided for @hwTeacherComment.
@@ -15641,14 +15641,14 @@ abstract class AppLocalizations {
   /// No description provided for @hwMockUpcoming.
   ///
   /// In fr, this message translates to:
-  /// **'Ouvre le {date} · {minutes} min'**
-  String hwMockUpcoming(String date, int minutes);
+  /// **'Ouvre le {date} · {minutes}'**
+  String hwMockUpcoming(String date, String minutes);
 
   /// No description provided for @hwMockOpen.
   ///
   /// In fr, this message translates to:
-  /// **'Ouvert jusqu’au {date} · {minutes} min'**
-  String hwMockOpen(String date, int minutes);
+  /// **'Ouvert jusqu’au {date} · {minutes}'**
+  String hwMockOpen(String date, String minutes);
 
   /// No description provided for @hwMockSubmitted.
   ///
@@ -15665,7 +15665,7 @@ abstract class AppLocalizations {
   /// No description provided for @hwMockResult.
   ///
   /// In fr, this message translates to:
-  /// **'{score} / 100 · {rank}e sur {total} · moyenne {average}'**
+  /// **'{score} · {rank}e sur {total} · moyenne {average}'**
   String hwMockResult(String score, int rank, int total, String average);
 
   /// No description provided for @hwChipUpcoming.
@@ -16679,7 +16679,7 @@ abstract class AppLocalizations {
   /// No description provided for @peersTop.
   ///
   /// In fr, this message translates to:
-  /// **'20 % les plus réguliers : {avg} / 20'**
+  /// **'20 % les plus réguliers : {avg}'**
   String peersTop(String avg);
 
   /// No description provided for @peersAbove.
@@ -17778,7 +17778,7 @@ abstract class AppLocalizations {
   /// No description provided for @peersYourAverage.
   ///
   /// In fr, this message translates to:
-  /// **'Ta moyenne : {avg} / 20'**
+  /// **'Ta moyenne : {avg}'**
   String peersYourAverage(String avg);
 
   /// No description provided for @peersSubjects.
@@ -17790,13 +17790,13 @@ abstract class AppLocalizations {
   /// No description provided for @peersSubjectLine.
   ///
   /// In fr, this message translates to:
-  /// **'Toi {you} / 20 · groupe {group} / 20'**
+  /// **'Toi {you} · groupe {group}'**
   String peersSubjectLine(String you, String group);
 
   /// No description provided for @peersSubjectYou.
   ///
   /// In fr, this message translates to:
-  /// **'Toi {you} / 20'**
+  /// **'Toi {you}'**
   String peersSubjectYou(String you);
 
   /// No description provided for @peersNoClass.
@@ -19662,8 +19662,8 @@ abstract class AppLocalizations {
   /// No description provided for @cstatWatch.
   ///
   /// In fr, this message translates to:
-  /// **'{minutes} min de visionnage en moyenne'**
-  String cstatWatch(int minutes);
+  /// **'{minutes} de visionnage en moyenne'**
+  String cstatWatch(String minutes);
 
   /// No description provided for @cstatQuiz.
   ///
@@ -20756,6 +20756,31 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Profil retiré de la recherche.'**
   String get tutorDeactivated;
+
+  /// No description provided for @studentCourseCurriculumSummaryNoDuration.
+  ///
+  /// In fr, this message translates to:
+  /// **'{sections} sections · {lessons} leçons'**
+  String studentCourseCurriculumSummaryNoDuration(
+      Object lessons, Object sections);
+
+  /// No description provided for @studentSessionHistoryLineNoDuration.
+  ///
+  /// In fr, this message translates to:
+  /// **'{score} · {date}'**
+  String studentSessionHistoryLineNoDuration(Object date, Object score);
+
+  /// No description provided for @studentQuizMetaNoDuration.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} questions'**
+  String studentQuizMetaNoDuration(Object count);
+
+  /// No description provided for @studentGroupsRankLineNoDuration.
+  ///
+  /// In fr, this message translates to:
+  /// **'{quizzes} quiz réussis'**
+  String studentGroupsRankLineNoDuration(Object quizzes);
 }
 
 class _AppLocalizationsDelegate

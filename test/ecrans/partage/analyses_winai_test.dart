@@ -35,7 +35,7 @@ void main() {
     await tester.tap(find.widgetWithText(WinChip, 'Annales Maths'));
     await reseau(tester);
     expect((faux.recues('POST', '/teacher/class-analysis').single.data as Map)['content_id'], 4);
-    expect(find.text('12.4 / 20'), findsOneWidget);
+    expect(find.text('12,4/20'), findsOneWidget);
     expect(find.text('•  ${l.canWrongRate('Derivees', 71)}'), findsOneWidget);
     expect(find.text('•  Revoir les derivees en classe'), findsOneWidget);
   });
@@ -64,7 +64,7 @@ void main() {
     await tester.tap(find.widgetWithText(WinButton, l.predRun));
     await reseau(tester);
     expect((faux.recues('POST', '/institutions/class-prediction').single.data as Map)['institution_id'], 4);
-    expect(find.text('68 %'), findsOneWidget);
+    expect(find.text(WinFormat.percent(68)), findsOneWidget);
     expect(find.widgetWithText(WinBadge, l.predConfMedium), findsOneWidget);
     expect(find.text(l.predVsLastYear('+4')), findsOneWidget);
     expect(find.text('25'), findsOneWidget, reason: '40 - 9 - 6 dans la moyenne');

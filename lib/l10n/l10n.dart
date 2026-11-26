@@ -108,4 +108,53 @@ class WinFormat {
 
   /// Montant TTC en XAF : « 8 000 XAF » / « 8,000 XAF ».
   static String xaf(num n) => '${number(n)} XAF';
+
+  // Lot 1 (26/11) : formats communs des notes, taux, durées et avis.
+  // Règle : toute note d'élève s'affiche sur 20 ; le pourcentage reste
+  // réservé aux taux (complétion, réussite, progression, part d'élèves).
+
+  /// Tiret affiché à la place d'une valeur absente.
+  static const String none = '–';
+
+  /// Nombre à une décimale au plus, sans décimale inutile :
+  /// « 12 », « 12,5 » / « 12.5 ».
+  static String decimal(num v) {
+    final r = (v * 10).round() / 10;
+    if (r == r.roundToDouble()) return r.round().toString();
+    final s = r.toStringAsFixed(1);
+    return L10n.isEn ? s : s.replaceAll('.', ',');
+  }
+
+  /// Valeur d'une note sur 20 à partir d'un score du serveur en
+  /// pourcentage (0-100), sans le « /20 » : « 12,5 » / « 12.5 ».
+  static String gradeValue(num pct) => decimal(pct / 5);
+
+  /// Note sur 20 à partir d'un score du serveur en pourcentage (0-100) :
+  /// « 10/20 », « 12,5/20 » / « 12.5/20 » ; « – » sans score.
+  static String grade20(num? pct) =>
+      pct == null ? none : '${gradeValue(pct)}/20';
+
+  /// Taux en pourcentage, arrondi à l'unité : « 16 % » (espace insécable)
+  /// / « 16% » ; « – » sans valeur.
+  static String percent(num? x) {
+    if (x == null) return none;
+    final n = x.round();
+    return L10n.isEn ? '$n%' : '$n %';
+  }
+
+  /// Durée en minutes : « 45 min », « 2 h », « 1 h 30 ». Une durée nulle
+  /// (ou absente) donne une chaîne vide : l'appelant masque alors le champ.
+  static String duration(int? minutes) {
+    if (minutes == null || minutes <= 0) return '';
+    final h = minutes ~/ 60;
+    final m = minutes % 60;
+    final l = L10n.current;
+    if (h == 0) return l.svcDurationMin(m);
+    return m == 0
+        ? l.svcDurationHours(h)
+        : l.svcDurationHoursMin(h, m.toString().padLeft(2, '0'));
+  }
+
+  /// Note d'avis sur 5 : « 4,5/5 » / « 4.5/5 ».
+  static String rating5(num r) => '${decimal(r)}/5';
 }

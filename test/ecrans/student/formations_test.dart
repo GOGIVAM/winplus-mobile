@@ -43,8 +43,8 @@ void main() {
       final l = L10n.current;
       expect(find.text('Algebre'), findsOneWidget);
       expect(find.text('Mme Ngo'), findsOneWidget);
-      expect(find.text('0%'), findsOneWidget);
-      expect(find.text('40%'), findsOneWidget);
+      expect(find.text(WinFormat.percent(0)), findsOneWidget);
+      expect(find.text(WinFormat.percent(40)), findsOneWidget);
       expect(_bouton(l.studentMyCoursesStart), findsOneWidget);
       expect(_bouton(l.commonContinue), findsOneWidget);
       await tester.scrollUntilVisible(find.text('Chimie'), 300, scrollable: find.byType(Scrollable).first);
@@ -94,8 +94,8 @@ void main() {
       expect(find.text('Algebre'), findsOneWidget);
       expect(find.text('Trigo'), findsOneWidget);
       expect(find.text(L10n.current.commonFree), findsOneWidget);
-      expect(find.text(L10n.current.studentCatalogPriceTtc(5000)), findsOneWidget);
-      expect(find.text('1h30'), findsNWidgets(2));
+      expect(find.text(L10n.current.studentCatalogPriceTtc('5 000')), findsOneWidget);
+      expect(find.text('1 h 30'), findsNWidgets(2));
       expect(find.text(L10n.current.studentCatalogLoadMore), findsNothing);
       expect(faux.requetes.single.queryParameters, {'page': 1, 'pageSize': 12});
     });

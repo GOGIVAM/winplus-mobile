@@ -120,8 +120,8 @@ class _RegionalComparisonScreenState extends State<RegionalComparisonScreen> {
     }
   }
 
-  /// Score sur 100 vers une note sur 20, une décimale.
-  static String on20(double? v) => v == null ? '–' : '${(v / 5).toStringAsFixed(1)} / 20';
+  /// Score sur 100 vers une note sur 20 (lot 1 : format commun).
+  static String on20(double? v) => WinFormat.grade20(v);
 
   Widget _bar(WinScheme s, String label, double value, Color color, {bool strong = false}) => Padding(
         padding: const EdgeInsets.only(bottom: 10),
@@ -143,7 +143,7 @@ class _RegionalComparisonScreenState extends State<RegionalComparisonScreen> {
         : gap > 0
             ? (PhosphorIconsRegular.trendUp, WinColors.success)
             : (PhosphorIconsRegular.trendDown, WinColors.error);
-    final gapText = gap == null ? '–' : '${gap > 0 ? '+' : ''}${gap.toStringAsFixed(1)}';
+    final gapText = gap == null ? WinFormat.none : '${gap > 0 ? '+' : ''}${WinFormat.decimal(gap)}';
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: WinCard(

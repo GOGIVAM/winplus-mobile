@@ -26,10 +26,10 @@ void main() {
       await monterSection(tester);
       final l = L10n.current;
       expect(find.text(l.peersAbove), findsOneWidget);
-      expect(find.text('14.2 / 20'), findsOneWidget);
-      expect(find.text('11.5 / 20'), findsOneWidget);
+      expect(find.text('14,2/20'), findsOneWidget);
+      expect(find.text('11,5/20'), findsOneWidget);
       expect(find.text(l.peersScope(128)), findsOneWidget);
-      expect(find.text(l.peersTop('16.8')), findsOneWidget);
+      expect(find.text(l.peersTop('16,8/20')), findsOneWidget);
       expect(find.text(l.peersBetterThan(72)), findsOneWidget);
       expect(find.byType(WinChip), findsNothing);
       expect(faux.recues('GET', '/student/peer-comparison').single.queryParameters, isEmpty);
@@ -92,8 +92,8 @@ void main() {
       expect(find.text(l.peersGroupAverage('Terminale C · Maths')), findsOneWidget);
       expect(find.text(l.peersScopeGroup(24)), findsOneWidget);
       expect(find.text('Mathématiques'), findsOneWidget);
-      expect(find.text(l.peersSubjectLine('16.0', '13.0')), findsOneWidget);
-      expect(find.text('${l.peersSubjectYou('10.0')} · Trop peu d’élèves de ta classe en Physique.'), findsOneWidget);
+      expect(find.text(l.peersSubjectLine('16/20', '13/20')), findsOneWidget);
+      expect(find.text('${l.peersSubjectYou('10/20')} · Trop peu d’élèves de ta classe en Physique.'), findsOneWidget);
       final niveau = tester.widget<WinChip>(find.widgetWithText(WinChip, l.peersScopeLevel));
       expect(niveau.onTap, isNull, reason: 'portee indisponible');
       expect(tester.widget<WinChip>(find.widgetWithText(WinChip, 'Terminale C · Maths')).active, isTrue);
@@ -123,7 +123,7 @@ void main() {
       });
       await monterSection(tester);
       final l = L10n.current;
-      expect(find.text(l.peersYourAverage('13.0')), findsOneWidget);
+      expect(find.text(l.peersYourAverage('13/20')), findsOneWidget);
       expect(find.text('Trop peu d’élèves de ta classe ont fait des quiz.'), findsOneWidget);
       expect(find.text(l.peersYou), findsNothing);
     });

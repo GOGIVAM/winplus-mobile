@@ -66,11 +66,11 @@ void main() {
     await monterHaut(tester);
     final l = L10n.current;
     expect(find.text('150 / 200'), findsOneWidget);
-    expect(find.text('(75%)'), findsOneWidget);
+    expect(find.text('(${WinFormat.percent(75)})'), findsOneWidget);
     expect(find.text('42'), findsOneWidget);
     await dernierChiffre(tester, find.text('200 / 250'));
     expect(find.text('200 / 250'), findsOneWidget);
-    expect(find.text('${l.instLicenseHeading('pro')} (80%)'), findsOneWidget);
+    expect(find.text('${l.instLicenseHeading('pro')} (${WinFormat.percent(80)})'), findsOneWidget);
   });
 
   testWidgets('sans licence : « Aucune » et mention de l\'absence de licence', (tester) async {

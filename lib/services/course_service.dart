@@ -58,13 +58,9 @@ class CourseListItem {
         instructorName: j['instructorName'] as String? ?? '',
       );
 
-  String get durationStr {
-    final h = totalDurationMin ~/ 60;
-    final m = totalDurationMin % 60;
-    if (h > 0 && m > 0) return '${h}h${m.toString().padLeft(2, '0')}';
-    if (h > 0) return '${h}h';
-    return '${m}min';
-  }
+  /// Lot 1 : « 2 h », « 1 h 30 », « 45 min » ; vide si la durée est nulle
+  /// (l'écran masque alors la durée).
+  String get durationStr => WinFormat.duration(totalDurationMin);
 }
 
 class CourseLesson {
@@ -230,13 +226,9 @@ class CourseDetail {
         purchaseBlockCode: j['purchaseBlockCode'] as String?,
       );
 
-  String get durationStr {
-    final h = totalDurationMin ~/ 60;
-    final m = totalDurationMin % 60;
-    if (h > 0 && m > 0) return '${h}h${m.toString().padLeft(2, '0')}';
-    if (h > 0) return '${h}h';
-    return '${m}min';
-  }
+  /// Lot 1 : « 2 h », « 1 h 30 », « 45 min » ; vide si la durée est nulle
+  /// (l'écran masque alors la durée).
+  String get durationStr => WinFormat.duration(totalDurationMin);
 
   int get totalLessons => sections.fold(0, (a, s) => a + s.lessons.length);
 }
@@ -596,12 +588,9 @@ class MyEnrollment {
 
   bool get isCompleted => completedAt != null || progressPercent >= 100;
 
-  String get durationStr {
-    final h = totalDurationMin ~/ 60;
-    final m = totalDurationMin % 60;
-    if (h > 0) return '${h}h${m > 0 ? m.toString().padLeft(2, '0') : ''}';
-    return '${m}min';
-  }
+  /// Lot 1 : « 2 h », « 1 h 30 », « 45 min » ; vide si la durée est nulle
+  /// (l'écran masque alors la durée).
+  String get durationStr => WinFormat.duration(totalDurationMin);
 }
 
 // ─── Reviews ─────────────────────────────────────────────────────────────────

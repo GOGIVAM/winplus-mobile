@@ -297,7 +297,7 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
         const SizedBox(height: 28),
         Text(context.l10n.studentCoachHoursPerDay, style: WinType.titleM(s.onStrong)),
         const SizedBox(height: 4),
-        Text('${_hoursPerDay.toStringAsFixed(1)}h',
+        Text(WinFormat.duration((_hoursPerDay * 60).round()),
             style: WinType.archivo(
                 size: 32, weight: FontWeight.w800, color: s.primary)),
         Slider(
@@ -431,8 +431,8 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
                           children: [
                         Text(isRest ? context.l10n.studentCoachRest : (d['focus_area'] as String? ?? ''),
                             style: WinType.titleM(s.onStrong)),
-                        if (!isRest)
-                          Text('${d['duration_minutes'] ?? 0} min',
+                        if (!isRest && WinFormat.duration((d['duration_minutes'] as num?)?.round()).isNotEmpty)
+                          Text(WinFormat.duration((d['duration_minutes'] as num?)?.round()),
                               style: WinType.labelS(s.onMuted)),
                       ])),
                 ]),

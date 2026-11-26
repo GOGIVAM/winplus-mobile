@@ -122,4 +122,59 @@ void main() {
       expect(WinFormat.weekdayCap(5), 'Friday');
     });
   });
+
+  // Lot 1 (26/11) : notes sur 20, taux, durees et avis.
+  group('WinFormat : notes, taux, durees, avis', () {
+    test('note sur 20 en francais : virgule, decimale seulement si utile', () {
+      expect(WinFormat.grade20(50), '10/20');
+      expect(WinFormat.grade20(62.5), '12,5/20');
+      expect(WinFormat.grade20(100), '20/20');
+      expect(WinFormat.grade20(0), '0/20');
+      expect(WinFormat.grade20(63), '12,6/20');
+      expect(WinFormat.grade20(null), '–');
+      expect(WinFormat.gradeValue(62.5), '12,5');
+    });
+
+    test('note sur 20 en anglais : point decimal', () {
+      L10n.locale = const Locale('en');
+      expect(WinFormat.grade20(50), '10/20');
+      expect(WinFormat.grade20(62.5), '12.5/20');
+      expect(WinFormat.grade20(null), '–');
+    });
+
+    test('taux : espace insecable en francais, colle en anglais', () {
+      expect(WinFormat.percent(16), '16 %');
+      expect(WinFormat.percent(15.6), '16 %');
+      expect(WinFormat.percent(null), '–');
+      L10n.locale = const Locale('en');
+      expect(WinFormat.percent(16), '16%');
+    });
+
+    test('duree : minutes, heures, heures et minutes ; vide si nulle', () {
+      expect(WinFormat.duration(45), '45 min');
+      expect(WinFormat.duration(120), '2 h');
+      expect(WinFormat.duration(90), '1 h 30');
+      expect(WinFormat.duration(65), '1 h 05');
+      expect(WinFormat.duration(0), '');
+      expect(WinFormat.duration(null), '');
+      L10n.locale = const Locale('en');
+      expect(WinFormat.duration(45), '45 min');
+      expect(WinFormat.duration(120), '2 h');
+      expect(WinFormat.duration(90), '1 h 30');
+    });
+
+    test('note d\'avis sur 5 et decimale seule', () {
+      expect(WinFormat.rating5(4.5), '4,5/5');
+      expect(WinFormat.rating5(4), '4/5');
+      expect(WinFormat.decimal(3.96), '4');
+      L10n.locale = const Locale('en');
+      expect(WinFormat.rating5(4.5), '4.5/5');
+    });
+
+    test('montant : separateur de milliers', () {
+      expect(WinFormat.xaf(3500), '3 500 XAF');
+      L10n.locale = const Locale('en');
+      expect(WinFormat.xaf(3500), '3,500 XAF');
+    });
+  });
 }

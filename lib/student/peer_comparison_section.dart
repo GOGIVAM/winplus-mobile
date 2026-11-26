@@ -166,14 +166,15 @@ class _PeerComparisonSectionState extends State<PeerComparisonSection> {
 
   /// Pourcentage (0 à 100) vers une note sur 20.
   static double _on20(double v) => v / 5;
-  static String _f(double v) => _on20(v).toStringAsFixed(1);
+  // Lot 1 : format commun des notes (« 12,5/20 »).
+  static String _f(double v) => WinFormat.grade20(v);
 
   Widget _bar(WinScheme s, String label, double value, Color color) => Padding(
         padding: const EdgeInsets.only(bottom: 10),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(children: [
             Expanded(child: Text(label, style: WinType.labelM(s.onStrong))),
-            Text('${_f(value)} / 20', style: WinType.labelM(s.onStrong)),
+            Text(_f(value), style: WinType.labelM(s.onStrong)),
           ]),
           const SizedBox(height: 4),
           WinProgressBar(value.clamp(0, 100).toDouble(), color: color, height: 8),

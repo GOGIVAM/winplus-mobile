@@ -44,7 +44,7 @@ void main() {
     await reseau(tester);
     expect(faux.recues('GET', '/institution/bulletins/preview').single.queryParameters['studentId'], 30,
         reason: 'le compte de l\'eleve, pas la ligne de rattachement');
-    expect(find.text('14.0 / 20'), findsOneWidget);
+    expect(find.text('14/20'), findsOneWidget);
     expect(find.text('3 / 28'), findsOneWidget);
     expect(find.text('2 h 05'), findsOneWidget);
     await tester.tap(find.widgetWithText(WinButton, l.bullShare));

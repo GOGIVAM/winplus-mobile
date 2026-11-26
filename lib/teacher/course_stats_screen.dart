@@ -114,13 +114,13 @@ class _CourseStatsScreenState extends State<CourseStatsScreen> {
         Expanded(child: WinStatCard('$enrolled', l.cstatEnrolled, icon: PhosphorIconsRegular.users)),
         const SizedBox(width: 10),
         Expanded(
-            child: WinStatCard('${avgCompletion.round()} %', l.cstatAvgCompletion,
+            child: WinStatCard(WinFormat.percent(avgCompletion), l.cstatAvgCompletion,
                 icon: PhosphorIconsRegular.checkCircle, color: avgCompletion >= 40 ? WinColors.success : WinColors.warn)),
       ]),
       const SizedBox(height: 10),
       Row(children: [
         Expanded(
-            child: WinStatCard(avgQuiz == null ? '–' : '${(avgQuiz / 5).toStringAsFixed(1)} / 20', l.cstatAvgQuiz,
+            child: WinStatCard(WinFormat.grade20(avgQuiz), l.cstatAvgQuiz,
                 icon: PhosphorIconsRegular.exam)),
         const SizedBox(width: 10),
         Expanded(
@@ -143,8 +143,8 @@ class _CourseStatsScreenState extends State<CourseStatsScreen> {
   Widget _lessonStep(WinScheme s, AppLocalizations l, int n, LessonStats x, {required bool last}) {
     final color = x.lowCompletion ? WinColors.error : WinColors.teal600;
     final details = [
-      if (x.watchSec > 0) l.cstatWatch((x.watchSec / 60).round().clamp(1, 999)),
-      if (x.quizScore != null) l.cstatQuiz('${(x.quizScore! / 5).toStringAsFixed(1)} / 20'),
+      if (x.watchSec > 0) l.cstatWatch(WinFormat.duration((x.watchSec / 60).round().clamp(1, 99999))),
+      if (x.quizScore != null) l.cstatQuiz(WinFormat.grade20(x.quizScore)),
     ].join(' · ');
     return IntrinsicHeight(
       child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
@@ -179,7 +179,7 @@ class _CourseStatsScreenState extends State<CourseStatsScreen> {
                 Row(children: [
                   Expanded(child: WinProgressBar(x.completionRate.clamp(0, 100).toDouble(), color: color, height: 8)),
                   const SizedBox(width: 10),
-                  Text('${x.completionRate.round()} %', style: WinType.labelM(color)),
+                  Text(WinFormat.percent(x.completionRate), style: WinType.labelM(color)),
                 ]),
                 const SizedBox(height: 6),
                 Text(l.cstatLessonOf(x.completed, x.enrolled), style: WinType.labelM(s.onStrong)),

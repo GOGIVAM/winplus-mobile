@@ -161,7 +161,7 @@ class ContentActionsSheet extends StatelessWidget {
     final lignes = <(String, String)>[
       (l.teacherDashDownloads, '${stats.downloads}'),
       (l.teacherStatsRating(stats.ratingCount),
-          stats.ratingCount > 0 ? stats.rating.toStringAsFixed(1) : '—'),
+          stats.ratingCount > 0 ? WinFormat.rating5(stats.rating) : '—'),
       (l.teacherStatsEnrollments, '${stats.enrollments}'),
       (l.teacherStatsSales, '${stats.sales}'),
       (l.teacherStatsGross, '${fmtXaf(stats.grossRevenue.round())} XAF'),
@@ -249,7 +249,7 @@ class ContentActionsSheet extends StatelessWidget {
               const SizedBox(width: 12),
               _MiniStat(
                 icon: PhosphorIconsRegular.star,
-                value: c.rating > 0 ? c.rating.toStringAsFixed(1) : '',
+                value: c.rating > 0 ? WinFormat.decimal(c.rating) : '',
                 label: context.l10n.teacherContentRating,
                 color: WinColors.gold,
               ),

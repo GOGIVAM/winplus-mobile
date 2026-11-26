@@ -483,7 +483,7 @@ class _CourseOptionsSheetState extends State<_CourseOptionsSheet> {
                     const Icon(PhosphorIconsRegular.star,
                         size: 14, color: WinColors.gold),
                     const SizedBox(width: 4),
-                    Text(avgRating.toStringAsFixed(1),
+                    Text(WinFormat.decimal(avgRating),
                         style: WinType.labelM(s.onMuted)),
                   ],
                 ]),

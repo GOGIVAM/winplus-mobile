@@ -154,7 +154,7 @@ class _ParentDashTabState extends State<ParentDashTab> {
               id: c.id.toString(),
               name: c.fullName,
               level: c.level ?? '',
-              avgScore: (_childScores[c.id] ?? 0).round(),
+              avgScore: _childScores[c.id] ?? 0,
               // Activité réelle (statistiques du serveur), plus « actif »
               // d'office ; aucune tendance n'est calculée par le serveur, on
               // n'en affiche donc pas.
@@ -180,9 +180,11 @@ class _ParentDashTabState extends State<ParentDashTab> {
     final wallet = _wallet;
     final creditsAvail = wallet?.creditsLeft.round() ?? 0;
     final scores = _childScores.values.toList();
-    final avg = scores.isEmpty
+    // Lot 1 : moyenne des enfants qui ont fait un quiz, en note sur 20.
+    final noted = scores.where((x) => x > 0).toList();
+    final avg = noted.isEmpty
         ? null
-        : (scores.reduce((a, b) => a + b) / scores.length).round();
+        : noted.reduce((a, b) => a + b) / noted.length;
     final firstChild = kids.isEmpty ? null : kids.first;
 
     if (_loadError) {
@@ -328,7 +330,7 @@ MobileForYou(slides: [
             onTap: () => _push(const SubscriptionStatusScreen())),
         MobileStat(
             label: l.mobileHomeChildrenAvg,
-            value: avg == null ? '—' : '$avg%',
+            value: avg == null ? '—' : WinFormat.grade20(avg),
             onTap: () => ShellNav.go(context, 1)),
       ]),
       below: [
@@ -492,7 +494,7 @@ class _TrackedChildCard extends StatelessWidget {
               style: WinType.labelS(s.onMuted)),
           const SizedBox(height: 8),
           Row(children: [
-            Text('${child.avgScore}%',
+            Text(ApiChildStats.averageGrade20(child.avgScore),
                 style: WinType.archivo(size: 14, color: scoreColor)),
             // Tendance affichée seulement si le serveur en calcule une.
             if (child.trend != null) ...[
@@ -1158,7 +1160,7 @@ class _ParentProfileTabState extends State<ParentProfileTab> {
                                 style: WinType.labelS(s.onMuted)),
                           ])),
                       if (_scores[c.id] != null)
-                        Text('${_scores[c.id]!.round()}%',
+                        Text(ApiChildStats.averageGrade20(_scores[c.id]),
                             style: WinType.labelM(s.onMuted)),
                       const SizedBox(width: 4),
                       const Icon(PhosphorIconsRegular.caretRight,

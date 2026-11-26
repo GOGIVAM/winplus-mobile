@@ -20,10 +20,10 @@ void main() {
       expect(c.price, 0.0);
       expect(c.isFree, isFalse);
       expect(c.shortDescription, isNull);
-      expect(c.durationStr, '0min');
-      expect(CourseListItem.fromJson({'totalDurationMin': 125}).durationStr, '2h05');
-      expect(CourseListItem.fromJson({'totalDurationMin': 120}).durationStr, '2h');
-      expect(CourseListItem.fromJson({'totalDurationMin': 45}).durationStr, '45min');
+      expect(c.durationStr, '', reason: 'duree nulle : masquee (lot 1)');
+      expect(CourseListItem.fromJson({'totalDurationMin': 125}).durationStr, '2 h 05');
+      expect(CourseListItem.fromJson({'totalDurationMin': 120}).durationStr, '2 h');
+      expect(CourseListItem.fromJson({'totalDurationMin': 45}).durationStr, '45 min');
     });
 
     test('CourseListItem lit un prix entier ou decimal', () {
@@ -90,7 +90,7 @@ void main() {
       expect(vide.sections, isEmpty);
       expect(vide.totalLessons, 0);
       expect(vide.isEnrolled, isFalse);
-      expect(vide.durationStr, '0min');
+      expect(vide.durationStr, '', reason: 'duree nulle : masquee (lot 1)');
     });
 
     test('CourseCurriculum : leçons aplaties, examen final facultatif', () {
@@ -203,12 +203,12 @@ void main() {
       expect(e.courseTitle, 'Anglais');
       expect(e.accessType, 'free');
       expect(e.isCompleted, isTrue, reason: '100 % suffit meme sans date');
-      expect(e.durationStr, '1h30');
+      expect(e.durationStr, '1 h 30');
       expect(MyEnrollment.fromJson({'completedAt': '2026-01-01', 'course': {'totalDurationMin': 60}}).isCompleted, isTrue);
       final partiel = MyEnrollment.fromJson({'progressPercent': 40, 'course': {'totalDurationMin': 120}});
       expect(partiel.isCompleted, isFalse);
-      expect(partiel.durationStr, '2h');
-      expect(MyEnrollment.fromJson(<String, dynamic>{}).durationStr, '0min');
+      expect(partiel.durationStr, '2 h');
+      expect(MyEnrollment.fromJson(<String, dynamic>{}).durationStr, '', reason: 'duree nulle : masquee (lot 1)');
     });
 
     test('CourseReview : auteur anonyme selon la langue', () {

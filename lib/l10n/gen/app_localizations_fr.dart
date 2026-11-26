@@ -455,8 +455,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get studentExamFinalTitle => 'Examen final';
 
   @override
-  String studentExamFinalIntro(int score) {
-    return 'L’examen final couvre toute la formation : au moins $score % pour obtenir le certificat.';
+  String studentExamFinalIntro(String score) {
+    return 'L’examen final couvre toute la formation : au moins $score pour obtenir le certificat.';
   }
 
   @override
@@ -1305,7 +1305,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String instRiskScore(Object n) {
-    return 'Score : $n%';
+    return 'Score : $n';
   }
 
   @override
@@ -3170,7 +3170,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String studentGroupsRankLine(Object quizzes, Object minutes) {
-    return '$quizzes quiz réussis · $minutes min étudiées';
+    return '$quizzes quiz réussis · $minutes d’étude';
   }
 
   @override
@@ -3776,7 +3776,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String studentQuizMeta(Object count, Object minutes) {
-    return '$count questions · $minutes min';
+    return '$count questions · $minutes';
   }
 
   @override
@@ -3904,7 +3904,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String studentSessionDoneScore(Object pct, Object subject) {
-    return 'Score : $pct% sur $subject';
+    return 'Score : $pct en $subject';
   }
 
   @override
@@ -3915,7 +3915,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String studentSessionHistoryLine(Object duration, Object score, Object date) {
-    return '$duration min · $score · $date';
+    return '$duration · $score · $date';
   }
 
   @override
@@ -3950,7 +3950,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String studentSessionScoreLine(Object correct, Object total, Object pct) {
-    return '$correct/$total correctes · $pct%';
+    return '$correct/$total correctes · $pct';
   }
 
   @override
@@ -5070,7 +5070,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String teacherClassesAverage(Object avg) {
-    return '$avg% moy.';
+    return 'moy. $avg';
   }
 
   @override
@@ -6001,7 +6001,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String teacherSessionDuration(Object minutes) {
-    return 'Durée : $minutes minutes';
+    return 'Durée : $minutes';
   }
 
   @override
@@ -9134,7 +9134,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String hwScore(String score, String max) {
-    return '$score / $max';
+    return '$score/$max';
   }
 
   @override
@@ -9161,7 +9161,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String hwGrade(String score, String max) {
-    return 'Note : $score / $max';
+    return 'Note : $score/$max';
   }
 
   @override
@@ -9171,13 +9171,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get hwSubmitFailed => 'L’envoi n’a pas abouti.';
 
   @override
-  String hwMockUpcoming(String date, int minutes) {
-    return 'Ouvre le $date · $minutes min';
+  String hwMockUpcoming(String date, String minutes) {
+    return 'Ouvre le $date · $minutes';
   }
 
   @override
-  String hwMockOpen(String date, int minutes) {
-    return 'Ouvert jusqu’au $date · $minutes min';
+  String hwMockOpen(String date, String minutes) {
+    return 'Ouvert jusqu’au $date · $minutes';
   }
 
   @override
@@ -9188,7 +9188,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String hwMockResult(String score, int rank, int total, String average) {
-    return '$score / 100 · ${rank}e sur $total · moyenne $average';
+    return '$score · ${rank}e sur $total · moyenne $average';
   }
 
   @override
@@ -9816,7 +9816,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String peersTop(String avg) {
-    return '20 % les plus réguliers : $avg / 20';
+    return '20 % les plus réguliers : $avg';
   }
 
   @override
@@ -10478,7 +10478,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String peersYourAverage(String avg) {
-    return 'Ta moyenne : $avg / 20';
+    return 'Ta moyenne : $avg';
   }
 
   @override
@@ -10486,12 +10486,12 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String peersSubjectLine(String you, String group) {
-    return 'Toi $you / 20 · groupe $group / 20';
+    return 'Toi $you · groupe $group';
   }
 
   @override
   String peersSubjectYou(String you) {
-    return 'Toi $you / 20';
+    return 'Toi $you';
   }
 
   @override
@@ -11683,8 +11683,8 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String cstatWatch(int minutes) {
-    return '$minutes min de visionnage en moyenne';
+  String cstatWatch(String minutes) {
+    return '$minutes de visionnage en moyenne';
   }
 
   @override
@@ -12341,4 +12341,25 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tutorDeactivated => 'Profil retiré de la recherche.';
+
+  @override
+  String studentCourseCurriculumSummaryNoDuration(
+      Object lessons, Object sections) {
+    return '$sections sections · $lessons leçons';
+  }
+
+  @override
+  String studentSessionHistoryLineNoDuration(Object date, Object score) {
+    return '$score · $date';
+  }
+
+  @override
+  String studentQuizMetaNoDuration(Object count) {
+    return '$count questions';
+  }
+
+  @override
+  String studentGroupsRankLineNoDuration(Object quizzes) {
+    return '$quizzes quiz réussis';
+  }
 }

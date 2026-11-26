@@ -180,7 +180,8 @@ class _TeacherStudentsViewState extends State<TeacherStudentsView> {
           ),
           if (avg != null) ...[
             const SizedBox(width: 8),
-            Text('${avg.round()} %', style: WinType.labelM(avg >= 70 ? WinColors.success : WinColors.warn)),
+            // Lot 1 : moyenne de l'élève en note sur 20.
+            Text(l.teacherClassesAverage(WinFormat.grade20(avg)), style: WinType.labelM(avg >= 70 ? WinColors.success : WinColors.warn)),
           ],
           IconButton(
             tooltip: l.teacherStudentsAddToClass,

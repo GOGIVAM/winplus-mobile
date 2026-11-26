@@ -247,7 +247,7 @@ class _TeacherDashTabState extends State<TeacherDashTab> {
             onTap: () => ShellNav.go(context, 1)),
         MobileStat(
             label: l.teacherDashAvgRating,
-            value: avgRating > 0 ? avgRating.toStringAsFixed(1) : '—',
+            value: avgRating > 0 ? WinFormat.decimal(avgRating) : '—',
             caption: avgRating > 0 ? l.teacherDashOutOf5 : null,
             tone: MobileStatTone.gold),
         MobileStat(
@@ -256,7 +256,7 @@ class _TeacherDashTabState extends State<TeacherDashTab> {
             onTap: () => ShellNav.go(context, 2)),
         MobileStat(
             label: l.mobileHomeShare,
-            value: sharePct > 0 ? '$sharePct %' : '—',
+            value: sharePct > 0 ? WinFormat.percent(sharePct) : '—',
             caption: subScope.planName,
             tone: MobileStatTone.teal),
       ]),
@@ -376,7 +376,7 @@ class _ContentRow extends StatelessWidget {
                     style: WinType.titleM(s.onStrong)),
                 const SizedBox(height: 4),
                 Text(
-                    '${context.l10n.teacherDashDownloadsCount(c.downloads)}${c.rating > 0 ? '  ·  ${c.rating.toStringAsFixed(1)}' : ''}',
+                    '${context.l10n.teacherDashDownloadsCount(c.downloads)}${c.rating > 0 ? '  ·  ${WinFormat.decimal(c.rating)}' : ''}',
                     style: WinType.labelM(s.onMuted)),
               ])),
           Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
@@ -766,7 +766,7 @@ class _TeacherStudentsTabState extends State<TeacherStudentsTab> {
                                   const SizedBox(width: 8),
                                   Icon(PhosphorIconsRegular.chartBar, size: 12, color: cl.classAverage! >= 70 ? WinColors.success : WinColors.warn),
                                   const SizedBox(width: 2),
-                                  Text(context.l10n.teacherClassesAverage(cl.classAverage!), style: WinType.labelM(cl.classAverage! >= 70 ? WinColors.success : WinColors.warn)),
+                                  Text(context.l10n.teacherClassesAverage(WinFormat.grade20(cl.classAverage)), style: WinType.labelM(cl.classAverage! >= 70 ? WinColors.success : WinColors.warn)),
                                 ],
                                 if (cl.pendingCount > 0) ...[
                                   const SizedBox(width: 8),

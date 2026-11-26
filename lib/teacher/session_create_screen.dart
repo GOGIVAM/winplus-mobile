@@ -102,7 +102,7 @@ class _SessionCreateScreenState extends State<SessionCreateScreen> {
                         icon: PhosphorIconsRegular.link,
                         controller: _linkCtrl),
                     const SizedBox(height: 24),
-                    Text(context.l10n.teacherSessionDuration(_duration),
+                    Text(context.l10n.teacherSessionDuration(WinFormat.duration(_duration)),
                         style: WinType.titleM(s.onStrong)),
                     Slider(
                       value: _duration.toDouble(),

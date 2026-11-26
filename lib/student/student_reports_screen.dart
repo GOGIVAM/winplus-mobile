@@ -155,7 +155,8 @@ class _StudentReportsScreenState extends State<StudentReportsScreen> {
         padding: const EdgeInsets.all(20),
         child: Column(children: [
           Text(
-            r.avgScore == null ? '—' : '${r.avgScore}%',
+            // Lot 1 : la moyenne est une note sur 20 (le serveur envoie un %).
+            WinFormat.grade20(r.avgScore),
             style: WinType.archivo(
                 size: 48,
                 color: r.avgScore == null ? s.onMuted : _barColor(r.avgScore!)),
@@ -192,8 +193,9 @@ class _StudentReportsScreenState extends State<StudentReportsScreen> {
               ),
               const SizedBox(width: 8),
               SizedBox(
-                width: 40,
-                child: Text('${e.score}%',
+                // Lot 1 : place pour « 12,5/20 ».
+                width: 56,
+                child: Text(WinFormat.grade20(e.score),
                     textAlign: TextAlign.right,
                     style: WinType.labelM(s.onMuted)),
               ),
@@ -221,7 +223,7 @@ class _StudentReportsScreenState extends State<StudentReportsScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Text(w.score == null ? '—' : '${w.score}',
+                          Text(w.score == null ? WinFormat.none : WinFormat.gradeValue(w.score!),
                               style: WinType.labelS(s.onFaint)),
                           const SizedBox(height: 2),
                           Flexible(
@@ -260,7 +262,7 @@ class _StudentReportsScreenState extends State<StudentReportsScreen> {
         Expanded(
           child: _figure(
             s,
-            r.quizSuccessRate == null ? '—' : '${r.quizSuccessRate}%',
+            WinFormat.percent(r.quizSuccessRate),
             l.studentReportsSuccessRate,
             color: r.quizSuccessRate == null ? null : WinColors.success,
           ),

@@ -210,13 +210,16 @@ MobileForYou(slides: [
       stats: MobileStatsStrip(items: [
         MobileStat(
             label: l.studentReportsAvgScore,
-            value: st != null ? '${st.averageScore.round()}%' : '—',
+            // Lot 1 : la moyenne des quiz est une note sur 20 ; sans quiz, « – ».
+            value: st != null ? st.averageGrade : '—',
             caption: l.mobileHomeThisWeek,
             tone: MobileStatTone.teal,
             onTap: () => _push(const StudentReportsScreen())),
         MobileStat(
             label: l.mobileHomeStatStudy,
-            value: st != null ? '${st.weeklyStudyHoursTotal.round()} h' : '—',
+            value: st == null || WinFormat.duration((st.weeklyStudyHoursTotal * 60).round()).isEmpty
+                ? '—'
+                : WinFormat.duration((st.weeklyStudyHoursTotal * 60).round()),
             caption: l.mobileHomeThisWeek,
             onTap: () => _push(const StudentReportsScreen())),
         MobileStat(
@@ -330,7 +333,7 @@ class _InProgressCard extends StatelessWidget {
           const SizedBox(height: 8),
           WinProgressBar(item.progressPct.toDouble(), height: 4),
           const SizedBox(height: 6),
-          Text('${item.progressPct}%',
+          Text(WinFormat.percent(item.progressPct),
               style: WinType.labelM(s.primary)
                   .copyWith(fontWeight: FontWeight.w600)),
         ]),

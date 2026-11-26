@@ -47,7 +47,7 @@ void main() {
     ]);
     await monterEcran(tester, const TeacherClassDetailScreen(initialClass: _classe));
     expect(find.text('Ada Eto'), findsOneWidget);
-    expect(find.text('82%'), findsOneWidget);
+    expect(find.text(L10n.current.teacherClassesAverage('16,5/20')), findsOneWidget);
     expect(find.text('bob@x.cm'), findsWidgets);
     expect(find.text('—'), findsOneWidget);
   });

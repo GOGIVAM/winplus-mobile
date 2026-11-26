@@ -106,7 +106,7 @@ class _GroupMembersScreenState extends State<GroupMembersScreen> {
                             color: scoreColor.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(WinRadii.full),
                           ),
-                          child: Text('${m.averageScore.round()}%',
+                          child: Text(WinFormat.grade20(m.averageScore),
                               style: WinType.archivo(
                                   size: 14,
                                   weight: FontWeight.w700,

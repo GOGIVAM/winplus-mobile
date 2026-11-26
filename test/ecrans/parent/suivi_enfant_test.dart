@@ -55,9 +55,9 @@ void main() {
     await monterEcran(tester, const Scaffold(body: SingleChildScrollView(child: ChildrenComparisonCard(childIds: [30, 31]))));
     final l = L10n.current;
     expect(faux.recues('GET', '/parent/children-insights').single.queryParameters['childIds'], '30,31');
-    expect(find.text('14.0 / 20'), findsOneWidget);
+    expect(find.text('14/20'), findsOneWidget);
     expect(find.text(l.cmpChildrenMeta(3, 1)), findsOneWidget);
-    expect(find.text('0.0 / 20'), findsNothing, reason: 'aucun quiz : pas de note nulle');
+    expect(find.text('0/20'), findsNothing, reason: 'aucun quiz : pas de note nulle');
     expect(find.text('–'), findsOneWidget);
     expect(find.text('Paul est tres regulier ce mois-ci.'), findsOneWidget);
     await tester.tap(find.byTooltip(l.cmpChildrenHide));

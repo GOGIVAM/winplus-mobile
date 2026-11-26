@@ -75,10 +75,10 @@ void main() {
     );
     await monterHaut(tester);
     final l = L10n.current;
-    expect(find.text('74%'), findsOneWidget);
-    // 3,5 h d'etude arrondies.
-    await chiffre(tester, find.text('4 h'));
-    expect(find.text('4 h'), findsOneWidget);
+    expect(find.text('14,9/20'), findsOneWidget);
+    // 3,5 h d'etude : format commun des durees (lot 1).
+    await chiffre(tester, find.text('3 h 30'));
+    expect(find.text('3 h 30'), findsOneWidget);
     await chiffre(tester, find.text('5'));
     expect(find.text('5'), findsOneWidget);
     await chiffre(tester, find.text(l.mobileHomeDays(4)));
@@ -97,7 +97,7 @@ void main() {
     expect(find.text('Algebre BAC', skipOffstage: false), findsOneWidget);
     expect(find.text(L10n.current.studentHomeContinue), findsOneWidget);
     expect(find.text('Optique'), findsOneWidget);
-    expect(find.text('60%'), findsOneWidget);
+    expect(find.text(WinFormat.percent(60)), findsOneWidget);
   });
 
   testWidgets('un seul contenu commence : pas de section « continuer » en double', (tester) async {
