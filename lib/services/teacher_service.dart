@@ -298,9 +298,12 @@ class TeacherService {
   Future<List<ApiSubmission>> getSubmissions() async {
     final res = await _api.dio.get('/teacher/corrections/pending');
     final raw = res.data;
+    // Le serveur répond { data: [...] } ; seule la clé items était lue, et
+    // l'accueil annonçait toujours 0 copie à corriger (lot 8, Pixel).
+    final map = raw is Map<String, dynamic> ? raw : null;
     final list = raw is List
         ? raw
-        : (raw as Map<String, dynamic>?)?['items'] as List? ?? [];
+        : (map?['data'] ?? map?['items']) as List? ?? [];
     return list
         .map((e) => ApiSubmission.fromJson(e as Map<String, dynamic>))
         .toList();

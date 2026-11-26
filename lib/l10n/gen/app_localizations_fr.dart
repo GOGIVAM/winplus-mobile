@@ -11700,7 +11700,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Des points pour chaque leçon et chaque quiz, et un classement pour motiver les élèves.';
 
   @override
-  String get cstatEnabled => 'Points et classement activés';
+  String get cstatEnabled => 'Points et classement';
 
   @override
   String get cstatPerLesson => 'Points par leçon terminée';
@@ -11918,4 +11918,170 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get studentQuizPendingReview =>
       'Certaines réponses seront corrigées par ton professeur : ce score est provisoire.';
+
+  @override
+  String get teacherStudentsTabStudents => 'Mes élèves';
+
+  @override
+  String get teacherStudentsTabClasses => 'Mes classes';
+
+  @override
+  String get teacherStudentsSearch => 'Rechercher un élève ou une classe';
+
+  @override
+  String teacherStudentsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count élèves',
+      one: '1 élève',
+      zero: 'Aucun élève',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get teacherStudentsEmpty => 'Aucun élève pour l\'instant';
+
+  @override
+  String get teacherStudentsEmptyHint =>
+      'Ajoutez des élèves à une classe, ou invitez-les par une liaison directe.';
+
+  @override
+  String get teacherStudentsDirect => 'Lien direct';
+
+  @override
+  String get teacherStudentsAddToClass => 'Ajouter à une classe';
+
+  @override
+  String teacherStudentsAdded(String name, String klass) {
+    return '$name ajouté à $klass';
+  }
+
+  @override
+  String get teacherStudentsNoOtherClass =>
+      'Cet élève est déjà dans toutes vos classes actives.';
+
+  @override
+  String get cstatTabLessons => 'Leçons';
+
+  @override
+  String get cstatTabStudents => 'Élèves';
+
+  @override
+  String get cstatTabPoints => 'Points';
+
+  @override
+  String get cstatEnrolled => 'Inscrits';
+
+  @override
+  String get cstatAvgCompletion => 'Complétion moyenne';
+
+  @override
+  String get cstatAvgQuiz => 'Score moyen des quiz';
+
+  @override
+  String get cstatToReview => 'Leçons à revoir';
+
+  @override
+  String get cstatDropTitle => 'Là où les élèves décrochent';
+
+  @override
+  String cstatDropText(int count, String from, String to) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count élèves de moins',
+      one: '1 élève de moins',
+    );
+    return '$_temp0 entre « $from » et « $to ».';
+  }
+
+  @override
+  String get cstatPath => 'Parcours leçon par leçon';
+
+  @override
+  String cstatLessonOf(int done, int total) {
+    return '$done / $total élèves';
+  }
+
+  @override
+  String get cstatReviewBadge => 'À revoir';
+
+  @override
+  String get cstatInactiveTitle => 'Élèves inactifs';
+
+  @override
+  String get cstatInactiveHint =>
+      'Inscrits qui n\'ont rien fait dans la formation depuis le seuil choisi. WinAI peut leur écrire un message d\'encouragement.';
+
+  @override
+  String get cstatThreshold => 'Inactif depuis';
+
+  @override
+  String cstatDays(int n) {
+    return '$n j';
+  }
+
+  @override
+  String cstatInactiveDays(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Inactif depuis $n jours',
+      one: 'Inactif depuis 1 jour',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String cstatNoInactive(int n) {
+    return 'Aucun élève inactif depuis $n jours.';
+  }
+
+  @override
+  String get cstatSelectAll => 'Tout sélectionner';
+
+  @override
+  String cstatRelaunch(int count) {
+    return 'Relancer avec WinAI ($count)';
+  }
+
+  @override
+  String get cstatRelaunchConfirmTitle => 'Relancer ces élèves ?';
+
+  @override
+  String get cstatRelaunchConfirm =>
+      'WinAI rédige un message d\'encouragement, envoyé dans la messagerie de chaque élève sélectionné.';
+
+  @override
+  String cstatRelaunched(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count élèves relancés',
+      one: '1 élève relancé',
+      zero: 'Aucun élève relancé',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get cstatRelaunchMessage => 'Message envoyé';
+
+  @override
+  String cstatRelaunchStats(int sent, String rate) {
+    String _temp0 = intl.Intl.pluralLogic(
+      sent,
+      locale: localeName,
+      other: '$sent relances envoyées',
+      one: '1 relance envoyée',
+    );
+    return '$_temp0 · $rate % ont repris la formation';
+  }
+
+  @override
+  String cstatLastActivity(String date) {
+    return 'Dernière activité : $date';
+  }
 }

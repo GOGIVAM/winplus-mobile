@@ -20,6 +20,7 @@ void main() {
       faux.repond('GET', '/messages/conversations', [
         {'id': 1, 'participantName': 'Mme Ngo', 'participantRole': 'teacher', 'lastMessage': 'A demain', 'unreadCount': 2, 'lastMessageAt': _ilYa(const Duration(minutes: 7))},
         {'id': 2, 'participantName': 'M. Eto', 'participantRole': 'parent', 'lastMessageAt': _ilYa(const Duration(days: 3))},
+        {'id': 3, 'participantName': 'Gael', 'participantRole': 'student', 'lastMessageAt': _ilYa(const Duration(days: 4))},
       ]);
       telephone(tester);
       await monter(tester, ecran(const MessagingScreen()));
@@ -31,6 +32,7 @@ void main() {
       expect(find.text('2'), findsOneWidget);
       expect(find.text(l.roleTeacher), findsOneWidget);
       expect(find.text(l.roleParent), findsOneWidget);
+      expect(find.text(l.roleStudent), findsOneWidget, reason: 'avant : « Utilisateur »');
       expect(find.text(l.msgMinutesAgo(7)), findsOneWidget);
       expect(find.text(l.msgDaysAgo(3)), findsOneWidget);
     });
@@ -63,12 +65,38 @@ void main() {
       expect(faux.recues('PUT', '/messages/conversations/1/read'), hasLength(1));
     });
 
-    testWidgets('actualiser relit les conversations', (tester) async {
+    testWidgets('onglet de la coque : pas de second titre ni de fleche de retour', (tester) async {
       faux.repond('GET', '/messages/conversations', []);
       await monterEcran(tester, const MessagingScreen());
+      expect(find.byIcon(PhosphorIconsRegular.arrowLeft), findsNothing);
+      expect(find.text(L10n.current.msgTitle), findsNothing);
+    });
+
+    testWidgets('ouverte par-dessus une page : titre, et actualiser relit les conversations', (tester) async {
+      faux.repond('GET', '/messages/conversations', []);
+      await monterEcran(
+          tester,
+          Builder(
+              builder: (c) => TextButton(
+                  onPressed: () => Navigator.push(c, MaterialPageRoute<void>(builder: (_) => const MessagingScreen())),
+                  child: const Text('ouvrir'))));
+      await tester.tap(find.text('ouvrir'));
+      await pomper(tester);
+      await pomper(tester, const Duration(milliseconds: 500));
+      await reseau(tester);
+      expect(find.text(L10n.current.msgTitle), findsOneWidget);
       await tester.tap(find.byIcon(PhosphorIconsRegular.arrowClockwise));
       await reseau(tester);
       expect(faux.recues('GET', '/messages/conversations'), hasLength(2));
+    });
+
+    testWidgets('nombre de non-lus partage avec la coque (badge de l\'onglet)', (tester) async {
+      faux.repond('GET', '/messages/conversations', [
+        {'id': 1, 'participantName': 'A', 'participantRole': 'student', 'unreadCount': 2},
+        {'id': 2, 'participantName': 'B', 'participantRole': 'parent', 'unreadCount': 3},
+      ]);
+      await monterEcran(tester, const MessagingScreen());
+      expect(MessagingService.instance.unreadTotal.value, 5);
     });
   });
 

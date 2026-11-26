@@ -235,8 +235,11 @@ class LessonStats {
   final int watchSec;
   final double? quizScore;
   final bool lowCompletion;
+
+  /// Inscrits actifs de la formation (même nombre pour chaque leçon).
+  final int enrolled;
   const LessonStats(this.lessonId, this.title, this.type, this.completionRate, this.completed, this.watchSec, this.quizScore,
-      this.lowCompletion);
+      this.lowCompletion, [this.enrolled = 0]);
 
   factory LessonStats.fromJson(Map j) => LessonStats(
         (j['lessonId'] as num?)?.toInt() ?? 0,
@@ -247,7 +250,34 @@ class LessonStats {
         (j['averageWatchTimeSec'] as num?)?.toInt() ?? 0,
         (j['averageQuizScore'] as num?)?.toDouble(),
         j['lowCompletionAlert'] == true,
+        (j['enrolledCount'] as num?)?.toInt() ?? 0,
       );
+}
+
+/// Inscrit sans activité dans la formation depuis le seuil choisi.
+class InactiveStudent {
+  final int userId;
+  final String name;
+  final String? avatarUrl;
+  final DateTime? lastActivity;
+  final int daysInactive;
+  const InactiveStudent(this.userId, this.name, this.avatarUrl, this.lastActivity, this.daysInactive);
+
+  factory InactiveStudent.fromJson(Map j) => InactiveStudent(
+        (j['userId'] as num?)?.toInt() ?? 0,
+        '${j['name'] ?? ''}',
+        j['avatarUrl'] as String?,
+        DateTime.tryParse('${j['lastActivity'] ?? ''}'),
+        (j['daysInactive'] as num?)?.toInt() ?? 0,
+      );
+}
+
+/// Relances envoyées et élèves qui ont repris la formation depuis.
+class RelaunchStats {
+  final int sent;
+  final int reactivated;
+  final double? rate;
+  const RelaunchStats(this.sent, this.reactivated, this.rate);
 }
 
 /// Semaine d'un syllabus proposé par WinAI.
@@ -578,6 +608,44 @@ class CourseEditorService {
         final res = await _api.dio.get('/teacher/courses/$courseId/analytics/lessons');
         final raw = res.data is Map ? (res.data as Map)['data'] : res.data;
         return (raw is List ? raw : const []).whereType<Map>().map(LessonStats.fromJson).toList();
+      });
+
+  /// Seuil d'inactivité de la formation (jours) ; 7, valeur du serveur,
+  /// tant que la fiche ne le renvoie pas.
+  Future<int> inactivityThreshold(int courseId) => _guard(() async {
+        final res = await _api.dio.get('/teacher/courses/$courseId');
+        final m = _map(res.data);
+        final d = m['data'] is Map ? m['data'] as Map : m;
+        return (d['inactivityThresholdDays'] as num?)?.toInt() ?? 7;
+      });
+
+  Future<int> setInactivityThreshold(int courseId, int days) => _guard(() async {
+        final res = await _api.dio.put('/teacher/courses/$courseId/inactivity-threshold', data: {'days': days});
+        return (_map(res.data)['inactivityThresholdDays'] as num?)?.toInt() ?? days;
+      });
+
+  /// Inscrits inactifs depuis le seuil, du plus ancien au plus récent.
+  Future<List<InactiveStudent>> inactiveStudents(int courseId) => _guard(() async {
+        final res = await _api.dio.get('/teacher/courses/$courseId/inactive-students');
+        final raw = res.data is Map ? (res.data as Map)['data'] : res.data;
+        return (raw is List ? raw : const []).whereType<Map>().map(InactiveStudent.fromJson).toList();
+      });
+
+  /// Relance par un message rédigé par WinAI (débité sur l'aide à la
+  /// publication ; message par défaut si WinAI n'est pas disponible),
+  /// envoyé dans la messagerie de chaque élève. [userIds] vide : tous les
+  /// inactifs. Renvoie le nombre d'élèves relancés et le message.
+  Future<(int, String)> relaunch(int courseId, List<int> userIds) => _guard(() async {
+        final res = await _api.dio.post('/teacher/courses/$courseId/relaunch-students', data: {'userIds': userIds});
+        final m = _map(res.data);
+        return ((m['sent'] as num?)?.toInt() ?? 0, '${m['message'] ?? ''}');
+      });
+
+  Future<RelaunchStats> relaunchStats(int courseId) => _guard(() async {
+        final res = await _api.dio.get('/teacher/courses/$courseId/relaunch-stats');
+        final m = _map(res.data);
+        return RelaunchStats((m['totalSent'] as num?)?.toInt() ?? 0, (m['reactivatedCount'] as num?)?.toInt() ?? 0,
+            (m['reactivationRate'] as num?)?.toDouble());
       });
 
   /// Soumet la formation à la validation de l'équipe (au moins une leçon

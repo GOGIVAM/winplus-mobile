@@ -2,6 +2,7 @@ import 'api_client.dart';
 import 'connectivity_service.dart';
 import 'content_refusal.dart';
 import 'outbox_service.dart';
+import 'package:flutter/foundation.dart';
 
 class ApiConversation {
   final int id;
@@ -116,12 +117,27 @@ class MessagingService {
 
   final _api = ApiClient.instance;
 
+  /// Messages non lus, toutes conversations : badge de l'onglet Messages
+  /// (lot 8 : il n'y en avait aucun, le nombre n'était visible qu'en
+  /// ouvrant l'onglet).
+  final ValueNotifier<int> unreadTotal = ValueNotifier<int>(0);
+
   Future<List<ApiConversation>> getConversations() async {
     final res = await _api.dio.get('/messages/conversations');
     final list = res.data as List? ?? [];
-    return list
+    final convos = list
         .map((e) => ApiConversation.fromJson(e as Map<String, dynamic>))
         .toList();
+    unreadTotal.value = convos.fold(0, (n, c) => n + c.unreadCount);
+    return convos;
+  }
+
+  /// Relit le nombre de non-lus (coque : ouverture, retour au premier plan,
+  /// évènement du flux) ; une panne garde le dernier nombre connu.
+  Future<void> refreshUnread() async {
+    try {
+      await getConversations();
+    } catch (_) {}
   }
 
   Future<List<ApiMessage>> getMessages(int conversationId) async {

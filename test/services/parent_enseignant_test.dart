@@ -314,6 +314,15 @@ void main() {
         {'id': 3},
       ]);
       expect(await TeacherService.instance.getSubmissions(), hasLength(2));
+      // Forme réelle du serveur (lot 8, Pixel) : { data: [...] }.
+      faux.repond('GET', '/teacher/corrections/pending', {
+        'data': [
+          {'id': 2},
+          {'id': 3},
+          {'id': 4},
+        ],
+      });
+      expect(await TeacherService.instance.getSubmissions(), hasLength(3));
     });
 
     test('correctSubmission poste la note vers /corrections/{id}', () async {

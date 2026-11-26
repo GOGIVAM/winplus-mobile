@@ -44,6 +44,19 @@ void main() {
     await tester.scrollUntilVisible(cible, 120, scrollable: bande.first);
   }
 
+  testWidgets('repetiteur deja actif : pas de carte « Activez le mode repetiteur »', (tester) async {
+    routes();
+    faux.repond('GET', '/tutor-profile/me', {'id': 1, 'userId': 50, 'isActive': true});
+    await monterHaut(tester);
+    expect(find.text(L10n.current.mobileHomeTeachTutorTitle), findsNothing);
+  });
+
+  testWidgets('pas encore repetiteur : la carte est proposee', (tester) async {
+    routes();
+    await monterHaut(tester);
+    expect(find.text(L10n.current.mobileHomeTeachTutorTitle), findsWidgets);
+  });
+
   testWidgets('chargement : « — » et indicateur des contenus avant les reponses', (tester) async {
     routes();
     telephone(tester);

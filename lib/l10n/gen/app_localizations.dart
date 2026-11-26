@@ -19686,7 +19686,7 @@ abstract class AppLocalizations {
   /// No description provided for @cstatEnabled.
   ///
   /// In fr, this message translates to:
-  /// **'Points et classement activés'**
+  /// **'Points et classement'**
   String get cstatEnabled;
 
   /// No description provided for @cstatPerLesson.
@@ -20054,6 +20054,222 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Certaines réponses seront corrigées par ton professeur : ce score est provisoire.'**
   String get studentQuizPendingReview;
+
+  /// No description provided for @teacherStudentsTabStudents.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mes élèves'**
+  String get teacherStudentsTabStudents;
+
+  /// No description provided for @teacherStudentsTabClasses.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mes classes'**
+  String get teacherStudentsTabClasses;
+
+  /// No description provided for @teacherStudentsSearch.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher un élève ou une classe'**
+  String get teacherStudentsSearch;
+
+  /// No description provided for @teacherStudentsCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =0{Aucun élève} =1{1 élève} other{{count} élèves}}'**
+  String teacherStudentsCount(int count);
+
+  /// No description provided for @teacherStudentsEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun élève pour l\'instant'**
+  String get teacherStudentsEmpty;
+
+  /// No description provided for @teacherStudentsEmptyHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajoutez des élèves à une classe, ou invitez-les par une liaison directe.'**
+  String get teacherStudentsEmptyHint;
+
+  /// No description provided for @teacherStudentsDirect.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lien direct'**
+  String get teacherStudentsDirect;
+
+  /// No description provided for @teacherStudentsAddToClass.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter à une classe'**
+  String get teacherStudentsAddToClass;
+
+  /// No description provided for @teacherStudentsAdded.
+  ///
+  /// In fr, this message translates to:
+  /// **'{name} ajouté à {klass}'**
+  String teacherStudentsAdded(String name, String klass);
+
+  /// No description provided for @teacherStudentsNoOtherClass.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cet élève est déjà dans toutes vos classes actives.'**
+  String get teacherStudentsNoOtherClass;
+
+  /// No description provided for @cstatTabLessons.
+  ///
+  /// In fr, this message translates to:
+  /// **'Leçons'**
+  String get cstatTabLessons;
+
+  /// No description provided for @cstatTabStudents.
+  ///
+  /// In fr, this message translates to:
+  /// **'Élèves'**
+  String get cstatTabStudents;
+
+  /// No description provided for @cstatTabPoints.
+  ///
+  /// In fr, this message translates to:
+  /// **'Points'**
+  String get cstatTabPoints;
+
+  /// No description provided for @cstatEnrolled.
+  ///
+  /// In fr, this message translates to:
+  /// **'Inscrits'**
+  String get cstatEnrolled;
+
+  /// No description provided for @cstatAvgCompletion.
+  ///
+  /// In fr, this message translates to:
+  /// **'Complétion moyenne'**
+  String get cstatAvgCompletion;
+
+  /// No description provided for @cstatAvgQuiz.
+  ///
+  /// In fr, this message translates to:
+  /// **'Score moyen des quiz'**
+  String get cstatAvgQuiz;
+
+  /// No description provided for @cstatToReview.
+  ///
+  /// In fr, this message translates to:
+  /// **'Leçons à revoir'**
+  String get cstatToReview;
+
+  /// No description provided for @cstatDropTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Là où les élèves décrochent'**
+  String get cstatDropTitle;
+
+  /// No description provided for @cstatDropText.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{1 élève de moins} other{{count} élèves de moins}} entre « {from} » et « {to} ».'**
+  String cstatDropText(int count, String from, String to);
+
+  /// No description provided for @cstatPath.
+  ///
+  /// In fr, this message translates to:
+  /// **'Parcours leçon par leçon'**
+  String get cstatPath;
+
+  /// No description provided for @cstatLessonOf.
+  ///
+  /// In fr, this message translates to:
+  /// **'{done} / {total} élèves'**
+  String cstatLessonOf(int done, int total);
+
+  /// No description provided for @cstatReviewBadge.
+  ///
+  /// In fr, this message translates to:
+  /// **'À revoir'**
+  String get cstatReviewBadge;
+
+  /// No description provided for @cstatInactiveTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Élèves inactifs'**
+  String get cstatInactiveTitle;
+
+  /// No description provided for @cstatInactiveHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Inscrits qui n\'ont rien fait dans la formation depuis le seuil choisi. WinAI peut leur écrire un message d\'encouragement.'**
+  String get cstatInactiveHint;
+
+  /// No description provided for @cstatThreshold.
+  ///
+  /// In fr, this message translates to:
+  /// **'Inactif depuis'**
+  String get cstatThreshold;
+
+  /// No description provided for @cstatDays.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n} j'**
+  String cstatDays(int n);
+
+  /// No description provided for @cstatInactiveDays.
+  ///
+  /// In fr, this message translates to:
+  /// **'{n, plural, =1{Inactif depuis 1 jour} other{Inactif depuis {n} jours}}'**
+  String cstatInactiveDays(int n);
+
+  /// No description provided for @cstatNoInactive.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun élève inactif depuis {n} jours.'**
+  String cstatNoInactive(int n);
+
+  /// No description provided for @cstatSelectAll.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tout sélectionner'**
+  String get cstatSelectAll;
+
+  /// No description provided for @cstatRelaunch.
+  ///
+  /// In fr, this message translates to:
+  /// **'Relancer avec WinAI ({count})'**
+  String cstatRelaunch(int count);
+
+  /// No description provided for @cstatRelaunchConfirmTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Relancer ces élèves ?'**
+  String get cstatRelaunchConfirmTitle;
+
+  /// No description provided for @cstatRelaunchConfirm.
+  ///
+  /// In fr, this message translates to:
+  /// **'WinAI rédige un message d\'encouragement, envoyé dans la messagerie de chaque élève sélectionné.'**
+  String get cstatRelaunchConfirm;
+
+  /// No description provided for @cstatRelaunched.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =0{Aucun élève relancé} =1{1 élève relancé} other{{count} élèves relancés}}'**
+  String cstatRelaunched(int count);
+
+  /// No description provided for @cstatRelaunchMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Message envoyé'**
+  String get cstatRelaunchMessage;
+
+  /// No description provided for @cstatRelaunchStats.
+  ///
+  /// In fr, this message translates to:
+  /// **'{sent, plural, =1{1 relance envoyée} other{{sent} relances envoyées}} · {rate} % ont repris la formation'**
+  String cstatRelaunchStats(int sent, String rate);
+
+  /// No description provided for @cstatLastActivity.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dernière activité : {date}'**
+  String cstatLastActivity(String date);
 }
 
 class _AppLocalizationsDelegate

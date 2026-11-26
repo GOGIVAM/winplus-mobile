@@ -27,6 +27,9 @@ import '../student/search_screen.dart';
 import '../widgets/mobile_home.dart';
 import '../widgets/win_screen.dart';
 import '../shared/winai/winai_screen.dart';
+import 'dart:async';
+import '../services/tutor_profile_service.dart';
+import 'teacher_students_view.dart';
 
 BadgeColor _statusColor(String s) => switch (s) {
       'Publié' => BadgeColor.success,
@@ -64,7 +67,15 @@ class _TeacherDashTabState extends State<TeacherDashTab> {
     _load();
   }
 
+  /// Profil de répétiteur déjà actif : la carte « Activez le mode
+  /// répétiteur » ne s'affiche plus (lot 8 : elle était proposée à un
+  /// répétiteur déjà en ligne).
+  bool _isTutor = false;
+
   Future<void> _load() async {
+    unawaited(TutorProfileService.instance.getMine().then((p) {
+      if (mounted && p.isActive != _isTutor) setState(() => _isTutor = p.isActive);
+    }).catchError((_) {}));
     try {
       final results = await Future.wait([
         TeacherService.instance.getMyContent(),
@@ -153,6 +164,7 @@ class _TeacherDashTabState extends State<TeacherDashTab> {
               cta: l.mobileHomePublishCta,
               onCta: _publish,
               image: 'assets/home/hero-repetiteur-eleve.webp'),
+        if (!_isTutor)
         MobileSlide(
             tag: l.mobileHomeTeachTutorTag,
             title: l.mobileHomeTeachTutorTitle,
@@ -517,6 +529,10 @@ class TeacherStudentsTab extends StatefulWidget {
 /// du module  GET /teacher/students/recent est une route sans rapport,
 /// non filtrée par professeur, qu'il aurait été trompeur de brancher ici).
 class _TeacherStudentsTabState extends State<TeacherStudentsTab> {
+  /// Deux sous-sections (demande de Georges, 26/11) : « Mes élèves » (tous
+  /// les élèves, chacun avec ses classes) et « Mes classes ». Avant, les
+  /// classes et les liens vers les élèves s'empilaient sur une seule page.
+  bool _studentsView = true;
   bool _showArchived = false;
   List<ApiTeacherClass>? _classes;
   String? _error;
@@ -652,12 +668,48 @@ class _TeacherStudentsTabState extends State<TeacherStudentsTab> {
     }
   }
 
+  /// Liaisons directes et réservations : sous « Mes élèves ».
+  List<Widget> _studentLinks() => [
+        WinButton(context.l10n.teacherClassesMyLinks,
+            variant: WinButtonVariant.outline,
+            block: true,
+            icon: PhosphorIconsRegular.link,
+            onTap: () => Navigator.push(context, WinPageRoute(builder: (_) => const TeacherLinksScreen()))),
+        const SizedBox(height: 10),
+        WinButton(context.l10n.teacherClassesMyBookings,
+            variant: WinButtonVariant.outline,
+            block: true,
+            icon: PhosphorIconsRegular.calendarCheck,
+            onTap: () => Navigator.push(context, WinPageRoute(builder: (_) => const TutorBookingsScreen()))),
+        const SizedBox(height: 10),
+        WinButton(context.l10n.teacherProfileTitle,
+            variant: WinButtonVariant.ghost,
+            block: true,
+            icon: PhosphorIconsRegular.graduationCap,
+            onTap: () => Navigator.push(context, WinPageRoute(builder: (_) => const TutorProfileScreen()))),
+      ];
+
   @override
   Widget build(BuildContext context) {
+    final l = context.l10n;
+    return Column(children: [
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+        child: Row(children: [
+          Expanded(child: WinChip(l.teacherStudentsTabStudents, active: _studentsView, onTap: () => setState(() => _studentsView = true))),
+          const SizedBox(width: 8),
+          Expanded(child: WinChip(l.teacherStudentsTabClasses, active: !_studentsView, onTap: () => setState(() => _studentsView = false))),
+        ]),
+      ),
+      Expanded(child: _studentsView ? TeacherStudentsView(footer: _studentLinks()) : _classesList()),
+    ]);
+  }
+
+  Widget _classesList() {
     final s = WinTheme.of(context);
 
     return ListView(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
       children: [
         Row(children: [
           Expanded(child: Text(context.l10n.teacherClassesTitle, style: WinType.archivo(size: 18, color: s.onStrong))),
@@ -740,24 +792,6 @@ class _TeacherStudentsTabState extends State<TeacherStudentsTab> {
               )),
         WinButton(context.l10n.teacherClassesCreate,
             variant: WinButtonVariant.outline, block: true, icon: PhosphorIconsRegular.plus, onTap: _showCreateClassSheet),
-        const SizedBox(height: 10),
-        WinButton(context.l10n.teacherClassesMyLinks,
-            variant: WinButtonVariant.outline,
-            block: true,
-            icon: PhosphorIconsRegular.link,
-            onTap: () => Navigator.push(context, WinPageRoute(builder: (_) => const TeacherLinksScreen()))),
-        const SizedBox(height: 10),
-        WinButton(context.l10n.teacherProfileTitle,
-            variant: WinButtonVariant.outline,
-            block: true,
-            icon: PhosphorIconsRegular.graduationCap,
-            onTap: () => Navigator.push(context, WinPageRoute(builder: (_) => const TutorProfileScreen()))),
-        const SizedBox(height: 10),
-        WinButton(context.l10n.teacherClassesMyBookings,
-            variant: WinButtonVariant.outline,
-            block: true,
-            icon: PhosphorIconsRegular.calendarCheck,
-            onTap: () => Navigator.push(context, WinPageRoute(builder: (_) => const TutorBookingsScreen()))),
       ],
     );
   }

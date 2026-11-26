@@ -51,6 +51,7 @@ import '../teacher/correction_queue_screen.dart';
 import '../shared/shop/cart_screen.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../widgets/win_logo.dart';
+import '../services/messaging_service.dart';
 
 class NavItem {
   final String label;
@@ -128,7 +129,12 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
 
   /// Compteur serveur (toutes pages), partagé avec le profil et l'écran
   /// Notifications via UserService.unreadNotifications.
-  Future<void> _loadUnread() => UserService.instance.refreshUnreadCount();
+  Future<void> _loadUnread() async {
+    await Future.wait([
+      UserService.instance.refreshUnreadCount(),
+      MessagingService.instance.refreshUnread(),
+    ]);
+  }
 
   /// Sens du dernier changement d'onglet : 1 vers la droite, -1 vers la gauche.
   double _direction = 1;
@@ -305,6 +311,8 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
         tabs: tabs,
         index: safeIndex,
         onTap: _goTab,
+        // Onglet Messages : avant-dernier pour tous les rôles.
+        messagesIndex: tabs.length - 2,
       ),
     );
   }
@@ -620,12 +628,40 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
       };
 }
 
+/// Pastille du nombre de messages non lus sur l'icône de l'onglet Messages.
+Widget _withUnread(bool messages, Widget icon) {
+  if (!messages) return icon;
+  return ValueListenableBuilder<int>(
+    valueListenable: MessagingService.instance.unreadTotal,
+    builder: (_, count, __) => count <= 0
+        ? icon
+        : Stack(clipBehavior: Clip.none, children: [
+            icon,
+            Positioned(
+              right: -8,
+              top: -4,
+              child: Container(
+                constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                decoration: BoxDecoration(color: WinColors.error, borderRadius: BorderRadius.circular(8)),
+                child: Center(
+                  widthFactor: 1,
+                  child: Text(count > 99 ? '99+' : '$count',
+                      style: const TextStyle(fontSize: 9, color: Colors.white, fontWeight: FontWeight.bold)),
+                ),
+              ),
+            ),
+          ]),
+  );
+}
+
 class _BottomNav extends StatelessWidget {
   final List<NavItem> tabs;
   final int index;
   final ValueChanged<int> onTap;
+  final int messagesIndex;
   const _BottomNav(
-      {required this.tabs, required this.index, required this.onTap});
+      {required this.tabs, required this.index, required this.onTap, required this.messagesIndex});
 
   @override
   Widget build(BuildContext context) {
@@ -647,8 +683,10 @@ class _BottomNav extends StatelessWidget {
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(on ? t.activeIcon : t.icon,
-                            size: 24, color: on ? s.primary : s.onFaint),
+                        _withUnread(
+                            i == messagesIndex,
+                            Icon(on ? t.activeIcon : t.icon,
+                                size: 24, color: on ? s.primary : s.onFaint)),
                         const SizedBox(height: 3),
                         Text(t.label,
                             maxLines: 1,

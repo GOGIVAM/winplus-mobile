@@ -51,6 +51,8 @@ class _MessagingScreenState extends State<MessagingScreen> {
   }
 
   String _roleLabel(String role) => switch (role) {
+        // Lot 8 : un élève s'affichait « Utilisateur ».
+        'student' => context.l10n.roleStudent,
         'teacher' => context.l10n.roleTeacher,
         'parent' => context.l10n.roleParent,
         'institution' => context.l10n.roleInstitution,
@@ -70,9 +72,15 @@ class _MessagingScreenState extends State<MessagingScreen> {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
+    // Onglet de la barre du bas : la coque porte déjà le titre « Messages » ;
+    // un second titre avec une flèche de retour sans effet s'y ajoutait.
+    // Ouverte par-dessus une page (établissement), la barre reste.
+    final inTab = !(ModalRoute.of(context)?.canPop ?? false);
     return Scaffold(
       backgroundColor: s.bg,
-      appBar: AppBar(
+      appBar: inTab
+          ? null
+          : AppBar(
         backgroundColor: s.bg,
         elevation: 0,
         leading: IconButton(
@@ -99,7 +107,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
                   icon: PhosphorIconsRegular.chatCircle,
                   title: context.l10n.msgEmpty,
                   message: context.l10n.msgEmptyHint)
-              : ListView.separated(
+              : RefreshIndicator(onRefresh: _load, child: ListView.separated(
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                   itemCount: _convos!.length,
                   separatorBuilder: (_, __) =>
@@ -159,7 +167,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
                           .then((_) => _load()),
                     );
                   },
-                ),
+                )),
     );
   }
 }
