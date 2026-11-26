@@ -11537,4 +11537,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String predEffort(String value) {
     return 'effort $value';
   }
+
+  @override
+  String reviewsTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Student reviews ($count)',
+      one: 'Student review',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reviewsStudent => 'Student';
+
+  @override
+  String get reviewsTutorReply => 'Tutor\'s reply';
+
+  @override
+  String reviewsSeeAll(int count) {
+    return 'See all $count reviews';
+  }
 }

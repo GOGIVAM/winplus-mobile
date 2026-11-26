@@ -19598,6 +19598,30 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'effort {value}'**
   String predEffort(String value);
+
+  /// No description provided for @reviewsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{Avis d’élève} other{Avis des élèves ({count})}}'**
+  String reviewsTitle(int count);
+
+  /// No description provided for @reviewsStudent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Élève'**
+  String get reviewsStudent;
+
+  /// No description provided for @reviewsTutorReply.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réponse du tuteur'**
+  String get reviewsTutorReply;
+
+  /// No description provided for @reviewsSeeAll.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir les {count} avis'**
+  String reviewsSeeAll(int count);
 }
 
 class _AppLocalizationsDelegate

@@ -3383,5 +3383,11 @@
   "predImpact": "impact {value}",
   "@predImpact": {"placeholders": {"value": {"type": "String"}}},
   "predEffort": "effort {value}",
-  "@predEffort": {"placeholders": {"value": {"type": "String"}}}
+  "@predEffort": {"placeholders": {"value": {"type": "String"}}},
+  "reviewsTitle": "{count, plural, =1{Student review} other{Student reviews ({count})}}",
+  "@reviewsTitle": {"placeholders": {"count": {"type": "int"}}},
+  "reviewsStudent": "Student",
+  "reviewsTutorReply": "Tutor's reply",
+  "reviewsSeeAll": "See all {count} reviews",
+  "@reviewsSeeAll": {"placeholders": {"count": {"type": "int"}}}
 }

@@ -181,6 +181,8 @@ void main() {
       expect(find.text(l.tutoringIntroVideo), findsOneWidget);
       expect(find.text('https://exemple.test/v'), findsOneWidget);
       await tester.scrollUntilVisible(find.text('Physique'), 300, scrollable: find.byType(Scrollable).first);
+      // Les avis, construits en bas de la liste, se chargent au défilement.
+      await reseau(tester);
       expect(find.text('Mathematiques'), findsOneWidget);
       expect(find.text('Terminale'), findsOneWidget);
     });

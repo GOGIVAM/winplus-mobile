@@ -6265,5 +6265,11 @@
   "predImpact": "impact {value}",
   "@predImpact": {"placeholders": {"value": {"type": "String"}}},
   "predEffort": "effort {value}",
-  "@predEffort": {"placeholders": {"value": {"type": "String"}}}
+  "@predEffort": {"placeholders": {"value": {"type": "String"}}},
+  "reviewsTitle": "{count, plural, =1{Avis d’élève} other{Avis des élèves ({count})}}",
+  "@reviewsTitle": {"placeholders": {"count": {"type": "int"}}},
+  "reviewsStudent": "Élève",
+  "reviewsTutorReply": "Réponse du tuteur",
+  "reviewsSeeAll": "Voir les {count} avis",
+  "@reviewsSeeAll": {"placeholders": {"count": {"type": "int"}}}
 }

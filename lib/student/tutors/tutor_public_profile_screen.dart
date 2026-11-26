@@ -1,5 +1,6 @@
 import '../../l10n/class_levels.dart';
 import 'package:flutter/material.dart';
+import 'tutor_reviews_section.dart';
 import '../../l10n/l10n.dart';
 import '../../theme/win_motion.dart';
 import '../../services/tutor_booking_service.dart';
@@ -291,6 +292,8 @@ class _TutorPublicProfileScreenState extends State<TutorPublicProfileScreen> {
                         .toList()),
           ]),
         ),
+        // Lot 6 : les avis eux-mêmes, plus seulement la note.
+        TutorReviewsSection(tutorUserId: widget.userId),
         const SizedBox(height: 100), // laisse la place au bouton sticky
       ],
     );
