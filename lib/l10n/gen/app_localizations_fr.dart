@@ -11812,4 +11812,110 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get authWelcomeSlide6Subtitle =>
       'Classes, devoirs, bulletins, emplois du temps et examens blancs : repérez tôt les élèves en difficulté.';
+
+  @override
+  String get winaiStudioExam => 'Composer une épreuve';
+
+  @override
+  String get winaiToolExam => 'Épreuve complète avec corrigé';
+
+  @override
+  String get winaiExamsTitle => 'Mes épreuves';
+
+  @override
+  String get winaiExamsEmpty => 'Aucune épreuve pour le moment';
+
+  @override
+  String get winaiExamsEmptyHint =>
+      'Composez une épreuve depuis l\'atelier : vous la retrouverez ici.';
+
+  @override
+  String get winaiExamEmpty => 'Cette épreuve n\'a pas de contenu à afficher';
+
+  @override
+  String get winaiExamSubjectHint => 'Ex. : Mathématiques';
+
+  @override
+  String get winaiExamSubjectRequired => 'Indiquez la matière.';
+
+  @override
+  String get winaiExamClass => 'Classe';
+
+  @override
+  String get winaiExamClassHint => 'Ex. : 3e, Tle C';
+
+  @override
+  String get winaiExamType => 'Type d\'épreuve';
+
+  @override
+  String get winaiExamTypeTest => 'Interrogation';
+
+  @override
+  String get winaiExamTypeAssignment => 'Devoir';
+
+  @override
+  String get winaiExamTypeTerm => 'Composition';
+
+  @override
+  String get winaiExamTypeMock => 'Examen blanc';
+
+  @override
+  String get winaiExamDuration => 'Durée';
+
+  @override
+  String get winaiExamTotal => 'Barème (points)';
+
+  @override
+  String get winaiExamExercises => 'Nombre d\'exercices';
+
+  @override
+  String get winaiExamWait =>
+      'La génération prend 30 à 50 secondes et compte dans votre budget WinAI.';
+
+  @override
+  String get winaiExamBusy =>
+      'WinAI compose l\'épreuve : comptez 30 à 50 secondes, gardez cet écran ouvert…';
+
+  @override
+  String winaiExamMinutes(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String winaiExamOutOf(String points) {
+    return 'sur $points';
+  }
+
+  @override
+  String winaiExamPointsShort(String points) {
+    return '$points pt';
+  }
+
+  @override
+  String winaiExamExercise(int number) {
+    return 'Exercice $number';
+  }
+
+  @override
+  String get winaiExamShowAnswers => 'Afficher le corrigé et le barème';
+
+  @override
+  String get winaiExamHideAnswers => 'Masquer le corrigé';
+
+  @override
+  String get winaiExamAnswer => 'Corrigé';
+
+  @override
+  String get winaiExamScoring => 'Barème';
+
+  @override
+  String get studentQuizPendingTitle => 'Résultat en attente';
+
+  @override
+  String get studentQuizPendingText =>
+      'Tes réponses sont gardées et partiront dès le retour du réseau. Ton score s\'affichera alors dans ton suivi.';
+
+  @override
+  String get studentQuizPendingReview =>
+      'Certaines réponses seront corrigées par ton professeur : ce score est provisoire.';
 }

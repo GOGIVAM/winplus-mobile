@@ -31,6 +31,7 @@ import '../../services/winai_studio_service.dart';
 import '../../student/quiz_screen.dart';
 import 'winai_creations.dart';
 import 'winai_tools.dart';
+import 'winai_exam.dart';
 import '../../services/institution_service.dart';
 import '../../services/parent_service.dart';
 import '../../services/winai_productions_service.dart';
@@ -595,6 +596,10 @@ class _Studio extends StatefulWidget {
 class _StudioState extends State<_Studio> {
   bool _busy = false;
 
+  /// Génération longue en cours (épreuve complète) : message d'attente
+  /// explicite au lieu du bandeau habituel.
+  bool _slow = false;
+
   void _open(Widget page) =>
       Navigator.push(context, WinPageRoute(builder: (_) => page));
 
@@ -735,6 +740,39 @@ class _StudioState extends State<_Studio> {
       }
     } finally {
       if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  /// Épreuve complète du professeur : réglages, génération (30 à 50
+  /// secondes), puis le sujet avec son corrigé et son barème.
+  Future<void> _exam() async {
+    final l = context.l10n;
+    final req = await showWinBottomSheet<WinAIExamRequest>(
+        context: context,
+        title: l.winaiToolExam,
+        child: const WinAIExamSettings());
+    if (req == null || !mounted) return;
+    setState(() {
+      _busy = true;
+      _slow = true;
+    });
+    try {
+      final exam = await WinAiProductionsService.instance
+          .generateExam(req, sources: widget.sources);
+      if (mounted) _open(WinAIExamScreen(exam: exam));
+    } on WinAiStudioException catch (e) {
+      if (WinAiProductionsService.routeMissing(e)) {
+        _toast(l.winaiToolUnavailable);
+      } else {
+        _refused(e);
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _busy = false;
+          _slow = false;
+        });
+      }
     }
   }
 
@@ -905,6 +943,18 @@ class _StudioState extends State<_Studio> {
           title(l.winaiStudioAssess),
           MoreGroup(children: [quiz, _line(exercises), _line(rubric)]),
           const SizedBox(height: 18),
+          title(l.winaiStudioExam),
+          MoreGroup(children: [
+            MoreLine(
+                icon: PhosphorIconsRegular.exam,
+                label: l.winaiToolExam,
+                onTap: _busy ? null : _exam),
+            MoreLine(
+                icon: PhosphorIconsRegular.folderOpen,
+                label: l.winaiExamsTitle,
+                onTap: () => _open(const WinAIExamsScreen())),
+          ]),
+          const SizedBox(height: 18),
           title(l.winaiStudioFollow),
           MoreGroup(children: [
             MoreLine(
@@ -997,7 +1047,8 @@ class _StudioState extends State<_Studio> {
           child: Align(
               alignment: Alignment.centerLeft,
               child:
-                  Text(l.winaiStudioBusy, style: WinType.bodyS(s.onMuted))),
+                  Text(_slow ? l.winaiExamBusy : l.winaiStudioBusy,
+                      style: WinType.bodyS(s.onMuted))),
         ),
       ],
       Expanded(

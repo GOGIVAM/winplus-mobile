@@ -19868,6 +19868,192 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Classes, devoirs, bulletins, emplois du temps et examens blancs : repérez tôt les élèves en difficulté.'**
   String get authWelcomeSlide6Subtitle;
+
+  /// No description provided for @winaiStudioExam.
+  ///
+  /// In fr, this message translates to:
+  /// **'Composer une épreuve'**
+  String get winaiStudioExam;
+
+  /// No description provided for @winaiToolExam.
+  ///
+  /// In fr, this message translates to:
+  /// **'Épreuve complète avec corrigé'**
+  String get winaiToolExam;
+
+  /// No description provided for @winaiExamsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mes épreuves'**
+  String get winaiExamsTitle;
+
+  /// No description provided for @winaiExamsEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune épreuve pour le moment'**
+  String get winaiExamsEmpty;
+
+  /// No description provided for @winaiExamsEmptyHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Composez une épreuve depuis l\'atelier : vous la retrouverez ici.'**
+  String get winaiExamsEmptyHint;
+
+  /// No description provided for @winaiExamEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette épreuve n\'a pas de contenu à afficher'**
+  String get winaiExamEmpty;
+
+  /// No description provided for @winaiExamSubjectHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex. : Mathématiques'**
+  String get winaiExamSubjectHint;
+
+  /// No description provided for @winaiExamSubjectRequired.
+  ///
+  /// In fr, this message translates to:
+  /// **'Indiquez la matière.'**
+  String get winaiExamSubjectRequired;
+
+  /// No description provided for @winaiExamClass.
+  ///
+  /// In fr, this message translates to:
+  /// **'Classe'**
+  String get winaiExamClass;
+
+  /// No description provided for @winaiExamClassHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex. : 3e, Tle C'**
+  String get winaiExamClassHint;
+
+  /// No description provided for @winaiExamType.
+  ///
+  /// In fr, this message translates to:
+  /// **'Type d\'épreuve'**
+  String get winaiExamType;
+
+  /// No description provided for @winaiExamTypeTest.
+  ///
+  /// In fr, this message translates to:
+  /// **'Interrogation'**
+  String get winaiExamTypeTest;
+
+  /// No description provided for @winaiExamTypeAssignment.
+  ///
+  /// In fr, this message translates to:
+  /// **'Devoir'**
+  String get winaiExamTypeAssignment;
+
+  /// No description provided for @winaiExamTypeTerm.
+  ///
+  /// In fr, this message translates to:
+  /// **'Composition'**
+  String get winaiExamTypeTerm;
+
+  /// No description provided for @winaiExamTypeMock.
+  ///
+  /// In fr, this message translates to:
+  /// **'Examen blanc'**
+  String get winaiExamTypeMock;
+
+  /// No description provided for @winaiExamDuration.
+  ///
+  /// In fr, this message translates to:
+  /// **'Durée'**
+  String get winaiExamDuration;
+
+  /// No description provided for @winaiExamTotal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Barème (points)'**
+  String get winaiExamTotal;
+
+  /// No description provided for @winaiExamExercises.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nombre d\'exercices'**
+  String get winaiExamExercises;
+
+  /// No description provided for @winaiExamWait.
+  ///
+  /// In fr, this message translates to:
+  /// **'La génération prend 30 à 50 secondes et compte dans votre budget WinAI.'**
+  String get winaiExamWait;
+
+  /// No description provided for @winaiExamBusy.
+  ///
+  /// In fr, this message translates to:
+  /// **'WinAI compose l\'épreuve : comptez 30 à 50 secondes, gardez cet écran ouvert…'**
+  String get winaiExamBusy;
+
+  /// No description provided for @winaiExamMinutes.
+  ///
+  /// In fr, this message translates to:
+  /// **'{minutes} min'**
+  String winaiExamMinutes(int minutes);
+
+  /// No description provided for @winaiExamOutOf.
+  ///
+  /// In fr, this message translates to:
+  /// **'sur {points}'**
+  String winaiExamOutOf(String points);
+
+  /// No description provided for @winaiExamPointsShort.
+  ///
+  /// In fr, this message translates to:
+  /// **'{points} pt'**
+  String winaiExamPointsShort(String points);
+
+  /// No description provided for @winaiExamExercise.
+  ///
+  /// In fr, this message translates to:
+  /// **'Exercice {number}'**
+  String winaiExamExercise(int number);
+
+  /// No description provided for @winaiExamShowAnswers.
+  ///
+  /// In fr, this message translates to:
+  /// **'Afficher le corrigé et le barème'**
+  String get winaiExamShowAnswers;
+
+  /// No description provided for @winaiExamHideAnswers.
+  ///
+  /// In fr, this message translates to:
+  /// **'Masquer le corrigé'**
+  String get winaiExamHideAnswers;
+
+  /// No description provided for @winaiExamAnswer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Corrigé'**
+  String get winaiExamAnswer;
+
+  /// No description provided for @winaiExamScoring.
+  ///
+  /// In fr, this message translates to:
+  /// **'Barème'**
+  String get winaiExamScoring;
+
+  /// No description provided for @studentQuizPendingTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Résultat en attente'**
+  String get studentQuizPendingTitle;
+
+  /// No description provided for @studentQuizPendingText.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tes réponses sont gardées et partiront dès le retour du réseau. Ton score s\'affichera alors dans ton suivi.'**
+  String get studentQuizPendingText;
+
+  /// No description provided for @studentQuizPendingReview.
+  ///
+  /// In fr, this message translates to:
+  /// **'Certaines réponses seront corrigées par ton professeur : ce score est provisoire.'**
+  String get studentQuizPendingReview;
 }
 
 class _AppLocalizationsDelegate

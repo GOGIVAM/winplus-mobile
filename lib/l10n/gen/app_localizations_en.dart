@@ -11718,4 +11718,110 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get authWelcomeSlide6Subtitle =>
       'Classes, homework, report cards, timetables and mock exams: spot struggling students early.';
+
+  @override
+  String get winaiStudioExam => 'Write an exam paper';
+
+  @override
+  String get winaiToolExam => 'Full paper with answers';
+
+  @override
+  String get winaiExamsTitle => 'My exam papers';
+
+  @override
+  String get winaiExamsEmpty => 'No exam paper yet';
+
+  @override
+  String get winaiExamsEmptyHint =>
+      'Write a paper from the studio: you will find it here.';
+
+  @override
+  String get winaiExamEmpty => 'This paper has no content to show';
+
+  @override
+  String get winaiExamSubjectHint => 'E.g. Mathematics';
+
+  @override
+  String get winaiExamSubjectRequired => 'Enter the subject.';
+
+  @override
+  String get winaiExamClass => 'Class';
+
+  @override
+  String get winaiExamClassHint => 'E.g. Form 4, Upper Sixth';
+
+  @override
+  String get winaiExamType => 'Type of paper';
+
+  @override
+  String get winaiExamTypeTest => 'Test';
+
+  @override
+  String get winaiExamTypeAssignment => 'Assignment';
+
+  @override
+  String get winaiExamTypeTerm => 'Term exam';
+
+  @override
+  String get winaiExamTypeMock => 'Mock exam';
+
+  @override
+  String get winaiExamDuration => 'Duration';
+
+  @override
+  String get winaiExamTotal => 'Total marks';
+
+  @override
+  String get winaiExamExercises => 'Number of exercises';
+
+  @override
+  String get winaiExamWait =>
+      'Generation takes 30 to 50 seconds and counts against your WinAI budget.';
+
+  @override
+  String get winaiExamBusy =>
+      'WinAI is writing the paper: allow 30 to 50 seconds and keep this screen open…';
+
+  @override
+  String winaiExamMinutes(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String winaiExamOutOf(String points) {
+    return 'out of $points';
+  }
+
+  @override
+  String winaiExamPointsShort(String points) {
+    return '$points pt';
+  }
+
+  @override
+  String winaiExamExercise(int number) {
+    return 'Exercise $number';
+  }
+
+  @override
+  String get winaiExamShowAnswers => 'Show answers and marking scheme';
+
+  @override
+  String get winaiExamHideAnswers => 'Hide answers';
+
+  @override
+  String get winaiExamAnswer => 'Answer';
+
+  @override
+  String get winaiExamScoring => 'Marking scheme';
+
+  @override
+  String get studentQuizPendingTitle => 'Result pending';
+
+  @override
+  String get studentQuizPendingText =>
+      'Your answers are saved and will be sent as soon as you\'re back online. Your score will then appear in your progress.';
+
+  @override
+  String get studentQuizPendingReview =>
+      'Some answers will be marked by your teacher: this score is provisional.';
 }

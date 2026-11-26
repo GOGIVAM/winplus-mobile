@@ -1,3 +1,5 @@
+import 'package:dio/dio.dart';
+
 import 'api_client.dart';
 import 'connectivity_service.dart';
 import 'winai_sources_service.dart';
@@ -68,13 +70,107 @@ class WinAISynthesis {
   const WinAISynthesis({required this.title, required this.text});
 }
 
+/// Demande d'une épreuve complète (réglages du professeur).
+typedef WinAIExamRequest = ({
+  String subject,
+  String topic,
+  String level,
+  String examType,
+  int durationMinutes,
+  int totalPoints,
+  int exercises,
+});
+
+class WinAIExamQuestion {
+  final String number, statement, answer, scoringGuide;
+  final double points;
+  const WinAIExamQuestion({
+    required this.number,
+    required this.statement,
+    required this.points,
+    this.answer = '',
+    this.scoringGuide = '',
+  });
+}
+
+class WinAIExamExercise {
+  final String title, context;
+  final double points;
+  final List<WinAIExamQuestion> questions;
+  const WinAIExamExercise({
+    required this.title,
+    required this.points,
+    this.context = '',
+    this.questions = const [],
+  });
+}
+
+/// Épreuve composée par WinAI pour un professeur : sujet, barème, corrigé.
+/// Une liste ne porte pas les exercices.
+class WinAIExam {
+  final int id;
+  final String title, subject, topic, level, examType, instructions;
+  final int durationMinutes;
+  final double totalPoints;
+  final List<WinAIExamExercise> exercises;
+
+  const WinAIExam({
+    required this.id,
+    required this.title,
+    this.subject = '',
+    this.topic = '',
+    this.level = '',
+    this.examType = '',
+    this.instructions = '',
+    this.durationMinutes = 0,
+    this.totalPoints = 0,
+    this.exercises = const [],
+  });
+
+  factory WinAIExam.fromJson(Map<String, dynamic> j) {
+    String str(Object? v) => v is String ? v.trim() : (v is num ? '$v' : '');
+    double dbl(Object? v) => v is num ? v.toDouble() : 0;
+    return WinAIExam(
+      id: (j['id'] as num?)?.toInt() ?? 0,
+      title: str(j['title']),
+      subject: str(j['subject']),
+      topic: str(j['topic']),
+      level: str(j['level']),
+      examType: str(j['examType']),
+      instructions: str(j['instructions']),
+      durationMinutes: (j['durationMinutes'] as num?)?.toInt() ?? 0,
+      totalPoints: dbl(j['totalPoints']),
+      exercises: [
+        for (final e in (j['exercises'] as List? ?? const []).whereType<Map>())
+          WinAIExamExercise(
+            title: str(e['title']),
+            context: str(e['context']),
+            points: dbl(e['points']),
+            questions: [
+              for (final q
+                  in (e['questions'] as List? ?? const []).whereType<Map>())
+                WinAIExamQuestion(
+                  number: str(q['number']),
+                  statement: str(q['statement']),
+                  points: dbl(q['points']),
+                  answer: str(q['answer']),
+                  scoringGuide: str(q['scoringGuide']),
+                ),
+            ],
+          ),
+      ],
+    );
+  }
+}
+
 /// Productions de l'atelier WinAI gardées par le serveur.
 ///
 ///  - fiches recto verso : POST/GET/DELETE /winai/flashcards ;
 ///  - résumé à écouter : POST/GET/DELETE /winai/resume-audio (un texte parlé,
 ///    lu par la voix du téléphone : aucun fichier audio) ;
 ///  - bilan de la semaine : POST /parent/children/{id}/bilan-semaine ;
-///  - synthèse de classe : POST /institution/groups/{id}/synthese.
+///  - synthèse de classe : POST /institution/groups/{id}/synthese ;
+///  - épreuve complète du professeur : POST/GET/DELETE /teacher/epreuves.
 ///
 /// Les refus sont levés en [WinAiStudioException] avec la phrase du serveur.
 class WinAiProductionsService {
@@ -181,6 +277,39 @@ class WinAiProductionsService {
     String str(Object? v) => v is String ? v.trim() : '';
     return WinAISynthesis(title: str(d['title']), text: str(d['text']));
   }
+
+  /// Épreuve complète : sujet, barème et corrigé. La génération dure 30 à
+  /// 50 secondes, d'où le délai de réponse allongé pour cet appel.
+  Future<WinAIExam> generateExam(WinAIExamRequest r,
+          {List<WinAISourceRef> sources = const []}) =>
+      _guard(() async {
+        final res = await _api.dio.post('/teacher/epreuves',
+            data: {
+              ..._request(r.subject, r.topic, sources),
+              if (r.level.isNotEmpty) 'level': r.level,
+              'examType': r.examType,
+              'durationMinutes': r.durationMinutes,
+              'totalPoints': r.totalPoints,
+              'exercises': r.exercises,
+            },
+            options: Options(receiveTimeout: const Duration(seconds: 120)));
+        return WinAIExam.fromJson(_data(res.data));
+      });
+
+  Future<List<WinAIExam>> exams() => _guard(() async {
+        final body = (await _api.dio.get('/teacher/epreuves')).data;
+        final raw = body is Map ? (body['data'] ?? body['items']) : body;
+        return [
+          for (final e in (raw is List ? raw : const []).whereType<Map>())
+            WinAIExam.fromJson(Map<String, dynamic>.from(e)),
+        ];
+      });
+
+  Future<WinAIExam> exam(int id) => _guard(() async => WinAIExam.fromJson(
+      _data((await _api.dio.get('/teacher/epreuves/$id')).data)));
+
+  Future<void> deleteExam(int id) =>
+      _guard(() async => _api.dio.delete('/teacher/epreuves/$id'));
 
   /// Bilan de la semaine d'un enfant, pour son parent.
   Future<WinAISynthesis> childWeekReport(int childId) => _guard(() async =>
