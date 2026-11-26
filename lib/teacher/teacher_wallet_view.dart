@@ -448,7 +448,7 @@ class _TeacherWalletViewState extends State<TeacherWalletView>
             width: 36,
             height: 36,
             decoration: BoxDecoration(
-                color: credit ? WinColors.successBg : s.surface2, shape: BoxShape.circle),
+                color: credit ? winTone(s, BadgeColor.success).bg : s.surface2, shape: BoxShape.circle),
             child: Icon(credit ? PhosphorIconsRegular.trendUp : PhosphorIconsRegular.wallet,
                 size: 16, color: credit ? WinColors.success : s.onMuted)),
         const SizedBox(width: 12),

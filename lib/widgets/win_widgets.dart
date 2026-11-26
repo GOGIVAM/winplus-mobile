@@ -371,7 +371,8 @@ class WinAvatar extends StatelessWidget {
           style: WinType.manrope(
               size: size * 0.36,
               weight: FontWeight.w600,
-              color: WinColors.teal700)),
+              // En sombre, le disque est fonce : initiales eclaircies.
+              color: s.dark ? WinColors.teal300 : WinColors.teal700)),
     );
     if (progress == null) return inner;
     return SizedBox(

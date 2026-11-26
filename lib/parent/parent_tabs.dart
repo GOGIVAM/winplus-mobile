@@ -396,7 +396,7 @@ class ChildCard extends StatelessWidget {
       onTap: () => Navigator.push(context,
           WinPageRoute(builder: (_) => ChildActivityScreen(child: child))),
       child: Row(children: [
-        WinAvatar(child.fullName, size: 48, color: WinColors.blue100),
+        WinAvatar(child.fullName, size: 48, color: winTone(s, BadgeColor.blue).bg),
         const SizedBox(width: 14),
         Expanded(
             child:
@@ -480,7 +480,7 @@ class _TrackedChildCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(WinRadii.lg),
             border: Border.all(color: s.outline)),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          WinAvatar(child.name, size: 44, color: WinColors.blue100),
+          WinAvatar(child.name, size: 44, color: winTone(s, BadgeColor.blue).bg),
           const SizedBox(height: 8),
           Text(firstName,
               maxLines: 1,
@@ -1081,7 +1081,7 @@ class _ParentProfileTabState extends State<ParentProfileTab> {
         Center(
           child: Column(children: [
             WinAvatar(name.isEmpty ? 'Parent' : name,
-                size: 80, color: WinColors.blue100),
+                size: 80, color: winTone(s, BadgeColor.blue).bg),
             const SizedBox(height: 12),
             Text(name.isEmpty ? (_loaded ? context.l10n.parentProfileMyAccount : '…') : name,
                 style: WinType.archivo(size: 22, color: s.onStrong)),
@@ -1145,7 +1145,7 @@ class _ParentProfileTabState extends State<ParentProfileTab> {
                         borderRadius: BorderRadius.circular(WinRadii.md),
                         border: Border.all(color: s.outline)),
                     child: Row(children: [
-                      WinAvatar(c.fullName, size: 36, color: WinColors.blue100),
+                      WinAvatar(c.fullName, size: 36, color: winTone(s, BadgeColor.blue).bg),
                       const SizedBox(width: 12),
                       Expanded(
                           child: Column(

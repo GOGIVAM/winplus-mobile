@@ -83,7 +83,7 @@ class _OnboardingSuccessScreenState extends State<OnboardingSuccessScreen> {
                         width: 28,
                         height: 28,
                         decoration: BoxDecoration(
-                          color: WinColors.successBg,
+                          color: winTone(s, BadgeColor.success).bg,
                           borderRadius: BorderRadius.circular(WinRadii.sm),
                         ),
                         child: const Icon(PhosphorIconsBold.check,

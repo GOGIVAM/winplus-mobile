@@ -406,7 +406,7 @@ class _ContentPublishScreenState extends State<ContentPublishScreen> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
               decoration: BoxDecoration(
-                color: WinColors.successBg,
+                color: winTone(s, BadgeColor.success).bg,
                 border:
                     Border.all(color: WinColors.success.withValues(alpha: 0.5)),
                 borderRadius: BorderRadius.circular(WinRadii.md),

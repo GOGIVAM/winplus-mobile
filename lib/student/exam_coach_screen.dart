@@ -374,7 +374,7 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
         ),
         const SizedBox(height: 16),
         WinCard(
-          bg: isTodayDone ? WinColors.successBg : null,
+          bg: isTodayDone ? winTone(s, BadgeColor.success).bg : null,
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             WinBadge(context.l10n.studentCoachTodayDay(todayNum)),
             const SizedBox(height: 8),
@@ -405,7 +405,7 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
               padding: const EdgeInsets.only(bottom: 10),
               child: WinCard(
                 bg: isDone
-                    ? WinColors.successBg
+                    ? winTone(s, BadgeColor.success).bg
                     : isToday
                         ? s.primary.withValues(alpha: 0.06)
                         : null,

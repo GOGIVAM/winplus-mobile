@@ -162,7 +162,7 @@ class _CertificatesScreenState extends State<CertificatesScreen> {
                               width: double.infinity,
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 16, vertical: 18),
-                              color: WinColors.goldBg,
+                              color: winTone(s, BadgeColor.gold).bg,
                               child: Row(children: [
                                 Container(
                                   width: 56,

@@ -178,7 +178,7 @@ class _ActionPlanScreenState extends State<ActionPlanScreen> {
           padding: const EdgeInsets.only(bottom: 12),
           child: Container(
             decoration: BoxDecoration(
-              color: isDone ? WinColors.successBg : s.cardBg,
+              color: isDone ? winTone(s, BadgeColor.success).bg : s.cardBg,
               borderRadius: BorderRadius.circular(WinRadii.lg),
               border: Border.all(
                 color: isDone ? WinColors.success : s.cardBorder,

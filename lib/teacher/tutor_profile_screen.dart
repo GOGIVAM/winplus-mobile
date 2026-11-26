@@ -576,7 +576,7 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
                 .map((m) => Chip(
                       label: Text(m['label'] ?? '',
                           style: const TextStyle(fontSize: 11)),
-                      backgroundColor: WinColors.warnBg,
+                      backgroundColor: winTone(s, BadgeColor.warn).bg,
                       side: BorderSide.none,
                     ))
                 .toList()),

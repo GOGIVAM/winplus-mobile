@@ -681,7 +681,7 @@ class _InstitutionAccountTabState extends State<InstitutionAccountTab> {
                   width: 80,
                   height: 80,
                   decoration: BoxDecoration(
-                      color: WinColors.goldBg,
+                      color: winTone(s, BadgeColor.gold).bg,
                       borderRadius: BorderRadius.circular(WinRadii.lg)),
                   child: const Icon(PhosphorIconsRegular.buildings,
                       size: 40, color: WinColors.gold)),

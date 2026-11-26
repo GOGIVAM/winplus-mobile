@@ -498,7 +498,7 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
                   decoration: BoxDecoration(
                     color: active
                         ? s.primary
-                        : (bookable ? WinColors.successBg : s.chipBg),
+                        : (bookable ? winTone(s, BadgeColor.success).bg : s.chipBg),
                     borderRadius: BorderRadius.circular(WinRadii.sm),
                     border: Border.all(color: active ? s.primary : s.outline),
                   ),
@@ -540,7 +540,7 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
                     decoration: BoxDecoration(
                       color: selected
                           ? s.primary
-                          : (occ.isBookable ? WinColors.successBg : s.chipBg),
+                          : (occ.isBookable ? winTone(s, BadgeColor.success).bg : s.chipBg),
                       borderRadius: BorderRadius.circular(WinRadii.full),
                       border: Border.all(
                           color: selected

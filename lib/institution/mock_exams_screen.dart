@@ -517,7 +517,7 @@ class _MockExamRankingScreenState extends State<MockExamRankingScreen> {
                   ListTile(
                     leading: CircleAvatar(
                       radius: 16,
-                      backgroundColor: x.rank <= 3 ? WinColors.teal100 : s.surface2,
+                      backgroundColor: x.rank <= 3 ? winTone(s, BadgeColor.teal).bg : s.surface2,
                       child: Text('${x.rank}', style: WinType.labelM(s.onStrong)),
                     ),
                     title: Text(x.name),

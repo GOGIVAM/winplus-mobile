@@ -534,7 +534,7 @@ class _ContentCardState extends State<ContentCard> {
                           horizontal: 9, vertical: 4),
                       decoration: BoxDecoration(
                         color: content.free
-                            ? WinColors.successBg
+                            ? winTone(s, BadgeColor.success).bg
                             : MobileHomeColors.tint,
                         borderRadius: BorderRadius.circular(WinRadii.full),
                       ),
