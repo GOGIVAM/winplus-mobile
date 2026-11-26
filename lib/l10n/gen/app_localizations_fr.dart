@@ -8782,7 +8782,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get commonLoadError =>
-      'Impossible de charger. Vérifie ta connexion puis réessaie.';
+      'Chargement impossible. Vérifier la connexion, puis réessayer.';
 
   @override
   String get visioTitle => 'Cours en direct';
@@ -12084,4 +12084,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String cstatLastActivity(String date) {
     return 'Dernière activité : $date';
   }
+
+  @override
+  String get mobileHomeForYouFormal => 'Pour vous';
 }

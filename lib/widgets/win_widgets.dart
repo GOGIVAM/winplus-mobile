@@ -231,7 +231,11 @@ class WinChip extends StatelessWidget {
           borderRadius: BorderRadius.circular(WinRadii.full),
           border: Border.all(color: active ? s.chipActiveBg : s.outline),
         ),
-        child: Row(mainAxisSize: MainAxisSize.min, children: [
+        // Centre : une puce etiree (onglets cote a cote) gardait son libelle
+        // cale a gauche. Sans contrainte, elle garde la largeur du libelle.
+        child: Center(
+            widthFactor: 1,
+            child: Row(mainAxisSize: MainAxisSize.min, children: [
           if (icon != null) ...[
             winIcon(icon, size: 15, color: active ? s.chipActiveFg : s.onMuted),
             const SizedBox(width: 6)
@@ -245,7 +249,7 @@ class WinChip extends StatelessWidget {
                     weight: FontWeight.w600,
                     color: active ? s.chipActiveFg : s.onSurface)),
           ),
-        ]),
+        ])),
       ),
     );
   }

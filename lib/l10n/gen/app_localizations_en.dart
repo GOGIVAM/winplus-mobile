@@ -11990,4 +11990,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String cstatLastActivity(String date) {
     return 'Last activity: $date';
   }
+
+  @override
+  String get mobileHomeForYouFormal => 'For you';
 }

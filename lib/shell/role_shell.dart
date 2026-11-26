@@ -52,6 +52,7 @@ import '../shared/shop/cart_screen.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../widgets/win_logo.dart';
 import '../services/messaging_service.dart';
+import '../widgets/win_widgets.dart';
 
 class NavItem {
   final String label;
@@ -230,6 +231,9 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
           role: role,
           navigatorKey: _inner,
           hidden: _popup,
+          // Lu ici, au-dessus du Scaffold : dessous, il retire déjà la
+          // hauteur du clavier.
+          keyboardOpen: MediaQuery.viewInsetsOf(context).bottom > 0,
           // Retour d'Android : ferme d'abord l'écran secondaire ouvert.
           child: NavigatorPopHandler(
             onPopWithResult: (_) => _inner.currentState?.maybePop(),
@@ -374,6 +378,12 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
       };
 
   Widget _avatarFor(WinRole role) {
+    final s = WinTheme.of(context);
+    // En sombre : voile et ton eclairci au lieu d'un disque pale.
+    Color bg(Color light, BadgeColor tone) =>
+        s.dark ? winTone(s, tone).bg : light;
+    Color fg(Color light, BadgeColor tone) =>
+        s.dark ? winTone(s, tone).fg : light;
     // L'avatar ouvre « Plus » : compte, réglages (langue, mode sombre,
     // empreinte) et déconnexion, pour tous les espaces.
     return Padding(
@@ -384,50 +394,52 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
         WinRole.student => Container(
             width: 34,
             height: 34,
-            decoration: const BoxDecoration(
-              color: WinColors.teal100,
+            decoration: BoxDecoration(
+              color: bg(WinColors.teal100, BadgeColor.teal),
               shape: BoxShape.circle,
             ),
             alignment: Alignment.center,
             child: Text(
               _avatarInitials ?? '',
               style: WinType.manrope(
-                  size: 12, weight: FontWeight.w600, color: WinColors.teal700),
+                  size: 12, weight: FontWeight.w600, color: fg(WinColors.teal700, BadgeColor.teal)),
             ),
           ),
         WinRole.parent => Container(
             width: 34,
             height: 34,
-            decoration: const BoxDecoration(
-                color: WinColors.blue100, shape: BoxShape.circle),
+            decoration: BoxDecoration(
+                color: bg(WinColors.blue100, BadgeColor.blue),
+                shape: BoxShape.circle),
             alignment: Alignment.center,
             child: Text(
               _avatarInitials ?? '',
 
               style: WinType.manrope(
-                  size: 12, weight: FontWeight.w600, color: WinColors.teal700),
+                  size: 12, weight: FontWeight.w600, color: fg(WinColors.teal700, BadgeColor.teal)),
             ),
           ),
         WinRole.teacher => Container(
             width: 34,
             height: 34,
-            decoration: const BoxDecoration(
-                color: WinColors.ink100, shape: BoxShape.circle),
+            decoration: BoxDecoration(
+                color: bg(WinColors.ink100, BadgeColor.neutral),
+                shape: BoxShape.circle),
             alignment: Alignment.center,
             child: Text(_avatarInitials ?? '…',
                 style: WinType.manrope(
                     size: 12,
                     weight: FontWeight.w600,
-                    color: WinColors.teal700)),
+                    color: fg(WinColors.teal700, BadgeColor.teal))),
           ),
         WinRole.institution => Container(
             width: 34,
             height: 34,
             decoration: BoxDecoration(
-                color: WinColors.goldBg,
+                color: bg(WinColors.goldBg, BadgeColor.gold),
                 borderRadius: BorderRadius.circular(10)),
-            child: const Icon(PhosphorIconsRegular.buildings,
-                size: 18, color: WinColors.gold),
+            child: Icon(PhosphorIconsRegular.buildings,
+                size: 18, color: fg(WinColors.gold, BadgeColor.gold)),
           ),
         },
       ),

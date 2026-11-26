@@ -235,6 +235,13 @@ void main() {
     expect(find.text(l.shellTabHome), findsOneWidget);
     expect(find.text(l.shellTabMessages), findsOneWidget);
     expect(find.byType(WinAIFloatingWidget), findsOneWidget);
+    // Clavier ouvert : le bouton WinAI s'efface (il couvrait le bouton d'envoi).
+    tester.view.viewInsets = const FakeViewPadding(bottom: 300);
+    await pomper(tester);
+    expect(find.byKey(const ValueKey('winai-fab')), findsNothing);
+    tester.view.resetViewInsets();
+    await pomper(tester);
+    expect(find.byKey(const ValueKey('winai-fab')), findsOneWidget);
     // Toucher l'onglet Accueil referme l'ecran secondaire.
     await tester.tap(find.text(l.shellTabHome));
     await pomper(tester);

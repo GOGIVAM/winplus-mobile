@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../app_state.dart';
+import '../data/models.dart' show WinRole;
 import '../l10n/l10n.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_motion.dart';
@@ -517,7 +519,10 @@ class _MobileForYouState extends State<MobileForYou> {
     final s = WinTheme.of(context);
     final slides = widget.slides;
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      MobileBlockHead(context.l10n.mobileHomeForYou),
+      // L'eleve est tutoye, les autres comptes vouvoyes.
+      MobileBlockHead(WinAppScope.of(context).role == WinRole.student
+          ? context.l10n.mobileHomeForYou
+          : context.l10n.mobileHomeForYouFormal),
       const SizedBox(height: 12),
       SizedBox(
         height: 206,
@@ -734,7 +739,10 @@ class WinDuoIcon extends StatelessWidget {
       ? WinAIIcon(size: size * 1.2)
       : PhosphorIcon(icon,
       size: size,
-      color: MobileHomeColors.abyss,
+      // Trait clair en sombre (le vert profond y disparaissait).
+      color: WinTheme.of(context).dark
+          ? WinColors.teal200
+          : MobileHomeColors.abyss,
       duotoneSecondaryColor: WinColors.teal500,
       duotoneSecondaryOpacity: 1);
 }
@@ -824,9 +832,15 @@ class _QuickItemState extends State<_QuickItem> {
           curve: _ease,
           child: Stack(clipBehavior: Clip.none, children: [
             Material(
-              color: _pressed
-                  ? MobileHomeColors.tintPressed
-                  : MobileHomeColors.tint,
+              // En sombre : voile sarcelle au lieu d'une pastille menthe pale.
+              color: s.dark
+                  ? Color.alphaBlend(
+                      WinColors.teal300
+                          .withValues(alpha: _pressed ? 0.26 : 0.16),
+                      s.surface)
+                  : (_pressed
+                      ? MobileHomeColors.tintPressed
+                      : MobileHomeColors.tint),
               shape: const CircleBorder(),
               clipBehavior: Clip.antiAlias,
               child: InkWell(

@@ -5363,7 +5363,7 @@
   "settingsLoadError": "Impossible de charger les paramètres.",
   "settingsSaveError": "Le réglage n’a pas pu être enregistré.",
   "settingsTitle": "Paramètres",
-  "commonLoadError": "Impossible de charger. Vérifie ta connexion puis réessaie.",
+  "commonLoadError": "Chargement impossible. Vérifier la connexion, puis réessayer.",
   "visioTitle": "Cours en direct",
   "visioPreparing": "Préparation de la salle…",
   "visioHost": "Tu animes",
@@ -6404,5 +6404,6 @@
   "cstatRelaunchStats": "{sent, plural, =1{1 relance envoyée} other{{sent} relances envoyées}} · {rate} % ont repris la formation",
   "@cstatRelaunchStats": {"placeholders": {"sent": {"type": "int"}, "rate": {"type": "String"}}},
   "cstatLastActivity": "Dernière activité : {date}",
-  "@cstatLastActivity": {"placeholders": {"date": {"type": "String"}}}
+  "@cstatLastActivity": {"placeholders": {"date": {"type": "String"}}},
+  "mobileHomeForYouFormal": "Pour vous"
 }

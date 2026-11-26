@@ -14993,7 +14993,7 @@ abstract class AppLocalizations {
   /// No description provided for @commonLoadError.
   ///
   /// In fr, this message translates to:
-  /// **'Impossible de charger. Vérifie ta connexion puis réessaie.'**
+  /// **'Chargement impossible. Vérifier la connexion, puis réessayer.'**
   String get commonLoadError;
 
   /// No description provided for @visioTitle.
@@ -20270,6 +20270,12 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Dernière activité : {date}'**
   String cstatLastActivity(String date);
+
+  /// No description provided for @mobileHomeForYouFormal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pour vous'**
+  String get mobileHomeForYouFormal;
 }
 
 class _AppLocalizationsDelegate

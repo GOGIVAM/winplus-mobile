@@ -263,7 +263,10 @@ ThemeData winMaterialTheme(WinScheme s) => ThemeData(
       ),
       switchTheme: SwitchThemeData(
         thumbColor: WidgetStateProperty.resolveWith((st) =>
-            st.contains(WidgetState.selected) ? Colors.white : s.onFaint),
+            // En sombre la piste activee est claire : pouce fonce.
+            st.contains(WidgetState.selected)
+                ? (s.dark ? s.onPrimary : Colors.white)
+                : s.onFaint),
         trackColor: WidgetStateProperty.resolveWith((st) =>
             st.contains(WidgetState.selected)
                 ? (s.dark ? s.primary : WinColors.teal600)

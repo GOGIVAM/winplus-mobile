@@ -3522,5 +3522,6 @@
   "cstatRelaunchStats": "{sent, plural, =1{1 nudge sent} other{{sent} nudges sent}} · {rate}% resumed the course",
   "@cstatRelaunchStats": {"placeholders": {"sent": {"type": "int"}, "rate": {"type": "String"}}},
   "cstatLastActivity": "Last activity: {date}",
-  "@cstatLastActivity": {"placeholders": {"date": {"type": "String"}}}
+  "@cstatLastActivity": {"placeholders": {"date": {"type": "String"}}},
+  "mobileHomeForYouFormal": "For you"
 }

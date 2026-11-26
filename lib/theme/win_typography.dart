@@ -61,7 +61,9 @@ class WinType {
   static TextStyle titleM(Color c) =>
       manrope(size: 14, weight: FontWeight.w600, color: c);
   static TextStyle titleS(Color c) =>
-      manrope(size: 12, weight: FontWeight.w600, color: c, letterSpacing: 0.8);
+      // Pas d'espacement de lettres : ce style sert a des titres courants
+      // (chapitres, noms), pas a des surtitres en capitales.
+      manrope(size: 12, weight: FontWeight.w600, color: c);
   static TextStyle bodyL(Color c) =>
       manrope(size: 16, weight: FontWeight.w400, color: c, height: 1.55);
   static TextStyle bodyM(Color c) =>

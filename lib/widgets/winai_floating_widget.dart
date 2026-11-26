@@ -44,6 +44,10 @@ class WinAIFloatingWidget extends StatefulWidget {
   /// ouvert (le bouton passerait par-dessus), ou WinAI occupe déjà l'écran.
   final ValueListenable<bool>? hidden;
 
+  /// Clavier ouvert : le bouton s'efface (il se posait sur le bouton d'envoi
+  /// d'une conversation, à droite du champ).
+  final bool keyboardOpen;
+
   /// Écrans qui occupent déjà l'écran avec WinAI : ils retirent le bouton le
   /// temps de leur présence (voir [WinAIFabHidden]).
   static final ValueNotifier<int> suppressed = ValueNotifier<int>(0);
@@ -53,7 +57,8 @@ class WinAIFloatingWidget extends StatefulWidget {
       required this.child,
       required this.role,
       this.navigatorKey,
-      this.hidden});
+      this.hidden,
+      this.keyboardOpen = false});
 
   @override
   State<WinAIFloatingWidget> createState() => _WinAIFloatingWidgetState();
@@ -149,7 +154,8 @@ class _WinAIFloatingWidgetState extends State<WinAIFloatingWidget> {
         listenable: Listenable.merge(
             [WinAIFloatingWidget.suppressed, if (hidden != null) hidden]),
         builder: (context, _) {
-          final off = WinAIFloatingWidget.suppressed.value > 0 ||
+          final off = widget.keyboardOpen ||
+              WinAIFloatingWidget.suppressed.value > 0 ||
               (hidden?.value ?? false);
           if (off) return widget.child;
           return _buildWithButton(context, cfg);
@@ -206,6 +212,7 @@ class _WinAIFloatingWidgetState extends State<WinAIFloatingWidget> {
 
         // ── Bouton flottant déplaçable ──
         Positioned(
+          key: const ValueKey('winai-fab'),
           left: pos.dx,
           top: pos.dy,
           child: GestureDetector(
