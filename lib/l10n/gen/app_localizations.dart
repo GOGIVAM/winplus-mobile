@@ -21435,6 +21435,90 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Compte supprimé.'**
   String get settingsDeleted;
+
+  /// No description provided for @tutoringTrialTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Séance d\'essai'**
+  String get tutoringTrialTitle;
+
+  /// No description provided for @tutoringTrialFreeHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Première rencontre avec ce répétiteur : gratuite, 60 minutes au plus.'**
+  String get tutoringTrialFreeHint;
+
+  /// No description provided for @tutoringTrialPriceHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Première rencontre avec ce répétiteur : {amount} XAF, 60 minutes au plus.'**
+  String tutoringTrialPriceHint(String amount);
+
+  /// No description provided for @tutoringTrialLimits.
+  ///
+  /// In fr, this message translates to:
+  /// **'L\'essai dure 60 minutes au plus et concerne un seul élève.'**
+  String get tutoringTrialLimits;
+
+  /// No description provided for @tutoringTrialInsteadOf.
+  ///
+  /// In fr, this message translates to:
+  /// **'Au lieu de {amount} XAF pour cette séance.'**
+  String tutoringTrialInsteadOf(String amount);
+
+  /// No description provided for @tutoringTrialSend.
+  ///
+  /// In fr, this message translates to:
+  /// **'Envoyer la demande d\'essai'**
+  String get tutoringTrialSend;
+
+  /// No description provided for @tutoringTrialSent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Demande envoyée : en attente du répétiteur'**
+  String get tutoringTrialSent;
+
+  /// No description provided for @tutoringTrialMustAccept.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le répétiteur doit accepter la demande. Une notification arrive dès sa réponse. Aucun paiement n\'a été fait.'**
+  String get tutoringTrialMustAccept;
+
+  /// No description provided for @tutoringLocationLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lieu de la séance'**
+  String get tutoringLocationLabel;
+
+  /// No description provided for @tutoringLocationHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quartier, rue et un repère'**
+  String get tutoringLocationHint;
+
+  /// No description provided for @tutoringLocationNoteLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Précision (facultatif)'**
+  String get tutoringLocationNoteLabel;
+
+  /// No description provided for @tutoringLocationNoteHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Étage, portail, personne à demander'**
+  String get tutoringLocationNoteHint;
+
+  /// No description provided for @tutoringLocationRequired.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le lieu de la séance est à indiquer : quartier, rue et un repère.'**
+  String get tutoringLocationRequired;
+
+  /// No description provided for @tutoringLocationTutorHome.
+  ///
+  /// In fr, this message translates to:
+  /// **'La séance a lieu chez le répétiteur, dans le quartier indiqué sur son profil.'**
+  String get tutoringLocationTutorHome;
 }
 
 class _AppLocalizationsDelegate

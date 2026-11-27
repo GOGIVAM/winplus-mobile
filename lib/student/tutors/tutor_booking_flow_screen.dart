@@ -118,6 +118,37 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
   }
 
   final _phoneCtrl = TextEditingController();
+
+  // Séance d'essai : première rencontre avec ce répétiteur, 60 minutes au
+  // plus, pour un seul élève. Proposée seulement si le serveur dit que
+  // l'appelant y a encore droit.
+  bool _trial = false;
+  bool get _trialOffered =>
+      widget.profile.trialSessionEnabled && widget.profile.trialEligible == true;
+  bool get _trialFits =>
+      (_durationMinutes ?? 0) <= 60 && _participantCount == 1;
+  bool get _trialOn => _trial && _trialOffered && _trialFits;
+
+  /// Essai gratuit : pas d'étape de paiement.
+  bool get _freeTrial =>
+      _trialOn && _quote != null && _quote!.isTrial && _quote!.totalXaf == 0;
+
+  // Lieu d'une séance en présentiel : demandé à domicile et en lieu neutre
+  // (chez le répétiteur, le serveur reprend le quartier de son profil).
+  final _locationCtrl = TextEditingController();
+  final _locationNoteCtrl = TextEditingController();
+  String? _locationError;
+  bool get _locationRequired =>
+      _mode == 'student_home' || _mode == 'neutral_place';
+
+  /// Vérifie le lieu avant de payer ou d'envoyer la demande.
+  bool _checkLocation() {
+    if (_locationRequired && _locationCtrl.text.trim().isEmpty) {
+      setState(() => _locationError = L10n.current.tutoringLocationRequired);
+      return false;
+    }
+    return true;
+  }
   bool _submitting = false;
   String? _submitError;
 
@@ -197,6 +228,7 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
         mode: mode,
         subject: _subject,
         participantCount: _participantCount,
+        isTrial: _trialOn,
       );
       if (!mounted || req != _quoteRequest) return;
       setState(() {
@@ -264,6 +296,12 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
   }
 
   void _goToPayment() {
+    if (!_checkLocation()) return;
+    // Essai gratuit : la demande part tout de suite, sans paiement.
+    if (_freeTrial) {
+      _submitBooking();
+      return;
+    }
     setState(() => _step = 2);
     _loadWallet();
   }
@@ -272,6 +310,8 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
   void dispose() {
     _pollTimer?.cancel();
     _phoneCtrl.dispose();
+    _locationCtrl.dispose();
+    _locationNoteCtrl.dispose();
     super.dispose();
   }
 
@@ -324,13 +364,14 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
     if (occ == null || mode == null || duration == null || !_quoteReady) {
       return;
     }
+    final free = _freeTrial;
     final byWallet = _payMethod == 'wallet';
     final phone = _normalizePhone(_phoneCtrl.text);
-    if (!byWallet && phone.length < 9) {
+    if (!free && !byWallet && phone.length < 9) {
       setState(() => _submitError = L10n.current.tutoringPhoneInvalid);
       return;
     }
-    if (byWallet && !_walletCovers) {
+    if (!free && byWallet && !_walletCovers) {
       setState(() => _submitError =
           L10n.current.tutoringBalanceNotCover(_walletShortfallHint));
       return;
@@ -346,7 +387,7 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
         startTime: occ.startTime,
         durationMinutes: duration,
         mode: mode,
-        phone: byWallet ? null : phone,
+        phone: byWallet || free ? null : phone,
         paymentMethod: _payMethod,
         subject: _subject,
         topics: _topics,
@@ -354,15 +395,22 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
         participantUserIds: _forWhom.payerType == 'student' ? null : _forWhom.participantIds,
         studyGroupId: _forWhom.studyGroupId,
         tutorAssignmentId: widget.assignment?.isActive == true ? widget.assignment!.id : null,
+        isTrial: _trialOn,
+        locationAddress: _mode == 'online' ? null : _locationCtrl.text.trim(),
+        locationNote: _mode == 'online' ? null : _locationNoteCtrl.text.trim(),
       );
       if (!mounted) return;
       setState(() {
         _booking = result.booking;
         _submitting = false;
+        // Essai gratuit envoyé depuis le récapitulatif : on affiche le résultat.
+        _step = 2;
       });
       // Payé par solde : débité avec la création, la demande part tout de
       // suite au tuteur ; aucune confirmation Mobile Money à attendre.
-      if (!byWallet) _startPolling(result.booking.id);
+      if (!byWallet && !free && !result.booking.noPayment) {
+        _startPolling(result.booking.id);
+      }
     } catch (e) {
       if (mounted) {
         setState(() {
@@ -694,6 +742,37 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
               _quote!.unavailableReason ?? context.l10n.tutoringSlotGone,
               type: BadgeColor.error),
         ],
+        if (_trialOffered) ...[
+          const SizedBox(height: 10),
+          WinCard(
+            padding: const EdgeInsets.fromLTRB(14, 4, 6, 4),
+            child: SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              value: _trialOn,
+              onChanged: !_trialFits
+                  ? null
+                  : (v) {
+                      setState(() => _trial = v);
+                      _refreshQuote();
+                    },
+              title: Text(context.l10n.tutoringTrialTitle),
+              subtitle: Text(!_trialFits
+                  ? context.l10n.tutoringTrialLimits
+                  : (widget.profile.trialSessionPriceXaf ?? 0) == 0
+                      ? context.l10n.tutoringTrialFreeHint
+                      : context.l10n.tutoringTrialPriceHint(fmtXaf(
+                          (widget.profile.trialSessionPriceXaf ?? 0).round()))),
+            ),
+          ),
+          if (_trialOn && _quote?.regularTotalXaf != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 6, left: 4),
+              child: Text(
+                  context.l10n
+                      .tutoringTrialInsteadOf(fmtXaf(_quote!.regularTotalXaf!)),
+                  style: WinType.bodyS(s.onMuted)),
+            ),
+        ],
         const SizedBox(height: 20),
         Text(context.l10n.tutoringSessionMode, style: WinType.labelM(s.onStrong)),
         const SizedBox(height: 8),
@@ -709,7 +788,10 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
                   .map((m) => GestureDetector(
                         onTap: () {
                           if (_mode == m) return;
-                          setState(() => _mode = m);
+                          setState(() {
+                            _mode = m;
+                            _locationError = null;
+                          });
                           _refreshQuote(); // le mode change le tarif de base
                         },
                         child: Container(
@@ -733,6 +815,34 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
                         ),
                       ))
                   .toList()),
+        if (_locationRequired) ...[
+          const SizedBox(height: 14),
+          WinTextField(
+              controller: _locationCtrl,
+              label: context.l10n.tutoringLocationLabel,
+              hint: context.l10n.tutoringLocationHint,
+              icon: PhosphorIconsRegular.mapPin,
+              onChanged: (_) {
+                if (_locationError != null) {
+                  setState(() => _locationError = null);
+                }
+              }),
+          if (_locationError != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 6, left: 4),
+              child: Text(_locationError!,
+                  style: WinType.bodyS(winTone(s, BadgeColor.error).fg)),
+            ),
+          const SizedBox(height: 10),
+          WinTextField(
+              controller: _locationNoteCtrl,
+              label: context.l10n.tutoringLocationNoteLabel,
+              hint: context.l10n.tutoringLocationNoteHint),
+        ] else if (_mode == 'tutor_home') ...[
+          const SizedBox(height: 10),
+          Text(context.l10n.tutoringLocationTutorHome,
+              style: WinType.bodyS(s.onMuted)),
+        ],
         const SizedBox(height: 20),
         TutorCancellationPolicyCard(
           compact: true,
@@ -741,12 +851,22 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
           noRefundHours: widget.profile.noRefundHours,
         ),
         const SizedBox(height: 28),
+        // Refus du serveur à l'envoi d'un essai gratuit (lieu, essai déjà pris).
+        if (_submitError != null && _freeTrial) ...[
+          WinAlert(_submitError!, type: BadgeColor.error),
+          const SizedBox(height: 12),
+        ],
         WinButton(
-            _quote != null && _quoteReady
-                ? context.l10n.tutoringPayAmount(fmtXaf(_quote!.totalXaf))
-                : context.l10n.tutoringPayNow,
+            _freeTrial
+                ? context.l10n.tutoringTrialSend
+                : _quote != null && _quoteReady
+                    ? context.l10n.tutoringPayAmount(fmtXaf(_quote!.totalXaf))
+                    : context.l10n.tutoringPayNow,
             block: true,
-            onTap: (_mode != null && _quoteReady) ? _goToPayment : null),
+            loading: _freeTrial && _submitting,
+            onTap: (_mode != null && _quoteReady && !_submitting)
+                ? _goToPayment
+                : null),
       ],
     );
   }
@@ -937,7 +1057,9 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
           child: Text(
             alreadyConfirmed
                 ? context.l10n.tutoringSessionConfirmed
-                : context.l10n.tutoringPaymentReceivedAwaiting,
+                : booking.noPayment
+                    ? context.l10n.tutoringTrialSent
+                    : context.l10n.tutoringPaymentReceivedAwaiting,
             style: WinType.archivo(size: 20, color: s.onStrong),
             textAlign: TextAlign.center,
           ),
@@ -946,7 +1068,9 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
           const SizedBox(height: 8),
           Center(
             child: Text(
-              context.l10n.tutoringMustAccept,
+              booking.noPayment
+                  ? context.l10n.tutoringTrialMustAccept
+                  : context.l10n.tutoringMustAccept,
               style: WinType.bodyS(s.onMuted),
               textAlign: TextAlign.center,
             ),
@@ -974,12 +1098,21 @@ class _TutorBookingFlowScreenState extends State<TutorBookingFlowScreen> {
             _RecapRow(
                 icon: PhosphorIconsRegular.money,
                 label: context.l10n.tutoringPrice,
-                value: '${fmtXaf(booking.priceXaf)} XAF'),
+                value: booking.isTrial && booking.priceXaf == 0
+                    ? context.l10n.tutoringTrialFree
+                    : '${fmtXaf(booking.priceXaf)} XAF'),
             const SizedBox(height: 10),
             _RecapRow(
                 icon: _modeIcons[booking.mode] ?? PhosphorIconsRegular.info,
                 label: context.l10n.tutoringMode,
                 value: _modeLabel(booking.mode) ?? booking.mode),
+            if ((booking.locationAddress ?? '').isNotEmpty) ...[
+              const SizedBox(height: 10),
+              _RecapRow(
+                  icon: PhosphorIconsRegular.mapPin,
+                  label: context.l10n.tutoringLocationLabel,
+                  value: booking.locationAddress!),
+            ],
           ]),
         ),
         const SizedBox(height: 24),
@@ -1096,12 +1229,17 @@ class _RecapRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    return Row(children: [
+    // La valeur prend la place restante et passe à la ligne : une adresse
+    // ou plusieurs prénoms débordaient de la carte.
+    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Icon(icon, size: 18, color: s.onFaint),
       const SizedBox(width: 10),
       Text(label, style: WinType.bodyS(s.onMuted)),
-      const Spacer(),
-      Text(value, style: WinType.titleM(s.onStrong)),
+      const SizedBox(width: 12),
+      Expanded(
+        child: Text(value,
+            textAlign: TextAlign.end, style: WinType.titleM(s.onStrong)),
+      ),
     ]);
   }
 }

@@ -347,6 +347,35 @@ class _BookingCardState extends State<_BookingCard> {
           const SizedBox(width: 4),
           Text('${fmtXaf(b.priceXaf)} XAF', style: WinType.labelM(s.onMuted)),
         ]),
+        // Séance d'essai et lieu du présentiel.
+        if (b.isTrial || (b.locationAddress ?? '').isNotEmpty) ...[
+          const SizedBox(height: 8),
+          if (b.isTrial)
+            Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: WinBadge(L10n.current.tutoringTrialTitle,
+                    color: BadgeColor.gold)),
+          if ((b.locationAddress ?? '').isNotEmpty)
+            Padding(
+              padding: EdgeInsets.only(top: b.isTrial ? 6 : 0),
+              child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(PhosphorIconsRegular.mapPinLine,
+                        size: 14, color: s.onFaint),
+                    const SizedBox(width: 4),
+                    Expanded(
+                      child: Text(
+                          [
+                            b.locationAddress!,
+                            if ((b.locationNote ?? '').isNotEmpty)
+                              b.locationNote!,
+                          ].join(' \u00b7 '),
+                          style: WinType.labelM(s.onMuted)),
+                    ),
+                  ]),
+            ),
+        ],
         if (b.subject != null || b.topics.isNotEmpty) ...[
           const SizedBox(height: 8),
           if (b.subject != null)

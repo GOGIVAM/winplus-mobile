@@ -287,6 +287,11 @@ class TutorProfile {
   final String? teachingStyle;
   final num? hourlyRateXaf;
   final bool trialSessionEnabled;
+
+  /// Vrai si l'appelant peut encore prendre la séance d'essai de ce
+  /// répétiteur (jamais de séance avec lui) ; null pour un visiteur ou un
+  /// serveur plus ancien.
+  final bool? trialEligible;
   final num? trialSessionPriceXaf;
   final bool offersAtStudentHome;
   final bool offersAtTutorHome;
@@ -363,6 +368,7 @@ class TutorProfile {
     this.teachingStyle,
     this.hourlyRateXaf,
     this.trialSessionEnabled = false,
+    this.trialEligible,
     this.trialSessionPriceXaf,
     this.offersAtStudentHome = false,
     this.offersAtTutorHome = false,
@@ -422,6 +428,7 @@ class TutorProfile {
         teachingStyle: j['teachingStyle'] as String?,
         hourlyRateXaf: j['hourlyRateXaf'] as num?,
         trialSessionEnabled: j['trialSessionEnabled'] as bool? ?? false,
+        trialEligible: j['trialEligible'] as bool?,
         trialSessionPriceXaf: j['trialSessionPriceXaf'] as num?,
         offersAtStudentHome: j['offersAtStudentHome'] as bool? ?? false,
         offersAtTutorHome: j['offersAtTutorHome'] as bool? ?? false,

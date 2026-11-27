@@ -326,4 +326,117 @@ void main() {
       expect(tester.widget<WinButton>(_bouton('${l.tutoringPayWithBalance} ${fmtXaf(4500)} XAF')).onTap, isNull);
     });
   });
+
+  group('Seance d\'essai et lieu', () {
+    /// Recapitulatif avec un profil donne.
+    Future<void> recap(WidgetTester tester, TutorProfile profil) async {
+      faux.repond('POST', '/tutor-bookings/quote', _devis());
+      await monterParcours(tester, profil: profil);
+      await tester.tap(find.text('15:00'));
+      await pomper(tester);
+      await tester.tap(_bouton(L10n.current.commonContinue));
+      await reseau(tester);
+    }
+
+    testWidgets('essai non propose : pas de choix, devis et bouton habituels', (tester) async {
+      await recap(tester, _profil({'trialSessionEnabled': true, 'trialEligible': false}));
+      final l = L10n.current;
+      expect(find.text(l.tutoringTrialTitle), findsNothing);
+      expect(_bouton(l.tutoringPayAmount(fmtXaf(4500))), findsOneWidget);
+    });
+
+    testWidgets('essai gratuit : devis d\'essai, demande envoyee sans paiement, en attente du repetiteur', (tester) async {
+      await recap(tester, _profil({'trialSessionEnabled': true, 'trialEligible': true}));
+      final l = L10n.current;
+      expect(find.text(l.tutoringTrialFreeHint), findsOneWidget);
+      faux.repond('POST', '/tutor-bookings/quote', _devis({'isTrial': true, 'totalXaf': 0, 'regularTotalXaf': 4500}));
+      await tester.tap(find.byType(SwitchListTile));
+      await reseau(tester);
+      expect((faux.recues('POST', '/tutor-bookings/quote').last.data as Map)['isTrial'], true);
+      expect(find.text(l.tutoringTrialInsteadOf(fmtXaf(4500))), findsOneWidget);
+      faux.repond('POST', '/tutor-bookings', {
+        'booking': _reservation('pending_tutor_approval', en: {'priceXaf': 0, 'isTrial': true, 'paymentStatus': 'not_required', 'paymentMethod': 'free'}),
+      });
+      await tester.tap(_bouton(l.tutoringTrialSend));
+      await reseau(tester);
+      final envoi = faux.recues('POST', '/tutor-bookings').single.data as Map;
+      expect(envoi['isTrial'], true);
+      expect(envoi.containsKey('phone'), isFalse);
+      expect(find.text(l.tutoringTrialSent), findsOneWidget);
+      expect(find.text(l.tutoringTrialMustAccept), findsOneWidget);
+      expect(find.text(l.tutoringTrialFree), findsOneWidget);
+      // Ni portefeuille lu, ni suivi de paiement.
+      expect(faux.recues('GET', '/wallet/me'), isEmpty);
+      await pomper(tester, const Duration(seconds: 4));
+      expect(faux.recues('GET', '/tutor-bookings/88'), isEmpty);
+    });
+
+    testWidgets('essai refuse par le serveur : son message s\'affiche sur le recapitulatif', (tester) async {
+      await recap(tester, _profil({'trialSessionEnabled': true, 'trialEligible': true}));
+      faux.repond('POST', '/tutor-bookings/quote', _devis({'isTrial': true, 'totalXaf': 0, 'regularTotalXaf': 4500}));
+      await tester.tap(find.byType(SwitchListTile));
+      await reseau(tester);
+      faux.repond('POST', '/tutor-bookings', {'success': false, 'code': 'essai_non_disponible', 'message': 'Une seance a deja ete reservee avec ce repetiteur.'}, statut: 400);
+      await tester.tap(_bouton(L10n.current.tutoringTrialSend));
+      await reseau(tester);
+      expect(find.text('Une seance a deja ete reservee avec ce repetiteur.'), findsOneWidget);
+      expect(find.text(L10n.current.tutoringStepRecap), findsOneWidget);
+    });
+
+    testWidgets('essai payant : paiement habituel au prix d\'essai', (tester) async {
+      await recap(tester, _profil({'trialSessionEnabled': true, 'trialEligible': true, 'trialSessionPriceXaf': 2000}));
+      final l = L10n.current;
+      expect(find.text(l.tutoringTrialPriceHint(fmtXaf(2000))), findsOneWidget);
+      faux.repond('POST', '/tutor-bookings/quote', _devis({'isTrial': true, 'totalXaf': 2000, 'regularTotalXaf': 4500}));
+      await tester.tap(find.byType(SwitchListTile));
+      await reseau(tester);
+      expect(_bouton(l.tutoringPayAmount(fmtXaf(2000))), findsOneWidget);
+      expect(_bouton(l.tutoringTrialSend), findsNothing);
+    });
+
+    testWidgets('a domicile : le lieu est demande avant le paiement, puis envoye avec la precision', (tester) async {
+      faux.repond('GET', '/wallet/me', {'data': {'availableXaf': 10000}});
+      await recap(tester, _profil({'offersAtStudentHome': true}));
+      final l = L10n.current;
+      // En ligne : aucun champ de lieu.
+      expect(find.text(l.tutoringLocationLabel), findsNothing);
+      await tester.tap(find.text(l.tutoringModeStudentHomeMine));
+      await reseau(tester);
+      expect(find.text(l.tutoringLocationLabel), findsOneWidget);
+      await tester.tap(_bouton(l.tutoringPayAmount(fmtXaf(4500))));
+      await reseau(tester);
+      expect(find.text(l.tutoringLocationRequired), findsOneWidget);
+      expect(find.text(l.tutoringStepRecap), findsOneWidget);
+      // Les deux champs du lieu (un champ de sujets les precede sur l'ecran).
+      Finder champ(String libelle) => find.descendant(of: find.widgetWithText(WinTextField, libelle), matching: find.byType(TextField));
+      await tester.enterText(champ(l.tutoringLocationLabel), 'Akwa, rue Joss, face a la pharmacie');
+      await pomper(tester);
+      await tester.enterText(champ(l.tutoringLocationNoteLabel), 'Portail bleu');
+      await pomper(tester);
+      expect(find.text(l.tutoringLocationRequired), findsNothing);
+      await tester.tap(_bouton(l.tutoringPayAmount(fmtXaf(4500))));
+      await reseau(tester);
+      faux.repond('POST', '/tutor-bookings', {
+        'booking': _reservation('pending_tutor_approval', en: {'mode': 'student_home', 'paymentMethod': 'wallet', 'locationAddress': 'Akwa, rue Joss, face a la pharmacie'}),
+      });
+      await tester.tap(find.text(l.tutoringWalletMine));
+      await pomper(tester);
+      await tester.tap(_bouton('${l.tutoringPayWithBalance} ${fmtXaf(4500)} XAF'));
+      await reseau(tester);
+      final envoi = faux.recues('POST', '/tutor-bookings').single.data as Map;
+      expect(envoi['mode'], 'student_home');
+      expect(envoi['locationAddress'], 'Akwa, rue Joss, face a la pharmacie');
+      expect(envoi['locationNote'], 'Portail bleu');
+      expect(find.text('Akwa, rue Joss, face a la pharmacie'), findsOneWidget);
+    });
+
+    testWidgets('chez le repetiteur : pas de champ, une phrase dit ou la seance a lieu', (tester) async {
+      await recap(tester, _profil());
+      final l = L10n.current;
+      await tester.tap(find.text(l.tutoringModeTutorHome));
+      await reseau(tester);
+      expect(find.text(l.tutoringLocationTutorHome), findsOneWidget);
+      expect(find.text(l.tutoringLocationLabel), findsNothing);
+    });
+  });
 }

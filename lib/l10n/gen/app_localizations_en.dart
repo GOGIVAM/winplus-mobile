@@ -12713,4 +12713,55 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsDeleted => 'Account deleted.';
+
+  @override
+  String get tutoringTrialTitle => 'Trial session';
+
+  @override
+  String get tutoringTrialFreeHint =>
+      'First meeting with this tutor: free, 60 minutes at most.';
+
+  @override
+  String tutoringTrialPriceHint(String amount) {
+    return 'First meeting with this tutor: $amount XAF, 60 minutes at most.';
+  }
+
+  @override
+  String get tutoringTrialLimits =>
+      'The trial lasts 60 minutes at most, for one student.';
+
+  @override
+  String tutoringTrialInsteadOf(String amount) {
+    return 'Instead of $amount XAF for this session.';
+  }
+
+  @override
+  String get tutoringTrialSend => 'Send the trial request';
+
+  @override
+  String get tutoringTrialSent => 'Request sent: waiting for the tutor';
+
+  @override
+  String get tutoringTrialMustAccept =>
+      'The tutor has to accept the request. A notification arrives as soon as they answer. No payment was made.';
+
+  @override
+  String get tutoringLocationLabel => 'Where the session takes place';
+
+  @override
+  String get tutoringLocationHint => 'Neighbourhood, street and a landmark';
+
+  @override
+  String get tutoringLocationNoteLabel => 'Extra detail (optional)';
+
+  @override
+  String get tutoringLocationNoteHint => 'Floor, gate, who to ask for';
+
+  @override
+  String get tutoringLocationRequired =>
+      'The place of the session is needed: neighbourhood, street and a landmark.';
+
+  @override
+  String get tutoringLocationTutorHome =>
+      'The session takes place at the tutor\'s home, in the neighbourhood shown on their profile.';
 }

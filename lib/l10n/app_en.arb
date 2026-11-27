@@ -3737,5 +3737,21 @@
   "studentHubGroupsCount": "{count, plural, =0{No group yet} =1{1 group} other{{count} groups}}",
   "parentPortfolioPeriod": "Period covered: {period}",
   "settingsDeleteBody": "This cannot be undone. All the data of the account will be lost.",
-  "settingsDeleted": "Account deleted."
+  "settingsDeleted": "Account deleted.",
+  "tutoringTrialTitle": "Trial session",
+  "tutoringTrialFreeHint": "First meeting with this tutor: free, 60 minutes at most.",
+  "tutoringTrialPriceHint": "First meeting with this tutor: {amount} XAF, 60 minutes at most.",
+  "@tutoringTrialPriceHint": {"placeholders": {"amount": {"type": "String"}}},
+  "tutoringTrialLimits": "The trial lasts 60 minutes at most, for one student.",
+  "tutoringTrialInsteadOf": "Instead of {amount} XAF for this session.",
+  "@tutoringTrialInsteadOf": {"placeholders": {"amount": {"type": "String"}}},
+  "tutoringTrialSend": "Send the trial request",
+  "tutoringTrialSent": "Request sent: waiting for the tutor",
+  "tutoringTrialMustAccept": "The tutor has to accept the request. A notification arrives as soon as they answer. No payment was made.",
+  "tutoringLocationLabel": "Where the session takes place",
+  "tutoringLocationHint": "Neighbourhood, street and a landmark",
+  "tutoringLocationNoteLabel": "Extra detail (optional)",
+  "tutoringLocationNoteHint": "Floor, gate, who to ask for",
+  "tutoringLocationRequired": "The place of the session is needed: neighbourhood, street and a landmark.",
+  "tutoringLocationTutorHome": "The session takes place at the tutor's home, in the neighbourhood shown on their profile."
 }

@@ -109,6 +109,11 @@ class TutorPriceQuote {
   final int? groupFlatPercent;
   final num perStudentXaf;
 
+  /// Séance d'essai : le total est le prix d'essai (0 = gratuite),
+  /// [regularTotalXaf] le prix normal de la même séance.
+  final bool isTrial;
+  final num? regularTotalXaf;
+
   const TutorPriceQuote({
     required this.startTime,
     required this.endTime,
@@ -129,6 +134,8 @@ class TutorPriceQuote {
     this.groupDiscountPercent = 0,
     this.groupFlatPercent,
     this.perStudentXaf = 0,
+    this.isTrial = false,
+    this.regularTotalXaf,
   });
 
   bool get isGroup => participantCount > 1;
@@ -157,6 +164,8 @@ class TutorPriceQuote {
         groupDiscountPercent: (j['groupDiscountPercent'] as num?)?.toInt() ?? 0,
         groupFlatPercent: (j['groupFlatPercent'] as num?)?.toInt(),
         perStudentXaf: (j['perStudentXaf'] ?? 0) as num,
+        isTrial: j['isTrial'] == true,
+        regularTotalXaf: j['regularTotalXaf'] as num?,
       );
 }
 
@@ -379,6 +388,13 @@ class TutorBookingRecord {
   /// shared_with_changes ; élèves et payeur : shared), null sinon.
   final String? sessionMaterialStatus;
 
+  /// Séance d'essai (première rencontre avec ce répétiteur).
+  final bool isTrial;
+
+  /// Lieu d'une séance en présentiel et précision (repère, étage…).
+  final String? locationAddress;
+  final String? locationNote;
+
   const TutorBookingRecord({
     required this.id,
     required this.tutorUserId,
@@ -430,6 +446,9 @@ class TutorBookingRecord {
     this.hasReported = false,
     this.tutorEngagementId,
     this.sessionMaterialStatus,
+    this.isTrial = false,
+    this.locationAddress,
+    this.locationNote,
   });
 
   /// Lot 9.3 : seul le côté payeur annule (un élève dont la séance a été
@@ -456,6 +475,9 @@ class TutorBookingRecord {
   /// ou déjà confirmé). Utilisé pour distinguer du paiement en cours.
   bool get isConfirmed => status == 'confirmed';
   bool get isPendingTutorApproval => status == 'pending_tutor_approval';
+
+  /// Essai gratuit : rien n'a été payé, rien n'est à suivre côté paiement.
+  bool get noPayment => paymentStatus == 'not_required';
   bool get isCompleted => status == 'completed';
   bool get isDisputed => status == 'disputed';
   bool get isRejected => status == 'rejected';
@@ -565,6 +587,9 @@ class TutorBookingRecord {
         hasReported: j['hasReported'] as bool? ?? false,
         tutorEngagementId: (j['tutorEngagementId'] as num?)?.toInt(),
         sessionMaterialStatus: j['sessionMaterialStatus'] as String?,
+        isTrial: j['isTrial'] == true,
+        locationAddress: j['locationAddress'] as String?,
+        locationNote: j['locationNote'] as String?,
       );
 }
 
@@ -738,6 +763,7 @@ class TutorBookingService {
     required String mode,
     String? subject,
     int participantCount = 1,
+    bool isTrial = false,
   }) async {
     final res = await _api.dio.post('/tutor-bookings/quote', data: {
       'tutorUserId': tutorUserId,
@@ -747,6 +773,7 @@ class TutorBookingService {
       'mode': mode,
       if (subject != null && subject.isNotEmpty) 'subject': subject,
       'participantCount': participantCount,
+      if (isTrial) 'isTrial': true,
     });
     return TutorPriceQuote.fromJson(res.data as Map<String, dynamic>);
   }
@@ -765,6 +792,9 @@ class TutorBookingService {
     List<int>? participantUserIds,
     int? studyGroupId,
     int? tutorAssignmentId,
+    bool isTrial = false,
+    String? locationAddress,
+    String? locationNote,
   }) async {
     final res = await _api.dio.post('/tutor-bookings', data: {
       'tutorUserId': tutorUserId,
@@ -781,6 +811,9 @@ class TutorBookingService {
       if (participantUserIds != null && participantUserIds.isNotEmpty) 'participantUserIds': participantUserIds,
       if (studyGroupId != null) 'studyGroupId': studyGroupId,
       if (tutorAssignmentId != null) 'tutorAssignmentId': tutorAssignmentId,
+      if (isTrial) 'isTrial': true,
+      if (locationAddress != null && locationAddress.isNotEmpty) 'locationAddress': locationAddress,
+      if (locationNote != null && locationNote.isNotEmpty) 'locationNote': locationNote,
     });
     return TutorBookingCreatedResult.fromJson(res.data as Map<String, dynamic>);
   }

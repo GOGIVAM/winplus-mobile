@@ -12806,4 +12806,55 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get settingsDeleted => 'Compte supprimé.';
+
+  @override
+  String get tutoringTrialTitle => 'Séance d\'essai';
+
+  @override
+  String get tutoringTrialFreeHint =>
+      'Première rencontre avec ce répétiteur : gratuite, 60 minutes au plus.';
+
+  @override
+  String tutoringTrialPriceHint(String amount) {
+    return 'Première rencontre avec ce répétiteur : $amount XAF, 60 minutes au plus.';
+  }
+
+  @override
+  String get tutoringTrialLimits =>
+      'L\'essai dure 60 minutes au plus et concerne un seul élève.';
+
+  @override
+  String tutoringTrialInsteadOf(String amount) {
+    return 'Au lieu de $amount XAF pour cette séance.';
+  }
+
+  @override
+  String get tutoringTrialSend => 'Envoyer la demande d\'essai';
+
+  @override
+  String get tutoringTrialSent => 'Demande envoyée : en attente du répétiteur';
+
+  @override
+  String get tutoringTrialMustAccept =>
+      'Le répétiteur doit accepter la demande. Une notification arrive dès sa réponse. Aucun paiement n\'a été fait.';
+
+  @override
+  String get tutoringLocationLabel => 'Lieu de la séance';
+
+  @override
+  String get tutoringLocationHint => 'Quartier, rue et un repère';
+
+  @override
+  String get tutoringLocationNoteLabel => 'Précision (facultatif)';
+
+  @override
+  String get tutoringLocationNoteHint => 'Étage, portail, personne à demander';
+
+  @override
+  String get tutoringLocationRequired =>
+      'Le lieu de la séance est à indiquer : quartier, rue et un repère.';
+
+  @override
+  String get tutoringLocationTutorHome =>
+      'La séance a lieu chez le répétiteur, dans le quartier indiqué sur son profil.';
 }
