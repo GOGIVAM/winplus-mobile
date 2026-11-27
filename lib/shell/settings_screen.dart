@@ -11,6 +11,7 @@ import '../theme/win_theme.dart';
 import '../widgets/account_settings_switches.dart';
 import '../widgets/biometric_toggle.dart';
 import '../widgets/language_selector.dart';
+import 'change_password_screen.dart';
 import 'more_screen.dart';
 
 /// Paramètres de l'application, les mêmes pour tous les espaces : langue,
@@ -47,6 +48,13 @@ class SettingsScreen extends StatelessWidget {
           const SizedBox(height: 16),
           // Préférences du compte, enregistrées sur le serveur.
           MoreGroup(children: [
+            MoreLine(
+                icon: PhosphorIconsRegular.password,
+                label: l.studentProfileChangePwd,
+                onTap: () => Navigator.push(
+                    context,
+                    WinPageRoute(
+                        builder: (_) => const ChangePasswordScreen()))),
             MoreLine(
                 icon: PhosphorIconsRegular.bell,
                 label: l.studentNotifTitle,
