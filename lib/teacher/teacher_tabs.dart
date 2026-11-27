@@ -73,8 +73,8 @@ class _TeacherDashTabState extends State<TeacherDashTab> {
   bool _isTutor = false;
 
   Future<void> _load() async {
-    unawaited(TutorProfileService.instance.getMine().then((p) {
-      if (mounted && p.isActive != _isTutor) setState(() => _isTutor = p.isActive);
+    unawaited(TutorProfileService.instance.isActiveTutor().then((active) {
+      if (mounted && active != _isTutor) setState(() => _isTutor = active);
     }).catchError((_) {}));
     try {
       final results = await Future.wait([

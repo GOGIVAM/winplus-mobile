@@ -631,6 +631,15 @@ class TutorProfileService {
   /// Oublie la liste gardée (tests).
   void forgetReferential() => _referential = null;
 
+  /// Vrai si le professeur a un profil de répétiteur en ligne. Lit le statut,
+  /// qui ne crée rien : lire le profil lui-même en créait un, vide, pour
+  /// tout professeur qui ouvrait son accueil.
+  Future<bool> isActiveTutor() async {
+    final res = await _api.dio.get('/tutor-profile/me/status');
+    final data = res.data;
+    return data is Map && data['isActive'] == true;
+  }
+
   Future<TutorProfile> getMine() async {
     final res = await _api.dio.get('/tutor-profile/me');
     return TutorProfile.fromJson(res.data as Map<String, dynamic>);

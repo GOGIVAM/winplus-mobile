@@ -57,9 +57,11 @@ void main() {
 
   testWidgets('repetiteur deja actif : pas de carte « Activez le mode repetiteur »', (tester) async {
     routes();
-    faux.repond('GET', '/tutor-profile/me', {'id': 1, 'userId': 50, 'isActive': true});
+    faux.repond('GET', '/tutor-profile/me/status', {'started': true, 'isActive': true});
     await monterHaut(tester);
     expect(find.text(L10n.current.mobileHomeTeachTutorTitle), findsNothing);
+    // L'accueil lit le statut : lire le profil en creait un, vide, cote serveur.
+    expect(faux.recues('GET', '/tutor-profile/me'), isEmpty);
   });
 
   testWidgets('pas encore repetiteur : la carte est proposee', (tester) async {
