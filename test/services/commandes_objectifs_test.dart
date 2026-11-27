@@ -173,7 +173,7 @@ void main() {
       expect(faux.recues('POST', '/goals/propose').single.data, {
         'childId': 7,
         'title': 'Lire',
-        'deadline': echeance.toIso8601String(),
+        'deadline': echeance.toUtc().toIso8601String(),
       });
       await GoalsService.instance.propose(childId: 7, title: 'Lire', description: 'd', type: 'quiz', deadline: echeance);
       final corps = faux.recues('POST', '/goals/propose').last.data as Map;
@@ -201,7 +201,7 @@ void main() {
       await GoalsService.instance.modify(3, title: 'Nouveau', deadline: echeance);
       expect(faux.recues('POST', '/goals/3/accept'), hasLength(1));
       expect(faux.recues('POST', '/goals/3/refuse'), hasLength(1));
-      expect(faux.recues('PUT', '/goals/3/modify').single.data, {'title': 'Nouveau', 'deadline': echeance.toIso8601String()});
+      expect(faux.recues('PUT', '/goals/3/modify').single.data, {'title': 'Nouveau', 'deadline': echeance.toUtc().toIso8601String()});
     });
 
     test('accept leve l\'erreur du serveur au lieu de l\'avaler', () async {

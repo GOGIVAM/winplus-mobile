@@ -71,7 +71,7 @@ class GoalsService {
       'title': title,
       if (description != null) 'description': description,
       if (type != null) 'type': type,
-      'deadline': deadline.toIso8601String(),
+      'deadline': deadline.toUtc().toIso8601String(), // UTC : Npgsql refuse une date sans fuseau
     });
     final data = res.data as Map<String, dynamic>;
     return ApiGoalDetail.fromJson(data['data'] as Map<String, dynamic>);
@@ -101,7 +101,7 @@ class GoalsService {
     await _api.dio.put('/goals/$id/modify', data: {
       'title': title,
       if (description != null) 'description': description,
-      'deadline': deadline.toIso8601String(),
+      'deadline': deadline.toUtc().toIso8601String(), // UTC : Npgsql refuse une date sans fuseau
     });
   }
 
@@ -116,7 +116,7 @@ class GoalsService {
       'title': title,
       if (description != null) 'description': description,
       if (type != null) 'type': type,
-      'deadline': deadline.toIso8601String(),
+      'deadline': deadline.toUtc().toIso8601String(), // UTC : Npgsql refuse une date sans fuseau
     });
     final data = res.data as Map<String, dynamic>;
     return ApiGoalDetail.fromJson(data['data'] as Map<String, dynamic>);

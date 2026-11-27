@@ -266,7 +266,7 @@ void main() {
       final d = faux.requetes.single.data as Map;
       expect(d['title'], 'Revision');
       expect(d['type'], 'live');
-      expect(d['startDate'], '2026-04-01T09:00:00.000');
+      expect(d['startDate'], DateTime(2026, 4, 1, 9).toUtc().toIso8601String(), reason: 'date envoyee en UTC');
       expect(d['durationMinutes'], 60);
       expect(d['maxParticipants'], 20);
       expect(d['externalLink'], 'https://meet.x');

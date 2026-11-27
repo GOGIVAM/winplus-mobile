@@ -130,7 +130,7 @@ void main() {
       faux.repond('POST', '/auth/verify-email', {});
       final r = await AuthService.instance.verifyEmail('e@w.cm', '123456');
       expect(r.success, isTrue);
-      expect(faux.recues('POST', '/auth/verify-email').single.data, {'email': 'e@w.cm', 'code': '123456'});
+      expect(faux.recues('POST', '/auth/verify-email').single.data, {'email': 'e@w.cm', 'verificationCode': '123456', 'code': '123456'});
     });
 
     test('verifyEmail refuse un mauvais code avec le message par defaut', () async {
@@ -153,15 +153,15 @@ void main() {
       faux.repond('POST', '/auth/reset-password', {});
       final r = await AuthService.instance.resetPassword('tok', 'nouveau');
       expect(r.success, isTrue);
-      expect(faux.recues('POST', '/auth/reset-password').single.data, {'token': 'tok', 'newPassword': 'nouveau'});
+      expect(faux.recues('POST', '/auth/reset-password').single.data, {'resetToken': 'tok', 'token': 'tok', 'newPassword': 'nouveau'});
     });
 
     test('hors ligne, ces appels rendent le message d\'erreur reseau', () async {
       faux.coupure('POST', '/auth/resend-verification');
       faux.coupure('POST', '/auth/forgot-password');
       faux.coupure('POST', '/auth/reset-password');
-      faux.coupure('POST', '/auth/2fa/enable');
-      faux.coupure('POST', '/auth/2fa/disable');
+      faux.coupure('POST', '/users/2fa/enable');
+      faux.coupure('POST', '/users/2fa/disable');
       final rs = [
         await AuthService.instance.resendVerification('e@w.cm'),
         await AuthService.instance.forgotPassword('e@w.cm'),
@@ -176,19 +176,19 @@ void main() {
     });
 
     test('le message du serveur l\'emporte sur le message reseau', () async {
-      faux.repond('POST', '/auth/2fa/enable', {'error': 'Deja active'}, statut: 409);
+      faux.repond('POST', '/users/2fa/enable', {'error': 'Deja active'}, statut: 409);
       final r = await AuthService.instance.enable2FA();
       expect(r.success, isFalse);
       expect(r.message, 'Deja active');
     });
 
     test('enable2FA et disable2FA appellent leur route', () async {
-      faux.repond('POST', '/auth/2fa/enable', {});
-      faux.repond('POST', '/auth/2fa/disable', {});
+      faux.repond('POST', '/users/2fa/enable', {});
+      faux.repond('POST', '/users/2fa/disable', {});
       expect((await AuthService.instance.enable2FA()).success, isTrue);
       expect((await AuthService.instance.disable2FA()).success, isTrue);
-      expect(faux.recues('POST', '/auth/2fa/enable'), hasLength(1));
-      expect(faux.recues('POST', '/auth/2fa/disable'), hasLength(1));
+      expect(faux.recues('POST', '/users/2fa/enable'), hasLength(1));
+      expect(faux.recues('POST', '/users/2fa/disable'), hasLength(1));
     });
   });
 

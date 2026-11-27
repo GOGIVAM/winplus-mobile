@@ -183,7 +183,7 @@ void main() {
       expect(find.text(L10n.current.studentProfilePwdWrong), findsOneWidget);
     });
 
-    testWidgets('double authentification : activation via le serveur ; refus = message et interrupteur inchange', (tester) async {
+    testWidgets('double authentification : activation via le serveur ; refus = message et interrupteur inchange', skip: !kTwoFactorAvailable, (tester) async {
       faux.repond('POST', '/auth/2fa/enable', {});
       await monterEcran(tester, const ProfileScreen());
       await _versOnglet(tester, L10n.current.studentProfileTabSecurity);

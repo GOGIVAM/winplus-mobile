@@ -12565,4 +12565,17 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get instRiskNoQuiz => 'Pas encore de quiz';
+
+  @override
+  String get studentProfileCurrentPassword => 'Mot de passe actuel';
+
+  @override
+  String get studentProfileDeleted => 'Ton compte a été supprimé.';
+
+  @override
+  String get liveChildrenTitle => 'Séances de mes enfants';
+
+  @override
+  String get liveEmptyHintParent =>
+      'Les cours en direct et les tutorats en ligne de vos enfants apparaîtront ici, en consultation.';
 }

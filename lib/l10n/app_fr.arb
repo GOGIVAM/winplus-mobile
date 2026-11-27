@@ -6551,5 +6551,9 @@
   "reviewsReplyPublic": "Votre réponse s'affiche sous l'avis, sur votre fiche publique.",
   "reviewsReplySend": "Publier la réponse",
   "reviewsReplySent": "Réponse publiée.",
-  "instRiskNoQuiz": "Pas encore de quiz"
+  "instRiskNoQuiz": "Pas encore de quiz",
+  "studentProfileCurrentPassword": "Mot de passe actuel",
+  "studentProfileDeleted": "Ton compte a été supprimé.",
+  "liveChildrenTitle": "Séances de mes enfants",
+  "liveEmptyHintParent": "Les cours en direct et les tutorats en ligne de vos enfants apparaîtront ici, en consultation."
 }

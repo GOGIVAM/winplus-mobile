@@ -68,7 +68,8 @@ class ApiSubject {
         price: ((j['price'] ?? 0) as num).toDouble(),
         hasCorrection: j['hasCorrection'] as bool? ?? false,
         rating: ((j['averageRating'] ?? 0) as num).toDouble(),
-        ratingsCount: j['ratingsCount'] as int? ?? 0,
+        // Le serveur envoie totalRatings (audit du 27/11 : 0 avis partout).
+        ratingsCount: ((j['totalRatings'] ?? j['ratingsCount'] ?? 0) as num).toInt(),
         language: j['language'] as String? ?? 'fr',
         thumbnailUrl: (j['thumbnailUrl'] ?? j['coverImageUrl']) as String?,
       );
@@ -153,6 +154,8 @@ class SubjectService {
       'sortOrder': sortOrder,
     });
     final data = res.data as Map<String, dynamic>;
+    // Le niveau est filtré par le serveur (paramètre level, ajouté le 27/11 :
+    // il porte sur le niveau de la matière ou de l'une de ses épreuves).
     final items = (data['items'] as List? ?? [])
         .map((e) => ApiSubject.fromJson(e as Map<String, dynamic>))
         .toList();

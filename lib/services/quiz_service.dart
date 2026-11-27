@@ -100,7 +100,9 @@ class ApiQuiz {
         id: j['id'] as int? ?? 0,
         title: j['title'] as String? ?? '',
         description: j['description'] as String?,
-        subjectCategory: j['subjectCategory'] as String?,
+        // Le serveur envoie subject (QuizDTOs) : toutes les cartes de quiz
+        // affichaient « Maths » (audit du 27/11).
+        subjectCategory: j['subject'] as String? ?? j['subjectCategory'] as String?,
         durationMinutes: j['durationMinutes'] as int? ?? 30,
         questions: (j['questions'] as List? ?? [])
             .map((q) => ApiQuizQuestion.fromJson(q as Map<String, dynamic>))

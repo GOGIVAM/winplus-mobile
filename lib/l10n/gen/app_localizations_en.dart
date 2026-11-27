@@ -12471,4 +12471,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get instRiskNoQuiz => 'No quiz yet';
+
+  @override
+  String get studentProfileCurrentPassword => 'Current password';
+
+  @override
+  String get studentProfileDeleted => 'Your account has been deleted.';
+
+  @override
+  String get liveChildrenTitle => 'My children\'s sessions';
+
+  @override
+  String get liveEmptyHintParent =>
+      'Your children\'s live classes and online tutoring will appear here, view only.';
 }

@@ -58,11 +58,14 @@ class FavoritesService {
     }
   }
 
-  Future<bool> remove(int favoriteId) async {
+  /// [subjectId] : le serveur retire le favori par sujet (DELETE
+  /// /favorites/{subjectId}) ; avant, l'identifiant du favori était envoyé
+  /// et un autre favori pouvait être retiré (audit du 27/11).
+  Future<bool> remove(int subjectId) async {
     try {
       await OutboxService.instance.sendOrQueue(
           method: 'DELETE',
-          path: '/favorites/$favoriteId',
+          path: '/favorites/$subjectId',
           label: 'favorite_remove');
       return true;
     } catch (_) {

@@ -153,7 +153,7 @@ void main() {
       await monterEcran(tester, const ResetPasswordScreen(token: 'jeton-42'));
       await saisir(tester, 'Abcdef1!', 'Abcdef1!');
       await _toucher(tester, _bouton(L10n.current.authReset));
-      expect(faux.requetes.single.data, {'token': 'jeton-42', 'newPassword': 'Abcdef1!'});
+      expect(faux.requetes.single.data, {'resetToken': 'jeton-42', 'token': 'jeton-42', 'newPassword': 'Abcdef1!'});
       expect(find.text(L10n.current.authPwdUpdated), findsOneWidget);
       expect(_bouton(L10n.current.authGoToLogin), findsOneWidget);
     });

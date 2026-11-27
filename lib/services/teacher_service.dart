@@ -233,8 +233,11 @@ class TeacherService {
     int? maxStudents,
   }) async {
     try {
-      final startDate = DateTime.tryParse(date) ??
-          DateTime.now().add(const Duration(days: 1));
+      // Date envoyée en UTC (Npgsql refuse une date sans fuseau : la
+      // création échouait, audit du 27/11).
+      final startDate = (DateTime.tryParse(date) ??
+              DateTime.now().add(const Duration(days: 1)))
+          .toUtc();
       await _api.dio.post('/sessions', data: {
         'title': title,
         'type': 'live',
@@ -402,12 +405,16 @@ class TeacherService {
   }
 
   Future<ApiTeacherStats> getStats() async {
+    // { data: { monthRevenue, activeStudents, … } } (audit du 27/11 : lu à
+    // plat sous d'autres noms, le revenu du mois restait à 0 XAF).
     final res = await _api.dio.get('/teacher/stats');
-    final j = res.data as Map<String, dynamic>;
+    final body = res.data is Map<String, dynamic> ? res.data as Map<String, dynamic> : const <String, dynamic>{};
+    final j = body['data'] is Map<String, dynamic> ? body['data'] as Map<String, dynamic> : body;
+    final weekly = (j['weeklyRevenue'] as List?)?.map((e) => (e as num).toInt()).toList();
     return ApiTeacherStats(
-      thisMonthRevenue: (j['thisMonthRevenue'] as num?)?.toInt() ?? 0,
-      weeklyRevenue: (j['weeklyRevenue'] as List?)?.cast<int>() ?? [0, 0, 0, 0],
-      activeStudents: j['activeStudents'] as int? ?? 0,
+      thisMonthRevenue: ((j['monthRevenue'] ?? j['thisMonthRevenue'] ?? 0) as num).toInt(),
+      weeklyRevenue: weekly ?? [0, 0, 0, 0],
+      activeStudents: (j['activeStudents'] as num?)?.toInt() ?? 0,
     );
   }
 

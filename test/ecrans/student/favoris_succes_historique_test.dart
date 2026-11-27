@@ -80,12 +80,14 @@ void main() {
       faux.repond('GET', '/favorites', [
         {'id': 7, 'subjectId': 4, 'subjectTitle': 'Maths BAC', 'addedAt': '2026-01-05T10:00:00Z'},
       ]);
-      faux.repond('DELETE', '/favorites/7', {});
+      // Le serveur retire par sujet (4), pas par identifiant de favori (7).
+      faux.repond('DELETE', '/favorites/4', {});
       final abo = await abonnementAvecDroits(tester, faux, {'favorites.max': -1});
       await monterEcran(tester, const FavoritesScreen(), abonnement: abo);
       await tester.tap(find.byIcon(PhosphorIconsFill.heart));
       await reseau(tester);
-      expect(faux.recues('DELETE', '/favorites/7'), hasLength(1));
+      expect(faux.recues('DELETE', '/favorites/4'), hasLength(1));
+      expect(faux.recues('DELETE', '/favorites/7'), isEmpty);
       expect(find.text('Maths BAC'), findsNothing);
     });
 

@@ -157,8 +157,9 @@ void main() {
       await pomper(tester, const Duration(milliseconds: 400));
       await reseau(tester);
       expect(find.byType(MoreScreen), findsOneWidget, reason: '$role');
-      // Lot 9.4 : cours en direct dans « Plus » pour chaque espace.
-      final cours = find.text(l.liveTitle);
+      // Lot 9.4 : cours en direct dans « Plus » pour chaque espace ; chez le
+      // parent, « Séances de mes enfants » (décision du 26/11).
+      final cours = find.text(role == WinRole.parent ? l.liveChildrenTitle : l.liveTitle);
       await tester.scrollUntilVisible(cours, 200, scrollable: find.byType(Scrollable).last);
       expect(cours, findsOneWidget, reason: '$role');
       // Lot 7 : aide et contact, sous « Paramètres », pour chaque espace.

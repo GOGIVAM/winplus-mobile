@@ -33,7 +33,31 @@ class WinData {
   ];
 
   static Subject subjectById(String id) =>
-      subjects.firstWhere((s) => s.id == id, orElse: () => subjects.last);
+      subjects.firstWhere((s) => s.id == id, orElse: () => subjectByName(id));
+
+  /// Matière d'après son nom tel que l'envoie le serveur (« Mathématiques »,
+  /// « mathematiques », « Maths », « Physique-Chimie »…), sans tenir compte
+  /// des accents ni de la casse ; « Autre » si rien ne correspond.
+  static Subject subjectByName(String name) {
+    String norm(String v) => v
+        .toLowerCase()
+        .replaceAll(RegExp('[\u00e0\u00e2\u00e4]'), 'a')
+        .replaceAll(RegExp('[\u00e9\u00e8\u00ea\u00eb]'), 'e')
+        .replaceAll(RegExp('[\u00ee\u00ef]'), 'i')
+        .replaceAll(RegExp('[\u00f4\u00f6]'), 'o')
+        .replaceAll(RegExp('[\u00f9\u00fb\u00fc]'), 'u')
+        .replaceAll('\u00e7', 'c')
+        .trim();
+    final n = norm(name);
+    if (n.isEmpty) return subjects.last;
+    for (final s in subjects) {
+      if (n == s.id || n == norm(s.nameFr) || n == norm(s.shortFr)) return s;
+    }
+    for (final s in subjects.take(subjects.length - 1)) {
+      if (n.startsWith(norm(s.shortFr)) || n.contains(norm(s.nameFr))) return s;
+    }
+    return subjects.last;
+  }
 
   static const roles = <RoleInfo>[
     RoleInfo(

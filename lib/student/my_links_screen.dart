@@ -142,8 +142,14 @@ class _MyLinksScreenState extends State<MyLinksScreen> {
                           const SizedBox(height: 8),
                           ..._pending.map((inv) {
                             final id = inv['id'] as int;
+                            // Nom et photo de l'expéditeur sous initiator
+                            // (audit du 27/11 : « Utilisateur », sans photo).
+                            final who = inv['initiator'] is Map<String, dynamic>
+                                ? inv['initiator'] as Map<String, dynamic>
+                                : inv;
+                            final avatar = who['avatarUrl'] as String?;
                             final name =
-                                '${inv['firstName'] ?? ''} ${inv['lastName'] ?? ''}'
+                                '${who['firstName'] ?? ''} ${who['lastName'] ?? ''}'
                                     .trim();
                             final actioning = _actioning[id] == true;
                             return Padding(
@@ -157,12 +163,12 @@ class _MyLinksScreenState extends State<MyLinksScreen> {
                                       CircleAvatar(
                                         radius: 18,
                                         backgroundImage:
-                                            inv['avatarUrl'] != null
+                                            avatar != null
                                                 ? NetImage.provider(context,
-                                                    inv['avatarUrl'] as String, size: 36)
+                                                    avatar, size: 36)
                                                 : null,
                                         backgroundColor: s.surface2,
-                                        child: inv['avatarUrl'] == null
+                                        child: avatar == null
                                             ? Icon(PhosphorIconsFill.user,
                                                 color: s.onFaint, size: 18)
                                             : null,

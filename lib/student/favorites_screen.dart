@@ -41,7 +41,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   }
 
   Future<void> _remove(ApiFavorite fav) async {
-    await FavoritesService.instance.remove(fav.id);
+    await FavoritesService.instance.remove(fav.subjectId);
     if (mounted) setState(() => _favs?.remove(fav));
   }
 

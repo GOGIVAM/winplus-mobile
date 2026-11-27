@@ -21111,6 +21111,30 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Pas encore de quiz'**
   String get instRiskNoQuiz;
+
+  /// No description provided for @studentProfileCurrentPassword.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mot de passe actuel'**
+  String get studentProfileCurrentPassword;
+
+  /// No description provided for @studentProfileDeleted.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ton compte a été supprimé.'**
+  String get studentProfileDeleted;
+
+  /// No description provided for @liveChildrenTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Séances de mes enfants'**
+  String get liveChildrenTitle;
+
+  /// No description provided for @liveEmptyHintParent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les cours en direct et les tutorats en ligne de vos enfants apparaîtront ici, en consultation.'**
+  String get liveEmptyHintParent;
 }
 
 class _AppLocalizationsDelegate

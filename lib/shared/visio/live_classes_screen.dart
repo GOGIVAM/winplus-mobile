@@ -22,7 +22,9 @@ import '../../teacher/session_create_screen.dart';
 /// Professeur et répétiteur démarrent, l'élève rejoint, le parent voit les
 /// cours de ses enfants sans pouvoir entrer.
 class LiveClassesScreen extends StatefulWidget {
-  const LiveClassesScreen({super.key});
+  /// Titre de la page (« Séances de mes enfants » chez le parent).
+  final String? title;
+  const LiveClassesScreen({super.key, this.title});
 
   @override
   State<LiveClassesScreen> createState() => _LiveClassesScreenState();
@@ -58,7 +60,7 @@ class _LiveClassesScreenState extends State<LiveClassesScreen> {
         backgroundColor: s.bg,
         elevation: 0,
         iconTheme: IconThemeData(color: s.onStrong),
-        title: Text(l.liveTitle),
+        title: Text(widget.title ?? l.liveTitle),
       ),
       body: SafeArea(child: _body(s, l)),
     );
@@ -131,7 +133,9 @@ class _LiveClassesScreenState extends State<LiveClassesScreen> {
         ? l.liveEmptyHintHost
         : role == WinRole.student
             ? l.liveEmptyHint
-            : l.liveEmptyHintFormal;
+            : role == WinRole.parent
+                ? l.liveEmptyHintParent
+                : l.liveEmptyHintFormal;
     if (list.isEmpty) {
       return ListView(padding: const EdgeInsets.fromLTRB(16, 8, 16, 24), children: [
         if (_canHost) ..._hostActions(l),

@@ -149,7 +149,7 @@ void main() {
       expect(find.text(l.liveStartNow), findsNothing);
       expect(find.text(l.liveEmptyHint), findsOneWidget);
       await monterEcran(tester, const LiveClassesScreen(), etat: etat(WinRole.parent));
-      expect(find.text(l.liveEmptyHintFormal), findsOneWidget);
+      expect(find.text(l.liveEmptyHintParent), findsOneWidget);
     });
   });
 

@@ -156,7 +156,7 @@ void main() {
       await saisirCode(tester, '123456');
       expect(tester.widget<WinButton>(_bouton(L10n.current.authVerify)).onTap, isNotNull);
       await _toucher(tester, _bouton(L10n.current.authVerify));
-      expect(faux.requetes.single.data, {'email': 'ada@x.cm', 'code': '123456'});
+      expect(faux.requetes.single.data, {'email': 'ada@x.cm', 'verificationCode': '123456', 'code': '123456'});
       expect(find.text('Code expire'), findsOneWidget);
       await _demonter(tester);
     });

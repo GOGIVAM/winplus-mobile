@@ -17,6 +17,9 @@ import '../app_config.dart';
 import '../shared/subscription/pricing_screen.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
+/// Double authentification proposée dans le profil (voir plus bas).
+const bool kTwoFactorAvailable = false;
+
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
   @override
@@ -324,6 +327,11 @@ class _ProfileScreenState extends State<ProfileScreen>
               variant: WinButtonVariant.outline,
               loading: _savingPwd,
               onTap: _changePwd),
+          // Double authentification masquée (audit du 27/11) : le serveur ne
+          // garde pas le secret généré, la vérification ne peut pas aboutir,
+          // et l'interrupteur appelait une route inexistante. À réafficher
+          // quand le parcours serveur (activation, code, désactivation) sera fait.
+          if (kTwoFactorAvailable) ...[
           const SizedBox(height: 28),
           const WinDivider(),
           const SizedBox(height: 20),
@@ -355,6 +363,7 @@ class _ProfileScreenState extends State<ProfileScreen>
               },
             ),
           ]),
+          ],
           const SizedBox(height: 28),
           const WinDivider(),
           const SizedBox(height: 20),
@@ -431,6 +440,7 @@ enum _EmailChangeStep { collapsed, form, code }
 class _EmailChangeCardState extends State<_EmailChangeCard> {
   _EmailChangeStep _step = _EmailChangeStep.collapsed;
   final _newEmailCtrl = TextEditingController();
+  final _pwdCtrl = TextEditingController();
   final _codeCtrl = TextEditingController();
   String? _pendingEmail;
   String? _error;
@@ -461,7 +471,7 @@ class _EmailChangeCardState extends State<_EmailChangeCard> {
       _error = null;
     });
     try {
-      await UserService.instance.requestEmailChange(newEmail);
+      await UserService.instance.requestEmailChange(newEmail, password: _pwdCtrl.text);
       if (!mounted) return;
       setState(() {
         _pendingEmail = newEmail;
@@ -506,6 +516,7 @@ class _EmailChangeCardState extends State<_EmailChangeCard> {
   @override
   void dispose() {
     _newEmailCtrl.dispose();
+    _pwdCtrl.dispose();
     _codeCtrl.dispose();
     super.dispose();
   }
@@ -547,6 +558,15 @@ class _EmailChangeCardState extends State<_EmailChangeCard> {
           icon: PhosphorIconsRegular.envelopeSimple,
           controller: _newEmailCtrl,
           keyboardType: TextInputType.emailAddress,
+        ),
+        const SizedBox(height: 10),
+        // Mot de passe actuel, demandé par le serveur (un compte créé avec
+        // Google n'en a pas : le champ reste facultatif).
+        WinTextField(
+          label: context.l10n.studentProfileCurrentPassword,
+          icon: PhosphorIconsRegular.lockSimple,
+          controller: _pwdCtrl,
+          obscure: true,
         ),
         if (_error != null) ...[
           const SizedBox(height: 10),
@@ -629,6 +649,35 @@ class _TabCompteState extends State<_TabCompte> {
     );
   }
 
+  /// Suppression réelle du compte (avant : le dialogue se refermait sans rien
+  /// supprimer). Le dialogue se ferme par son propre contexte : celui de
+  /// l'écran fermerait l'écran dans la nouvelle coque.
+  Future<void> _deleteAccount() async {
+    final l = context.l10n;
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(WinRadii.xl)),
+        title: Text(l.studentProfileDeleteTitle),
+        content: Text(l.studentProfileDeleteBody),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l.commonCancel)),
+          TextButton(onPressed: () => Navigator.pop(ctx, true), child: Text(l.commonDelete)),
+        ],
+      ),
+    );
+    if (ok != true || !mounted) return;
+    final messenger = ScaffoldMessenger.of(context);
+    final error = await UserService.instance.deleteAccount();
+    if (!mounted) return;
+    if (error != null) {
+      messenger.showSnackBar(SnackBar(content: Text(error)));
+      return;
+    }
+    messenger.showSnackBar(SnackBar(content: Text(l.studentProfileDeleted)));
+    await _signOut();
+  }
+
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
@@ -668,25 +717,7 @@ class _TabCompteState extends State<_TabCompte> {
           block: true,
           variant: WinButtonVariant.danger,
           icon: PhosphorIconsRegular.trash,
-          onTap: () => showDialog(
-                context: context,
-                builder: (_) => AlertDialog(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(WinRadii.xl)),
-                  title: Text(context.l10n.studentProfileDeleteTitle),
-                  content: Text(
-                      context.l10n.studentProfileDeleteBody),
-                  actions: [
-                    TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: Text(context.l10n.commonCancel)),
-                    TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: Text(context.l10n.commonDelete,
-                            style: const TextStyle(color: Colors.red))),
-                  ],
-                ),
-              )),
+          onTap: _deleteAccount),
       const SizedBox(height: 20),
       TextButton(
         onPressed: _signOut,

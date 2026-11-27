@@ -168,7 +168,7 @@ class AuthService {
       });
       return const AuthResult(success: true);
     } on DioException catch (e) {
-      final data = e.response?.data as Map<String, dynamic>?;
+      final data = e.response?.data is Map<String, dynamic> ? e.response!.data as Map<String, dynamic> : null;
       return AuthResult(
         success: false,
         message: data?['error'] as String? ?? L10n.current.svcSignupFailed,
@@ -178,13 +178,16 @@ class AuthService {
 
   Future<AuthResult> verifyEmail(String email, String code) async {
     try {
+      // Le serveur attend verificationCode (AuthDTOs) : avec « code » seul,
+      // la vérification échouait toujours (audit du 27/11).
       await _api.dio.post('/auth/verify-email', data: {
         'email': email,
+        'verificationCode': code,
         'code': code,
       });
       return const AuthResult(success: true);
     } on DioException catch (e) {
-      final data = e.response?.data as Map<String, dynamic>?;
+      final data = e.response?.data is Map<String, dynamic> ? e.response!.data as Map<String, dynamic> : null;
       return AuthResult(
         success: false,
         message: data?['error'] as String? ?? L10n.current.svcInvalidCode,
@@ -197,7 +200,7 @@ class AuthService {
       await _api.dio.post('/auth/resend-verification', data: {'email': email});
       return const AuthResult(success: true);
     } on DioException catch (e) {
-      final data = e.response?.data as Map<String, dynamic>?;
+      final data = e.response?.data is Map<String, dynamic> ? e.response!.data as Map<String, dynamic> : null;
       return AuthResult(
           success: false,
           message: data?['error'] as String? ?? L10n.current.commonNetworkError);
@@ -209,7 +212,7 @@ class AuthService {
       await _api.dio.post('/auth/forgot-password', data: {'email': email});
       return const AuthResult(success: true);
     } on DioException catch (e) {
-      final data = e.response?.data as Map<String, dynamic>?;
+      final data = e.response?.data is Map<String, dynamic> ? e.response!.data as Map<String, dynamic> : null;
       return AuthResult(
           success: false,
           message: data?['error'] as String? ?? L10n.current.commonNetworkError);
@@ -218,11 +221,13 @@ class AuthService {
 
   Future<AuthResult> resetPassword(String token, String password) async {
     try {
+      // Le serveur attend resetToken (AuthDTOs) : la réinitialisation
+      // échouait toujours (audit du 27/11).
       await _api.dio.post('/auth/reset-password',
-          data: {'token': token, 'newPassword': password});
+          data: {'resetToken': token, 'token': token, 'newPassword': password});
       return const AuthResult(success: true);
     } on DioException catch (e) {
-      final data = e.response?.data as Map<String, dynamic>?;
+      final data = e.response?.data is Map<String, dynamic> ? e.response!.data as Map<String, dynamic> : null;
       return AuthResult(
           success: false,
           message: data?['error'] as String? ?? L10n.current.commonNetworkError);
@@ -283,7 +288,10 @@ class AuthService {
 
   Future<void> signOut() async {
     try {
-      await _api.dio.post('/auth/logout');
+      // Le jeton de renouvellement est révoqué côté serveur (avant : il
+      // restait valide jusqu'à 30 jours après la déconnexion).
+      final refresh = await SessionManager.getRefreshToken();
+      await _api.dio.post('/auth/logout', data: {if (refresh != null) 'refreshToken': refresh});
     } catch (_) {}
     // Module 27 (lot 8) : purge la clé de chiffrement et les leçons de
     // formation téléchargées hors-ligne du compte courant, avant d'effacer
@@ -301,10 +309,11 @@ class AuthService {
 
   Future<AuthResult> enable2FA() async {
     try {
-      await _api.dio.post('/auth/2fa/enable');
+      // Routes réelles : /users/2fa/enable puis /users/2fa/verify (code).
+      await _api.dio.post('/users/2fa/enable', data: {'method': 'authenticator'});
       return const AuthResult(success: true);
     } on DioException catch (e) {
-      final data = e.response?.data as Map<String, dynamic>?;
+      final data = e.response?.data is Map<String, dynamic> ? e.response!.data as Map<String, dynamic> : null;
       return AuthResult(
           success: false,
           message: data?['error'] as String? ?? L10n.current.commonNetworkError);
@@ -313,10 +322,10 @@ class AuthService {
 
   Future<AuthResult> disable2FA() async {
     try {
-      await _api.dio.post('/auth/2fa/disable');
+      await _api.dio.post('/users/2fa/disable', data: const {});
       return const AuthResult(success: true);
     } on DioException catch (e) {
-      final data = e.response?.data as Map<String, dynamic>?;
+      final data = e.response?.data is Map<String, dynamic> ? e.response!.data as Map<String, dynamic> : null;
       return AuthResult(
           success: false,
           message: data?['error'] as String? ?? L10n.current.commonNetworkError);

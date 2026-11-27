@@ -515,7 +515,7 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
               l.moreGroupAccount
             ], groups: {
               l.barometerTitle: l.moreGroupChildren,
-              l.liveTitle: l.moreGroupChildren,
+              l.liveChildrenTitle: l.moreGroupChildren,
               l.concTitle: l.moreGroupChildren,
               l.bullMineTitle: l.moreGroupChildren,
               l.shellTabProfile: l.moreGroupAccount,
@@ -525,8 +525,10 @@ class _RoleShellState extends State<RoleShell> with WidgetsBindingObserver {
                   PhosphorIconsRegular.userCircle,
                   (_) => MorePage(
                       title: l.shellTabProfile, child: const ParentProfileTab())),
-              MoreEntry(l.liveTitle, PhosphorIconsRegular.videoCamera,
-                  (_) => const LiveClassesScreen()),
+              // Décision de Georges (26/11) : chez le parent, « Séances de mes
+              // enfants » (consultation) au lieu de « Cours en direct ».
+              MoreEntry(l.liveChildrenTitle, PhosphorIconsRegular.videoCamera,
+                  (_) => LiveClassesScreen(title: l.liveChildrenTitle)),
               // Lot 7 : baromètre de bien-être, enfant choisi en haut.
               MoreEntry(l.barometerTitle, PhosphorIconsRegular.gauge,
                   (_) => const BarometerScreen()),

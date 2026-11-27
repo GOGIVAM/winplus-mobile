@@ -3675,5 +3675,9 @@
   "reviewsReplyPublic": "Your reply appears under the review, on your public profile.",
   "reviewsReplySend": "Post reply",
   "reviewsReplySent": "Reply posted.",
-  "instRiskNoQuiz": "No quiz yet"
+  "instRiskNoQuiz": "No quiz yet",
+  "studentProfileCurrentPassword": "Current password",
+  "studentProfileDeleted": "Your account has been deleted.",
+  "liveChildrenTitle": "My children's sessions",
+  "liveEmptyHintParent": "Your children's live classes and online tutoring will appear here, view only."
 }

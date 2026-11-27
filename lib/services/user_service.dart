@@ -303,12 +303,17 @@ class UserService {
         .toList();
   }
 
-  Future<bool> deleteAccount() async {
+  /// Suppression du compte (DELETE /users/me). Renvoie null en cas de
+  /// succès, sinon le message du serveur (titulaire du portefeuille d'un
+  /// établissement, par exemple) ou un message générique.
+  Future<String?> deleteAccount() async {
     try {
       await _api.dio.delete('/users/me');
-      return true;
+      return null;
+    } on DioException catch (e) {
+      return _serverError(e);
     } catch (_) {
-      return false;
+      return L10n.current.svcGenericError;
     }
   }
 
@@ -321,9 +326,15 @@ class UserService {
   /// POST /users/change-email  envoie un code à 6 chiffres à [newEmail].
   /// Lance une [EmailChangeException] avec le message serveur en cas d'échec
   /// (email déjà utilisé, etc.) pour que l'écran affiche l'erreur exacte.
-  Future<void> requestEmailChange(String newEmail) async {
+  /// [password] : mot de passe actuel, exigé par le serveur pour un compte à
+  /// mot de passe (refus « mot_de_passe_requis » ou « mot_de_passe_incorrect »,
+  /// message affiché tel quel) ; un compte Google n'en a pas.
+  Future<void> requestEmailChange(String newEmail, {String? password}) async {
     try {
-      await _api.dio.post('/users/change-email', data: {'newEmail': newEmail});
+      await _api.dio.post('/users/change-email', data: {
+        'newEmail': newEmail,
+        if (password != null && password.isNotEmpty) 'password': password,
+      });
     } on DioException catch (e) {
       throw EmailChangeException(_serverError(e));
     }
@@ -344,6 +355,7 @@ class UserService {
 
   String _serverError(DioException e) {
     final data = e.response?.data;
+    if (data is Map && data['message'] is String && data['code'] is String) return data['message'] as String;
     if (data is Map && data['error'] is String) return data['error'] as String;
     return L10n.current.svcGenericError;
   }

@@ -56,7 +56,7 @@ void main() {
     await reseau(tester);
     final d = faux.recues('POST', '/sessions').single.data as Map;
     expect(d['title'], 'Revision BAC');
-    expect(d['startDate'], '2026-04-01T09:00:00.000');
+    expect(d['startDate'], DateTime(2026, 4, 1, 9).toUtc().toIso8601String(), reason: 'date envoyee en UTC');
     expect(d['externalLink'], 'https://meet.x/abc');
     expect(d['durationMinutes'], 60);
     expect(d['maxParticipants'], 30);
