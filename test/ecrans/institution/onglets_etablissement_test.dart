@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:winplus/app_state.dart';
-import 'package:winplus/institution/action_plan_screen.dart';
 import 'package:winplus/institution/at_risk_screen.dart';
 import 'package:winplus/institution/group_create_screen.dart';
 import 'package:winplus/institution/group_members_screen.dart';
@@ -150,42 +149,69 @@ void main() {
   });
 
   group('InstitutionAnalyticsTab', () {
-    void routes() {
-      faux.repond('GET', '/institution/analytics', {'downloadsThisMonth': 140, 'quizzesThisMonth': 56});
-      faux.repond('GET', '/institution/groups', [
-        _groupe(1, 'Terminale C1', 32),
-        _groupe(2, 'Premiere D', 28),
-      ]);
-    }
+    // GET /institution/analytics/overview (G8 : onglet refait).
+    Map<String, Object> apercu() => {
+          'success': true,
+          'data': {
+            'period': {'from': '2026-10-28', 'to': '2026-11-27'},
+            'kpis': {'enrolled': 40, 'neverLoggedIn': 3, 'active': 25, 'activePrev': 20, 'avgScore': 62.5, 'avgScorePrev': 55.0, 'quizzes': 56, 'quizzesPrev': 60},
+            'weekly': [
+              {'weekStart': '2026-11-03', 'active': 10, 'quizzes': 12},
+              {'weekStart': '2026-11-10', 'active': 18, 'quizzes': 20, 'avgScore': 60.0},
+            ],
+            'groups': [
+              {'id': 1, 'name': 'Terminale C1', 'students': 20, 'active': 15, 'avgScore': 70.0},
+              {'id': 2, 'name': 'Premiere D', 'students': 20, 'active': 10, 'avgScore': 40.0},
+            ],
+            'subjects': [
+              {'subject': 'Mathematiques', 'attempts': 30, 'avgScore': 65.0},
+            ],
+            'content': {'downloads': 140, 'homeworkGiven': 4, 'homeworkSubmitted': 30, 'mockExamsTaken': 12},
+            'atRisk': {'critical': 2, 'moderate': 1, 'top': [{'studentId': 9, 'name': 'Zoe Ndi', 'groupName': 'Premiere D', 'riskReason': 'Aucune activite depuis 21 jours'}]},
+          },
+        };
 
-    testWidgets('compteurs du mois et performance par groupe', (tester) async {
-      routes();
+    testWidgets('chiffres cles avec tendance, risque, classes triees de la plus faible, contenus', (tester) async {
+      faux.repond('GET', '/institution/analytics/overview', apercu());
       await monterHaut(tester, _page(const InstitutionAnalyticsTab()));
       final l = L10n.current;
-      expect(find.text('140'), findsOneWidget);
-      expect(find.text('56'), findsOneWidget);
-      expect(find.text(l.instAnalyticsDownloadsMonth), findsOneWidget);
-      expect(find.text(l.instAnalyticsQuizMonth), findsOneWidget);
-      expect(find.text(l.instAnalyticsByGroup), findsOneWidget);
-      expect(find.text('Terminale C1'), findsOneWidget);
-      expect(find.text('32'), findsOneWidget);
-      expect(find.byType(WinProgressBar), findsNWidgets(2));
+      expect(faux.recues('GET', '/institution/analytics/overview').single.queryParameters['period'], '30d');
+      expect(find.text(l.anaActiveOf(25, 40)), findsOneWidget);
+      expect(find.text('+5'), findsOneWidget, reason: '25 actifs contre 20');
+      expect(find.text(l.anaEnrolledNever(3)), findsOneWidget);
+      expect(find.text('12,5/20'), findsOneWidget, reason: '62,5 % sur 20');
+      expect(find.text(l.anaRiskCritical(2)), findsOneWidget);
+      expect(find.textContaining('Zoe Ndi'), findsOneWidget);
+      final faible = tester.getTopLeft(find.text('Premiere D').last).dy;
+      final fort = tester.getTopLeft(find.text('Terminale C1')).dy;
+      expect(faible, lessThan(fort), reason: 'classe la plus faible en tete');
+      expect(find.text(l.anaHomeworkValue(30, 4)), findsOneWidget);
     });
 
-    testWidgets('« Eleves a risque » ouvre l\'ecran dedie', (tester) async {
-      routes();
+    testWidgets('changer de periode relance avec period=year', (tester) async {
+      faux.repond('GET', '/institution/analytics/overview', apercu());
       await monterHaut(tester, _page(const InstitutionAnalyticsTab()));
-      await tester.tap(_bouton(L10n.current.instRiskTitle));
+      await tester.tap(find.text(L10n.current.anaPeriodYear));
+      await reseau(tester);
+      expect(faux.recues('GET', '/institution/analytics/overview').last.queryParameters['period'], 'year');
+    });
+
+    testWidgets('serveur pas encore a jour (404) : chiffres du mois de l ancienne route et message', (tester) async {
+      faux.repond('GET', '/institution/analytics/overview', {'error': 'x'}, statut: 404);
+      faux.repond('GET', '/institution/analytics', {'totalStudents': 40, 'activeStudents': 12, 'quizzesThisMonth': 56, 'downloadsThisMonth': 140});
+      await monterHaut(tester, _page(const InstitutionAnalyticsTab()));
+      final l = L10n.current;
+      expect(find.text(l.anaPartial), findsOneWidget);
+      expect(find.text(l.anaActiveOf(12, 40)), findsOneWidget);
+      expect(find.text('56'), findsOneWidget);
+    });
+
+    testWidgets('« Voir tout » des eleves a risque et le plan WinAI ouvrent leurs ecrans', (tester) async {
+      faux.repond('GET', '/institution/analytics/overview', apercu());
+      await monterHaut(tester, _page(const InstitutionAnalyticsTab()));
+      await tester.tap(find.text(L10n.current.commonSeeAll).first);
       await reseau(tester);
       expect(find.byType(AtRiskScreen), findsOneWidget);
-    });
-
-    testWidgets('« Plan d\'action WinAI » ouvre l\'ecran dedie', (tester) async {
-      routes();
-      await monterHaut(tester, _page(const InstitutionAnalyticsTab()));
-      await tester.tap(_bouton(L10n.current.instPlanTitle));
-      await reseau(tester);
-      expect(find.byType(ActionPlanScreen), findsOneWidget);
     });
   });
 

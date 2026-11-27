@@ -28,18 +28,7 @@ import '../shell/more_screen.dart';
 import '../shared/net_image.dart';
 import 'institution_profile_screen.dart';
 import '../services/institution_profile_service.dart';
-
-Widget _statCard(BuildContext c, IconData icon, String value, String label) {
-  final s = WinTheme.of(c);
-  return WinCard(
-      padding: const EdgeInsets.all(14),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Icon(icon, size: 20, color: s.primary),
-        const SizedBox(height: 8),
-        Text(value, style: WinType.archivo(size: 22, color: s.onStrong)),
-        Text(label, style: WinType.labelM(s.onMuted)),
-      ]));
-}
+import 'institution_analytics_view.dart';
 
 class _GroupRow extends StatelessWidget {
   final ApiGroup g;
@@ -541,117 +530,11 @@ class _InstitutionCatalogTabState extends State<InstitutionCatalogTab> {
 }
 
 /// ===================== ANALYTICS =====================
-class InstitutionAnalyticsTab extends StatefulWidget {
+/// Onglet « Analyses » : écran refait (G8), voir institution_analytics_view.
+class InstitutionAnalyticsTab extends StatelessWidget {
   const InstitutionAnalyticsTab({super.key});
   @override
-  State<InstitutionAnalyticsTab> createState() =>
-      _InstitutionAnalyticsTabState();
-}
-
-class _InstitutionAnalyticsTabState extends State<InstitutionAnalyticsTab> {
-  ApiInstitutionAnalytics? _analytics;
-  List<ApiGroup>? _groups;
-
-  @override
-  void initState() {
-    super.initState();
-    _load();
-  }
-
-  bool _failed = false;
-
-  Future<void> _load() async {
-    if (_failed) setState(() => _failed = false);
-    try {
-      final analytics = await InstitutionService.instance.getAnalytics();
-      final groups = await InstitutionService.instance.getGroups();
-      if (mounted)
-        setState(() {
-          _analytics = analytics;
-          _groups = groups;
-        });
-    } catch (_) {
-      if (mounted) setState(() => _failed = true);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final s = WinTheme.of(context);
-    final groups = _groups ?? [];
-
-    return Column(children: [
-      Expanded(
-          child: ListView(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-              children: [
-            Row(children: [
-              Expanded(
-                  child: _statCard(
-                      context,
-                      PhosphorIconsRegular.clock,
-                      _analytics != null
-                          ? '${_analytics!.downloadsThisMonth}'
-                          : '',
-                      context.l10n.instAnalyticsDownloadsMonth)),
-              const SizedBox(width: 10),
-              Expanded(
-                  child: _statCard(
-                      context,
-                      PhosphorIconsRegular.checkCircle,
-                      _analytics != null
-                          ? '${_analytics!.quizzesThisMonth}'
-                          : '',
-                      context.l10n.instAnalyticsQuizMonth)),
-            ]),
-            const SizedBox(height: 10),
-            WinButton(context.l10n.instRiskTitle,
-                variant: WinButtonVariant.outline,
-                block: true,
-                icon: PhosphorIconsRegular.warning,
-                onTap: () => Navigator.push(context,
-                    WinPageRoute(builder: (_) => const AtRiskScreen()))),
-            const SizedBox(height: 10),
-            WinButton(context.l10n.instPlanTitle,
-                variant: WinButtonVariant.ghost,
-                block: true,
-                icon: winAIIconData,
-                onTap: () => Navigator.push(context,
-                    WinPageRoute(builder: (_) => const ActionPlanScreen()))),
-            const SizedBox(height: 20),
-            if (_failed)
-              WinErrorState(message: context.l10n.commonLoadError, onRetry: _load)
-            else if (_groups == null)
-              const WinLoading()
-            else ...[
-              Text(context.l10n.instAnalyticsByGroup,
-                  style: WinType.archivo(size: 18, color: s.onStrong)),
-              const SizedBox(height: 12),
-              ...groups.map((g) => Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: Row(children: [
-                      SizedBox(
-                          width: 84,
-                          child: Text(g.name,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: WinType.bodyM(s.onStrong)
-                                  .copyWith(fontWeight: FontWeight.w600))),
-                      Expanded(
-                          child: WinProgressBar(
-                              g.memberCount.toDouble().clamp(0, 100))),
-                      const SizedBox(width: 8),
-                      SizedBox(
-                          width: 40,
-                          child: Text('${g.memberCount}',
-                              textAlign: TextAlign.right,
-                              style: WinType.labelM(s.onMuted))),
-                    ]),
-                  )),
-            ],
-          ])),
-    ]);
-  }
+  Widget build(BuildContext context) => const InstitutionAnalyticsView();
 }
 
 /// ===================== COMPTE =====================

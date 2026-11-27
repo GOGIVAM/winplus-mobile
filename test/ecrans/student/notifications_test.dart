@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:winplus/app_state.dart';
+import 'package:winplus/data/models.dart' show WinRole;
 import 'package:winplus/l10n/l10n.dart';
+import 'package:winplus/teacher/course_stats_screen.dart';
 import 'package:winplus/services/user_service.dart';
 import 'package:winplus/student/notifications_screen.dart';
 
@@ -45,6 +48,23 @@ void main() {
     expect(UserService.instance.unreadNotifications.value, 1);
     expect(find.text(l.studentNotifSeeMore), findsNothing);
     expect(faux.requetes.single.queryParameters, {'page': 1, 'limit': 20});
+  });
+
+  testWidgets('professeur : une alerte d eleves inactifs ouvre le suivi de la formation', (tester) async {
+    faux.repond('GET', '/notifications', {
+      'data': [
+        {'id': 5, 'title': '3 eleves inactifs', 'type': 'warning', 'isRead': true, 'createdAt': _ilYa(const Duration(minutes: 5)),
+         'relatedEntityType': 'Course', 'relatedEntityId': 12},
+      ],
+      'unread': 0,
+    });
+    faux.repond('GET', '/teacher/courses/12/analytics/lessons', []);
+    await monterEcran(tester, const NotificationsScreen(), etat: WinAppState()..setRole(WinRole.teacher));
+    await tester.tap(find.text('3 eleves inactifs'));
+    await pomper(tester);
+    await pomper(tester, const Duration(milliseconds: 500));
+    await reseau(tester);
+    expect(find.byType(CourseStatsScreen), findsOneWidget);
   });
 
   testWidgets('liste vide : « tout est a jour »', (tester) async {

@@ -238,8 +238,13 @@ class LessonStats {
 
   /// Inscrits actifs de la formation (même nombre pour chaque leçon).
   final int enrolled;
+
+  /// Chapitre de la leçon (serveur, 27/11 : leçons triées par chapitre puis
+  /// position) ; null avec un serveur plus ancien.
+  final int? sectionId;
+  final String? sectionTitle;
   const LessonStats(this.lessonId, this.title, this.type, this.completionRate, this.completed, this.watchSec, this.quizScore,
-      this.lowCompletion, [this.enrolled = 0]);
+      this.lowCompletion, [this.enrolled = 0, this.sectionId, this.sectionTitle]);
 
   factory LessonStats.fromJson(Map j) => LessonStats(
         (j['lessonId'] as num?)?.toInt() ?? 0,
@@ -251,6 +256,8 @@ class LessonStats {
         (j['averageQuizScore'] as num?)?.toDouble(),
         j['lowCompletionAlert'] == true,
         (j['enrolledCount'] as num?)?.toInt() ?? 0,
+        (j['sectionId'] as num?)?.toInt(),
+        j['sectionTitle'] as String?,
       );
 }
 

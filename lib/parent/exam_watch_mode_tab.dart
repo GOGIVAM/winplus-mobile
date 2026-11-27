@@ -157,7 +157,7 @@ class _ExamWatchModeTabState extends State<ExamWatchModeTab> {
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(state.examType ?? '',
+                        Text(examTypeLabel(state.examType ?? ''),
                             style: WinType.titleM(s.onStrong)),
                         if (state.examDate != null)
                           Text(context.l10n.parentWatchExamOn(_fmtDate(state.examDate!)),
@@ -186,7 +186,7 @@ class _ExamWatchModeTabState extends State<ExamWatchModeTab> {
           WinCard(
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(state.examType!, style: WinType.titleM(s.onStrong)),
+              Text(examTypeLabel(state.examType!), style: WinType.titleM(s.onStrong)),
               Text(context.l10n.parentWatchExamOn(_fmtDate(state.examDate!)),
                   style: WinType.labelS(s.onMuted)),
               const SizedBox(height: 12),

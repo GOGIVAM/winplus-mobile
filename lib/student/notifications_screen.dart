@@ -10,6 +10,11 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../widgets/win_screen.dart';
+import 'dart:async';
+import '../app_state.dart';
+import '../data/models.dart' show WinRole;
+import '../teacher/course_stats_screen.dart';
+import '../theme/win_motion.dart';
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
@@ -104,7 +109,23 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     }
   }
 
+  /// Écran de l'objet d'une notification, ou null (pas de lien connu).
+  Widget? _target(ApiNotification n) {
+    final id = n.relatedEntityId;
+    if (id == null) return null;
+    return switch (n.relatedEntityType?.toLowerCase()) {
+      // Alerte « élèves inactifs » du professeur : suivi de la formation.
+      'course' when WinAppScope.of(context).role == WinRole.teacher =>
+        CourseStatsScreen(courseId: id, title: n.title),
+      _ => null,
+    };
+  }
+
   Future<void> _openNotification(ApiNotification n) async {
+    final target = _target(n);
+    if (target != null) {
+      unawaited(Navigator.push(context, WinPageRoute(builder: (_) => target)));
+    }
     if (n.isRead) return;
     // Optimiste : la carte et le badge changent tout de suite, le serveur
     // donne ensuite le compte exact.

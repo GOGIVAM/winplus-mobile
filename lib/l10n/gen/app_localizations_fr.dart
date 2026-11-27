@@ -2314,7 +2314,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get shellTabAccount => 'Compte';
 
   @override
-  String get shellTabAnalytics => 'Analytics';
+  String get shellTabAnalytics => 'Analyses';
 
   @override
   String get shellTabCatalog => 'Catalogue';
@@ -2570,7 +2570,7 @@ class AppLocalizationsFr extends AppLocalizations {
       count,
       locale: localeName,
       other: '$count jours consécutifs',
-      one: '$count jours consécutifs',
+      one: '$count jour consécutif',
     );
     return '$_temp0';
   }
@@ -2580,7 +2580,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Impossible de charger ta série réelle. La série ci-dessous peut ne pas être à jour.';
 
   @override
-  String get studentAchTitle => 'Achievements';
+  String get studentAchTitle => 'Mes badges';
 
   @override
   String get studentAchUnlocked => 'Débloqué';
@@ -3385,7 +3385,7 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get studentHubPomodoroSub => '25 min focus · 5 min pause';
+  String get studentHubPomodoroSub => '25 min de travail · 5 min de pause';
 
   @override
   String get studentHubPrivacy => 'Politique de confidentialité';
@@ -3926,7 +3926,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get studentSessionIntro =>
-      'Choisis une matière et une durée. WinAI prépare un briefing, un quiz progressif puis une synthèse personnalisée.';
+      'Choisis une matière et une durée. WinAI prépare une présentation, un quiz progressif puis une synthèse personnalisée.';
 
   @override
   String studentSessionMinutes(Object d) {
@@ -3970,7 +3970,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Impossible de démarrer la session. Réessaie.';
 
   @override
-  String get studentSessionStepBriefing => 'Briefing';
+  String get studentSessionStepBriefing => 'Présentation';
 
   @override
   String get studentSessionStepQuiz => 'Quiz progressif';
@@ -6293,10 +6293,10 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get timerTip =>
-      '25 min de focus + 5 min de pause = 1 pomodoro. Après 4 pomodoros, prends une pause longue de 15 min.';
+      '25 min de travail + 5 min de pause = 1 pomodoro. Après 4 pomodoros, prends une pause longue de 15 min.';
 
   @override
-  String get timerTitle => 'Timer Pomodoro';
+  String get timerTitle => 'Minuteur Pomodoro';
 
   @override
   String timerTodayCount(int count) {
@@ -12578,4 +12578,153 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get liveEmptyHintParent =>
       'Les cours en direct et les tutorats en ligne de vos enfants apparaîtront ici, en consultation.';
+
+  @override
+  String get studentCoachTitle => 'Coach d\'examen';
+
+  @override
+  String get anaFilterClass => 'Filtrer par classe';
+
+  @override
+  String get anaAllClasses => 'Toutes les classes';
+
+  @override
+  String get anaPeriodWeek => '7 jours';
+
+  @override
+  String get anaPeriodMonth => '30 jours';
+
+  @override
+  String get anaPeriodTerm => 'Trimestre';
+
+  @override
+  String get anaPeriodYear => 'Année';
+
+  @override
+  String get anaPartial =>
+      'Seuls les chiffres du mois sont disponibles pour le moment. Les analyses détaillées arrivent avec la prochaine mise à jour du serveur.';
+
+  @override
+  String get anaEnrolled => 'Élèves inscrits';
+
+  @override
+  String anaEnrolledNever(int count) {
+    return 'Inscrits, dont $count jamais connectés';
+  }
+
+  @override
+  String get anaActive => 'Élèves actifs sur la période';
+
+  @override
+  String anaActiveOf(int active, int total) {
+    return '$active sur $total';
+  }
+
+  @override
+  String get anaAvgScore => 'Moyenne aux quiz';
+
+  @override
+  String get anaQuizzes => 'Quiz faits';
+
+  @override
+  String get anaNoActivityTitle => 'Pas encore d\'activité';
+
+  @override
+  String get anaNoActivityHint =>
+      'Attribuez des ressources à vos classes : les résultats de vos élèves apparaîtront ici.';
+
+  @override
+  String get anaNoActivityPeriod => 'Aucun élève actif sur la période.';
+
+  @override
+  String anaActiveCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count élèves actifs',
+      one: '1 élève actif',
+      zero: 'aucun élève actif',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get anaRiskTitle => 'Élèves à risque';
+
+  @override
+  String get anaRiskNone => 'Aucun élève à risque sur la période.';
+
+  @override
+  String anaRiskCritical(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count critiques',
+      one: '1 critique',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String anaRiskModerate(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count modérés',
+      one: '1 modéré',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get anaWeeklyTitle => 'Élèves actifs par semaine';
+
+  @override
+  String get anaByClass => 'Résultats par classe';
+
+  @override
+  String anaClassMeta(int active, int students) {
+    return '$active actifs sur $students élèves';
+  }
+
+  @override
+  String get anaBySubject => 'Résultats par matière';
+
+  @override
+  String anaSubjectMeta(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count quiz',
+      one: '1 quiz',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get anaContentTitle => 'Activité des contenus';
+
+  @override
+  String get anaDownloads => 'Téléchargements';
+
+  @override
+  String get anaHomework => 'Devoirs rendus';
+
+  @override
+  String anaHomeworkValue(int submitted, int given) {
+    return '$submitted rendus · $given donnés';
+  }
+
+  @override
+  String get anaMockExams => 'Examens blancs passés';
+
+  @override
+  String get anaPlanHint =>
+      'WinAI propose des actions prioritaires à partir de ces résultats.';
+
+  @override
+  String get anaMore => 'Pour aller plus loin';
+
+  @override
+  String get anaReports => 'Rapports';
 }

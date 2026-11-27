@@ -3996,7 +3996,7 @@ abstract class AppLocalizations {
   /// No description provided for @shellTabAnalytics.
   ///
   /// In fr, this message translates to:
-  /// **'Analytics'**
+  /// **'Analyses'**
   String get shellTabAnalytics;
 
   /// No description provided for @shellTabCatalog.
@@ -4440,7 +4440,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentAchStreakDays.
   ///
   /// In fr, this message translates to:
-  /// **'{count, plural, =1{{count} jours consécutifs} other{{count} jours consécutifs}}'**
+  /// **'{count, plural, =1{{count} jour consécutif} other{{count} jours consécutifs}}'**
   String studentAchStreakDays(int count);
 
   /// No description provided for @studentAchStreakLoadError.
@@ -4452,7 +4452,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentAchTitle.
   ///
   /// In fr, this message translates to:
-  /// **'Achievements'**
+  /// **'Mes badges'**
   String get studentAchTitle;
 
   /// No description provided for @studentAchUnlocked.
@@ -5791,7 +5791,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentHubPomodoroSub.
   ///
   /// In fr, this message translates to:
-  /// **'25 min focus · 5 min pause'**
+  /// **'25 min de travail · 5 min de pause'**
   String get studentHubPomodoroSub;
 
   /// No description provided for @studentHubPrivacy.
@@ -6769,7 +6769,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentSessionIntro.
   ///
   /// In fr, this message translates to:
-  /// **'Choisis une matière et une durée. WinAI prépare un briefing, un quiz progressif puis une synthèse personnalisée.'**
+  /// **'Choisis une matière et une durée. WinAI prépare une présentation, un quiz progressif puis une synthèse personnalisée.'**
   String get studentSessionIntro;
 
   /// No description provided for @studentSessionMinutes.
@@ -6841,7 +6841,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentSessionStepBriefing.
   ///
   /// In fr, this message translates to:
-  /// **'Briefing'**
+  /// **'Présentation'**
   String get studentSessionStepBriefing;
 
   /// No description provided for @studentSessionStepQuiz.
@@ -10791,13 +10791,13 @@ abstract class AppLocalizations {
   /// No description provided for @timerTip.
   ///
   /// In fr, this message translates to:
-  /// **'25 min de focus + 5 min de pause = 1 pomodoro. Après 4 pomodoros, prends une pause longue de 15 min.'**
+  /// **'25 min de travail + 5 min de pause = 1 pomodoro. Après 4 pomodoros, prends une pause longue de 15 min.'**
   String get timerTip;
 
   /// No description provided for @timerTitle.
   ///
   /// In fr, this message translates to:
-  /// **'Timer Pomodoro'**
+  /// **'Minuteur Pomodoro'**
   String get timerTitle;
 
   /// No description provided for @timerTodayCount.
@@ -21135,6 +21135,216 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Les cours en direct et les tutorats en ligne de vos enfants apparaîtront ici, en consultation.'**
   String get liveEmptyHintParent;
+
+  /// No description provided for @studentCoachTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Coach d\'examen'**
+  String get studentCoachTitle;
+
+  /// No description provided for @anaFilterClass.
+  ///
+  /// In fr, this message translates to:
+  /// **'Filtrer par classe'**
+  String get anaFilterClass;
+
+  /// No description provided for @anaAllClasses.
+  ///
+  /// In fr, this message translates to:
+  /// **'Toutes les classes'**
+  String get anaAllClasses;
+
+  /// No description provided for @anaPeriodWeek.
+  ///
+  /// In fr, this message translates to:
+  /// **'7 jours'**
+  String get anaPeriodWeek;
+
+  /// No description provided for @anaPeriodMonth.
+  ///
+  /// In fr, this message translates to:
+  /// **'30 jours'**
+  String get anaPeriodMonth;
+
+  /// No description provided for @anaPeriodTerm.
+  ///
+  /// In fr, this message translates to:
+  /// **'Trimestre'**
+  String get anaPeriodTerm;
+
+  /// No description provided for @anaPeriodYear.
+  ///
+  /// In fr, this message translates to:
+  /// **'Année'**
+  String get anaPeriodYear;
+
+  /// No description provided for @anaPartial.
+  ///
+  /// In fr, this message translates to:
+  /// **'Seuls les chiffres du mois sont disponibles pour le moment. Les analyses détaillées arrivent avec la prochaine mise à jour du serveur.'**
+  String get anaPartial;
+
+  /// No description provided for @anaEnrolled.
+  ///
+  /// In fr, this message translates to:
+  /// **'Élèves inscrits'**
+  String get anaEnrolled;
+
+  /// No description provided for @anaEnrolledNever.
+  ///
+  /// In fr, this message translates to:
+  /// **'Inscrits, dont {count} jamais connectés'**
+  String anaEnrolledNever(int count);
+
+  /// No description provided for @anaActive.
+  ///
+  /// In fr, this message translates to:
+  /// **'Élèves actifs sur la période'**
+  String get anaActive;
+
+  /// No description provided for @anaActiveOf.
+  ///
+  /// In fr, this message translates to:
+  /// **'{active} sur {total}'**
+  String anaActiveOf(int active, int total);
+
+  /// No description provided for @anaAvgScore.
+  ///
+  /// In fr, this message translates to:
+  /// **'Moyenne aux quiz'**
+  String get anaAvgScore;
+
+  /// No description provided for @anaQuizzes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quiz faits'**
+  String get anaQuizzes;
+
+  /// No description provided for @anaNoActivityTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pas encore d\'activité'**
+  String get anaNoActivityTitle;
+
+  /// No description provided for @anaNoActivityHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Attribuez des ressources à vos classes : les résultats de vos élèves apparaîtront ici.'**
+  String get anaNoActivityHint;
+
+  /// No description provided for @anaNoActivityPeriod.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun élève actif sur la période.'**
+  String get anaNoActivityPeriod;
+
+  /// No description provided for @anaActiveCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =0{aucun élève actif} =1{1 élève actif} other{{count} élèves actifs}}'**
+  String anaActiveCount(int count);
+
+  /// No description provided for @anaRiskTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Élèves à risque'**
+  String get anaRiskTitle;
+
+  /// No description provided for @anaRiskNone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun élève à risque sur la période.'**
+  String get anaRiskNone;
+
+  /// No description provided for @anaRiskCritical.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{1 critique} other{{count} critiques}}'**
+  String anaRiskCritical(int count);
+
+  /// No description provided for @anaRiskModerate.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{1 modéré} other{{count} modérés}}'**
+  String anaRiskModerate(int count);
+
+  /// No description provided for @anaWeeklyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Élèves actifs par semaine'**
+  String get anaWeeklyTitle;
+
+  /// No description provided for @anaByClass.
+  ///
+  /// In fr, this message translates to:
+  /// **'Résultats par classe'**
+  String get anaByClass;
+
+  /// No description provided for @anaClassMeta.
+  ///
+  /// In fr, this message translates to:
+  /// **'{active} actifs sur {students} élèves'**
+  String anaClassMeta(int active, int students);
+
+  /// No description provided for @anaBySubject.
+  ///
+  /// In fr, this message translates to:
+  /// **'Résultats par matière'**
+  String get anaBySubject;
+
+  /// No description provided for @anaSubjectMeta.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{1 quiz} other{{count} quiz}}'**
+  String anaSubjectMeta(int count);
+
+  /// No description provided for @anaContentTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Activité des contenus'**
+  String get anaContentTitle;
+
+  /// No description provided for @anaDownloads.
+  ///
+  /// In fr, this message translates to:
+  /// **'Téléchargements'**
+  String get anaDownloads;
+
+  /// No description provided for @anaHomework.
+  ///
+  /// In fr, this message translates to:
+  /// **'Devoirs rendus'**
+  String get anaHomework;
+
+  /// No description provided for @anaHomeworkValue.
+  ///
+  /// In fr, this message translates to:
+  /// **'{submitted} rendus · {given} donnés'**
+  String anaHomeworkValue(int submitted, int given);
+
+  /// No description provided for @anaMockExams.
+  ///
+  /// In fr, this message translates to:
+  /// **'Examens blancs passés'**
+  String get anaMockExams;
+
+  /// No description provided for @anaPlanHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'WinAI propose des actions prioritaires à partir de ces résultats.'**
+  String get anaPlanHint;
+
+  /// No description provided for @anaMore.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pour aller plus loin'**
+  String get anaMore;
+
+  /// No description provided for @anaReports.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rapports'**
+  String get anaReports;
 }
 
 class _AppLocalizationsDelegate

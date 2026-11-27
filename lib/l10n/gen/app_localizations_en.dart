@@ -12484,4 +12484,153 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get liveEmptyHintParent =>
       'Your children\'s live classes and online tutoring will appear here, view only.';
+
+  @override
+  String get studentCoachTitle => 'Exam coach';
+
+  @override
+  String get anaFilterClass => 'Filter by class';
+
+  @override
+  String get anaAllClasses => 'All classes';
+
+  @override
+  String get anaPeriodWeek => '7 days';
+
+  @override
+  String get anaPeriodMonth => '30 days';
+
+  @override
+  String get anaPeriodTerm => 'Term';
+
+  @override
+  String get anaPeriodYear => 'Year';
+
+  @override
+  String get anaPartial =>
+      'Only this month\'s figures are available for now. Detailed analytics come with the next server update.';
+
+  @override
+  String get anaEnrolled => 'Enrolled students';
+
+  @override
+  String anaEnrolledNever(int count) {
+    return 'Enrolled, $count never signed in';
+  }
+
+  @override
+  String get anaActive => 'Active students in the period';
+
+  @override
+  String anaActiveOf(int active, int total) {
+    return '$active of $total';
+  }
+
+  @override
+  String get anaAvgScore => 'Quiz average';
+
+  @override
+  String get anaQuizzes => 'Quizzes taken';
+
+  @override
+  String get anaNoActivityTitle => 'No activity yet';
+
+  @override
+  String get anaNoActivityHint =>
+      'Assign resources to your classes: your students\' results will appear here.';
+
+  @override
+  String get anaNoActivityPeriod => 'No active students in the period.';
+
+  @override
+  String anaActiveCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count active students',
+      one: '1 active student',
+      zero: 'no active students',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get anaRiskTitle => 'At-risk students';
+
+  @override
+  String get anaRiskNone => 'No at-risk students in the period.';
+
+  @override
+  String anaRiskCritical(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count critical',
+      one: '1 critical',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String anaRiskModerate(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count moderate',
+      one: '1 moderate',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get anaWeeklyTitle => 'Active students per week';
+
+  @override
+  String get anaByClass => 'Results by class';
+
+  @override
+  String anaClassMeta(int active, int students) {
+    return '$active active of $students students';
+  }
+
+  @override
+  String get anaBySubject => 'Results by subject';
+
+  @override
+  String anaSubjectMeta(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count quizzes',
+      one: '1 quiz',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get anaContentTitle => 'Content activity';
+
+  @override
+  String get anaDownloads => 'Downloads';
+
+  @override
+  String get anaHomework => 'Homework handed in';
+
+  @override
+  String anaHomeworkValue(int submitted, int given) {
+    return '$submitted handed in · $given given';
+  }
+
+  @override
+  String get anaMockExams => 'Mock exams taken';
+
+  @override
+  String get anaPlanHint =>
+      'WinAI suggests priority actions based on these results.';
+
+  @override
+  String get anaMore => 'Going further';
+
+  @override
+  String get anaReports => 'Reports';
 }

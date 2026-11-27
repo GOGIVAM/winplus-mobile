@@ -54,6 +54,11 @@ class ApiNotification {
   final String type;
   final bool isRead;
   final DateTime createdAt;
+
+  /// Objet de la notification (ex. « Course » et l'identifiant de la
+  /// formation pour une alerte d'élèves inactifs) : la toucher l'ouvre.
+  final String? relatedEntityType;
+  final int? relatedEntityId;
   const ApiNotification({
     required this.id,
     required this.title,
@@ -61,6 +66,8 @@ class ApiNotification {
     required this.type,
     required this.isRead,
     required this.createdAt,
+    this.relatedEntityType,
+    this.relatedEntityId,
   });
 
   factory ApiNotification.fromJson(Map<String, dynamic> j) => ApiNotification(
@@ -71,6 +78,8 @@ class ApiNotification {
         isRead: j['isRead'] as bool? ?? false,
         createdAt: DateTime.tryParse(j['createdAt'] as String? ?? '') ??
             DateTime.now(),
+        relatedEntityType: j['relatedEntityType'] as String?,
+        relatedEntityId: (j['relatedEntityId'] as num?)?.toInt(),
       );
 
   ApiNotification copyWith({bool? isRead}) => ApiNotification(
@@ -80,6 +89,8 @@ class ApiNotification {
         type: type,
         isRead: isRead ?? this.isRead,
         createdAt: createdAt,
+        relatedEntityType: relatedEntityType,
+        relatedEntityId: relatedEntityId,
       );
 }
 

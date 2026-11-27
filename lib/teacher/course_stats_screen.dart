@@ -89,6 +89,8 @@ class _CourseStatsScreenState extends State<CourseStatsScreen> {
   (int, LessonStats, LessonStats)? _biggestDrop(List<LessonStats> ls) {
     (int, LessonStats, LessonStats)? best;
     for (var i = 1; i < ls.length; i++) {
+      // Deux leçons consécutives du même chapitre seulement.
+      if (ls[i].sectionId != ls[i - 1].sectionId) continue;
       final drop = ls[i - 1].completed - ls[i].completed;
       if (drop > 0 && (best == null || drop > best.$1)) best = (drop, ls[i - 1], ls[i]);
     }
@@ -135,7 +137,15 @@ class _CourseStatsScreenState extends State<CourseStatsScreen> {
       const SizedBox(height: 20),
       Text(l.cstatPath, style: WinType.titleM(s.onStrong)),
       const SizedBox(height: 8),
-      for (var i = 0; i < ls.length; i++) _lessonStep(s, l, i + 1, ls[i], last: i == ls.length - 1),
+      for (var i = 0; i < ls.length; i++) ...[
+        // Titre du chapitre à chaque changement (ordre du programme).
+        if ((ls[i].sectionTitle ?? '').isNotEmpty && (i == 0 || ls[i].sectionId != ls[i - 1].sectionId))
+          Padding(
+            padding: EdgeInsets.only(top: i == 0 ? 0 : 8, bottom: 6),
+            child: Text(ls[i].sectionTitle!, style: WinType.labelM(s.onMuted)),
+          ),
+        _lessonStep(s, l, i + 1, ls[i], last: i == ls.length - 1),
+      ],
     ];
   }
 

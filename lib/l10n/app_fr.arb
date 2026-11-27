@@ -1372,7 +1372,7 @@
   "roleTeacher": "Professeur",
   "roleTutor": "Répétiteur",
   "shellTabAccount": "Compte",
-  "shellTabAnalytics": "Analytics",
+  "shellTabAnalytics": "Analyses",
   "shellTabCatalog": "Catalogue",
   "shellTabChildren": "Enfants",
   "shellTabContent": "Contenus",
@@ -1498,7 +1498,7 @@
   "studentAchCurrentStreak": "Série actuelle",
   "studentAchLocked": "Verrouillé",
   "studentAchMyBadges": "Mes badges",
-  "studentAchStreakDays": "{count, plural, =1{{count} jours consécutifs} other{{count} jours consécutifs}}",
+  "studentAchStreakDays": "{count, plural, =1{{count} jour consécutif} other{{count} jours consécutifs}}",
   "@studentAchStreakDays": {
     "placeholders": {
       "count": {
@@ -1507,7 +1507,7 @@
     }
   },
   "studentAchStreakLoadError": "Impossible de charger ta série réelle. La série ci-dessous peut ne pas être à jour.",
-  "studentAchTitle": "Achievements",
+  "studentAchTitle": "Mes badges",
   "studentAchUnlocked": "Débloqué",
   "studentCatalogAccess": "Accès",
   "studentCatalogAllAccess": "Tous",
@@ -2003,7 +2003,7 @@
       }
     }
   },
-  "studentHubPomodoroSub": "25 min focus · 5 min pause",
+  "studentHubPomodoroSub": "25 min de travail · 5 min de pause",
   "studentHubPrivacy": "Politique de confidentialité",
   "studentHubProfileSettings": "Paramètres du profil",
   "studentHubReports": "Mes rapports de progression",
@@ -2300,7 +2300,7 @@
       }
     }
   },
-  "studentSessionIntro": "Choisis une matière et une durée. WinAI prépare un briefing, un quiz progressif puis une synthèse personnalisée.",
+  "studentSessionIntro": "Choisis une matière et une durée. WinAI prépare une présentation, un quiz progressif puis une synthèse personnalisée.",
   "studentSessionMinutes": "{d} min",
   "@studentSessionMinutes": {
     "placeholders": {
@@ -2332,7 +2332,7 @@
   "studentSessionSeeSummary": "Voir la synthèse",
   "studentSessionStart": "Démarrer la session",
   "studentSessionStartError": "Impossible de démarrer la session. Réessaie.",
-  "studentSessionStepBriefing": "Briefing",
+  "studentSessionStepBriefing": "Présentation",
   "studentSessionStepQuiz": "Quiz progressif",
   "studentSessionStepSummary": "Synthèse WinAI",
   "studentSessionSummaryError": "La synthèse n'a pas pu être générée, mais tes réponses sont bien conservées.",
@@ -3731,8 +3731,8 @@
   "timerNewPomodoro": "Nouveau pomodoro",
   "timerPomodoroDone": "Pomodoro terminé !",
   "timerReset": "Réinitialiser",
-  "timerTip": "25 min de focus + 5 min de pause = 1 pomodoro. Après 4 pomodoros, prends une pause longue de 15 min.",
-  "timerTitle": "Timer Pomodoro",
+  "timerTip": "25 min de travail + 5 min de pause = 1 pomodoro. Après 4 pomodoros, prends une pause longue de 15 min.",
+  "timerTitle": "Minuteur Pomodoro",
   "timerTodayCount": "{count, plural, =0{{count} pomodoros aujourd'hui} =1{{count} pomodoro aujourd'hui} other{{count} pomodoros aujourd'hui}}",
   "@timerTodayCount": {
     "placeholders": {
@@ -6555,5 +6555,48 @@
   "studentProfileCurrentPassword": "Mot de passe actuel",
   "studentProfileDeleted": "Ton compte a été supprimé.",
   "liveChildrenTitle": "Séances de mes enfants",
-  "liveEmptyHintParent": "Les cours en direct et les tutorats en ligne de vos enfants apparaîtront ici, en consultation."
+  "liveEmptyHintParent": "Les cours en direct et les tutorats en ligne de vos enfants apparaîtront ici, en consultation.",
+  "studentCoachTitle": "Coach d'examen",
+  "anaFilterClass": "Filtrer par classe",
+  "anaAllClasses": "Toutes les classes",
+  "anaPeriodWeek": "7 jours",
+  "anaPeriodMonth": "30 jours",
+  "anaPeriodTerm": "Trimestre",
+  "anaPeriodYear": "Année",
+  "anaPartial": "Seuls les chiffres du mois sont disponibles pour le moment. Les analyses détaillées arrivent avec la prochaine mise à jour du serveur.",
+  "anaEnrolled": "Élèves inscrits",
+  "anaEnrolledNever": "Inscrits, dont {count} jamais connectés",
+  "@anaEnrolledNever": {"placeholders": {"count": {"type": "int"}}},
+  "anaActive": "Élèves actifs sur la période",
+  "anaActiveOf": "{active} sur {total}",
+  "@anaActiveOf": {"placeholders": {"active": {"type": "int"}, "total": {"type": "int"}}},
+  "anaAvgScore": "Moyenne aux quiz",
+  "anaQuizzes": "Quiz faits",
+  "anaNoActivityTitle": "Pas encore d'activité",
+  "anaNoActivityHint": "Attribuez des ressources à vos classes : les résultats de vos élèves apparaîtront ici.",
+  "anaNoActivityPeriod": "Aucun élève actif sur la période.",
+  "anaActiveCount": "{count, plural, =0{aucun élève actif} =1{1 élève actif} other{{count} élèves actifs}}",
+  "@anaActiveCount": {"placeholders": {"count": {"type": "int"}}},
+  "anaRiskTitle": "Élèves à risque",
+  "anaRiskNone": "Aucun élève à risque sur la période.",
+  "anaRiskCritical": "{count, plural, =1{1 critique} other{{count} critiques}}",
+  "@anaRiskCritical": {"placeholders": {"count": {"type": "int"}}},
+  "anaRiskModerate": "{count, plural, =1{1 modéré} other{{count} modérés}}",
+  "@anaRiskModerate": {"placeholders": {"count": {"type": "int"}}},
+  "anaWeeklyTitle": "Élèves actifs par semaine",
+  "anaByClass": "Résultats par classe",
+  "anaClassMeta": "{active} actifs sur {students} élèves",
+  "@anaClassMeta": {"placeholders": {"active": {"type": "int"}, "students": {"type": "int"}}},
+  "anaBySubject": "Résultats par matière",
+  "anaSubjectMeta": "{count, plural, =1{1 quiz} other{{count} quiz}}",
+  "@anaSubjectMeta": {"placeholders": {"count": {"type": "int"}}},
+  "anaContentTitle": "Activité des contenus",
+  "anaDownloads": "Téléchargements",
+  "anaHomework": "Devoirs rendus",
+  "anaHomeworkValue": "{submitted} rendus · {given} donnés",
+  "@anaHomeworkValue": {"placeholders": {"submitted": {"type": "int"}, "given": {"type": "int"}}},
+  "anaMockExams": "Examens blancs passés",
+  "anaPlanHint": "WinAI propose des actions prioritaires à partir de ces résultats.",
+  "anaMore": "Pour aller plus loin",
+  "anaReports": "Rapports"
 }

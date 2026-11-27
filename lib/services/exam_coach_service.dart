@@ -167,3 +167,20 @@ class ExamCoachService {
     await _api.dio.delete('/exam-coach/$childId/watch-mode');
   }
 }
+
+/// Libellé lisible d'un code d'examen du serveur (« BAC_C » → « Bac C ») ;
+/// un texte libre (saisi par un parent) est rendu tel quel.
+String examTypeLabel(String code) => switch (code.trim().toUpperCase()) {
+      'BEPC' => 'BEPC',
+      'BAC_C' => 'Bac C',
+      'BAC_D' => 'Bac D',
+      'BAC_A' => 'Bac A',
+      'BAC_TI' => 'Bac TI',
+      'BAC_G' => 'Bac G',
+      'BAC_E' => 'Bac E',
+      'PROBATOIRE' => 'Probatoire',
+      'ENSP' => 'Concours ENSP',
+      'UY_L1' => 'Licence 1 (UY)',
+      'CONCOURS' => 'Concours',
+      _ => code.replaceAll('_', ' '),
+    };

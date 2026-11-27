@@ -204,7 +204,7 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
                   child: const Icon(PhosphorIconsRegular.lock,
                       size: 40, color: WinColors.warn)),
               const SizedBox(height: 20),
-              Text('Exam Coach',
+              Text(context.l10n.studentCoachTitle,
                   style: WinType.displayS(s.onStrong),
                   textAlign: TextAlign.center),
               const SizedBox(height: 8),
@@ -216,7 +216,7 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
               WinButton(context.l10n.studentCoachSeePlans,
                   block: true,
                   onTap: () => UpgradeSheet.show(context,
-                      featureName: 'Exam Coach', requiredPlan: 'Standard')),
+                      featureName: context.l10n.studentCoachTitle, requiredPlan: 'Standard')),
             ]),
           ),
         ),
@@ -231,7 +231,7 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
         leading: IconButton(
             icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
             onPressed: () => Navigator.pop(context)),
-        title: Text('Exam Coach'),
+        title: Text(context.l10n.studentCoachTitle),
       ),
       body: _loading
           ? const WinLoading()
@@ -270,7 +270,7 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
                   borderRadius: BorderRadius.circular(WinRadii.full),
                   border: Border.all(color: selected ? s.primary : s.outline),
                 ),
-                child: Text(code,
+                child: Text(examTypeLabel(code),
                     style: WinType.labelM(selected ? s.primary : s.onMuted)),
               ),
             );
@@ -357,12 +357,12 @@ class _ExamCoachScreenState extends State<ExamCoachScreen> {
               const Icon(PhosphorIconsRegular.graduationCap, size: 20, color: WinColors.teal400),
               const SizedBox(width: 8),
               Expanded(
-                  child: Text(plan.examType,
+                  child: Text(examTypeLabel(plan.examType),
                       style: WinType.headlineS(WinColors.cream50))),
               WinBadge(context.l10n.studentCoachDaysLeft(days), color: BadgeColor.warn),
             ]),
             const SizedBox(height: 4),
-            Text('${plan.examDate.day}/${plan.examDate.month}/${plan.examDate.year}',
+            Text(WinFormat.date(plan.examDate),
                 style: WinType.bodyS(WinColors.ink300)),
             const SizedBox(height: 12),
             WinProgressBar(completionPct.toDouble(), color: WinColors.teal400),

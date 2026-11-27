@@ -22,8 +22,8 @@ void main() {
       {'rank': 1, 'userId': 30, 'name': 'Paul Eto', 'points': 120},
     ]);
     faux.repond('GET', '/teacher/courses/12/analytics/lessons', [
-      {'lessonId': 1, 'title': 'Introduction', 'lessonType': 'video', 'completionRate': 80.0, 'completedCount': 8, 'enrolledCount': 10, 'averageWatchTimeSec': 600, 'lowCompletionAlert': false},
-      {'lessonId': 2, 'title': 'Exercices', 'lessonType': 'article', 'completionRate': 25.0, 'completedCount': 2, 'enrolledCount': 10, 'averageWatchTimeSec': 0, 'averageQuizScore': 60.0, 'lowCompletionAlert': true},
+      {'lessonId': 1, 'title': 'Introduction', 'lessonType': 'video', 'completionRate': 80.0, 'completedCount': 8, 'enrolledCount': 10, 'averageWatchTimeSec': 600, 'lowCompletionAlert': false, 'sectionId': 5, 'sectionTitle': 'Chapitre 1'},
+      {'lessonId': 2, 'title': 'Exercices', 'lessonType': 'article', 'completionRate': 25.0, 'completedCount': 2, 'enrolledCount': 10, 'averageWatchTimeSec': 0, 'averageQuizScore': 60.0, 'lowCompletionAlert': true, 'sectionId': 5, 'sectionTitle': 'Chapitre 1'},
     ]);
     faux.repond('GET', '/teacher/courses/12/inactive-students', inactifs ??
         [
@@ -53,6 +53,7 @@ void main() {
     expect(find.text(l.cstatWatch('10 min')), findsOneWidget);
     expect(find.text(l.cstatQuiz('12/20')), findsOneWidget);
     expect(find.text(l.cstatReviewBadge), findsOneWidget);
+    expect(find.text('Chapitre 1'), findsOneWidget, reason: 'titre du chapitre en tete du parcours');
   });
 
   testWidgets('eleves : inactifs, seuil, relance WinAI des eleves choisis', (tester) async {
