@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:winplus/l10n/l10n.dart';
+import 'package:winplus/services/course_editor_service.dart';
 import 'package:winplus/teacher/course_editor_screen.dart';
 import 'package:winplus/widgets/win_widgets.dart';
 
@@ -189,5 +190,19 @@ void main() {
     expect(faux.recues('POST', '/teacher/courses/12/submit'), hasLength(1));
     expect(find.text(l.tcoursePending), findsOneWidget);
     expect(find.text(l.tcourseAddLesson), findsNothing);
+  });
+
+  testWidgets('programme WinAI : matiere choisie dans le selecteur (pre-remplie, jamais tapee)', (tester) async {
+    faux.repond('POST', '/teacher/courses/generate-syllabus', {'weeks': []});
+    final course = EditorCourse.fromJson(formation());
+    tester.view.physicalSize = const Size(800, 3000);
+    await monterEcran(tester, SyllabusScreen(course: course));
+    final l = L10n.current;
+    expect(find.byType(TextField), findsNWidgets(2), reason: 'objectifs et examens vises seulement, plus de champ Matiere');
+    await tester.tap(find.text('Maths'));
+    await pomper(tester);
+    await tester.tap(find.text(l.tcourseGenerate));
+    await reseau(tester);
+    expect((faux.recues('POST', '/teacher/courses/generate-syllabus').single.data as Map)['subject'], 'Mathématiques');
   });
 }

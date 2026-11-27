@@ -12727,4 +12727,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get anaReports => 'Rapports';
+
+  @override
+  String get studentSessionTopic => 'Sujet de la séance';
 }

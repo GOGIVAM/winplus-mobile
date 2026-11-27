@@ -11,6 +11,8 @@ import '../theme/win_typography.dart';
 import '../widgets/win_screen.dart';
 import '../widgets/win_widgets.dart';
 import 'course_stats_screen.dart';
+import '../widgets/win_subject_picker.dart';
+import '../data/reference_data.dart';
 
 String _levelLabel(AppLocalizations l, String v) => switch (v) {
       'intermediaire' => l.tcourseLevelMid,
@@ -818,7 +820,12 @@ class SyllabusScreen extends StatefulWidget {
 
 class _SyllabusScreenState extends State<SyllabusScreen> {
   final _svc = CourseEditorService.instance;
-  late final _subject = TextEditingController(text: widget.course.category ?? widget.course.title);
+  /// Matière choisie dans le sélecteur commun (consigne G3 : jamais tapée),
+  /// pré-remplie avec celle de la formation quand elle est reconnue.
+  late String _subject = () {
+    final sub = WinData.subjectByName(widget.course.category ?? '');
+    return sub.id == 'autre' ? '' : sub.name;
+  }();
   final _objectives = TextEditingController();
   final _exams = TextEditingController();
   late String _level = widget.course.level;
@@ -831,7 +838,6 @@ class _SyllabusScreenState extends State<SyllabusScreen> {
 
   @override
   void dispose() {
-    _subject.dispose();
     _objectives.dispose();
     _exams.dispose();
     super.dispose();
@@ -839,7 +845,7 @@ class _SyllabusScreenState extends State<SyllabusScreen> {
 
   Future<void> _generate() async {
     final l = context.l10n;
-    if (_subject.text.trim().isEmpty) {
+    if (_subject.trim().isEmpty) {
       setState(() => _error = l.tcourseNeedSubject);
       return;
     }
@@ -850,7 +856,7 @@ class _SyllabusScreenState extends State<SyllabusScreen> {
     });
     try {
       final weeks = await _svc.generateSyllabus(
-        subject: _subject.text,
+        subject: _subject,
         level: _level,
         weeks: _weeks,
         objectives: _lines(_objectives.text),
@@ -897,7 +903,9 @@ class _SyllabusScreenState extends State<SyllabusScreen> {
         child: ListView(padding: const EdgeInsets.fromLTRB(16, 8, 16, 24), children: [
           Text(l.tcourseSyllabusIntro, style: WinType.bodyM(s.onMuted)),
           const SizedBox(height: 12),
-          TextField(controller: _subject, decoration: InputDecoration(labelText: l.tcourseSubject)),
+          Text(l.tcourseSubject, style: WinType.labelM(s.onStrong)),
+          const SizedBox(height: 6),
+          WinSubjectPicker(value: _subject, onChanged: (v) => setState(() => _subject = v)),
           const SizedBox(height: 12),
           Wrap(spacing: 8, children: [
             for (final v in CourseEditorService.levels)

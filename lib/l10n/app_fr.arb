@@ -6598,5 +6598,6 @@
   "anaMockExams": "Examens blancs passés",
   "anaPlanHint": "WinAI propose des actions prioritaires à partir de ces résultats.",
   "anaMore": "Pour aller plus loin",
-  "anaReports": "Rapports"
+  "anaReports": "Rapports",
+  "studentSessionTopic": "Sujet de la séance"
 }

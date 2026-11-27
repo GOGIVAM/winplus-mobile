@@ -12633,4 +12633,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get anaReports => 'Reports';
+
+  @override
+  String get studentSessionTopic => 'Session topic';
 }

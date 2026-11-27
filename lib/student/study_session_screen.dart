@@ -10,6 +10,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../widgets/win_screen.dart';
+import '../widgets/win_subject_picker.dart';
 
 /// Module 32 (lot 8, décision 14.3) : portage mobile de la session d'étude
 /// guidée, déjà entièrement reconstruite côté web au lot 6
@@ -72,7 +73,8 @@ class _StudySessionScreenState extends State<StudySessionScreen> {
   @override
   void initState() {
     super.initState();
-    _loadSubjects();
+    // Rien à charger tant qu'aucune matière n'est choisie.
+    _loadingSubjects = false;
   }
 
   @override
@@ -81,14 +83,31 @@ class _StudySessionScreenState extends State<StudySessionScreen> {
     super.dispose();
   }
 
+  /// Matière choisie dans le sélecteur commun (consigne G3 ; avant, la
+  /// liste mêlait des titres d'épreuves coupés et en double).
+  String _subjectName = '';
+
+  /// Épreuves de la matière choisie (une par titre), parmi lesquelles le
+  /// serveur prépare la session.
   Future<void> _loadSubjects() async {
-    try {
-      final page = await SubjectService.instance.getAll(pageSize: 20, page: 1);
-      if (!mounted) return;
+    if (_subjectName.isEmpty) {
       setState(() {
-        _subjects = page.items;
+        _subjects = [];
+        _selectedSubject = null;
         _loadingSubjects = false;
-        if (_subjects.isNotEmpty) _selectedSubject = _subjects.first;
+      });
+      return;
+    }
+    setState(() => _loadingSubjects = true);
+    try {
+      final page = await SubjectService.instance.getAll(category: _subjectName, pageSize: 30, page: 1);
+      if (!mounted) return;
+      final seen = <String>{};
+      final unique = page.items.where((x) => seen.add(x.title.trim().toLowerCase())).toList();
+      setState(() {
+        _subjects = unique;
+        _loadingSubjects = false;
+        _selectedSubject = unique.isNotEmpty ? unique.first : null;
       });
     } catch (_) {
       if (mounted) setState(() => _loadingSubjects = false);
@@ -326,21 +345,38 @@ class _StudySessionScreenState extends State<StudySessionScreen> {
         const SizedBox(height: 24),
         Text(context.l10n.commonSubject, style: WinType.titleM(s.onStrong)),
         const SizedBox(height: 10),
-        if (_loadingSubjects)
-          const WinLoading()
-        else if (_subjects.isEmpty)
-          WinAlert(context.l10n.studentSessionNoSubjects,
-              type: BadgeColor.warn)
-        else
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: _subjects
-                .map((subj) => WinChip(subj.title,
-                    active: _selectedSubject?.id == subj.id,
-                    onTap: () => setState(() => _selectedSubject = subj)))
-                .toList(),
-          ),
+        WinSubjectPicker(
+          value: _subjectName,
+          onChanged: (v) {
+            setState(() => _subjectName = v);
+            _loadSubjects();
+          },
+        ),
+        if (_subjectName.isNotEmpty) ...[
+          const SizedBox(height: 16),
+          Text(context.l10n.studentSessionTopic, style: WinType.labelM(s.onMuted)),
+          const SizedBox(height: 6),
+          if (_loadingSubjects)
+            const WinLoading()
+          else if (_subjects.isEmpty)
+            WinAlert(context.l10n.studentSessionNoSubjects, type: BadgeColor.warn)
+          else
+            // Titres en entier, une ligne chacun (ils étaient coupés en puces).
+            Column(children: [
+              for (final subj in _subjects.take(8))
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  dense: true,
+                  leading: Icon(
+                      _selectedSubject?.id == subj.id
+                          ? PhosphorIconsFill.radioButton
+                          : PhosphorIconsRegular.circle,
+                      color: _selectedSubject?.id == subj.id ? s.primary : s.onMuted),
+                  title: Text(subj.title),
+                  onTap: () => setState(() => _selectedSubject = subj),
+                ),
+            ]),
+        ],
         const SizedBox(height: 24),
         Text(context.l10n.commonDuration, style: WinType.titleM(s.onStrong)),
         const SizedBox(height: 10),

@@ -3722,5 +3722,6 @@
   "anaMockExams": "Mock exams taken",
   "anaPlanHint": "WinAI suggests priority actions based on these results.",
   "anaMore": "Going further",
-  "anaReports": "Reports"
+  "anaReports": "Reports",
+  "studentSessionTopic": "Session topic"
 }

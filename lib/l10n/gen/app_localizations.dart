@@ -21345,6 +21345,12 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Rapports'**
   String get anaReports;
+
+  /// No description provided for @studentSessionTopic.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sujet de la séance'**
+  String get studentSessionTopic;
 }
 
 class _AppLocalizationsDelegate

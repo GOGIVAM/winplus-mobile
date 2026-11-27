@@ -18,13 +18,21 @@ void main() {
   setUpAll(initialiserDates);
   setUp(() {
     faux = preparerEnvironnement(prefs: {'user_id': 7});
+    // Épreuves de la matière choisie (doublon de titre retiré à l'affichage).
     faux.repond('GET', '/subjects', {
       'items': [
-        {'id': 1, 'title': 'Maths'},
-        {'id': 2, 'title': 'Physique'},
+        {'id': 1, 'title': 'Bac C 2022'},
+        {'id': 2, 'title': 'Probatoire 2021'},
+        {'id': 3, 'title': 'Bac C 2022'},
       ],
     });
   });
+
+  /// Matière choisie dans le sélecteur commun (puce « Maths »).
+  Future<void> choisirMaths(WidgetTester tester) async {
+    await tester.tap(find.widgetWithText(WinChip, 'Maths'));
+    await reseau(tester);
+  }
 
   void sessionOk() {
     faux.repond('POST', '/ai/study-session/generate', {
@@ -48,33 +56,34 @@ void main() {
   }
 
   group('Lanceur', () {
-    testWidgets('matieres du catalogue, durees proposees, premiere matiere choisie', (tester) async {
-      telephone(tester);
-      await monter(tester, ecran(const StudySessionScreen()));
-      expect(chargement, findsOneWidget);
-      await reseau(tester);
+    testWidgets('matiere au selecteur commun, puis sujets de cette matiere sans doublon, premier choisi', (tester) async {
+      await monterEcran(tester, const StudySessionScreen());
       final l = L10n.current;
       expect(find.text(l.studentSessionIntro), findsOneWidget);
-      expect(find.text('Maths'), findsOneWidget);
-      expect(find.text('Physique'), findsOneWidget);
+      expect(faux.recues('GET', '/subjects'), isEmpty, reason: 'rien a charger avant le choix de la matiere');
       for (final d in [15, 25, 45, 60]) {
         expect(find.text(WinFormat.duration(d)), findsOneWidget);
       }
-      expect(tester.widget<WinChip>(find.widgetWithText(WinChip, 'Maths')).active, isTrue);
+      await choisirMaths(tester);
+      expect(faux.recues('GET', '/subjects').single.queryParameters['category'], 'Mathématiques');
+      expect(find.text('Bac C 2022'), findsOneWidget, reason: 'doublon retire');
+      expect(find.text('Probatoire 2021'), findsOneWidget);
       expect(tester.widget<WinChip>(find.widgetWithText(WinChip, WinFormat.duration(25))).active, isTrue);
     });
 
-    testWidgets('aucune matiere : avertissement ; demarrer demande de choisir une matiere', (tester) async {
-      faux.repond('GET', '/subjects', {'items': []});
+    testWidgets('sans matiere choisie : demarrer demande de choisir ; matiere sans sujet : avertissement', (tester) async {
       await monterEcran(tester, const StudySessionScreen());
-      expect(find.text(L10n.current.studentSessionNoSubjects), findsOneWidget);
       await lancer(tester);
       expect(find.text(L10n.current.studentSessionPickSubject), findsOneWidget);
       expect(faux.recues('POST', '/ai/study-session/generate'), isEmpty);
+      faux.repond('GET', '/subjects', {'items': []});
+      await choisirMaths(tester);
+      expect(find.text(L10n.current.studentSessionNoSubjects), findsOneWidget);
     });
 
-    testWidgets('echec du demarrage : message d\'erreur, on reste sur le lanceur', (tester) async {
+    testWidgets('echec du demarrage : message d erreur, on reste sur le lanceur', (tester) async {
       await monterEcran(tester, const StudySessionScreen());
+      await choisirMaths(tester);
       await lancer(tester);
       expect(find.text(L10n.current.studentSessionStartError), findsOneWidget);
       expect(_bouton(L10n.current.studentSessionStart), findsOneWidget);
@@ -85,7 +94,8 @@ void main() {
     testWidgets('briefing : matiere, minuteur, etapes et texte du serveur ; la matiere et la duree choisies sont envoyees', (tester) async {
       sessionOk();
       await monterEcran(tester, const StudySessionScreen());
-      await tester.tap(find.text('Physique'));
+      await choisirMaths(tester);
+      await tester.tap(find.text('Probatoire 2021'));
       await tester.tap(find.text(WinFormat.duration(45)));
       await pomper(tester);
       await lancer(tester);
@@ -102,6 +112,7 @@ void main() {
     testWidgets('le minuteur decompte pendant la session', (tester) async {
       sessionOk();
       await monterEcran(tester, const StudySessionScreen());
+      await choisirMaths(tester);
       await lancer(tester);
       await pomper(tester, const Duration(seconds: 3));
       expect(find.text('24:57'), findsOneWidget);
@@ -115,6 +126,7 @@ void main() {
       });
       faux.repond('POST', '/ai/study-session/complete', {});
       await monterEcran(tester, const StudySessionScreen());
+      await choisirMaths(tester);
       await lancer(tester);
       final l = L10n.current;
       await tester.tap(_bouton(l.studentDetailStartQuiz));
@@ -152,6 +164,7 @@ void main() {
       sessionOk();
       faux.repond('POST', '/ai/study-session/phase3/summary', {'phase3': {'summary': 'S'}});
       await monterEcran(tester, const StudySessionScreen());
+      await choisirMaths(tester);
       await lancer(tester);
       final l = L10n.current;
       await tester.tap(_bouton(l.studentDetailStartQuiz));
@@ -173,6 +186,7 @@ void main() {
       faux.repond('POST', '/ai/study-session/generate', {'subject': {'id': 1, 'name': 'Maths'}, 'briefing': 'B'});
       faux.repond('POST', '/ai/study-session/phase2/quiz', {});
       await monterEcran(tester, const StudySessionScreen());
+      await choisirMaths(tester);
       await lancer(tester);
       await tester.tap(_bouton(L10n.current.studentDetailStartQuiz));
       await reseau(tester);
@@ -185,6 +199,7 @@ void main() {
       sessionOk();
       faux.repond('POST', '/ai/study-session/complete', {});
       await monterEcran(tester, const StudySessionScreen());
+      await choisirMaths(tester);
       await lancer(tester);
       final l = L10n.current;
       await tester.tap(_bouton(l.studentDetailStartQuiz));
