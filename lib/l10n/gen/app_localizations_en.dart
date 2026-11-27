@@ -3303,13 +3303,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get studentHubAccount => 'Account';
 
   @override
-  String get studentHubBadgesSub => '14 unlocked';
+  String get studentHubBadgesSub => 'Your rewards';
 
   @override
   String get studentHubCertificates => 'My certificates';
 
   @override
-  String get studentHubCertificatesSub => '2 signed';
+  String get studentHubCertificatesSub => 'Your certificates of achievement';
 
   @override
   String get studentHubCommunity => 'Community';
@@ -3333,7 +3333,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get studentHubGroups => 'My study groups';
 
   @override
-  String get studentHubGroupsSub => '3 groups';
+  String get studentHubGroupsSub => 'Study together';
 
   @override
   String get studentHubHistory => 'Download history';
@@ -5211,7 +5211,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get teacherCorrectionQueueTitle => 'Marking queue';
+  String get teacherCorrectionQueueTitle => 'Corrections';
 
   @override
   String get teacherCorrectionSend => 'Send the marking';
@@ -12636,4 +12636,74 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get studentSessionTopic => 'Session topic';
+
+  @override
+  String teacherCorrectionSubmittedOn(Object date) {
+    return 'Submitted on $date';
+  }
+
+  @override
+  String teacherCorrectionWaitingDays(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'waiting for $count days',
+      one: 'waiting for 1 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get teacherCorrectionUrgent => 'Urgent';
+
+  @override
+  String get teacherCorrectionOpenFile => 'Open the submitted file';
+
+  @override
+  String get teacherCorrectionOpenFileError => 'Unable to open the file.';
+
+  @override
+  String get teacherCorrectionStudentWork => 'Student\'s work';
+
+  @override
+  String get teacherCorrectionNoWork => 'This submission has no text or file.';
+
+  @override
+  String teacherCorrectionScale(Object max) {
+    return 'Grade out of $max';
+  }
+
+  @override
+  String studentHubBadgesCount(Object total, Object unlocked) {
+    return '$unlocked of $total unlocked';
+  }
+
+  @override
+  String studentHubCertificatesCount(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count certificates',
+      one: '1 certificate',
+      zero: 'No certificate yet',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String studentHubGroupsCount(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count groups',
+      one: '1 group',
+      zero: 'No group yet',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String parentPortfolioPeriod(Object period) {
+    return 'Period covered: $period';
+  }
 }

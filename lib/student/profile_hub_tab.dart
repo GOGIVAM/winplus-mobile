@@ -6,6 +6,10 @@ import '../app_state.dart';
 import '../auth/login_screen.dart';
 import '../services/auth_service.dart';
 import '../services/user_service.dart';
+import '../services/achievement_service.dart';
+import '../services/certificate_service.dart';
+import '../services/course_service.dart';
+import '../services/study_group_service.dart';
 import '../shared/subscription/pricing_screen.dart';
 import '../shared/subscription/subscription_notifier.dart';
 import '../theme/win_colors.dart';
@@ -37,12 +41,42 @@ class ProfileHubTab extends StatefulWidget {
 
 class _ProfileHubTabState extends State<ProfileHubTab> {
   ApiUserProfile? _profile;
+  // Compteurs réels des tuiles (null tant qu'ils ne sont pas connus : la
+  // tuile garde alors son sous-titre général). Ils étaient écrits en dur
+  // (« 14 débloqués », « 2 signés », « 3 groupes »).
+  int? _badgesUnlocked, _badgesTotal, _certificates, _groups;
 
   @override
   void initState() {
     super.initState();
     _loadProfile();
     _loadNotifCount();
+    _loadCounts();
+  }
+
+  /// Chaque compteur est chargé seul : une route en panne n'efface pas les
+  /// autres.
+  Future<void> _loadCounts() async {
+    await Future.wait([
+      AchievementService.instance.getMyAchievements().then((r) {
+        if (mounted) {
+          setState(() {
+            _badgesUnlocked = r.badges.where((b) => b.unlocked).length;
+            _badgesTotal = r.badges.length;
+          });
+        }
+      }).catchError((_) {}),
+      // Comme l'écran Certificats : certificats de formation et de sujets.
+      Future.wait([
+        CourseService.instance.myCourseCertificates().then((c) => c.length).catchError((_) => 0),
+        CertificateService.instance.getCertificates().then((c) => c.length),
+      ]).then((n) {
+        if (mounted) setState(() => _certificates = n[0] + n[1]);
+      }).catchError((_) {}),
+      StudyGroupService.instance.getMine().then((g) {
+        if (mounted) setState(() => _groups = g.length);
+      }).catchError((_) {}),
+    ]);
   }
 
   Future<void> _loadProfile() async {
@@ -83,8 +117,11 @@ class _ProfileHubTabState extends State<ProfileHubTab> {
     );
   }
 
-  void _go(Widget screen) =>
-      Navigator.push(context, WinPageRoute(builder: (_) => screen));
+  /// Au retour, les compteurs sont relus (badge gagné, groupe rejoint...).
+  Future<void> _go(Widget screen) async {
+    await Navigator.push(context, WinPageRoute(builder: (_) => screen));
+    if (mounted) _loadCounts();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -153,14 +190,18 @@ class _ProfileHubTabState extends State<ProfileHubTab> {
               icon: PhosphorIconsRegular.trophy,
               color: WinColors.gold,
               label: context.l10n.studentAchMyBadges,
-              subtitle: context.l10n.studentHubBadgesSub,
+              subtitle: _badgesTotal != null && _badgesTotal! > 0
+                  ? context.l10n.studentHubBadgesCount(_badgesUnlocked!, _badgesTotal!)
+                  : context.l10n.studentHubBadgesSub,
               onTap: () => _go(const AchievementsScreen()),
             ),
             _HubTile(
               icon: PhosphorIconsRegular.medal,
               color: WinColors.teal400,
               label: context.l10n.studentHubCertificates,
-              subtitle: context.l10n.studentHubCertificatesSub,
+              subtitle: _certificates != null
+                  ? context.l10n.studentHubCertificatesCount(_certificates!)
+                  : context.l10n.studentHubCertificatesSub,
               onTap: () => _go(const CertificatesScreen()),
             ),
             _HubTile(
@@ -180,7 +221,9 @@ class _ProfileHubTabState extends State<ProfileHubTab> {
               icon: PhosphorIconsRegular.usersThree,
               color: s.primary,
               label: context.l10n.studentHubGroups,
-              subtitle: context.l10n.studentHubGroupsSub,
+              subtitle: _groups != null
+                  ? context.l10n.studentHubGroupsCount(_groups!)
+                  : context.l10n.studentHubGroupsSub,
               onTap: () => _go(const StudyGroupsScreen()),
             ),
             _HubTile(

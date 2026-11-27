@@ -39,17 +39,22 @@ class ApiPortfolio {
   final String? regularite;
   final String? autonomie;
   final String? curiosite;
+  /// Période couverte, nommée par le serveur (« octobre 2026 », « 30 derniers
+  /// jours ») : le portrait daté du 1er porte sur le mois écoulé.
+  final String? periode;
   final DateTime updatedAt;
   const ApiPortfolio(
       {this.regularite,
       this.autonomie,
       this.curiosite,
+      this.periode,
       required this.updatedAt});
 
   factory ApiPortfolio.fromJson(Map<String, dynamic> j) => ApiPortfolio(
         regularite: j['regularite'] as String?,
         autonomie: j['autonomie'] as String?,
         curiosite: j['curiosite'] as String?,
+        periode: (j['periode'] as String?)?.trim().isEmpty ?? true ? null : (j['periode'] as String).trim(),
         updatedAt: DateTime.tryParse(j['updatedAt'] as String? ?? '') ??
             DateTime.now(),
       );

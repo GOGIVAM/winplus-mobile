@@ -323,6 +323,30 @@ void main() {
         ],
       });
       expect(await TeacherService.instance.getSubmissions(), hasLength(3));
+      // Toutes les copies sont demandees, pas seulement celles en attente.
+      expect(faux.recues('GET', '/teacher/corrections/pending').last.queryParameters['filter'], 'all');
+    });
+
+    test('ApiSubmission : champs du serveur, date sans fuseau lue en UTC, note ramenee sur 20', () {
+      final c = ApiSubmission.fromJson({
+        'id': 5, 'assignment': 'Quiz', 'studentName': 'Ada', 'subject': 'Terminale C',
+        'submittedDate': '2026-01-05T09:00:00.0000000', 'daysWaiting': 3, 'priority': 'high',
+        'status': 'draft', 'score': 60, 'maxScore': 100, 'comment': ' ', 'textContent': 'Texte',
+        'fileUrl': 'https://x/c.pdf',
+      });
+      expect(c.contentTitle, 'Quiz');
+      expect(c.className, 'Terminale C');
+      expect(c.submittedAt, DateTime.utc(2026, 1, 5, 9));
+      expect(c.daysWaiting, 3);
+      expect(c.urgent, isTrue);
+      expect(c.isDraft, isTrue);
+      expect(c.corrected, isFalse);
+      expect(c.score20, 12);
+      expect(c.comment, isNull);
+      expect(c.textContent, 'Texte');
+      expect(c.fileUrl, 'https://x/c.pdf');
+      expect(ApiSubmission.fromJson({'submittedDate': '2026-01-05T09:00:00Z'}).submittedAt, DateTime.utc(2026, 1, 5, 9));
+      expect(ApiSubmission.fromJson({}).submittedAt, isNull);
     });
 
     test('correctSubmission poste la note vers /corrections/{id}', () async {

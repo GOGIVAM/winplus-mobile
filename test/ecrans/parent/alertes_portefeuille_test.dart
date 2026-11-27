@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:winplus/l10n/l10n.dart';
+import 'package:winplus/services/reports_service.dart';
 import 'package:winplus/parent/portfolio_tab.dart';
 import 'package:winplus/parent/winai_alerts_screen.dart';
 import 'package:winplus/services/local_cache_service.dart';
@@ -128,11 +129,19 @@ void main() {
       await monterEcran(tester, const Scaffold(body: PortfolioTab(child: _enfant)));
       final l = L10n.current;
       expect(find.text(l.parentPortfolioTitle('Zoe')), findsOneWidget);
-      expect(find.text(l.parentPortfolioUpdatedOn('01/03/2026')), findsOneWidget);
+      expect(find.text(l.parentPortfolioUpdatedOn(WinFormat.date(DateTime.parse('2026-03-01T10:00:00')))), findsOneWidget);
       expect(find.text('Travaille chaque soir'), findsOneWidget);
       expect(find.text(l.parentPortfolioNoAutonomy('Zoe')), findsOneWidget);
       expect(find.text(l.parentPortfolioNoCuriosity('Zoe')), findsOneWidget);
       expect(find.text(l.parentPortfolioRegularity.toUpperCase()), findsOneWidget);
+    });
+
+    testWidgets('periode couverte nommee par le serveur affichee sous le titre', (tester) async {
+      faux.repond('GET', '/parent-reports/4/portefeuille', {'regularite': 'R', 'periode': 'octobre 2026', 'updatedAt': '2026-11-01T02:00:00Z'});
+      await monterEcran(tester, const Scaffold(body: PortfolioTab(child: _enfant)));
+      expect(find.text(L10n.current.parentPortfolioPeriod('octobre 2026')), findsOneWidget);
+      // Periode vide : rien a afficher.
+      expect(ApiPortfolio.fromJson({'periode': ' '}).periode, isNull);
     });
 
     testWidgets('hors ligne : le dernier portefeuille connu reste affiche', (tester) async {

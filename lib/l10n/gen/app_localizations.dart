@@ -5683,7 +5683,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentHubBadgesSub.
   ///
   /// In fr, this message translates to:
-  /// **'14 débloqués'**
+  /// **'Tes récompenses'**
   String get studentHubBadgesSub;
 
   /// No description provided for @studentHubCertificates.
@@ -5695,7 +5695,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentHubCertificatesSub.
   ///
   /// In fr, this message translates to:
-  /// **'2 signés'**
+  /// **'Tes attestations de réussite'**
   String get studentHubCertificatesSub;
 
   /// No description provided for @studentHubCommunity.
@@ -5743,7 +5743,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentHubGroupsSub.
   ///
   /// In fr, this message translates to:
-  /// **'3 groupes'**
+  /// **'Réviser à plusieurs'**
   String get studentHubGroupsSub;
 
   /// No description provided for @studentHubHistory.
@@ -9001,13 +9001,13 @@ abstract class AppLocalizations {
   /// No description provided for @teacherCorrectionEmpty.
   ///
   /// In fr, this message translates to:
-  /// **'Aucune soumission'**
+  /// **'Aucune copie'**
   String get teacherCorrectionEmpty;
 
   /// No description provided for @teacherCorrectionFeedbackHint.
   ///
   /// In fr, this message translates to:
-  /// **'Commentaires et retours à l\'étudiant…'**
+  /// **'Commentaire pour l\'élève…'**
   String get teacherCorrectionFeedbackHint;
 
   /// No description provided for @teacherCorrectionFilterMarked.
@@ -9031,7 +9031,7 @@ abstract class AppLocalizations {
   /// No description provided for @teacherCorrectionQueueTitle.
   ///
   /// In fr, this message translates to:
-  /// **'File de corrections'**
+  /// **'Corrections'**
   String get teacherCorrectionQueueTitle;
 
   /// No description provided for @teacherCorrectionSend.
@@ -21351,6 +21351,78 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Sujet de la séance'**
   String get studentSessionTopic;
+
+  /// No description provided for @teacherCorrectionSubmittedOn.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rendue le {date}'**
+  String teacherCorrectionSubmittedOn(Object date);
+
+  /// No description provided for @teacherCorrectionWaitingDays.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{en attente depuis 1 jour} other{en attente depuis {count} jours}}'**
+  String teacherCorrectionWaitingDays(num count);
+
+  /// No description provided for @teacherCorrectionUrgent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Urgent'**
+  String get teacherCorrectionUrgent;
+
+  /// No description provided for @teacherCorrectionOpenFile.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouvrir le fichier rendu'**
+  String get teacherCorrectionOpenFile;
+
+  /// No description provided for @teacherCorrectionOpenFileError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible d\'ouvrir le fichier.'**
+  String get teacherCorrectionOpenFileError;
+
+  /// No description provided for @teacherCorrectionStudentWork.
+  ///
+  /// In fr, this message translates to:
+  /// **'Copie de l\'élève'**
+  String get teacherCorrectionStudentWork;
+
+  /// No description provided for @teacherCorrectionNoWork.
+  ///
+  /// In fr, this message translates to:
+  /// **'La copie ne contient ni texte ni fichier.'**
+  String get teacherCorrectionNoWork;
+
+  /// No description provided for @teacherCorrectionScale.
+  ///
+  /// In fr, this message translates to:
+  /// **'Note sur {max}'**
+  String teacherCorrectionScale(Object max);
+
+  /// No description provided for @studentHubBadgesCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'{unlocked} sur {total} débloqués'**
+  String studentHubBadgesCount(Object total, Object unlocked);
+
+  /// No description provided for @studentHubCertificatesCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =0{Aucun certificat pour l\'instant} =1{1 certificat} other{{count} certificats}}'**
+  String studentHubCertificatesCount(num count);
+
+  /// No description provided for @studentHubGroupsCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =0{Aucun groupe pour l\'instant} =1{1 groupe} other{{count} groupes}}'**
+  String studentHubGroupsCount(num count);
+
+  /// No description provided for @parentPortfolioPeriod.
+  ///
+  /// In fr, this message translates to:
+  /// **'Période couverte : {period}'**
+  String parentPortfolioPeriod(Object period);
 }
 
 class _AppLocalizationsDelegate

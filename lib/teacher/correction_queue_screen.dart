@@ -6,6 +6,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
 import '../widgets/win_screen.dart';
+import '../widgets/external_links.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class CorrectionQueueScreen extends StatefulWidget {
@@ -157,9 +158,15 @@ class _SubmissionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
+    final l = context.l10n;
+    final who = [sub.studentName, if (sub.className != null) sub.className!].join(' \u00b7 ');
+    final when = [
+      if (sub.submittedAt != null) l.teacherCorrectionSubmittedOn(WinFormat.dayMonth(sub.submittedAt!)),
+      if (!sub.corrected && sub.daysWaiting > 0) l.teacherCorrectionWaitingDays(sub.daysWaiting),
+    ].join(' \u00b7 ');
     return WinCard(
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Row(children: [
+        Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Container(
             padding: const EdgeInsets.all(2),
             decoration: BoxDecoration(
@@ -171,27 +178,38 @@ class _SubmissionCard extends StatelessWidget {
           ),
           const SizedBox(width: 10),
           Expanded(
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                Text(sub.studentName, style: WinType.titleM(s.onStrong)),
-                Text(sub.submittedAt, style: WinType.labelM(s.onFaint)),
-              ])),
-          if (sub.corrected)
-            WinBadge('${sub.score}/20', color: BadgeColor.success)
-          else
-            WinBadge(context.l10n.commonPending, color: BadgeColor.warn),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            // Le devoir d'abord : deux copies du même élève se distinguent.
+            Text(sub.contentTitle.isEmpty ? sub.studentName : sub.contentTitle,
+                style: WinType.titleM(s.onStrong)),
+            const SizedBox(height: 2),
+            Text(who, style: WinType.bodyS(s.onMuted)),
+            if (when.isNotEmpty) ...[
+              const SizedBox(height: 2),
+              Text(when, style: WinType.labelM(s.onFaint)),
+            ],
+          ])),
+          const SizedBox(width: 8),
+          Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+            if (sub.corrected)
+              WinBadge(WinFormat.grade20(sub.score20 == null ? null : sub.score20! * 5),
+                  color: BadgeColor.success)
+            else
+              WinBadge(sub.isDraft ? l.commonDraft : l.commonPending, color: BadgeColor.warn),
+            if (sub.urgent && !sub.corrected) ...[
+              const SizedBox(height: 6),
+              WinBadge(l.teacherCorrectionUrgent, color: BadgeColor.error),
+            ],
+          ]),
         ]),
-        const SizedBox(height: 8),
-        Text(sub.contentTitle, style: WinType.bodyM(s.onMuted)),
         const SizedBox(height: 12),
         if (!sub.corrected)
-          WinButton(context.l10n.teacherCorrectionCorrect,
+          WinButton(l.teacherCorrectionCorrect,
               small: true, icon: PhosphorIconsRegular.chatText, onTap: onCorrect)
         else
           // La feuille de correction montre la note et le commentaire déjà
           // donnés : un seul bouton suffit pour les revoir et les modifier.
-          WinButton(context.l10n.commonEdit,
+          WinButton(l.commonEdit,
               small: true, variant: WinButtonVariant.outline, onTap: onCorrect),
       ]),
     );
@@ -206,14 +224,29 @@ class _CorrectionSheet extends StatefulWidget {
 }
 
 class _CorrectionSheetState extends State<_CorrectionSheet> {
-  double _score = 12;
-  final _fbCtrl = TextEditingController();
+  // Note sur le barème du devoir (20, ou 100 pour un quiz assigné), reprise
+  // de la correction déjà donnée ; 12/20 par défaut pour une nouvelle copie.
+  late final double _max = widget.sub.maxScore > 0 ? widget.sub.maxScore : 20;
+  late double _score = (widget.sub.score ?? _max * 0.6).clamp(0, _max).toDouble();
+  late final _fbCtrl = TextEditingController(text: widget.sub.comment ?? '');
   bool _sent = false, _loading = false;
+
+  @override
+  void dispose() {
+    _fbCtrl.dispose();
+    super.dispose();
+  }
+
+  /// Au demi-point près ; un entier reste un entier.
+  num get _note {
+    final v = (_score * 2).round() / 2;
+    return v == v.roundToDouble() ? v.toInt() : v;
+  }
 
   Future<void> _submit() async {
     setState(() => _loading = true);
     final ok = await TeacherService.instance
-        .correctSubmission(widget.sub.id, _score.round(), _fbCtrl.text.trim());
+        .correctSubmission(widget.sub.id, _note, _fbCtrl.text.trim());
     if (!mounted) return;
     if (ok) {
       setState(() {
@@ -227,77 +260,126 @@ class _CorrectionSheetState extends State<_CorrectionSheet> {
     }
   }
 
+  Future<void> _openFile() async {
+    final ok = await ExternalLinks.open(widget.sub.fileUrl!);
+    if (!ok && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(L10n.current.teacherCorrectionOpenFileError)));
+    }
+  }
+
+  Widget _work(WinScheme s) {
+    final l = context.l10n;
+    final sub = widget.sub;
+    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      Text(l.teacherCorrectionStudentWork, style: WinType.titleM(s.onStrong)),
+      const SizedBox(height: 8),
+      if (sub.textContent != null)
+        Container(
+          constraints: const BoxConstraints(maxHeight: 180),
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+              color: s.surface2,
+              borderRadius: BorderRadius.circular(WinRadii.md),
+              border: Border.all(color: s.outline)),
+          child: SingleChildScrollView(
+              child: Text(sub.textContent!, style: WinType.bodyM(s.onStrong))),
+        ),
+      if (sub.fileUrl != null) ...[
+        if (sub.textContent != null) const SizedBox(height: 8),
+        WinButton(l.teacherCorrectionOpenFile,
+            small: true,
+            variant: WinButtonVariant.outline,
+            icon: PhosphorIconsRegular.fileArrowDown,
+            onTap: _openFile),
+      ],
+      if (sub.textContent == null && sub.fileUrl == null)
+        Text(l.teacherCorrectionNoWork, style: WinType.bodyS(s.onFaint)),
+    ]);
+  }
+
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
+    final l = context.l10n;
+    final maxLabel = WinFormat.decimal(_max);
     return Container(
       decoration: BoxDecoration(
           color: s.surface,
           borderRadius:
-              BorderRadius.vertical(top: Radius.circular(WinRadii.xl))),
+              const BorderRadius.vertical(top: Radius.circular(WinRadii.xl))),
       padding: EdgeInsets.fromLTRB(
           24, 20, 24, MediaQuery.of(context).viewInsets.bottom + 32),
-      child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Container(
-            width: 40,
-            height: 4,
-            decoration: BoxDecoration(
-                color: s.outline2,
-                borderRadius: BorderRadius.circular(WinRadii.full)),
-            margin: const EdgeInsets.only(bottom: 16)),
-        Text(context.l10n.teacherCorrectionSheetTitle(widget.sub.studentName),
-            style: WinType.headlineS(s.onStrong)),
-        const SizedBox(height: 4),
-        Text(widget.sub.contentTitle, style: WinType.bodyS(s.onMuted)),
-        const SizedBox(height: 20),
-        if (_sent)
-          WinAlert(context.l10n.teacherCorrectionSent(widget.sub.studentName),
-              type: BadgeColor.success)
-        else ...[
-          Row(children: [
-            Text(context.l10n.teacherCorrectionGrade, style: WinType.titleM(s.onStrong)),
-            Text('${_score.round()}/20',
-                style: WinType.archivo(
-                    size: 24, weight: FontWeight.w700, color: s.primary)),
-          ]),
-          Slider(
-            value: _score,
-            min: 0,
-            max: 20,
-            divisions: 40,
-            activeColor: s.primary,
-            inactiveColor: s.outline2,
-            onChanged: (v) => setState(() => _score = v),
+      child: SingleChildScrollView(
+        child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          Center(
+            child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                    color: s.outline2,
+                    borderRadius: BorderRadius.circular(WinRadii.full)),
+                margin: const EdgeInsets.only(bottom: 16)),
           ),
-          const SizedBox(height: 8),
-          TextField(
-            controller: _fbCtrl,
-            maxLines: 4,
-            style: WinType.manrope(size: 14, color: s.onStrong),
-            decoration: InputDecoration(
-              hintText: context.l10n.teacherCorrectionFeedbackHint,
-              hintStyle: WinType.manrope(size: 14, color: s.onFaint),
-              filled: true,
-              fillColor: s.surface2,
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(WinRadii.md),
-                  borderSide: BorderSide(color: s.outline)),
-              enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(WinRadii.md),
-                  borderSide: BorderSide(color: s.outline)),
-              focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(WinRadii.md),
-                  borderSide: BorderSide(color: s.primary, width: 2)),
+          Text(l.teacherCorrectionSheetTitle(widget.sub.studentName),
+              textAlign: TextAlign.center, style: WinType.headlineS(s.onStrong)),
+          const SizedBox(height: 4),
+          Text(widget.sub.contentTitle,
+              textAlign: TextAlign.center, style: WinType.bodyS(s.onMuted)),
+          const SizedBox(height: 20),
+          if (_sent)
+            WinAlert(l.teacherCorrectionSent(widget.sub.studentName),
+                type: BadgeColor.success)
+          else ...[
+            _work(s),
+            const SizedBox(height: 20),
+            Row(children: [
+              Expanded(
+                  child: Text(l.teacherCorrectionScale(maxLabel),
+                      style: WinType.titleM(s.onStrong))),
+              Text('${WinFormat.decimal(_note)}/$maxLabel',
+                  style: WinType.archivo(
+                      size: 24, weight: FontWeight.w700, color: s.primary)),
+            ]),
+            Slider(
+              value: _score,
+              min: 0,
+              max: _max,
+              divisions: (_max * 2).round(),
+              activeColor: s.primary,
+              inactiveColor: s.outline2,
+              onChanged: (v) => setState(() => _score = v),
             ),
-          ),
-          const SizedBox(height: 16),
-          WinButton(context.l10n.teacherCorrectionSend,
-              block: true,
-              loading: _loading,
-              icon: PhosphorIconsRegular.paperPlaneRight,
-              onTap: _submit),
-        ],
-      ]),
+            const SizedBox(height: 8),
+            TextField(
+              controller: _fbCtrl,
+              maxLines: 4,
+              style: WinType.manrope(size: 14, color: s.onStrong),
+              decoration: InputDecoration(
+                hintText: l.teacherCorrectionFeedbackHint,
+                hintStyle: WinType.manrope(size: 14, color: s.onFaint),
+                filled: true,
+                fillColor: s.surface2,
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(WinRadii.md),
+                    borderSide: BorderSide(color: s.outline)),
+                enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(WinRadii.md),
+                    borderSide: BorderSide(color: s.outline)),
+                focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(WinRadii.md),
+                    borderSide: BorderSide(color: s.primary, width: 2)),
+              ),
+            ),
+            const SizedBox(height: 16),
+            WinButton(l.teacherCorrectionSend,
+                block: true,
+                loading: _loading,
+                icon: PhosphorIconsRegular.paperPlaneRight,
+                onTap: _submit),
+          ],
+        ]),
+      ),
     );
   }
 }

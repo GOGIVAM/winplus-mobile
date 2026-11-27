@@ -3328,13 +3328,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get studentHubAccount => 'Compte';
 
   @override
-  String get studentHubBadgesSub => '14 débloqués';
+  String get studentHubBadgesSub => 'Tes récompenses';
 
   @override
   String get studentHubCertificates => 'Mes certificats';
 
   @override
-  String get studentHubCertificatesSub => '2 signés';
+  String get studentHubCertificatesSub => 'Tes attestations de réussite';
 
   @override
   String get studentHubCommunity => 'Communauté';
@@ -3358,7 +3358,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get studentHubGroups => 'Mes groupes d\'étude';
 
   @override
-  String get studentHubGroupsSub => '3 groupes';
+  String get studentHubGroupsSub => 'Réviser à plusieurs';
 
   @override
   String get studentHubHistory => 'Historique des téléchargements';
@@ -5237,11 +5237,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get teacherCorrectionCorrect => 'Corriger';
 
   @override
-  String get teacherCorrectionEmpty => 'Aucune soumission';
+  String get teacherCorrectionEmpty => 'Aucune copie';
 
   @override
-  String get teacherCorrectionFeedbackHint =>
-      'Commentaires et retours à l\'étudiant…';
+  String get teacherCorrectionFeedbackHint => 'Commentaire pour l\'élève…';
 
   @override
   String get teacherCorrectionFilterMarked => 'Corrigé';
@@ -5255,7 +5254,7 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get teacherCorrectionQueueTitle => 'File de corrections';
+  String get teacherCorrectionQueueTitle => 'Corrections';
 
   @override
   String get teacherCorrectionSend => 'Envoyer la correction';
@@ -12730,4 +12729,76 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get studentSessionTopic => 'Sujet de la séance';
+
+  @override
+  String teacherCorrectionSubmittedOn(Object date) {
+    return 'Rendue le $date';
+  }
+
+  @override
+  String teacherCorrectionWaitingDays(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'en attente depuis $count jours',
+      one: 'en attente depuis 1 jour',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get teacherCorrectionUrgent => 'Urgent';
+
+  @override
+  String get teacherCorrectionOpenFile => 'Ouvrir le fichier rendu';
+
+  @override
+  String get teacherCorrectionOpenFileError =>
+      'Impossible d\'ouvrir le fichier.';
+
+  @override
+  String get teacherCorrectionStudentWork => 'Copie de l\'élève';
+
+  @override
+  String get teacherCorrectionNoWork =>
+      'La copie ne contient ni texte ni fichier.';
+
+  @override
+  String teacherCorrectionScale(Object max) {
+    return 'Note sur $max';
+  }
+
+  @override
+  String studentHubBadgesCount(Object total, Object unlocked) {
+    return '$unlocked sur $total débloqués';
+  }
+
+  @override
+  String studentHubCertificatesCount(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count certificats',
+      one: '1 certificat',
+      zero: 'Aucun certificat pour l\'instant',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String studentHubGroupsCount(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count groupes',
+      one: '1 groupe',
+      zero: 'Aucun groupe pour l\'instant',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String parentPortfolioPeriod(Object period) {
+    return 'Période couverte : $period';
+  }
 }

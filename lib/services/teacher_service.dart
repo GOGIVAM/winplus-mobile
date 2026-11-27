@@ -36,30 +36,79 @@ class ApiPublishedContent {
 class ApiSubmission {
   final int id;
   final String studentName;
+  /// Titre du devoir (champ assignment du serveur).
   final String contentTitle;
-  final String submittedAt;
+  /// Classe du devoir (champ subject du serveur, qui porte le niveau).
+  final String? className;
+  final DateTime? submittedAt;
+  final int daysWaiting;
+  final String status;
   final bool corrected;
-  final int? score;
+  /// Note sur [maxScore] (barème du devoir : 20, ou 100 pour un quiz).
+  final double? score;
+  final double maxScore;
+  final String? comment;
+  final String? textContent;
+  final String? fileUrl;
+  final bool urgent;
   const ApiSubmission({
     required this.id,
     required this.studentName,
     required this.contentTitle,
-    required this.submittedAt,
+    this.className,
+    this.submittedAt,
+    this.daysWaiting = 0,
+    this.status = 'pending',
     required this.corrected,
     this.score,
+    this.maxScore = 20,
+    this.comment,
+    this.textContent,
+    this.fileUrl,
+    this.urgent = false,
   });
 
-  factory ApiSubmission.fromJson(Map<String, dynamic> j) => ApiSubmission(
-        id: j['id'] as int? ?? 0,
-        studentName: j['studentName'] as String? ?? '',
-        // GET /teacher/corrections/pending : assignment (titre du devoir),
-        // submittedDate, status ; les anciens noms restent lus.
-        contentTitle: j['assignment'] as String? ?? j['contentTitle'] as String? ?? '',
-        submittedAt: j['submittedDate'] as String? ?? j['submittedAt'] as String? ?? '',
-        corrected: j['corrected'] as bool? ??
-            const {'corrected', 'graded', 'returned', 'done'}.contains(j['status']),
-        score: (j['score'] as num?)?.toInt(),
-      );
+  bool get isDraft => status == 'draft';
+
+  /// Note ramenée sur 20 (décision du 26/11 : toute note d'élève sur 20).
+  double? get score20 => score == null || maxScore <= 0 ? null : score! * 20 / maxScore;
+
+  /// Le serveur écrit la date sans fuseau (ToString("O") d'une date UTC) :
+  /// sans Z, elle serait lue comme une heure locale.
+  static DateTime? _utc(Object? v) {
+    final t = v?.toString() ?? '';
+    if (t.isEmpty) return null;
+    final hasZone = RegExp(r'(Z|[+-]\d\d:?\d\d)$').hasMatch(t);
+    return DateTime.tryParse(hasZone || !t.contains('T') ? t : '${t}Z');
+  }
+
+  static String? _text(Object? v) {
+    final t = v?.toString().trim() ?? '';
+    return t.isEmpty ? null : t;
+  }
+
+  factory ApiSubmission.fromJson(Map<String, dynamic> j) {
+    final status = '${j['status'] ?? 'pending'}';
+    return ApiSubmission(
+      id: (j['id'] as num?)?.toInt() ?? 0,
+      studentName: j['studentName'] as String? ?? '',
+      // GET /teacher/corrections/pending : assignment (titre du devoir),
+      // submittedDate, status ; les anciens noms restent lus.
+      contentTitle: j['assignment'] as String? ?? j['contentTitle'] as String? ?? '',
+      className: _text(j['subject']),
+      submittedAt: _utc(j['submittedDate'] ?? j['submittedAt']),
+      daysWaiting: (j['daysWaiting'] as num?)?.toInt() ?? 0,
+      status: status,
+      corrected: j['corrected'] as bool? ??
+          const {'corrected', 'graded', 'returned', 'done'}.contains(status),
+      score: (j['score'] as num?)?.toDouble(),
+      maxScore: (j['maxScore'] as num?)?.toDouble() ?? 20,
+      comment: _text(j['comment']),
+      textContent: _text(j['textContent']),
+      fileUrl: _text(j['fileUrl']),
+      urgent: j['priority'] == 'high',
+    );
+  }
 }
 
 class ApiTeacherStats {
@@ -329,8 +378,11 @@ class TeacherService {
     }
   }
 
+  /// Toutes les copies (filter=all) : sans ce paramètre, le serveur ne
+  /// renvoie que les copies en attente et le filtre « Corrigé » restait vide.
   Future<List<ApiSubmission>> getSubmissions() async {
-    final res = await _api.dio.get('/teacher/corrections/pending');
+    final res = await _api.dio.get('/teacher/corrections/pending',
+        queryParameters: {'filter': 'all'});
     final raw = res.data;
     // Le serveur répond { data: [...] } ; seule la clé items était lue, et
     // l'accueil annonçait toujours 0 copie à corriger (lot 8, Pixel).
@@ -347,7 +399,7 @@ class TeacherService {
   /// POST /api/corrections/{id} avec {note, comment, status} (contrat déjà
   /// utilisé par CorrectionQueue.tsx côté web)  PUT /teacher/corrections/pending
   /// n'a jamais existé côté .NET, cet appel échouait toujours en 404.
-  Future<bool> correctSubmission(int submissionId, int score,
+  Future<bool> correctSubmission(int submissionId, num score,
       [String? feedback]) async {
     try {
       await _api.dio.post('/corrections/$submissionId', data: {

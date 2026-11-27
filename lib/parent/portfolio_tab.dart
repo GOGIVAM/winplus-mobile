@@ -54,9 +54,6 @@ class _PortfolioTabState extends State<PortfolioTab> {
     }
   }
 
-  String _fmtDate(DateTime d) =>
-      '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year}';
-
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
@@ -75,8 +72,13 @@ class _PortfolioTabState extends State<PortfolioTab> {
       children: [
         Text(context.l10n.parentPortfolioTitle(widget.child.firstName),
             style: WinType.headlineS(s.onStrong)),
+        if (p.periode != null) ...[
+          const SizedBox(height: 4),
+          Text(context.l10n.parentPortfolioPeriod(p.periode!),
+              style: WinType.bodyS(s.onMuted)),
+        ],
         const SizedBox(height: 4),
-        Text(context.l10n.parentPortfolioUpdatedOn(_fmtDate(p.updatedAt)),
+        Text(context.l10n.parentPortfolioUpdatedOn(WinFormat.date(p.updatedAt)),
             style: WinType.labelS(s.onFaint)),
         const SizedBox(height: 16),
         _PortfolioCard(
