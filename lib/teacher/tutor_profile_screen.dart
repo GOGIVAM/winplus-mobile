@@ -17,6 +17,7 @@ import 'package:image_picker/image_picker.dart';
 import '../services/user_service.dart';
 import '../shared/net_image.dart';
 import '../shared/tutor_ref_picker.dart';
+import '../student/tutors/tutor_reviews_section.dart';
 
 /// Module 1  Onboarding et profil répétiteur (professeur_complete.md).
 /// Écran unique en 5 étapes (Workflow 1) : matières/niveaux, intervention,
@@ -680,6 +681,8 @@ class _TutorProfileScreenState extends State<TutorProfileScreen> {
         Text(p.subjects.join(', ').isEmpty ? context.l10n.teacherProfileNoneF : p.subjects.map((m) => _subjectLabel(context, m)).join(', ')),
         Text(p.levels.join(', ').isEmpty ? context.l10n.teacherProfileNoneM : p.levels.map((l) => _levelLabel(context, l)).join(', ')),
       ])),
+      // Les avis reçus, auxquels le répétiteur répond d'ici.
+      TutorReviewsSection(tutorUserId: p.userId, canReply: true),
       const SizedBox(height: 20),
       WinButton(context.l10n.teacherProfileBookPreview, block: true, onTap: null),
     ]);

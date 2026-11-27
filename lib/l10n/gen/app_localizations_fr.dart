@@ -12534,4 +12534,26 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get liveEmptyHintFormal =>
       'Les séances en direct et les tutorats en ligne apparaîtront ici.';
+
+  @override
+  String get reviewsReply => 'Répondre';
+
+  @override
+  String get reviewsEditReply => 'Modifier ma réponse';
+
+  @override
+  String get reviewsReplyTitle => 'Répondre à l\'avis';
+
+  @override
+  String get reviewsReplyHint => 'Votre réponse';
+
+  @override
+  String get reviewsReplyPublic =>
+      'Votre réponse s\'affiche sous l\'avis, sur votre fiche publique.';
+
+  @override
+  String get reviewsReplySend => 'Publier la réponse';
+
+  @override
+  String get reviewsReplySent => 'Réponse publiée.';
 }

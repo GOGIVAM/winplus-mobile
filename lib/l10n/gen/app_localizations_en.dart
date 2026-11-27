@@ -12440,4 +12440,26 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get liveEmptyHintFormal =>
       'Live sessions and online tutoring will appear here.';
+
+  @override
+  String get reviewsReply => 'Reply';
+
+  @override
+  String get reviewsEditReply => 'Edit my reply';
+
+  @override
+  String get reviewsReplyTitle => 'Reply to the review';
+
+  @override
+  String get reviewsReplyHint => 'Your reply';
+
+  @override
+  String get reviewsReplyPublic =>
+      'Your reply appears under the review, on your public profile.';
+
+  @override
+  String get reviewsReplySend => 'Post reply';
+
+  @override
+  String get reviewsReplySent => 'Reply posted.';
 }

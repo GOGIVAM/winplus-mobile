@@ -3667,5 +3667,12 @@
   "liveStartDefaultTitle": "Live class",
   "liveStartError": "The class couldn't be created. Please try again.",
   "liveEmptyHintHost": "Start a class now or schedule it: your students will join from this page.",
-  "liveEmptyHintFormal": "Live sessions and online tutoring will appear here."
+  "liveEmptyHintFormal": "Live sessions and online tutoring will appear here.",
+  "reviewsReply": "Reply",
+  "reviewsEditReply": "Edit my reply",
+  "reviewsReplyTitle": "Reply to the review",
+  "reviewsReplyHint": "Your reply",
+  "reviewsReplyPublic": "Your reply appears under the review, on your public profile.",
+  "reviewsReplySend": "Post reply",
+  "reviewsReplySent": "Reply posted."
 }

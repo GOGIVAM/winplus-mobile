@@ -21063,6 +21063,48 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Les séances en direct et les tutorats en ligne apparaîtront ici.'**
   String get liveEmptyHintFormal;
+
+  /// No description provided for @reviewsReply.
+  ///
+  /// In fr, this message translates to:
+  /// **'Répondre'**
+  String get reviewsReply;
+
+  /// No description provided for @reviewsEditReply.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier ma réponse'**
+  String get reviewsEditReply;
+
+  /// No description provided for @reviewsReplyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Répondre à l\'avis'**
+  String get reviewsReplyTitle;
+
+  /// No description provided for @reviewsReplyHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre réponse'**
+  String get reviewsReplyHint;
+
+  /// No description provided for @reviewsReplyPublic.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre réponse s\'affiche sous l\'avis, sur votre fiche publique.'**
+  String get reviewsReplyPublic;
+
+  /// No description provided for @reviewsReplySend.
+  ///
+  /// In fr, this message translates to:
+  /// **'Publier la réponse'**
+  String get reviewsReplySend;
+
+  /// No description provided for @reviewsReplySent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réponse publiée.'**
+  String get reviewsReplySent;
 }
 
 class _AppLocalizationsDelegate

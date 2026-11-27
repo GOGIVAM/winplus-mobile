@@ -585,7 +585,8 @@ void main() {
       expect(find.text(l.teacherProfileNoReviews), findsOneWidget);
       expect(find.text(l.dataSubjectMath), findsOneWidget);
       await tester.tap(find.byTooltip(l.teacherProfileBackToEdit));
-      await pomper(tester);
+      // L'aperçu a demandé les avis : on laisse la réponse arriver.
+      await reseau(tester);
       expect(find.text(l.teacherProfileSubjectsTaught), findsOneWidget);
     });
 

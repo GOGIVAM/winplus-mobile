@@ -6543,5 +6543,12 @@
   "liveStartDefaultTitle": "Cours en direct",
   "liveStartError": "Le cours n'a pas pu être créé. Réessayez.",
   "liveEmptyHintHost": "Démarrez un cours maintenant ou planifiez-le : vos élèves le rejoindront depuis cette page.",
-  "liveEmptyHintFormal": "Les séances en direct et les tutorats en ligne apparaîtront ici."
+  "liveEmptyHintFormal": "Les séances en direct et les tutorats en ligne apparaîtront ici.",
+  "reviewsReply": "Répondre",
+  "reviewsEditReply": "Modifier ma réponse",
+  "reviewsReplyTitle": "Répondre à l'avis",
+  "reviewsReplyHint": "Votre réponse",
+  "reviewsReplyPublic": "Votre réponse s'affiche sous l'avis, sur votre fiche publique.",
+  "reviewsReplySend": "Publier la réponse",
+  "reviewsReplySent": "Réponse publiée."
 }
