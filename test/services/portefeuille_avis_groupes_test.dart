@@ -104,7 +104,7 @@ void main() {
         WalletService.instance.getSummary(),
         throwsA(isA<WalletApiException>()
             .having((e) => e.offline, 'offline', isTrue)
-            .having((e) => e.message, 'message', 'Connexion impossible. Vérifie ton réseau et réessaie.')),
+            .having((e) => e.message, 'message', 'Connexion impossible. Vérifiez votre réseau et réessayez.')),
       );
     });
 
@@ -113,7 +113,7 @@ void main() {
       await expectLater(
         WalletService.instance.getSummary(),
         throwsA(isA<WalletApiException>()
-            .having((e) => e.message, 'message', 'Impossible de charger ton solde.')
+            .having((e) => e.message, 'message', 'Impossible de charger votre solde.')
             .having((e) => e.statusCode, 'statusCode', 500)),
       );
     });
@@ -122,7 +122,7 @@ void main() {
       faux.repond('GET', '/wallet/me', {}, statut: 403);
       await expectLater(
         WalletService.instance.getSummary(),
-        throwsA(isA<WalletApiException>().having((e) => e.message, 'message', contains('vérifie ton adresse e-mail'))),
+        throwsA(isA<WalletApiException>().having((e) => e.message, 'message', contains('vérifiez votre adresse e-mail'))),
       );
       faux.repond('GET', '/wallet/me', {'error': 'Interdit'}, statut: 403);
       await expectLater(

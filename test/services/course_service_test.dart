@@ -304,7 +304,7 @@ void main() {
       faux.repond('POST', '/orders/pay-with-balance', {'error': 'Solde insuffisant'}, statut: 409);
       expect(await CourseService.instance.payCartWithBalance(), 'Solde insuffisant');
       faux.repond('POST', '/orders/pay-with-balance', {}, statut: 500);
-      expect(await CourseService.instance.payCartWithBalance(), 'Le paiement par solde a échoué. Réessaie.');
+      expect(await CourseService.instance.payCartWithBalance(), 'Le paiement par solde a échoué. Merci de réessayer.');
     });
 
     test('purchaseForChild envoie l\'enfant et la formation', () async {

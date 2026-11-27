@@ -101,13 +101,13 @@ abstract class AppLocalizations {
   /// No description provided for @aiAskHint.
   ///
   /// In fr, this message translates to:
-  /// **'Écris ta question…'**
+  /// **'Écrire une question…'**
   String get aiAskHint;
 
   /// No description provided for @authAccountActive.
   ///
   /// In fr, this message translates to:
-  /// **'Votre compte WinPlus est maintenant actif.'**
+  /// **'Le compte WinPlus est maintenant actif.'**
   String get authAccountActive;
 
   /// No description provided for @authAlreadyAccount.
@@ -131,19 +131,19 @@ abstract class AppLocalizations {
   /// No description provided for @authChooseProfile.
   ///
   /// In fr, this message translates to:
-  /// **'Choisis ton profil pour une expérience personnalisée.'**
+  /// **'Choisir un profil pour une expérience personnalisée.'**
   String get authChooseProfile;
 
   /// No description provided for @authChooseSecure.
   ///
   /// In fr, this message translates to:
-  /// **'Choisissez un mot de passe sécurisé.'**
+  /// **'Choisir un mot de passe sécurisé.'**
   String get authChooseSecure;
 
   /// No description provided for @authCodeIncorrect.
   ///
   /// In fr, this message translates to:
-  /// **'Code incorrect. Vérifiez votre email.'**
+  /// **'Code incorrect. Vérifier l\'email.'**
   String get authCodeIncorrect;
 
   /// No description provided for @authCodeInvalid.
@@ -155,13 +155,13 @@ abstract class AppLocalizations {
   /// No description provided for @authCodeSentAddress.
   ///
   /// In fr, this message translates to:
-  /// **'Un code à 6 chiffres a été envoyé à votre adresse.'**
+  /// **'Un code à 6 chiffres a été envoyé à l\'adresse du compte.'**
   String get authCodeSentAddress;
 
   /// No description provided for @authCodeSentEmail.
   ///
   /// In fr, this message translates to:
-  /// **'Code envoyé à votre email'**
+  /// **'Code envoyé par email'**
   String get authCodeSentEmail;
 
   /// No description provided for @authConfirmPassword.
@@ -191,7 +191,7 @@ abstract class AppLocalizations {
   /// No description provided for @authEmailHint.
   ///
   /// In fr, this message translates to:
-  /// **'votre@email.com'**
+  /// **'nom@email.com'**
   String get authEmailHint;
 
   /// No description provided for @authEmailVerified.
@@ -251,7 +251,7 @@ abstract class AppLocalizations {
   /// No description provided for @authFeatStudent3.
   ///
   /// In fr, this message translates to:
-  /// **'Certificats de vos formations terminées'**
+  /// **'Certificats de tes formations terminées'**
   String get authFeatStudent3;
 
   /// No description provided for @authFeatTeacher1.
@@ -275,7 +275,7 @@ abstract class AppLocalizations {
   /// No description provided for @authFillRequired.
   ///
   /// In fr, this message translates to:
-  /// **'Veuillez remplir tous les champs obligatoires.'**
+  /// **'Tous les champs obligatoires doivent être remplis.'**
   String get authFillRequired;
 
   /// No description provided for @authFinish.
@@ -329,19 +329,19 @@ abstract class AppLocalizations {
   /// No description provided for @authForgotIntro.
   ///
   /// In fr, this message translates to:
-  /// **'Entrez votre adresse email, nous vous enverrons un lien de réinitialisation.'**
+  /// **'Saisir l\'adresse email : un lien de réinitialisation y sera envoyé.'**
   String get authForgotIntro;
 
   /// No description provided for @authForgotNotReceived.
   ///
   /// In fr, this message translates to:
-  /// **'Vous n\'avez pas reçu l\'email ?'**
+  /// **'Email non reçu ?'**
   String get authForgotNotReceived;
 
   /// No description provided for @authForgotSent.
   ///
   /// In fr, this message translates to:
-  /// **'Email envoyé à {email}. Vérifiez aussi vos spams.'**
+  /// **'Email envoyé à {email}. Vérifier aussi les spams.'**
   String authForgotSent(Object email);
 
   /// No description provided for @authForgotTitle.
@@ -359,19 +359,19 @@ abstract class AppLocalizations {
   /// No description provided for @authGoogleUnavailable.
   ///
   /// In fr, this message translates to:
-  /// **'La connexion avec Google n\'est pas encore disponible. Utilisez votre adresse e-mail et votre mot de passe.'**
+  /// **'La connexion avec Google n\'est pas encore disponible. Utiliser l\'adresse e-mail et le mot de passe.'**
   String get authGoogleUnavailable;
 
   /// No description provided for @authGoogleFailed.
   ///
   /// In fr, this message translates to:
-  /// **'La connexion avec Google n\'a pas abouti. Réessayez ou utilisez votre mot de passe.'**
+  /// **'La connexion avec Google n\'a pas abouti. Réessayer ou utiliser le mot de passe.'**
   String get authGoogleFailed;
 
   /// No description provided for @authGoogleChooseProfile.
   ///
   /// In fr, this message translates to:
-  /// **'Choisissez votre profil pour créer votre compte avec Google.'**
+  /// **'Choisir un profil pour créer le compte avec Google.'**
   String get authGoogleChooseProfile;
 
   /// No description provided for @authIAm.
@@ -503,13 +503,13 @@ abstract class AppLocalizations {
   /// No description provided for @authPeriodicIntro.
   ///
   /// In fr, this message translates to:
-  /// **'Pour votre sécurité, confirmez votre identité tous les {days} jours.'**
+  /// **'Pour la sécurité du compte, l\'identité est à confirmer tous les {days} jours.'**
   String authPeriodicIntro(int days);
 
   /// No description provided for @authSessionExpired.
   ///
   /// In fr, this message translates to:
-  /// **'Votre session a expiré. Reconnectez-vous.'**
+  /// **'La session a expiré : reconnexion nécessaire.'**
   String get authSessionExpired;
 
   /// No description provided for @authPhoneOptional.
@@ -533,7 +533,7 @@ abstract class AppLocalizations {
   /// No description provided for @authPwdUpdated.
   ///
   /// In fr, this message translates to:
-  /// **'Mot de passe mis à jour ! Vous pouvez maintenant vous connecter.'**
+  /// **'Mot de passe mis à jour ! La connexion est maintenant possible.'**
   String get authPwdUpdated;
 
   /// No description provided for @authResendCode.
@@ -779,7 +779,7 @@ abstract class AppLocalizations {
   /// No description provided for @authSuccessStudent.
   ///
   /// In fr, this message translates to:
-  /// **'Votre profil est prêt. Commencez à réviser !'**
+  /// **'Ton profil est prêt. Commence à réviser !'**
   String get authSuccessStudent;
 
   /// No description provided for @authSuccessTeacher.
@@ -791,25 +791,25 @@ abstract class AppLocalizations {
   /// No description provided for @authTeacherLevelsHint.
   ///
   /// In fr, this message translates to:
-  /// **'Utile pour situer tes contenus et, plus tard, ton profil Mode Tuteur.'**
+  /// **'Utile pour situer vos contenus et, plus tard, votre profil Mode Tuteur.'**
   String get authTeacherLevelsHint;
 
   /// No description provided for @authTeacherLevelsTitle.
   ///
   /// In fr, this message translates to:
-  /// **'Quels niveaux couvres-tu ?'**
+  /// **'Quels niveaux couvrez-vous ?'**
   String get authTeacherLevelsTitle;
 
   /// No description provided for @authTeacherSubjectsHint.
   ///
   /// In fr, this message translates to:
-  /// **'On adapte ton espace professeur et les suggestions WinAI à tes matières.'**
+  /// **'On adapte votre espace professeur et les suggestions WinAI à vos matières.'**
   String get authTeacherSubjectsHint;
 
   /// No description provided for @authTeacherSubjectsTitle.
   ///
   /// In fr, this message translates to:
-  /// **'Quelles matières enseignes-tu ?'**
+  /// **'Quelles matières enseignez-vous ?'**
   String get authTeacherSubjectsTitle;
 
   /// No description provided for @authVerify.
@@ -827,7 +827,7 @@ abstract class AppLocalizations {
   /// No description provided for @authVerifyItsYou.
   ///
   /// In fr, this message translates to:
-  /// **'Vérifiez que c\'est bien vous'**
+  /// **'Vérification d\'identité'**
   String get authVerifyItsYou;
 
   /// No description provided for @authWelcomeName.
@@ -1332,7 +1332,7 @@ abstract class AppLocalizations {
   /// No description provided for @fillAllFields.
   ///
   /// In fr, this message translates to:
-  /// **'Veuillez remplir tous les champs.'**
+  /// **'Tous les champs doivent être remplis.'**
   String get fillAllFields;
 
   /// No description provided for @fmtDateAtTime.
@@ -1398,7 +1398,7 @@ abstract class AppLocalizations {
   /// No description provided for @forumContentHint.
   ///
   /// In fr, this message translates to:
-  /// **'Détaillez votre question…'**
+  /// **'Détaille ta question…'**
   String get forumContentHint;
 
   /// No description provided for @forumEmptyCategory.
@@ -1428,7 +1428,7 @@ abstract class AppLocalizations {
   /// No description provided for @forumReplyHint.
   ///
   /// In fr, this message translates to:
-  /// **'Votre réponse…'**
+  /// **'Ta réponse…'**
   String get forumReplyHint;
 
   /// No description provided for @forumRoleTeacher.
@@ -1464,7 +1464,7 @@ abstract class AppLocalizations {
   /// No description provided for @forumTitleHint.
   ///
   /// In fr, this message translates to:
-  /// **'Votre question ou sujet…'**
+  /// **'Ta question ou ton sujet…'**
   String get forumTitleHint;
 
   /// No description provided for @instAccountAdmins.
@@ -1536,7 +1536,7 @@ abstract class AppLocalizations {
   /// No description provided for @instAiTagline.
   ///
   /// In fr, this message translates to:
-  /// **'Ton auditeur analytique & stratège institutionnel'**
+  /// **'Votre auditeur analytique & stratège institutionnel'**
   String get instAiTagline;
 
   /// No description provided for @instAnalyticsByGroup.
@@ -2628,7 +2628,7 @@ abstract class AppLocalizations {
   /// No description provided for @loginSubtitle.
   ///
   /// In fr, this message translates to:
-  /// **'Connecte-toi à ton compte WinPlus.'**
+  /// **'Connexion au compte WinPlus.'**
   String get loginSubtitle;
 
   /// No description provided for @loginTitle.
@@ -2652,13 +2652,13 @@ abstract class AppLocalizations {
   /// No description provided for @msgEmptyHint.
   ///
   /// In fr, this message translates to:
-  /// **'Contactez un professeur depuis la fiche d\'un élève.'**
+  /// **'Contacter un professeur depuis la fiche d\'un élève.'**
   String get msgEmptyHint;
 
   /// No description provided for @msgHint.
   ///
   /// In fr, this message translates to:
-  /// **'Votre message…'**
+  /// **'Écrire un message…'**
   String get msgHint;
 
   /// No description provided for @msgHoursAgo.
@@ -2688,7 +2688,7 @@ abstract class AppLocalizations {
   /// No description provided for @msgStartConversation.
   ///
   /// In fr, this message translates to:
-  /// **'Commencez la conversation.'**
+  /// **'Commencer la conversation.'**
   String get msgStartConversation;
 
   /// No description provided for @msgTitle.
@@ -2796,7 +2796,7 @@ abstract class AppLocalizations {
   /// No description provided for @parentAiTagline.
   ///
   /// In fr, this message translates to:
-  /// **'Ton conseiller familial chaleureux'**
+  /// **'Votre conseiller familial chaleureux'**
   String get parentAiTagline;
 
   /// No description provided for @parentAlbumGoals.
@@ -4050,7 +4050,7 @@ abstract class AppLocalizations {
   /// No description provided for @shellTabMySpace.
   ///
   /// In fr, this message translates to:
-  /// **'Mon Espace'**
+  /// **'Mon espace'**
   String get shellTabMySpace;
 
   /// No description provided for @shellTabProfile.
@@ -4080,7 +4080,7 @@ abstract class AppLocalizations {
   /// No description provided for @shopAccountRequiredBody.
   ///
   /// In fr, this message translates to:
-  /// **'Connectez-vous ou créez un compte avant le paiement : le contenu acheté est rattaché à votre compte et reste accessible sur tous vos appareils.'**
+  /// **'Connexion ou création de compte requise avant le paiement : le contenu acheté est rattaché au compte et reste accessible sur tous les appareils.'**
   String get shopAccountRequiredBody;
 
   /// No description provided for @shopAccountRequiredTitle.
@@ -4122,7 +4122,7 @@ abstract class AppLocalizations {
   /// No description provided for @shopBuyInAppBody.
   ///
   /// In fr, this message translates to:
-  /// **'Ajoutez ce contenu à votre panier, puis réglez-le par Mobile Money (MTN ou Orange). Il sera ensuite disponible dans votre espace.'**
+  /// **'Ajouter ce contenu au panier, puis le régler par Mobile Money (MTN ou Orange). Il sera ensuite disponible dans l\'espace WinPlus.'**
   String get shopBuyInAppBody;
 
   /// No description provided for @shopBuyInAppTitle.
@@ -4134,7 +4134,7 @@ abstract class AppLocalizations {
   /// No description provided for @shopCartEmpty.
   ///
   /// In fr, this message translates to:
-  /// **'Votre panier est vide.'**
+  /// **'Le panier est vide.'**
   String get shopCartEmpty;
 
   /// No description provided for @shopCartLoadFailed.
@@ -4176,7 +4176,7 @@ abstract class AppLocalizations {
   /// No description provided for @shopContentAvailable.
   ///
   /// In fr, this message translates to:
-  /// **'Vos contenus sont maintenant disponibles.'**
+  /// **'Les contenus sont maintenant disponibles.'**
   String get shopContentAvailable;
 
   /// No description provided for @shopExploreCatalog.
@@ -4350,7 +4350,7 @@ abstract class AppLocalizations {
   /// No description provided for @shopSlowPayment.
   ///
   /// In fr, this message translates to:
-  /// **'Le paiement met plus de temps que prévu. Vous pouvez vérifier plus tard dans \"Mes commandes\".'**
+  /// **'Le paiement met plus de temps que prévu. Vérification possible plus tard dans \"Mes commandes\".'**
   String get shopSlowPayment;
 
   /// No description provided for @shopStillPending.
@@ -4386,19 +4386,19 @@ abstract class AppLocalizations {
   /// No description provided for @shopUnexpectedError.
   ///
   /// In fr, this message translates to:
-  /// **'Erreur inattendue. Réessayez.'**
+  /// **'Erreur inattendue. Merci de réessayer.'**
   String get shopUnexpectedError;
 
   /// No description provided for @shopUssdNotice.
   ///
   /// In fr, this message translates to:
-  /// **'Vous recevrez une notification USSD pour valider.'**
+  /// **'Une notification USSD arrivera pour valider.'**
   String get shopUssdNotice;
 
   /// No description provided for @shopValidateUssd.
   ///
   /// In fr, this message translates to:
-  /// **'Valide le paiement via le message USSD envoyé sur ton téléphone.'**
+  /// **'Valider le paiement via le message USSD envoyé sur le téléphone.'**
   String get shopValidateUssd;
 
   /// No description provided for @shopVatIncluded.
@@ -4566,7 +4566,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentCertEmptyHint.
   ///
   /// In fr, this message translates to:
-  /// **'Complétez des quiz et des parcours pour\ndécrocher vos premiers certificats.'**
+  /// **'Complète des quiz et des parcours pour\ndécrocher tes premiers certificats.'**
   String get studentCertEmptyHint;
 
   /// No description provided for @studentCertIssuedOn.
@@ -4620,7 +4620,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentCertTitle.
   ///
   /// In fr, this message translates to:
-  /// **'Mes Certificats'**
+  /// **'Mes certificats'**
   String get studentCertTitle;
 
   /// No description provided for @studentCertVerificationCode.
@@ -4825,7 +4825,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentCourseLeaveReview.
   ///
   /// In fr, this message translates to:
-  /// **'Donnez votre avis'**
+  /// **'Donne ton avis'**
   String get studentCourseLeaveReview;
 
   /// No description provided for @studentCourseLessons.
@@ -4855,7 +4855,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentCourseObjectives.
   ///
   /// In fr, this message translates to:
-  /// **'Ce que vous apprendrez'**
+  /// **'Ce que tu apprendras'**
   String get studentCourseObjectives;
 
   /// No description provided for @studentCourseOfferChild.
@@ -4927,7 +4927,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentCourseReviewHint.
   ///
   /// In fr, this message translates to:
-  /// **'Partagez votre expérience (optionnel)…'**
+  /// **'Partage ton expérience (optionnel)…'**
   String get studentCourseReviewHint;
 
   /// No description provided for @studentCourseReviewSubmitError.
@@ -4939,7 +4939,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentCourseReviewThanks.
   ///
   /// In fr, this message translates to:
-  /// **'Merci pour votre avis !'**
+  /// **'Merci pour ton avis !'**
   String get studentCourseReviewThanks;
 
   /// No description provided for @studentCourseReviews.
@@ -4963,7 +4963,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentCourseYours.
   ///
   /// In fr, this message translates to:
-  /// **'Votre formation'**
+  /// **'Ta formation'**
   String get studentCourseYours;
 
   /// No description provided for @studentDetailAddNote.
@@ -5035,7 +5035,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentDetailOrSubscriptions.
   ///
   /// In fr, this message translates to:
-  /// **'ou découvrez les abonnements'**
+  /// **'ou découvrir les abonnements'**
   String get studentDetailOrSubscriptions;
 
   /// No description provided for @studentDetailRatingCount.
@@ -5155,7 +5155,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentFavLimit.
   ///
   /// In fr, this message translates to:
-  /// **'Votre plan permet {max} favoris. Passez à un plan supérieur pour en sauvegarder plus.'**
+  /// **'Ton plan permet {max} favoris. Passe à un plan supérieur pour en sauvegarder plus.'**
   String studentFavLimit(Object max);
 
   /// No description provided for @studentFavLoadError.
@@ -5167,7 +5167,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentFavTitle.
   ///
   /// In fr, this message translates to:
-  /// **'Mes Favoris'**
+  /// **'Mes favoris'**
   String get studentFavTitle;
 
   /// No description provided for @studentGoalsAcceptError.
@@ -5197,7 +5197,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentGoalsProposedBy.
   ///
   /// In fr, this message translates to:
-  /// **'Proposé par un de vos parents'**
+  /// **'Proposé par un de tes parents'**
   String get studentGoalsProposedBy;
 
   /// No description provided for @studentGoalsRefuseConfirm.
@@ -5233,19 +5233,19 @@ abstract class AppLocalizations {
   /// No description provided for @studentGoalsTitle.
   ///
   /// In fr, this message translates to:
-  /// **'Objectifs proposés par vos parents'**
+  /// **'Objectifs proposés par tes parents'**
   String get studentGoalsTitle;
 
   /// No description provided for @studentGroupsAlreadyMember.
   ///
   /// In fr, this message translates to:
-  /// **'Vous faites déjà partie de « {name} ».'**
+  /// **'Tu fais déjà partie de « {name} ».'**
   String studentGroupsAlreadyMember(Object name);
 
   /// No description provided for @studentGroupsCodeIncomplete.
   ///
   /// In fr, this message translates to:
-  /// **'Entrez le code d\'invitation complet.'**
+  /// **'Entre le code d\'invitation complet.'**
   String get studentGroupsCodeIncomplete;
 
   /// No description provided for @studentGroupsCodeNotFound.
@@ -5299,7 +5299,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentGroupsEmptyHint.
   ///
   /// In fr, this message translates to:
-  /// **'Créez un groupe ou rejoignez celui d\'un camarade avec son code.'**
+  /// **'Crée un groupe ou rejoins celui d\'un camarade avec son code.'**
   String get studentGroupsEmptyHint;
 
   /// No description provided for @studentGroupsInviteCode.
@@ -5353,7 +5353,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentGroupsLeaveError.
   ///
   /// In fr, this message translates to:
-  /// **'Vous n\'avez pas pu quitter ce groupe.'**
+  /// **'Tu n\'as pas pu quitter ce groupe.'**
   String get studentGroupsLeaveError;
 
   /// No description provided for @studentGroupsLeaveOwner.
@@ -5371,7 +5371,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentGroupsLoadError.
   ///
   /// In fr, this message translates to:
-  /// **'Vos groupes n\'ont pas pu être chargés.'**
+  /// **'Tes groupes n\'ont pas pu être chargés.'**
   String get studentGroupsLoadError;
 
   /// No description provided for @studentGroupsMember.
@@ -5671,7 +5671,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentHomeUpgrade.
   ///
   /// In fr, this message translates to:
-  /// **'Avec un abonnement, tout le catalogue s\'ouvre et WinAI vous accompagne davantage.'**
+  /// **'Avec un abonnement, tout le catalogue s\'ouvre et WinAI t\'accompagne davantage.'**
   String get studentHomeUpgrade;
 
   /// No description provided for @studentHubAccount.
@@ -5719,7 +5719,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentHubFavoritesSub.
   ///
   /// In fr, this message translates to:
-  /// **'Vos contenus enregistrés'**
+  /// **'Tes contenus enregistrés'**
   String get studentHubFavoritesSub;
 
   /// No description provided for @studentHubForum.
@@ -5749,7 +5749,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentHubHistory.
   ///
   /// In fr, this message translates to:
-  /// **'Historique des téléchargements'**
+  /// **'Documents consultés'**
   String get studentHubHistory;
 
   /// No description provided for @studentHubLearning.
@@ -5761,7 +5761,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentHubLogoutBody.
   ///
   /// In fr, this message translates to:
-  /// **'Vous serez redirigé vers l\'écran d\'accueil.'**
+  /// **'Tu seras redirigé vers l\'écran d\'accueil.'**
   String get studentHubLogoutBody;
 
   /// No description provided for @studentHubLogoutConfirm.
@@ -5971,7 +5971,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentMyCoursesEmptyHint.
   ///
   /// In fr, this message translates to:
-  /// **'Explorez notre catalogue et commencez à apprendre dès aujourd\'hui.'**
+  /// **'Explore notre catalogue et commence à apprendre dès aujourd\'hui.'**
   String get studentMyCoursesEmptyHint;
 
   /// No description provided for @studentMyCoursesExplore.
@@ -5983,7 +5983,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentMyCoursesLoadError.
   ///
   /// In fr, this message translates to:
-  /// **'Impossible de charger vos formations.'**
+  /// **'Impossible de charger tes formations.'**
   String get studentMyCoursesLoadError;
 
   /// No description provided for @studentMyCoursesReplay.
@@ -6025,7 +6025,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentNotifMarkFailed.
   ///
   /// In fr, this message translates to:
-  /// **'Impossible de marquer les notifications comme lues. Réessaie.'**
+  /// **'Impossible de marquer les notifications comme lues. Merci de réessayer.'**
   String get studentNotifMarkFailed;
 
   /// No description provided for @studentNotifMinutesAgo.
@@ -6061,13 +6061,13 @@ abstract class AppLocalizations {
   /// No description provided for @studentPlayerCertAvailable.
   ///
   /// In fr, this message translates to:
-  /// **'Votre certificat est disponible.'**
+  /// **'Ton certificat est disponible.'**
   String get studentPlayerCertAvailable;
 
   /// No description provided for @studentPlayerCertGenerating.
   ///
   /// In fr, this message translates to:
-  /// **'Félicitations ! Votre certificat est en cours de génération.'**
+  /// **'Félicitations ! Ton certificat est en cours de génération.'**
   String get studentPlayerCertGenerating;
 
   /// No description provided for @studentPlayerCourseDone.
@@ -6139,13 +6139,13 @@ abstract class AppLocalizations {
   /// No description provided for @studentPlayerSelectLesson.
   ///
   /// In fr, this message translates to:
-  /// **'Sélectionnez une leçon.'**
+  /// **'Sélectionne une leçon.'**
   String get studentPlayerSelectLesson;
 
   /// No description provided for @studentPlayerTapToDownload.
   ///
   /// In fr, this message translates to:
-  /// **'Appuyez pour télécharger'**
+  /// **'Appuie pour télécharger'**
   String get studentPlayerTapToDownload;
 
   /// No description provided for @studentPlayerVideoUnavailable.
@@ -6247,7 +6247,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentProfileDeleteBody.
   ///
   /// In fr, this message translates to:
-  /// **'Cette action est irréversible. Toutes vos données seront perdues.'**
+  /// **'Cette action est irréversible. Toutes tes données seront perdues.'**
   String get studentProfileDeleteBody;
 
   /// No description provided for @studentProfileDeleteTitle.
@@ -6259,7 +6259,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentProfileDeleteWarning.
   ///
   /// In fr, this message translates to:
-  /// **'La suppression de votre compte est irréversible.'**
+  /// **'La suppression de ton compte est irréversible.'**
   String get studentProfileDeleteWarning;
 
   /// No description provided for @studentProfileEmailAddress.
@@ -6289,7 +6289,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentProfileEmailSame.
   ///
   /// In fr, this message translates to:
-  /// **'C\'est déjà votre adresse actuelle.'**
+  /// **'C\'est déjà ton adresse actuelle.'**
   String get studentProfileEmailSame;
 
   /// No description provided for @studentProfileEnterCode.
@@ -6349,7 +6349,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentProfileNotifCommunitySub.
   ///
   /// In fr, this message translates to:
-  /// **'Réponses à vos questions'**
+  /// **'Réponses à tes questions'**
   String get studentProfileNotifCommunitySub;
 
   /// No description provided for @studentProfileNotifExam.
@@ -6361,7 +6361,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentProfileNotifExamSub.
   ///
   /// In fr, this message translates to:
-  /// **'Compte à rebours avant vos examens'**
+  /// **'Compte à rebours avant tes examens'**
   String get studentProfileNotifExamSub;
 
   /// No description provided for @studentProfileNotifPromo.
@@ -6385,7 +6385,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentProfileNotifQuizSub.
   ///
   /// In fr, this message translates to:
-  /// **'Recevoir vos scores après chaque quiz'**
+  /// **'Recevoir tes scores après chaque quiz'**
   String get studentProfileNotifQuizSub;
 
   /// No description provided for @studentProfilePeriodEnd.
@@ -6727,7 +6727,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentSearchIdle.
   ///
   /// In fr, this message translates to:
-  /// **'Recherchez dans le catalogue'**
+  /// **'Rechercher dans le catalogue'**
   String get studentSearchIdle;
 
   /// No description provided for @studentSearchNoResults.
@@ -6883,7 +6883,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentTabsAiNoReply.
   ///
   /// In fr, this message translates to:
-  /// **'Désolé, je n\'ai pas pu répondre. Réessaie.'**
+  /// **'Désolé, je n\'ai pas pu répondre. Merci de réessayer.'**
   String get studentTabsAiNoReply;
 
   /// No description provided for @studentTabsAiSuggest1.
@@ -7033,7 +7033,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentTabsStructuredCoursesSub.
   ///
   /// In fr, this message translates to:
-  /// **'Apprenez à votre rythme · Certificats inclus'**
+  /// **'Apprends à ton rythme · Certificats inclus'**
   String get studentTabsStructuredCoursesSub;
 
   /// No description provided for @studentTabsStudyThisWeek.
@@ -7069,7 +7069,7 @@ abstract class AppLocalizations {
   /// No description provided for @voiceListening.
   ///
   /// In fr, this message translates to:
-  /// **'Je vous écoute…'**
+  /// **'J\'écoute…'**
   String get voiceListening;
 
   /// No description provided for @voiceNothingHeard.
@@ -7081,7 +7081,7 @@ abstract class AppLocalizations {
   /// No description provided for @voiceCheckText.
   ///
   /// In fr, this message translates to:
-  /// **'Relisez le texte avant de l\'utiliser :'**
+  /// **'Relire le texte avant de l\'utiliser :'**
   String get voiceCheckText;
 
   /// No description provided for @voiceStop.
@@ -7105,7 +7105,7 @@ abstract class AppLocalizations {
   /// No description provided for @voiceUnavailable.
   ///
   /// In fr, this message translates to:
-  /// **'La dictée n\'est pas disponible : autorisez le micro pour WinPlus, ou vérifiez que la reconnaissance vocale de Google est installée.'**
+  /// **'La dictée n\'est pas disponible : autoriser le micro pour WinPlus, ou vérifier que la reconnaissance vocale de Google est installée.'**
   String get voiceUnavailable;
 
   /// No description provided for @studentVarkApplied.
@@ -7375,13 +7375,13 @@ abstract class AppLocalizations {
   /// No description provided for @studentViewerNoAccess.
   ///
   /// In fr, this message translates to:
-  /// **'Ce contenu n\'est pas inclus dans votre accès. Achetez-le ou abonnez-vous pour le consulter.'**
+  /// **'Ce contenu n\'est pas inclus dans ton accès. Achète-le ou abonne-toi pour le consulter.'**
   String get studentViewerNoAccess;
 
   /// No description provided for @studentViewerNoConnection.
   ///
   /// In fr, this message translates to:
-  /// **'Connexion impossible. Vérifiez votre réseau puis réessayez.'**
+  /// **'Connexion impossible. Vérifie ton réseau puis réessaie.'**
   String get studentViewerNoConnection;
 
   /// No description provided for @studentViewerNoCorrection.
@@ -7417,7 +7417,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentViewerSessionExpired.
   ///
   /// In fr, this message translates to:
-  /// **'Votre session a expiré. Reconnectez-vous pour consulter ce document.'**
+  /// **'Ta session a expiré. Reconnecte-toi pour consulter ce document.'**
   String get studentViewerSessionExpired;
 
   /// No description provided for @studentViewerSubscriptions.
@@ -7531,7 +7531,7 @@ abstract class AppLocalizations {
   /// No description provided for @subInstitutionLicenseNote.
   ///
   /// In fr, this message translates to:
-  /// **'Les établissements passent par une licence (sièges élèves, année scolaire) : gérez-la depuis l\'onglet Licence de votre espace établissement.'**
+  /// **'Les établissements passent par une licence (sièges élèves, année scolaire) : elle se gère depuis l\'onglet Licence de l\'espace établissement.'**
   String get subInstitutionLicenseNote;
 
   /// No description provided for @subLater.
@@ -7681,7 +7681,7 @@ abstract class AppLocalizations {
   /// No description provided for @svcBalancePaymentFailed.
   ///
   /// In fr, this message translates to:
-  /// **'Le paiement par solde a échoué. Réessaie.'**
+  /// **'Le paiement par solde a échoué. Merci de réessayer.'**
   String get svcBalancePaymentFailed;
 
   /// No description provided for @svcBookedForOthers.
@@ -7765,7 +7765,7 @@ abstract class AppLocalizations {
   /// No description provided for @svcGenericError.
   ///
   /// In fr, this message translates to:
-  /// **'Une erreur est survenue. Réessaie.'**
+  /// **'Une erreur est survenue. Merci de réessayer.'**
   String get svcGenericError;
 
   /// No description provided for @svcIdDocCni.
@@ -7981,7 +7981,7 @@ abstract class AppLocalizations {
   /// No description provided for @svcRefundMyWallet.
   ///
   /// In fr, this message translates to:
-  /// **'ton portefeuille WinPlus'**
+  /// **'le portefeuille WinPlus'**
   String get svcRefundMyWallet;
 
   /// No description provided for @svcRefundPartial.
@@ -8209,7 +8209,7 @@ abstract class AppLocalizations {
   /// No description provided for @svcVerifLoadFailed.
   ///
   /// In fr, this message translates to:
-  /// **'Impossible de charger ta vérification.'**
+  /// **'Impossible de charger votre vérification.'**
   String get svcVerifLoadFailed;
 
   /// No description provided for @svcVerifRouteInstitution.
@@ -8227,13 +8227,13 @@ abstract class AppLocalizations {
   /// No description provided for @svcWinaiLimit.
   ///
   /// In fr, this message translates to:
-  /// **'Vous avez atteint votre limite WinAI. Passez à un plan supérieur pour continuer.'**
+  /// **'Limite WinAI atteinte. Un plan supérieur permet de continuer.'**
   String get svcWinaiLimit;
 
   /// No description provided for @svcWinaiUnavailable.
   ///
   /// In fr, this message translates to:
-  /// **'WinAI est momentanément indisponible. Réessayez dans quelques minutes.'**
+  /// **'WinAI est momentanément indisponible. Merci de réessayer dans quelques minutes.'**
   String get svcWinaiUnavailable;
 
   /// No description provided for @svcWithdrawFailed.
@@ -8281,7 +8281,7 @@ abstract class AppLocalizations {
   /// No description provided for @teacherAiTagline.
   ///
   /// In fr, this message translates to:
-  /// **'Ton assistant éditorial & pédagogique'**
+  /// **'Votre assistant éditorial & pédagogique'**
   String get teacherAiTagline;
 
   /// No description provided for @teacherBookingAcceptError.
@@ -8311,7 +8311,7 @@ abstract class AppLocalizations {
   /// No description provided for @teacherBookingAutoMaterialHint.
   ///
   /// In fr, this message translates to:
-  /// **'Décompté de ton usage WinAI ; tu le relis avant de le partager.'**
+  /// **'Décompté de votre usage WinAI ; vous le relisez avant de le partager.'**
   String get teacherBookingAutoMaterialHint;
 
   /// No description provided for @teacherBookingBeneficiaries.
@@ -8335,7 +8335,7 @@ abstract class AppLocalizations {
   /// No description provided for @teacherBookingDeclineEngagementMessage.
   ///
   /// In fr, this message translates to:
-  /// **'Le payeur est remboursé intégralement, séance par séance ; si le mois a été payé par Mobile Money, les frais sont retenus sur ton solde.'**
+  /// **'Le payeur est remboursé intégralement, séance par séance ; si le mois a été payé par Mobile Money, les frais sont retenus sur votre solde.'**
   String get teacherBookingDeclineEngagementMessage;
 
   /// No description provided for @teacherBookingDeclineEngagementTitle.
@@ -8353,7 +8353,7 @@ abstract class AppLocalizations {
   /// No description provided for @teacherBookingDeclineMessage.
   ///
   /// In fr, this message translates to:
-  /// **'Celui qui a payé (élève, parent, institution ou membre du groupe) sera remboursé intégralement sur son portefeuille WinPlus ; si la séance a été payée par Mobile Money, les frais de l\'opérateur seront retenus sur ton solde.'**
+  /// **'Celui qui a payé (élève, parent, institution ou membre du groupe) sera remboursé intégralement sur son portefeuille WinPlus ; si la séance a été payée par Mobile Money, les frais de l\'opérateur seront retenus sur votre solde.'**
   String get teacherBookingDeclineMessage;
 
   /// No description provided for @teacherBookingDeclineTitle.
@@ -8371,7 +8371,7 @@ abstract class AppLocalizations {
   /// No description provided for @teacherBookingDeclinedFee.
   ///
   /// In fr, this message translates to:
-  /// **'Demande refusée : le payeur est remboursé, {amount} XAF de frais Mobile Money retenus sur ton solde.'**
+  /// **'Demande refusée : le payeur est remboursé, {amount} XAF de frais Mobile Money retenus sur votre solde.'**
   String teacherBookingDeclinedFee(Object amount);
 
   /// No description provided for @teacherBookingDetail.
@@ -8635,13 +8635,13 @@ abstract class AppLocalizations {
   /// No description provided for @teacherClassNoStudentsHint.
   ///
   /// In fr, this message translates to:
-  /// **'Ajoute un élève par son email WinPlus.'**
+  /// **'Ajoutez un élève par son email WinPlus.'**
   String get teacherClassNoStudentsHint;
 
   /// No description provided for @teacherClassReferenceHint.
   ///
   /// In fr, this message translates to:
-  /// **'Ton propre corrigé…'**
+  /// **'Votre propre corrigé…'**
   String get teacherClassReferenceHint;
 
   /// No description provided for @teacherClassReferenceLabel.
@@ -8683,7 +8683,7 @@ abstract class AppLocalizations {
   /// No description provided for @teacherClassStatementHint.
   ///
   /// In fr, this message translates to:
-  /// **'Colle l\'énoncé…'**
+  /// **'Collez l\'énoncé…'**
   String get teacherClassStatementHint;
 
   /// No description provided for @teacherClassStatementLabel.
@@ -9355,7 +9355,7 @@ abstract class AppLocalizations {
   /// No description provided for @teacherGroupIntro.
   ///
   /// In fr, this message translates to:
-  /// **'Un parent, une institution ou un groupe d\'étude peut réserver pour plusieurs élèves. Une séance de groupe occupe ton créneau une seule fois.'**
+  /// **'Un parent, une institution ou un groupe d\'étude peut réserver pour plusieurs élèves. Une séance de groupe occupe votre créneau une seule fois.'**
   String get teacherGroupIntro;
 
   /// No description provided for @teacherGroupMaxSizeLabel.
@@ -9403,7 +9403,7 @@ abstract class AppLocalizations {
   /// No description provided for @teacherGroupSubjectsFirst.
   ///
   /// In fr, this message translates to:
-  /// **'Choisis d\'abord tes matières.'**
+  /// **'Choisissez d\'abord vos matières.'**
   String get teacherGroupSubjectsFirst;
 
   /// No description provided for @teacherGroupSuggest.
@@ -9547,7 +9547,7 @@ abstract class AppLocalizations {
   /// No description provided for @teacherPricingGridIntro.
   ///
   /// In fr, this message translates to:
-  /// **'Sans grille, ton tarif horaire s\'applique partout. Facturation au prorata des tranches de 30 min ; le prix exact est calculé par WinPlus et montré à l\'élève avant paiement.'**
+  /// **'Sans grille, votre tarif horaire s\'applique partout. Facturation au prorata des tranches de 30 min ; le prix exact est calculé par WinPlus et montré à l\'élève avant paiement.'**
   String get teacherPricingGridIntro;
 
   /// No description provided for @teacherPricingGridTitle.
@@ -9607,7 +9607,7 @@ abstract class AppLocalizations {
   /// No description provided for @teacherPricingSubjectsFirst.
   ///
   /// In fr, this message translates to:
-  /// **'Choisis d\'abord tes matières (étape 1).'**
+  /// **'Choisissez d\'abord vos matières (étape 1).'**
   String get teacherPricingSubjectsFirst;
 
   /// No description provided for @teacherPricingSuggest.
@@ -9637,13 +9637,13 @@ abstract class AppLocalizations {
   /// No description provided for @teacherProfileActivateError.
   ///
   /// In fr, this message translates to:
-  /// **'Complète les champs essentiels avant d\'activer ton profil.'**
+  /// **'Complétez les champs essentiels avant d\'activer votre profil.'**
   String get teacherProfileActivateError;
 
   /// No description provided for @teacherProfileActivated.
   ///
   /// In fr, this message translates to:
-  /// **'Ton profil tuteur est visible dans la recherche !'**
+  /// **'Votre profil tuteur est visible dans la recherche !'**
   String get teacherProfileActivated;
 
   /// No description provided for @teacherProfileActiveAfterSuspension.
@@ -9793,13 +9793,13 @@ abstract class AppLocalizations {
   /// No description provided for @teacherProfileKeptSuspended.
   ///
   /// In fr, this message translates to:
-  /// **'Tes choix présentiels restent enregistrés et redeviendront actifs à la levée de la suspension.'**
+  /// **'Vos choix présentiels restent enregistrés et redeviendront actifs à la levée de la suspension.'**
   String get teacherProfileKeptSuspended;
 
   /// No description provided for @teacherProfileKeptUnverified.
   ///
   /// In fr, this message translates to:
-  /// **'Tes choix présentiels sont enregistrés et deviendront actifs dès ta vérification.'**
+  /// **'Vos choix présentiels sont enregistrés et deviendront actifs dès votre vérification.'**
   String get teacherProfileKeptUnverified;
 
   /// No description provided for @teacherProfileLevelEnam.
@@ -9817,7 +9817,7 @@ abstract class AppLocalizations {
   /// No description provided for @teacherProfileLoadError.
   ///
   /// In fr, this message translates to:
-  /// **'Impossible de charger ton profil tuteur.'**
+  /// **'Impossible de charger votre profil tuteur.'**
   String get teacherProfileLoadError;
 
   /// No description provided for @teacherProfileMaxPerWeek.
@@ -9835,7 +9835,7 @@ abstract class AppLocalizations {
   /// No description provided for @teacherProfileMonthlyDesc.
   ///
   /// In fr, this message translates to:
-  /// **'Mêmes créneaux chaque semaine pendant 4 semaines, payés d\'avance ; tu es payé séance par séance.'**
+  /// **'Mêmes créneaux chaque semaine pendant 4 semaines, payés d\'avance ; vous êtes payé séance par séance.'**
   String get teacherProfileMonthlyDesc;
 
   /// No description provided for @teacherProfileMonthlyDiscountHint.
@@ -9847,7 +9847,7 @@ abstract class AppLocalizations {
   /// No description provided for @teacherProfileMonthlyHint.
   ///
   /// In fr, this message translates to:
-  /// **'Appliquée au prix de chaque séance du mois, calculé par ta grille.'**
+  /// **'Appliquée au prix de chaque séance du mois, calculé par votre grille.'**
   String get teacherProfileMonthlyHint;
 
   /// No description provided for @teacherProfileMonthlyToggle.
@@ -10407,7 +10407,7 @@ abstract class AppLocalizations {
   /// No description provided for @teacherVerifAvailability.
   ///
   /// In fr, this message translates to:
-  /// **'Tes disponibilités'**
+  /// **'Vos disponibilités'**
   String get teacherVerifAvailability;
 
   /// No description provided for @teacherVerifAvailabilityHint.
@@ -10425,7 +10425,7 @@ abstract class AppLocalizations {
   /// No description provided for @teacherVerifCameraUnavailable.
   ///
   /// In fr, this message translates to:
-  /// **'Appareil photo indisponible : choisis plutôt une photo de ton visage dans tes fichiers.'**
+  /// **'Appareil photo indisponible : choisissez plutôt une photo de votre visage dans vos fichiers.'**
   String get teacherVerifCameraUnavailable;
 
   /// No description provided for @teacherVerifCancelRequest.
@@ -10491,13 +10491,13 @@ abstract class AppLocalizations {
   /// No description provided for @teacherVerifIdentityOk.
   ///
   /// In fr, this message translates to:
-  /// **'Ta pièce d\'identité est validée.'**
+  /// **'Votre pièce d\'identité est validée.'**
   String get teacherVerifIdentityOk;
 
   /// No description provided for @teacherVerifIdentityText.
   ///
   /// In fr, this message translates to:
-  /// **'Un administrateur compare la photo de ta pièce et ton visage.'**
+  /// **'Un administrateur compare la photo de votre pièce et votre visage.'**
   String get teacherVerifIdentityText;
 
   /// No description provided for @teacherVerifIdentityTitle.
@@ -10515,19 +10515,19 @@ abstract class AppLocalizations {
   /// No description provided for @teacherVerifInstitutionText.
   ///
   /// In fr, this message translates to:
-  /// **'Si tu es rattaché à un établissement sur WinPlus, il peut te cautionner après t\'avoir vérifié par ses propres moyens. Si le rattachement ou la caution est retiré, cette voie tombe.'**
+  /// **'Si vous êtes rattaché à un établissement sur WinPlus, il peut vous cautionner après vous avoir vérifié par ses propres moyens. Si le rattachement ou la caution est retiré, cette voie tombe.'**
   String get teacherVerifInstitutionText;
 
   /// No description provided for @teacherVerifInstitutionTitle.
   ///
   /// In fr, this message translates to:
-  /// **'Caution de ton institution'**
+  /// **'Caution de votre institution'**
   String get teacherVerifInstitutionTitle;
 
   /// No description provided for @teacherVerifInterviewText.
   ///
   /// In fr, this message translates to:
-  /// **'En visio ou en rencontre. L\'entretien ne remplace pas l\'identité : prépare ta pièce, elle est jointe au dossier avec un selfie.'**
+  /// **'En visio ou en rencontre. L\'entretien ne remplace pas l\'identité : préparez votre pièce, elle est jointe au dossier avec un selfie.'**
   String get teacherVerifInterviewText;
 
   /// No description provided for @teacherVerifInterviewTitle.
@@ -10539,7 +10539,7 @@ abstract class AppLocalizations {
   /// No description provided for @teacherVerifIntro.
   ///
   /// In fr, this message translates to:
-  /// **'Les séances chez l\'élève, chez toi ou en lieu neutre sont réservées aux tuteurs vérifiés. Choisis une des trois voies : une seule suffit. Le diplôme reste un badge facultatif.'**
+  /// **'Les séances chez l\'élève, chez vous ou en lieu neutre sont réservées aux tuteurs vérifiés. Choisissez une des trois voies : une seule suffit. Le diplôme reste un badge facultatif.'**
   String get teacherVerifIntro;
 
   /// No description provided for @teacherVerifLastInterview.
@@ -10575,13 +10575,13 @@ abstract class AppLocalizations {
   /// No description provided for @teacherVerifNeedFiles.
   ///
   /// In fr, this message translates to:
-  /// **'Ajoute au moins le recto de ta pièce et un selfie.'**
+  /// **'Ajoutez au moins le recto de votre pièce et un selfie.'**
   String get teacherVerifNeedFiles;
 
   /// No description provided for @teacherVerifNoEndorsement.
   ///
   /// In fr, this message translates to:
-  /// **'Aucune caution pour le moment. Demande à ton établissement de rattachement (Réseau) de te cautionner.'**
+  /// **'Aucune caution pour le moment. Demandez à votre établissement de rattachement (Réseau) de vous cautionner.'**
   String get teacherVerifNoEndorsement;
 
   /// No description provided for @teacherVerifPassed.
@@ -10593,7 +10593,7 @@ abstract class AppLocalizations {
   /// No description provided for @teacherVerifPassedNeedIdentity.
   ///
   /// In fr, this message translates to:
-  /// **'Il reste à valider ta pièce d\'identité et ton selfie pour ouvrir le présentiel.'**
+  /// **'Il reste à valider votre pièce d\'identité et votre selfie pour ouvrir le présentiel.'**
   String get teacherVerifPassedNeedIdentity;
 
   /// No description provided for @teacherVerifPendingSince.
@@ -10623,7 +10623,7 @@ abstract class AppLocalizations {
   /// No description provided for @teacherVerifRejected.
   ///
   /// In fr, this message translates to:
-  /// **'Refusée : {reason}. Tu peux envoyer de nouveaux documents.'**
+  /// **'Refusée : {reason}. Vous pouvez envoyer de nouveaux documents.'**
   String teacherVerifRejected(Object reason);
 
   /// No description provided for @teacherVerifRequestInterview.
@@ -10635,13 +10635,13 @@ abstract class AppLocalizations {
   /// No description provided for @teacherVerifRequested.
   ///
   /// In fr, this message translates to:
-  /// **'Demande envoyée. Un agent WinPlus va te proposer une date.'**
+  /// **'Demande envoyée. Un agent WinPlus va vous proposer une date.'**
   String get teacherVerifRequested;
 
   /// No description provided for @teacherVerifRequestedOn.
   ///
   /// In fr, this message translates to:
-  /// **'Demande envoyée le {date}. Un agent va te proposer une date.'**
+  /// **'Demande envoyée le {date}. Un agent va vous proposer une date.'**
   String teacherVerifRequestedOn(Object date);
 
   /// No description provided for @teacherVerifRetake.
@@ -10653,7 +10653,7 @@ abstract class AppLocalizations {
   /// No description provided for @teacherVerifRetention.
   ///
   /// In fr, this message translates to:
-  /// **'Fichiers privés, vus seulement par l\'équipe WinPlus, jamais affichés sur ton profil. Supprimés {approved} jours après la validation ({rejected} jours après un refus) ; seule la décision est conservée.'**
+  /// **'Fichiers privés, vus seulement par l\'équipe WinPlus, jamais affichés sur votre profil. Supprimés {approved} jours après la validation ({rejected} jours après un refus) ; seule la décision est conservée.'**
   String teacherVerifRetention(Object approved, Object rejected);
 
   /// No description provided for @teacherVerifRevoked.
@@ -10677,7 +10677,7 @@ abstract class AppLocalizations {
   /// No description provided for @teacherVerifSelfie.
   ///
   /// In fr, this message translates to:
-  /// **'Selfie (ton visage)'**
+  /// **'Selfie (votre visage)'**
   String get teacherVerifSelfie;
 
   /// No description provided for @teacherVerifSent.
@@ -10701,7 +10701,7 @@ abstract class AppLocalizations {
   /// No description provided for @teacherVerifSuspendedBanner.
   ///
   /// In fr, this message translates to:
-  /// **'Suite à des signalements, tes séances présentielles sont suspendues le temps qu\'un membre de l\'équipe WinPlus examine la situation. Tes séances en ligne restent possibles.'**
+  /// **'Suite à des signalements, vos séances présentielles sont suspendues le temps qu\'un membre de l\'équipe WinPlus examine la situation. Vos séances en ligne restent possibles.'**
   String get teacherVerifSuspendedBanner;
 
   /// No description provided for @teacherVerifTake.
@@ -10857,19 +10857,19 @@ abstract class AppLocalizations {
   /// No description provided for @tutoringAssignChooseChild.
   ///
   /// In fr, this message translates to:
-  /// **'Choisis au moins un enfant.'**
+  /// **'Choisissez au moins un enfant.'**
   String get tutoringAssignChooseChild;
 
   /// No description provided for @tutoringAssignChooseStudents.
   ///
   /// In fr, this message translates to:
-  /// **'Choisis des élèves ou une classe.'**
+  /// **'Choisissez des élèves ou une classe.'**
   String get tutoringAssignChooseStudents;
 
   /// No description provided for @tutoringAssignChooseTutor.
   ///
   /// In fr, this message translates to:
-  /// **'Choisis un répétiteur.'**
+  /// **'Choisissez un répétiteur.'**
   String get tutoringAssignChooseTutor;
 
   /// No description provided for @tutoringAssignError.
@@ -10893,7 +10893,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutoringAssignNoStudent.
   ///
   /// In fr, this message translates to:
-  /// **'Aucun élève actif au rattachement confirmé dans ton institution.'**
+  /// **'Aucun élève actif au rattachement confirmé dans votre institution.'**
   String get tutoringAssignNoStudent;
 
   /// No description provided for @tutoringAssignNoTutor.
@@ -11055,7 +11055,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutoringBookingsDisputeSent.
   ///
   /// In fr, this message translates to:
-  /// **'Votre signalement a été envoyé.'**
+  /// **'Signalement envoyé.'**
   String get tutoringBookingsDisputeSent;
 
   /// No description provided for @tutoringBookingsEmpty.
@@ -11067,7 +11067,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutoringBookingsLoadError.
   ///
   /// In fr, this message translates to:
-  /// **'Impossible de charger vos réservations.'**
+  /// **'Impossible de charger les réservations.'**
   String get tutoringBookingsLoadError;
 
   /// No description provided for @tutoringBookingsTitle.
@@ -11097,7 +11097,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutoringChooseDay.
   ///
   /// In fr, this message translates to:
-  /// **'Choisissez un jour'**
+  /// **'Choisir un jour'**
   String get tutoringChooseDay;
 
   /// No description provided for @tutoringClassName.
@@ -11145,7 +11145,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutoringDisputeUntil.
   ///
   /// In fr, this message translates to:
-  /// **'Un problème ? Tu peux contester jusqu\'au {date} à {time} ({hours} h après la séance). Ensuite, le paiement est versé au tuteur.'**
+  /// **'Un problème ? Contestation possible jusqu\'au {date} à {time} ({hours} h après la séance). Ensuite, le paiement est versé au tuteur.'**
   String tutoringDisputeUntil(Object date, Object time, Object hours);
 
   /// No description provided for @tutoringDurationHint.
@@ -11223,7 +11223,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutoringEngAutoRenewHelp.
   ///
   /// In fr, this message translates to:
-  /// **'Mêmes créneaux. Tentative 3 jours avant la fin, après un rappel 7 jours avant ; si le solde ne suffit pas ou si un créneau n\'est plus libre, rien n\'est débité et tu es prévenu.'**
+  /// **'Mêmes créneaux. Tentative 3 jours avant la fin, après un rappel 7 jours avant ; si le solde ne suffit pas ou si un créneau n\'est plus libre, rien n\'est débité et le payeur est prévenu.'**
   String get tutoringEngAutoRenewHelp;
 
   /// No description provided for @tutoringEngAutoRenewIf.
@@ -11319,7 +11319,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutoringEngDisputePrompt.
   ///
   /// In fr, this message translates to:
-  /// **'Pourquoi contestes-tu cette séance ?'**
+  /// **'Pourquoi contester cette séance ?'**
   String get tutoringEngDisputePrompt;
 
   /// No description provided for @tutoringEngDisputeUntil.
@@ -11343,7 +11343,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutoringEngExplainProblem.
   ///
   /// In fr, this message translates to:
-  /// **'Explique le problème'**
+  /// **'Expliquer le problème'**
   String get tutoringEngExplainProblem;
 
   /// No description provided for @tutoringEngFeesNote.
@@ -11391,7 +11391,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutoringEngMmSent.
   ///
   /// In fr, this message translates to:
-  /// **'Demande de paiement envoyée sur ton téléphone.'**
+  /// **'Demande de paiement envoyée sur le téléphone.'**
   String get tutoringEngMmSent;
 
   /// No description provided for @tutoringEngMomoChip.
@@ -11565,7 +11565,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutoringEngReplyBefore.
   ///
   /// In fr, this message translates to:
-  /// **'Réponds avant le {date}'**
+  /// **'Répondez avant le {date}'**
   String tutoringEngReplyBefore(Object date);
 
   /// No description provided for @tutoringEngSameSlots.
@@ -11667,7 +11667,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutoringEngValidateOnPhone.
   ///
   /// In fr, this message translates to:
-  /// **'Valide le paiement sur ton téléphone'**
+  /// **'Valider le paiement sur le téléphone'**
   String get tutoringEngValidateOnPhone;
 
   /// No description provided for @tutoringEngWalletMissing.
@@ -11679,7 +11679,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutoringEngWalletShort.
   ///
   /// In fr, this message translates to:
-  /// **'Le solde ne couvre pas le total du mois. Choisis Mobile Money ou recharge le portefeuille.'**
+  /// **'Le solde ne couvre pas le total du mois. Choisir Mobile Money ou recharger le portefeuille.'**
   String get tutoringEngWalletShort;
 
   /// No description provided for @tutoringEngWeeklySlots.
@@ -11757,13 +11757,13 @@ abstract class AppLocalizations {
   /// No description provided for @tutoringForWhomNoChild.
   ///
   /// In fr, this message translates to:
-  /// **'Aucun enfant lié à ton compte (le lien doit être accepté par l\'enfant).'**
+  /// **'Aucun enfant lié à votre compte (le lien doit être accepté par l\'enfant).'**
   String get tutoringForWhomNoChild;
 
   /// No description provided for @tutoringForWhomNoGroup.
   ///
   /// In fr, this message translates to:
-  /// **'Ce tuteur ne propose pas de séances de groupe : choisis un seul élève.'**
+  /// **'Ce tuteur ne propose pas de séances de groupe : choisir un seul élève.'**
   String get tutoringForWhomNoGroup;
 
   /// No description provided for @tutoringForWhomNoStudent.
@@ -11775,7 +11775,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutoringForWhomParentHelp.
   ///
   /// In fr, this message translates to:
-  /// **'Tu paies avec ton portefeuille parent ou Mobile Money ; tes enfants voient la séance dans leur espace.'**
+  /// **'Vous payez avec votre portefeuille parent ou Mobile Money ; vos enfants voient la séance dans leur espace.'**
   String get tutoringForWhomParentHelp;
 
   /// No description provided for @tutoringForWhomPendingConfirmation.
@@ -12051,7 +12051,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutoringMatGenerateHelp.
   ///
   /// In fr, this message translates to:
-  /// **'WinAI prépare un cours, un quiz et des exercices à partir des sujets de la séance. La génération est décomptée de ton usage WinAI ; rien n\'est envoyé aux élèves avant que tu partages.'**
+  /// **'WinAI prépare un cours, un quiz et des exercices à partir des sujets de la séance. La génération est décomptée de votre usage WinAI ; rien n\'est envoyé aux élèves avant que vous partagiez.'**
   String get tutoringMatGenerateHelp;
 
   /// No description provided for @tutoringMatGenerated.
@@ -12153,7 +12153,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutoringMatRegenerateConfirm.
   ///
   /// In fr, this message translates to:
-  /// **'Régénérer remplace ton brouillon actuel (la version partagée reste visible jusqu\'au prochain partage). Continuer ?'**
+  /// **'Régénérer remplace votre brouillon actuel (la version partagée reste visible jusqu\'au prochain partage). Continuer ?'**
   String get tutoringMatRegenerateConfirm;
 
   /// No description provided for @tutoringMatResults.
@@ -12339,13 +12339,13 @@ abstract class AppLocalizations {
   /// No description provided for @tutoringMustAccept.
   ///
   /// In fr, this message translates to:
-  /// **'Le tuteur doit accepter ta demande. Tu seras notifié·e dès sa réponse, et remboursé·e intégralement sur ton portefeuille WinPlus s\'il refuse ou ne répond pas à temps.'**
+  /// **'Le tuteur doit accepter la demande. Une notification arrive dès sa réponse, et le remboursement est intégral sur le portefeuille WinPlus s\'il refuse ou ne répond pas à temps.'**
   String get tutoringMustAccept;
 
   /// No description provided for @tutoringMyRating.
   ///
   /// In fr, this message translates to:
-  /// **'Ta note : {rating}/5'**
+  /// **'Note donnée : {rating}/5'**
   String tutoringMyRating(Object rating);
 
   /// No description provided for @tutoringNoAssignment.
@@ -12447,7 +12447,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutoringPaymentSlow.
   ///
   /// In fr, this message translates to:
-  /// **'Le paiement met plus de temps que prévu. Tu peux vérifier plus tard dans \"Mes séances\".'**
+  /// **'Le paiement met plus de temps que prévu. Vérification possible plus tard dans \"Mes séances\".'**
   String get tutoringPaymentSlow;
 
   /// No description provided for @tutoringPerHour.
@@ -12489,7 +12489,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutoringPolicyDispute.
   ///
   /// In fr, this message translates to:
-  /// **'Après la séance, tu as {hours} h pour la contester.'**
+  /// **'Après la séance, {hours} h pour la contester.'**
   String tutoringPolicyDispute(Object hours);
 
   /// No description provided for @tutoringPolicyFactDispute.
@@ -12501,7 +12501,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutoringPolicyFactFee.
   ///
   /// In fr, this message translates to:
-  /// **'de frais Mobile Money si tu annules toi-même'**
+  /// **'de frais Mobile Money en cas d\'annulation par le payeur'**
   String get tutoringPolicyFactFee;
 
   /// No description provided for @tutoringPolicyFactImmediate.
@@ -12519,7 +12519,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutoringPolicyFull.
   ///
   /// In fr, this message translates to:
-  /// **'Remboursement intégral si tu annules au moins {hours} h avant la séance.'**
+  /// **'Remboursement intégral pour une annulation au moins {hours} h avant la séance.'**
   String tutoringPolicyFull(Object hours);
 
   /// No description provided for @tutoringPolicyIntro.
@@ -12573,13 +12573,13 @@ abstract class AppLocalizations {
   /// No description provided for @tutoringPolicyWallet.
   ///
   /// In fr, this message translates to:
-  /// **'Remboursements versés immédiatement sur ton portefeuille WinPlus.'**
+  /// **'Remboursements versés immédiatement sur le portefeuille WinPlus.'**
   String get tutoringPolicyWallet;
 
   /// No description provided for @tutoringPolicyWalletFee.
   ///
   /// In fr, this message translates to:
-  /// **'Remboursements versés immédiatement sur ton portefeuille WinPlus. Si tu annules une séance payée par Mobile Money, {fee} % de frais de l\'opérateur sont déduits ; aucun frais pour un paiement par solde.'**
+  /// **'Remboursements versés immédiatement sur le portefeuille WinPlus. Pour une séance payée par Mobile Money puis annulée, {fee} % de frais de l\'opérateur sont déduits ; aucun frais pour un paiement par solde.'**
   String tutoringPolicyWalletFee(Object fee);
 
   /// No description provided for @tutoringPrice.
@@ -12669,7 +12669,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutoringRechargeConfirmOnPhone.
   ///
   /// In fr, this message translates to:
-  /// **'Confirme le paiement sur ton téléphone ; le solde s\'actualise dès la confirmation.'**
+  /// **'Confirmez le paiement sur votre téléphone ; le solde s\'actualise dès la confirmation.'**
   String get tutoringRechargeConfirmOnPhone;
 
   /// No description provided for @tutoringRechargeConfirmed.
@@ -12705,7 +12705,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutoringRechargeStillPending.
   ///
   /// In fr, this message translates to:
-  /// **'Recharge toujours en attente : tire vers le bas pour actualiser le solde plus tard.'**
+  /// **'Recharge toujours en attente : tirez vers le bas pour actualiser le solde plus tard.'**
   String get tutoringRechargeStillPending;
 
   /// No description provided for @tutoringRechargeTitle.
@@ -12723,13 +12723,13 @@ abstract class AppLocalizations {
   /// No description provided for @tutoringReportChooseReason.
   ///
   /// In fr, this message translates to:
-  /// **'Choisis un motif.'**
+  /// **'Choisir un motif.'**
   String get tutoringReportChooseReason;
 
   /// No description provided for @tutoringReportDescribe.
   ///
   /// In fr, this message translates to:
-  /// **'Décris ce qui s\'est passé (10 caractères au moins).'**
+  /// **'Décrire ce qui s\'est passé (10 caractères au moins).'**
   String get tutoringReportDescribe;
 
   /// No description provided for @tutoringReportDescriptionOptional.
@@ -12741,7 +12741,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutoringReportIntro.
   ///
   /// In fr, this message translates to:
-  /// **'Ton signalement est transmis à l\'équipe WinPlus, qui l\'examine. Le tuteur ne voit pas qui l\'a signalé. Pour un remboursement, utilise plutôt « Contester la séance ».'**
+  /// **'Le signalement est transmis à l\'équipe WinPlus, qui l\'examine. Le tuteur ne voit pas qui l\'a signalé. Pour un remboursement, utiliser plutôt « Contester la séance ».'**
   String get tutoringReportIntro;
 
   /// No description provided for @tutoringReportName.
@@ -12765,7 +12765,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutoringReportProblemHint.
   ///
   /// In fr, this message translates to:
-  /// **'Décrivez le problème rencontré pendant cette séance.'**
+  /// **'Décrire le problème rencontré pendant cette séance.'**
   String get tutoringReportProblemHint;
 
   /// No description provided for @tutoringReportProblemPlaceholder.
@@ -12801,7 +12801,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutoringReviewChooseRating.
   ///
   /// In fr, this message translates to:
-  /// **'Choisissez une note avant d\'envoyer.'**
+  /// **'Choisir une note avant d\'envoyer.'**
   String get tutoringReviewChooseRating;
 
   /// No description provided for @tutoringReviewCommentHint.
@@ -12819,7 +12819,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutoringReviewThanks.
   ///
   /// In fr, this message translates to:
-  /// **'Merci pour votre avis !'**
+  /// **'Merci pour cet avis !'**
   String get tutoringReviewThanks;
 
   /// No description provided for @tutoringSearchEmpty.
@@ -12873,7 +12873,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutoringShortfallInstitution.
   ///
   /// In fr, this message translates to:
-  /// **'Choisis Mobile Money ou recharge le portefeuille de l\'institution (écran Tutorat).'**
+  /// **'Choisissez Mobile Money ou rechargez le portefeuille de l\'institution (écran Tutorat).'**
   String get tutoringShortfallInstitution;
 
   /// No description provided for @tutoringShortfallMine.
@@ -12885,7 +12885,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutoringShortfallParent.
   ///
   /// In fr, this message translates to:
-  /// **'Choisis Mobile Money ou recharge ton portefeuille parent.'**
+  /// **'Choisissez Mobile Money ou rechargez votre portefeuille parent.'**
   String get tutoringShortfallParent;
 
   /// No description provided for @tutoringSlotGone.
@@ -13047,7 +13047,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutoringTopicsHelp.
   ///
   /// In fr, this message translates to:
-  /// **'Le tuteur les verra dans ta demande pour préparer la séance.'**
+  /// **'Le tuteur les verra dans la demande pour préparer la séance.'**
   String get tutoringTopicsHelp;
 
   /// No description provided for @tutoringTopicsOptional.
@@ -13131,7 +13131,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutoringWaitingUssd.
   ///
   /// In fr, this message translates to:
-  /// **'Valide le paiement via le message USSD envoyé sur ton téléphone.'**
+  /// **'Valider le paiement via le message USSD envoyé sur le téléphone.'**
   String get tutoringWaitingUssd;
 
   /// No description provided for @tutoringWalletAvailable.
@@ -13173,7 +13173,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutoringWalletOk.
   ///
   /// In fr, this message translates to:
-  /// **'Paiement immédiat et sans frais. Ta demande part tout de suite au tuteur.'**
+  /// **'Paiement immédiat et sans frais. La demande part tout de suite au tuteur.'**
   String get tutoringWalletOk;
 
   /// No description provided for @tutoringWalletParent.
@@ -13203,13 +13203,13 @@ abstract class AppLocalizations {
   /// No description provided for @tutoringYourInstitution.
   ///
   /// In fr, this message translates to:
-  /// **'ton institution'**
+  /// **'votre institution'**
   String get tutoringYourInstitution;
 
   /// No description provided for @tutoringYourTutor.
   ///
   /// In fr, this message translates to:
-  /// **'ton tuteur'**
+  /// **'le tuteur'**
   String get tutoringYourTutor;
 
   /// No description provided for @welcomeTagline.
@@ -13221,7 +13221,7 @@ abstract class AppLocalizations {
   /// No description provided for @widgetKbOff.
   ///
   /// In fr, this message translates to:
-  /// **' · désactivée. L\'activer cherche dans les cours et vos fichiers, mais consomme plus de tokens.'**
+  /// **' · désactivée. L\'activer cherche dans les cours et les fichiers, mais consomme plus de tokens.'**
   String get widgetKbOff;
 
   /// No description provided for @widgetKbOn.
@@ -13251,7 +13251,7 @@ abstract class AppLocalizations {
   /// No description provided for @widgetMemEmpty.
   ///
   /// In fr, this message translates to:
-  /// **'WinAI n\'a pas encore mémorisé d\'informations. Continue à interagir !'**
+  /// **'WinAI n\'a pas encore mémorisé d\'informations. Continuer à interagir !'**
   String get widgetMemEmpty;
 
   /// No description provided for @widgetMemExam.
@@ -13299,7 +13299,7 @@ abstract class AppLocalizations {
   /// No description provided for @widgetMemSubtitle.
   ///
   /// In fr, this message translates to:
-  /// **'Ce que WinAI a retenu de toi'**
+  /// **'Ce que WinAI a retenu'**
   String get widgetMemSubtitle;
 
   /// No description provided for @widgetOfflineBanner.
@@ -13377,13 +13377,13 @@ abstract class AppLocalizations {
   /// No description provided for @studentPlayerTapToOpen.
   ///
   /// In fr, this message translates to:
-  /// **'Appuyez pour ouvrir le document'**
+  /// **'Appuie pour ouvrir le document'**
   String get studentPlayerTapToOpen;
 
   /// No description provided for @studentPlayerOpenWithApp.
   ///
   /// In fr, this message translates to:
-  /// **'Touchez pour l\'ouvrir avec une application du téléphone.'**
+  /// **'Touche pour l\'ouvrir avec une application du téléphone.'**
   String get studentPlayerOpenWithApp;
 
   /// No description provided for @mobileHomeForYou.
@@ -13983,7 +13983,7 @@ abstract class AppLocalizations {
   /// No description provided for @notifChannelDesc.
   ///
   /// In fr, this message translates to:
-  /// **'Messages, corrections, rappels et alertes de votre compte.'**
+  /// **'Messages, corrections, rappels et alertes du compte.'**
   String get notifChannelDesc;
 
   /// No description provided for @notifServiceChannelName.
@@ -14007,7 +14007,7 @@ abstract class AppLocalizations {
   /// No description provided for @notifServiceText.
   ///
   /// In fr, this message translates to:
-  /// **'Vos notifications arrivent à l’instant. Désactivable dans votre profil.'**
+  /// **'Les notifications arrivent à l’instant. Désactivable dans le profil.'**
   String get notifServiceText;
 
   /// No description provided for @notifInstantTitle.
@@ -14019,13 +14019,13 @@ abstract class AppLocalizations {
   /// No description provided for @notifInstantHint.
   ///
   /// In fr, this message translates to:
-  /// **'Une notification discrète reste affichée pour recevoir vos alertes à l’instant, même application fermée. Désactivées, WinPlus vérifie environ toutes les 15 minutes.'**
+  /// **'Une notification discrète reste affichée pour recevoir les alertes à l’instant, même application fermée. Désactivées, WinPlus vérifie environ toutes les 15 minutes.'**
   String get notifInstantHint;
 
   /// No description provided for @notifPermissionDenied.
   ///
   /// In fr, this message translates to:
-  /// **'Notifications refusées : autorisez-les dans les réglages du téléphone pour les recevoir.'**
+  /// **'Notifications refusées : les autoriser dans les réglages du téléphone pour les recevoir.'**
   String get notifPermissionDenied;
 
   /// No description provided for @offlineStripOffline.
@@ -14055,25 +14055,25 @@ abstract class AppLocalizations {
   /// No description provided for @walletErrOffline.
   ///
   /// In fr, this message translates to:
-  /// **'Connexion impossible. Vérifie ton réseau et réessaie.'**
+  /// **'Connexion impossible. Vérifiez votre réseau et réessayez.'**
   String get walletErrOffline;
 
   /// No description provided for @walletErrSession.
   ///
   /// In fr, this message translates to:
-  /// **'Ta session a expiré. Reconnecte-toi.'**
+  /// **'Votre session a expiré. Reconnectez-vous.'**
   String get walletErrSession;
 
   /// No description provided for @walletErrUnverified.
   ///
   /// In fr, this message translates to:
-  /// **'Action non autorisée : vérifie ton adresse e-mail pour effectuer un retrait.'**
+  /// **'Action non autorisée : vérifiez votre adresse e-mail pour effectuer un retrait.'**
   String get walletErrUnverified;
 
   /// No description provided for @walletErrSummary.
   ///
   /// In fr, this message translates to:
-  /// **'Impossible de charger ton solde.'**
+  /// **'Impossible de charger votre solde.'**
   String get walletErrSummary;
 
   /// No description provided for @walletErrHistory.
@@ -14223,7 +14223,7 @@ abstract class AppLocalizations {
   /// No description provided for @walletEmpty.
   ///
   /// In fr, this message translates to:
-  /// **'Ton portefeuille est vide pour l\'instant. Tes ventes, tes séances de cours particulier, tes commissions et tes recharges l\'alimenteront.'**
+  /// **'Votre portefeuille est vide pour l\'instant. Vos ventes, vos séances de cours particulier, vos commissions et vos recharges l\'alimenteront.'**
   String get walletEmpty;
 
   /// No description provided for @walletTutoringShare.
@@ -14241,7 +14241,7 @@ abstract class AppLocalizations {
   /// No description provided for @walletShareSplit.
   ///
   /// In fr, this message translates to:
-  /// **'{teacher} % pour toi · {platform} % WinPlus'**
+  /// **'{teacher} % pour vous · {platform} % WinPlus'**
   String walletShareSplit(String teacher, String platform);
 
   /// No description provided for @walletHistory.
@@ -14344,13 +14344,13 @@ abstract class AppLocalizations {
   /// No description provided for @walletWithdrawalFailedDetail.
   ///
   /// In fr, this message translates to:
-  /// **'{reason} Les {amount} ont été remis sur ton solde.'**
+  /// **'{reason} Les {amount} ont été remis sur votre solde.'**
   String walletWithdrawalFailedDetail(String reason, String amount);
 
   /// No description provided for @walletWithdrawalProgressDetail.
   ///
   /// In fr, this message translates to:
-  /// **'{amount} vers {operator} {phone}. L\'opération se poursuit même si tu quittes l\'application ; tu seras notifié de son issue.'**
+  /// **'{amount} vers {operator} {phone}. L\'opération se poursuit même si vous quittez l\'application ; vous serez notifié de son issue.'**
   String walletWithdrawalProgressDetail(
       String amount, String operator, String phone);
 
@@ -14411,7 +14411,7 @@ abstract class AppLocalizations {
   /// No description provided for @walletPhoneConfirm.
   ///
   /// In fr, this message translates to:
-  /// **'Confirme le numéro'**
+  /// **'Confirmez le numéro'**
   String get walletPhoneConfirm;
 
   /// No description provided for @walletAmountLabel.
@@ -14459,7 +14459,7 @@ abstract class AppLocalizations {
   /// No description provided for @walletReservedNotice.
   ///
   /// In fr, this message translates to:
-  /// **'Le montant est réservé sur ton solde dès la validation, puis envoyé automatiquement.'**
+  /// **'Le montant est réservé sur votre solde dès la validation, puis envoyé automatiquement.'**
   String get walletReservedNotice;
 
   /// No description provided for @walletEdit.
@@ -14501,13 +14501,13 @@ abstract class AppLocalizations {
   /// No description provided for @walletTimeout.
   ///
   /// In fr, this message translates to:
-  /// **'Délai dépassé. Si tu as confirmé sur ton téléphone, le montant apparaîtra dès confirmation.'**
+  /// **'Délai dépassé. Si vous avez confirmé sur votre téléphone, le montant apparaîtra dès confirmation.'**
   String get walletTimeout;
 
   /// No description provided for @walletConfirmOnPhone.
   ///
   /// In fr, this message translates to:
-  /// **'Confirme le paiement sur ton téléphone…'**
+  /// **'Confirmez le paiement sur votre téléphone…'**
   String get walletConfirmOnPhone;
 
   /// No description provided for @walletRechargeDone.
@@ -14699,7 +14699,7 @@ abstract class AppLocalizations {
   /// No description provided for @biometricReason.
   ///
   /// In fr, this message translates to:
-  /// **'Déverrouillez WinPlus'**
+  /// **'Déverrouiller WinPlus'**
   String get biometricReason;
 
   /// No description provided for @biometricLockedTitle.
@@ -14711,7 +14711,7 @@ abstract class AppLocalizations {
   /// No description provided for @biometricLockedHint.
   ///
   /// In fr, this message translates to:
-  /// **'Utilisez votre empreinte pour ouvrir votre espace.'**
+  /// **'Utiliser l\'empreinte pour ouvrir l\'espace.'**
   String get biometricLockedHint;
 
   /// No description provided for @biometricUnlock.
@@ -14723,13 +14723,13 @@ abstract class AppLocalizations {
   /// No description provided for @biometricOfferTitle.
   ///
   /// In fr, this message translates to:
-  /// **'Déverrouiller avec votre empreinte ?'**
+  /// **'Déverrouiller avec l\'empreinte ?'**
   String get biometricOfferTitle;
 
   /// No description provided for @biometricOfferBody.
   ///
   /// In fr, this message translates to:
-  /// **'Vous ouvrirez WinPlus avec votre empreinte, sans code de vérification par e-mail. Modifiable plus tard depuis votre avatar.'**
+  /// **'WinPlus s\'ouvrira avec l\'empreinte, sans code de vérification par e-mail. Modifiable plus tard depuis l\'avatar.'**
   String get biometricOfferBody;
 
   /// No description provided for @biometricOfferYes.
@@ -14783,7 +14783,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentReportsNoData.
   ///
   /// In fr, this message translates to:
-  /// **'Aucun quiz terminé sur cette période. Vos résultats apparaîtront ici dès votre premier quiz.'**
+  /// **'Aucun quiz terminé sur cette période. Tes résultats apparaîtront ici dès ton premier quiz.'**
   String get studentReportsNoData;
 
   /// No description provided for @studentReportsLoadError.
@@ -15011,7 +15011,7 @@ abstract class AppLocalizations {
   /// No description provided for @visioHost.
   ///
   /// In fr, this message translates to:
-  /// **'Tu animes'**
+  /// **'Vous animez'**
   String get visioHost;
 
   /// No description provided for @visioJoin.
@@ -15035,7 +15035,7 @@ abstract class AppLocalizations {
   /// No description provided for @visioOpenedHint.
   ///
   /// In fr, this message translates to:
-  /// **'La salle s’est ouverte. Reviens ici pour la rouvrir si tu l’as quittée.'**
+  /// **'La salle s’est ouverte. Revenir ici pour la rouvrir après l’avoir quittée.'**
   String get visioOpenedHint;
 
   /// No description provided for @visioNotYet.
@@ -15047,7 +15047,7 @@ abstract class AppLocalizations {
   /// No description provided for @visioNotYetHint.
   ///
   /// In fr, this message translates to:
-  /// **'Garde cet écran ouvert : tu entreras automatiquement à l’ouverture.'**
+  /// **'Garder cet écran ouvert : l’entrée se fera automatiquement à l’ouverture.'**
   String get visioNotYetHint;
 
   /// No description provided for @visioEnded.
@@ -15059,13 +15059,13 @@ abstract class AppLocalizations {
   /// No description provided for @visioNotFound.
   ///
   /// In fr, this message translates to:
-  /// **'Cette séance n’existe pas ou tu n’y es pas inscrit.'**
+  /// **'Cette séance n’existe pas ou aucune inscription n’y correspond.'**
   String get visioNotFound;
 
   /// No description provided for @visioUnavailable.
   ///
   /// In fr, this message translates to:
-  /// **'La visio est momentanément indisponible. Réessaie dans quelques instants.'**
+  /// **'La visio est momentanément indisponible. Réessayer dans quelques instants.'**
   String get visioUnavailable;
 
   /// No description provided for @visioError.
@@ -15149,7 +15149,7 @@ abstract class AppLocalizations {
   /// No description provided for @liveChildReadOnly.
   ///
   /// In fr, this message translates to:
-  /// **'Seul ton enfant peut entrer dans la salle.'**
+  /// **'Seul votre enfant peut entrer dans la salle.'**
   String get liveChildReadOnly;
 
   /// No description provided for @livePendingPayment.
@@ -15245,19 +15245,19 @@ abstract class AppLocalizations {
   /// No description provided for @liveSessionPhoneRequired.
   ///
   /// In fr, this message translates to:
-  /// **'Indique ton numéro Mobile Money.'**
+  /// **'Indiquer le numéro Mobile Money.'**
   String get liveSessionPhoneRequired;
 
   /// No description provided for @liveSessionEnrolled.
   ///
   /// In fr, this message translates to:
-  /// **'Tu es inscrit à cette séance.'**
+  /// **'Inscription confirmée à cette séance.'**
   String get liveSessionEnrolled;
 
   /// No description provided for @liveSessionPendingPayment.
   ///
   /// In fr, this message translates to:
-  /// **'Paiement en attente : valide-le sur ton téléphone, puis vérifie.'**
+  /// **'Paiement en attente : le valider sur le téléphone, puis vérifier.'**
   String get liveSessionPendingPayment;
 
   /// No description provided for @liveSessionCheckPayment.
@@ -15305,7 +15305,7 @@ abstract class AppLocalizations {
   /// No description provided for @dlLessonsEmpty.
   ///
   /// In fr, this message translates to:
-  /// **'Aucune leçon enregistrée. Dans une formation, enregistre une leçon pour la regarder sans réseau.'**
+  /// **'Aucune leçon enregistrée. Dans une formation, enregistrer une leçon pour la regarder sans réseau.'**
   String get dlLessonsEmpty;
 
   /// No description provided for @dlSavedOn.
@@ -15449,7 +15449,7 @@ abstract class AppLocalizations {
   /// No description provided for @winaiStudioHint.
   ///
   /// In fr, this message translates to:
-  /// **'Choisis un outil : WinAI prépare le travail, tu n\'as plus qu\'à le relire.'**
+  /// **'Choisir un outil : WinAI prépare le travail, il ne reste plus qu\'à le relire.'**
   String get winaiStudioHint;
 
   /// No description provided for @winaiStudioGenerate.
@@ -15719,7 +15719,7 @@ abstract class AppLocalizations {
   /// No description provided for @msgYou.
   ///
   /// In fr, this message translates to:
-  /// **'Toi'**
+  /// **'Moi'**
   String get msgYou;
 
   /// No description provided for @msgCancelReply.
@@ -15761,7 +15761,7 @@ abstract class AppLocalizations {
   /// No description provided for @dpEmptyHint.
   ///
   /// In fr, this message translates to:
-  /// **'WinPlus signale ici les élèves de tes formations qui décrochent.'**
+  /// **'WinPlus signale ici les élèves de vos formations qui décrochent.'**
   String get dpEmptyHint;
 
   /// No description provided for @dpDetected.
@@ -15809,7 +15809,7 @@ abstract class AppLocalizations {
   /// No description provided for @dpSentPartial.
   ///
   /// In fr, this message translates to:
-  /// **'{sent} sur {total} élèves relancés ; réessaie pour les autres.'**
+  /// **'{sent} sur {total} élèves relancés ; réessayez pour les autres.'**
   String dpSentPartial(int sent, int total);
 
   /// No description provided for @dpSendError.
@@ -15827,7 +15827,7 @@ abstract class AppLocalizations {
   /// No description provided for @barometerStateHigh.
   ///
   /// In fr, this message translates to:
-  /// **'Des signaux méritent ton attention'**
+  /// **'Des signaux méritent votre attention'**
   String get barometerStateHigh;
 
   /// No description provided for @barometerStateMedium.
@@ -15941,7 +15941,7 @@ abstract class AppLocalizations {
   /// No description provided for @crDoneNamed.
   ///
   /// In fr, this message translates to:
-  /// **'Fiche prête : {name} est prévenu(e) qu’elle vient de toi.'**
+  /// **'Fiche prête : {name} est prévenu(e) qu’elle vient de vous.'**
   String crDoneNamed(String name);
 
   /// No description provided for @crDoneAnonymous.
@@ -16013,7 +16013,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpA4.
   ///
   /// In fr, this message translates to:
-  /// **'Sur l’écran de connexion, touche « Mot de passe oublié », saisis ton e-mail et suis les instructions reçues.'**
+  /// **'Sur l’écran de connexion, toucher « Mot de passe oublié », saisir l’e-mail et suivre les instructions reçues.'**
   String get helpA4;
 
   /// No description provided for @helpQ5.
@@ -16037,7 +16037,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpA6.
   ///
   /// In fr, this message translates to:
-  /// **'Dans l’application, le paiement se fait par Mobile Money (MTN, Orange) ou avec le solde de ton portefeuille WinPlus.'**
+  /// **'Dans l’application, le paiement se fait par Mobile Money (MTN, Orange) ou avec le solde du portefeuille WinPlus.'**
   String get helpA6;
 
   /// No description provided for @helpQ7.
@@ -16061,7 +16061,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpA8.
   ///
   /// In fr, this message translates to:
-  /// **'Une connexion de 1 à 2 Mbit/s suffit pour naviguer ; les vidéos en HD demandent au moins 5 Mbit/s. Sans réseau, les écrans déjà ouverts restent consultables et tes actions partent au retour de la connexion.'**
+  /// **'Une connexion de 1 à 2 Mbit/s suffit pour naviguer ; les vidéos en HD demandent au moins 5 Mbit/s. Sans réseau, les écrans déjà ouverts restent consultables et les actions partent au retour de la connexion.'**
   String get helpA8;
 
   /// No description provided for @helpWrite.
@@ -16073,7 +16073,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpWriteText.
   ///
   /// In fr, this message translates to:
-  /// **'Une question, un problème de paiement ou de compte ? Écris au support : ton application e-mail s’ouvre avec le message prêt à compléter.'**
+  /// **'Une question, un problème de paiement ou de compte ? Écrire au support : l’application e-mail s’ouvre avec le message prêt à compléter.'**
   String get helpWriteText;
 
   /// No description provided for @helpWriteButton.
@@ -16097,7 +16097,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpNoMailApp.
   ///
   /// In fr, this message translates to:
-  /// **'Aucune application e-mail : écris à support@winplus.cm.'**
+  /// **'Aucune application e-mail : écrire à support@winplus.cm.'**
   String get helpNoMailApp;
 
   /// No description provided for @helpCopy.
@@ -16115,19 +16115,19 @@ abstract class AppLocalizations {
   /// No description provided for @helpFormIntro.
   ///
   /// In fr, this message translates to:
-  /// **'Une question, un problème de paiement ou de compte ? Écris-nous, l’équipe WinPlus te répond par e-mail.'**
+  /// **'Une question, un problème de paiement ou de compte ? Écrire à l’équipe WinPlus : la réponse arrive par e-mail.'**
   String get helpFormIntro;
 
   /// No description provided for @helpFormName.
   ///
   /// In fr, this message translates to:
-  /// **'Ton nom'**
+  /// **'Nom'**
   String get helpFormName;
 
   /// No description provided for @helpFormEmail.
   ///
   /// In fr, this message translates to:
-  /// **'Ton e-mail'**
+  /// **'E-mail'**
   String get helpFormEmail;
 
   /// No description provided for @helpFormSubject.
@@ -16139,7 +16139,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpFormMessage.
   ///
   /// In fr, this message translates to:
-  /// **'Ton message'**
+  /// **'Message'**
   String get helpFormMessage;
 
   /// No description provided for @helpErrName.
@@ -16175,19 +16175,19 @@ abstract class AppLocalizations {
   /// No description provided for @helpSentText.
   ///
   /// In fr, this message translates to:
-  /// **'L’équipe WinPlus te répondra par e-mail.'**
+  /// **'L’équipe WinPlus répondra par e-mail.'**
   String get helpSentText;
 
   /// No description provided for @helpTooMany.
   ///
   /// In fr, this message translates to:
-  /// **'Trop d’envois, réessaie dans une heure ou écris à support@winplus.cm.'**
+  /// **'Trop d’envois, réessayer dans une heure ou écrire à support@winplus.cm.'**
   String get helpTooMany;
 
   /// No description provided for @helpUnavailable.
   ///
   /// In fr, this message translates to:
-  /// **'L’envoi depuis l’application n’est pas encore disponible : écris-nous par e-mail ci-dessous.'**
+  /// **'L’envoi depuis l’application n’est pas encore disponible : nous écrire par e-mail ci-dessous.'**
   String get helpUnavailable;
 
   /// No description provided for @helpSendError.
@@ -16205,7 +16205,7 @@ abstract class AppLocalizations {
   /// No description provided for @winaiSourcesHint.
   ///
   /// In fr, this message translates to:
-  /// **'Coche ce sur quoi WinAI doit s\'appuyer : la discussion et les outils de l\'atelier s\'en tiendront à ces sources.'**
+  /// **'Cocher ce sur quoi WinAI doit s\'appuyer : la discussion et les outils de l\'atelier s\'en tiendront à ces sources.'**
   String get winaiSourcesHint;
 
   /// No description provided for @winaiSourcesMine.
@@ -16385,7 +16385,7 @@ abstract class AppLocalizations {
   /// No description provided for @annFeedEmptyHint.
   ///
   /// In fr, this message translates to:
-  /// **'Les annonces de ton établissement apparaîtront ici.'**
+  /// **'Les annonces de l\'établissement apparaîtront ici.'**
   String get annFeedEmptyHint;
 
   /// No description provided for @annTypeInfo.
@@ -16565,7 +16565,7 @@ abstract class AppLocalizations {
   /// No description provided for @certVerifyIntro.
   ///
   /// In fr, this message translates to:
-  /// **'Saisis le code imprimé sur le certificat WinPlus pour vérifier qu’il est authentique.'**
+  /// **'Saisir le code imprimé sur le certificat WinPlus pour vérifier qu’il est authentique.'**
   String get certVerifyIntro;
 
   /// No description provided for @certVerifyCode.
@@ -16583,7 +16583,7 @@ abstract class AppLocalizations {
   /// No description provided for @certVerifyCodeRequired.
   ///
   /// In fr, this message translates to:
-  /// **'Saisis le code du certificat.'**
+  /// **'Saisir le code du certificat.'**
   String get certVerifyCodeRequired;
 
   /// No description provided for @certVerifyAuthentic.
@@ -16613,7 +16613,7 @@ abstract class AppLocalizations {
   /// No description provided for @studentDetailNotesEmpty.
   ///
   /// In fr, this message translates to:
-  /// **'Aucune note pour cette épreuve. Elles te suivent sur le site et sur tes autres appareils.'**
+  /// **'Aucune note pour cette épreuve. Elles sont aussi disponibles sur le site et sur les autres appareils.'**
   String get studentDetailNotesEmpty;
 
   /// No description provided for @studentDetailNotePending.
@@ -16715,13 +16715,13 @@ abstract class AppLocalizations {
   /// No description provided for @affIntro.
   ///
   /// In fr, this message translates to:
-  /// **'Partage ton lien : quand une personne venue par toi achète sur WinPlus, tu touches une commission.'**
+  /// **'Partagez votre lien : quand une personne venue par vous achète sur WinPlus, vous touchez une commission.'**
   String get affIntro;
 
   /// No description provided for @affLinkTitle.
   ///
   /// In fr, this message translates to:
-  /// **'Ton lien de parrainage'**
+  /// **'Votre lien de parrainage'**
   String get affLinkTitle;
 
   /// No description provided for @affRate.
@@ -16799,7 +16799,7 @@ abstract class AppLocalizations {
   /// No description provided for @affEmpty.
   ///
   /// In fr, this message translates to:
-  /// **'Aucune commission pour l’instant. Partage ton lien à tes élèves et à leurs parents : chaque achat fait après un clic sur ton lien te rapporte une commission.'**
+  /// **'Aucune commission pour l’instant. Partagez votre lien à vos élèves et à leurs parents : chaque achat fait après un clic sur votre lien vous rapporte une commission.'**
   String get affEmpty;
 
   /// No description provided for @affOrder.
@@ -16871,7 +16871,7 @@ abstract class AppLocalizations {
   /// No description provided for @winaiStudioBusy.
   ///
   /// In fr, this message translates to:
-  /// **'WinAI prépare ton travail…'**
+  /// **'WinAI prépare le travail…'**
   String get winaiStudioBusy;
 
   /// No description provided for @winaiStudioSeePlans.
@@ -16913,7 +16913,7 @@ abstract class AppLocalizations {
   /// No description provided for @winaiListenUnavailable.
   ///
   /// In fr, this message translates to:
-  /// **'La voix du téléphone n\'est pas disponible. Vérifie la synthèse vocale dans les réglages de l\'appareil.'**
+  /// **'La voix du téléphone n\'est pas disponible. Vérifier la synthèse vocale dans les réglages de l\'appareil.'**
   String get winaiListenUnavailable;
 
   /// No description provided for @regCmpTitle.
@@ -17123,7 +17123,7 @@ abstract class AppLocalizations {
   /// No description provided for @winaiCardsFlip.
   ///
   /// In fr, this message translates to:
-  /// **'Appuie pour retourner la fiche'**
+  /// **'Appuyer pour retourner la fiche'**
   String get winaiCardsFlip;
 
   /// No description provided for @winaiCardsPrevious.
@@ -18204,7 +18204,7 @@ abstract class AppLocalizations {
   /// No description provided for @bullMineEmptyText.
   ///
   /// In fr, this message translates to:
-  /// **'Les bulletins partagés par ton établissement arrivent ici, avec une notification.'**
+  /// **'Les bulletins partagés par l\'établissement arrivent ici, avec une notification.'**
   String get bullMineEmptyText;
 
   /// No description provided for @bullSharedOn.
@@ -19626,7 +19626,7 @@ abstract class AppLocalizations {
   /// No description provided for @notifSummaryTitle.
   ///
   /// In fr, this message translates to:
-  /// **'WinAI résume vos {count} notifications non lues'**
+  /// **'WinAI résume les {count} notifications non lues'**
   String notifSummaryTitle(int count);
 
   /// No description provided for @notifSummaryHide.
@@ -19812,19 +19812,19 @@ abstract class AppLocalizations {
   /// No description provided for @authErrTooManyAttempts.
   ///
   /// In fr, this message translates to:
-  /// **'Trop d\'essais de connexion. Patiente quelques minutes avant de réessayer.'**
+  /// **'Trop d\'essais de connexion. Attendre quelques minutes avant de réessayer.'**
   String get authErrTooManyAttempts;
 
   /// No description provided for @authErrEmailNotVerified.
   ///
   /// In fr, this message translates to:
-  /// **'Ton adresse e-mail n\'est pas encore vérifiée. Ouvre le lien reçu par e-mail.'**
+  /// **'L\'adresse e-mail n\'est pas encore vérifiée. Ouvrir le lien reçu par e-mail.'**
   String get authErrEmailNotVerified;
 
   /// No description provided for @authErrAccountInactive.
   ///
   /// In fr, this message translates to:
-  /// **'Ce compte est désactivé. Contacte le support WinPlus.'**
+  /// **'Ce compte est désactivé. Contacter le support WinPlus.'**
   String get authErrAccountInactive;
 
   /// No description provided for @integrationRibbon.

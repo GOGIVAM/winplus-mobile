@@ -94,7 +94,7 @@ void main() {
     testWidgets('portefeuille vide : message d\'accueil et historique vide', (tester) async {
       routes(solde: _solde({'availableXaf': 0, 'pendingXaf': 0}));
       await monterVue(tester);
-      expect(find.textContaining('Ton portefeuille est vide'), findsOneWidget);
+      expect(find.textContaining('Votre portefeuille est vide'), findsOneWidget);
       expect(find.text('Aucune opération pour l\'instant.'), findsOneWidget);
     });
 
@@ -120,7 +120,7 @@ void main() {
       faux.repond('GET', '/teacher/revenue-share', {'data': {}});
       await monterVue(tester);
       expect(find.text('Solde indisponible'), findsOneWidget);
-      expect(find.text('Connexion impossible. Vérifie ton réseau et réessaie.'), findsOneWidget);
+      expect(find.text('Connexion impossible. Vérifiez votre réseau et réessayez.'), findsOneWidget);
     });
 
     testWidgets('session expiree (401) : proposition de se reconnecter', (tester) async {
@@ -223,7 +223,7 @@ void main() {
       );
       await monterVue(tester);
       expect(find.text('Cours particuliers · plan Pro'), findsOneWidget);
-      expect(find.text('70 % pour toi · 30 % WinPlus'), findsOneWidget);
+      expect(find.text('70 % pour vous · 30 % WinPlus'), findsOneWidget);
       final titre = find.text('Epreuve de maths');
       await tester.scrollUntilVisible(titre, 300, scrollable: find.byType(Scrollable).first);
       expect(find.text('12 ventes'), findsOneWidget);
@@ -236,7 +236,7 @@ void main() {
       await monterVue(tester);
       expect(find.text(_xaf(12500)), findsOneWidget);
       expect(find.text('Revenus par contenu'), findsNothing);
-      expect(find.textContaining('pour toi'), findsNothing);
+      expect(find.textContaining('pour vous'), findsNothing);
     });
   });
 
@@ -364,7 +364,7 @@ void main() {
       await pomper(tester);
       await tester.tap(_bouton('Retirer ${_xaf(3000)}'));
       await reseau(tester);
-      expect(find.text('Connexion impossible. Vérifie ton réseau et réessaie.'), findsOneWidget);
+      expect(find.text('Connexion impossible. Vérifiez votre réseau et réessayez.'), findsOneWidget);
       // Toujours sur le recapitulatif : on renvoie.
       faux.repond('POST', '/withdrawals', {'data': _retrait()});
       await tester.tap(_bouton('Retirer ${_xaf(3000)}'));
@@ -380,7 +380,7 @@ void main() {
       faux.repond('GET', '/withdrawals/status/9', {'data': _retrait({'status': 'completed', 'processedAt': '2026-04-06T12:00:00Z', 'inProgress': false})});
       await monterVue(tester);
       expect(find.text('Transfert en cours…'), findsOneWidget);
-      expect(find.textContaining('L\'opération se poursuit même si tu quittes l\'application'), findsOneWidget);
+      expect(find.textContaining('L\'opération se poursuit même si vous quittez l\'application'), findsOneWidget);
       expect(find.textContaining('MTN MoMo 6XX XX 12 34'), findsOneWidget);
       expect(tester.widget<WinButton>(_bouton('Retirer')).onTap, isNull);
       // Suivi toutes les 5 secondes.
@@ -405,7 +405,7 @@ void main() {
       await pomper(tester, const Duration(seconds: 5));
       await reseau(tester);
       expect(find.text('Retrait non abouti'), findsOneWidget);
-      expect(find.text('Numero inactif Les ${_xaf(3000)} ont été remis sur ton solde.'), findsOneWidget);
+      expect(find.text('Numero inactif Les ${_xaf(3000)} ont été remis sur votre solde.'), findsOneWidget);
       await monter(tester, const SizedBox());
     });
   });
@@ -450,7 +450,7 @@ void main() {
       expect(envoi['amount'], 1000);
       expect(envoi['operator'], 'mtn');
       expect(envoi['phone'], '612345678');
-      expect(find.text('Confirme le paiement sur ton téléphone…'), findsOneWidget);
+      expect(find.text('Confirmez le paiement sur votre téléphone…'), findsOneWidget);
       await pomper(tester, const Duration(seconds: 4));
       await reseau(tester);
       expect(find.text('Recharge confirmée'), findsOneWidget);

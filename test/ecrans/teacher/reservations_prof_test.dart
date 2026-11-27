@@ -84,7 +84,7 @@ void main() {
     expect(chargement, findsOneWidget);
     await reseau(tester);
     final l = L10n.current;
-    expect(find.text(l.tutoringPrivateLessons), findsOneWidget);
+    expect(find.text(l.teacherClassesMyBookings), findsWidgets);
     expect(find.text(l.teacherBookingPendingTitle), findsOneWidget);
     expect(find.text(l.teacherBookingPendingEmpty), findsOneWidget);
     await faireDefiler(tester, find.text(l.teacherBookingConfirmedEmpty));

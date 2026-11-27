@@ -294,7 +294,7 @@ void main() {
       faux.repond('GET', '/tutor-verification/me', {}, statut: 500);
       await expectLater(
         TutorVerificationService.instance.getMine(),
-        throwsA(isA<Exception>().having((e) => e.toString(), 'texte', contains('Impossible de charger ta vérification.'))),
+        throwsA(isA<Exception>().having((e) => e.toString(), 'texte', contains('Impossible de charger votre vérification.'))),
       );
     });
 

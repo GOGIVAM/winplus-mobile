@@ -125,7 +125,7 @@ class _TeacherLinksScreenState extends State<TeacherLinksScreen>
             icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
             onPressed: () => Navigator.pop(context)),
         title:
-            Text(context.l10n.teacherLinksTitle, style: WinType.headlineS(s.onStrong)),
+            Text(context.l10n.teacherClassesMyLinks, style: WinType.headlineS(s.onStrong)),
         bottom: TabBar(
           controller: _tabs,
           labelColor: s.primary,

@@ -347,7 +347,7 @@ class _TutorBookingsScreenState extends State<TutorBookingsScreen> {
           icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(context.l10n.tutoringPrivateLessons),
+        title: Text(context.l10n.teacherClassesMyBookings),
         actions: [
           IconButton(
               icon: Icon(PhosphorIconsRegular.arrowClockwise, color: s.onMuted),

@@ -3336,7 +3336,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get studentHubGroupsSub => 'Study together';
 
   @override
-  String get studentHubHistory => 'Download history';
+  String get studentHubHistory => 'Documents viewed';
 
   @override
   String get studentHubLearning => 'Learning';

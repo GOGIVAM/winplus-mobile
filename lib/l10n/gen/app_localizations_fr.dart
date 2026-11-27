@@ -9,10 +9,10 @@ class AppLocalizationsFr extends AppLocalizations {
   AppLocalizationsFr([String locale = 'fr']) : super(locale);
 
   @override
-  String get aiAskHint => 'Écris ta question…';
+  String get aiAskHint => 'Écrire une question…';
 
   @override
-  String get authAccountActive => 'Votre compte WinPlus est maintenant actif.';
+  String get authAccountActive => 'Le compte WinPlus est maintenant actif.';
 
   @override
   String get authAlreadyAccount => 'Déjà un compte ? ';
@@ -27,23 +27,23 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get authChooseProfile =>
-      'Choisis ton profil pour une expérience personnalisée.';
+      'Choisir un profil pour une expérience personnalisée.';
 
   @override
-  String get authChooseSecure => 'Choisissez un mot de passe sécurisé.';
+  String get authChooseSecure => 'Choisir un mot de passe sécurisé.';
 
   @override
-  String get authCodeIncorrect => 'Code incorrect. Vérifiez votre email.';
+  String get authCodeIncorrect => 'Code incorrect. Vérifier l\'email.';
 
   @override
   String get authCodeInvalid => 'Code invalide.';
 
   @override
   String get authCodeSentAddress =>
-      'Un code à 6 chiffres a été envoyé à votre adresse.';
+      'Un code à 6 chiffres a été envoyé à l\'adresse du compte.';
 
   @override
-  String get authCodeSentEmail => 'Code envoyé à votre email';
+  String get authCodeSentEmail => 'Code envoyé par email';
 
   @override
   String get authConfirmPassword => 'Confirmer le mot de passe';
@@ -58,7 +58,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get authEmailAddress => 'Adresse email';
 
   @override
-  String get authEmailHint => 'votre@email.com';
+  String get authEmailHint => 'nom@email.com';
 
   @override
   String get authEmailVerified => 'Email vérifié !';
@@ -89,7 +89,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get authFeatStudent2 => 'Quiz IA personnalisés';
 
   @override
-  String get authFeatStudent3 => 'Certificats de vos formations terminées';
+  String get authFeatStudent3 => 'Certificats de tes formations terminées';
 
   @override
   String get authFeatTeacher1 => 'Publiez et monétisez vos contenus';
@@ -102,7 +102,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get authFillRequired =>
-      'Veuillez remplir tous les champs obligatoires.';
+      'Tous les champs obligatoires doivent être remplis.';
 
   @override
   String get authFinish => 'Terminer';
@@ -133,14 +133,14 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get authForgotIntro =>
-      'Entrez votre adresse email, nous vous enverrons un lien de réinitialisation.';
+      'Saisir l\'adresse email : un lien de réinitialisation y sera envoyé.';
 
   @override
-  String get authForgotNotReceived => 'Vous n\'avez pas reçu l\'email ?';
+  String get authForgotNotReceived => 'Email non reçu ?';
 
   @override
   String authForgotSent(Object email) {
-    return 'Email envoyé à $email. Vérifiez aussi vos spams.';
+    return 'Email envoyé à $email. Vérifier aussi les spams.';
   }
 
   @override
@@ -151,15 +151,15 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get authGoogleUnavailable =>
-      'La connexion avec Google n\'est pas encore disponible. Utilisez votre adresse e-mail et votre mot de passe.';
+      'La connexion avec Google n\'est pas encore disponible. Utiliser l\'adresse e-mail et le mot de passe.';
 
   @override
   String get authGoogleFailed =>
-      'La connexion avec Google n\'a pas abouti. Réessayez ou utilisez votre mot de passe.';
+      'La connexion avec Google n\'a pas abouti. Réessayer ou utiliser le mot de passe.';
 
   @override
   String get authGoogleChooseProfile =>
-      'Choisissez votre profil pour créer votre compte avec Google.';
+      'Choisir un profil pour créer le compte avec Google.';
 
   @override
   String get authIAm => 'Je suis…';
@@ -231,11 +231,12 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String authPeriodicIntro(int days) {
-    return 'Pour votre sécurité, confirmez votre identité tous les $days jours.';
+    return 'Pour la sécurité du compte, l\'identité est à confirmer tous les $days jours.';
   }
 
   @override
-  String get authSessionExpired => 'Votre session a expiré. Reconnectez-vous.';
+  String get authSessionExpired =>
+      'La session a expiré : reconnexion nécessaire.';
 
   @override
   String get authPhoneOptional => 'Téléphone (optionnel)';
@@ -248,7 +249,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get authPwdUpdated =>
-      'Mot de passe mis à jour ! Vous pouvez maintenant vous connecter.';
+      'Mot de passe mis à jour ! La connexion est maintenant possible.';
 
   @override
   String get authResendCode => 'Renvoyer le code';
@@ -381,25 +382,24 @@ class AppLocalizationsFr extends AppLocalizations {
   String get authSuccessParent => 'Vous pouvez maintenant suivre vos enfants.';
 
   @override
-  String get authSuccessStudent =>
-      'Votre profil est prêt. Commencez à réviser !';
+  String get authSuccessStudent => 'Ton profil est prêt. Commence à réviser !';
 
   @override
   String get authSuccessTeacher => 'Publiez votre premier contenu !';
 
   @override
   String get authTeacherLevelsHint =>
-      'Utile pour situer tes contenus et, plus tard, ton profil Mode Tuteur.';
+      'Utile pour situer vos contenus et, plus tard, votre profil Mode Tuteur.';
 
   @override
-  String get authTeacherLevelsTitle => 'Quels niveaux couvres-tu ?';
+  String get authTeacherLevelsTitle => 'Quels niveaux couvrez-vous ?';
 
   @override
   String get authTeacherSubjectsHint =>
-      'On adapte ton espace professeur et les suggestions WinAI à tes matières.';
+      'On adapte votre espace professeur et les suggestions WinAI à vos matières.';
 
   @override
-  String get authTeacherSubjectsTitle => 'Quelles matières enseignes-tu ?';
+  String get authTeacherSubjectsTitle => 'Quelles matières enseignez-vous ?';
 
   @override
   String get authVerify => 'Vérifier';
@@ -408,7 +408,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get authVerifyEmailTitle => 'Vérification email';
 
   @override
-  String get authVerifyItsYou => 'Vérifiez que c\'est bien vous';
+  String get authVerifyItsYou => 'Vérification d\'identité';
 
   @override
   String authWelcomeName(Object name) {
@@ -685,7 +685,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get email => 'Email';
 
   @override
-  String get fillAllFields => 'Veuillez remplir tous les champs.';
+  String get fillAllFields => 'Tous les champs doivent être remplis.';
 
   @override
   String fmtDateAtTime(String date, String time) {
@@ -720,7 +720,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get forumContentField => 'Contenu *';
 
   @override
-  String get forumContentHint => 'Détaillez votre question…';
+  String get forumContentHint => 'Détaille ta question…';
 
   @override
   String get forumEmptyCategory => 'Aucun thread dans cette catégorie.';
@@ -737,7 +737,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get forumPublish => 'Publier';
 
   @override
-  String get forumReplyHint => 'Votre réponse…';
+  String get forumReplyHint => 'Ta réponse…';
 
   @override
   String get forumRoleTeacher => 'Prof';
@@ -755,7 +755,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get forumTitleField => 'Titre *';
 
   @override
-  String get forumTitleHint => 'Votre question ou sujet…';
+  String get forumTitleHint => 'Ta question ou ton sujet…';
 
   @override
   String get instAccountAdmins => 'Administrateurs';
@@ -792,7 +792,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get instAiTagline =>
-      'Ton auditeur analytique & stratège institutionnel';
+      'Votre auditeur analytique & stratège institutionnel';
 
   @override
   String get instAnalyticsByGroup => 'Performance par groupe';
@@ -1470,7 +1470,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get login => 'Se connecter';
 
   @override
-  String get loginSubtitle => 'Connecte-toi à ton compte WinPlus.';
+  String get loginSubtitle => 'Connexion au compte WinPlus.';
 
   @override
   String get loginTitle => 'Bon retour !';
@@ -1485,10 +1485,10 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get msgEmptyHint =>
-      'Contactez un professeur depuis la fiche d\'un élève.';
+      'Contacter un professeur depuis la fiche d\'un élève.';
 
   @override
-  String get msgHint => 'Votre message…';
+  String get msgHint => 'Écrire un message…';
 
   @override
   String msgHoursAgo(Object n) {
@@ -1507,7 +1507,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get msgRoleUser => 'Utilisateur';
 
   @override
-  String get msgStartConversation => 'Commencez la conversation.';
+  String get msgStartConversation => 'Commencer la conversation.';
 
   @override
   String get msgTitle => 'Messages';
@@ -1574,7 +1574,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get parentAiSuggestion4 => 'Comment le motiver ?';
 
   @override
-  String get parentAiTagline => 'Ton conseiller familial chaleureux';
+  String get parentAiTagline => 'Votre conseiller familial chaleureux';
 
   @override
   String get parentAlbumGoals => 'Objectifs de l\'année';
@@ -2341,7 +2341,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get shellTabMessages => 'Messages';
 
   @override
-  String get shellTabMySpace => 'Mon Espace';
+  String get shellTabMySpace => 'Mon espace';
 
   @override
   String get shellTabProfile => 'Profil';
@@ -2357,7 +2357,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get shopAccountRequiredBody =>
-      'Connectez-vous ou créez un compte avant le paiement : le contenu acheté est rattaché à votre compte et reste accessible sur tous vos appareils.';
+      'Connexion ou création de compte requise avant le paiement : le contenu acheté est rattaché au compte et reste accessible sur tous les appareils.';
 
   @override
   String get shopAccountRequiredTitle =>
@@ -2380,13 +2380,13 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get shopBuyInAppBody =>
-      'Ajoutez ce contenu à votre panier, puis réglez-le par Mobile Money (MTN ou Orange). Il sera ensuite disponible dans votre espace.';
+      'Ajouter ce contenu au panier, puis le régler par Mobile Money (MTN ou Orange). Il sera ensuite disponible dans l\'espace WinPlus.';
 
   @override
   String get shopBuyInAppTitle => 'Acheter dans l\'application';
 
   @override
-  String get shopCartEmpty => 'Votre panier est vide.';
+  String get shopCartEmpty => 'Le panier est vide.';
 
   @override
   String get shopCartLoadFailed => 'Impossible de charger le panier.';
@@ -2408,7 +2408,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get shopContentAvailable =>
-      'Vos contenus sont maintenant disponibles.';
+      'Les contenus sont maintenant disponibles.';
 
   @override
   String get shopExploreCatalog => 'Explorer le catalogue';
@@ -2514,7 +2514,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get shopSlowPayment =>
-      'Le paiement met plus de temps que prévu. Vous pouvez vérifier plus tard dans \"Mes commandes\".';
+      'Le paiement met plus de temps que prévu. Vérification possible plus tard dans \"Mes commandes\".';
 
   @override
   String get shopStillPending => 'Toujours en attente';
@@ -2534,15 +2534,14 @@ class AppLocalizationsFr extends AppLocalizations {
   String get shopTotalTtc => 'Total TTC';
 
   @override
-  String get shopUnexpectedError => 'Erreur inattendue. Réessayez.';
+  String get shopUnexpectedError => 'Erreur inattendue. Merci de réessayer.';
 
   @override
-  String get shopUssdNotice =>
-      'Vous recevrez une notification USSD pour valider.';
+  String get shopUssdNotice => 'Une notification USSD arrivera pour valider.';
 
   @override
   String get shopValidateUssd =>
-      'Valide le paiement via le message USSD envoyé sur ton téléphone.';
+      'Valider le paiement via le message USSD envoyé sur le téléphone.';
 
   @override
   String get shopVatIncluded => 'dont TVA 19,25 % incluse';
@@ -2640,7 +2639,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get studentCertEmptyHint =>
-      'Complétez des quiz et des parcours pour\ndécrocher vos premiers certificats.';
+      'Complète des quiz et des parcours pour\ndécrocher tes premiers certificats.';
 
   @override
   String studentCertIssuedOn(Object date) {
@@ -2670,7 +2669,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get studentCertShare => 'Partager';
 
   @override
-  String get studentCertTitle => 'Mes Certificats';
+  String get studentCertTitle => 'Mes certificats';
 
   @override
   String studentCertVerificationCode(Object code) {
@@ -2793,7 +2792,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get studentCourseError => 'Erreur';
 
   @override
-  String get studentCourseLeaveReview => 'Donnez votre avis';
+  String get studentCourseLeaveReview => 'Donne ton avis';
 
   @override
   String studentCourseLessons(Object n) {
@@ -2811,7 +2810,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get studentCourseNotFound => 'Formation introuvable.';
 
   @override
-  String get studentCourseObjectives => 'Ce que vous apprendrez';
+  String get studentCourseObjectives => 'Ce que tu apprendras';
 
   @override
   String get studentCourseOfferChild => 'Offrir à mon enfant';
@@ -2852,14 +2851,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get studentCourseRequirements => 'Prérequis';
 
   @override
-  String get studentCourseReviewHint =>
-      'Partagez votre expérience (optionnel)…';
+  String get studentCourseReviewHint => 'Partage ton expérience (optionnel)…';
 
   @override
   String get studentCourseReviewSubmitError => 'Erreur lors de la soumission.';
 
   @override
-  String get studentCourseReviewThanks => 'Merci pour votre avis !';
+  String get studentCourseReviewThanks => 'Merci pour ton avis !';
 
   @override
   String get studentCourseReviews => 'Avis';
@@ -2872,7 +2870,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'TTC, TVA 19,25 % incluse · hors abonnement';
 
   @override
-  String get studentCourseYours => 'Votre formation';
+  String get studentCourseYours => 'Ta formation';
 
   @override
   String get studentDetailAddNote => 'Ajouter une note';
@@ -2914,7 +2912,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get studentDetailNoReviews => 'Aucun avis pour l\'instant.';
 
   @override
-  String get studentDetailOrSubscriptions => 'ou découvrez les abonnements';
+  String get studentDetailOrSubscriptions => 'ou découvrir les abonnements';
 
   @override
   String studentDetailRatingCount(Object rating, int count) {
@@ -2999,14 +2997,14 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String studentFavLimit(Object max) {
-    return 'Votre plan permet $max favoris. Passez à un plan supérieur pour en sauvegarder plus.';
+    return 'Ton plan permet $max favoris. Passe à un plan supérieur pour en sauvegarder plus.';
   }
 
   @override
   String get studentFavLoadError => 'Impossible de charger les favoris.';
 
   @override
-  String get studentFavTitle => 'Mes Favoris';
+  String get studentFavTitle => 'Mes favoris';
 
   @override
   String get studentGoalsAcceptError =>
@@ -3024,7 +3022,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get studentGoalsFieldTitle => 'Titre';
 
   @override
-  String get studentGoalsProposedBy => 'Proposé par un de vos parents';
+  String get studentGoalsProposedBy => 'Proposé par un de tes parents';
 
   @override
   String get studentGoalsRefuseConfirm => 'Refuser définitivement ?';
@@ -3044,16 +3042,16 @@ class AppLocalizationsFr extends AppLocalizations {
       'Impossible d\'enregistrer les modifications pour le moment.';
 
   @override
-  String get studentGoalsTitle => 'Objectifs proposés par vos parents';
+  String get studentGoalsTitle => 'Objectifs proposés par tes parents';
 
   @override
   String studentGroupsAlreadyMember(Object name) {
-    return 'Vous faites déjà partie de « $name ».';
+    return 'Tu fais déjà partie de « $name ».';
   }
 
   @override
   String get studentGroupsCodeIncomplete =>
-      'Entrez le code d\'invitation complet.';
+      'Entre le code d\'invitation complet.';
 
   @override
   String get studentGroupsCodeNotFound =>
@@ -3082,7 +3080,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get studentGroupsEmptyHint =>
-      'Créez un groupe ou rejoignez celui d\'un camarade avec son code.';
+      'Crée un groupe ou rejoins celui d\'un camarade avec son code.';
 
   @override
   String get studentGroupsInviteCode => 'Code d\'invitation';
@@ -3114,8 +3112,7 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get studentGroupsLeaveError =>
-      'Vous n\'avez pas pu quitter ce groupe.';
+  String get studentGroupsLeaveError => 'Tu n\'as pas pu quitter ce groupe.';
 
   @override
   String studentGroupsLeaveOwner(Object name) {
@@ -3127,7 +3124,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get studentGroupsLoadError =>
-      'Vos groupes n\'ont pas pu être chargés.';
+      'Tes groupes n\'ont pas pu être chargés.';
 
   @override
   String get studentGroupsMember => 'Membre';
@@ -3322,7 +3319,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get studentHomeUpgrade =>
-      'Avec un abonnement, tout le catalogue s\'ouvre et WinAI vous accompagne davantage.';
+      'Avec un abonnement, tout le catalogue s\'ouvre et WinAI t\'accompagne davantage.';
 
   @override
   String get studentHubAccount => 'Compte';
@@ -3346,7 +3343,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get studentHubFavorites => 'Mes favoris';
 
   @override
-  String get studentHubFavoritesSub => 'Vos contenus enregistrés';
+  String get studentHubFavoritesSub => 'Tes contenus enregistrés';
 
   @override
   String get studentHubForum => 'Forum communauté';
@@ -3361,14 +3358,14 @@ class AppLocalizationsFr extends AppLocalizations {
   String get studentHubGroupsSub => 'Réviser à plusieurs';
 
   @override
-  String get studentHubHistory => 'Historique des téléchargements';
+  String get studentHubHistory => 'Documents consultés';
 
   @override
   String get studentHubLearning => 'Apprentissage';
 
   @override
   String get studentHubLogoutBody =>
-      'Vous serez redirigé vers l\'écran d\'accueil.';
+      'Tu seras redirigé vers l\'écran d\'accueil.';
 
   @override
   String get studentHubLogoutConfirm => 'Déconnecter';
@@ -3485,14 +3482,14 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get studentMyCoursesEmptyHint =>
-      'Explorez notre catalogue et commencez à apprendre dès aujourd\'hui.';
+      'Explore notre catalogue et commence à apprendre dès aujourd\'hui.';
 
   @override
   String get studentMyCoursesExplore => 'Explorer les formations';
 
   @override
   String get studentMyCoursesLoadError =>
-      'Impossible de charger vos formations.';
+      'Impossible de charger tes formations.';
 
   @override
   String get studentMyCoursesReplay => 'Revoir';
@@ -3516,7 +3513,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get studentNotifMarkFailed =>
-      'Impossible de marquer les notifications comme lues. Réessaie.';
+      'Impossible de marquer les notifications comme lues. Merci de réessayer.';
 
   @override
   String studentNotifMinutesAgo(Object n) {
@@ -3536,11 +3533,11 @@ class AppLocalizationsFr extends AppLocalizations {
   String get studentPlayerAttachedFile => 'Fichier joint';
 
   @override
-  String get studentPlayerCertAvailable => 'Votre certificat est disponible.';
+  String get studentPlayerCertAvailable => 'Ton certificat est disponible.';
 
   @override
   String get studentPlayerCertGenerating =>
-      'Félicitations ! Votre certificat est en cours de génération.';
+      'Félicitations ! Ton certificat est en cours de génération.';
 
   @override
   String get studentPlayerCourseDone => 'Formation terminée !';
@@ -3579,10 +3576,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get studentPlayerRemoveOffline => 'Retirer le hors-ligne';
 
   @override
-  String get studentPlayerSelectLesson => 'Sélectionnez une leçon.';
+  String get studentPlayerSelectLesson => 'Sélectionne une leçon.';
 
   @override
-  String get studentPlayerTapToDownload => 'Appuyez pour télécharger';
+  String get studentPlayerTapToDownload => 'Appuie pour télécharger';
 
   @override
   String get studentPlayerVideoUnavailable =>
@@ -3637,14 +3634,14 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get studentProfileDeleteBody =>
-      'Cette action est irréversible. Toutes vos données seront perdues.';
+      'Cette action est irréversible. Toutes tes données seront perdues.';
 
   @override
   String get studentProfileDeleteTitle => 'Supprimer le compte ?';
 
   @override
   String get studentProfileDeleteWarning =>
-      'La suppression de votre compte est irréversible.';
+      'La suppression de ton compte est irréversible.';
 
   @override
   String get studentProfileEmailAddress => 'Adresse e-mail';
@@ -3661,7 +3658,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get studentProfileEmailInvalid => 'Adresse email invalide.';
 
   @override
-  String get studentProfileEmailSame => 'C\'est déjà votre adresse actuelle.';
+  String get studentProfileEmailSame => 'C\'est déjà ton adresse actuelle.';
 
   @override
   String get studentProfileEnterCode => 'Saisis le code reçu par email.';
@@ -3691,13 +3688,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get studentProfileNotifAiSub => 'Alertes et conseils personnalisés';
 
   @override
-  String get studentProfileNotifCommunitySub => 'Réponses à vos questions';
+  String get studentProfileNotifCommunitySub => 'Réponses à tes questions';
 
   @override
   String get studentProfileNotifExam => 'Rappels d\'examens';
 
   @override
-  String get studentProfileNotifExamSub => 'Compte à rebours avant vos examens';
+  String get studentProfileNotifExamSub => 'Compte à rebours avant tes examens';
 
   @override
   String get studentProfileNotifPromo => 'Offres et promotions';
@@ -3710,7 +3707,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get studentProfileNotifQuizSub =>
-      'Recevoir vos scores après chaque quiz';
+      'Recevoir tes scores après chaque quiz';
 
   @override
   String studentProfilePeriodEnd(Object date) {
@@ -3898,7 +3895,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get studentSearchHint => 'BAC C Maths, ENSP, SVT…';
 
   @override
-  String get studentSearchIdle => 'Recherchez dans le catalogue';
+  String get studentSearchIdle => 'Rechercher dans le catalogue';
 
   @override
   String studentSearchNoResults(Object query) {
@@ -3995,7 +3992,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get studentTabsAiNoReply =>
-      'Désolé, je n\'ai pas pu répondre. Réessaie.';
+      'Désolé, je n\'ai pas pu répondre. Merci de réessayer.';
 
   @override
   String get studentTabsAiSuggest1 => 'Explique-moi les dérivées';
@@ -4073,7 +4070,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get studentTabsStructuredCoursesSub =>
-      'Apprenez à votre rythme · Certificats inclus';
+      'Apprends à ton rythme · Certificats inclus';
 
   @override
   String get studentTabsStudyThisWeek => 'Étude cette semaine';
@@ -4091,13 +4088,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get studentTabsTypePapers => 'Épreuves';
 
   @override
-  String get voiceListening => 'Je vous écoute…';
+  String get voiceListening => 'J\'écoute…';
 
   @override
   String get voiceNothingHeard => 'Rien n\'a été entendu.';
 
   @override
-  String get voiceCheckText => 'Relisez le texte avant de l\'utiliser :';
+  String get voiceCheckText => 'Relire le texte avant de l\'utiliser :';
 
   @override
   String get voiceStop => 'Arrêter';
@@ -4110,7 +4107,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get voiceUnavailable =>
-      'La dictée n\'est pas disponible : autorisez le micro pour WinPlus, ou vérifiez que la reconnaissance vocale de Google est installée.';
+      'La dictée n\'est pas disponible : autoriser le micro pour WinPlus, ou vérifier que la reconnaissance vocale de Google est installée.';
 
   @override
   String get studentVarkApplied => 'Style appliqué !';
@@ -4260,11 +4257,11 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get studentViewerNoAccess =>
-      'Ce contenu n\'est pas inclus dans votre accès. Achetez-le ou abonnez-vous pour le consulter.';
+      'Ce contenu n\'est pas inclus dans ton accès. Achète-le ou abonne-toi pour le consulter.';
 
   @override
   String get studentViewerNoConnection =>
-      'Connexion impossible. Vérifiez votre réseau puis réessayez.';
+      'Connexion impossible. Vérifie ton réseau puis réessaie.';
 
   @override
   String get studentViewerNoCorrection =>
@@ -4304,7 +4301,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get studentViewerSessionExpired =>
-      'Votre session a expiré. Reconnectez-vous pour consulter ce document.';
+      'Ta session a expiré. Reconnecte-toi pour consulter ce document.';
 
   @override
   String get studentViewerSubscriptions => 'Abonnements';
@@ -4374,7 +4371,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get subInstitutionLicenseNote =>
-      'Les établissements passent par une licence (sièges élèves, année scolaire) : gérez-la depuis l\'onglet Licence de votre espace établissement.';
+      'Les établissements passent par une licence (sièges élèves, année scolaire) : elle se gère depuis l\'onglet Licence de l\'espace établissement.';
 
   @override
   String get subLater => 'Plus tard';
@@ -4456,7 +4453,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get svcBalancePaymentFailed =>
-      'Le paiement par solde a échoué. Réessaie.';
+      'Le paiement par solde a échoué. Merci de réessayer.';
 
   @override
   String svcBookedForOthers(Object names, Object payer) {
@@ -4509,7 +4506,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get svcEngStatusRejected => 'Refusé par le tuteur';
 
   @override
-  String get svcGenericError => 'Une erreur est survenue. Réessaie.';
+  String get svcGenericError => 'Une erreur est survenue. Merci de réessayer.';
 
   @override
   String get svcIdDocCni => 'Carte nationale d\'identité';
@@ -4629,7 +4626,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get svcRefundInstitutionWallet => 'le portefeuille de l\'institution';
 
   @override
-  String get svcRefundMyWallet => 'ton portefeuille WinPlus';
+  String get svcRefundMyWallet => 'le portefeuille WinPlus';
 
   @override
   String svcRefundPartial(Object percent, Object fee) {
@@ -4753,7 +4750,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get svcVerifEventSuspensionLifted => 'Suspension levée';
 
   @override
-  String get svcVerifLoadFailed => 'Impossible de charger ta vérification.';
+  String get svcVerifLoadFailed => 'Impossible de charger votre vérification.';
 
   @override
   String get svcVerifRouteInstitution => 'Caution d\'une institution';
@@ -4763,11 +4760,11 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get svcWinaiLimit =>
-      'Vous avez atteint votre limite WinAI. Passez à un plan supérieur pour continuer.';
+      'Limite WinAI atteinte. Un plan supérieur permet de continuer.';
 
   @override
   String get svcWinaiUnavailable =>
-      'WinAI est momentanément indisponible. Réessayez dans quelques minutes.';
+      'WinAI est momentanément indisponible. Merci de réessayer dans quelques minutes.';
 
   @override
   String get svcWithdrawFailed => 'Retrait impossible.';
@@ -4793,7 +4790,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get teacherAiSuggestTitle => 'Optimiser un titre';
 
   @override
-  String get teacherAiTagline => 'Ton assistant éditorial & pédagogique';
+  String get teacherAiTagline => 'Votre assistant éditorial & pédagogique';
 
   @override
   String get teacherBookingAcceptError =>
@@ -4811,7 +4808,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get teacherBookingAutoMaterialHint =>
-      'Décompté de ton usage WinAI ; tu le relis avant de le partager.';
+      'Décompté de votre usage WinAI ; vous le relisez avant de le partager.';
 
   @override
   String teacherBookingBeneficiaries(Object count) {
@@ -4828,7 +4825,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get teacherBookingDeclineEngagementMessage =>
-      'Le payeur est remboursé intégralement, séance par séance ; si le mois a été payé par Mobile Money, les frais sont retenus sur ton solde.';
+      'Le payeur est remboursé intégralement, séance par séance ; si le mois a été payé par Mobile Money, les frais sont retenus sur votre solde.';
 
   @override
   String get teacherBookingDeclineEngagementTitle =>
@@ -4840,7 +4837,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get teacherBookingDeclineMessage =>
-      'Celui qui a payé (élève, parent, institution ou membre du groupe) sera remboursé intégralement sur son portefeuille WinPlus ; si la séance a été payée par Mobile Money, les frais de l\'opérateur seront retenus sur ton solde.';
+      'Celui qui a payé (élève, parent, institution ou membre du groupe) sera remboursé intégralement sur son portefeuille WinPlus ; si la séance a été payée par Mobile Money, les frais de l\'opérateur seront retenus sur votre solde.';
 
   @override
   String get teacherBookingDeclineTitle => 'Refuser la demande';
@@ -4851,7 +4848,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String teacherBookingDeclinedFee(Object amount) {
-    return 'Demande refusée : le payeur est remboursé, $amount XAF de frais Mobile Money retenus sur ton solde.';
+    return 'Demande refusée : le payeur est remboursé, $amount XAF de frais Mobile Money retenus sur votre solde.';
   }
 
   @override
@@ -5021,10 +5018,10 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get teacherClassNoStudentsHint =>
-      'Ajoute un élève par son email WinPlus.';
+      'Ajoutez un élève par son email WinPlus.';
 
   @override
-  String get teacherClassReferenceHint => 'Ton propre corrigé…';
+  String get teacherClassReferenceHint => 'Votre propre corrigé…';
 
   @override
   String get teacherClassReferenceLabel => 'Corrigé de référence (facultatif)';
@@ -5048,7 +5045,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get teacherClassRemoveStudentTitle => 'Retirer cet élève ?';
 
   @override
-  String get teacherClassStatementHint => 'Colle l\'énoncé…';
+  String get teacherClassStatementHint => 'Collez l\'énoncé…';
 
   @override
   String get teacherClassStatementLabel => 'Énoncé (génère le barème WinAI)';
@@ -5466,7 +5463,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get teacherGroupIntro =>
-      'Un parent, une institution ou un groupe d\'étude peut réserver pour plusieurs élèves. Une séance de groupe occupe ton créneau une seule fois.';
+      'Un parent, une institution ou un groupe d\'étude peut réserver pour plusieurs élèves. Une séance de groupe occupe votre créneau une seule fois.';
 
   @override
   String get teacherGroupMaxSizeLabel => 'Taille maximale du groupe (élèves)';
@@ -5496,7 +5493,7 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get teacherGroupSubjectsFirst => 'Choisis d\'abord tes matières.';
+  String get teacherGroupSubjectsFirst => 'Choisissez d\'abord vos matières.';
 
   @override
   String get teacherGroupSuggest => 'Proposer (WinAI)';
@@ -5572,7 +5569,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get teacherPricingGridIntro =>
-      'Sans grille, ton tarif horaire s\'applique partout. Facturation au prorata des tranches de 30 min ; le prix exact est calculé par WinPlus et montré à l\'élève avant paiement.';
+      'Sans grille, votre tarif horaire s\'applique partout. Facturation au prorata des tranches de 30 min ; le prix exact est calculé par WinPlus et montré à l\'élève avant paiement.';
 
   @override
   String get teacherPricingGridTitle => 'Grille tarifaire (facultatif)';
@@ -5603,7 +5600,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get teacherPricingSubjectsFirst =>
-      'Choisis d\'abord tes matières (étape 1).';
+      'Choisissez d\'abord vos matières (étape 1).';
 
   @override
   String get teacherPricingSuggest => 'Proposer une grille (WinAI)';
@@ -5620,11 +5617,11 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get teacherProfileActivateError =>
-      'Complète les champs essentiels avant d\'activer ton profil.';
+      'Complétez les champs essentiels avant d\'activer votre profil.';
 
   @override
   String get teacherProfileActivated =>
-      'Ton profil tuteur est visible dans la recherche !';
+      'Votre profil tuteur est visible dans la recherche !';
 
   @override
   String get teacherProfileActiveAfterSuspension =>
@@ -5710,11 +5707,11 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get teacherProfileKeptSuspended =>
-      'Tes choix présentiels restent enregistrés et redeviendront actifs à la levée de la suspension.';
+      'Vos choix présentiels restent enregistrés et redeviendront actifs à la levée de la suspension.';
 
   @override
   String get teacherProfileKeptUnverified =>
-      'Tes choix présentiels sont enregistrés et deviendront actifs dès ta vérification.';
+      'Vos choix présentiels sont enregistrés et deviendront actifs dès votre vérification.';
 
   @override
   String get teacherProfileLevelEnam => 'ENAM Administration';
@@ -5724,7 +5721,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get teacherProfileLoadError =>
-      'Impossible de charger ton profil tuteur.';
+      'Impossible de charger votre profil tuteur.';
 
   @override
   String get teacherProfileMaxPerWeek => 'Séances max par semaine';
@@ -5734,7 +5731,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get teacherProfileMonthlyDesc =>
-      'Mêmes créneaux chaque semaine pendant 4 semaines, payés d\'avance ; tu es payé séance par séance.';
+      'Mêmes créneaux chaque semaine pendant 4 semaines, payés d\'avance ; vous êtes payé séance par séance.';
 
   @override
   String teacherProfileMonthlyDiscountHint(Object max) {
@@ -5743,7 +5740,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get teacherProfileMonthlyHint =>
-      'Appliquée au prix de chaque séance du mois, calculé par ta grille.';
+      'Appliquée au prix de chaque séance du mois, calculé par votre grille.';
 
   @override
   String get teacherProfileMonthlyToggle => 'Proposer l\'engagement mensuel';
@@ -6051,7 +6048,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Joindre ma pièce et mon selfie à l\'entretien';
 
   @override
-  String get teacherVerifAvailability => 'Tes disponibilités';
+  String get teacherVerifAvailability => 'Vos disponibilités';
 
   @override
   String get teacherVerifAvailabilityHint => 'Ex. : mardi et jeudi après 17 h';
@@ -6061,7 +6058,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get teacherVerifCameraUnavailable =>
-      'Appareil photo indisponible : choisis plutôt une photo de ton visage dans tes fichiers.';
+      'Appareil photo indisponible : choisissez plutôt une photo de votre visage dans vos fichiers.';
 
   @override
   String get teacherVerifCancelRequest => 'Annuler la demande';
@@ -6097,11 +6094,11 @@ class AppLocalizationsFr extends AppLocalizations {
   String get teacherVerifHistory => 'Historique';
 
   @override
-  String get teacherVerifIdentityOk => 'Ta pièce d\'identité est validée.';
+  String get teacherVerifIdentityOk => 'Votre pièce d\'identité est validée.';
 
   @override
   String get teacherVerifIdentityText =>
-      'Un administrateur compare la photo de ta pièce et ton visage.';
+      'Un administrateur compare la photo de votre pièce et votre visage.';
 
   @override
   String get teacherVerifIdentityTitle => 'Pièce d\'identité et selfie';
@@ -6111,21 +6108,21 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get teacherVerifInstitutionText =>
-      'Si tu es rattaché à un établissement sur WinPlus, il peut te cautionner après t\'avoir vérifié par ses propres moyens. Si le rattachement ou la caution est retiré, cette voie tombe.';
+      'Si vous êtes rattaché à un établissement sur WinPlus, il peut vous cautionner après vous avoir vérifié par ses propres moyens. Si le rattachement ou la caution est retiré, cette voie tombe.';
 
   @override
-  String get teacherVerifInstitutionTitle => 'Caution de ton institution';
+  String get teacherVerifInstitutionTitle => 'Caution de votre institution';
 
   @override
   String get teacherVerifInterviewText =>
-      'En visio ou en rencontre. L\'entretien ne remplace pas l\'identité : prépare ta pièce, elle est jointe au dossier avec un selfie.';
+      'En visio ou en rencontre. L\'entretien ne remplace pas l\'identité : préparez votre pièce, elle est jointe au dossier avec un selfie.';
 
   @override
   String get teacherVerifInterviewTitle => 'Entretien avec un agent';
 
   @override
   String get teacherVerifIntro =>
-      'Les séances chez l\'élève, chez toi ou en lieu neutre sont réservées aux tuteurs vérifiés. Choisis une des trois voies : une seule suffit. Le diplôme reste un badge facultatif.';
+      'Les séances chez l\'élève, chez vous ou en lieu neutre sont réservées aux tuteurs vérifiés. Choisissez une des trois voies : une seule suffit. Le diplôme reste un badge facultatif.';
 
   @override
   String teacherVerifLastInterview(Object reason) {
@@ -6148,18 +6145,18 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get teacherVerifNeedFiles =>
-      'Ajoute au moins le recto de ta pièce et un selfie.';
+      'Ajoutez au moins le recto de votre pièce et un selfie.';
 
   @override
   String get teacherVerifNoEndorsement =>
-      'Aucune caution pour le moment. Demande à ton établissement de rattachement (Réseau) de te cautionner.';
+      'Aucune caution pour le moment. Demandez à votre établissement de rattachement (Réseau) de vous cautionner.';
 
   @override
   String get teacherVerifPassed => 'Entretien réussi.';
 
   @override
   String get teacherVerifPassedNeedIdentity =>
-      'Il reste à valider ta pièce d\'identité et ton selfie pour ouvrir le présentiel.';
+      'Il reste à valider votre pièce d\'identité et votre selfie pour ouvrir le présentiel.';
 
   @override
   String teacherVerifPendingSince(Object date) {
@@ -6182,7 +6179,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String teacherVerifRejected(Object reason) {
-    return 'Refusée : $reason. Tu peux envoyer de nouveaux documents.';
+    return 'Refusée : $reason. Vous pouvez envoyer de nouveaux documents.';
   }
 
   @override
@@ -6190,11 +6187,11 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get teacherVerifRequested =>
-      'Demande envoyée. Un agent WinPlus va te proposer une date.';
+      'Demande envoyée. Un agent WinPlus va vous proposer une date.';
 
   @override
   String teacherVerifRequestedOn(Object date) {
-    return 'Demande envoyée le $date. Un agent va te proposer une date.';
+    return 'Demande envoyée le $date. Un agent va vous proposer une date.';
   }
 
   @override
@@ -6202,7 +6199,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String teacherVerifRetention(Object approved, Object rejected) {
-    return 'Fichiers privés, vus seulement par l\'équipe WinPlus, jamais affichés sur ton profil. Supprimés $approved jours après la validation ($rejected jours après un refus) ; seule la décision est conservée.';
+    return 'Fichiers privés, vus seulement par l\'équipe WinPlus, jamais affichés sur votre profil. Supprimés $approved jours après la validation ($rejected jours après un refus) ; seule la décision est conservée.';
   }
 
   @override
@@ -6221,7 +6218,7 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get teacherVerifSelfie => 'Selfie (ton visage)';
+  String get teacherVerifSelfie => 'Selfie (votre visage)';
 
   @override
   String get teacherVerifSent =>
@@ -6235,7 +6232,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get teacherVerifSuspendedBanner =>
-      'Suite à des signalements, tes séances présentielles sont suspendues le temps qu\'un membre de l\'équipe WinPlus examine la situation. Tes séances en ligne restent possibles.';
+      'Suite à des signalements, vos séances présentielles sont suspendues le temps qu\'un membre de l\'équipe WinPlus examine la situation. Vos séances en ligne restent possibles.';
 
   @override
   String get teacherVerifTake => 'Prendre';
@@ -6336,14 +6333,14 @@ class AppLocalizationsFr extends AppLocalizations {
   String get tutoringAssignChildrenLabel => 'Enfants bénéficiaires';
 
   @override
-  String get tutoringAssignChooseChild => 'Choisis au moins un enfant.';
+  String get tutoringAssignChooseChild => 'Choisissez au moins un enfant.';
 
   @override
   String get tutoringAssignChooseStudents =>
-      'Choisis des élèves ou une classe.';
+      'Choisissez des élèves ou une classe.';
 
   @override
-  String get tutoringAssignChooseTutor => 'Choisis un répétiteur.';
+  String get tutoringAssignChooseTutor => 'Choisissez un répétiteur.';
 
   @override
   String get tutoringAssignError => 'Attribution impossible.';
@@ -6358,7 +6355,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tutoringAssignNoStudent =>
-      'Aucun élève actif au rattachement confirmé dans ton institution.';
+      'Aucun élève actif au rattachement confirmé dans votre institution.';
 
   @override
   String get tutoringAssignNoTutor => 'Aucun répétiteur trouvé.';
@@ -6452,14 +6449,14 @@ class AppLocalizationsFr extends AppLocalizations {
       'Impossible d\'envoyer le signalement.';
 
   @override
-  String get tutoringBookingsDisputeSent => 'Votre signalement a été envoyé.';
+  String get tutoringBookingsDisputeSent => 'Signalement envoyé.';
 
   @override
   String get tutoringBookingsEmpty => 'Aucune réservation pour le moment.';
 
   @override
   String get tutoringBookingsLoadError =>
-      'Impossible de charger vos réservations.';
+      'Impossible de charger les réservations.';
 
   @override
   String get tutoringBookingsTitle => 'Mes réservations';
@@ -6475,7 +6472,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get tutoringCheckNow => 'Vérifier maintenant';
 
   @override
-  String get tutoringChooseDay => 'Choisissez un jour';
+  String get tutoringChooseDay => 'Choisir un jour';
 
   @override
   String tutoringClassName(Object name) {
@@ -6504,7 +6501,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String tutoringDisputeUntil(Object date, Object time, Object hours) {
-    return 'Un problème ? Tu peux contester jusqu\'au $date à $time ($hours h après la séance). Ensuite, le paiement est versé au tuteur.';
+    return 'Un problème ? Contestation possible jusqu\'au $date à $time ($hours h après la séance). Ensuite, le paiement est versé au tuteur.';
   }
 
   @override
@@ -6556,7 +6553,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tutoringEngAutoRenewHelp =>
-      'Mêmes créneaux. Tentative 3 jours avant la fin, après un rappel 7 jours avant ; si le solde ne suffit pas ou si un créneau n\'est plus libre, rien n\'est débité et tu es prévenu.';
+      'Mêmes créneaux. Tentative 3 jours avant la fin, après un rappel 7 jours avant ; si le solde ne suffit pas ou si un créneau n\'est plus libre, rien n\'est débité et le payeur est prévenu.';
 
   @override
   String get tutoringEngAutoRenewIf =>
@@ -6617,7 +6614,7 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get tutoringEngDisputePrompt => 'Pourquoi contestes-tu cette séance ?';
+  String get tutoringEngDisputePrompt => 'Pourquoi contester cette séance ?';
 
   @override
   String tutoringEngDisputeUntil(Object date) {
@@ -6632,7 +6629,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get tutoringEngEditSlots => 'Modifier les créneaux';
 
   @override
-  String get tutoringEngExplainProblem => 'Explique le problème';
+  String get tutoringEngExplainProblem => 'Expliquer le problème';
 
   @override
   String tutoringEngFeesNote(Object amount) {
@@ -6663,7 +6660,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tutoringEngMmSent =>
-      'Demande de paiement envoyée sur ton téléphone.';
+      'Demande de paiement envoyée sur le téléphone.';
 
   @override
   String get tutoringEngMomoChip => 'Mobile Money (MTN MoMo ou Orange Money)';
@@ -6773,7 +6770,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String tutoringEngReplyBefore(Object date) {
-    return 'Réponds avant le $date';
+    return 'Répondez avant le $date';
   }
 
   @override
@@ -6835,7 +6832,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tutoringEngValidateOnPhone =>
-      'Valide le paiement sur ton téléphone';
+      'Valider le paiement sur le téléphone';
 
   @override
   String tutoringEngWalletMissing(Object amount) {
@@ -6844,7 +6841,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tutoringEngWalletShort =>
-      'Le solde ne couvre pas le total du mois. Choisis Mobile Money ou recharge le portefeuille.';
+      'Le solde ne couvre pas le total du mois. Choisir Mobile Money ou recharger le portefeuille.';
 
   @override
   String get tutoringEngWeeklySlots => 'Créneaux de chaque semaine';
@@ -6891,11 +6888,11 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tutoringForWhomNoChild =>
-      'Aucun enfant lié à ton compte (le lien doit être accepté par l\'enfant).';
+      'Aucun enfant lié à votre compte (le lien doit être accepté par l\'enfant).';
 
   @override
   String get tutoringForWhomNoGroup =>
-      'Ce tuteur ne propose pas de séances de groupe : choisis un seul élève.';
+      'Ce tuteur ne propose pas de séances de groupe : choisir un seul élève.';
 
   @override
   String tutoringForWhomNoStudent(Object name) {
@@ -6904,7 +6901,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tutoringForWhomParentHelp =>
-      'Tu paies avec ton portefeuille parent ou Mobile Money ; tes enfants voient la séance dans leur espace.';
+      'Vous payez avec votre portefeuille parent ou Mobile Money ; vos enfants voient la séance dans leur espace.';
 
   @override
   String tutoringForWhomPendingConfirmation(Object count) {
@@ -7074,7 +7071,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tutoringMatGenerateHelp =>
-      'WinAI prépare un cours, un quiz et des exercices à partir des sujets de la séance. La génération est décomptée de ton usage WinAI ; rien n\'est envoyé aux élèves avant que tu partages.';
+      'WinAI prépare un cours, un quiz et des exercices à partir des sujets de la séance. La génération est décomptée de votre usage WinAI ; rien n\'est envoyé aux élèves avant que vous partagiez.';
 
   @override
   String get tutoringMatGenerated =>
@@ -7138,7 +7135,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tutoringMatRegenerateConfirm =>
-      'Régénérer remplace ton brouillon actuel (la version partagée reste visible jusqu\'au prochain partage). Continuer ?';
+      'Régénérer remplace votre brouillon actuel (la version partagée reste visible jusqu\'au prochain partage). Continuer ?';
 
   @override
   String get tutoringMatResults => 'Résultats';
@@ -7242,11 +7239,11 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tutoringMustAccept =>
-      'Le tuteur doit accepter ta demande. Tu seras notifié·e dès sa réponse, et remboursé·e intégralement sur ton portefeuille WinPlus s\'il refuse ou ne répond pas à temps.';
+      'Le tuteur doit accepter la demande. Une notification arrive dès sa réponse, et le remboursement est intégral sur le portefeuille WinPlus s\'il refuse ou ne répond pas à temps.';
 
   @override
   String tutoringMyRating(Object rating) {
-    return 'Ta note : $rating/5';
+    return 'Note donnée : $rating/5';
   }
 
   @override
@@ -7307,7 +7304,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tutoringPaymentSlow =>
-      'Le paiement met plus de temps que prévu. Tu peux vérifier plus tard dans \"Mes séances\".';
+      'Le paiement met plus de temps que prévu. Vérification possible plus tard dans \"Mes séances\".';
 
   @override
   String get tutoringPerHour => '/ heure';
@@ -7334,7 +7331,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String tutoringPolicyDispute(Object hours) {
-    return 'Après la séance, tu as $hours h pour la contester.';
+    return 'Après la séance, $hours h pour la contester.';
   }
 
   @override
@@ -7342,7 +7339,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tutoringPolicyFactFee =>
-      'de frais Mobile Money si tu annules toi-même';
+      'de frais Mobile Money en cas d\'annulation par le payeur';
 
   @override
   String get tutoringPolicyFactImmediate => 'Immédiat';
@@ -7352,7 +7349,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String tutoringPolicyFull(Object hours) {
-    return 'Remboursement intégral si tu annules au moins $hours h avant la séance.';
+    return 'Remboursement intégral pour une annulation au moins $hours h avant la séance.';
   }
 
   @override
@@ -7390,11 +7387,11 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tutoringPolicyWallet =>
-      'Remboursements versés immédiatement sur ton portefeuille WinPlus.';
+      'Remboursements versés immédiatement sur le portefeuille WinPlus.';
 
   @override
   String tutoringPolicyWalletFee(Object fee) {
-    return 'Remboursements versés immédiatement sur ton portefeuille WinPlus. Si tu annules une séance payée par Mobile Money, $fee % de frais de l\'opérateur sont déduits ; aucun frais pour un paiement par solde.';
+    return 'Remboursements versés immédiatement sur le portefeuille WinPlus. Pour une séance payée par Mobile Money puis annulée, $fee % de frais de l\'opérateur sont déduits ; aucun frais pour un paiement par solde.';
   }
 
   @override
@@ -7450,7 +7447,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tutoringRechargeConfirmOnPhone =>
-      'Confirme le paiement sur ton téléphone ; le solde s\'actualise dès la confirmation.';
+      'Confirmez le paiement sur votre téléphone ; le solde s\'actualise dès la confirmation.';
 
   @override
   String get tutoringRechargeConfirmed =>
@@ -7473,7 +7470,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tutoringRechargeStillPending =>
-      'Recharge toujours en attente : tire vers le bas pour actualiser le solde plus tard.';
+      'Recharge toujours en attente : tirez vers le bas pour actualiser le solde plus tard.';
 
   @override
   String get tutoringRechargeTitle => 'Recharger le portefeuille';
@@ -7484,18 +7481,18 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get tutoringReportChooseReason => 'Choisis un motif.';
+  String get tutoringReportChooseReason => 'Choisir un motif.';
 
   @override
   String get tutoringReportDescribe =>
-      'Décris ce qui s\'est passé (10 caractères au moins).';
+      'Décrire ce qui s\'est passé (10 caractères au moins).';
 
   @override
   String get tutoringReportDescriptionOptional => 'Description (facultative)';
 
   @override
   String get tutoringReportIntro =>
-      'Ton signalement est transmis à l\'équipe WinPlus, qui l\'examine. Le tuteur ne voit pas qui l\'a signalé. Pour un remboursement, utilise plutôt « Contester la séance ».';
+      'Le signalement est transmis à l\'équipe WinPlus, qui l\'examine. Le tuteur ne voit pas qui l\'a signalé. Pour un remboursement, utiliser plutôt « Contester la séance ».';
 
   @override
   String tutoringReportName(Object name) {
@@ -7511,7 +7508,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tutoringReportProblemHint =>
-      'Décrivez le problème rencontré pendant cette séance.';
+      'Décrire le problème rencontré pendant cette séance.';
 
   @override
   String get tutoringReportProblemPlaceholder =>
@@ -7531,8 +7528,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get tutoringReportTutor => 'Signaler le tuteur';
 
   @override
-  String get tutoringReviewChooseRating =>
-      'Choisissez une note avant d\'envoyer.';
+  String get tutoringReviewChooseRating => 'Choisir une note avant d\'envoyer.';
 
   @override
   String get tutoringReviewCommentHint =>
@@ -7542,7 +7538,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get tutoringReviewSubmit => 'Envoyer mon avis';
 
   @override
-  String get tutoringReviewThanks => 'Merci pour votre avis !';
+  String get tutoringReviewThanks => 'Merci pour cet avis !';
 
   @override
   String get tutoringSearchEmpty => 'Aucun tuteur trouvé pour ces critères.';
@@ -7571,14 +7567,14 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tutoringShortfallInstitution =>
-      'Choisis Mobile Money ou recharge le portefeuille de l\'institution (écran Tutorat).';
+      'Choisissez Mobile Money ou rechargez le portefeuille de l\'institution (écran Tutorat).';
 
   @override
   String get tutoringShortfallMine => 'Choisis Mobile Money.';
 
   @override
   String get tutoringShortfallParent =>
-      'Choisis Mobile Money ou recharge ton portefeuille parent.';
+      'Choisissez Mobile Money ou rechargez votre portefeuille parent.';
 
   @override
   String get tutoringSlotGone => 'Ce créneau n\'est plus disponible.';
@@ -7666,7 +7662,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tutoringTopicsHelp =>
-      'Le tuteur les verra dans ta demande pour préparer la séance.';
+      'Le tuteur les verra dans la demande pour préparer la séance.';
 
   @override
   String get tutoringTopicsOptional => 'Sujets à travailler (facultatif)';
@@ -7711,7 +7707,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tutoringWaitingUssd =>
-      'Valide le paiement via le message USSD envoyé sur ton téléphone.';
+      'Valider le paiement via le message USSD envoyé sur le téléphone.';
 
   @override
   String tutoringWalletAvailable(Object amount) {
@@ -7738,7 +7734,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tutoringWalletOk =>
-      'Paiement immédiat et sans frais. Ta demande part tout de suite au tuteur.';
+      'Paiement immédiat et sans frais. La demande part tout de suite au tuteur.';
 
   @override
   String get tutoringWalletParent => 'Mon portefeuille parent';
@@ -7755,17 +7751,17 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get tutoringYourInstitution => 'ton institution';
+  String get tutoringYourInstitution => 'votre institution';
 
   @override
-  String get tutoringYourTutor => 'ton tuteur';
+  String get tutoringYourTutor => 'le tuteur';
 
   @override
   String get welcomeTagline => 'Ta réussite, notre mission';
 
   @override
   String get widgetKbOff =>
-      ' · désactivée. L\'activer cherche dans les cours et vos fichiers, mais consomme plus de tokens.';
+      ' · désactivée. L\'activer cherche dans les cours et les fichiers, mais consomme plus de tokens.';
 
   @override
   String get widgetKbOn =>
@@ -7782,7 +7778,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get widgetMemEmpty =>
-      'WinAI n\'a pas encore mémorisé d\'informations. Continue à interagir !';
+      'WinAI n\'a pas encore mémorisé d\'informations. Continuer à interagir !';
 
   @override
   String get widgetMemExam => 'Examen';
@@ -7806,7 +7802,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get widgetMemRefresh => 'Actualiser';
 
   @override
-  String get widgetMemSubtitle => 'Ce que WinAI a retenu de toi';
+  String get widgetMemSubtitle => 'Ce que WinAI a retenu';
 
   @override
   String widgetOfflineBanner(Object when) {
@@ -7850,11 +7846,11 @@ class AppLocalizationsFr extends AppLocalizations {
   String get studentPdfLoadError => 'Le document n\'a pas pu être chargé.';
 
   @override
-  String get studentPlayerTapToOpen => 'Appuyez pour ouvrir le document';
+  String get studentPlayerTapToOpen => 'Appuie pour ouvrir le document';
 
   @override
   String get studentPlayerOpenWithApp =>
-      'Touchez pour l\'ouvrir avec une application du téléphone.';
+      'Touche pour l\'ouvrir avec une application du téléphone.';
 
   @override
   String get mobileHomeForYou => 'Pour toi';
@@ -8184,7 +8180,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get notifChannelDesc =>
-      'Messages, corrections, rappels et alertes de votre compte.';
+      'Messages, corrections, rappels et alertes du compte.';
 
   @override
   String get notifServiceChannelName => 'Écoute des notifications';
@@ -8198,18 +8194,18 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get notifServiceText =>
-      'Vos notifications arrivent à l’instant. Désactivable dans votre profil.';
+      'Les notifications arrivent à l’instant. Désactivable dans le profil.';
 
   @override
   String get notifInstantTitle => 'Notifications instantanées';
 
   @override
   String get notifInstantHint =>
-      'Une notification discrète reste affichée pour recevoir vos alertes à l’instant, même application fermée. Désactivées, WinPlus vérifie environ toutes les 15 minutes.';
+      'Une notification discrète reste affichée pour recevoir les alertes à l’instant, même application fermée. Désactivées, WinPlus vérifie environ toutes les 15 minutes.';
 
   @override
   String get notifPermissionDenied =>
-      'Notifications refusées : autorisez-les dans les réglages du téléphone pour les recevoir.';
+      'Notifications refusées : les autoriser dans les réglages du téléphone pour les recevoir.';
 
   @override
   String get offlineStripOffline => 'Hors ligne';
@@ -8235,17 +8231,17 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get walletErrOffline =>
-      'Connexion impossible. Vérifie ton réseau et réessaie.';
+      'Connexion impossible. Vérifiez votre réseau et réessayez.';
 
   @override
-  String get walletErrSession => 'Ta session a expiré. Reconnecte-toi.';
+  String get walletErrSession => 'Votre session a expiré. Reconnectez-vous.';
 
   @override
   String get walletErrUnverified =>
-      'Action non autorisée : vérifie ton adresse e-mail pour effectuer un retrait.';
+      'Action non autorisée : vérifiez votre adresse e-mail pour effectuer un retrait.';
 
   @override
-  String get walletErrSummary => 'Impossible de charger ton solde.';
+  String get walletErrSummary => 'Impossible de charger votre solde.';
 
   @override
   String get walletErrHistory => 'Impossible de charger l\'historique.';
@@ -8329,7 +8325,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get walletEmpty =>
-      'Ton portefeuille est vide pour l\'instant. Tes ventes, tes séances de cours particulier, tes commissions et tes recharges l\'alimenteront.';
+      'Votre portefeuille est vide pour l\'instant. Vos ventes, vos séances de cours particulier, vos commissions et vos recharges l\'alimenteront.';
 
   @override
   String walletTutoringShare(String plan) {
@@ -8343,7 +8339,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String walletShareSplit(String teacher, String platform) {
-    return '$teacher % pour toi · $platform % WinPlus';
+    return '$teacher % pour vous · $platform % WinPlus';
   }
 
   @override
@@ -8405,13 +8401,13 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String walletWithdrawalFailedDetail(String reason, String amount) {
-    return '$reason Les $amount ont été remis sur ton solde.';
+    return '$reason Les $amount ont été remis sur votre solde.';
   }
 
   @override
   String walletWithdrawalProgressDetail(
       String amount, String operator, String phone) {
-    return '$amount vers $operator $phone. L\'opération se poursuit même si tu quittes l\'application ; tu seras notifié de son issue.';
+    return '$amount vers $operator $phone. L\'opération se poursuit même si vous quittez l\'application ; vous serez notifié de son issue.';
   }
 
   @override
@@ -8450,7 +8446,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get walletPhoneLabel => 'Numéro Mobile Money';
 
   @override
-  String get walletPhoneConfirm => 'Confirme le numéro';
+  String get walletPhoneConfirm => 'Confirmez le numéro';
 
   @override
   String get walletAmountLabel => 'Montant (FCFA)';
@@ -8477,7 +8473,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get walletReservedNotice =>
-      'Le montant est réservé sur ton solde dès la validation, puis envoyé automatiquement.';
+      'Le montant est réservé sur votre solde dès la validation, puis envoyé automatiquement.';
 
   @override
   String get walletEdit => 'Modifier';
@@ -8504,10 +8500,11 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get walletTimeout =>
-      'Délai dépassé. Si tu as confirmé sur ton téléphone, le montant apparaîtra dès confirmation.';
+      'Délai dépassé. Si vous avez confirmé sur votre téléphone, le montant apparaîtra dès confirmation.';
 
   @override
-  String get walletConfirmOnPhone => 'Confirme le paiement sur ton téléphone…';
+  String get walletConfirmOnPhone =>
+      'Confirmez le paiement sur votre téléphone…';
 
   @override
   String get walletRechargeDone => 'Recharge confirmée';
@@ -8611,24 +8608,24 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get biometricReason => 'Déverrouillez WinPlus';
+  String get biometricReason => 'Déverrouiller WinPlus';
 
   @override
   String get biometricLockedTitle => 'WinPlus est verrouillé';
 
   @override
   String get biometricLockedHint =>
-      'Utilisez votre empreinte pour ouvrir votre espace.';
+      'Utiliser l\'empreinte pour ouvrir l\'espace.';
 
   @override
   String get biometricUnlock => 'Déverrouiller';
 
   @override
-  String get biometricOfferTitle => 'Déverrouiller avec votre empreinte ?';
+  String get biometricOfferTitle => 'Déverrouiller avec l\'empreinte ?';
 
   @override
   String get biometricOfferBody =>
-      'Vous ouvrirez WinPlus avec votre empreinte, sans code de vérification par e-mail. Modifiable plus tard depuis votre avatar.';
+      'WinPlus s\'ouvrira avec l\'empreinte, sans code de vérification par e-mail. Modifiable plus tard depuis l\'avatar.';
 
   @override
   String get biometricOfferYes => 'Activer';
@@ -8661,7 +8658,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get studentReportsNoData =>
-      'Aucun quiz terminé sur cette période. Vos résultats apparaîtront ici dès votre premier quiz.';
+      'Aucun quiz terminé sur cette période. Tes résultats apparaîtront ici dès ton premier quiz.';
 
   @override
   String get studentReportsLoadError => 'Le rapport n’a pas pu être chargé.';
@@ -8796,7 +8793,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get visioPreparing => 'Préparation de la salle…';
 
   @override
-  String get visioHost => 'Tu animes';
+  String get visioHost => 'Vous animez';
 
   @override
   String get visioJoin => 'Rejoindre la visio';
@@ -8809,7 +8806,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get visioOpenedHint =>
-      'La salle s’est ouverte. Reviens ici pour la rouvrir si tu l’as quittée.';
+      'La salle s’est ouverte. Revenir ici pour la rouvrir après l’avoir quittée.';
 
   @override
   String visioNotYet(String date, String time) {
@@ -8818,18 +8815,18 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get visioNotYetHint =>
-      'Garde cet écran ouvert : tu entreras automatiquement à l’ouverture.';
+      'Garder cet écran ouvert : l’entrée se fera automatiquement à l’ouverture.';
 
   @override
   String get visioEnded => 'Cette séance est terminée.';
 
   @override
   String get visioNotFound =>
-      'Cette séance n’existe pas ou tu n’y es pas inscrit.';
+      'Cette séance n’existe pas ou aucune inscription n’y correspond.';
 
   @override
   String get visioUnavailable =>
-      'La visio est momentanément indisponible. Réessaie dans quelques instants.';
+      'La visio est momentanément indisponible. Réessayer dans quelques instants.';
 
   @override
   String get visioError => 'Impossible d’ouvrir la salle pour le moment.';
@@ -8877,7 +8874,8 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get liveChildReadOnly => 'Seul ton enfant peut entrer dans la salle.';
+  String get liveChildReadOnly =>
+      'Seul votre enfant peut entrer dans la salle.';
 
   @override
   String get livePendingPayment => 'Paiement en attente';
@@ -8947,14 +8945,14 @@ class AppLocalizationsFr extends AppLocalizations {
   String get liveSessionPhone => 'Numéro Mobile Money';
 
   @override
-  String get liveSessionPhoneRequired => 'Indique ton numéro Mobile Money.';
+  String get liveSessionPhoneRequired => 'Indiquer le numéro Mobile Money.';
 
   @override
-  String get liveSessionEnrolled => 'Tu es inscrit à cette séance.';
+  String get liveSessionEnrolled => 'Inscription confirmée à cette séance.';
 
   @override
   String get liveSessionPendingPayment =>
-      'Paiement en attente : valide-le sur ton téléphone, puis vérifie.';
+      'Paiement en attente : le valider sur le téléphone, puis vérifier.';
 
   @override
   String get liveSessionCheckPayment => 'Vérifier le paiement';
@@ -8981,7 +8979,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get dlLessonsEmpty =>
-      'Aucune leçon enregistrée. Dans une formation, enregistre une leçon pour la regarder sans réseau.';
+      'Aucune leçon enregistrée. Dans une formation, enregistrer une leçon pour la regarder sans réseau.';
 
   @override
   String dlSavedOn(String date) {
@@ -9068,7 +9066,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get winaiStudioHint =>
-      'Choisis un outil : WinAI prépare le travail, tu n\'as plus qu\'à le relire.';
+      'Choisir un outil : WinAI prépare le travail, il ne reste plus qu\'à le relire.';
 
   @override
   String get winaiStudioGenerate => 'Générer';
@@ -9225,7 +9223,7 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get msgYou => 'Toi';
+  String get msgYou => 'Moi';
 
   @override
   String get msgCancelReply => 'Annuler la réponse';
@@ -9247,7 +9245,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get dpEmptyHint =>
-      'WinPlus signale ici les élèves de tes formations qui décrochent.';
+      'WinPlus signale ici les élèves de vos formations qui décrochent.';
 
   @override
   String dpDetected(String date) {
@@ -9300,7 +9298,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String dpSentPartial(int sent, int total) {
-    return '$sent sur $total élèves relancés ; réessaie pour les autres.';
+    return '$sent sur $total élèves relancés ; réessayez pour les autres.';
   }
 
   @override
@@ -9310,7 +9308,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get barometerTitle => 'Baromètre';
 
   @override
-  String get barometerStateHigh => 'Des signaux méritent ton attention';
+  String get barometerStateHigh => 'Des signaux méritent votre attention';
 
   @override
   String get barometerStateMedium => 'Quelques changements à surveiller';
@@ -9380,7 +9378,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String crDoneNamed(String name) {
-    return 'Fiche prête : $name est prévenu(e) qu’elle vient de toi.';
+    return 'Fiche prête : $name est prévenu(e) qu’elle vient de vous.';
   }
 
   @override
@@ -9423,7 +9421,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get helpA4 =>
-      'Sur l’écran de connexion, touche « Mot de passe oublié », saisis ton e-mail et suis les instructions reçues.';
+      'Sur l’écran de connexion, toucher « Mot de passe oublié », saisir l’e-mail et suivre les instructions reçues.';
 
   @override
   String get helpQ5 => 'Puis-je consulter les annales hors connexion ?';
@@ -9437,7 +9435,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get helpA6 =>
-      'Dans l’application, le paiement se fait par Mobile Money (MTN, Orange) ou avec le solde de ton portefeuille WinPlus.';
+      'Dans l’application, le paiement se fait par Mobile Money (MTN, Orange) ou avec le solde du portefeuille WinPlus.';
 
   @override
   String get helpQ7 => 'Puis-je annuler mon abonnement ?';
@@ -9451,14 +9449,14 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get helpA8 =>
-      'Une connexion de 1 à 2 Mbit/s suffit pour naviguer ; les vidéos en HD demandent au moins 5 Mbit/s. Sans réseau, les écrans déjà ouverts restent consultables et tes actions partent au retour de la connexion.';
+      'Une connexion de 1 à 2 Mbit/s suffit pour naviguer ; les vidéos en HD demandent au moins 5 Mbit/s. Sans réseau, les écrans déjà ouverts restent consultables et les actions partent au retour de la connexion.';
 
   @override
   String get helpWrite => 'Nous écrire';
 
   @override
   String get helpWriteText =>
-      'Une question, un problème de paiement ou de compte ? Écris au support : ton application e-mail s’ouvre avec le message prêt à compléter.';
+      'Une question, un problème de paiement ou de compte ? Écrire au support : l’application e-mail s’ouvre avec le message prêt à compléter.';
 
   @override
   String get helpWriteButton => 'Écrire au support';
@@ -9473,7 +9471,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get helpNoMailApp =>
-      'Aucune application e-mail : écris à support@winplus.cm.';
+      'Aucune application e-mail : écrire à support@winplus.cm.';
 
   @override
   String get helpCopy => 'Copier l’adresse';
@@ -9483,19 +9481,19 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get helpFormIntro =>
-      'Une question, un problème de paiement ou de compte ? Écris-nous, l’équipe WinPlus te répond par e-mail.';
+      'Une question, un problème de paiement ou de compte ? Écrire à l’équipe WinPlus : la réponse arrive par e-mail.';
 
   @override
-  String get helpFormName => 'Ton nom';
+  String get helpFormName => 'Nom';
 
   @override
-  String get helpFormEmail => 'Ton e-mail';
+  String get helpFormEmail => 'E-mail';
 
   @override
   String get helpFormSubject => 'Sujet';
 
   @override
-  String get helpFormMessage => 'Ton message';
+  String get helpFormMessage => 'Message';
 
   @override
   String get helpErrName => '2 caractères au moins.';
@@ -9513,15 +9511,15 @@ class AppLocalizationsFr extends AppLocalizations {
   String get helpSentTitle => 'Message envoyé';
 
   @override
-  String get helpSentText => 'L’équipe WinPlus te répondra par e-mail.';
+  String get helpSentText => 'L’équipe WinPlus répondra par e-mail.';
 
   @override
   String get helpTooMany =>
-      'Trop d’envois, réessaie dans une heure ou écris à support@winplus.cm.';
+      'Trop d’envois, réessayer dans une heure ou écrire à support@winplus.cm.';
 
   @override
   String get helpUnavailable =>
-      'L’envoi depuis l’application n’est pas encore disponible : écris-nous par e-mail ci-dessous.';
+      'L’envoi depuis l’application n’est pas encore disponible : nous écrire par e-mail ci-dessous.';
 
   @override
   String get helpSendError => 'Le message n’a pas pu être envoyé.';
@@ -9531,7 +9529,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get winaiSourcesHint =>
-      'Coche ce sur quoi WinAI doit s\'appuyer : la discussion et les outils de l\'atelier s\'en tiendront à ces sources.';
+      'Cocher ce sur quoi WinAI doit s\'appuyer : la discussion et les outils de l\'atelier s\'en tiendront à ces sources.';
 
   @override
   String get winaiSourcesMine => 'Mes fichiers';
@@ -9638,7 +9636,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get annFeedEmptyHint =>
-      'Les annonces de ton établissement apparaîtront ici.';
+      'Les annonces de l\'établissement apparaîtront ici.';
 
   @override
   String get annTypeInfo => 'Info';
@@ -9751,7 +9749,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get certVerifyIntro =>
-      'Saisis le code imprimé sur le certificat WinPlus pour vérifier qu’il est authentique.';
+      'Saisir le code imprimé sur le certificat WinPlus pour vérifier qu’il est authentique.';
 
   @override
   String get certVerifyCode => 'Code du certificat';
@@ -9760,7 +9758,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get certVerifyButton => 'Vérifier';
 
   @override
-  String get certVerifyCodeRequired => 'Saisis le code du certificat.';
+  String get certVerifyCodeRequired => 'Saisir le code du certificat.';
 
   @override
   String get certVerifyAuthentic => 'Certificat authentique';
@@ -9781,7 +9779,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get studentDetailNotesEmpty =>
-      'Aucune note pour cette épreuve. Elles te suivent sur le site et sur tes autres appareils.';
+      'Aucune note pour cette épreuve. Elles sont aussi disponibles sur le site et sur les autres appareils.';
 
   @override
   String get studentDetailNotePending => 'En attente d’envoi';
@@ -9843,10 +9841,10 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get affIntro =>
-      'Partage ton lien : quand une personne venue par toi achète sur WinPlus, tu touches une commission.';
+      'Partagez votre lien : quand une personne venue par vous achète sur WinPlus, vous touchez une commission.';
 
   @override
-  String get affLinkTitle => 'Ton lien de parrainage';
+  String get affLinkTitle => 'Votre lien de parrainage';
 
   @override
   String affRate(String rate) {
@@ -9890,7 +9888,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get affEmpty =>
-      'Aucune commission pour l’instant. Partage ton lien à tes élèves et à leurs parents : chaque achat fait après un clic sur ton lien te rapporte une commission.';
+      'Aucune commission pour l’instant. Partagez votre lien à vos élèves et à leurs parents : chaque achat fait après un clic sur votre lien vous rapporte une commission.';
 
   @override
   String affOrder(String number, String amount) {
@@ -9929,7 +9927,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get winaiCreationsSheets => 'Mes fiches';
 
   @override
-  String get winaiStudioBusy => 'WinAI prépare ton travail…';
+  String get winaiStudioBusy => 'WinAI prépare le travail…';
 
   @override
   String get winaiStudioSeePlans => 'Voir les offres';
@@ -9951,7 +9949,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get winaiListenUnavailable =>
-      'La voix du téléphone n\'est pas disponible. Vérifie la synthèse vocale dans les réglages de l\'appareil.';
+      'La voix du téléphone n\'est pas disponible. Vérifier la synthèse vocale dans les réglages de l\'appareil.';
 
   @override
   String get regCmpTitle => 'Comparaison régionale';
@@ -10081,7 +10079,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get winaiCardsAnswer => 'Réponse';
 
   @override
-  String get winaiCardsFlip => 'Appuie pour retourner la fiche';
+  String get winaiCardsFlip => 'Appuyer pour retourner la fiche';
 
   @override
   String get winaiCardsPrevious => 'Précédente';
@@ -10751,7 +10749,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get bullMineEmptyText =>
-      'Les bulletins partagés par ton établissement arrivent ici, avec une notification.';
+      'Les bulletins partagés par l\'établissement arrivent ici, avec une notification.';
 
   @override
   String bullSharedOn(String date) {
@@ -11660,7 +11658,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String notifSummaryTitle(int count) {
-    return 'WinAI résume vos $count notifications non lues';
+    return 'WinAI résume les $count notifications non lues';
   }
 
   @override
@@ -11782,15 +11780,15 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get authErrTooManyAttempts =>
-      'Trop d\'essais de connexion. Patiente quelques minutes avant de réessayer.';
+      'Trop d\'essais de connexion. Attendre quelques minutes avant de réessayer.';
 
   @override
   String get authErrEmailNotVerified =>
-      'Ton adresse e-mail n\'est pas encore vérifiée. Ouvre le lien reçu par e-mail.';
+      'L\'adresse e-mail n\'est pas encore vérifiée. Ouvrir le lien reçu par e-mail.';
 
   @override
   String get authErrAccountInactive =>
-      'Ce compte est désactivé. Contacte le support WinPlus.';
+      'Ce compte est désactivé. Contacter le support WinPlus.';
 
   @override
   String get integrationRibbon => 'INTÉGRATION';
