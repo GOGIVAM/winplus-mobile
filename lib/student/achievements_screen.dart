@@ -184,10 +184,17 @@ class _BadgeCard extends StatelessWidget {
           if (badge.unlocked && badge.unlockedAt != null)
             Padding(
               padding: const EdgeInsets.only(top: 4),
-              child: Text(badge.unlockedAt!, style: WinType.labelS(s.onFaint)),
+              child: Text(_unlockedOn(badge.unlockedAt!), style: WinType.labelS(s.onFaint)),
             ),
         ],
       ),
     );
   }
+}
+
+/// Date de déblocage en toutes lettres (« 18 octobre 2026 ») ; le serveur
+/// envoie une date ISO, affichée brute avant.
+String _unlockedOn(String raw) {
+  final d = DateTime.tryParse(raw);
+  return d == null ? raw : WinFormat.date(d);
 }

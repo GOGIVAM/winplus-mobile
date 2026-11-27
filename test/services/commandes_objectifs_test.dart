@@ -305,6 +305,7 @@ void main() {
       });
       final s = await StudentService.instance.getStats();
       expect(s.averageScore, 14.0);
+      expect(s.averageGrade, WinFormat.grade20(14));
       expect(s.hoursSpent, 12.5);
       expect(s.quizCompleted, 9);
       expect(s.weeklyQuizCompleted, 2);
@@ -318,7 +319,13 @@ void main() {
       final s = await StudentService.instance.getStats();
       expect(s.averageScore, 0);
       expect(s.weeklyStudyHours, isEmpty);
+      expect(s.averageGrade, WinFormat.none);
       expect(s.weeklyStudyHoursTotal, 0);
+    });
+
+    test('quiz comptes mais aucun note (moyenne 0 du serveur) : pas de 0/20', () {
+      final s = ApiStudentStats.fromJson({'averageScore': 0, 'quizCompleted': 5});
+      expect(s.averageGrade, WinFormat.none);
     });
 
     test('getContinueLearning arrondit la progression et applique les valeurs par defaut', () async {

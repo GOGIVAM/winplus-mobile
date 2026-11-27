@@ -65,6 +65,8 @@ void main() {
     // Sans quiz, le serveur omet la moyenne : pas de « 0/20 » invente.
     expect(ApiInstitutionAnalytics.fromJson(<String, dynamic>{}).averageScore, isNull);
     expect(ApiInstitutionAnalytics.fromJson({'averageScore': 62.5}).averageScore, 62.5);
+    expect(ApiInstitutionAnalytics.fromJson({'averageScore': 0, 'quizzesThisMonth': 0}).averageScore, isNull);
+    expect(ApiInstitutionAnalytics.fromJson({'averageScore': 70, 'quizzesThisMonth': 3}).averageScore, 70);
     });
 
     test('ApiActionPlan : contexte, semaine et actions vides retirees', () {

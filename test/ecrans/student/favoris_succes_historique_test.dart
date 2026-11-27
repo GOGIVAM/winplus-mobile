@@ -109,7 +109,7 @@ void main() {
 
     testWidgets('chargement puis serie, compteur de badges et badges debloques / verrouilles', (tester) async {
       repondre(faux, badges: [
-        {'code': 'first_quiz_passed', 'title': 'Premier quiz', 'description': 'Reussis un quiz', 'unlocked': true, 'unlockedAt': '5 janvier'},
+        {'code': 'first_quiz_passed', 'title': 'Premier quiz', 'description': 'Reussis un quiz', 'unlocked': true, 'unlockedAt': '2026-01-05T10:00:00Z'},
         {'code': 'streak_30', 'title': 'Serie de 30', 'description': 'Reviens 30 jours', 'unlocked': false},
       ]);
       telephone(tester);
@@ -124,7 +124,9 @@ void main() {
       expect(find.text(l.studentAchUnlocked), findsOneWidget);
       expect(find.text(l.studentAchLocked), findsOneWidget);
       expect(find.byIcon(PhosphorIconsFill.lock), findsOneWidget);
-      expect(find.text('5 janvier'), findsOneWidget);
+      // Date ISO du serveur affichee en toutes lettres, jamais brute.
+    expect(find.text(WinFormat.date(DateTime.utc(2026, 1, 5, 10))), findsOneWidget);
+    expect(find.textContaining('2026-01-05T'), findsNothing);
     });
 
     testWidgets('aucun badge : 0 / 0 et pas d\'avertissement', (tester) async {

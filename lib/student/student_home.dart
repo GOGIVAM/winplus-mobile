@@ -212,7 +212,7 @@ MobileForYou(slides: [
             label: l.studentReportsAvgScore,
             // Lot 1 : la moyenne des quiz est une note sur 20 ; sans quiz, « – ».
             value: st != null ? st.averageGrade : '—',
-            caption: l.mobileHomeThisWeek,
+            // Moyenne de tous les quiz notés, pas de la semaine.
             tone: MobileStatTone.teal,
             onTap: () => _push(const StudentReportsScreen())),
         MobileStat(

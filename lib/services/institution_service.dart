@@ -218,7 +218,10 @@ class ApiInstitutionAnalytics {
       ApiInstitutionAnalytics(
         totalStudents: j['totalStudents'] as int? ?? 0,
         activeStudents: j['activeStudents'] as int? ?? 0,
-        averageScore: (j['averageScore'] as num?)?.toDouble(),
+        // L'ancienne route renvoie 0 sans quiz sur le mois : pas de moyenne.
+        averageScore: (j['quizzesThisMonth'] as num?) == 0
+            ? null
+            : (j['averageScore'] as num?)?.toDouble(),
         downloadsThisMonth: j['downloadsThisMonth'] as int? ?? 0,
         quizzesThisMonth: j['quizzesThisMonth'] as int? ?? 0,
         activityByDay: (j['activityByDay'] as Map<String, dynamic>? ?? {})
