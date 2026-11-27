@@ -1650,7 +1650,7 @@ abstract class AppLocalizations {
   /// No description provided for @instDirAvg.
   ///
   /// In fr, this message translates to:
-  /// **'Moy.'**
+  /// **'Moyenne'**
   String get instDirAvg;
 
   /// No description provided for @instDirCount.
@@ -21519,6 +21519,12 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'La séance a lieu chez le répétiteur, dans le quartier indiqué sur son profil.'**
   String get tutoringLocationTutorHome;
+
+  /// No description provided for @signOutBodyFormal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous serez redirigé vers l\'écran de connexion.'**
+  String get signOutBodyFormal;
 }
 
 class _AppLocalizationsDelegate

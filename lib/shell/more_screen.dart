@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-import '../auth/login_screen.dart';
 import '../l10n/l10n.dart';
-import '../services/auth_service.dart';
 import '../services/user_service.dart';
 import '../theme/win_colors.dart';
 import '../theme/win_motion.dart';
@@ -12,6 +10,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../shared/help_screen.dart';
 import 'settings_screen.dart';
+import 'sign_out.dart';
 
 /// Entrée de l'onglet « Plus » : une fonction de l'espace qui n'a pas sa
 /// place dans la barre du bas.
@@ -92,12 +91,7 @@ class _MoreScreenState extends State<MoreScreen> {
   void _open(WidgetBuilder page) =>
       Navigator.push(context, WinPageRoute(builder: page));
 
-  Future<void> _logout() async {
-    await AuthService.instance.signOut();
-    if (!mounted) return;
-    Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-        WinPageRoute(builder: (_) => const LoginScreen()), (r) => false);
-  }
+  Future<void> _logout() => confirmSignOut(context);
 
   /// Entrées rangées par groupe d'usage, dans l'ordre demandé.
   List<({String? title, List<MoreEntry> entries})> _grouped() {

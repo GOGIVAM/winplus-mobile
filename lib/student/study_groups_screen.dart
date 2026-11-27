@@ -117,7 +117,8 @@ class _StudyGroupsScreenState extends State<StudyGroupsScreen> {
           icon: Icon(PhosphorIconsRegular.arrowLeft, color: s.onStrong),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(context.l10n.studentLinksStudyGroups),
+        // Même nom que l'entrée du profil qui ouvre l'écran.
+        title: Text(context.l10n.studentHubGroups),
       ),
       body: groups == null
           ? const WinLoading()

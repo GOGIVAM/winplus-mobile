@@ -30,6 +30,7 @@ import '../shared/winai/winai_screen.dart';
 import 'dart:async';
 import '../services/tutor_profile_service.dart';
 import 'teacher_students_view.dart';
+import '../l10n/class_levels.dart';
 
 BadgeColor _statusColor(String s) => switch (s) {
       'Publié' => BadgeColor.success,
@@ -555,9 +556,12 @@ class _TeacherStudentsTabState extends State<TeacherStudentsTab> {
 
   void _showCreateClassSheet() {
     final nameCtrl = TextEditingController();
-    final levelCtrl = TextEditingController();
-    final yearCtrl = TextEditingController();
+    // Année scolaire en cours (de septembre à août), modifiable.
+    final now = DateTime.now();
+    final startYear = now.month >= 9 ? now.year : now.year - 1;
+    final yearCtrl = TextEditingController(text: '$startYear-${startYear + 1}');
     bool busy = false;
+    String? level;
     showModalBottomSheet(
       showDragHandle: false,
       context: context,
@@ -567,7 +571,7 @@ class _TeacherStudentsTabState extends State<TeacherStudentsTab> {
         final s = WinTheme.of(ctx);
         return StatefulBuilder(builder: (ctx, setSheetState) {
           Future<void> submit() async {
-            if (nameCtrl.text.trim().length < 2 || levelCtrl.text.trim().isEmpty || yearCtrl.text.trim().isEmpty) {
+            if (nameCtrl.text.trim().length < 2 || level == null || yearCtrl.text.trim().isEmpty) {
               ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(content: Text(ctx.l10n.teacherClassesRequired)));
               return;
             }
@@ -575,7 +579,7 @@ class _TeacherStudentsTabState extends State<TeacherStudentsTab> {
             try {
               await TeacherService.instance.createClass(
                 name: nameCtrl.text.trim(),
-                level: levelCtrl.text.trim(),
+                level: level!,
                 academicYear: yearCtrl.text.trim(),
               );
               if (ctx.mounted) Navigator.pop(ctx);
@@ -613,7 +617,16 @@ class _TeacherStudentsTabState extends State<TeacherStudentsTab> {
                     const SizedBox(height: 16),
                     WinTextField(label: ctx.l10n.teacherClassesName, hint: ctx.l10n.teacherClassesNameHint, icon: PhosphorIconsRegular.chalkboardTeacher, controller: nameCtrl),
                     const SizedBox(height: 12),
-                    WinTextField(label: ctx.l10n.commonLevel, hint: ctx.l10n.teacherClassesLevelHint, icon: PhosphorIconsRegular.graduationCap, controller: levelCtrl),
+                    // Niveau choisi dans la liste (un champ libre donnait
+                    // « Tle », « terminale C »… que rien ne reconnaissait).
+                    Text(ctx.l10n.commonLevel, style: WinType.labelM(s.onStrong)),
+                    const SizedBox(height: 8),
+                    Wrap(spacing: 8, runSpacing: 8, children: [
+                      for (final lv in _classLevels)
+                        WinChip(ClassLevels.label(lv),
+                            active: level == lv,
+                            onTap: () => setSheetState(() => level = lv)),
+                    ]),
                     const SizedBox(height: 12),
                     WinTextField(label: ctx.l10n.teacherClassesYear, hint: ctx.l10n.teacherClassesYearHint, icon: PhosphorIconsRegular.calendarBlank, controller: yearCtrl),
                     const SizedBox(height: 20),
@@ -998,3 +1011,10 @@ class TeacherWinAITab extends StatelessWidget {
   Widget build(BuildContext context) =>
       WinAIScreen(role: WinRole.teacher, initialMessage: initialMessage);
 }
+
+/// Niveaux proposés à la création d'une classe (valeurs enregistrées telles
+/// quelles par le serveur ; libellé affiché par ClassLevels).
+const _classLevels = [
+  '6ème', '5ème', '4ème', '3ème', 'Seconde', 'Première', 'Terminale',
+  'BTS', 'Prépa', 'Licence', 'Master',
+];

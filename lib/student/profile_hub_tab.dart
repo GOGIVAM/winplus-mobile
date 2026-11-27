@@ -3,8 +3,6 @@ import '../l10n/l10n.dart';
 import '../widgets/language_selector.dart';
 import '../theme/win_motion.dart';
 import '../app_state.dart';
-import '../auth/login_screen.dart';
-import '../services/auth_service.dart';
 import '../services/user_service.dart';
 import '../services/achievement_service.dart';
 import '../services/certificate_service.dart';
@@ -32,6 +30,7 @@ import 'tutors/tutor_policy_widgets.dart';
 import '../shared/forum/forum_screen.dart';
 import 'student_tabs.dart' show StudentWinAITab;
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../shell/sign_out.dart';
 
 class ProfileHubTab extends StatefulWidget {
   const ProfileHubTab({super.key});
@@ -90,32 +89,9 @@ class _ProfileHubTabState extends State<ProfileHubTab> {
   /// les lectures faites dans l'écran Notifications sans recharger ce profil.
   Future<void> _loadNotifCount() => UserService.instance.refreshUnreadCount();
 
-  Future<void> _signOut() async {
-    final ok = await showDialog<bool>(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text(context.l10n.studentHubLogoutTitle),
-        content: Text(context.l10n.studentHubLogoutBody),
-        actions: [
-          TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: Text(context.l10n.commonCancel)),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(context.l10n.studentHubLogoutConfirm,
-                style: const TextStyle(color: Colors.red)),
-          ),
-        ],
-      ),
-    );
-    if (ok != true || !mounted) return;
-    await AuthService.instance.signOut();
-    if (!mounted) return;
-    Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-      WinPageRoute(builder: (_) => const LoginScreen()),
-      (r) => false,
-    );
-  }
+  // Même confirmation pour tous les comptes ; l'ancien dialogue se fermait
+  // par le contexte de l'écran.
+  Future<void> _signOut() => confirmSignOut(context);
 
   /// Au retour, les compteurs sont relus (badge gagné, groupe rejoint...).
   Future<void> _go(Widget screen) async {
@@ -399,10 +375,9 @@ class _SectionLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = WinTheme.of(context);
-    return Text(label.toUpperCase(),
-        style:
-            WinType.manrope(size: 11, weight: FontWeight.w700, color: s.onFaint)
-                .copyWith(letterSpacing: 1.1));
+    // Même titre de groupe que l'écran « Plus » : plus de capitales
+    // espacées, que la charte n'emploie nulle part ailleurs.
+    return Text(label, style: WinType.titleL(s.onStrong));
   }
 }
 

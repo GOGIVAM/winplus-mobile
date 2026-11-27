@@ -485,7 +485,7 @@ class _StudentSpaceTabState extends State<StudentSpaceTab> {
                     onTap: () => _open(const MyTutorBookingsScreen())),
                 MoreLine(
                     icon: PhosphorIconsRegular.usersThree,
-                    label: context.l10n.studentLinksStudyGroups,
+                    label: context.l10n.studentHubGroups,
                     onTap: () => _open(const StudyGroupsScreen())),
               ]),
               const SizedBox(height: 18),

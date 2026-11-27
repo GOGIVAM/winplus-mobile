@@ -205,7 +205,7 @@ void main() {
         l.spaceGroupSupport,
         l.studentTabsFindTutor,
         l.studentTabsMyBookings,
-        l.studentLinksStudyGroups,
+        l.studentHubGroups,
         l.spaceGroupProgress,
         l.studentReportsTitle,
         l.studentHomeBadges,

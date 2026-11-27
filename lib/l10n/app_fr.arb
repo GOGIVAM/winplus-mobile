@@ -382,7 +382,7 @@
   "instDirActive": "Actifs",
   "instDirAddError": "Impossible d'ajouter cet élève",
   "instDirAddSuccess": "Élève ajouté avec succès",
-  "instDirAvg": "Moy.",
+  "instDirAvg": "Moyenne",
   "instDirCount": "{count} {count, plural, =1{élève} other{élèves}}",
   "@instDirCount": {
     "placeholders": {
@@ -6629,5 +6629,6 @@
   "tutoringLocationNoteLabel": "Précision (facultatif)",
   "tutoringLocationNoteHint": "Étage, portail, personne à demander",
   "tutoringLocationRequired": "Le lieu de la séance est à indiquer : quartier, rue et un repère.",
-  "tutoringLocationTutorHome": "La séance a lieu chez le répétiteur, dans le quartier indiqué sur son profil."
+  "tutoringLocationTutorHome": "La séance a lieu chez le répétiteur, dans le quartier indiqué sur son profil.",
+  "signOutBodyFormal": "Vous serez redirigé vers l'écran de connexion."
 }

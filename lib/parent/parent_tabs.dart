@@ -8,9 +8,7 @@ import '../widgets/language_selector.dart';
 import '../widgets/account_settings_switches.dart';
 import '../theme/win_motion.dart';
 import '../app_state.dart';
-import '../auth/login_screen.dart';
 import '../data/models.dart';
-import '../services/auth_service.dart';
 import '../services/connectivity_service.dart';
 import '../services/local_cache_service.dart';
 import '../services/parent_service.dart';
@@ -39,6 +37,7 @@ import '../student/content_detail_screen.dart';
 import '../student/student_home.dart' show ContentCard;
 import '../widgets/win_screen.dart';
 import '../shared/winai/winai_screen.dart';
+import '../shell/sign_out.dart';
 
 /// ===================== ACCUEIL PARENT =====================
 
@@ -1217,14 +1216,7 @@ class _ParentProfileTabState extends State<ParentProfileTab> {
             onTap: () => LegalScreen.showCgu(context)),
         const SizedBox(height: 16),
         TextButton(
-          onPressed: () async {
-            await AuthService.instance.signOut();
-            if (!context.mounted) return;
-            Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-              WinPageRoute(builder: (_) => const LoginScreen()),
-              (r) => false,
-            );
-          },
+          onPressed: () => confirmSignOut(context),
           child: Text(context.l10n.commonLogout,
               style: WinType.manrope(
                   size: 14, weight: FontWeight.w600, color: WinColors.error)),

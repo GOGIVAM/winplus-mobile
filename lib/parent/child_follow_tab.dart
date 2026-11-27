@@ -197,7 +197,10 @@ class _ChildrenComparisonCardState extends State<ChildrenComparisonCard> {
     final l = context.l10n;
     final d = _data;
     final header = Row(children: [
-      Expanded(child: Text(l.cmpChildrenTitle, style: WinType.titleM(s.onStrong))),
+      // Titre de section, au même niveau que « Accès rapide » sur l'accueil.
+      Expanded(
+          child: Text(l.cmpChildrenTitle,
+              style: WinType.archivo(size: 19, color: s.onStrong))),
       if (_enabled!)
         IconButton(
             tooltip: l.cmpChildrenHide,

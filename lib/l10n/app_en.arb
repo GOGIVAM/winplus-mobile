@@ -258,7 +258,7 @@
   "instDirActive": "Active",
   "instDirAddError": "Could not add this student",
   "instDirAddSuccess": "Student added successfully",
-  "instDirAvg": "Avg.",
+  "instDirAvg": "Average",
   "instDirCount": "{count} {count, plural, =1{student} other{students}}",
   "instDirEmailRequired": "Email required",
   "instDirGroup": "Group",
@@ -3753,5 +3753,6 @@
   "tutoringLocationNoteLabel": "Extra detail (optional)",
   "tutoringLocationNoteHint": "Floor, gate, who to ask for",
   "tutoringLocationRequired": "The place of the session is needed: neighbourhood, street and a landmark.",
-  "tutoringLocationTutorHome": "The session takes place at the tutor's home, in the neighbourhood shown on their profile."
+  "tutoringLocationTutorHome": "The session takes place at the tutor's home, in the neighbourhood shown on their profile.",
+  "signOutBodyFormal": "You will be taken back to the sign-in screen."
 }

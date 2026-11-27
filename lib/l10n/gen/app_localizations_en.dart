@@ -853,7 +853,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get instDirAddSuccess => 'Student added successfully';
 
   @override
-  String get instDirAvg => 'Avg.';
+  String get instDirAvg => 'Average';
 
   @override
   String instDirCount(int count) {
@@ -12764,4 +12764,8 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get tutoringLocationTutorHome =>
       'The session takes place at the tutor\'s home, in the neighbourhood shown on their profile.';
+
+  @override
+  String get signOutBodyFormal =>
+      'You will be taken back to the sign-in screen.';
 }

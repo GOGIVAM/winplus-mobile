@@ -1052,9 +1052,10 @@ class _StatCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: border),
       ),
+      // Chiffre juste sous le libellé : réparti sur la hauteur, il descendait
+      // sur une carte sans sous-titre et ne s'alignait plus avec ses voisines.
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(stat.label,
                 maxLines: compact ? 1 : 2,
