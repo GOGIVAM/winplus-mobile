@@ -1296,8 +1296,14 @@ class AppLocalizationsFr extends AppLocalizations {
   String get instRiskEmpty => 'Aucun élève dans cette catégorie.';
 
   @override
-  String instRiskInactiveFor(Object n) {
-    return 'Inactif depuis ${n}j';
+  String instRiskInactiveFor(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Inactif depuis $n jours',
+      one: 'Inactif depuis 1 jour',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -1305,7 +1311,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String instRiskScore(Object n) {
-    return 'Score : $n';
+    return 'Moyenne : $n';
   }
 
   @override
@@ -12556,4 +12562,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get reviewsReplySent => 'Réponse publiée.';
+
+  @override
+  String get instRiskNoQuiz => 'Pas encore de quiz';
 }

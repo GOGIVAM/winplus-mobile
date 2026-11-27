@@ -19,6 +19,8 @@ class _StudentDirectoryScreenState extends State<StudentDirectoryScreen> {
   int? _institutionId;
   List<ApiInstitutionStudent> _students = [];
   ApiInstitutionKpis? _kpis;
+  // Nombre de classes de l'établissement, donné avec la liste des élèves.
+  int? _groupCount;
   bool _loading = true;
   bool _addLoading = false;
   String _query = '';
@@ -62,7 +64,7 @@ class _StudentDirectoryScreenState extends State<StudentDirectoryScreen> {
     try {
       results = await Future.wait([
         InstitutionService.instance
-            .getStudentDirectory(id, q: _query.isEmpty ? null : _query),
+            .getStudentDirectoryPage(id, q: _query.isEmpty ? null : _query),
         InstitutionService.instance.getInstitutionKpis(id),
       ]);
     } catch (_) {
@@ -73,7 +75,9 @@ class _StudentDirectoryScreenState extends State<StudentDirectoryScreen> {
     if (mounted) {
       setState(() {
         _institutionId = id;
-        _students = results[0] as List<ApiInstitutionStudent>;
+        final page = results[0] as ApiStudentDirectoryPage;
+        _students = page.students;
+        _groupCount = page.groupCount ?? _groupCount;
         _kpis = results[1] as ApiInstitutionKpis;
         _loading = false;
       });
@@ -173,7 +177,9 @@ class _StudentDirectoryScreenState extends State<StudentDirectoryScreen> {
                         const SizedBox(width: 8),
                         _KpiCard(
                             label: context.l10n.shellTabGroups,
-                            value: '${_kpis!.groupCount}',
+                            value: _groupCount == null
+                                ? WinFormat.none
+                                : '$_groupCount',
                             s: s),
                       ]),
                     ),

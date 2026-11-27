@@ -12,10 +12,15 @@ void main() {
 
   setUp(() => faux = preparerEnvironnement());
 
-  void routes({List<Map<String, dynamic>> eleves = const [], Map<String, dynamic> kpis = const {}}) {
+  void routes({List<Map<String, dynamic>> eleves = const [], Map<String, dynamic> kpis = const {}, List<String> groupes = const []}) {
     faux.repond('GET', '/institution/me', {'data': {'id': 4, 'name': 'Lycee'}});
-    faux.repond('GET', '/institution/4/students', {'items': eleves});
-    faux.repond('GET', '/institution/4/kpis', kpis);
+    faux.repond('GET', '/institution/4/students', {
+      'success': true,
+      'data': eleves,
+      'total': eleves.length,
+      'filters': {'levels': <String>[], 'groups': groupes},
+    });
+    faux.repond('GET', '/institution/4/kpis', {'success': true, 'data': kpis});
   }
 
   testWidgets('compte sans etablissement : message dedie', (tester) async {
@@ -26,7 +31,8 @@ void main() {
 
   testWidgets('chargement puis indicateurs et eleves (nom, e-mail de secours, matricule)', (tester) async {
     routes(
-      kpis: {'totalStudents': 120, 'activeStudents': 90, 'groupCount': 6, 'averageScore': 12},
+      kpis: {'studentsTotal': 120, 'licensesUsed': 118, 'activeToday': 90, 'quizThisWeek': 14, 'avgSuccessRate': 55, 'avgScore': 60},
+      groupes: ['6e A', '6e B', '5e A', '5e B', '4e', '3e'],
       eleves: [
         {'id': 1, 'firstName': 'Ada', 'lastName': 'Eto', 'email': 'ada@x.cm', 'matricule': 'M-001', 'isActive': true},
         {'id': 2, 'email': 'sans-nom@x.cm', 'isActive': false},
@@ -40,6 +46,8 @@ void main() {
     expect(find.text('120'), findsOneWidget);
     expect(find.text('90'), findsOneWidget);
     expect(find.text('6'), findsOneWidget);
+    // Moyenne des quiz donnee en pourcentage, affichee sur 20.
+    expect(find.text(WinFormat.grade20(60)), findsOneWidget);
     expect(find.text('Ada Eto'), findsOneWidget);
     expect(find.text('M-001'), findsOneWidget);
     expect(find.text('sans-nom@x.cm'), findsWidgets);

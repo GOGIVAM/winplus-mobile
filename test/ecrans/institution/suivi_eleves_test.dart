@@ -62,9 +62,9 @@ void main() {
 
   group('AtRiskScreen', () {
     final eleves = [
-      {'id': 1, 'firstName': 'Ada', 'lastName': 'Eto', 'groupName': 'Groupe A', 'riskScore': 40, 'globalScore': 60, 'inactiveDays': 2, 'weakSubject': 'Maths', 'weakScore': 30, 'riskReason': 'Notes en baisse'},
-      {'id': 2, 'firstName': 'Bob', 'lastName': 'Nku', 'groupName': 'Groupe B', 'riskScore': 90, 'globalScore': 30, 'inactiveDays': 10},
-      {'id': 3, 'firstName': 'Cleo', 'lastName': 'Ban', 'groupName': 'Groupe C', 'riskScore': 70, 'globalScore': 35},
+      {'id': 1, 'firstName': 'Ada', 'lastName': 'Eto', 'groupName': 'Groupe A', 'riskScore': 0.4, 'globalScore': 60, 'hasScores': true, 'inactiveDays': 2, 'weakSubject': 'Maths', 'weakScore': 30, 'riskReason': 'Notes en baisse'},
+      {'id': 2, 'firstName': 'Bob', 'lastName': 'Nku', 'groupName': 'Groupe B', 'riskScore': 0.9, 'globalScore': 30, 'hasScores': true, 'inactiveDays': 10},
+      {'id': 3, 'firstName': 'Cleo', 'lastName': 'Ban', 'groupName': 'Groupe C', 'riskScore': 0.8, 'globalScore': 35, 'hasScores': true},
     ];
 
     testWidgets('liste vide : message « aucun eleve a risque »', (tester) async {
@@ -99,6 +99,20 @@ void main() {
       expect(find.text(l.instRiskInactiveFor(2)), findsOneWidget);
       expect(find.text('Notes en baisse'), findsOneWidget);
       expect(find.text(l.instRiskModerate), findsWidgets);
+    });
+
+    testWidgets('eleve sans quiz : « Pas encore de quiz », jamais 0/20 ; classe et niveau affiches', (tester) async {
+      faux.repond('GET', '/institution/at-risk', [
+        {'id': 4, 'firstName': 'Dan', 'lastName': 'Moa', 'groupName': 'Tle C1', 'level': 'Terminale', 'riskScore': 0.5, 'hasScores': false, 'inactiveDays': 7, 'weakSubject': '', 'weakScore': 0, 'riskReason': 'Aucune activite depuis 7 jours'},
+      ]);
+      await monterEcran(tester, const AtRiskScreen());
+      final l = L10n.current;
+      expect(find.text(l.instRiskNoQuiz), findsOneWidget);
+      expect(find.textContaining('0/20'), findsNothing);
+      expect(find.textContaining('Tle C1'), findsOneWidget);
+      expect(find.text('Aucune activite depuis 7 jours'), findsOneWidget);
+      // Risque de 0,5 : modere, meme sans note.
+      expect(find.widgetWithText(WinBadge, l.instRiskModerate), findsOneWidget);
     });
 
     testWidgets('filtre « Critique » masque les moderes', (tester) async {

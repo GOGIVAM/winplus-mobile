@@ -715,16 +715,16 @@
     }
   },
   "instRiskEmpty": "Aucun élève dans cette catégorie.",
-  "instRiskInactiveFor": "Inactif depuis {n}j",
+  "instRiskInactiveFor": "{n, plural, =1{Inactif depuis 1 jour} other{Inactif depuis {n} jours}}",
   "@instRiskInactiveFor": {
     "placeholders": {
       "n": {
-        "type": "Object"
+        "type": "int"
       }
     }
   },
   "instRiskModerate": "Modéré",
-  "instRiskScore": "Score : {n}",
+  "instRiskScore": "Moyenne : {n}",
   "@instRiskScore": {
     "placeholders": {
       "n": {
@@ -6550,5 +6550,6 @@
   "reviewsReplyHint": "Votre réponse",
   "reviewsReplyPublic": "Votre réponse s'affiche sous l'avis, sur votre fiche publique.",
   "reviewsReplySend": "Publier la réponse",
-  "reviewsReplySent": "Réponse publiée."
+  "reviewsReplySent": "Réponse publiée.",
+  "instRiskNoQuiz": "Pas encore de quiz"
 }

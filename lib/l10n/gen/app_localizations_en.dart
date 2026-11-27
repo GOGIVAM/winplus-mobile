@@ -1289,8 +1289,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get instRiskEmpty => 'No students in this category.';
 
   @override
-  String instRiskInactiveFor(Object n) {
-    return 'Inactive for ${n}d';
+  String instRiskInactiveFor(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Inactive for $n days',
+      one: 'Inactive for 1 day',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -1298,7 +1304,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String instRiskScore(Object n) {
-    return 'Score: $n';
+    return 'Average: $n';
   }
 
   @override
@@ -12462,4 +12468,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reviewsReplySent => 'Reply posted.';
+
+  @override
+  String get instRiskNoQuiz => 'No quiz yet';
 }

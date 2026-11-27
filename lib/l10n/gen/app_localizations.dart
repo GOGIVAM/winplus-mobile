@@ -2352,8 +2352,8 @@ abstract class AppLocalizations {
   /// No description provided for @instRiskInactiveFor.
   ///
   /// In fr, this message translates to:
-  /// **'Inactif depuis {n}j'**
-  String instRiskInactiveFor(Object n);
+  /// **'{n, plural, =1{Inactif depuis 1 jour} other{Inactif depuis {n} jours}}'**
+  String instRiskInactiveFor(int n);
 
   /// No description provided for @instRiskModerate.
   ///
@@ -2364,7 +2364,7 @@ abstract class AppLocalizations {
   /// No description provided for @instRiskScore.
   ///
   /// In fr, this message translates to:
-  /// **'Score : {n}'**
+  /// **'Moyenne : {n}'**
   String instRiskScore(Object n);
 
   /// No description provided for @instRiskTitle.
@@ -21105,6 +21105,12 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Réponse publiée.'**
   String get reviewsReplySent;
+
+  /// No description provided for @instRiskNoQuiz.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pas encore de quiz'**
+  String get instRiskNoQuiz;
 }
 
 class _AppLocalizationsDelegate

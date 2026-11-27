@@ -19,19 +19,30 @@ void main() {
       expect(v.averageScore, isNull);
     });
 
-    test('ApiInstitutionKpis : zeros par defaut', () {
+    test('ApiInstitutionKpis : reponse enveloppee du serveur, anciens noms encore lus, pas de moyenne sans quiz', () {
       final k = ApiInstitutionKpis.fromJson(<String, dynamic>{});
       expect(k.totalStudents, 0);
-      expect(k.averageScore, 0.0);
-      expect(ApiInstitutionKpis.fromJson({'averageScore': 12, 'groupCount': 3}).averageScore, 12.0);
+      expect(k.averageScore, isNull);
+      final r = ApiInstitutionKpis.fromJson({
+        'success': true,
+        'data': {'studentsTotal': 7, 'activeToday': 3, 'avgScore': 62, 'avgSuccessRate': 50},
+      });
+      expect([r.totalStudents, r.activeStudents, r.averageScore], [7, 3, 62.0]);
+      expect(ApiInstitutionKpis.fromJson({'averageScore': 12, 'totalStudents': 4}).averageScore, 12.0);
     });
 
-    test('ApiAtRiskStudent : critique sous 40 de score global ou apres 7 jours d\'inactivite', () {
+    test('ApiAtRiskStudent : critique d\'apres le risque du serveur (0 a 1) ; sans lui, d\'apres la note et l\'inactivite', () {
+      expect(ApiAtRiskStudent.fromJson({'riskScore': 0.75}).isCritical, isTrue);
+      expect(ApiAtRiskStudent.fromJson({'riskScore': 0.5, 'globalScore': 10, 'hasScores': true}).isCritical, isFalse);
+      // Risque donne sur 100 par un ancien serveur.
+      expect(ApiAtRiskStudent.fromJson({'riskScore': 90}).riskScore, 0.9);
+      // Sans quiz : ni note ni « critique » par defaut.
+      final sansQuiz = ApiAtRiskStudent.fromJson({'riskScore': 0.5, 'hasScores': false, 'inactiveDays': 7});
+      expect([sansQuiz.hasScores, sansQuiz.globalScore, sansQuiz.isCritical], [false, null, false]);
+      // Ancien serveur, sans risque calcule.
       expect(ApiAtRiskStudent.fromJson({'globalScore': 39}).isCritical, isTrue);
       expect(ApiAtRiskStudent.fromJson({'globalScore': 40, 'inactiveDays': 7}).isCritical, isFalse);
       expect(ApiAtRiskStudent.fromJson({'globalScore': 60, 'inactiveDays': 8}).isCritical, isTrue);
-      expect(ApiAtRiskStudent.fromJson({'globalScore': 90}).isCritical, isFalse);
-      expect(ApiAtRiskStudent.fromJson({'firstName': 'A', 'lastName': 'B'}).fullName, 'A B');
     });
 
     test('ApiGroup et ApiGroupMember : valeurs par defaut', () {
@@ -150,9 +161,9 @@ void main() {
 
     test('eleves a risque, analyses et plan d\'action', () async {
       faux.repond('GET', '/institution/at-risk', [
-        {'id': 1, 'riskScore': 80},
+        {'id': 1, 'riskScore': 0.8},
       ]);
-      expect((await InstitutionService.instance.getAtRiskStudents()).single.riskScore, 80.0);
+      expect((await InstitutionService.instance.getAtRiskStudents()).single.riskScore, 0.8);
       faux.repond('GET', '/institution/analytics', {'totalStudents': 40});
       expect((await InstitutionService.instance.getAnalytics()).totalStudents, 40);
       faux.repond('GET', '/institution/action-plan', {'week_label': 'S1'});

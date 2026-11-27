@@ -146,11 +146,19 @@ class _AtRiskCard extends StatelessWidget {
     final s = WinTheme.of(context);
     final critical = student.isCritical;
     final riskColor = critical ? WinColors.error : WinColors.warn;
-    final scoreColor = student.globalScore < 40
-        ? WinColors.error
-        : student.globalScore < 55
-            ? WinColors.warn
-            : WinColors.success;
+    final score = student.globalScore ?? 0;
+    // Sans quiz, pas de note : ni rouge ni « 0/20 ».
+    final scoreColor = !student.hasScores
+        ? s.onMuted
+        : score < 40
+            ? WinColors.error
+            : score < 55
+                ? WinColors.warn
+                : WinColors.success;
+    final place = [
+      if (student.level.isNotEmpty) ClassLevels.label(student.level),
+      if ((student.groupName ?? '').isNotEmpty) student.groupName!,
+    ].join(' \u00b7 ');
 
     // Un bord arrondi exige une bordure de couleur uniforme : la bande de
     // couleur du risque est donc dessinee a l'interieur, sous le decoupage.
@@ -186,11 +194,8 @@ class _AtRiskCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                 Text(student.fullName, style: WinType.titleM(s.onStrong)),
-                Text(
-                    student.level.isNotEmpty
-                        ? ClassLevels.label(student.level)
-                        : (student.groupName ?? ''),
-                    style: WinType.labelM(s.onMuted)),
+                if (place.isNotEmpty)
+                  Text(place, style: WinType.labelM(s.onMuted)),
               ])),
           WinBadge(critical ? context.l10n.instRiskCritical : context.l10n.instRiskModerate,
               color: critical ? BadgeColor.error : BadgeColor.warn),
@@ -199,13 +204,16 @@ class _AtRiskCard extends StatelessWidget {
 
         // Stats row
         Wrap(spacing: 8, runSpacing: 8, children: [
+          if (student.weakSubject.isNotEmpty)
+            _InfoChip(
+                PhosphorIconsRegular.textAlignLeft,
+                '${student.weakSubject} : ${WinFormat.grade20(student.weakScore)}',
+                WinColors.error),
           _InfoChip(
-              PhosphorIconsRegular.textAlignLeft,
-              student.weakSubject.isNotEmpty
-                  ? '${student.weakSubject}  ${WinFormat.grade20(student.weakScore)}'
-                  : context.l10n.instRiskWeakSubject,
-              WinColors.error),
-          _InfoChip(PhosphorIconsRegular.chartBar, context.l10n.instRiskScore(WinFormat.grade20(student.globalScore)),
+              PhosphorIconsRegular.chartBar,
+              student.hasScores
+                  ? context.l10n.instRiskScore(WinFormat.grade20(score))
+                  : context.l10n.instRiskNoQuiz,
               scoreColor),
           _InfoChip(
               PhosphorIconsRegular.clock,

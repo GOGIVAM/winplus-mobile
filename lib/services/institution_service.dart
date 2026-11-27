@@ -39,31 +39,49 @@ class ApiInstitutionStudent {
         level: j['level'] as String?,
         group: j['group'] as String?,
         matricule: j['matricule'] as String?,
-        averageScore: (j['averageScore'] as num?)?.toDouble(),
+        // Le serveur nomme la moyenne « avgScore » (en pourcentage).
+        averageScore:
+            ((j['avgScore'] ?? j['averageScore']) as num?)?.toDouble(),
         isActive: j['isActive'] as bool? ?? true,
       );
 }
 
 class ApiInstitutionKpis {
   final int totalStudents;
+
+  /// Élèves connectés dans les dernières 24 heures.
   final int activeStudents;
-  final double averageScore;
-  final int groupCount;
+
+  /// Moyenne des quiz en pourcentage ; null tant qu'aucun quiz n'est fait.
+  final double? averageScore;
 
   const ApiInstitutionKpis({
     this.totalStudents = 0,
     this.activeStudents = 0,
-    this.averageScore = 0,
-    this.groupCount = 0,
+    this.averageScore,
   });
 
-  factory ApiInstitutionKpis.fromJson(Map<String, dynamic> j) =>
-      ApiInstitutionKpis(
-        totalStudents: j['totalStudents'] as int? ?? 0,
-        activeStudents: j['activeStudents'] as int? ?? 0,
-        averageScore: (j['averageScore'] as num?)?.toDouble() ?? 0,
-        groupCount: j['groupCount'] as int? ?? 0,
-      );
+  /// Le serveur enveloppe la réponse : { data: { studentsTotal, activeToday,
+  /// avgScore, ... } }. Les anciens noms restent lus.
+  factory ApiInstitutionKpis.fromJson(Map<String, dynamic> j) {
+    final d = j['data'] is Map ? Map<String, dynamic>.from(j['data'] as Map) : j;
+    num? n(String a, String b) => (d[a] ?? d[b]) as num?;
+    return ApiInstitutionKpis(
+      totalStudents: n('studentsTotal', 'totalStudents')?.toInt() ?? 0,
+      activeStudents: n('activeToday', 'activeStudents')?.toInt() ?? 0,
+      averageScore: n('avgScore', 'averageScore')?.toDouble(),
+    );
+  }
+}
+
+/// Une page de l'annuaire : les élèves, leur nombre total et le nombre de
+/// classes de l'établissement (null si le serveur ne le donne pas).
+class ApiStudentDirectoryPage {
+  final List<ApiInstitutionStudent> students;
+  final int total;
+  final int? groupCount;
+  const ApiStudentDirectoryPage(
+      {required this.students, required this.total, this.groupCount});
 }
 
 class ApiGroup {
@@ -127,7 +145,12 @@ class ApiAtRiskStudent {
   final String riskReason;
   final String weakSubject;
   final int weakScore;
-  final int globalScore;
+
+  /// Moyenne des quiz sur 30 jours, en pourcentage ; null sans quiz.
+  final int? globalScore;
+
+  /// Faux quand l'élève n'a fait aucun quiz : pas de note à afficher.
+  final bool hasScores;
   final int inactiveDays;
   const ApiAtRiskStudent({
     required this.id,
@@ -139,12 +162,17 @@ class ApiAtRiskStudent {
     required this.riskReason,
     this.weakSubject = '',
     this.weakScore = 0,
-    this.globalScore = 0,
+    this.globalScore,
+    this.hasScores = false,
     this.inactiveDays = 0,
   });
 
   String get fullName => '$firstName $lastName'.trim();
-  bool get isCritical => globalScore < 40 || inactiveDays > 7;
+  /// D'après le risque calculé par le serveur (0 à 1) ; sans lui (ancien
+  /// serveur), d'après la note et l'inactivité.
+  bool get isCritical => riskScore > 0
+      ? riskScore >= 0.75
+      : (hasScores && (globalScore ?? 100) < 40) || inactiveDays > 7;
 
   factory ApiAtRiskStudent.fromJson(Map<String, dynamic> j) => ApiAtRiskStudent(
         id: j['id'] as int? ?? 0,
@@ -152,12 +180,19 @@ class ApiAtRiskStudent {
         lastName: j['lastName'] as String? ?? '',
         groupName: j['groupName'] as String?,
         level: j['level'] as String? ?? '',
-        riskScore: ((j['riskScore'] ?? 0) as num).toDouble(),
+        // De 0 à 1 ; une valeur sur 100 (ancien serveur) est ramenée à 1.
+        riskScore: switch (((j['riskScore'] ?? 0) as num).toDouble()) {
+          final r when r > 1 => r / 100,
+          final r => r,
+        },
         riskReason: j['riskReason'] as String? ?? '',
         weakSubject: j['weakSubject'] as String? ?? '',
-        weakScore: j['weakScore'] as int? ?? 0,
-        globalScore: j['globalScore'] as int? ?? 0,
-        inactiveDays: j['inactiveDays'] as int? ?? 0,
+        weakScore: (j['weakScore'] as num?)?.round() ?? 0,
+        globalScore: (j['globalScore'] as num?)?.round(),
+        // L'ancien serveur envoyait 0 en dur sans « hasScores ».
+        hasScores: j['hasScores'] as bool? ??
+            ((j['globalScore'] as num? ?? 0) > 0),
+        inactiveDays: (j['inactiveDays'] as num?)?.toInt() ?? 0,
       );
 }
 
@@ -426,6 +461,18 @@ class InstitutionService {
     String? q,
     int page = 1,
     int pageSize = 50,
+  }) async =>
+      (await getStudentDirectoryPage(institutionId,
+              q: q, page: page, pageSize: pageSize))
+          .students;
+
+  /// Le serveur répond { data: [...], total, filters: { groups, levels } }
+  /// (le mobile lisait « items » : l'annuaire restait vide).
+  Future<ApiStudentDirectoryPage> getStudentDirectoryPage(
+    int institutionId, {
+    String? q,
+    int page = 1,
+    int pageSize = 50,
   }) async {
     final res = await _api.dio.get(
       '/institution/$institutionId/students',
@@ -438,10 +485,21 @@ class InstitutionService {
       },
     );
     final data = res.data;
-    final list = (data is Map ? data['items'] : data) as List? ?? [];
-    return list
-        .map((e) => ApiInstitutionStudent.fromJson(e as Map<String, dynamic>))
+    final list =
+        (data is Map ? (data['data'] ?? data['items']) : data) as List? ?? [];
+    final students = list
+        .whereType<Map>()
+        .map((e) => ApiInstitutionStudent.fromJson(Map<String, dynamic>.from(e)))
         .toList();
+    final filters = data is Map ? data['filters'] : null;
+    final groups = filters is Map ? filters['groups'] : null;
+    return ApiStudentDirectoryPage(
+      students: students,
+      total: data is Map
+          ? (data['total'] as num?)?.toInt() ?? students.length
+          : students.length,
+      groupCount: groups is List ? groups.length : null,
+    );
   }
 
   Future<ApiInstitutionKpis> getInstitutionKpis(int institutionId) async {
