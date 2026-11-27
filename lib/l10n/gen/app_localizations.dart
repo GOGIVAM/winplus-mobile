@@ -21423,6 +21423,18 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Période couverte : {period}'**
   String parentPortfolioPeriod(Object period);
+
+  /// No description provided for @settingsDeleteBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette action est irréversible. Toutes les données du compte seront perdues.'**
+  String get settingsDeleteBody;
+
+  /// No description provided for @settingsDeleted.
+  ///
+  /// In fr, this message translates to:
+  /// **'Compte supprimé.'**
+  String get settingsDeleted;
 }
 
 class _AppLocalizationsDelegate

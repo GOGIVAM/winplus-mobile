@@ -3735,5 +3735,7 @@
   "studentHubBadgesCount": "{unlocked} of {total} unlocked",
   "studentHubCertificatesCount": "{count, plural, =0{No certificate yet} =1{1 certificate} other{{count} certificates}}",
   "studentHubGroupsCount": "{count, plural, =0{No group yet} =1{1 group} other{{count} groups}}",
-  "parentPortfolioPeriod": "Period covered: {period}"
+  "parentPortfolioPeriod": "Period covered: {period}",
+  "settingsDeleteBody": "This cannot be undone. All the data of the account will be lost.",
+  "settingsDeleted": "Account deleted."
 }

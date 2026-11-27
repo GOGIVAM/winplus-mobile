@@ -12706,4 +12706,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String parentPortfolioPeriod(Object period) {
     return 'Period covered: $period';
   }
+
+  @override
+  String get settingsDeleteBody =>
+      'This cannot be undone. All the data of the account will be lost.';
+
+  @override
+  String get settingsDeleted => 'Account deleted.';
 }

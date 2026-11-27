@@ -12,6 +12,7 @@ import '../widgets/account_settings_switches.dart';
 import '../widgets/biometric_toggle.dart';
 import '../widgets/language_selector.dart';
 import 'change_password_screen.dart';
+import 'delete_account.dart';
 import 'more_screen.dart';
 
 /// Paramètres de l'application, les mêmes pour tous les espaces : langue,
@@ -102,6 +103,13 @@ class SettingsScreen extends StatelessWidget {
                 icon: PhosphorIconsRegular.shieldCheck,
                 label: l.studentHubPrivacy,
                 onTap: () => LegalScreen.showPrivacy(context)),
+          ]),
+          const SizedBox(height: 16),
+          MoreGroup(children: [
+            MoreLine(
+                icon: PhosphorIconsRegular.trash,
+                label: l.studentProfileDeleteAccount,
+                onTap: () => confirmDeleteAccount(context)),
           ]),
         ],
       ),

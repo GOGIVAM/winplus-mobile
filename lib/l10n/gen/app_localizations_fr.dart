@@ -12799,4 +12799,11 @@ class AppLocalizationsFr extends AppLocalizations {
   String parentPortfolioPeriod(Object period) {
     return 'Période couverte : $period';
   }
+
+  @override
+  String get settingsDeleteBody =>
+      'Cette action est irréversible. Toutes les données du compte seront perdues.';
+
+  @override
+  String get settingsDeleted => 'Compte supprimé.';
 }
