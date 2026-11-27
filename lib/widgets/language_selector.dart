@@ -23,14 +23,16 @@ class LanguageToggle extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           decoration: BoxDecoration(
-            color: active ? s.onStrong : Colors.transparent,
+            // Mêmes tons qu'une puce active : en sombre, l'ancien fond
+            // (couleur du texte fort) donnait une pastille blanc pur.
+            color: active ? s.chipActiveBg : Colors.transparent,
             borderRadius: BorderRadius.circular(WinRadii.full),
           ),
           child: Text(code.toUpperCase(),
               style: WinType.manrope(
                   size: 12,
                   weight: FontWeight.w700,
-                  color: active ? s.bg : s.onMuted)),
+                  color: active ? s.chipActiveFg : s.onMuted)),
         ),
       );
     }
