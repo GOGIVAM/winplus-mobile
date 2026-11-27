@@ -199,14 +199,16 @@ class ApiAtRiskStudent {
 class ApiInstitutionAnalytics {
   final int totalStudents;
   final int activeStudents;
-  final double averageScore;
+  /// Pourcentage 0-100 ; null sans quiz (le serveur omet le champ : un 0
+  /// affichait « 0/20 » à côté d'élèves notés).
+  final double? averageScore;
   final int downloadsThisMonth;
   final int quizzesThisMonth;
   final Map<String, int> activityByDay;
   const ApiInstitutionAnalytics({
     this.totalStudents = 0,
     this.activeStudents = 0,
-    this.averageScore = 0,
+    this.averageScore,
     this.downloadsThisMonth = 0,
     this.quizzesThisMonth = 0,
     this.activityByDay = const {},
@@ -216,7 +218,7 @@ class ApiInstitutionAnalytics {
       ApiInstitutionAnalytics(
         totalStudents: j['totalStudents'] as int? ?? 0,
         activeStudents: j['activeStudents'] as int? ?? 0,
-        averageScore: ((j['averageScore'] ?? 0) as num).toDouble(),
+        averageScore: (j['averageScore'] as num?)?.toDouble(),
         downloadsThisMonth: j['downloadsThisMonth'] as int? ?? 0,
         quizzesThisMonth: j['quizzesThisMonth'] as int? ?? 0,
         activityByDay: (j['activityByDay'] as Map<String, dynamic>? ?? {})

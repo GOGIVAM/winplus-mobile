@@ -62,6 +62,9 @@ void main() {
       expect(a.activityByDay, {'lun': 5, 'mar': 0});
       expect(a.averageScore, 11.0);
       expect(ApiInstitutionAnalytics.fromJson(<String, dynamic>{}).activityByDay, isEmpty);
+    // Sans quiz, le serveur omet la moyenne : pas de « 0/20 » invente.
+    expect(ApiInstitutionAnalytics.fromJson(<String, dynamic>{}).averageScore, isNull);
+    expect(ApiInstitutionAnalytics.fromJson({'averageScore': 62.5}).averageScore, 62.5);
     });
 
     test('ApiActionPlan : contexte, semaine et actions vides retirees', () {
