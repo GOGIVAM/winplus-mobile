@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:winplus/app_state.dart';
+import 'package:winplus/data/models.dart' show WinRole;
 import 'package:winplus/l10n/l10n.dart';
 import 'package:winplus/services/deep_links.dart';
 import 'package:winplus/services/visio_service.dart';
@@ -114,6 +116,40 @@ void main() {
       expect(find.text('seance-1.webm'), findsOneWidget);
       expect(find.textContaining('50 Mo'), findsOneWidget);
       expect(faux.recues('GET', '/visio/enregistrements').single.queryParameters['id'], 5);
+    });
+  });
+
+  group('LiveClassesScreen, lancer un cours (G6)', () {
+    WinAppState etat(WinRole r) => WinAppState()..setRole(r);
+
+    testWidgets('professeur : demarrer maintenant cree la seance et ouvre la salle', (tester) async {
+      faux.repond('GET', '/visio/mes-cours', {'success': true, 'data': []});
+      faux.repond('POST', '/sessions', {'success': true, 'data': {'id': 42, 'title': 'Revision'}});
+      faux.repond('GET', '/visio/jeton', jeton());
+      await monterEcran(tester, const LiveClassesScreen(), etat: etat(WinRole.teacher));
+      final l = L10n.current;
+      expect(find.text(l.liveEmptyHintHost), findsOneWidget);
+      expect(find.text(l.livePlan), findsOneWidget);
+      await tester.tap(find.text(l.liveStartNow));
+      await pomper(tester);
+      await tester.enterText(find.byType(TextField), 'Revision');
+      await tester.tap(find.text(l.liveStartGo));
+      await reseau(tester);
+      final d = faux.recues('POST', '/sessions').single.data as Map;
+      expect(d['title'], 'Revision');
+      expect(d['type'], 'live');
+      expect(d['durationMinutes'], 60);
+      expect(faux.recues('GET', '/visio/jeton').single.queryParameters['id'], anyOf(42, '42'));
+    });
+
+    testWidgets('eleve : ni demarrer ni planifier, texte tutoye ; parent : vouvoye', (tester) async {
+      faux.repond('GET', '/visio/mes-cours', {'success': true, 'data': []});
+      await monterEcran(tester, const LiveClassesScreen(), etat: etat(WinRole.student));
+      final l = L10n.current;
+      expect(find.text(l.liveStartNow), findsNothing);
+      expect(find.text(l.liveEmptyHint), findsOneWidget);
+      await monterEcran(tester, const LiveClassesScreen(), etat: etat(WinRole.parent));
+      expect(find.text(l.liveEmptyHintFormal), findsOneWidget);
     });
   });
 

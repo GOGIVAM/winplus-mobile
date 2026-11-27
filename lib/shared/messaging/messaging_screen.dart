@@ -50,14 +50,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
     _load();
   }
 
-  String _roleLabel(String role) => switch (role) {
-        // Lot 8 : un élève s'affichait « Utilisateur ».
-        'student' => context.l10n.roleStudent,
-        'teacher' => context.l10n.roleTeacher,
-        'parent' => context.l10n.roleParent,
-        'institution' => context.l10n.roleInstitution,
-        _ => context.l10n.msgRoleUser,
-      };
+  String _roleLabel(String role) => messagingRoleLabel(context.l10n, role);
 
   String _relativeTime(DateTime? dt) {
     if (dt == null) return '';
@@ -422,9 +415,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
             Text(widget.conversation.participantName,
                 style: WinType.titleM(s.onStrong)),
             Text(
-                widget.conversation.participantRole == 'teacher'
-                    ? context.l10n.roleTeacher
-                    : context.l10n.roleParent,
+                messagingRoleLabel(context.l10n, widget.conversation.participantRole),
                 style: WinType.labelS(s.onMuted)),
           ]),
         ]),
@@ -513,3 +504,13 @@ class _ConversationScreenState extends State<ConversationScreen> {
     );
   }
 }
+
+/// Libellé du rôle d'un interlocuteur, le même dans la liste et dans
+/// l'en-tête d'une conversation (lot 8 : un élève y apparaissait « Parent »).
+String messagingRoleLabel(AppLocalizations l, String role) => switch (role) {
+      'student' => l.roleStudent,
+      'teacher' => l.roleTeacher,
+      'parent' => l.roleParent,
+      'institution' => l.roleInstitution,
+      _ => l.msgRoleUser,
+    };

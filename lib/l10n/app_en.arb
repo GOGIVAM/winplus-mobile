@@ -3657,5 +3657,15 @@
   "instLicenseWalletBalance": "Wallet balance: {amount} XAF",
   "@instLicenseWalletBalance": {"placeholders": {"amount": {"type": "String"}}},
   "instLicenseWalletShort": "Not enough in the wallet for the renewal: {amount} XAF missing. Top up the wallet before the due date.",
-  "@instLicenseWalletShort": {"placeholders": {"amount": {"type": "String"}}}
+  "@instLicenseWalletShort": {"placeholders": {"amount": {"type": "String"}}},
+  "liveStartNow": "Start a class now",
+  "livePlan": "Schedule a class",
+  "liveStartDialogTitle": "Start a class",
+  "liveStartFieldLabel": "Class title",
+  "liveStartFieldHint": "E.g. Sequences review",
+  "liveStartGo": "Start",
+  "liveStartDefaultTitle": "Live class",
+  "liveStartError": "The class couldn't be created. Please try again.",
+  "liveEmptyHintHost": "Start a class now or schedule it: your students will join from this page.",
+  "liveEmptyHintFormal": "Live sessions and online tutoring will appear here."
 }

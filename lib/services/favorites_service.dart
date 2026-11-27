@@ -16,7 +16,10 @@ class ApiFavorite {
   factory ApiFavorite.fromJson(Map<String, dynamic> j) => ApiFavorite(
         id: j['id'] as int,
         subjectId: j['subjectId'] as int,
-        subjectTitle: j['subjectTitle'] as String? ?? '',
+        // Le serveur renvoie l'entité Favorite : le titre est dans subject.
+        subjectTitle: j['subjectTitle'] as String? ??
+            (j['subject'] is Map ? (j['subject'] as Map)['title'] as String? : null) ??
+            '',
         addedAt:
             DateTime.tryParse(j['addedAt'] as String? ?? '') ?? DateTime.now(),
       );
@@ -29,8 +32,15 @@ class FavoritesService {
   final _api = ApiClient.instance;
 
   Future<List<ApiFavorite>> getAll() async {
-    final res = await _api.dio.get('/favorites');
-    final list = res.data as List? ?? [];
+    // Réponse paginée { items, totalCount, … } (lot 8 : l'application
+    // attendait une liste et affichait « Impossible de charger les favoris »).
+    final res = await _api.dio.get('/favorites', queryParameters: {'pageSize': 100});
+    final body = res.data;
+    final list = body is List
+        ? body
+        : body is Map
+            ? (body['items'] ?? body['Items'] ?? body['data']) as List? ?? const []
+            : const [];
     return list
         .map((e) => ApiFavorite.fromJson(e as Map<String, dynamic>))
         .toList();

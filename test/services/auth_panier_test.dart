@@ -379,6 +379,17 @@ void main() {
   });
 
   group('FavoritesService', () {
+    test('getAll lit la reponse paginee du serveur (items, titre dans subject)', () async {
+      faux.repond('GET', '/favorites', {
+        'items': [
+          {'id': 1, 'subjectId': 10, 'addedAt': '2026-01-05T10:00:00Z', 'subject': {'id': 10, 'title': 'Bac C 2023'}},
+        ],
+        'totalCount': 1, 'page': 1, 'pageSize': 100,
+      });
+      final l = await FavoritesService.instance.getAll();
+      expect(l.single.subjectTitle, 'Bac C 2023');
+    });
+
     test('getAll convertit la liste', () async {
       faux.repond('GET', '/favorites', [
         {'id': 1, 'subjectId': 10, 'subjectTitle': 'Maths', 'addedAt': '2026-01-05T10:00:00Z'},

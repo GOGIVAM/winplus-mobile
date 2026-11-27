@@ -12502,4 +12502,36 @@ class AppLocalizationsFr extends AppLocalizations {
   String instLicenseWalletShort(String amount) {
     return 'Solde insuffisant pour le renouvellement : il manque $amount XAF. Rechargez le portefeuille avant l\'échéance.';
   }
+
+  @override
+  String get liveStartNow => 'Démarrer un cours maintenant';
+
+  @override
+  String get livePlan => 'Planifier un cours';
+
+  @override
+  String get liveStartDialogTitle => 'Démarrer un cours';
+
+  @override
+  String get liveStartFieldLabel => 'Titre du cours';
+
+  @override
+  String get liveStartFieldHint => 'Ex. : Révision des suites';
+
+  @override
+  String get liveStartGo => 'Démarrer';
+
+  @override
+  String get liveStartDefaultTitle => 'Cours en direct';
+
+  @override
+  String get liveStartError => 'Le cours n\'a pas pu être créé. Réessayez.';
+
+  @override
+  String get liveEmptyHintHost =>
+      'Démarrez un cours maintenant ou planifiez-le : vos élèves le rejoindront depuis cette page.';
+
+  @override
+  String get liveEmptyHintFormal =>
+      'Les séances en direct et les tutorats en ligne apparaîtront ici.';
 }

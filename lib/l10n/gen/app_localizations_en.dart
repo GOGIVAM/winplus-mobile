@@ -12407,4 +12407,37 @@ class AppLocalizationsEn extends AppLocalizations {
   String instLicenseWalletShort(String amount) {
     return 'Not enough in the wallet for the renewal: $amount XAF missing. Top up the wallet before the due date.';
   }
+
+  @override
+  String get liveStartNow => 'Start a class now';
+
+  @override
+  String get livePlan => 'Schedule a class';
+
+  @override
+  String get liveStartDialogTitle => 'Start a class';
+
+  @override
+  String get liveStartFieldLabel => 'Class title';
+
+  @override
+  String get liveStartFieldHint => 'E.g. Sequences review';
+
+  @override
+  String get liveStartGo => 'Start';
+
+  @override
+  String get liveStartDefaultTitle => 'Live class';
+
+  @override
+  String get liveStartError =>
+      'The class couldn\'t be created. Please try again.';
+
+  @override
+  String get liveEmptyHintHost =>
+      'Start a class now or schedule it: your students will join from this page.';
+
+  @override
+  String get liveEmptyHintFormal =>
+      'Live sessions and online tutoring will appear here.';
 }

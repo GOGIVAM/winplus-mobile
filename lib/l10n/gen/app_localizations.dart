@@ -21003,6 +21003,66 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Solde insuffisant pour le renouvellement : il manque {amount} XAF. Rechargez le portefeuille avant l\'échéance.'**
   String instLicenseWalletShort(String amount);
+
+  /// No description provided for @liveStartNow.
+  ///
+  /// In fr, this message translates to:
+  /// **'Démarrer un cours maintenant'**
+  String get liveStartNow;
+
+  /// No description provided for @livePlan.
+  ///
+  /// In fr, this message translates to:
+  /// **'Planifier un cours'**
+  String get livePlan;
+
+  /// No description provided for @liveStartDialogTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Démarrer un cours'**
+  String get liveStartDialogTitle;
+
+  /// No description provided for @liveStartFieldLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Titre du cours'**
+  String get liveStartFieldLabel;
+
+  /// No description provided for @liveStartFieldHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex. : Révision des suites'**
+  String get liveStartFieldHint;
+
+  /// No description provided for @liveStartGo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Démarrer'**
+  String get liveStartGo;
+
+  /// No description provided for @liveStartDefaultTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cours en direct'**
+  String get liveStartDefaultTitle;
+
+  /// No description provided for @liveStartError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le cours n\'a pas pu être créé. Réessayez.'**
+  String get liveStartError;
+
+  /// No description provided for @liveEmptyHintHost.
+  ///
+  /// In fr, this message translates to:
+  /// **'Démarrez un cours maintenant ou planifiez-le : vos élèves le rejoindront depuis cette page.'**
+  String get liveEmptyHintHost;
+
+  /// No description provided for @liveEmptyHintFormal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les séances en direct et les tutorats en ligne apparaîtront ici.'**
+  String get liveEmptyHintFormal;
 }
 
 class _AppLocalizationsDelegate

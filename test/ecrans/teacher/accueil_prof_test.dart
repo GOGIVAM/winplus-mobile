@@ -22,9 +22,11 @@ void main() {
     Map<String, dynamic>? stats,
     List<Map<String, dynamic>> copies = const [],
   }) {
-    faux.repond('GET', '/teacher/contents/mine', contenus ?? []);
+    // Formes réelles du serveur : { data: [...] } (lot 8 : les listes brutes
+    // des anciens tests masquaient un échec systématique en production).
+    faux.repond('GET', '/teacher/contents/mine', {'data': contenus ?? [], 'counts': [], 'success': true});
     faux.repond('GET', '/teacher/stats', stats ?? {'thisMonthRevenue': 0, 'activeStudents': 0});
-    faux.repond('GET', '/teacher/corrections/pending', copies);
+    faux.repond('GET', '/teacher/corrections/pending', {'data': copies});
   }
 
   /// Ecran haut : les blocs du bas sont construits (et reveles) sans defilement.
@@ -43,6 +45,15 @@ void main() {
     );
     await tester.scrollUntilVisible(cible, 120, scrollable: bande.first);
   }
+
+  testWidgets('copies en attente au format du serveur (status, assignment) : carte « a corriger »', (tester) async {
+    routes(copies: [
+      {'id': 2, 'assignmentId': 1, 'assignment': 'Equations', 'studentName': 'Cedric', 'submittedDate': '2026-10-11T09:58:41Z', 'status': 'pending'},
+      {'id': 3, 'assignmentId': 1, 'assignment': 'Equations', 'studentName': 'Flore', 'submittedDate': '2026-10-12T09:58:41Z', 'status': 'pending'},
+    ]);
+    await monterHaut(tester);
+    expect(find.text(L10n.current.mobileHomeCorrectTitle(2)), findsWidgets);
+  });
 
   testWidgets('repetiteur deja actif : pas de carte « Activez le mode repetiteur »', (tester) async {
     routes();

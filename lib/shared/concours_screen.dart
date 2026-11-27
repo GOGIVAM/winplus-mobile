@@ -41,23 +41,22 @@ class _ConcoursHubScreenState extends State<ConcoursHubScreen> {
   }
 
   Future<void> _load() async {
-    // Calendrier et chiffres indépendants : une panne de l'un n'empêche
-    // pas d'afficher l'autre (le hub reste utilisable hors calendrier).
-    final events = _svc.events().catchError((_) => <String, ConcoursEvent>{});
-    final counts = Future.wait(concoursSchools.map((c) => _svc
+    // Les écoles sont connues d'avance : la liste s'affiche tout de suite, et
+    // le calendrier puis le nombre d'épreuves de chaque école arrivent un à
+    // un (lot 8 : l'écran attendait toutes les réponses et restait sur son
+    // squelette quand un seul calcul traînait).
+    setState(() => _loaded = true);
+    final events = _svc.events().catchError((_) => <String, ConcoursEvent>{}).then((e) {
+      if (mounted) setState(() => _events = e);
+    });
+    final counts = concoursSchools.map((c) => _svc
         .stats(c.slug)
         .then<int?>((s) => s.total)
-        .catchError((_) => null)));
-    final results = await Future.wait([events, counts]);
-    if (!mounted) return;
-    setState(() {
-      _events = results[0] as Map<String, ConcoursEvent>;
-      final list = results[1] as List<int?>;
-      for (var i = 0; i < concoursSchools.length; i++) {
-        _counts[concoursSchools[i].slug] = list[i];
-      }
-      _loaded = true;
-    });
+        .catchError((_) => null)
+        .then((n) {
+          if (mounted) setState(() => _counts[c.slug] = n);
+        }));
+    await Future.wait([events, ...counts]);
   }
 
   @override

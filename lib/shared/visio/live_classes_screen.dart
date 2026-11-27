@@ -11,6 +11,10 @@ import '../../widgets/win_screen.dart';
 import '../../widgets/win_widgets.dart';
 import 'visio_screen.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../../app_state.dart';
+import '../../data/models.dart' show WinRole;
+import '../../services/teacher_service.dart';
+import '../../teacher/session_create_screen.dart';
 
 /// « Cours en direct » (lot 9.4), comme la page /cours-en-direct du site :
 /// une seule liste pour tous les rôles (GET /visio/mes-cours), triée par le
@@ -60,13 +64,82 @@ class _LiveClassesScreenState extends State<LiveClassesScreen> {
     );
   }
 
+  /// Le professeur (et le répétiteur, qui a ce même compte) peut lancer un
+  /// cours depuis cette page (G6 : avant, la page ne faisait que lister).
+  bool get _canHost => WinAppScope.of(context).role == WinRole.teacher;
+
+  bool _starting = false;
+
+  /// Démarrer maintenant : titre demandé, séance créée pour 60 minutes, salle
+  /// ouverte aussitôt ; la liste est relue au retour.
+  Future<void> _startNow() async {
+    final l = context.l10n;
+    final ctrl = TextEditingController();
+    final title = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l.liveStartDialogTitle),
+        content: TextField(
+          controller: ctrl,
+          autofocus: true,
+          decoration: InputDecoration(labelText: l.liveStartFieldLabel, hintText: l.liveStartFieldHint),
+          onSubmitted: (v) => Navigator.pop(ctx, v.trim()),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: Text(l.commonCancel)),
+          TextButton(onPressed: () => Navigator.pop(ctx, ctrl.text.trim()), child: Text(l.liveStartGo)),
+        ],
+      ),
+    );
+    if (title == null || !mounted) return;
+    final messenger = ScaffoldMessenger.of(context);
+    setState(() => _starting = true);
+    try {
+      final id = await TeacherService.instance.startLiveNow(title.isEmpty ? l.liveStartDefaultTitle : title);
+      if (!mounted) return;
+      await VisioScreen.open(context, VisioType.seance, id, title: title.isEmpty ? l.liveStartDefaultTitle : title);
+    } catch (_) {
+      messenger.showSnackBar(SnackBar(content: Text(l.liveStartError)));
+    } finally {
+      if (mounted) setState(() => _starting = false);
+    }
+    await _load();
+  }
+
+  Future<void> _plan() async {
+    await Navigator.of(context).push(WinPageRoute(builder: (_) => const SessionCreateScreen()));
+    await _load();
+  }
+
+  /// Actions du professeur, en tête de page.
+  List<Widget> _hostActions(AppLocalizations l) => [
+        WinButton(l.liveStartNow,
+            block: true, icon: PhosphorIconsRegular.videoCamera, loading: _starting, onTap: _starting ? null : _startNow),
+        const SizedBox(height: 8),
+        WinButton(l.livePlan,
+            block: true, variant: WinButtonVariant.outline, icon: PhosphorIconsRegular.calendarPlus, onTap: _plan),
+        const SizedBox(height: 8),
+      ];
+
   Widget _body(WinScheme s, AppLocalizations l) {
     if (_error) return WinErrorState(message: l.commonLoadError, onRetry: _load);
     final list = _classes;
     if (list == null) return const WinLoading();
+    final role = WinAppScope.of(context).role;
+    // Tutoiement pour l'élève, vouvoiement pour les autres rôles.
+    final hint = _canHost
+        ? l.liveEmptyHintHost
+        : role == WinRole.student
+            ? l.liveEmptyHint
+            : l.liveEmptyHintFormal;
     if (list.isEmpty) {
-      return WinEmptyState(
-          icon: PhosphorIconsRegular.videoCamera, title: l.liveEmpty, message: l.liveEmptyHint);
+      return ListView(padding: const EdgeInsets.fromLTRB(16, 8, 16, 24), children: [
+        if (_canHost) ..._hostActions(l),
+        SizedBox(
+          height: 320,
+          child: WinEmptyState(icon: PhosphorIconsRegular.videoCamera, title: l.liveEmpty, message: hint),
+        ),
+      ]);
     }
     final sections = [
       (l.liveSectionOpen, list.where((c) => c.state == 'ouverte').toList()),
@@ -76,6 +149,7 @@ class _LiveClassesScreenState extends State<LiveClassesScreen> {
     return RefreshIndicator(
       onRefresh: _load,
       child: ListView(padding: const EdgeInsets.fromLTRB(16, 8, 16, 24), children: [
+        if (_canHost) ..._hostActions(l),
         for (final (title, items) in sections)
           if (items.isNotEmpty) ...[
             Padding(

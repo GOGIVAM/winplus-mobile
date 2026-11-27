@@ -24,8 +24,10 @@ class ApiPublishedContent {
         id: j['id'] as int? ?? 0,
         title: j['title'] as String? ?? '',
         status: j['status'] as String? ?? 'draft',
-        downloads: j['downloadCount'] as int? ?? 0,
-        rating: ((j['averageRating'] ?? 0) as num).toDouble(),
+        // Noms du serveur (GET /teacher/contents/mine) : downloads, rating ;
+        // les anciens noms restent lus.
+        downloads: ((j['downloads'] ?? j['downloadCount'] ?? 0) as num).toInt(),
+        rating: ((j['rating'] ?? j['averageRating'] ?? 0) as num).toDouble(),
         revenue: j['revenue'] as int? ?? 0,
         type: j['category'] as String? ?? 'epreuve',
       );
@@ -50,10 +52,13 @@ class ApiSubmission {
   factory ApiSubmission.fromJson(Map<String, dynamic> j) => ApiSubmission(
         id: j['id'] as int? ?? 0,
         studentName: j['studentName'] as String? ?? '',
-        contentTitle: j['contentTitle'] as String? ?? '',
-        submittedAt: j['submittedAt'] as String? ?? '',
-        corrected: j['corrected'] as bool? ?? false,
-        score: j['score'] as int?,
+        // GET /teacher/corrections/pending : assignment (titre du devoir),
+        // submittedDate, status ; les anciens noms restent lus.
+        contentTitle: j['assignment'] as String? ?? j['contentTitle'] as String? ?? '',
+        submittedAt: j['submittedDate'] as String? ?? j['submittedAt'] as String? ?? '',
+        corrected: j['corrected'] as bool? ??
+            const {'corrected', 'graded', 'returned', 'done'}.contains(j['status']),
+        score: (j['score'] as num?)?.toInt(),
       );
 }
 
@@ -245,6 +250,24 @@ class TeacherService {
     }
   }
 
+  /// « Démarrer un cours maintenant » (Cours en direct, G6) : séance en direct
+  /// qui commence tout de suite, pour 60 minutes ; renvoie son identifiant
+  /// pour ouvrir la salle aussitôt. Lève en cas de refus du serveur.
+  Future<int> startLiveNow(String title) async {
+    final res = await _api.dio.post('/sessions', data: {
+      'title': title,
+      'type': 'live',
+      'startDate': DateTime.now().toUtc().toIso8601String(),
+      'durationMinutes': 60,
+      'isFree': true,
+    });
+    final body = res.data is Map ? res.data as Map : const {};
+    final d = body['data'] is Map ? body['data'] as Map : body;
+    final id = (d['id'] as num?)?.toInt();
+    if (id == null) throw StateError('session sans identifiant');
+    return id;
+  }
+
   /// Statistiques réelles d'une publication (GET /teacher/contents/{id}/stats) :
   /// téléchargements, note, inscrits, ventes et revenus. `null` si
   /// indisponible.
@@ -259,8 +282,16 @@ class TeacherService {
   }
 
   Future<List<ApiPublishedContent>> getMyContent() async {
+    // Le serveur répond { data, counts } (lot 8 : seule une liste brute était
+    // lue, l'appel échouait toujours : « Aucun contenu », « 0 publié »,
+    // analyse de classe impossible et copies à corriger jamais comptées).
     final res = await _api.dio.get('/teacher/contents/mine');
-    final list = res.data as List? ?? [];
+    final body = res.data;
+    final list = body is List
+        ? body
+        : body is Map
+            ? (body['data'] ?? body['items']) as List? ?? const []
+            : const [];
     return list
         .map((e) => ApiPublishedContent.fromJson(e as Map<String, dynamic>))
         .toList();

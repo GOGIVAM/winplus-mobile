@@ -6533,5 +6533,15 @@
   "instLicenseWalletBalance": "Solde du portefeuille : {amount} XAF",
   "@instLicenseWalletBalance": {"placeholders": {"amount": {"type": "String"}}},
   "instLicenseWalletShort": "Solde insuffisant pour le renouvellement : il manque {amount} XAF. Rechargez le portefeuille avant l'échéance.",
-  "@instLicenseWalletShort": {"placeholders": {"amount": {"type": "String"}}}
+  "@instLicenseWalletShort": {"placeholders": {"amount": {"type": "String"}}},
+  "liveStartNow": "Démarrer un cours maintenant",
+  "livePlan": "Planifier un cours",
+  "liveStartDialogTitle": "Démarrer un cours",
+  "liveStartFieldLabel": "Titre du cours",
+  "liveStartFieldHint": "Ex. : Révision des suites",
+  "liveStartGo": "Démarrer",
+  "liveStartDefaultTitle": "Cours en direct",
+  "liveStartError": "Le cours n'a pas pu être créé. Réessayez.",
+  "liveEmptyHintHost": "Démarrez un cours maintenant ou planifiez-le : vos élèves le rejoindront depuis cette page.",
+  "liveEmptyHintFormal": "Les séances en direct et les tutorats en ligne apparaîtront ici."
 }
