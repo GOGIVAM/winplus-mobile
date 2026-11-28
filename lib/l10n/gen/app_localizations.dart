@@ -9469,7 +9469,7 @@ abstract class AppLocalizations {
   /// No description provided for @teacherLinksSearchHint.
   ///
   /// In fr, this message translates to:
-  /// **'Nom, email ou téléphone…'**
+  /// **'Nom (3 lettres au moins) ou e-mail exact…'**
   String get teacherLinksSearchHint;
 
   /// No description provided for @teacherLinksTitle.

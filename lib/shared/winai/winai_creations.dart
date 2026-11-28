@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../services/content_refusal.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../l10n/l10n.dart';
@@ -117,8 +118,8 @@ class _WinAICreationsScreenState extends State<WinAICreationsScreen> {
           context,
           WinPageRoute(
               builder: (_) => QuizActiveScreen(quiz: api.toQuiz())));
-    } catch (_) {
-      if (mounted) _toast(context.l10n.commonLoadError);
+    } catch (e) {
+      if (mounted) _toast(ServerRefusal.of(e)?.message ?? context.l10n.commonLoadError);
     } finally {
       if (mounted) setState(() => _opening = null);
     }

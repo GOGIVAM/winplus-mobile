@@ -5485,7 +5485,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get teacherLinksNoPending => 'No pending invitations';
 
   @override
-  String get teacherLinksSearchHint => 'Name, email or phone…';
+  String get teacherLinksSearchHint =>
+      'Name (at least 3 letters) or exact email…';
 
   @override
   String get teacherLinksTitle => 'My student links';

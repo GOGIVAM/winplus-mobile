@@ -5528,7 +5528,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get teacherLinksNoPending => 'Aucune invitation en attente';
 
   @override
-  String get teacherLinksSearchHint => 'Nom, email ou téléphone…';
+  String get teacherLinksSearchHint =>
+      'Nom (3 lettres au moins) ou e-mail exact…';
 
   @override
   String get teacherLinksTitle => 'Mes liaisons élèves';

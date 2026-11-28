@@ -1561,7 +1561,7 @@
   "teacherLinksLinkedTab": "Linked",
   "teacherLinksNoLinked": "No linked students",
   "teacherLinksNoPending": "No pending invitations",
-  "teacherLinksSearchHint": "Name, email or phone…",
+  "teacherLinksSearchHint": "Name (at least 3 letters) or exact email…",
   "teacherLinksTitle": "My student links",
   "teacherPricingAddMod": "+ Add an adjustment",
   "teacherPricingAddRate": "+ Add a rate",

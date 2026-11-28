@@ -219,6 +219,9 @@ class MessagingService {
     } catch (e) {
       final refused = ContentRefused.of(e);
       if (refused != null) throw refused;
+      // Autre refus motivé (un répétiteur ne peut pas écrire le premier…).
+      final other = ServerRefusal.of(e);
+      if (other != null) throw other;
       return null;
     }
   }

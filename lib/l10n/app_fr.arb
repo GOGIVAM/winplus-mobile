@@ -3290,7 +3290,7 @@
   "teacherLinksLinkedTab": "Liés",
   "teacherLinksNoLinked": "Aucun élève lié",
   "teacherLinksNoPending": "Aucune invitation en attente",
-  "teacherLinksSearchHint": "Nom, email ou téléphone…",
+  "teacherLinksSearchHint": "Nom (3 lettres au moins) ou e-mail exact…",
   "teacherLinksTitle": "Mes liaisons élèves",
   "teacherPricingAddMod": "+ Ajouter une modulation",
   "teacherPricingAddRate": "+ Ajouter un tarif",

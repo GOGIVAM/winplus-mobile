@@ -272,6 +272,9 @@ class _TutorStudentSheetScreenState extends State<TutorStudentSheetScreen> {
     } on ContentRefused catch (r) {
       // Filtre des messageries : message du serveur, le texte reste.
       refusal = r.message;
+    } on ServerRefusal catch (r) {
+      // Le répétiteur ne peut écrire le premier qu'avec une réservation.
+      refusal = r.message;
     }
     if (!mounted) return;
     setState(() => _sending = false);

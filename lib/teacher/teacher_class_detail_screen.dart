@@ -1,4 +1,5 @@
 import '../l10n/class_levels.dart';
+import '../services/content_refusal.dart';
 import 'package:flutter/material.dart';
 import '../services/teacher_service.dart';
 import '../theme/win_colors.dart';
@@ -81,8 +82,11 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
       }
     } catch (e) {
       if (mounted) {
+        // Élève pas encore lié au professeur (lien_requis) : message du serveur.
+        final refusal = ServerRefusal.of(e)?.message;
         final msg = e is Exception ? e.toString() : L10n.current.teacherClassAddStudentError;
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg.contains('DioException') ? L10n.current.teacherClassAddStudentErrorDetail : msg)));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(refusal ?? (msg.contains('DioException') ? L10n.current.teacherClassAddStudentErrorDetail : msg))));
       }
     }
   }

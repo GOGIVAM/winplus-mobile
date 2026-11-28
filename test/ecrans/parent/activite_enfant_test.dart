@@ -393,6 +393,33 @@ void main() {
       expect(find.text(l.parentEncourageSent('Zoe')), findsOneWidget);
     });
 
+    testWidgets('envoi en echec sans refus motive : message d erreur, la feuille reste (on annoncait envoye)', (tester) async {
+      faux.repond('POST', '/messages/conversations', {}, statut: 500);
+      await ouvrirFeuille(tester);
+      final l = L10n.current;
+      await tester.tap(find.text(l.parentEncourageTpl1('Zoe')));
+      await pomper(tester);
+      await tester.ensureVisible(_bouton(l.commonSend));
+      await tester.tap(_bouton(l.commonSend));
+      await reseau(tester);
+      expect(find.text(l.parentEncourageSendError), findsOneWidget);
+      expect(find.text(l.parentEncourageSent('Zoe')), findsNothing);
+      expect(find.byType(EncouragementSheet), findsOneWidget);
+    });
+
+    testWidgets('refus motive du serveur (403 enfant_non_lie) : son message est affiche', (tester) async {
+      faux.repond('POST', '/messages/conversations',
+          {'success': false, 'code': 'enfant_non_lie', 'message': 'Cet enfant n est pas lie a votre compte.'}, statut: 403);
+      await ouvrirFeuille(tester);
+      final l = L10n.current;
+      await tester.tap(find.text(l.parentEncourageTpl1('Zoe')));
+      await pomper(tester);
+      await tester.ensureVisible(_bouton(l.commonSend));
+      await tester.tap(_bouton(l.commonSend));
+      await reseau(tester);
+      expect(find.text('Cet enfant n est pas lie a votre compte.'), findsOneWidget);
+    });
+
     testWidgets('message libre rogne : c\'est lui qui est envoye', (tester) async {
       faux.repond('POST', '/messages/conversations', {'conversationId': 9});
       await ouvrirFeuille(tester);

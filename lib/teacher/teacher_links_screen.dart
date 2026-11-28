@@ -56,7 +56,9 @@ class _TeacherLinksScreenState extends State<TeacherLinksScreen>
   }
 
   Future<void> _search(String q) async {
-    if (q.length < 2) {
+    // Le serveur cherche sur le nom à partir de 3 caractères (ou sur un
+    // e-mail exact) ; plus de recherche par téléphone (correctif de sécurité).
+    if (q.trim().length < 3) {
       setState(() => _searchResults = []);
       return;
     }

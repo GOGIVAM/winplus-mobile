@@ -75,8 +75,11 @@ class _EncouragementSheetState extends State<EncouragementSheet> {
     if (message.isEmpty) return;
     setState(() => _sending = true);
     try {
-      await MessagingService.instance
+      final id = await MessagingService.instance
           .startConversation(widget.child.id, firstMessage: message);
+      // Échec sans refus motivé : l'envoi n'a pas eu lieu (on annonçait
+      // « envoyé » quand même).
+      if (id == null) throw StateError('envoi');
       if (!mounted) return;
       Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(
@@ -87,7 +90,7 @@ class _EncouragementSheetState extends State<EncouragementSheet> {
       setState(() => _sending = false);
       // Filtre des messageries : le message du serveur, la feuille reste
       // ouverte avec le texte.
-      final refused = ContentRefused.of(e);
+      final refused = ServerRefusal.of(e);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
             content: Text(refused?.message ?? L10n.current.parentEncourageSendError)),

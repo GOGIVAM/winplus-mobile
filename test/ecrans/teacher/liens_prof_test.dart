@@ -77,21 +77,20 @@ void main() {
     expect(find.text(L10n.current.teacherLinksNoLinked), findsOneWidget);
   });
 
-  testWidgets('recherche : moins de 2 caracteres = aucun appel ; sinon resultats avec invitation', (tester) async {
+  testWidgets('recherche : moins de 3 caracteres = aucun appel ; sinon resultats (sans e-mail, retire par le serveur) avec invitation', (tester) async {
     routes();
     faux.repond('GET', '/teacher-links/search', [
-      {'id': 9, 'firstName': 'Zoe', 'lastName': 'Mba', 'email': 'zoe@x.cm'},
+      {'id': 9, 'firstName': 'Zoe', 'lastName': 'Mba'},
     ]);
     faux.repond('POST', '/teacher-links/invite', {});
     await monterEcran(tester, const TeacherLinksScreen());
-    await tester.enterText(find.byType(TextField), 'z');
-    await reseau(tester);
-    expect(faux.recues('GET', '/teacher-links/search'), isEmpty);
     await tester.enterText(find.byType(TextField), 'zo');
     await reseau(tester);
-    expect(faux.recues('GET', '/teacher-links/search').single.queryParameters, {'q': 'zo'});
+    expect(faux.recues('GET', '/teacher-links/search'), isEmpty);
+    await tester.enterText(find.byType(TextField), 'zoe');
+    await reseau(tester);
+    expect(faux.recues('GET', '/teacher-links/search').single.queryParameters, {'q': 'zoe'});
     expect(find.text('Zoe Mba'), findsOneWidget);
-    expect(find.text('zoe@x.cm'), findsOneWidget);
     await tester.tap(find.byIcon(PhosphorIconsFill.userPlus));
     await reseau(tester);
     expect(faux.recues('POST', '/teacher-links/invite').single.data, {'targetUserId': 9});

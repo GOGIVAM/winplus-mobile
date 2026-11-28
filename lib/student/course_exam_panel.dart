@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/content_refusal.dart';
 import 'package:intl/intl.dart';
 import '../l10n/l10n.dart';
 import '../services/course_service.dart';
@@ -76,10 +77,11 @@ class _CourseExamPanelState extends State<CourseExamPanel> {
       );
       await widget.onAttempted();
       await _refresh();
-    } catch (_) {
+    } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(context.l10n.studentExamLoadFailed)));
+        // Sans droit d'accès (exam_access_required) : message du serveur.
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(ServerRefusal.of(e)?.message ?? context.l10n.studentExamLoadFailed)));
       }
     } finally {
       if (mounted) setState(() => _starting = false);

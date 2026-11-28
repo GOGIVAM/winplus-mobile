@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/content_refusal.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../l10n/l10n.dart';
@@ -154,8 +155,11 @@ class _TeacherStudentsViewState extends State<TeacherStudentsView> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.teacherStudentsAdded(st.name, klass.name))));
       await _load();
-    } catch (_) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.teacherClassesActionFailed)));
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(ServerRefusal.of(e)?.message ?? l.teacherClassesActionFailed)));
+      }
     }
   }
 
