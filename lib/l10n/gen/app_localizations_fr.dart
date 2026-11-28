@@ -12861,4 +12861,35 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get signOutBodyFormal =>
       'Vous serez redirigé vers l\'écran de connexion.';
+
+  @override
+  String get authTwoFactorTitle => 'Vérification en deux étapes';
+
+  @override
+  String get authTwoFactorSubtitle =>
+      'Saisir le code à 6 chiffres affiché par l\'application d\'authentification, ou un code de secours.';
+
+  @override
+  String get authTwoFactorCode => 'Code';
+
+  @override
+  String get authTwoFactorVerify => 'Vérifier';
+
+  @override
+  String get authTwoFactorInvalid => 'Code incorrect.';
+
+  @override
+  String authTwoFactorAttemptsLeft(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Encore $count essais.',
+      one: 'Encore 1 essai.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get authTwoFactorBackupHint =>
+      'Plus d\'accès à l\'application ? Un code de secours (8 caractères) fonctionne une seule fois.';
 }

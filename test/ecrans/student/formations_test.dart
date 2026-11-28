@@ -52,6 +52,18 @@ void main() {
       expect(find.byIcon(PhosphorIconsFill.medal), findsOneWidget);
     });
 
+    testWidgets('toucher la carte (pas seulement le bouton) ouvre le lecteur de la formation', (tester) async {
+      faux.repond('GET', '/my-courses', [
+        {'enrollmentId': 1, 'progressPercent': 40, 'course': {'id': 7, 'title': 'Algebre', 'lessonsCount': 4, 'totalDurationMin': 90}},
+      ]);
+      await monterEcran(tester, const MyCoursesScreen());
+      await tester.tap(find.text('Algebre'));
+      await reseau(tester);
+      // Le lecteur s'est ouvert sur cette formation (il demande son programme ;
+      // sans reponse simulee, il se referme aussitot).
+      expect(faux.recues('GET', '/courses/7/play'), isNotEmpty);
+    });
+
     testWidgets('aucune formation : etat vide avec bouton d\'exploration', (tester) async {
       faux.repond('GET', '/my-courses', []);
       await monterEcran(tester, const MyCoursesScreen());

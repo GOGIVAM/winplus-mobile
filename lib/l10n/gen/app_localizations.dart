@@ -21525,6 +21525,48 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Vous serez redirigé vers l\'écran de connexion.'**
   String get signOutBodyFormal;
+
+  /// No description provided for @authTwoFactorTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vérification en deux étapes'**
+  String get authTwoFactorTitle;
+
+  /// No description provided for @authTwoFactorSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Saisir le code à 6 chiffres affiché par l\'application d\'authentification, ou un code de secours.'**
+  String get authTwoFactorSubtitle;
+
+  /// No description provided for @authTwoFactorCode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code'**
+  String get authTwoFactorCode;
+
+  /// No description provided for @authTwoFactorVerify.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vérifier'**
+  String get authTwoFactorVerify;
+
+  /// No description provided for @authTwoFactorInvalid.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code incorrect.'**
+  String get authTwoFactorInvalid;
+
+  /// No description provided for @authTwoFactorAttemptsLeft.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{Encore 1 essai.} other{Encore {count} essais.}}'**
+  String authTwoFactorAttemptsLeft(num count);
+
+  /// No description provided for @authTwoFactorBackupHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plus d\'accès à l\'application ? Un code de secours (8 caractères) fonctionne une seule fois.'**
+  String get authTwoFactorBackupHint;
 }
 
 class _AppLocalizationsDelegate

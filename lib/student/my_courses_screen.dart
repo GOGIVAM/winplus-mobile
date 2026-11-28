@@ -113,6 +113,8 @@ class _CourseCard extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 14),
       child: WinCard(
         padding: EdgeInsets.zero,
+        // Toute la carte ouvre la formation (seul le bouton le faisait).
+        onTap: onTap,
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           // Thumbnail
           ClipRRect(

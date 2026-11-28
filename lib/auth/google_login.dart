@@ -12,6 +12,7 @@ import '../shared/subscription/subscription_notifier.dart';
 import '../shell/role_shell.dart';
 import '../theme/win_motion.dart';
 import 'role_screen.dart';
+import 'two_factor_login_screen.dart';
 
 /// Connexion avec Google sur mobile (lot 2).
 ///
@@ -70,6 +71,13 @@ class GoogleLogin {
       // Compte Google inconnu : choisir son profil, puis créer le compte.
       Navigator.push(context,
           WinPageRoute(builder: (_) => RoleScreen(googleIdToken: res.idToken)));
+      return;
+    }
+    if (res.twoFactorToken != null) {
+      // Double authentification active : le code avant la session.
+      final retour = await Navigator.push<String>(context,
+          WinPageRoute(builder: (_) => TwoFactorLoginScreen(twoFactorToken: res.twoFactorToken!)));
+      if (retour != null) messenger.showSnackBar(SnackBar(content: Text(retour)));
       return;
     }
     if (!res.success) {

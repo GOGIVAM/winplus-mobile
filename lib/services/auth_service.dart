@@ -13,8 +13,27 @@ class AuthResult {
   final String? message;
   final String? errorCode;
   final String? locale;
+
+  /// Double authentification active : pas encore de session, le code de
+  /// l'application (ou un code de secours) est à envoyer avec ce jeton de
+  /// 5 minutes (POST /auth/2fa/verify-login).
+  final String? twoFactorToken;
+
+  /// Code faux : essais restants avant le blocage (5 au départ).
+  final int? attemptsLeft;
   const AuthResult(
-      {required this.success, this.message, this.errorCode, this.locale});
+      {required this.success,
+      this.message,
+      this.errorCode,
+      this.locale,
+      this.twoFactorToken,
+      this.attemptsLeft});
+
+  bool get needsTwoFactor => twoFactorToken != null;
+
+  /// Jeton expiré ou trop d'essais : retour à l'écran de connexion.
+  bool get twoFactorRestart =>
+      errorCode == 'TWO_FACTOR_EXPIRED' || errorCode == 'TWO_FACTOR_LOCKED';
 }
 
 /// Réponse de GET /auth/reconfirmation-status.
@@ -43,12 +62,15 @@ class GoogleAuthResult {
   final String? idToken;
   final String? message;
   final String? locale;
+  /// Double authentification active (voir [AuthResult.twoFactorToken]).
+  final String? twoFactorToken;
   const GoogleAuthResult(
       {this.success = false,
       this.needsRole = false,
       this.idToken,
       this.message,
-      this.locale});
+      this.locale,
+      this.twoFactorToken});
 }
 
 class AuthService {
@@ -64,16 +86,10 @@ class AuthService {
         'password': password,
       });
       final d = res.data as Map<String, dynamic>;
-      final u = d['user'] as Map<String, dynamic>;
-      await SessionManager.save(
-        accessToken: d['accessToken'] as String,
-        refreshToken: d['refreshToken'] as String,
-        userId: u['id'] as int,
-        email: u['email'] as String,
-        role: (u['role'] as String?) ?? 'student',
-        name: '${u['firstName'] ?? ''} ${u['lastName'] ?? ''}'.trim(),
-      );
-      return AuthResult(success: true, locale: u['locale'] as String?);
+      if (d['requiresTwoFactor'] == true) {
+        return AuthResult(success: false, twoFactorToken: d['twoFactorToken'] as String?);
+      }
+      return AuthResult(success: true, locale: await _openSession(d));
     } on DioException catch (e) {
       final data = e.response?.data is Map<String, dynamic> ? e.response!.data as Map<String, dynamic> : null;
       final code = data?['errorCode'] as String?;
@@ -81,6 +97,48 @@ class AuthService {
         success: false,
         message: signInMessage(e.response?.statusCode, code),
         errorCode: code,
+      );
+    }
+  }
+
+  /// Session ouverte à partir d'une réponse de connexion (signin, google,
+  /// 2fa/verify-login : même forme) ; renvoie la langue du compte.
+  Future<String?> _openSession(Map<String, dynamic> d) async {
+    final u = d['user'] as Map<String, dynamic>;
+    await SessionManager.save(
+      accessToken: d['accessToken'] as String,
+      refreshToken: d['refreshToken'] as String,
+      userId: u['id'] as int,
+      email: u['email'] as String,
+      role: (u['role'] as String?) ?? 'student',
+      name: '${u['firstName'] ?? ''} ${u['lastName'] ?? ''}'.trim(),
+    );
+    return u['locale'] as String?;
+  }
+
+  /// Second facteur de la connexion : code à 6 chiffres de l'application
+  /// d'authentification, ou code de secours de 8 caractères (le serveur
+  /// ignore casse, espaces et tirets). Refus en 401 avec errorCode
+  /// TWO_FACTOR_INVALID (attemptsLeft), TWO_FACTOR_EXPIRED ou
+  /// TWO_FACTOR_LOCKED, et un message en français affiché tel quel.
+  Future<AuthResult> verifyTwoFactorLogin(String twoFactorToken, String code) async {
+    try {
+      final res = await _api.dio.post('/auth/2fa/verify-login', data: {
+        'twoFactorToken': twoFactorToken,
+        'code': code.trim(),
+      });
+      return AuthResult(
+          success: true, locale: await _openSession(res.data as Map<String, dynamic>));
+    } on DioException catch (e) {
+      final data = e.response?.data is Map ? e.response!.data as Map : null;
+      final status = e.response?.statusCode;
+      return AuthResult(
+        success: false,
+        errorCode: data?['errorCode'] as String?,
+        attemptsLeft: (data?['attemptsLeft'] as num?)?.toInt(),
+        message: status == null
+            ? L10n.current.authErrNetwork
+            : (data?['message'] as String?) ?? L10n.current.authTwoFactorInvalid,
       );
     }
   }
@@ -130,16 +188,10 @@ class AuthService {
         return GoogleAuthResult(
             needsRole: true, idToken: d['idToken'] as String? ?? idToken);
       }
-      final u = d['user'] as Map<String, dynamic>;
-      await SessionManager.save(
-        accessToken: d['accessToken'] as String,
-        refreshToken: d['refreshToken'] as String,
-        userId: u['id'] as int,
-        email: u['email'] as String,
-        role: (u['role'] as String?) ?? 'student',
-        name: '${u['firstName'] ?? ''} ${u['lastName'] ?? ''}'.trim(),
-      );
-      return GoogleAuthResult(success: true, locale: u['locale'] as String?);
+      if (d['requiresTwoFactor'] == true) {
+        return GoogleAuthResult(twoFactorToken: d['twoFactorToken'] as String?);
+      }
+      return GoogleAuthResult(success: true, locale: await _openSession(d));
     } on DioException catch (e) {
       final data = e.response?.data;
       return GoogleAuthResult(

@@ -6630,5 +6630,12 @@
   "tutoringLocationNoteHint": "Étage, portail, personne à demander",
   "tutoringLocationRequired": "Le lieu de la séance est à indiquer : quartier, rue et un repère.",
   "tutoringLocationTutorHome": "La séance a lieu chez le répétiteur, dans le quartier indiqué sur son profil.",
-  "signOutBodyFormal": "Vous serez redirigé vers l'écran de connexion."
+  "signOutBodyFormal": "Vous serez redirigé vers l'écran de connexion.",
+  "authTwoFactorTitle": "Vérification en deux étapes",
+  "authTwoFactorSubtitle": "Saisir le code à 6 chiffres affiché par l'application d'authentification, ou un code de secours.",
+  "authTwoFactorCode": "Code",
+  "authTwoFactorVerify": "Vérifier",
+  "authTwoFactorInvalid": "Code incorrect.",
+  "authTwoFactorAttemptsLeft": "{count, plural, =1{Encore 1 essai.} other{Encore {count} essais.}}",
+  "authTwoFactorBackupHint": "Plus d'accès à l'application ? Un code de secours (8 caractères) fonctionne une seule fois."
 }

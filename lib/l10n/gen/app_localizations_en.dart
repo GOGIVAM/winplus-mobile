@@ -12768,4 +12768,35 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get signOutBodyFormal =>
       'You will be taken back to the sign-in screen.';
+
+  @override
+  String get authTwoFactorTitle => 'Two-step verification';
+
+  @override
+  String get authTwoFactorSubtitle =>
+      'Enter the 6-digit code shown by your authenticator app, or a backup code.';
+
+  @override
+  String get authTwoFactorCode => 'Code';
+
+  @override
+  String get authTwoFactorVerify => 'Verify';
+
+  @override
+  String get authTwoFactorInvalid => 'Incorrect code.';
+
+  @override
+  String authTwoFactorAttemptsLeft(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count attempts left.',
+      one: '1 attempt left.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get authTwoFactorBackupHint =>
+      'Lost access to the app? A backup code (8 characters) works only once.';
 }

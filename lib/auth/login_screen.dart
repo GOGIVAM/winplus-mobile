@@ -17,6 +17,7 @@ import '../shared/subscription/subscription_notifier.dart';
 import 'forgot_password_screen.dart';
 import 'google_login.dart';
 import 'role_screen.dart';
+import 'two_factor_login_screen.dart';
 import '../widgets/win_logo.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
@@ -52,6 +53,19 @@ class _LoginScreenState extends State<LoginScreen> {
 
     final result = await AuthService.instance.signIn(email, pwd);
     if (!mounted) return;
+
+    if (result.needsTwoFactor) {
+      // Double authentification : le code avant la session. Au retour
+      // (jeton expiré, trop d'essais), le message du serveur s'affiche ici.
+      final retour = await Navigator.push<String>(context,
+          WinPageRoute(builder: (_) => TwoFactorLoginScreen(twoFactorToken: result.twoFactorToken!)));
+      if (!mounted) return;
+      setState(() {
+        _loading = false;
+        _error = retour;
+      });
+      return;
+    }
 
     if (result.success) {
       final roleStr = await SessionManager.getUserRole();

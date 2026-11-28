@@ -3754,5 +3754,12 @@
   "tutoringLocationNoteHint": "Floor, gate, who to ask for",
   "tutoringLocationRequired": "The place of the session is needed: neighbourhood, street and a landmark.",
   "tutoringLocationTutorHome": "The session takes place at the tutor's home, in the neighbourhood shown on their profile.",
-  "signOutBodyFormal": "You will be taken back to the sign-in screen."
+  "signOutBodyFormal": "You will be taken back to the sign-in screen.",
+  "authTwoFactorTitle": "Two-step verification",
+  "authTwoFactorSubtitle": "Enter the 6-digit code shown by your authenticator app, or a backup code.",
+  "authTwoFactorCode": "Code",
+  "authTwoFactorVerify": "Verify",
+  "authTwoFactorInvalid": "Incorrect code.",
+  "authTwoFactorAttemptsLeft": "{count, plural, =1{1 attempt left.} other{{count} attempts left.}}",
+  "authTwoFactorBackupHint": "Lost access to the app? A backup code (8 characters) works only once."
 }
