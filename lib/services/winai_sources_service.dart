@@ -80,7 +80,7 @@ class WinAISourceUsage {
     this.bytes = 0,
     this.maxFiles = -1,
     this.maxBytes = -1,
-    this.maxFileBytes = 5 * 1024 * 1024,
+    this.maxFileBytes = 25 * 1024 * 1024,
     this.maxPerMessage = 10,
     this.acceptedTypes = const [],
   });
@@ -90,7 +90,7 @@ class WinAISourceUsage {
         bytes: (j['bytes'] as num?)?.toInt() ?? 0,
         maxFiles: (j['maxFiles'] as num?)?.toInt() ?? -1,
         maxBytes: (j['maxBytes'] as num?)?.toInt() ?? -1,
-        maxFileBytes: (j['maxFileBytes'] as num?)?.toInt() ?? 5 * 1024 * 1024,
+        maxFileBytes: (j['maxFileBytes'] as num?)?.toInt() ?? 25 * 1024 * 1024,
         maxPerMessage: (j['maxSourcesPerMessage'] as num?)?.toInt() ?? 10,
         acceptedTypes:
             (j['acceptedTypes'] as List? ?? const []).whereType<String>().toList(),
@@ -177,9 +177,14 @@ class WinAISourcesService {
   /// « pending » puis « ready »).
   Future<WinAIDocument> upload(List<int> bytes, String fileName) async {
     try {
+      // Jusqu'à 25 Mo (serveur 41b2fbe) : sur un réseau lent, l'envoi dépasse
+      // le délai habituel (même réglage que la vidéo du répétiteur).
       final res = await _api.dio.post('/winai/sources',
           data: FormData.fromMap(
-              {'file': MultipartFile.fromBytes(bytes, filename: fileName)}));
+              {'file': MultipartFile.fromBytes(bytes, filename: fileName)}),
+          options: Options(
+              sendTimeout: const Duration(minutes: 5),
+              receiveTimeout: const Duration(minutes: 2)));
       final d = _data(res.data);
       return WinAIDocument.fromJson(
           d['source'] as Map<String, dynamic>? ?? const {});
