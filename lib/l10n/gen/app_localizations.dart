@@ -21567,6 +21567,162 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Plus d\'accès à l\'application ? Un code de secours (8 caractères) fonctionne une seule fois.'**
   String get authTwoFactorBackupHint;
+
+  /// No description provided for @twoFaTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Double authentification'**
+  String get twoFaTitle;
+
+  /// No description provided for @twoFaIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'À chaque connexion, un code de l\'application d\'authentification (Google Authenticator, Microsoft Authenticator…) est demandé en plus du mot de passe.'**
+  String get twoFaIntro;
+
+  /// No description provided for @twoFaEnabled.
+  ///
+  /// In fr, this message translates to:
+  /// **'Activée'**
+  String get twoFaEnabled;
+
+  /// No description provided for @twoFaEnabledSince.
+  ///
+  /// In fr, this message translates to:
+  /// **'Activée depuis le {date}'**
+  String twoFaEnabledSince(Object date);
+
+  /// No description provided for @twoFaDisabled.
+  ///
+  /// In fr, this message translates to:
+  /// **'Désactivée'**
+  String get twoFaDisabled;
+
+  /// No description provided for @twoFaBackupLeft.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =0{Plus aucun code de secours} =1{1 code de secours restant} other{{count} codes de secours restants}}'**
+  String twoFaBackupLeft(num count);
+
+  /// No description provided for @twoFaEnable.
+  ///
+  /// In fr, this message translates to:
+  /// **'Activer'**
+  String get twoFaEnable;
+
+  /// No description provided for @twoFaStep1.
+  ///
+  /// In fr, this message translates to:
+  /// **'1. Ajouter WinPlus dans l\'application d\'authentification'**
+  String get twoFaStep1;
+
+  /// No description provided for @twoFaOpenApp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouvrir l\'application d\'authentification'**
+  String get twoFaOpenApp;
+
+  /// No description provided for @twoFaKeyLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ou saisir cette clé à la main :'**
+  String get twoFaKeyLabel;
+
+  /// No description provided for @twoFaCopyKey.
+  ///
+  /// In fr, this message translates to:
+  /// **'Copier la clé'**
+  String get twoFaCopyKey;
+
+  /// No description provided for @twoFaKeyCopied.
+  ///
+  /// In fr, this message translates to:
+  /// **'Clé copiée.'**
+  String get twoFaKeyCopied;
+
+  /// No description provided for @twoFaQrHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Depuis un autre appareil, scanner ce QR code.'**
+  String get twoFaQrHint;
+
+  /// No description provided for @twoFaStep2.
+  ///
+  /// In fr, this message translates to:
+  /// **'2. Saisir le code à 6 chiffres affiché'**
+  String get twoFaStep2;
+
+  /// No description provided for @twoFaConfirm.
+  ///
+  /// In fr, this message translates to:
+  /// **'Confirmer l\'activation'**
+  String get twoFaConfirm;
+
+  /// No description provided for @twoFaBackupTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Codes de secours'**
+  String get twoFaBackupTitle;
+
+  /// No description provided for @twoFaBackupHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chaque code sert une seule fois, si l\'application n\'est plus accessible. Ils ne seront plus affichés : à copier et garder en lieu sûr.'**
+  String get twoFaBackupHint;
+
+  /// No description provided for @twoFaCopyCodes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Copier les codes'**
+  String get twoFaCopyCodes;
+
+  /// No description provided for @twoFaCopied.
+  ///
+  /// In fr, this message translates to:
+  /// **'Codes copiés.'**
+  String get twoFaCopied;
+
+  /// No description provided for @twoFaDone.
+  ///
+  /// In fr, this message translates to:
+  /// **'C\'est noté'**
+  String get twoFaDone;
+
+  /// No description provided for @twoFaNewCodes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveaux codes de secours'**
+  String get twoFaNewCodes;
+
+  /// No description provided for @twoFaDisable.
+  ///
+  /// In fr, this message translates to:
+  /// **'Désactiver'**
+  String get twoFaDisable;
+
+  /// No description provided for @twoFaPasswordLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mot de passe (sauf compte Google)'**
+  String get twoFaPasswordLabel;
+
+  /// No description provided for @twoFaCodeLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code de l\'application ou de secours'**
+  String get twoFaCodeLabel;
+
+  /// No description provided for @twoFaAppCodeLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code de l\'application'**
+  String get twoFaAppCodeLabel;
+
+  /// No description provided for @twoFaError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Opération impossible pour le moment. Merci de réessayer.'**
+  String get twoFaError;
 }
 
 class _AppLocalizationsDelegate

@@ -12,6 +12,7 @@ import '../widgets/account_settings_switches.dart';
 import '../widgets/biometric_toggle.dart';
 import '../widgets/language_selector.dart';
 import 'change_password_screen.dart';
+import 'two_factor_settings_screen.dart';
 import 'delete_account.dart';
 import 'more_screen.dart';
 
@@ -56,6 +57,14 @@ class SettingsScreen extends StatelessWidget {
                     context,
                     WinPageRoute(
                         builder: (_) => const ChangePasswordScreen()))),
+            // Double authentification pour tous les comptes (serveur 2a006d2).
+            MoreLine(
+                icon: PhosphorIconsRegular.shieldCheck,
+                label: l.twoFaTitle,
+                onTap: () => Navigator.push(
+                    context,
+                    WinPageRoute(
+                        builder: (_) => const TwoFactorSettingsScreen()))),
             MoreLine(
                 icon: PhosphorIconsRegular.bell,
                 label: l.studentNotifTitle,

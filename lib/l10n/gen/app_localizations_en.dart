@@ -12799,4 +12799,96 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get authTwoFactorBackupHint =>
       'Lost access to the app? A backup code (8 characters) works only once.';
+
+  @override
+  String get twoFaTitle => 'Two-factor authentication';
+
+  @override
+  String get twoFaIntro =>
+      'At each sign-in, a code from your authenticator app (Google Authenticator, Microsoft Authenticator…) is required in addition to your password.';
+
+  @override
+  String get twoFaEnabled => 'On';
+
+  @override
+  String twoFaEnabledSince(Object date) {
+    return 'On since $date';
+  }
+
+  @override
+  String get twoFaDisabled => 'Off';
+
+  @override
+  String twoFaBackupLeft(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count backup codes left',
+      one: '1 backup code left',
+      zero: 'No backup codes left',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get twoFaEnable => 'Turn on';
+
+  @override
+  String get twoFaStep1 => '1. Add WinPlus to your authenticator app';
+
+  @override
+  String get twoFaOpenApp => 'Open the authenticator app';
+
+  @override
+  String get twoFaKeyLabel => 'Or enter this key manually:';
+
+  @override
+  String get twoFaCopyKey => 'Copy key';
+
+  @override
+  String get twoFaKeyCopied => 'Key copied.';
+
+  @override
+  String get twoFaQrHint => 'From another device, scan this QR code.';
+
+  @override
+  String get twoFaStep2 => '2. Enter the 6-digit code shown';
+
+  @override
+  String get twoFaConfirm => 'Confirm';
+
+  @override
+  String get twoFaBackupTitle => 'Backup codes';
+
+  @override
+  String get twoFaBackupHint =>
+      'Each code works once, if you lose access to the app. They will not be shown again: copy them and keep them safe.';
+
+  @override
+  String get twoFaCopyCodes => 'Copy codes';
+
+  @override
+  String get twoFaCopied => 'Codes copied.';
+
+  @override
+  String get twoFaDone => 'Done';
+
+  @override
+  String get twoFaNewCodes => 'New backup codes';
+
+  @override
+  String get twoFaDisable => 'Turn off';
+
+  @override
+  String get twoFaPasswordLabel => 'Password (except Google accounts)';
+
+  @override
+  String get twoFaCodeLabel => 'App or backup code';
+
+  @override
+  String get twoFaAppCodeLabel => 'App code';
+
+  @override
+  String get twoFaError =>
+      'Unable to complete this right now. Please try again.';
 }

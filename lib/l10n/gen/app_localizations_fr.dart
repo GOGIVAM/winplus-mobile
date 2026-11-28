@@ -12892,4 +12892,97 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get authTwoFactorBackupHint =>
       'Plus d\'accès à l\'application ? Un code de secours (8 caractères) fonctionne une seule fois.';
+
+  @override
+  String get twoFaTitle => 'Double authentification';
+
+  @override
+  String get twoFaIntro =>
+      'À chaque connexion, un code de l\'application d\'authentification (Google Authenticator, Microsoft Authenticator…) est demandé en plus du mot de passe.';
+
+  @override
+  String get twoFaEnabled => 'Activée';
+
+  @override
+  String twoFaEnabledSince(Object date) {
+    return 'Activée depuis le $date';
+  }
+
+  @override
+  String get twoFaDisabled => 'Désactivée';
+
+  @override
+  String twoFaBackupLeft(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count codes de secours restants',
+      one: '1 code de secours restant',
+      zero: 'Plus aucun code de secours',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get twoFaEnable => 'Activer';
+
+  @override
+  String get twoFaStep1 =>
+      '1. Ajouter WinPlus dans l\'application d\'authentification';
+
+  @override
+  String get twoFaOpenApp => 'Ouvrir l\'application d\'authentification';
+
+  @override
+  String get twoFaKeyLabel => 'Ou saisir cette clé à la main :';
+
+  @override
+  String get twoFaCopyKey => 'Copier la clé';
+
+  @override
+  String get twoFaKeyCopied => 'Clé copiée.';
+
+  @override
+  String get twoFaQrHint => 'Depuis un autre appareil, scanner ce QR code.';
+
+  @override
+  String get twoFaStep2 => '2. Saisir le code à 6 chiffres affiché';
+
+  @override
+  String get twoFaConfirm => 'Confirmer l\'activation';
+
+  @override
+  String get twoFaBackupTitle => 'Codes de secours';
+
+  @override
+  String get twoFaBackupHint =>
+      'Chaque code sert une seule fois, si l\'application n\'est plus accessible. Ils ne seront plus affichés : à copier et garder en lieu sûr.';
+
+  @override
+  String get twoFaCopyCodes => 'Copier les codes';
+
+  @override
+  String get twoFaCopied => 'Codes copiés.';
+
+  @override
+  String get twoFaDone => 'C\'est noté';
+
+  @override
+  String get twoFaNewCodes => 'Nouveaux codes de secours';
+
+  @override
+  String get twoFaDisable => 'Désactiver';
+
+  @override
+  String get twoFaPasswordLabel => 'Mot de passe (sauf compte Google)';
+
+  @override
+  String get twoFaCodeLabel => 'Code de l\'application ou de secours';
+
+  @override
+  String get twoFaAppCodeLabel => 'Code de l\'application';
+
+  @override
+  String get twoFaError =>
+      'Opération impossible pour le moment. Merci de réessayer.';
 }

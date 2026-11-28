@@ -182,24 +182,6 @@ void main() {
       await reseau(tester);
       expect(find.text(L10n.current.studentProfilePwdWrong), findsOneWidget);
     });
-
-    testWidgets('double authentification : activation via le serveur ; refus = message et interrupteur inchange', skip: !kTwoFactorAvailable, (tester) async {
-      faux.repond('POST', '/auth/2fa/enable', {});
-      await monterEcran(tester, const ProfileScreen());
-      await _versOnglet(tester, L10n.current.studentProfileTabSecurity);
-      final commutateur = find.byType(Switch);
-      await _defiler(tester, commutateur);
-      expect(tester.widget<Switch>(commutateur).value, isFalse);
-      await tester.tap(commutateur);
-      await reseau(tester);
-      expect(faux.recues('POST', '/auth/2fa/enable'), hasLength(1));
-      expect(tester.widget<Switch>(commutateur).value, isTrue);
-      faux.repond('POST', '/auth/2fa/disable', {'error': 'Impossible'}, statut: 400);
-      await tester.tap(commutateur);
-      await reseau(tester);
-      expect(tester.widget<Switch>(commutateur).value, isTrue);
-      expect(find.text('Impossible'), findsOneWidget);
-    });
   });
 
   group('Autres onglets', () {

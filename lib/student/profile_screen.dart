@@ -17,9 +17,6 @@ import '../app_config.dart';
 import '../shared/subscription/pricing_screen.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-/// Double authentification proposée dans le profil (voir plus bas).
-const bool kTwoFactorAvailable = false;
-
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
   @override
@@ -42,7 +39,6 @@ class _ProfileScreenState extends State<ProfileScreen>
   final _newPwdCtrl = TextEditingController();
   final _confPwdCtrl = TextEditingController();
 
-  bool _twoFactor = false;
   bool _savingProfile = false;
   bool _savingPwd = false;
   String? _pwdError;
@@ -327,43 +323,8 @@ class _ProfileScreenState extends State<ProfileScreen>
               variant: WinButtonVariant.outline,
               loading: _savingPwd,
               onTap: _changePwd),
-          // Double authentification masquée (audit du 27/11) : le serveur ne
-          // garde pas le secret généré, la vérification ne peut pas aboutir,
-          // et l'interrupteur appelait une route inexistante. À réafficher
-          // quand le parcours serveur (activation, code, désactivation) sera fait.
-          if (kTwoFactorAvailable) ...[
-          const SizedBox(height: 28),
-          const WinDivider(),
-          const SizedBox(height: 20),
-          Row(children: [
-            Expanded(
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                  Text(context.l10n.studentProfile2fa,
-                      style: WinType.titleM(s.onStrong)),
-                  Text(context.l10n.studentProfile2faHint,
-                      style: WinType.bodyS(s.onMuted)),
-                ])),
-            Switch(
-              value: _twoFactor,
-              activeTrackColor: s.primary,
-              onChanged: (v) async {
-                final messenger = ScaffoldMessenger.of(context);
-                final res = v
-                    ? await AuthService.instance.enable2FA()
-                    : await AuthService.instance.disable2FA();
-                if (!mounted) return;
-                if (res.success) {
-                  setState(() => _twoFactor = v);
-                } else {
-                  messenger.showSnackBar(
-                      SnackBar(content: Text(res.message ?? L10n.current.studentCourseError)));
-                }
-              },
-            ),
-          ]),
-          ],
+          // Double authentification : Paramètres > Double authentification,
+          // pour tous les comptes (TwoFactorSettingsScreen).
           const SizedBox(height: 28),
           const WinDivider(),
           const SizedBox(height: 20),

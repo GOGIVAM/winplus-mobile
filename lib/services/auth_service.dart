@@ -359,28 +359,4 @@ class AuthService {
     UserService.instance.resetNotifications();
   }
 
-  Future<AuthResult> enable2FA() async {
-    try {
-      // Routes réelles : /users/2fa/enable puis /users/2fa/verify (code).
-      await _api.dio.post('/users/2fa/enable', data: {'method': 'authenticator'});
-      return const AuthResult(success: true);
-    } on DioException catch (e) {
-      final data = e.response?.data is Map<String, dynamic> ? e.response!.data as Map<String, dynamic> : null;
-      return AuthResult(
-          success: false,
-          message: data?['error'] as String? ?? L10n.current.commonNetworkError);
-    }
-  }
-
-  Future<AuthResult> disable2FA() async {
-    try {
-      await _api.dio.post('/users/2fa/disable', data: const {});
-      return const AuthResult(success: true);
-    } on DioException catch (e) {
-      final data = e.response?.data is Map<String, dynamic> ? e.response!.data as Map<String, dynamic> : null;
-      return AuthResult(
-          success: false,
-          message: data?['error'] as String? ?? L10n.current.commonNetworkError);
-    }
-  }
 }

@@ -160,35 +160,15 @@ void main() {
       faux.coupure('POST', '/auth/resend-verification');
       faux.coupure('POST', '/auth/forgot-password');
       faux.coupure('POST', '/auth/reset-password');
-      faux.coupure('POST', '/users/2fa/enable');
-      faux.coupure('POST', '/users/2fa/disable');
       final rs = [
         await AuthService.instance.resendVerification('e@w.cm'),
         await AuthService.instance.forgotPassword('e@w.cm'),
         await AuthService.instance.resetPassword('t', 'p'),
-        await AuthService.instance.enable2FA(),
-        await AuthService.instance.disable2FA(),
       ];
       for (final r in rs) {
         expect(r.success, isFalse);
         expect(r.message, 'Erreur réseau');
       }
-    });
-
-    test('le message du serveur l\'emporte sur le message reseau', () async {
-      faux.repond('POST', '/users/2fa/enable', {'error': 'Deja active'}, statut: 409);
-      final r = await AuthService.instance.enable2FA();
-      expect(r.success, isFalse);
-      expect(r.message, 'Deja active');
-    });
-
-    test('enable2FA et disable2FA appellent leur route', () async {
-      faux.repond('POST', '/users/2fa/enable', {});
-      faux.repond('POST', '/users/2fa/disable', {});
-      expect((await AuthService.instance.enable2FA()).success, isTrue);
-      expect((await AuthService.instance.disable2FA()).success, isTrue);
-      expect(faux.recues('POST', '/users/2fa/enable'), hasLength(1));
-      expect(faux.recues('POST', '/users/2fa/disable'), hasLength(1));
     });
   });
 
