@@ -247,7 +247,7 @@ Widget bulletinTile(BuildContext context, BulletinSummary b,
           ]),
         ),
         if (onDelete != null)
-          IconButton(tooltip: l.bullDelete, onPressed: onDelete, icon: const Icon(PhosphorIconsRegular.trash))
+          IconButton(tooltip: l.bullDelete, onPressed: onDelete, icon: Icon(PhosphorIconsRegular.trash, size: 20, color: s.onMuted))
         else
           Icon(PhosphorIconsRegular.caretRight, size: 18, color: s.onMuted),
       ]),

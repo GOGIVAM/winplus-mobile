@@ -9,6 +9,7 @@ import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../widgets/win_screen.dart';
+import '../widgets/winai_floating_widget.dart';
 
 // ---------------------------------------------------------------------------
 // Model
@@ -240,12 +241,13 @@ class _TeacherCoursesScreenState extends State<TeacherCoursesScreen> {
           Expanded(child: _buildBody(s)),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: // Le bouton WinAI flottant se retire : deux boutons se superposaient.
+          WinAIFabHidden(child: FloatingActionButton(
         backgroundColor: s.primary,
         foregroundColor: s.onPrimary,
         onPressed: _showCourseFab,
         child: const Icon(PhosphorIconsRegular.plus),
-      ),
+      )),
     );
   }
 

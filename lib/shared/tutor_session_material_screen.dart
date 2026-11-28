@@ -490,7 +490,7 @@ class _MaterialEditorState extends State<_MaterialEditor> {
       for (var i = 0; i < _c.sections.length; i++) ...[
         Row(children: [
           Expanded(child: Text(context.l10n.tutoringMatPart(i + 1), style: WinType.labelM(s.onStrong))),
-          IconButton(icon: const Icon(PhosphorIconsRegular.trash), onPressed: () => setState(() => _c.sections = [..._c.sections]..removeAt(i))),
+          IconButton(icon: Icon(PhosphorIconsRegular.trash, size: 20, color: s.onMuted), onPressed: () => setState(() => _c.sections = [..._c.sections]..removeAt(i))),
         ]),
         _field(context.l10n.tutoringMatFieldPartTitle, _c.sections[i].title, (v) => _c.sections[i].title = v),
         _field(context.l10n.tutoringMatFieldContent, _c.sections[i].content, (v) => _c.sections[i].content = v, maxLines: 8),
@@ -508,7 +508,7 @@ class _MaterialEditorState extends State<_MaterialEditor> {
       for (var i = 0; i < _c.quiz.length; i++) ...[
         Row(children: [
           Expanded(child: Text('Question ${i + 1}', style: WinType.labelM(s.onStrong))),
-          IconButton(icon: const Icon(PhosphorIconsRegular.trash), onPressed: () => setState(() => _c.quiz = [..._c.quiz]..removeAt(i))),
+          IconButton(icon: Icon(PhosphorIconsRegular.trash, size: 20, color: s.onMuted), onPressed: () => setState(() => _c.quiz = [..._c.quiz]..removeAt(i))),
         ]),
         _field(context.l10n.tutoringMatFieldStatement, _c.quiz[i].text, (v) => _c.quiz[i].text = v, maxLines: 3),
         RadioGroup<String>(
@@ -548,7 +548,7 @@ class _MaterialEditorState extends State<_MaterialEditor> {
             items: [for (final e in _difficultyLabels.entries) DropdownMenuItem(value: e.key, child: Text(e.value))],
             onChanged: (v) => setState(() => _c.exercises[i].difficulty = v ?? 'moyen'),
           ),
-          IconButton(icon: const Icon(PhosphorIconsRegular.trash), onPressed: () => setState(() => _c.exercises = [..._c.exercises]..removeAt(i))),
+          IconButton(icon: Icon(PhosphorIconsRegular.trash, size: 20, color: s.onMuted), onPressed: () => setState(() => _c.exercises = [..._c.exercises]..removeAt(i))),
         ]),
         _field(context.l10n.tutoringMatFieldTitle, _c.exercises[i].title, (v) => _c.exercises[i].title = v),
         _field(context.l10n.tutoringMatFieldStatement, _c.exercises[i].statement, (v) => _c.exercises[i].statement = v, maxLines: 5),

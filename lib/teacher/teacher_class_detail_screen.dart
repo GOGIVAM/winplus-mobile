@@ -8,6 +8,7 @@ import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../widgets/win_screen.dart';
+import '../widgets/winai_floating_widget.dart';
 
 /// Module 12 : écran d'une classe (élèves + devoirs), en miroir strict des
 /// opérations exposées par TeacherClassesController côté serveur. Remplace
@@ -166,11 +167,12 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
         ),
         Expanded(child: _tabStudents ? _buildStudents(s) : _buildAssignments(s)),
       ]),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: // Le bouton WinAI flottant se retire : deux boutons se superposaient.
+          WinAIFabHidden(child: FloatingActionButton.extended(
         onPressed: _tabStudents ? _addStudent : _createAssignment,
         icon: Icon(_tabStudents ? PhosphorIconsRegular.userPlus : PhosphorIconsRegular.plus),
         label: Text(_tabStudents ? context.l10n.teacherClassAddStudent : context.l10n.teacherClassNewAssignment),
-      ),
+      )),
     );
   }
 

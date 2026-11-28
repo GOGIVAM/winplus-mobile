@@ -9,6 +9,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_screen.dart';
 import '../widgets/win_widgets.dart';
+import '../widgets/winai_floating_widget.dart';
 
 /// « Bulletins » de l'établissement (lot 7), comme InstitutionBulletins du
 /// site : bulletins déjà partagés, et préparation d'un bulletin (élève,
@@ -100,8 +101,9 @@ class _InstitutionBulletinsScreenState extends State<InstitutionBulletinsScreen>
       appBar: AppBar(title: Text(l.bullTitle)),
       floatingActionButton: items == null || items.isEmpty
           ? null
-          : FloatingActionButton.extended(
-              onPressed: _prepare, icon: const Icon(PhosphorIconsRegular.plus), label: Text(l.bullPrepare)),
+          : // Le bouton WinAI flottant se retire : deux boutons se superposaient.
+          WinAIFabHidden(child: FloatingActionButton.extended(
+              onPressed: _prepare, icon: const Icon(PhosphorIconsRegular.plus), label: Text(l.bullPrepare))),
       body: SafeArea(child: body),
     );
   }

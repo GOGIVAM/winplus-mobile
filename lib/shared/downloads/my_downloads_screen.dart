@@ -130,7 +130,7 @@ class _MyDownloadsScreenState extends State<MyDownloadsScreen> {
                   Text(formatSize(x.sizeBytes), style: WinType.labelM(s.onMuted)),
                   IconButton(
                     tooltip: l.commonDelete,
-                    icon: const Icon(PhosphorIconsRegular.trash),
+                    icon: Icon(PhosphorIconsRegular.trash, size: 20, color: s.onMuted),
                     onPressed: () => _deleteLesson(x),
                   ),
                 ]),

@@ -15,6 +15,7 @@ import '../widgets/win_widgets.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../widgets/win_screen.dart';
 import '../widgets/win_subject_picker.dart';
+import '../widgets/winai_floating_widget.dart';
 
 /// Lot 9.3 (suivi 17.4) : cours particuliers réservés et payés par un parent
 /// pour ses enfants, ou par une institution pour ses élèves (parité web
@@ -240,7 +241,8 @@ class _TutoringForStudentsScreenState extends State<TutoringForStudentsScreen> w
         actions: [IconButton(icon: Icon(PhosphorIconsRegular.arrowClockwise, color: s.onMuted), onPressed: _load)],
       ),
       floatingActionButton: ctx != null && (ctx.isParent || ctx.isInstitution)
-          ? FloatingActionButton.extended(onPressed: _create, icon: const Icon(PhosphorIconsRegular.plus), label: Text(context.l10n.tutoringAssignTutor))
+          ? // Le bouton WinAI flottant se retire : deux boutons se superposaient.
+          WinAIFabHidden(child: FloatingActionButton.extended(onPressed: _create, icon: const Icon(PhosphorIconsRegular.plus), label: Text(context.l10n.tutoringAssignTutor)))
           : null,
       body: _loading
           ? const WinLoading()

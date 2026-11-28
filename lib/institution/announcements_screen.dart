@@ -138,7 +138,7 @@ class _InstitutionAnnouncementsScreenState extends State<InstitutionAnnouncement
                       ),
                       IconButton(
                         tooltip: l.commonDelete,
-                        icon: const Icon(PhosphorIconsRegular.trash),
+                        icon: Icon(PhosphorIconsRegular.trash, size: 20, color: s.onMuted),
                         onPressed: () => _delete(a),
                       ),
                     ]),

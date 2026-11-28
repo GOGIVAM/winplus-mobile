@@ -11,6 +11,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_screen.dart';
 import '../widgets/win_widgets.dart';
+import '../widgets/winai_floating_widget.dart';
 
 /// Pourcentage (0 à 100) vers une note sur 20.
 String on20(double? v) => WinFormat.grade20(v);
@@ -126,8 +127,9 @@ class _MockExamsScreenState extends State<MockExamsScreen> {
       appBar: AppBar(title: Text(l.mockTitle)),
       floatingActionButton: items == null || items.isEmpty
           ? null
-          : FloatingActionButton.extended(
-              onPressed: _create, icon: const Icon(PhosphorIconsRegular.plus), label: Text(l.mockCreate)),
+          : // Le bouton WinAI flottant se retire : deux boutons se superposaient.
+          WinAIFabHidden(child: FloatingActionButton.extended(
+              onPressed: _create, icon: const Icon(PhosphorIconsRegular.plus), label: Text(l.mockCreate))),
       body: SafeArea(child: body),
     );
   }

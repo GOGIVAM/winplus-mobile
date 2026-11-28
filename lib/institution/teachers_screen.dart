@@ -11,6 +11,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_screen.dart';
 import '../widgets/win_widgets.dart';
+import '../widgets/winai_floating_widget.dart';
 
 /// « Enseignants » de l'établissement (lot 7), comme InstitutionTeachers du
 /// site : demandes reçues, enseignants affiliés (contenus, quiz, classes),
@@ -232,8 +233,9 @@ class _InstitutionTeachersScreenState extends State<InstitutionTeachersScreen> {
       appBar: AppBar(title: Text(l.teachTitle)),
       floatingActionButton: d == null || (d.teachers.isEmpty && d.received.isEmpty && d.sent.isEmpty)
           ? null
-          : FloatingActionButton.extended(
-              onPressed: _invite, icon: const Icon(PhosphorIconsRegular.userPlus), label: Text(l.teachInvite)),
+          : // Le bouton WinAI flottant se retire : deux boutons se superposaient.
+          WinAIFabHidden(child: FloatingActionButton.extended(
+              onPressed: _invite, icon: const Icon(PhosphorIconsRegular.userPlus), label: Text(l.teachInvite))),
       body: SafeArea(child: body),
     );
   }

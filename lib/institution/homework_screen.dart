@@ -12,6 +12,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_screen.dart';
 import '../widgets/win_widgets.dart';
 import 'mock_exams_screen.dart' show on20;
+import '../widgets/winai_floating_widget.dart';
 
 /// « Devoirs » de l'établissement (lot 7), comme InstitutionHomework du
 /// site : devoirs donnés aux classes (rendus, moyenne), donner un devoir
@@ -109,8 +110,9 @@ class _InstitutionHomeworkScreenState extends State<InstitutionHomeworkScreen> {
       appBar: AppBar(title: Text(l.ihwTitle)),
       floatingActionButton: items == null || items.isEmpty
           ? null
-          : FloatingActionButton.extended(
-              onPressed: _create, icon: const Icon(PhosphorIconsRegular.plus), label: Text(l.ihwCreate)),
+          : // Le bouton WinAI flottant se retire : deux boutons se superposaient.
+          WinAIFabHidden(child: FloatingActionButton.extended(
+              onPressed: _create, icon: const Icon(PhosphorIconsRegular.plus), label: Text(l.ihwCreate))),
       body: SafeArea(child: body),
     );
   }
@@ -377,7 +379,7 @@ class _HomeworkProgressScreenState extends State<HomeworkProgressScreen> {
     return Scaffold(
       backgroundColor: s.bg,
       appBar: AppBar(title: Text(widget.homework.title), actions: [
-        IconButton(tooltip: l.ihwDelete, onPressed: _delete, icon: const Icon(PhosphorIconsRegular.trash)),
+        IconButton(tooltip: l.ihwDelete, onPressed: _delete, icon: Icon(PhosphorIconsRegular.trash, size: 20, color: s.onMuted)),
       ]),
       body: SafeArea(
         child: _error

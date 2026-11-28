@@ -312,7 +312,7 @@ class _StudySessionScreenState extends State<StudySessionScreen> {
             }
           },
         ),
-        title: Text(context.l10n.studentTabsGuidedSession, style: WinType.headlineS(s.onStrong)),
+        title: Text(context.l10n.studentTabsGuidedSession),
       ),
       body: SafeArea(child: _buildBody(s)),
     );
