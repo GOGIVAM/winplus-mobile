@@ -12891,4 +12891,14 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get twoFaError =>
       'Unable to complete this right now. Please try again.';
+
+  @override
+  String get twoFaReminderTitle => 'Protect your account';
+
+  @override
+  String get twoFaReminderText =>
+      'Two-factor authentication adds a code from your authenticator app to your password. It stays optional.';
+
+  @override
+  String get twoFaReminderLater => 'Later';
 }

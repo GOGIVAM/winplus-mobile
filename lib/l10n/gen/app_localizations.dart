@@ -21723,6 +21723,24 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Opération impossible pour le moment. Merci de réessayer.'**
   String get twoFaError;
+
+  /// No description provided for @twoFaReminderTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Protéger le compte'**
+  String get twoFaReminderTitle;
+
+  /// No description provided for @twoFaReminderText.
+  ///
+  /// In fr, this message translates to:
+  /// **'La double authentification ajoute un code de l\'application d\'authentification au mot de passe. Elle reste facultative.'**
+  String get twoFaReminderText;
+
+  /// No description provided for @twoFaReminderLater.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plus tard'**
+  String get twoFaReminderLater;
 }
 
 class _AppLocalizationsDelegate

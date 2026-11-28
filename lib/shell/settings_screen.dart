@@ -17,12 +17,11 @@ import 'two_factor_settings_screen.dart';
 import 'delete_account.dart';
 import 'more_screen.dart';
 
-/// Activation de la double authentification proposée dans Paramètres. Faux
-/// tant que le site ne demande pas le code à la connexion : un compte activé
-/// depuis le téléphone ne pourrait plus se connecter sur le site
-/// (frontend-3e prévient quand c'est en production). L'étape du code à la
-/// connexion du mobile, elle, est active.
-const bool kTwoFactorSetupAvailable = false;
+/// Activation de la double authentification proposée dans Paramètres, et
+/// rappel facultatif sur l'accueil (TwoFactorReminderCard). Ouvert le 28/11 :
+/// la connexion du site demande le code depuis la production fba0d38. À
+/// remettre à false si l'un des clients ne gère plus requiresTwoFactor.
+const bool kTwoFactorSetupAvailable = true;
 
 /// Paramètres de l'application, les mêmes pour tous les espaces : langue,
 /// mode sombre, déverrouillage par empreinte, notifications et

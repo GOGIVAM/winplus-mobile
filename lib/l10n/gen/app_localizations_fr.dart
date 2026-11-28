@@ -12985,4 +12985,14 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get twoFaError =>
       'Opération impossible pour le moment. Merci de réessayer.';
+
+  @override
+  String get twoFaReminderTitle => 'Protéger le compte';
+
+  @override
+  String get twoFaReminderText =>
+      'La double authentification ajoute un code de l\'application d\'authentification au mot de passe. Elle reste facultative.';
+
+  @override
+  String get twoFaReminderLater => 'Plus tard';
 }

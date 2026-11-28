@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../shell/two_factor_reminder.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../app_state.dart';
 import '../data/models.dart' show WinRole;
@@ -301,6 +302,9 @@ class MobileHomeView extends StatelessWidget {
         forYou,
         const SizedBox(height: 22),
         quick,
+        // Rappel de la double authentification (facultative) : se masque seul
+        // pour un compte protégé ou après « Plus tard » (30 jours).
+        const TwoFactorReminderCard(),
         if (stats != null) ...[
           const SizedBox(height: 22),
           WinReveal(id: 'stats', index: i++, child: stats!),

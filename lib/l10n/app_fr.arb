@@ -6663,5 +6663,8 @@
   "twoFaPasswordLabel": "Mot de passe (sauf compte Google)",
   "twoFaCodeLabel": "Code de l'application ou de secours",
   "twoFaAppCodeLabel": "Code de l'application",
-  "twoFaError": "Opération impossible pour le moment. Merci de réessayer."
+  "twoFaError": "Opération impossible pour le moment. Merci de réessayer.",
+  "twoFaReminderTitle": "Protéger le compte",
+  "twoFaReminderText": "La double authentification ajoute un code de l'application d'authentification au mot de passe. Elle reste facultative.",
+  "twoFaReminderLater": "Plus tard"
 }

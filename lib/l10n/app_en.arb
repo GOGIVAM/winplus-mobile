@@ -3787,5 +3787,8 @@
   "twoFaPasswordLabel": "Password (except Google accounts)",
   "twoFaCodeLabel": "App or backup code",
   "twoFaAppCodeLabel": "App code",
-  "twoFaError": "Unable to complete this right now. Please try again."
+  "twoFaError": "Unable to complete this right now. Please try again.",
+  "twoFaReminderTitle": "Protect your account",
+  "twoFaReminderText": "Two-factor authentication adds a code from your authenticator app to your password. It stays optional.",
+  "twoFaReminderLater": "Later"
 }
