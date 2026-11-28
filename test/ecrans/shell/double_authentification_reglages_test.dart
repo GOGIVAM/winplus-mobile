@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:winplus/l10n/l10n.dart';
 import 'package:winplus/services/two_factor_service.dart';
+import 'package:winplus/shell/settings_screen.dart';
 import 'package:winplus/shell/two_factor_settings_screen.dart';
 import 'package:winplus/widgets/win_widgets.dart';
 
@@ -126,6 +127,11 @@ void main() {
       await reseau(tester);
       expect(faux.recues('POST', '/users/2fa/disable').single.data, {'password': 'secret', 'code': '654321'});
       expect(find.text(l.twoFaDisabled), findsOneWidget);
+    });
+
+    testWidgets('Parametres : entree masquee tant que le site ne demande pas le code a la connexion', (tester) async {
+      await monterEcran(tester, const SettingsScreen());
+      expect(find.text(L10n.current.twoFaTitle), kTwoFactorSetupAvailable ? findsOneWidget : findsNothing);
     });
 
     testWidgets('statut en panne : erreur et bouton Reessayer', (tester) async {

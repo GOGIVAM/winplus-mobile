@@ -13,8 +13,16 @@ import '../widgets/biometric_toggle.dart';
 import '../widgets/language_selector.dart';
 import 'change_password_screen.dart';
 import 'two_factor_settings_screen.dart';
+
 import 'delete_account.dart';
 import 'more_screen.dart';
+
+/// Activation de la double authentification proposée dans Paramètres. Faux
+/// tant que le site ne demande pas le code à la connexion : un compte activé
+/// depuis le téléphone ne pourrait plus se connecter sur le site
+/// (frontend-3e prévient quand c'est en production). L'étape du code à la
+/// connexion du mobile, elle, est active.
+const bool kTwoFactorSetupAvailable = false;
 
 /// Paramètres de l'application, les mêmes pour tous les espaces : langue,
 /// mode sombre, déverrouillage par empreinte, notifications et
@@ -57,7 +65,9 @@ class SettingsScreen extends StatelessWidget {
                     context,
                     WinPageRoute(
                         builder: (_) => const ChangePasswordScreen()))),
-            // Double authentification pour tous les comptes (serveur 2a006d2).
+            // Double authentification pour tous les comptes (serveur 2a006d2),
+            // masquée tant que la connexion du site ne demande pas le code.
+            if (kTwoFactorSetupAvailable)
             MoreLine(
                 icon: PhosphorIconsRegular.shieldCheck,
                 label: l.twoFaTitle,
