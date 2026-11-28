@@ -101,10 +101,8 @@ class _InstitutionAnnouncementsScreenState extends State<InstitutionAnnouncement
           WinButton(l.annNew, block: true, icon: PhosphorIconsRegular.megaphone, onTap: _create),
           const SizedBox(height: 16),
           if (items.isEmpty)
-            Padding(
-              padding: const EdgeInsets.only(top: 24),
-              child: Text(l.annSentEmpty, textAlign: TextAlign.center, style: WinType.bodyM(s.onMuted)),
-            )
+            WinEmptyState(
+                title: l.annSentEmpty, icon: PhosphorIconsRegular.megaphone)
           else
             for (final a in items)
               Padding(

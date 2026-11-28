@@ -7,6 +7,7 @@ import '../theme/win_theme.dart';
 import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/win_screen.dart';
 
 /// « En attente d'envoi » (lot 3) : les actions faites sans réseau, en
 /// attente ou en échec, avec relance et suppression. Ouvert depuis le
@@ -60,14 +61,9 @@ class _PendingActionsScreenState extends State<PendingActionsScreen> {
         builder: (context, _, __) {
           final entries = OutboxService.instance.entries;
           if (entries.isEmpty) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: Text(l.pendingEmpty,
-                    textAlign: TextAlign.center,
-                    style: WinType.bodyM(s.onMuted)),
-              ),
-            );
+            return WinEmptyState(
+                title: l.pendingEmpty,
+                icon: PhosphorIconsRegular.checkCircle);
           }
           return ListView(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),

@@ -132,18 +132,10 @@ class _StudyGroupsScreenState extends State<StudyGroupsScreen> {
                 WinSectionHeader(context.l10n.studentGroupsMine),
                 const SizedBox(height: 8),
                 if (groups.isEmpty)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 24),
-                    child: Column(children: [
-                      Icon(PhosphorIconsRegular.usersThree, size: 28, color: s.onFaint),
-                      const SizedBox(height: 8),
-                      Text(context.l10n.studentGroupsEmpty,
-                          style: WinType.bodyM(s.onMuted), textAlign: TextAlign.center),
-                      const SizedBox(height: 4),
-                      Text(context.l10n.studentGroupsEmptyHint,
-                          style: WinType.labelS(s.onFaint), textAlign: TextAlign.center),
-                    ]),
-                  )
+                  WinEmptyState(
+                      title: context.l10n.studentGroupsEmpty,
+                      message: context.l10n.studentGroupsEmptyHint,
+                      icon: PhosphorIconsRegular.usersThree)
                 else
                   ...groups.map((g) => Padding(
                         padding: const EdgeInsets.only(bottom: 10),

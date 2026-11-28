@@ -6,6 +6,7 @@ import '../theme/win_typography.dart';
 import '../widgets/win_widgets.dart';
 import '../l10n/l10n.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../widgets/win_screen.dart';
 
 /// Lot 9.5 (17.11) : l'institution cautionne un répétiteur qui lui est
 /// rattaché, après l'avoir vérifié par ses propres moyens (comment, par qui,
@@ -167,7 +168,9 @@ class _TutorEndorsementsScreenState extends State<TutorEndorsementsScreen> {
                     style: WinType.bodyS(s.onMuted)),
                 const SizedBox(height: 12),
                 if (tutors.isEmpty)
-                  Text(context.l10n.instEndorseEmpty, style: WinType.bodyM(s.onMuted)),
+                  WinEmptyState(
+                      title: context.l10n.instEndorseEmpty,
+                      icon: PhosphorIconsRegular.shieldCheck),
                 for (final t in tutors) ...[
                   WinCard(
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [

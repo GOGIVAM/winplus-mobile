@@ -607,12 +607,9 @@ class _QuizHubScreenState extends State<QuizHubScreen> {
                 WinSectionHeader(context.l10n.studentQuizAvailable),
                 const SizedBox(height: 12),
                 if (quizzes.isEmpty)
-                  Center(
-                      child: Padding(
-                    padding: const EdgeInsets.all(24),
-                    child: Text(context.l10n.studentQuizNone,
-                        style: WinType.bodyM(s.onMuted)),
-                  ))
+                  WinEmptyState(
+                      title: context.l10n.studentQuizNone,
+                      icon: PhosphorIconsRegular.exam)
                 else
                   GridView.builder(
                     shrinkWrap: true,

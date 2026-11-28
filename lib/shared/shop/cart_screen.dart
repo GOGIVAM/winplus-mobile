@@ -115,18 +115,11 @@ class _CartScreenState extends State<CartScreen> {
               ? WinErrorState(message: context.l10n.shopCartLoadFailed, onRetry: _load)
               : const WinLoading()
           : cart.items.isEmpty
-              ? Center(
-                  child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  Icon(PhosphorIconsRegular.shoppingCart,
-                      size: 64, color: s.onFaint),
-                  const SizedBox(height: 12),
-                  Text(context.l10n.shopCartEmpty,
-                      style: WinType.bodyM(s.onMuted)),
-                  const SizedBox(height: 20),
-                  WinButton(context.l10n.shopExploreCatalog,
-                      icon: PhosphorIconsRegular.compass,
-                      onTap: () => Navigator.pop(context)),
-                ]))
+              ? WinEmptyState(
+                  title: context.l10n.shopCartEmpty,
+                  icon: PhosphorIconsRegular.shoppingCart,
+                  actionLabel: context.l10n.shopExploreCatalog,
+                  onAction: () => Navigator.pop(context))
               : Column(children: [
                   Expanded(
                     child: ListView.separated(

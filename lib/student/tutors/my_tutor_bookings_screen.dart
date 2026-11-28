@@ -184,12 +184,9 @@ class _MyTutorBookingsScreenState extends State<MyTutorBookingsScreen> {
               // Répétiteur attribué sans réservation encore : la carte
               // « Réserver » doit rester visible.
               : bookings!.isEmpty && _engagements.isEmpty && _assigned.isEmpty
-                  ? Center(
-                      child: Padding(
-                      padding: const EdgeInsets.all(24),
-                      child: Text(context.l10n.tutoringBookingsEmpty,
-                          style: WinType.bodyM(s.onMuted)),
-                    ))
+                  ? WinEmptyState(
+                      title: context.l10n.tutoringBookingsEmpty,
+                      icon: PhosphorIconsRegular.calendarBlank)
                   : RefreshIndicator(
                       onRefresh: _load,
                       child: ListView(
